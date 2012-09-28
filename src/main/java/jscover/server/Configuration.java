@@ -1,6 +1,7 @@
 package jscover.server;
 
 import jscover.util.IoUtils;
+import org.mozilla.javascript.Context;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,6 +22,7 @@ public class Configuration {
     public static final String PORT_PREFIX = "--port=";
     public static final String REPORT_DIR_PREFIX = "--report-dir=";
     public static final String NO_INSTRUMENT_PREFIX = "--no-instrument=";
+    public static final String JS_VERSION_PREFIX = "--js-version=";
 
     public static final Properties properties = new Properties();
 
@@ -57,6 +59,7 @@ public class Configuration {
     private Integer port = 8080;
     private final Set<String> noInstruments = new HashSet<String>();
     private File reportDir = new File(System.getProperty("user.dir"));
+    private int JSVersion = Context.VERSION_1_8;
 
     public Boolean showHelp() {
         return showHelp;
@@ -142,6 +145,8 @@ public class Configuration {
                 configuration.reportDir.mkdirs();
             } else if (arg.startsWith(NO_INSTRUMENT_PREFIX)) {
                 configuration.noInstruments.add(arg.substring(NO_INSTRUMENT_PREFIX.length()));
+            } else if (arg.startsWith(JS_VERSION_PREFIX)) {
+                configuration.JSVersion = Integer.valueOf(arg.substring(JS_VERSION_PREFIX.length()));
             } else {
                 configuration.showHelp = true;
             }
@@ -155,5 +160,9 @@ public class Configuration {
 
     public String getVersionText() {
         return "JSCover version: " + properties.getProperty("version");
+    }
+
+    public int getJSVersion() {
+        return JSVersion;
     }
 }

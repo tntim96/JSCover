@@ -6,6 +6,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Token;
 import org.mozilla.javascript.ast.Assignment;
 import org.mozilla.javascript.ast.AstNode;
@@ -16,7 +17,7 @@ import org.mozilla.javascript.ast.NumberLiteral;
 @RunWith(JUnit4.class)
 public class InstrumenterTest {
 
-    private FileInstrumenter instrumenter = new FileInstrumenter("test.js", null, null);
+    private FileInstrumenter instrumenter = new FileInstrumenter(Context.VERSION_1_8, "test.js", null, null);
 
     @Test
     public void shouldPatchRhinoBug684131() {

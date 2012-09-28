@@ -21,13 +21,13 @@ public class FileInstrumenter {
     private ParseTreeInstrumenter instrumenter;
     private Parser parser;
 
-    public FileInstrumenter(String uri, SourceFormatter sourceFormatter, File log) {
+    public FileInstrumenter(int version, String uri, SourceFormatter sourceFormatter, File log) {
         this.uri = uri;
         this.instrumenter = new ParseTreeInstrumenter(uri, log);
         this.sourceFormatter = sourceFormatter;
         CompilerEnvirons compilerEnv = new CompilerEnvirons();
         // compilerEnv.setAllowMemberExprAsFunctionName(true);
-        compilerEnv.setLanguageVersion(180);
+        compilerEnv.setLanguageVersion(version);
         compilerEnv.setStrictMode(false);
         parser = new Parser(compilerEnv);
 

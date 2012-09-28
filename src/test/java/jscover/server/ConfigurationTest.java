@@ -54,6 +54,11 @@ public class ConfigurationTest {
     }
 
     @Test
+    public void shouldParseJSVersion() {
+        assertThat(Configuration.parse(new String[]{"--version=180"}).getJSVersion(), equalTo(180));
+    }
+
+    @Test
     public void shouldParseReportDir() {
         assertThat(Configuration.parse(new String[]{"--report-dir=/"}).getReportDir(), equalTo(new File("/")));
     }

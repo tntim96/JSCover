@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import jscover.util.IoUtils;
+import org.mozilla.javascript.Context;
 
 @RunWith(JUnit4.class)
 public class InstrumenterIntegrationTest {
@@ -19,7 +20,7 @@ public class InstrumenterIntegrationTest {
     public void shouldInstrumentStatements() throws URISyntaxException {
         String fileName = "test-simple.js";
         String source = IoUtils.loadFromClassPath("/" + fileName);
-        instrumenter = new FileInstrumenter(fileName, new PlainFormatter(), null);
+        instrumenter = new FileInstrumenter(Context.VERSION_1_8, fileName, new PlainFormatter(), null);
 
         String instrumentedSource = instrumenter.instrumentFile(null, source);
 

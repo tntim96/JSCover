@@ -72,7 +72,7 @@ public class WebServer extends NanoHTTPD {
             } else if (uri.startsWith("/jscoverage")) {
                 return new NanoHTTPD.Response(HTTP_OK, getMime(uri), getClass().getResourceAsStream(uri));
             } else if (uri.endsWith(".js") && !configuration.skipInstrumentation(uri)) {
-                FileInstrumenter fileInstrumenter = new FileInstrumenter(uri, sourceFormatter, log);
+                FileInstrumenter fileInstrumenter = new FileInstrumenter(configuration.getJSVersion(), uri, sourceFormatter, log);
                 String source = IoUtils.toString(new FileInputStream(myRootDir + uri));
                 String jsInstrumented = fileInstrumenter.instrumentFile(source);
                 return new NanoHTTPD.Response(HTTP_OK, "text/javascript", jsInstrumented);

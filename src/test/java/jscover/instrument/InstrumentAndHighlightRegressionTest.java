@@ -12,6 +12,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import jscover.util.IoUtils;
+import org.mozilla.javascript.Context;
 
 public class InstrumentAndHighlightRegressionTest {
     private static Set<String> tested = new HashSet<String>();
@@ -275,7 +276,7 @@ public class InstrumentAndHighlightRegressionTest {
 
     private void testFile(String fileName) {
         tested.add(fileName);
-        FileInstrumenter instrumenter = new FileInstrumenter(fileName, sourceFormatter, null);
+        FileInstrumenter instrumenter = new FileInstrumenter(Context.VERSION_1_8, fileName, sourceFormatter, null);
 
         String source = IoUtils.loadFromClassPath("/data/javascript/" + fileName);
         String instrumentedSource = instrumenter.instrumentFileWithoutHeader(source);
