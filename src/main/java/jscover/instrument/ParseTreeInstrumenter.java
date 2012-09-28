@@ -27,7 +27,7 @@ public class ParseTreeInstrumenter implements NodeVisitor {
 
     public ExpressionStatement buildInstrumentationStatement(int lineNumber) {
         if (lineNumber < 1)
-            throw new IllegalStateException("Illegal line number: "+lineNumber);
+            throw new IllegalStateException("Illegal line number: " + lineNumber);
         validLines.add(lineNumber);
 
         Name var = new Name(0, "_$jscoverage");
@@ -92,7 +92,7 @@ public class ParseTreeInstrumenter implements NodeVisitor {
             if (statements == null) {
                 return true;
             }
-            for (int i = statements.size()-1; i >= 0; i--) {
+            for (int i = statements.size() - 1; i >= 0; i--) {
                 AstNode statement = statements.get(i);
                 ExpressionStatement newChild = buildInstrumentationStatement(statement.getLineno());
                 statements.add(i, newChild);
@@ -100,7 +100,7 @@ public class ParseTreeInstrumenter implements NodeVisitor {
         } else if (node instanceof ExpressionStatement || node instanceof EmptyExpression || node instanceof ContinueStatement
                 || node instanceof BreakStatement || node instanceof EmptyStatement || node instanceof ThrowStatement) {
 
-            if (node.getLineno()<1) {
+            if (node.getLineno() < 1) {
                 //Must be a case expression
                 return true;
             }
@@ -124,7 +124,7 @@ public class ParseTreeInstrumenter implements NodeVisitor {
             } else if (parent instanceof SwitchCase) {
                 //Don't do anything here. Direct modification of statements will result in concurrent modification exception.
             } else {
-                if (parent!=null) {
+                if (parent != null) {
                     parent.addChildBefore(newChild, node);
                 }
             }
