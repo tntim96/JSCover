@@ -235,7 +235,6 @@ public class InstrumentAndHighlightRegressionTest {
     }
 
     @Test
-    @Ignore
     public void shouldInstrumentTry() {
         testFile("javascript-try.js");
     }

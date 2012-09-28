@@ -23,8 +23,7 @@ _$jscoverage['javascript-try.js'][3]++;
 try {
   _$jscoverage['javascript-try.js'][4]++;
   f();
-}
-catch (e) {
+}catch (e) {
   _$jscoverage['javascript-try.js'][7]++;
   f();
 }
@@ -32,8 +31,7 @@ _$jscoverage['javascript-try.js'][10]++;
 try {
   _$jscoverage['javascript-try.js'][11]++;
   f();
-}
-catch (e if (e instanceof E)) {
+}catch (e if e instanceof E) {
   _$jscoverage['javascript-try.js'][14]++;
   f();
 }
@@ -41,8 +39,7 @@ _$jscoverage['javascript-try.js'][17]++;
 try {
   _$jscoverage['javascript-try.js'][18]++;
   f();
-}
-finally {
+} finally {
   _$jscoverage['javascript-try.js'][21]++;
   f();
 }
@@ -50,12 +47,11 @@ _$jscoverage['javascript-try.js'][24]++;
 try {
   _$jscoverage['javascript-try.js'][25]++;
   f();
-}
-catch (e) {
+}catch (e) {
   _$jscoverage['javascript-try.js'][28]++;
   f();
 }
-finally {
+ finally {
   _$jscoverage['javascript-try.js'][31]++;
   f();
 }
