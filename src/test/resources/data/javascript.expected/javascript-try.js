@@ -55,4 +55,3 @@ try {
   _$jscoverage['javascript-try.js'][31]++;
   f();
 }
- 

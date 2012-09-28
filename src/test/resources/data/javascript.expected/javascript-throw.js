@@ -13,4 +13,3 @@ try {
   _$jscoverage['javascript-throw.js'][5]++;
   ;
 }
- 
