@@ -25,19 +25,11 @@
     </p>
 
     <p>
-        JSCover is currently packaged in two binaries, <i>JSCover-all.jar</i> and <i>JSCover.jar</i>.
-        <i>JSCover-all.jar</i> is a standalone JAR which includes all dependencies.
-        <i>JSCover.jar</i> must have all dependent JARs available in the same directory.
+        The binary <i>JSCover.jar</i> must have all dependent JARs available in the same directory.
     </p>
 
     <div class="shell">
         java -jar JSCover.jar [OPTION]...
-    </div>
-
-    <p>...or...</p>
-
-    <div class="shell">
-        java -jar JSCover-all.jar [OPTION]...
     </div>
 
     <p>For example</p>
@@ -50,6 +42,7 @@
         Run example.sh (see below) and then go to
         <a href="http://localhost:8080/jscoverage.html?/">http://localhost:8080/jscoverage.html?/</a>.
     </p>
+
     <div class="shell">
         java -jar target/dist/JSCover.jar --document-root=doc/example --report-dir=target
     </div>
@@ -85,14 +78,16 @@
             <td>None</td>
             <td>Specify URLs not to be instrumented. Can be specified multiple times.</td>
         </tr>
+        <tr>
+            <td>--js-version=VERSION</td>
+            <td>1.3</td>
+            <td>Use the specified JavaScript version; valid values for VERSION are 1.0, 1.1, 1.2, ..., 1.8.</td>
+        </tr>
     </table>
     <p>
-        The server can be stopped by:
+        The server can be stopped by issuing a request to the URI '/stop' on the server (e.g.
+        http://localhost:8080/stop)
     </p>
-    <ul>
-        <li>Issuing a request to the URI '/stop' on the server (e.g. http://localhost:8080/stop)</li>
-        <li>Hitting the 'Enter' key in the console</li>
-    </ul>
 
     <p>
         A log file is also produced in the report directory which should be inspected after running.
@@ -156,12 +151,14 @@
     </ul>
 
     <a name="todo"></a>
+
     <h2>To-Do</h2>
 
     <ul>
         <li>100% ECMAScript support. See @Ignore tests in
             <a href="../src/test/java/jscover/instrument/InstrumentAndHighlightRegressionTest.java">InstrumentAndHighlightRegressionTest.java</a>
-            which is work-in-progress</li>
+            which is work-in-progress
+        </li>
         <li>Add merging of coverage data</li>
         <li>Add branch coverage</li>
         <li>More documentation and examples</li>

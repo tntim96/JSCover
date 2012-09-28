@@ -16,6 +16,7 @@ public class ConfigurationTest {
         assertThat(configuration.showHelp(), equalTo(false));
         assertThat(configuration.getDocumentRoot().toString(), equalTo(System.getProperty("user.dir")));
         assertThat(configuration.getPort(), equalTo(8080));
+        assertThat(configuration.getJSVersion(), equalTo(130));
         assertThat(configuration.skipInstrumentation("/"), equalTo(false));
     }
 
@@ -55,7 +56,7 @@ public class ConfigurationTest {
 
     @Test
     public void shouldParseJSVersion() {
-        assertThat(Configuration.parse(new String[]{"--version=180"}).getJSVersion(), equalTo(180));
+        assertThat(Configuration.parse(new String[]{"--js-version=1.8"}).getJSVersion(), equalTo(180));
     }
 
     @Test

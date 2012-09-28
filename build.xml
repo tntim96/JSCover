@@ -94,7 +94,7 @@
         </jar>
     </target>
 
-    <target name="zip" depends="pre-commit, jar, jar-all">
+    <target name="zip" depends="pre-commit, jar">
         <zip destfile="${dist.dir}/${ant.project.name}-${version}.zip">
             <fileset dir="${basedir}">
                 <include name="**/*"/>
