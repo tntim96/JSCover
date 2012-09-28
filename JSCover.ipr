@@ -185,7 +185,7 @@
   </component>
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/JavaScriptCoverage.iml" filepath="$PROJECT_DIR$/JavaScriptCoverage.iml" />
+      <module fileurl="file://$PROJECT_DIR$/JSCover.iml" filepath="$PROJECT_DIR$/JSCover.iml" />
     </modules>
   </component>
   <component name="ProjectResources">
@@ -211,7 +211,7 @@
       <option name="ENABLE_SWING_INSPECTOR" value="false" />
       <option name="ENV_VARIABLES" />
       <option name="PASS_PARENT_ENVS" value="true" />
-      <module name="JavaScriptCoverage" />
+      <module name="JSCover" />
       <envs />
       <RunnerSettings RunnerId="Run" />
       <ConfigurationWrapper RunnerId="Run" />
@@ -233,7 +233,7 @@
       <option name="ENABLE_SWING_INSPECTOR" value="false" />
       <option name="ENV_VARIABLES" />
       <option name="PASS_PARENT_ENVS" value="true" />
-      <module name="JavaScriptCoverage" />
+      <module name="JSCover" />
       <envs />
       <RunnerSettings RunnerId="Debug">
         <option name="DEBUG_PORT" value="3236" />
@@ -261,7 +261,7 @@
       <option name="ENABLE_SWING_INSPECTOR" value="false" />
       <option name="ENV_VARIABLES" />
       <option name="PASS_PARENT_ENVS" value="true" />
-      <module name="JavaScriptCoverage" />
+      <module name="JSCover" />
       <envs />
       <RunnerSettings RunnerId="Run" />
       <ConfigurationWrapper RunnerId="Run" />
@@ -270,6 +270,7 @@
   </component>
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="hg4idea" />
+    <mapping directory="$PROJECT_DIR$" vcs="Git" />
   </component>
   <component name="WebServicesPlugin" addRequiredLibraries="true" />
 </project>
