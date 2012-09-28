@@ -1,0 +1,1 @@
+java -jar target/dist/JSCover-all.jar --document-root=doc/example --report-dir=target
