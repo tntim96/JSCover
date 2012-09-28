@@ -229,7 +229,6 @@ public class InstrumentAndHighlightRegressionTest {
     }
 
     @Test
-    @Ignore
     public void shouldInstrumentThrow() {
         testFile("javascript-throw.js");
     }
@@ -239,7 +238,7 @@ public class InstrumentAndHighlightRegressionTest {
         testFile("javascript-try.js");
     }
 
-    @Test //https://bugzilla.mozilla.org/show_bug.cgi?id=688018
+    @Test//https://bugzilla.mozilla.org/show_bug.cgi?id=688018
     public void shouldInstrumentUnaryOp() {
         testFile("javascript-unaryop.js");
     }

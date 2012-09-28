@@ -98,7 +98,7 @@ public class ParseTreeInstrumenter implements NodeVisitor {
                 statements.add(i, newChild);
             }
         } else if (node instanceof ExpressionStatement || node instanceof EmptyExpression || node instanceof ContinueStatement
-                || node instanceof BreakStatement || node instanceof EmptyStatement) {
+                || node instanceof BreakStatement || node instanceof EmptyStatement || node instanceof ThrowStatement) {
 
             if (node.getLineno()<1) {
                 //Must be a case expression

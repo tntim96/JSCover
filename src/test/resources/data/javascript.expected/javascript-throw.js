@@ -9,8 +9,7 @@ _$jscoverage['javascript-throw.js'][1]++;
 try {
   _$jscoverage['javascript-throw.js'][2]++;
   throw "x";
-}
-catch (e) {
+}catch (e) {
   _$jscoverage['javascript-throw.js'][5]++;
   ;
 }
