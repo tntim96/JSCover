@@ -19,7 +19,17 @@
 
     <p>
         For an overview of the basic workings of of JSCover, see the
-        <a href="http://siliconforks.com/jscoverage/manual.html">JSCoverage documentation</a>.
+        <a href="http://siliconforks.com/jscoverage/manual.html">JSCoverage documentation</a>. JSCover currently
+        supports the same features JSCoverage including:
+    </p>
+
+    <ul>
+        <li>Server mode with switches indicated below</li>
+        <li>Storing of report data to the file system</li>
+        <li>Merging of coverage data if multiple runs are stored at the same location</li>
+    </ul>
+
+    <p>
         NB - The binary <i>JSCover.jar</i> must have all dependent JARs available in the same directory.
         Currently only the server is implemented with the following usage:
     </p>
@@ -154,7 +164,6 @@
         In order of priority unless feedback or other circumstances dictates otherswise:
     </p>
     <ul>
-        <li>Add merging of coverage data</li>
         <li>
             100% ECMAScript support (see @Ignore tests in
             <a href="../src/test/jscover/instrument/InstrumentAndHighlightRegressionTest.java">InstrumentAndHighlightRegressionTest</a>)
