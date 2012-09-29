@@ -28,9 +28,10 @@
       <entry name="?*.dtd" />
       <entry name="?*.tld" />
       <entry name="?*.ftl" />
-      <entry name="*.js" />
-      <entry name="*.css" />
-      <entry name="*.txt" />
+      <entry name="?*.js" />
+      <entry name="?*.css" />
+      <entry name="?*.txt" />
+      <entry name="?*.json" />
     </wildcardResourcePatterns>
     <annotationProcessing enabled="false" useClasspath="true" />
   </component>
