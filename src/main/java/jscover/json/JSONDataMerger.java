@@ -368,6 +368,11 @@ public class JSONDataMerger {
                 }
             }
         }
+        for (String scriptName : map2.keySet()) {
+            if (!map1.containsKey(scriptName)) {
+                map1.put(scriptName, map2.get(scriptName));
+            }
+        }
         return toJSON(map1);
     }
 
@@ -391,15 +396,16 @@ public class JSONDataMerger {
         return map;
     }
 
-    public String toJSON(TreeMap<String, List<CoverageElement>> map) {
-        StringBuilder json = new StringBuilder();
+    String toJSON(TreeMap<String, List<CoverageElement>> map) {
+        StringBuilder json = new StringBuilder("{");
+        int scriptCount = 0;
         for (String scriptURI : map.keySet()) {
             StringBuilder coverage = new StringBuilder();
             StringBuilder source = new StringBuilder();
             List<CoverageElement> coverageElements = map.get(scriptURI);
-            int count = 0;
+            int elementCount = 0;
             for (CoverageElement coverageElement : coverageElements) {
-                if (count++ > 0) {
+                if (elementCount++ > 0) {
                     coverage.append(",");
                     source.append(",");
                 }
@@ -408,10 +414,14 @@ public class JSONDataMerger {
                 source.append(ScriptRuntime.escapeString(coverageElement.getSource()));
                 source.append("\"");
             }
+            if (scriptCount++ > 0) {
+                json.append(",");
+            }
 
-            String scriptJSON = "{\"%s\":{\"coverage\":[%s],\"source\":[%s]}}";
+            String scriptJSON = "\"%s\":{\"coverage\":[%s],\"source\":[%s]}";
             json.append(String.format(scriptJSON, scriptURI, coverage, source));
         }
+        json.append("}");
         return json.toString();
     }
 }

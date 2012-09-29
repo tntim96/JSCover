@@ -367,6 +367,17 @@ public class JSONDataMergerTest {
     }
 
     @Test
+    public void shouldMergeDataWithDifferentFiles() {
+        String data1 = "{\"/test1.js\":{\"coverage\":[null,0,1],\"source\":[\"x++;\",\"y++;\",\"z++;\"]}}";
+        String data2 = "{\"/test2.js\":{\"coverage\":[null,0,1],\"source\":[\"x++;\",\"y++;\",\"z++;\"]}}";
+        String expected = "{\"/test1.js\":{\"coverage\":[null,0,1],\"source\":[\"x++;\",\"y++;\",\"z++;\"]},\"/test2.js\":{\"coverage\":[null,0,1],\"source\":[\"x++;\",\"y++;\",\"z++;\"]}}";
+
+        String merged = jsonMerger.mergeJSONCoverageData(data1, data2);
+
+        assertThat(merged, equalTo(expected));
+    }
+
+    @Test
     public void shouldParseData() {
         String data = "{\"/test.js\":{\"coverage\":[null,0,1],\"source\":[\"x++;\",\"y++;\",\"z++;\"]}}";
         TreeMap<String, List<CoverageElement>> map = jsonMerger.jsonToMap(data);

@@ -345,6 +345,7 @@ package jscover.server;
 import jscover.format.PlainFormatter;
 import jscover.format.SourceFormatter;
 import jscover.instrument.FileInstrumenter;
+import jscover.json.JSONDataMerger;
 import org.apache.commons.io.IOUtils;
 import jscover.util.IoUtils;
 
@@ -355,6 +356,7 @@ import java.util.Properties;
 public class WebServer extends NanoHTTPD {
     private static SourceFormatter sourceFormatter = new PlainFormatter();
     private Configuration configuration;
+    private JSONDataMerger jsonDataMerger = new JSONDataMerger();
     private File log;
 
     public static void main(String[] args) {
@@ -400,7 +402,12 @@ public class WebServer extends NanoHTTPD {
                 String serverJS = "jscoverage_isServer = true;";
                 return new NanoHTTPD.Response(HTTP_OK, getMime(uri), IoUtils.loadFromClassPath(uri)+serverJS);
             } else if (uri.startsWith("/jscoverage-store")) {
-                IOUtils.copy(new StringReader(data), new FileOutputStream(new File(configuration.getReportDir(),"jscoverage.json")));
+                File jsonFile = new File(configuration.getReportDir(), "jscoverage.json");
+                if (jsonFile.exists()) {
+                    String existingJSON = IOUtils.toString(new FileInputStream(jsonFile));
+                    //data = jsonDataMerger.mergeJSONCoverageData(existingJSON, data);//This not quite working yet
+                }
+                IOUtils.copy(new StringReader(data), new FileOutputStream(jsonFile));
                 copyResourceToDir("jscoverage.css", configuration.getReportDir());
                 copyResourceToDir("jscoverage.html", configuration.getReportDir());
 
