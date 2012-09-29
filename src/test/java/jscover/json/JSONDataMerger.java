@@ -1,7 +1,3 @@
-package jscover.json;
-
-import org.junit.Test;
-
 /**
             GNU GENERAL PUBLIC LICENSE
                Version 2, June 1991
@@ -343,6 +339,10 @@ consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
 */
+
+package jscover.json;
+
+import org.junit.Test;
 
 public class JSONDataMerger {
     @Test
