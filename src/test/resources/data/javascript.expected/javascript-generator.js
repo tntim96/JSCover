@@ -14,15 +14,14 @@ function fib() {
   _$jscoverage['javascript-generator.js'][4]++;
   var i = 0, j = 1;
   _$jscoverage['javascript-generator.js'][5]++;
-  while (true) 
-    {
-      _$jscoverage['javascript-generator.js'][6]++;
+  while (true) {
+    _$jscoverage['javascript-generator.js'][6]++;
 yield i;
-      _$jscoverage['javascript-generator.js'][7]++;
-      var t = i;
-      _$jscoverage['javascript-generator.js'][8]++;
-      i = j;
-      _$jscoverage['javascript-generator.js'][9]++;
-      j += t;
-    }
+    _$jscoverage['javascript-generator.js'][7]++;
+    var t = i;
+    _$jscoverage['javascript-generator.js'][8]++;
+    i = j;
+    _$jscoverage['javascript-generator.js'][9]++;
+    j += t;
+  }
 }

@@ -597,7 +597,6 @@ public class InstrumentAndHighlightRegressionTest {
     }
 
     @Test
-    @Ignore
     public void shouldInstrumentWith() {
         testFile("javascript-with.js");
     }

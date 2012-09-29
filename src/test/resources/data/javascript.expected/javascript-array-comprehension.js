@@ -12,11 +12,10 @@ _$jscoverage['javascript-array-comprehension.js'].source = ["// https://develope
 _$jscoverage['javascript-array-comprehension.js'][3]++;
 function range(begin, end) {
   _$jscoverage['javascript-array-comprehension.js'][4]++;
-  for (let i = begin; i < end; ++i) 
-    {
-      _$jscoverage['javascript-array-comprehension.js'][5]++;
+  for (let i = begin; i < end; ++i) {
+    _$jscoverage['javascript-array-comprehension.js'][5]++;
 yield i;
-    }
+  }
 }
 _$jscoverage['javascript-array-comprehension.js'][8]++;
 var ten_squares = [i * i for each (i in range(0, 10))];

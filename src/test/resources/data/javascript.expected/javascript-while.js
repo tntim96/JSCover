@@ -23,52 +23,44 @@ if (! _$jscoverage['javascript-while.js']) {
 }
 _$jscoverage['javascript-while.js'].source = ["while (x) {","  x();","}","","while (x) {","  ;","}","","while (x)","  x();","","while (x)","  ;","","while (x) {","  if (x) {","    continue;","  }","}","","label:","while (x) {","  if (x) {","    continue label;","  }","}","","label2: {","  f();","  while (x) {","    if (x) {","      break label2;","    }","  }","}"];
 _$jscoverage['javascript-while.js'][1]++;
-while (x) 
-  {
-    _$jscoverage['javascript-while.js'][2]++;
-    x();
-  }
+while (x) {
+  _$jscoverage['javascript-while.js'][2]++;
+  x();
+}
 _$jscoverage['javascript-while.js'][5]++;
-while (x) 
-  {
-    _$jscoverage['javascript-while.js'][6]++;
-    ;
-  }
+while (x) {
+  _$jscoverage['javascript-while.js'][6]++;
+  ;
+}
 _$jscoverage['javascript-while.js'][9]++;
-while (x) 
-  {
-    _$jscoverage['javascript-while.js'][10]++;
-    x();
-  }
+while (x) {
+  _$jscoverage['javascript-while.js'][10]++;
+  x();
+}
 _$jscoverage['javascript-while.js'][12]++;
-while (x) 
-  {
-    _$jscoverage['javascript-while.js'][13]++;
-    ;
-  }
+while (x) {
+  _$jscoverage['javascript-while.js'][13]++;
+  ;
+}
 _$jscoverage['javascript-while.js'][15]++;
-while (x) 
-  {
-    _$jscoverage['javascript-while.js'][16]++;
-    if (x) 
-    {
-      _$jscoverage['javascript-while.js'][17]++;
-      continue;
-    }
+while (x) {
+  _$jscoverage['javascript-while.js'][16]++;
+  if (x) {
+    _$jscoverage['javascript-while.js'][17]++;
+    continue;
   }
+}
 label:
   {
     _$jscoverage['javascript-while.js'][21]++;
     _$jscoverage['javascript-while.js'][22]++;
-    while (x) 
-      {
-        _$jscoverage['javascript-while.js'][23]++;
-        if (x) 
-        {
-          _$jscoverage['javascript-while.js'][24]++;
-          continue label;
-        }
+    while (x) {
+      _$jscoverage['javascript-while.js'][23]++;
+      if (x) {
+        _$jscoverage['javascript-while.js'][24]++;
+        continue label;
       }
+    }
   }
 label2:
   {
@@ -77,14 +69,12 @@ label2:
       _$jscoverage['javascript-while.js'][29]++;
       f();
       _$jscoverage['javascript-while.js'][30]++;
-      while (x) 
-        {
-          _$jscoverage['javascript-while.js'][31]++;
-          if (x) 
-          {
-            _$jscoverage['javascript-while.js'][32]++;
-            break label2;
-          }
+      while (x) {
+        _$jscoverage['javascript-while.js'][31]++;
+        if (x) {
+          _$jscoverage['javascript-while.js'][32]++;
+          break label2;
         }
+      }
     }
   }

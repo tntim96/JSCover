@@ -411,7 +411,7 @@ public class InstrumenterTest {
     public void shouldInstrumentIfWithBraces() {
         String source = "if (x > 10)\n{\n  x++;\n}";
         String instrumentedSource = instrumenter.instrumentSource(source);
-        String expectedSource = "_$jscoverage['test.js'][1]++;\nif (x > 10) \n{\n  _$jscoverage['test.js'][3]++;\n  x++;\n}\n";
+        String expectedSource = "_$jscoverage['test.js'][1]++;\nif (x > 10) {\n  _$jscoverage['test.js'][3]++;\n  x++;\n}\n";
         assertEquals(expectedSource, instrumentedSource);
     }
 
@@ -419,7 +419,7 @@ public class InstrumenterTest {
     public void shouldInstrumentIfWithoutBraces() {
         String source = "if (x > 10)\n  x++;";
         String instrumentedSource = instrumenter.instrumentSource(source);
-        String expectedSource = "_$jscoverage['test.js'][1]++;\nif (x > 10) \n{\n  _$jscoverage['test.js'][2]++;\n  x++;\n}\n";
+        String expectedSource = "_$jscoverage['test.js'][1]++;\nif (x > 10) {\n  _$jscoverage['test.js'][2]++;\n  x++;\n}\n";
         assertEquals(expectedSource, instrumentedSource);
     }
 
@@ -427,7 +427,7 @@ public class InstrumenterTest {
     public void shouldInstrumentElseWithBraces() {
         String source = "if (x > 10)\n{\n  x++;\n} else {\n  x--;\n}";
         String instrumentedSource = instrumenter.instrumentSource(source);
-        String expectedSource = "_$jscoverage['test.js'][1]++;\nif (x > 10) \n{\n  _$jscoverage['test.js'][3]++;\n  x++;\n} else {\n  _$jscoverage['test.js'][5]++;\n  x--;\n}\n";
+        String expectedSource = "_$jscoverage['test.js'][1]++;\nif (x > 10) S{\n  _$jscoverage['test.js'][3]++;\n  x++;\n} else {\n  _$jscoverage['test.js'][5]++;\n  x--;\n}\n";
         assertEquals(expectedSource, instrumentedSource);
     }
 

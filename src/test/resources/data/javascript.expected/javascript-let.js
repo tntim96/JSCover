@@ -51,8 +51,7 @@ let (x = x + 10, y = 12) {
 _$jscoverage['javascript-let.js'][11]++;
 print(let (x = x + 10, y = 12) x + y + "<br>\n");
 _$jscoverage['javascript-let.js'][15]++;
-if (x > y) 
-{
+if (x > y) {
   _$jscoverage['javascript-let.js'][16]++;
   let gamma = 12.7 + y;
   _$jscoverage['javascript-let.js'][17]++;
@@ -61,29 +60,27 @@ if (x > y)
 _$jscoverage['javascript-let.js'][20]++;
 var list = document.getElementById("list");
 _$jscoverage['javascript-let.js'][22]++;
-for (var i = 1; i <= 5; i++) 
-  {
-    _$jscoverage['javascript-let.js'][23]++;
-    var item = document.createElement("LI");
-    _$jscoverage['javascript-let.js'][24]++;
-    item.appendChild(document.createTextNode("Item " + i));
-    _$jscoverage['javascript-let.js'][26]++;
-    let j = i;
-    _$jscoverage['javascript-let.js'][27]++;
-    item.onclick = function(ev) {
+for (var i = 1; i <= 5; i++) {
+  _$jscoverage['javascript-let.js'][23]++;
+  var item = document.createElement("LI");
+  _$jscoverage['javascript-let.js'][24]++;
+  item.appendChild(document.createTextNode("Item " + i));
+  _$jscoverage['javascript-let.js'][26]++;
+  let j = i;
+  _$jscoverage['javascript-let.js'][27]++;
+  item.onclick = function(ev) {
   _$jscoverage['javascript-let.js'][28]++;
   alert("Item " + j + " is clicked.");
 };
-    _$jscoverage['javascript-let.js'][30]++;
-    list.appendChild(item);
-  }
+  _$jscoverage['javascript-let.js'][30]++;
+  list.appendChild(item);
+}
 _$jscoverage['javascript-let.js'][33]++;
 function varTest() {
   _$jscoverage['javascript-let.js'][34]++;
   var x = 31;
   _$jscoverage['javascript-let.js'][35]++;
-  if (true) 
-  {
+  if (true) {
     _$jscoverage['javascript-let.js'][36]++;
     var x = 71;
     _$jscoverage['javascript-let.js'][37]++;
@@ -97,8 +94,7 @@ function letTest() {
   _$jscoverage['javascript-let.js'][43]++;
   let x = 31;
   _$jscoverage['javascript-let.js'][44]++;
-  if (true) 
-  {
+  if (true) {
     _$jscoverage['javascript-let.js'][45]++;
     let x = 71;
     _$jscoverage['javascript-let.js'][46]++;
@@ -134,14 +130,12 @@ document.write(this.x + "<br>\n");
 _$jscoverage['javascript-let.js'][74]++;
 var i = 0;
 _$jscoverage['javascript-let.js'][75]++;
-for (let i = i; i < 10; i++) 
-  {
-    _$jscoverage['javascript-let.js'][76]++;
-    document.write(i + "<br>\n");
-  }
+for (let i = i; i < 10; i++) {
+  _$jscoverage['javascript-let.js'][76]++;
+  document.write(i + "<br>\n");
+}
 _$jscoverage['javascript-let.js'][78]++;
-for (let [name, value] in obj) 
-  {
-    _$jscoverage['javascript-let.js'][79]++;
-    document.write("Name: " + name + ", Value: " + value + "<br>\n");
-  }
+for (let [name, value] in obj) {
+  _$jscoverage['javascript-let.js'][79]++;
+  document.write("Name: " + name + ", Value: " + value + "<br>\n");
+}

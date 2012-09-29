@@ -38,21 +38,19 @@ function f() {
 _$jscoverage['javascript-destructuring.js'][8]++;
 [a, b] = f();
 _$jscoverage['javascript-destructuring.js'][10]++;
-for (let [name, value] in Iterator(obj)) 
-  {
-    _$jscoverage['javascript-destructuring.js'][11]++;
-    print(name);
-    _$jscoverage['javascript-destructuring.js'][12]++;
-    print(value);
-  }
+for (let [name, value] in Iterator(obj)) {
+  _$jscoverage['javascript-destructuring.js'][11]++;
+  print(name);
+  _$jscoverage['javascript-destructuring.js'][12]++;
+  print(value);
+}
 _$jscoverage['javascript-destructuring.js'][15]++;
-for each (let {name: n, family: {father: f}} in people) 
-  {
-    _$jscoverage['javascript-destructuring.js'][16]++;
-    print(n);
-    _$jscoverage['javascript-destructuring.js'][17]++;
-    print(f);
-  }
+for each (let {name: n, family: {father: f}} in people) {
+  _$jscoverage['javascript-destructuring.js'][16]++;
+  print(n);
+  _$jscoverage['javascript-destructuring.js'][17]++;
+  print(f);
+}
 _$jscoverage['javascript-destructuring.js'][20]++;
 var [a, , b] = f();
 _$jscoverage['javascript-destructuring.js'][21]++;
@@ -62,8 +60,7 @@ function g() {
   _$jscoverage['javascript-destructuring.js'][24]++;
   var parsedURL = /^(\w+)\:\/\/([^\/]+)\/(.*)$/.exec(url);
   _$jscoverage['javascript-destructuring.js'][25]++;
-  if (!parsedURL) 
-  {
+  if (!parsedURL) {
     _$jscoverage['javascript-destructuring.js'][26]++;
     return null;
   }

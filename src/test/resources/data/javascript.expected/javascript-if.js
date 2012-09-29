@@ -21,20 +21,17 @@ _$jscoverage['javascript-if.js'].source = ["var x = 0;","","if (x)","  x = 0;","
 _$jscoverage['javascript-if.js'][1]++;
 var x = 0;
 _$jscoverage['javascript-if.js'][3]++;
-if (x) 
-{
+if (x) {
   _$jscoverage['javascript-if.js'][4]++;
   x = 0;
 }
 _$jscoverage['javascript-if.js'][6]++;
-if (x) 
-{
+if (x) {
   _$jscoverage['javascript-if.js'][7]++;
   x = 0;
 }
 _$jscoverage['javascript-if.js'][10]++;
-if (x) 
-{
+if (x) {
   _$jscoverage['javascript-if.js'][11]++;
   x = 0;
 } else {
@@ -42,8 +39,7 @@ if (x)
   x = 0;
 }
 _$jscoverage['javascript-if.js'][15]++;
-if (x) 
-{
+if (x) {
   _$jscoverage['javascript-if.js'][16]++;
   x = 0;
 } else {
@@ -51,14 +47,12 @@ if (x)
   x = 0;
 }
 _$jscoverage['javascript-if.js'][22]++;
-if (x) 
-{
+if (x) {
   _$jscoverage['javascript-if.js'][23]++;
   x = 0;
 } else {
   _$jscoverage['javascript-if.js'][25]++;
-  if (x) 
-  {
+  if (x) {
     _$jscoverage['javascript-if.js'][26]++;
     x = 0;
   } else {

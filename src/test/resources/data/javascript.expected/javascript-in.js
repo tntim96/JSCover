@@ -8,8 +8,7 @@ _$jscoverage['javascript-in.js'].source = ["var x = {};","if ('a' in x) {","  x 
 _$jscoverage['javascript-in.js'][1]++;
 var x = {};
 _$jscoverage['javascript-in.js'][2]++;
-if ('a' in x) 
-{
+if ('a' in x) {
   _$jscoverage['javascript-in.js'][3]++;
   x = null;
 }

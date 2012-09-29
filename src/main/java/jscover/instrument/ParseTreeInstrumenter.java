@@ -463,6 +463,11 @@ public class ParseTreeInstrumenter implements NodeVisitor {
                 scope.addChild(newChild);
                 scope.addChild(node);
                 parentLoop.setBody(scope);
+            } else if (parent instanceof WithStatement) {
+                Scope scope = new Scope();
+                scope.addChild(newChild);
+                scope.addChild(node);
+                ((WithStatement)parent).setStatement(scope);
             } else if (parent instanceof SwitchCase) {
                 //Don't do anything here. Direct modification of statements will result in concurrent modification exception.
             } else {
