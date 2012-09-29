@@ -383,4 +383,14 @@ public class JSONDataMergerTest {
         assertThat(map.values().iterator().next().get(2).getCoverage(), equalTo(1));
         assertThat(map.values().iterator().next().get(2).getSource(), equalTo("z++;"));
     }
+
+    @Test
+    public void shouldConvertMapToJSONString() throws JsonParser.ParseException {
+        String data = "{\"/test.js\":{\"coverage\":[null,0,1],\"source\":[\"x++;\",\"y++;\",\"z++;\"]}}";
+        TreeMap<String, List<CoverageElement>> map = jsonMerger.jsonToMap(data);
+
+        String jsonString = jsonMerger.toJSON(map);
+
+        assertThat(jsonString, equalTo(data));
+    }
 }

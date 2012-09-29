@@ -357,7 +357,7 @@ public class JSONDataMerger {
         return null;
     }
 
-    public TreeMap<String, List<CoverageElement>> jsonToMap(String data) throws JsonParser.ParseException {
+    TreeMap<String, List<CoverageElement>> jsonToMap(String data) throws JsonParser.ParseException {
         TreeMap<String, List<CoverageElement>> map = new TreeMap<String, List<CoverageElement>>();
         NativeObject json = (NativeObject)parser.parseValue(data);
         for (Object scriptURI : json.keySet()) {
@@ -371,5 +371,29 @@ public class JSONDataMerger {
             }
         }
         return map;
+    }
+
+    public String toJSON(TreeMap<String, List<CoverageElement>> map) {
+        //{"/test.js":{"coverage":[null,0,1],"source":["x++;","y++;","z++;"]}}
+        StringBuilder json = new StringBuilder("{");
+        for (String scriptURI : map.keySet()) {
+            StringBuilder coverage = new StringBuilder();
+            StringBuilder source = new StringBuilder();
+            List<CoverageElement> coverageElements = map.get(scriptURI);
+            int count = 0;
+            for (CoverageElement coverageElement : coverageElements) {
+                if (count > 0) {
+                    coverage.append(",");
+                    source.append(",");
+                }
+                coverage.append(coverageElement.getCoverage());
+                source.append(coverageElement.getSource());
+            }
+
+            String scriptJSON = "{\"%s\":{\"coverage\":[%s],\"source\":[%s]}}";
+            json.append(String.format(scriptJSON, coverage, source));
+        }
+        json.append("}");
+        return json.toString();
     }
 }
