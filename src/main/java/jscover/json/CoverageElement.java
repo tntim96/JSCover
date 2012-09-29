@@ -341,35 +341,28 @@ Public License instead of this License.
  */
 package jscover.json;
 
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.NativeArray;
-import org.mozilla.javascript.NativeObject;
-import org.mozilla.javascript.json.JsonParser;
+public class CoverageElement {
+    private Integer coverage;
+    private String source;
 
-import java.util.*;
-
-public class JSONDataMerger {
-    private Context cx = Context.enter();
-    private JsonParser parser = new JsonParser(cx, cx.initStandardObjects());
-
-
-    public String mergeJSONCoverageData(String data1, String data2) {
-        return null;
+    public CoverageElement(Integer coverage, String source) {
+        this.coverage = coverage;
+        this.source = source;
     }
 
-    public TreeMap<String, List<CoverageElement>> jsonToMap(String data) throws JsonParser.ParseException {
-        TreeMap<String, List<CoverageElement>> map = new TreeMap<String, List<CoverageElement>>();
-        NativeObject json = (NativeObject)parser.parseValue(data);
-        for (Object scriptURI : json.keySet()) {
-            NativeObject scriptData = (NativeObject)json.get(scriptURI);
-            NativeArray coverage = (NativeArray)scriptData.get("coverage");
-            NativeArray source = (NativeArray)scriptData.get("source");
-            List<CoverageElement> lineData = new ArrayList<CoverageElement>(coverage.size());
-            map.put((String)scriptURI, lineData);
-            for (int i=0; i<coverage.size(); i++) {
-                lineData.add(new CoverageElement((Integer)coverage.get(i), (String)source.get(i)));
-            }
-        }
-        return map;
+    public Integer getCoverage() {
+        return coverage;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    @Override
+    public String toString() {
+        return "CoverageElement{" +
+                "coverage=" + coverage +
+                ", source='" + source + '\'' +
+                '}';
     }
 }

@@ -345,8 +345,13 @@ package jscover.json;
 import jscover.util.IoUtils;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.mozilla.javascript.json.JsonParser;
+
+import java.util.List;
+import java.util.TreeMap;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 public class JSONDataMergerTest {
@@ -362,5 +367,20 @@ public class JSONDataMergerTest {
         String merged = jsonMerger.mergeJSONCoverageData(data1, data2);
 
         assertThat(merged, equalTo(expected));
+    }
+
+    @Test
+    public void shouldParseData() throws JsonParser.ParseException {
+        String data = "{\"/test.js\":{\"coverage\":[null,0,1],\"source\":[\"x++;\",\"y++;\",\"z++;\"]}}";
+        TreeMap<String, List<CoverageElement>> map = jsonMerger.jsonToMap(data);
+
+        assertThat(map.keySet().size(), equalTo(1));
+        assertThat(map.keySet().iterator().next(), equalTo("/test.js"));
+        assertThat(map.values().iterator().next().get(0).getCoverage(), nullValue());
+        assertThat(map.values().iterator().next().get(0).getSource(), equalTo("x++;"));
+        assertThat(map.values().iterator().next().get(1).getCoverage(), equalTo(0));
+        assertThat(map.values().iterator().next().get(1).getSource(), equalTo("y++;"));
+        assertThat(map.values().iterator().next().get(2).getCoverage(), equalTo(1));
+        assertThat(map.values().iterator().next().get(2).getSource(), equalTo("z++;"));
     }
 }
