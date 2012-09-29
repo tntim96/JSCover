@@ -20,12 +20,8 @@
     <p>
         For an overview of the basic workings of of JSCover, see the
         <a href="http://siliconforks.com/jscoverage/manual.html">JSCoverage documentation</a>.
-        Currently only the server is implemented with the following
-        usage:
-    </p>
-
-    <p>
-        The binary <i>JSCover.jar</i> must have all dependent JARs available in the same directory.
+        NB - The binary <i>JSCover.jar</i> must have all dependent JARs available in the same directory.
+        Currently only the server is implemented with the following usage:
     </p>
 
     <div class="shell">
@@ -103,8 +99,8 @@
     <table>
         <tr>
             <th>Tool</th>
-            <th>Language</th>
-            <th>Parser</th>
+            <th>Parser Language</th>
+            <th>Parser Implementation</th>
         </tr>
         <tr>
             <td>JSCover</td>
@@ -142,6 +138,7 @@
             <ul>
                 <li>An example is using NanoHTTPD as the web-server</li>
                 <li>The JavaScript syntax highlighting implementation can using existing libraries</li>
+                <li>The JavaScript JSON parsing can using existing libraries</li>
                 <li>
                     The coverage report can use existing libraries (e.g.
                     <a href="http://cobertura.sourceforge.net/">Cobertura</a> or lcov)
@@ -153,14 +150,17 @@
     <a name="todo"></a>
 
     <h2>To-Do</h2>
-
+    <p>
+        In order of priority unless feedback or other circumstances dictates otherswise:
+    </p>
     <ul>
-        <li>100% ECMAScript support. See @Ignore tests in
-            <a href="../src/test/java/jscover/instrument/InstrumentAndHighlightRegressionTest.java">InstrumentAndHighlightRegressionTest.java</a>
-            which is work-in-progress
-        </li>
         <li>Add merging of coverage data</li>
+        <li>
+            100% ECMAScript support (see @Ignore tests in
+            <a href="../src/test/jscover/instrument/InstrumentAndHighlightRegressionTest.java">InstrumentAndHighlightRegressionTest</a>)
+        </li>
         <li>Add branch coverage</li>
+        <li>Add client mode to generate instrumented JavaScript code</li>
         <li>More documentation and examples</li>
         <li>Improve tests and coverage</li>
         <li>Tidy logic in ParseTreeInstrumenter</li>

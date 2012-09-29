@@ -32,34 +32,47 @@
         Reasons that you might choose to use JSCover are:
     </p>
     <ul>
-        <li>You need coverage measured via a browser (e.g. your tests include DOM interaction).</li>
-        <li>JSCover will run anywhere Java does (NB: JSCoverage may not run on all your platforms).</li>
+        <li>You need coverage measured via a browser (e.g. your tests include DOM interaction)</li>
+        <li>JSCover will run anywhere Java does (NB: JSCoverage may not run on all your platforms)</li>
         <li>Quick and easy to set-up</li>
-        <li><a href="documentation.html#todo">These limitations/To-Dos</a> don't affect you.</li>
         <li>JSCover is under active development (see <a href="documentation.html#future">future</a>)</li>
+        <li>
+            JSCover is (IMHO) architecturally simpler and more modular than the original, and so should be easier to
+            contribute to and maintain, hopefully ensuring a long life-time.
+        </li>
     </ul>
-    <p>
-        In general though, if you can run JSCoverage, it is the superior tool if you use
-        <i>ECMAScript Language Specification</i> features currently not supported by this tool.
-    </p>
 
     <h2>Current State</h2>
 
     <p>
-        JSCover is ready to use in server mode, but currently does not support
-        100% <i>ECMAScript Language Specification</i>. JSCover is currently beta quality, but
-        from little things...
+        JSCover is ready to use in server mode, and should support most 1.3 language features. Version 1.3 is currently
+        the default version on most web-browsers unless other-wise specified in the <i>&lt;script&gt;</i> tag.
+        Most higher level language features are also supported, the most notable omissions being the <i>with</i>
+        statement and <i>getter</i>/<i>setter</i> logic.
+        Also, check these <a href="documentation.html#todo">limitations/To-Do</a> don't affect you.
+    </p>
+
+    <p>
+        If you find a bug please report it and we'll endeavour to correct it.
+        If it is a critical bug, you can try <a href="http://siliconforks.com/jscoverage/">JSCoverage</a>
+        (N.B. JSCoverage also does not support branch coverage).
     </p>
 
     <p>
         If running as part of a test suite, the test suite should be run a second time without instrumentation to
-        ensure consistency.
+        ensure consistent behaviour.
     </p>
 
     <h2>Contribute</h2>
 
     <p>
-        Please feel free to contribute. The difficult level for contributing patches varies depending on the area.
+        Please feel free to contribute - see the <a href="documentation.html#todo">To-Do</a> list.
+        The difficult level for contributing patches varies depending on the area.
+    </p>
+
+    <p>
+        Rhino bugs can be posted <a href="http://www.mozilla.org/rhino/">there</a>, but please notify us to avoid
+        duplication. If the report is urgent and includes a patch, it can be manually patched and included in JSCover.
     </p>
 
     <p>&nbsp;</p>
