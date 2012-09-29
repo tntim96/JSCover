@@ -352,17 +352,24 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import jscover.util.IoUtils;
+import org.mozilla.javascript.CompilerEnvirons;
 import org.mozilla.javascript.Context;
 
 @RunWith(JUnit4.class)
 public class InstrumenterIntegrationTest {
+    private static CompilerEnvirons compilerEnv = new CompilerEnvirons();
+    static {
+        // compilerEnv.setAllowMemberExprAsFunctionName(true);
+        compilerEnv.setLanguageVersion(Context.VERSION_1_8);
+        compilerEnv.setStrictMode(false);
+    }
     private FileInstrumenter instrumenter;
 
     @Test
     public void shouldInstrumentStatements() throws URISyntaxException {
         String fileName = "test-simple.js";
         String source = IoUtils.loadFromClassPath("/" + fileName);
-        instrumenter = new FileInstrumenter(Context.VERSION_1_8, fileName, new PlainFormatter(), null);
+        instrumenter = new FileInstrumenter(compilerEnv, fileName, new PlainFormatter(), null);
 
         String instrumentedSource = instrumenter.instrumentFile(null, source);
 

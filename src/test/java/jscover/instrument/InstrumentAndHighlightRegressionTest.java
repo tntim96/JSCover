@@ -354,6 +354,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import jscover.util.IoUtils;
+import org.mozilla.javascript.CompilerEnvirons;
 import org.mozilla.javascript.Context;
 
 public class InstrumentAndHighlightRegressionTest {
@@ -614,9 +615,16 @@ public class InstrumentAndHighlightRegressionTest {
         }
     }
 
+    private static CompilerEnvirons compilerEnv = new CompilerEnvirons();
+    static {
+        // compilerEnv.setAllowMemberExprAsFunctionName(true);
+        compilerEnv.setLanguageVersion(Context.VERSION_1_8);
+        compilerEnv.setStrictMode(false);
+    }
+
     private void testFile(String fileName) {
         tested.add(fileName);
-        FileInstrumenter instrumenter = new FileInstrumenter(Context.VERSION_1_8, fileName, sourceFormatter, null);
+        FileInstrumenter instrumenter = new FileInstrumenter(compilerEnv, fileName, sourceFormatter, null);
 
         String source = IoUtils.loadFromClassPath("/data/javascript/" + fileName);
         String instrumentedSource = instrumenter.instrumentFileWithoutHeader(source);
