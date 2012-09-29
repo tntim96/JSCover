@@ -11,6 +11,7 @@
     <div>
         <a class="nav" href="index.html">Home</a>
         <span class="nav selected">Documentation</span>
+        <a class="nav" href="to-do.html">To-do</a>
         <a class="nav" href="links.html">Links</a>
         <a class="nav" href="license.html">License</a>
     </div>
@@ -20,18 +21,18 @@
     <p>
         For an overview of the basic workings of of JSCover, see the
         <a href="http://siliconforks.com/jscoverage/manual.html">JSCoverage documentation</a>. JSCover currently
-        supports the same features JSCoverage including:
+        supports these features of JSCoverage:
     </p>
 
     <ul>
-        <li>Server mode with switches indicated below</li>
+        <li>Server mode with switches indicated below (i.e. JSCoverage's jscoverage-server)</li>
         <li>Storing of report data to the file system</li>
         <li>Merging of coverage data if multiple runs are stored at the same location</li>
     </ul>
 
     <p>
         NB - The binary <i>JSCover.jar</i> must have all dependent JARs available in the same directory.
-        Currently only the server is implemented with the following usage:
+        The server usage is:
     </p>
 
     <div class="shell">
@@ -128,57 +129,8 @@
         arguably the best JavaScript implementation currently available.
     </p>
 
-
-    <a name="future"></a>
-
-    <h2>Future</h2>
-
-    <ul>
-        <li>
-            Making the project available in Java opens up a huge community who
-            can contribute
-        </li>
-        <li>
-            Hopefully a side-effect of this project is to expose Rhino to a much greater set of JavaScript,
-            thus improving it's quality. This project has already contributed directly and indirectly to
-            several AST bugs being corrected.
-        </li>
-        <li>
-            The Java implementation and modularity can leverage existing tools:
-            <ul>
-                <li>An example is using NanoHTTPD as the web-server</li>
-                <li>The JavaScript syntax highlighting implementation can using existing libraries</li>
-                <li>The JavaScript JSON parsing can using Rhino</li>
-                <li>
-                    The coverage report can use existing libraries (e.g.
-                    <a href="http://cobertura.sourceforge.net/">Cobertura</a> or lcov)
-                </li>
-            </ul>
-        </li>
-    </ul>
-
-    <a name="todo"></a>
-
-    <h2>To-Do</h2>
-    <p>
-        In order of priority unless feedback or other circumstances dictates otherswise:
-    </p>
-    <ul>
-        <li>
-            100% ECMAScript support (see @Ignore tests in
-            <a href="../src/test/jscover/instrument/InstrumentAndHighlightRegressionTest.java">InstrumentAndHighlightRegressionTest</a>)
-        </li>
-        <li>Add branch coverage</li>
-        <li>Add client mode to generate instrumented JavaScript code</li>
-        <li>More documentation and examples</li>
-        <li>Improve tests and coverage</li>
-        <li>Tidy logic in ParseTreeInstrumenter</li>
-        <li>Send NanoHTTPD patch for JSON data submission</li>
-        <li>Send NanoHTTPD patch for stopping the server via a HTTP request</li>
-        <li>Add in check-style</li>
-    </ul>
-
     <p>&nbsp;</p>
+
 </div>
 </body>
 </html>
