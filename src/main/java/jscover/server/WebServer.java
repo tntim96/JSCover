@@ -405,7 +405,7 @@ public class WebServer extends NanoHTTPD {
                 File jsonFile = new File(configuration.getReportDir(), "jscoverage.json");
                 if (jsonFile.exists()) {
                     String existingJSON = IOUtils.toString(new FileInputStream(jsonFile));
-                    //data = jsonDataMerger.mergeJSONCoverageData(existingJSON, data);//This not quite working yet
+                    data = jsonDataMerger.mergeJSONCoverageData(existingJSON, data);
                 }
                 IOUtils.copy(new StringReader(data), new FileOutputStream(jsonFile));
                 copyResourceToDir("jscoverage.css", configuration.getReportDir());

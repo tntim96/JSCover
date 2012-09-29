@@ -227,7 +227,7 @@
       </extension>
       <option name="MAIN_CLASS_NAME" value="jscover.server.WebServer" />
       <option name="VM_PARAMETERS" value="" />
-      <option name="PROGRAM_PARAMETERS" value="--document-root=doc/example --report-dir=target" />
+      <option name="PROGRAM_PARAMETERS" value=" --document-root=C:/development/projects/ASISWeb/src --report-dir=target --no-instrument=/test --no-instrument=/main/webapp/js/lib --no-instrument=/main/webapp/js//lib" />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" value="" />

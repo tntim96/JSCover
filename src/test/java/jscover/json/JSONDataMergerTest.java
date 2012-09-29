@@ -380,22 +380,22 @@ public class JSONDataMergerTest {
     @Test
     public void shouldParseData() {
         String data = "{\"/test.js\":{\"coverage\":[null,0,1],\"source\":[\"x++;\",\"y++;\",\"z++;\"]}}";
-        TreeMap<String, List<CoverageElement>> map = jsonMerger.jsonToMap(data);
+        TreeMap<String, CoverageData> map = jsonMerger.jsonToMap(data);
 
         assertThat(map.keySet().size(), equalTo(1));
         assertThat(map.keySet().iterator().next(), equalTo("/test.js"));
-        assertThat(map.values().iterator().next().get(0).getCoverage(), nullValue());
-        assertThat(map.values().iterator().next().get(0).getSource(), equalTo("x++;"));
-        assertThat(map.values().iterator().next().get(1).getCoverage(), equalTo(0));
-        assertThat(map.values().iterator().next().get(1).getSource(), equalTo("y++;"));
-        assertThat(map.values().iterator().next().get(2).getCoverage(), equalTo(1));
-        assertThat(map.values().iterator().next().get(2).getSource(), equalTo("z++;"));
+        assertThat(map.values().iterator().next().getCoverage().get(0), nullValue());
+        assertThat(map.values().iterator().next().getSource().get(0), equalTo("x++;"));
+        assertThat(map.values().iterator().next().getCoverage().get(1), equalTo(0));
+        assertThat(map.values().iterator().next().getSource().get(1), equalTo("y++;"));
+        assertThat(map.values().iterator().next().getCoverage().get(2), equalTo(1));
+        assertThat(map.values().iterator().next().getSource().get(2), equalTo("z++;"));
     }
 
     @Test
     public void shouldConvertMapToJSONString() {
         String data = "{\"/test.js\":{\"coverage\":[null,0,1],\"source\":[\"x++;\",\"y++;\",\"z++;\"]}}";
-        TreeMap<String, List<CoverageElement>> map = jsonMerger.jsonToMap(data);
+        TreeMap<String, CoverageData> map = jsonMerger.jsonToMap(data);
 
         String jsonString = jsonMerger.toJSON(map);
 

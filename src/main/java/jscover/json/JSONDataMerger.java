@@ -356,14 +356,14 @@ public class JSONDataMerger {
 
 
     public String mergeJSONCoverageData(String data1, String data2) {
-        TreeMap<String, List<CoverageElement>> map1 = jsonToMap(data1);
-        TreeMap<String, List<CoverageElement>> map2 = jsonToMap(data2);
+        TreeMap<String, CoverageData> map1 = jsonToMap(data1);
+        TreeMap<String, CoverageData> map2 = jsonToMap(data2);
         for (String scriptName : map1.keySet()) {
             if (map2.containsKey(scriptName)) {
-                List<CoverageElement> line1 = map1.get(scriptName);
-                for (int i = 0; i < line1.size(); i++) {
-                    if (line1.get(i).getCoverage()!=null) {
-                        line1.get(i).addCoverage(map2.get(scriptName).get(i).getCoverage());
+                CoverageData coverageData = map1.get(scriptName);
+                for (int i = 0; i < coverageData.getCoverage().size(); i++) {
+                    if (coverageData.getCoverage().get(i)!=null) {
+                        coverageData.addCoverage(map2.get(scriptName).getCoverage().get(i), i);
                     }
                 }
             }
@@ -376,19 +376,21 @@ public class JSONDataMerger {
         return toJSON(map1);
     }
 
-    TreeMap<String, List<CoverageElement>> jsonToMap(String data) {
-        TreeMap<String, List<CoverageElement>> map = new TreeMap<String, List<CoverageElement>>();
+    TreeMap<String, CoverageData> jsonToMap(String data) {
+        TreeMap<String, CoverageData> map = new TreeMap<String, CoverageData>();
         try {
             NativeObject json = (NativeObject) parser.parseValue(data);
             for (Object scriptURI : json.keySet()) {
                 NativeObject scriptData = (NativeObject) json.get(scriptURI);
                 NativeArray coverage = (NativeArray) scriptData.get("coverage");
                 NativeArray source = (NativeArray) scriptData.get("source");
-                List<CoverageElement> lineData = new ArrayList<CoverageElement>(coverage.size());
-                map.put((String) scriptURI, lineData);
-                for (int i = 0; i < coverage.size(); i++) {
-                    lineData.add(new CoverageElement((Integer) coverage.get(i), (String) source.get(i)));
-                }
+                List<Integer> countData = new ArrayList<Integer>(coverage.size());
+                for (int i = 0; i < coverage.size(); i++)
+                    countData.add((Integer) coverage.get(i));
+                List<String> sourceData = new ArrayList<String>(source.size());
+                for (int i = 0; i < source.size(); i++)
+                    sourceData.add((String) source.get(i));
+                map.put((String) scriptURI, new CoverageData(countData, sourceData));
             }
         } catch (JsonParser.ParseException e) {
             throw new RuntimeException(e);
@@ -396,22 +398,23 @@ public class JSONDataMerger {
         return map;
     }
 
-    String toJSON(TreeMap<String, List<CoverageElement>> map) {
+    String toJSON(TreeMap<String, CoverageData> map) {
         StringBuilder json = new StringBuilder("{");
         int scriptCount = 0;
         for (String scriptURI : map.keySet()) {
             StringBuilder coverage = new StringBuilder();
             StringBuilder source = new StringBuilder();
-            List<CoverageElement> coverageElements = map.get(scriptURI);
-            int elementCount = 0;
-            for (CoverageElement coverageElement : coverageElements) {
-                if (elementCount++ > 0) {
+            CoverageData coverageData = map.get(scriptURI);
+            for (int i=0; i<coverageData.getCoverage().size(); i++) {
+                if (i > 0)
                     coverage.append(",");
+                coverage.append(coverageData.getCoverage().get(i));
+            }
+            for (int i=0; i<coverageData.getSource().size(); i++) {
+                if (i > 0)
                     source.append(",");
-                }
-                coverage.append(coverageElement.getCoverage());
                 source.append("\"");
-                source.append(ScriptRuntime.escapeString(coverageElement.getSource()));
+                source.append(ScriptRuntime.escapeString(coverageData.getSource().get(i)));
                 source.append("\"");
             }
             if (scriptCount++ > 0) {

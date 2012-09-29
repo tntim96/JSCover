@@ -341,30 +341,32 @@ Public License instead of this License.
  */
 package jscover.json;
 
-public class CoverageElement {
-    private Integer coverage;
-    private String source;
+import java.util.List;
 
-    public CoverageElement(Integer coverage, String source) {
+public class CoverageData {
+    private List<Integer> coverage;
+    private List<String> source;
+
+    public CoverageData(List<Integer> coverage, List<String> source) {
         this.coverage = coverage;
         this.source = source;
     }
 
-    public Integer getCoverage() {
+    public List<Integer> getCoverage() {
         return coverage;
     }
 
-    public void addCoverage(Integer coverage) {
-        this.coverage += coverage;
+    public void addCoverage(Integer coverage, int index) {
+        this.coverage.set(index, this.coverage.get(index) + coverage);
     }
 
-    public String getSource() {
+    public List<String> getSource() {
         return source;
     }
 
     @Override
     public String toString() {
-        return "CoverageElement{" +
+        return "CoverageData{" +
                 "coverage=" + coverage +
                 ", source='" + source + '\'' +
                 '}';
