@@ -343,9 +343,7 @@ Public License instead of this License.
 package jscover.json;
 
 import jscover.util.IoUtils;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.mozilla.javascript.json.JsonParser;
 
 import java.util.List;
 import java.util.TreeMap;
@@ -358,7 +356,6 @@ public class JSONDataMergerTest {
     private JSONDataMerger jsonMerger = new JSONDataMerger();
 
     @Test
-    @Ignore
     public void shouldMergeData() {
         String data1 = IoUtils.loadFromClassPath("/jscover/json/jscoverage-select-1.json");
         String data2 = IoUtils.loadFromClassPath("/jscover/json/jscoverage-select-3.json");
@@ -370,7 +367,7 @@ public class JSONDataMergerTest {
     }
 
     @Test
-    public void shouldParseData() throws JsonParser.ParseException {
+    public void shouldParseData() {
         String data = "{\"/test.js\":{\"coverage\":[null,0,1],\"source\":[\"x++;\",\"y++;\",\"z++;\"]}}";
         TreeMap<String, List<CoverageElement>> map = jsonMerger.jsonToMap(data);
 
@@ -385,7 +382,7 @@ public class JSONDataMergerTest {
     }
 
     @Test
-    public void shouldConvertMapToJSONString() throws JsonParser.ParseException {
+    public void shouldConvertMapToJSONString() {
         String data = "{\"/test.js\":{\"coverage\":[null,0,1],\"source\":[\"x++;\",\"y++;\",\"z++;\"]}}";
         TreeMap<String, List<CoverageElement>> map = jsonMerger.jsonToMap(data);
 

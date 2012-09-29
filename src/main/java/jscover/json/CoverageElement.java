@@ -354,6 +354,10 @@ public class CoverageElement {
         return coverage;
     }
 
+    public void addCoverage(Integer coverage) {
+        this.coverage += coverage;
+    }
+
     public String getSource() {
         return source;
     }

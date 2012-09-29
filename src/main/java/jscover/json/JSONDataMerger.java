@@ -337,16 +337,18 @@ This General Public License does not permit incorporating your program into
 proprietary programs.  If your program is a subroutine library, you may
 consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
-Public License instead of this License.
- */
+Public License instead of this License. */
 package jscover.json;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.NativeArray;
 import org.mozilla.javascript.NativeObject;
+import org.mozilla.javascript.ScriptRuntime;
 import org.mozilla.javascript.json.JsonParser;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.TreeMap;
 
 public class JSONDataMerger {
     private Context cx = Context.enter();
@@ -354,46 +356,62 @@ public class JSONDataMerger {
 
 
     public String mergeJSONCoverageData(String data1, String data2) {
-        return null;
+        TreeMap<String, List<CoverageElement>> map1 = jsonToMap(data1);
+        TreeMap<String, List<CoverageElement>> map2 = jsonToMap(data2);
+        for (String scriptName : map1.keySet()) {
+            if (map2.containsKey(scriptName)) {
+                List<CoverageElement> line1 = map1.get(scriptName);
+                for (int i = 0; i < line1.size(); i++) {
+                    if (line1.get(i).getCoverage()!=null) {
+                        line1.get(i).addCoverage(map2.get(scriptName).get(i).getCoverage());
+                    }
+                }
+            }
+        }
+        return toJSON(map1);
     }
 
-    TreeMap<String, List<CoverageElement>> jsonToMap(String data) throws JsonParser.ParseException {
+    TreeMap<String, List<CoverageElement>> jsonToMap(String data) {
         TreeMap<String, List<CoverageElement>> map = new TreeMap<String, List<CoverageElement>>();
-        NativeObject json = (NativeObject)parser.parseValue(data);
-        for (Object scriptURI : json.keySet()) {
-            NativeObject scriptData = (NativeObject)json.get(scriptURI);
-            NativeArray coverage = (NativeArray)scriptData.get("coverage");
-            NativeArray source = (NativeArray)scriptData.get("source");
-            List<CoverageElement> lineData = new ArrayList<CoverageElement>(coverage.size());
-            map.put((String)scriptURI, lineData);
-            for (int i=0; i<coverage.size(); i++) {
-                lineData.add(new CoverageElement((Integer)coverage.get(i), (String)source.get(i)));
+        try {
+            NativeObject json = (NativeObject) parser.parseValue(data);
+            for (Object scriptURI : json.keySet()) {
+                NativeObject scriptData = (NativeObject) json.get(scriptURI);
+                NativeArray coverage = (NativeArray) scriptData.get("coverage");
+                NativeArray source = (NativeArray) scriptData.get("source");
+                List<CoverageElement> lineData = new ArrayList<CoverageElement>(coverage.size());
+                map.put((String) scriptURI, lineData);
+                for (int i = 0; i < coverage.size(); i++) {
+                    lineData.add(new CoverageElement((Integer) coverage.get(i), (String) source.get(i)));
+                }
             }
+        } catch (JsonParser.ParseException e) {
+            throw new RuntimeException(e);
         }
         return map;
     }
 
     public String toJSON(TreeMap<String, List<CoverageElement>> map) {
-        //{"/test.js":{"coverage":[null,0,1],"source":["x++;","y++;","z++;"]}}
-        StringBuilder json = new StringBuilder("{");
+        StringBuilder json = new StringBuilder();
         for (String scriptURI : map.keySet()) {
             StringBuilder coverage = new StringBuilder();
             StringBuilder source = new StringBuilder();
             List<CoverageElement> coverageElements = map.get(scriptURI);
             int count = 0;
             for (CoverageElement coverageElement : coverageElements) {
-                if (count > 0) {
+                if (count++ > 0) {
                     coverage.append(",");
                     source.append(",");
                 }
                 coverage.append(coverageElement.getCoverage());
-                source.append(coverageElement.getSource());
+                source.append("\"");
+                source.append(ScriptRuntime.escapeString(coverageElement.getSource()));
+                source.append("\"");
             }
 
             String scriptJSON = "{\"%s\":{\"coverage\":[%s],\"source\":[%s]}}";
-            json.append(String.format(scriptJSON, coverage, source));
+            json.append(String.format(scriptJSON, scriptURI, coverage, source));
         }
-        json.append("}");
         return json.toString();
     }
 }
