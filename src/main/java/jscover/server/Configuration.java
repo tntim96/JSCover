@@ -402,7 +402,7 @@ public class Configuration {
     private Integer port = 8080;
     private final Set<String> noInstruments = new HashSet<String>();
     private File reportDir = new File(System.getProperty("user.dir"));
-    private int JSVersion = Context.VERSION_1_3;
+    private int JSVersion = Context.VERSION_1_5;
     private CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
 
     public Boolean showHelp() {

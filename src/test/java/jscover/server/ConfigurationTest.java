@@ -358,7 +358,7 @@ public class ConfigurationTest {
         assertThat(configuration.showHelp(), equalTo(false));
         assertThat(configuration.getDocumentRoot().toString(), equalTo(System.getProperty("user.dir")));
         assertThat(configuration.getPort(), equalTo(8080));
-        assertThat(configuration.getJSVersion(), equalTo(130));
+        assertThat(configuration.getJSVersion(), equalTo(150));
         assertThat(configuration.skipInstrumentation("/"), equalTo(false));
     }
 
