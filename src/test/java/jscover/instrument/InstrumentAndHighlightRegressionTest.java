@@ -623,10 +623,10 @@ public class InstrumentAndHighlightRegressionTest {
 
     private void testFile(String fileName) {
         tested.add(fileName);
-        FileInstrumenter instrumenter = new FileInstrumenter(compilerEnv, fileName, sourceFormatter, null);
+        SourceProcessor instrumenter = new SourceProcessor(compilerEnv, fileName, sourceFormatter, null);
 
         String source = IoUtils.loadFromClassPath("/data/javascript/" + fileName);
-        String instrumentedSource = instrumenter.instrumentFileWithoutHeader(source);
+        String instrumentedSource = instrumenter.processSourceWithoutHeader(source);
         String expectedSource = IoUtils.loadFromClassPath("/data/javascript.expected/" + fileName);
         assertEquals(expectedSource, instrumentedSource);
         //assertEquals(removeHighlightLine(expectedSource), removeHighlightLine(instrumentedSource));

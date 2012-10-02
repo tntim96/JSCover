@@ -344,7 +344,7 @@ package jscover.server;
 
 import jscover.format.PlainFormatter;
 import jscover.format.SourceFormatter;
-import jscover.instrument.FileInstrumenter;
+import jscover.instrument.SourceProcessor;
 import jscover.json.JSONDataMerger;
 import org.apache.commons.io.IOUtils;
 import jscover.util.IoUtils;
@@ -359,36 +359,20 @@ public class WebServer extends NanoHTTPD {
     private JSONDataMerger jsonDataMerger = new JSONDataMerger();
     private File log;
 
-    public static void main(String[] args) {
-        Configuration configuration = Configuration.parse(args);
-        if (configuration.showHelp()) {
-            System.out.println(configuration.getHelpText());
-            System.exit(0);
-        } else if (configuration.printVersion()) {
-            System.out.println(configuration.getVersionText());
-            System.exit(0);
-        }
-
-        try {
-            File wwwroot = configuration.getDocumentRoot();
-            WebServer ws = new WebServer(configuration);
-            myOut.println("Now serving files in port " + configuration.getPort() + " from \"" + wwwroot + "\"");
-
-            synchronized (ws) {
-                ws.wait();
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public WebServer(Configuration configuration) throws IOException {
+    public WebServer(Configuration configuration) throws IOException, InterruptedException {
         super(configuration.getPort(), configuration.getDocumentRoot());
         this.configuration = configuration;
         this.log = new File(configuration.getReportDir(), "errors.log");
         if (this.log.exists()) {
             this.log.delete();
         }
+        File wwwroot = configuration.getDocumentRoot();
+        myOut.println("Now serving files in port " + configuration.getPort() + " from \"" + wwwroot + "\"");
+        synchronized (this) {
+            this.wait();
+        }
+        Thread.yield();
+        Thread.sleep(10);
     }
 
     public Response serve(String uri, String method, Properties header, Properties parms, Properties files, String data) {
@@ -421,9 +405,9 @@ public class WebServer extends NanoHTTPD {
             } else if (uri.startsWith("/jscoverage")) {
                 return new NanoHTTPD.Response(HTTP_OK, getMime(uri), getClass().getResourceAsStream(uri));
             } else if (uri.endsWith(".js") && !configuration.skipInstrumentation(uri)) {
-                FileInstrumenter fileInstrumenter = new FileInstrumenter(configuration.getCompilerEnvirons(), uri, sourceFormatter, log);
+                SourceProcessor sourceProcessor = new SourceProcessor(configuration.getCompilerEnvirons(), uri, sourceFormatter, log);
                 String source = IoUtils.toString(new FileInputStream(myRootDir + uri));
-                String jsInstrumented = fileInstrumenter.instrumentFile(source);
+                String jsInstrumented = sourceProcessor.processSource(source);
                 return new NanoHTTPD.Response(HTTP_OK, "text/javascript", jsInstrumented);
             } else {
                 return super.serve(uri, method, header, parms, files, data);

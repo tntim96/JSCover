@@ -353,7 +353,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.SortedSet;
 
-public class FileInstrumenter {
+public class SourceProcessor {
 
     private static final String initLine = "  _$jscoverage['%s'][%d] = 0;\n";
     private static final String sourceInOneLine = "_$jscoverage['%s'].source = [%s];\n";
@@ -363,7 +363,7 @@ public class FileInstrumenter {
     private ParseTreeInstrumenter instrumenter;
     private Parser parser;
 
-    public FileInstrumenter(CompilerEnvirons compilerEnv, String uri, SourceFormatter sourceFormatter, File log) {
+    public SourceProcessor(CompilerEnvirons compilerEnv, String uri, SourceFormatter sourceFormatter, File log) {
         this.uri = uri;
         this.instrumenter = new ParseTreeInstrumenter(uri, log);
         this.sourceFormatter = sourceFormatter;
@@ -371,21 +371,21 @@ public class FileInstrumenter {
 
     }
 
-    public String instrumentFile(String source) {
-        return instrumentFile(null, source);
+    public String processSource(String source) {
+        return processSource(null, source);
     }
 
-    protected String instrumentFile(String sourceURI, String source) {
+    protected String processSource(String sourceURI, String source) {
         String report = IoUtils.loadFromClassPath("/report.js");
         String header = IoUtils.loadFromClassPath("/header.js");
-        return report + header + instrumentFileWithoutHeader(sourceURI, source);
+        return report + header + processSourceWithoutHeader(sourceURI, source);
     }
 
-    protected String instrumentFileWithoutHeader(String source) {
-        return instrumentFileWithoutHeader(null, source);
+    protected String processSourceWithoutHeader(String source) {
+        return processSourceWithoutHeader(null, source);
     }
 
-    protected String instrumentFileWithoutHeader(String sourceURI, String source) {
+    protected String processSourceWithoutHeader(String sourceURI, String source) {
         String instrumentedSource = instrumentSource(sourceURI, source);
 
         String jsLineInitialization = getJsLineInitialization(uri, instrumenter.getValidLines());
@@ -411,7 +411,7 @@ public class FileInstrumenter {
     }
 
     protected String getJsLineInitialization(String fileName, SortedSet<Integer> validlines) {
-        StringBuffer sb = new StringBuffer(String.format("if (! _$jscoverage['%s']) {\n", fileName));
+        StringBuilder sb = new StringBuilder(String.format("if (! _$jscoverage['%s']) {\n", fileName));
         sb.append(String.format("  _$jscoverage['%s'] = [];\n", fileName));
         for (Integer line : validlines) {
             sb.append(String.format(initLine, fileName, line));

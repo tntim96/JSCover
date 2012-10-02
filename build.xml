@@ -65,7 +65,7 @@
             <manifest>
                 <attribute name="Implementation-Title" value="${ant.project.name}"/>
                 <attribute name="Implementation-Version" value="${version}"/>
-                <attribute name="Main-Class" value="jscover.server.WebServer"/>
+                <attribute name="Main-Class" value="jscover.Main"/>
                 <attribute name="Class-Path" value="commons-io-1.4.jar commons-lang-2.4.jar js-1.7R4.jar"/>
             </manifest>
         </jar>
@@ -89,7 +89,7 @@
             <manifest>
                 <attribute name="Implementation-Title" value="JSCover"/>
                 <attribute name="Implementation-Version" value="${version}"/>
-                <attribute name="Main-Class" value="jscover.server.WebServer"/>
+                <attribute name="Main-Class" value="jscover.Main"/>
             </manifest>
         </jar>
     </target>
@@ -115,7 +115,8 @@
 			<ignore regex="org.apache.log4j.*" />
 			<fileset dir="${classes.main.dir}">
 				<include name="**/*.class" />
-				<exclude name="**/WebServer.class" />
+				<exclude name="**/Main.class" /><!-- Todo add this back in with tests -->
+				<exclude name="**/WebServer.class" /><!-- Todo add this back in with tests -->
 				<exclude name="**/NanoHTTPD*.class" />
 			</fileset>
 			<classpath>
@@ -133,7 +134,7 @@
 	</target>
 
 	<target name="coverage-check">
-		<cobertura-check totallinerate="87" totalbranchrate="89"/>
+		<cobertura-check totallinerate="90" totalbranchrate="90"/>
 	</target>
 
 	<target name="compile-tests" depends="compile">

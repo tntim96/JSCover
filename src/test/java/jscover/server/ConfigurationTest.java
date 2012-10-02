@@ -383,7 +383,7 @@ public class ConfigurationTest {
 
     @Test
     public void shouldGetVersionText() {
-        assertThat(new Configuration().getVersionText(), equalTo("JSCover version: 0.0.1"));
+        assertThat(new Configuration().getVersionText(), equalTo("JSCover version: 0.0.2"));
     }
 
     @Test

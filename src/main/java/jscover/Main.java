@@ -338,44 +338,74 @@ proprietary programs.  If your program is a subroutine library, you may
 consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
-*/
+ */
 
-package jscover.instrument;
+package jscover;
 
-import static org.junit.Assert.assertEquals;
+import jscover.server.Configuration;
+import jscover.server.WebServer;
 
-import java.net.URISyntaxException;
+import java.io.File;
+import java.io.IOException;
+import java.util.Properties;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 
-import jscover.format.PlainFormatter;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import static java.lang.String.format;
 
-import jscover.util.IoUtils;
-import org.mozilla.javascript.CompilerEnvirons;
-import org.mozilla.javascript.Context;
+public class Main {
+//    public static final String HELP_PREFIX1 = "-h";
+//    public static final String HELP_PREFIX2 = "--help";
+//    public static final String VERSION_PREFIX1 = "-V";
+//    public static final String VERSION_PREFIX2 = "--version";
+//    public static final Properties properties = new Properties();
 
-@RunWith(JUnit4.class)
-public class InstrumenterIntegrationTest {
-    private static CompilerEnvirons compilerEnv = new CompilerEnvirons();
     static {
-        // compilerEnv.setAllowMemberExprAsFunctionName(true);
-        compilerEnv.setLanguageVersion(Context.VERSION_1_8);
-        compilerEnv.setStrictMode(false);
+//        try {
+//            properties.load(Main.class.getResourceAsStream("configuration.properties"));
+//        } catch (Exception e) {
+//            e.printStackTrace(System.err);
+//            System.exit(1);
+//        }
+        try {
+            Class.forName("org.apache.commons.lang.ClassUtils");
+            Class.forName("org.apache.commons.io.IOUtils");
+            Class.forName("org.mozilla.javascript.ast.AstNode");
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+            try {
+                Manifest mf = new Manifest(Main.class.getResourceAsStream("/META-INF/MANIFEST.MF"));
+                Attributes mainAttributes = mf.getMainAttributes();
+                String name = mainAttributes.get(Attributes.Name.IMPLEMENTATION_TITLE).toString();
+                String classPathJARs = mainAttributes.get(Attributes.Name.CLASS_PATH).toString();
+                String message = "%nEnsure these JARs are in the same directory as %s.jar:%n%s";
+                System.err.println(format(message, name , classPathJARs));
+            } catch (IOException error) {
+                error.printStackTrace(System.err);
+            }
+            System.exit(1);
+        }
     }
-    private SourceProcessor instrumenter;
 
-    @Test
-    public void shouldInstrumentStatements() throws URISyntaxException {
-        String fileName = "test-simple.js";
-        String source = IoUtils.loadFromClassPath("/" + fileName);
-        instrumenter = new SourceProcessor(compilerEnv, fileName, new PlainFormatter(), null);
 
-        String instrumentedSource = instrumenter.processSource(null, source);
-
-        String expectedSource = IoUtils.loadFromClassPath("/test-instrumented.js");
-        // assertThat(instrumentedSource, equalTo(expectedSource));
-        assertEquals(expectedSource, instrumentedSource);
+    public static void main(String[] args) {
+        runServer(args);
     }
 
+    private static void runServer(String[] args) {
+        Configuration configuration = Configuration.parse(args);
+        if (configuration.showHelp()) {
+            System.out.println(configuration.getHelpText());
+            System.exit(0);
+        } else if (configuration.printVersion()) {
+            System.out.println(configuration.getVersionText());
+            System.exit(0);
+        }
+
+        try {
+            WebServer ws = new WebServer(configuration);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

@@ -347,14 +347,9 @@ import org.mozilla.javascript.CompilerEnvirons;
 import org.mozilla.javascript.Context;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
-import java.util.jar.Attributes;
-import java.util.jar.Manifest;
-
-import static java.lang.String.format;
 
 public class Configuration {
     public static final String HELP_PREFIX1 = "-h";
@@ -374,24 +369,6 @@ public class Configuration {
             properties.load(Configuration.class.getResourceAsStream("configuration.properties"));
         } catch (Exception e) {
             e.printStackTrace(System.err);
-            System.exit(1);
-        }
-        try {
-            Class.forName("org.apache.commons.lang.ClassUtils");
-            Class.forName("org.apache.commons.io.IOUtils");
-            Class.forName("org.mozilla.javascript.ast.AstNode");
-        } catch (Exception e) {
-            e.printStackTrace(System.err);
-            try {
-                Manifest mf = new Manifest(Configuration.class.getResourceAsStream("/META-INF/MANIFEST.MF"));
-                Attributes mainAttributes = mf.getMainAttributes();
-                String name = mainAttributes.get(Attributes.Name.IMPLEMENTATION_TITLE).toString();
-                String classPathJARs = mainAttributes.get(Attributes.Name.CLASS_PATH).toString();
-                String message = "%nEnsure these JARs are in the same directory as %s.jar:%n%s";
-                System.err.println(format(message, name , classPathJARs));
-            } catch (IOException error) {
-                error.printStackTrace(System.err);
-            }
             System.exit(1);
         }
     }

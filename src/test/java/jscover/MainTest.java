@@ -338,44 +338,15 @@ proprietary programs.  If your program is a subroutine library, you may
 consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
-*/
+ */
 
-package jscover.instrument;
+package jscover;
 
-import static org.junit.Assert.assertEquals;
-
-import java.net.URISyntaxException;
-
-import jscover.format.PlainFormatter;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
-import jscover.util.IoUtils;
-import org.mozilla.javascript.CompilerEnvirons;
-import org.mozilla.javascript.Context;
-
-@RunWith(JUnit4.class)
-public class InstrumenterIntegrationTest {
-    private static CompilerEnvirons compilerEnv = new CompilerEnvirons();
-    static {
-        // compilerEnv.setAllowMemberExprAsFunctionName(true);
-        compilerEnv.setLanguageVersion(Context.VERSION_1_8);
-        compilerEnv.setStrictMode(false);
-    }
-    private SourceProcessor instrumenter;
-
+public class MainTest {
     @Test
-    public void shouldInstrumentStatements() throws URISyntaxException {
-        String fileName = "test-simple.js";
-        String source = IoUtils.loadFromClassPath("/" + fileName);
-        instrumenter = new SourceProcessor(compilerEnv, fileName, new PlainFormatter(), null);
-
-        String instrumentedSource = instrumenter.processSource(null, source);
-
-        String expectedSource = IoUtils.loadFromClassPath("/test-instrumented.js");
-        // assertThat(instrumentedSource, equalTo(expectedSource));
-        assertEquals(expectedSource, instrumentedSource);
+    public void shouldAddTest() {
+        //Todo
     }
-
 }

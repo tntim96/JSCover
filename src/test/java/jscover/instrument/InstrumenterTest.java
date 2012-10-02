@@ -365,7 +365,7 @@ public class InstrumenterTest {
         compilerEnv.setLanguageVersion(Context.VERSION_1_8);
         compilerEnv.setStrictMode(false);
     }
-    private FileInstrumenter instrumenter = new FileInstrumenter(compilerEnv, "test.js", null, null);
+    private SourceProcessor instrumenter = new SourceProcessor(compilerEnv, "test.js", null, null);
 
     @Test
     public void shouldPatchRhinoBug684131() {
@@ -373,7 +373,6 @@ public class InstrumenterTest {
     }
 
     @Test
-    @Ignore
     public void shouldPatchRhinoBugVoid() {
         assertEquals("void", AstNode.operatorToString(126));
     }
