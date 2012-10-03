@@ -354,7 +354,7 @@ import java.util.Set;
 public class ConfigurationForFS {
     public static final String HELP_PREFIX1 = Main.HELP_PREFIX1;
     public static final String HELP_PREFIX2 = Main.HELP_PREFIX2;
-    public static final String NO_INSTRUMENT_PREFIX = "--exclude=";
+    public static final String NO_INSTRUMENT_PREFIX = "--no-instrument=";
     public static final String JS_VERSION_PREFIX = "--js-version=";
 
     private boolean showHelp;
@@ -374,6 +374,10 @@ public class ConfigurationForFS {
 
     public File getDestDir() {
         return destDir;
+    }
+
+    public int getJSVersion() {
+        return JSVersion;
     }
 
     public boolean skipInstrumentation(String uri) {
@@ -429,10 +433,6 @@ public class ConfigurationForFS {
 
     public String getHelpText() {
         return IoUtils.toString(getClass().getResourceAsStream("help.txt"));
-    }
-
-    public int getJSVersion() {
-        return JSVersion;
     }
 
     public CompilerEnvirons getCompilerEnvirons() {

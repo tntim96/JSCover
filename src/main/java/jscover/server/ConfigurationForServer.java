@@ -384,6 +384,10 @@ public class ConfigurationForServer {
         return reportDir;
     }
 
+    public int getJSVersion() {
+        return JSVersion;
+    }
+
     public boolean skipInstrumentation(String uri) {
         for (String noInstrument : noInstruments) {
             if (uri.startsWith(noInstrument))
@@ -420,10 +424,6 @@ public class ConfigurationForServer {
 
     public String getHelpText() {
         return IoUtils.toString(getClass().getResourceAsStream("help.txt"));
-    }
-
-    public int getJSVersion() {
-        return JSVersion;
     }
 
     public CompilerEnvirons getCompilerEnvirons() {

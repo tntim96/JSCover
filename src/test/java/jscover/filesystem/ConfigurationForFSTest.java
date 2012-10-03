@@ -342,8 +342,12 @@ Public License instead of this License.
 
 package jscover.filesystem;
 
+import jscover.server.ConfigurationForServer;
 import org.junit.Test;
 
+import java.io.File;
+
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -351,9 +355,50 @@ public class ConfigurationForFSTest {
 
     @Test
     public void shouldHaveDefaults() {
-        ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs","src","target"});
+        ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs","src","doc"});
         assertThat(configuration.showHelp(), equalTo(false));
         assertThat(configuration.getJSVersion(), equalTo(150));
         assertThat(configuration.skipInstrumentation("/"), equalTo(false));
+    }
+
+    @Test
+    public void shouldShowHelpOnError() {
+        assertThat(ConfigurationForFS.parse(new String[]{"-fs"}).showHelp(), equalTo(true));
+    }
+
+    @Test
+    public void shouldParseHelp() {
+        assertThat(ConfigurationForFS.parse(new String[]{"-h"}).showHelp(), equalTo(true));
+        assertThat(ConfigurationForFS.parse(new String[]{"--help"}).showHelp(), equalTo(true));
+    }
+
+    @Test
+    public void shouldParseSourceDirectory() {
+        assertThat(ConfigurationForFS.parse(new String[]{"-fs","src","doc"}).getSrcDir(), equalTo(new File("src")));
+    }
+
+    @Test
+    public void shouldParseDestinationDirectory() {
+        assertThat(ConfigurationForFS.parse(new String[]{"-fs","src","doc"}).getDestDir(), equalTo(new File("doc")));
+    }
+
+    @Test
+    public void shouldParseJSVersion() {
+        assertThat(ConfigurationForFS.parse(new String[]{"-fs","--js-version=1.8","src","doc"}).getJSVersion(), equalTo(180));
+    }
+
+    @Test
+    public void shouldParseNoInstrument() {
+        ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs","--no-instrument=/lib1", "--no-instrument=/lib2","src","doc"});
+        assertThat(configuration.skipInstrumentation("/test.js"), equalTo(false));
+        assertThat(configuration.skipInstrumentation("/lib1/test.js"), equalTo(true));
+        assertThat(configuration.skipInstrumentation("/lib2/test.js"), equalTo(true));
+        assertThat(configuration.skipInstrumentation("/lib3/test.js"), equalTo(false));
+    }
+
+    @Test
+    public void shouldRetrieveHelpText() {
+        String helpText = new ConfigurationForFS().getHelpText();
+        assertThat(helpText, containsString("Usage: java -jar jscover.jar -fs [OPTION]..."));
     }
 }
