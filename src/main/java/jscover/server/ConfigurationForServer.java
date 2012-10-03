@@ -350,7 +350,7 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Configuration {
+public class ConfigurationForServer {
     public static final String HELP_PREFIX1 = "-h";
     public static final String HELP_PREFIX2 = "--help";
     public static final String DOC_ROOT_PREFIX = "--document-root=";
@@ -391,8 +391,8 @@ public class Configuration {
         return false;
     }
 
-    public static Configuration parse(String[] args) {
-        Configuration configuration = new Configuration();
+    public static ConfigurationForServer parse(String[] args) {
+        ConfigurationForServer configuration = new ConfigurationForServer();
         for (String arg : args) {
             if (arg.equals(HELP_PREFIX1) || arg.equals(HELP_PREFIX2)) {
                 configuration.showHelp = true;

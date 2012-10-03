@@ -342,7 +342,7 @@ Public License instead of this License.
 
 package jscover;
 
-import jscover.server.Configuration;
+import jscover.server.ConfigurationForServer;
 import jscover.server.WebServer;
 import jscover.util.IoUtils;
 
@@ -417,7 +417,7 @@ public class Main {
     }
 
     private static void runServer(String[] args) {
-        Configuration configurationForServer = Configuration.parse(args);
+        ConfigurationForServer configurationForServer = ConfigurationForServer.parse(args);
         if (configurationForServer.showHelp()) {
             System.out.println(configurationForServer.getHelpText());
             System.exit(0);

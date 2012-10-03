@@ -355,11 +355,11 @@ import java.util.Properties;
 
 public class WebServer extends NanoHTTPD {
     private static SourceFormatter sourceFormatter = new PlainFormatter();
-    private Configuration configuration;
+    private ConfigurationForServer configuration;
     private JSONDataMerger jsonDataMerger = new JSONDataMerger();
     private File log;
 
-    public WebServer(Configuration configuration) throws IOException, InterruptedException {
+    public WebServer(ConfigurationForServer configuration) throws IOException, InterruptedException {
         super(configuration.getPort(), configuration.getDocumentRoot());
         this.configuration = configuration;
         this.log = new File(configuration.getReportDir(), "errors.log");
