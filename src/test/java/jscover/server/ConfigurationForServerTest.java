@@ -340,13 +340,72 @@ library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
 */
 
-package jscover.filesystem;
+package jscover.server;
 
 import org.junit.Test;
 
-public class ConfigurationForFileTest {
-    @Test
-    public void shouldTodo() {
+import java.io.File;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
+
+public class ConfigurationForServerTest {
+
+    @Test
+    public void shouldHaveDefaults() {
+        ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{});
+        assertThat(configuration.showHelp(), equalTo(false));
+        assertThat(configuration.getDocumentRoot().toString(), equalTo(System.getProperty("user.dir")));
+        assertThat(configuration.getPort(), equalTo(8080));
+        assertThat(configuration.getJSVersion(), equalTo(150));
+        assertThat(configuration.skipInstrumentation("/"), equalTo(false));
+    }
+
+    @Test
+    public void shouldShowHelpOnError() {
+        assertThat(ConfigurationForServer.parse(new String[]{"unknown"}).showHelp(), equalTo(true));
+    }
+
+    @Test
+    public void shouldParseHelp() {
+        assertThat(ConfigurationForServer.parse(new String[]{}).showHelp(), equalTo(false));
+        assertThat(ConfigurationForServer.parse(new String[]{"-h"}).showHelp(), equalTo(true));
+        assertThat(ConfigurationForServer.parse(new String[]{"--help"}).showHelp(), equalTo(true));
+    }
+
+    @Test
+    public void shouldParseDocumentRoot() {
+        assertThat(ConfigurationForServer.parse(new String[]{"--document-root=/"}).getDocumentRoot(), equalTo(new File("/")));
+    }
+
+    @Test
+    public void shouldParsePort() {
+        assertThat(ConfigurationForServer.parse(new String[]{"--port=80"}).getPort(), equalTo(80));
+    }
+
+    @Test
+    public void shouldParseJSVersion() {
+        assertThat(ConfigurationForServer.parse(new String[]{"--js-version=1.8"}).getJSVersion(), equalTo(180));
+    }
+
+    @Test
+    public void shouldParseReportDir() {
+        assertThat(ConfigurationForServer.parse(new String[]{"--report-dir=/"}).getReportDir(), equalTo(new File("/")));
+    }
+
+    @Test
+    public void shouldParseNoInstrument() {
+        ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--no-instrument=/lib1", "--no-instrument=/lib2"});
+        assertThat(configuration.skipInstrumentation("/test.js"), equalTo(false));
+        assertThat(configuration.skipInstrumentation("/lib1/test.js"), equalTo(true));
+        assertThat(configuration.skipInstrumentation("/lib2/test.js"), equalTo(true));
+        assertThat(configuration.skipInstrumentation("/lib3/test.js"), equalTo(false));
+    }
+
+    @Test
+    public void shouldRetrieveHelpText() {
+        String helpText = new ConfigurationForServer().getHelpText();
+        assertThat(helpText, containsString("Usage: java -jar jscover.jar -ws [OPTION]..."));
     }
 }

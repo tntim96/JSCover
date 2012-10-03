@@ -342,6 +342,7 @@ Public License instead of this License.
 
 package jscover.server;
 
+import jscover.Main;
 import jscover.util.IoUtils;
 import org.mozilla.javascript.CompilerEnvirons;
 import org.mozilla.javascript.Context;
@@ -351,8 +352,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class ConfigurationForServer {
-    public static final String HELP_PREFIX1 = "-h";
-    public static final String HELP_PREFIX2 = "--help";
+    public static final String HELP_PREFIX1 = Main.HELP_PREFIX1;
+    public static final String HELP_PREFIX2 = Main.HELP_PREFIX2;
     public static final String DOC_ROOT_PREFIX = "--document-root=";
     public static final String PORT_PREFIX = "--port=";
     public static final String REPORT_DIR_PREFIX = "--report-dir=";
@@ -394,7 +395,9 @@ public class ConfigurationForServer {
     public static ConfigurationForServer parse(String[] args) {
         ConfigurationForServer configuration = new ConfigurationForServer();
         for (String arg : args) {
-            if (arg.equals(HELP_PREFIX1) || arg.equals(HELP_PREFIX2)) {
+            if (arg.startsWith(Main.SERVER_PREFIX)) {
+            //Ignore this
+            } else if (arg.equals(HELP_PREFIX1) || arg.equals(HELP_PREFIX2)) {
                 configuration.showHelp = true;
             } else if (arg.startsWith(DOC_ROOT_PREFIX)) {
                 configuration.documentRoot = new File(arg.substring(DOC_ROOT_PREFIX.length()));

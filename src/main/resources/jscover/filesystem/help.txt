@@ -2,7 +2,6 @@ Usage: java -jar jscover.jar -fs [OPTION]... source destination
 Instrument JavaScript with code coverage information.
 
 Options:
-      --exclude=PATH        do not copy PATH
       --js-version=VERSION  use the specified JavaScript version
       --no-instrument=PATH  copy but do not instrument PATH
   -h, --help                display this help and exit

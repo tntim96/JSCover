@@ -340,72 +340,102 @@ library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
 */
 
-package jscover.server;
+package jscover.filesystem;
 
-import org.junit.Test;
+import jscover.Main;
+import jscover.util.IoUtils;
+import org.mozilla.javascript.CompilerEnvirons;
+import org.mozilla.javascript.Context;
 
 import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
+public class ConfigurationForFS {
+    public static final String HELP_PREFIX1 = Main.HELP_PREFIX1;
+    public static final String HELP_PREFIX2 = Main.HELP_PREFIX2;
+    public static final String NO_INSTRUMENT_PREFIX = "--exclude=";
+    public static final String JS_VERSION_PREFIX = "--js-version=";
 
-public class ConfigurationTest {
+    private boolean showHelp;
+    private final Set<String> noInstruments = new HashSet<String>();
+    private File srcDir = new File(System.getProperty("user.dir"));
+    private File destDir = new File(System.getProperty("user.dir"));
+    private int JSVersion = Context.VERSION_1_5;
+    private CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
 
-    @Test
-    public void shouldHaveDefaults() {
-        ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{});
-        assertThat(configuration.showHelp(), equalTo(false));
-        assertThat(configuration.getDocumentRoot().toString(), equalTo(System.getProperty("user.dir")));
-        assertThat(configuration.getPort(), equalTo(8080));
-        assertThat(configuration.getJSVersion(), equalTo(150));
-        assertThat(configuration.skipInstrumentation("/"), equalTo(false));
+    public Boolean showHelp() {
+        return showHelp;
     }
 
-    @Test
-    public void shouldShowHelpOnError() {
-        assertThat(ConfigurationForServer.parse(new String[]{"unknown"}).showHelp(), equalTo(true));
+    public File getSrcDir() {
+        return srcDir;
     }
 
-    @Test
-    public void shouldParseHelp() {
-        assertThat(ConfigurationForServer.parse(new String[]{}).showHelp(), equalTo(false));
-        assertThat(ConfigurationForServer.parse(new String[]{"-h"}).showHelp(), equalTo(true));
-        assertThat(ConfigurationForServer.parse(new String[]{"--help"}).showHelp(), equalTo(true));
+    public File getDestDir() {
+        return destDir;
     }
 
-    @Test
-    public void shouldParseDocumentRoot() {
-        assertThat(ConfigurationForServer.parse(new String[]{"--document-root=/"}).getDocumentRoot(), equalTo(new File("/")));
+    public boolean skipInstrumentation(String uri) {
+        for (String noInstrument : noInstruments) {
+            if (uri.startsWith(noInstrument))
+                return true;
+        }
+        return false;
     }
 
-    @Test
-    public void shouldParsePort() {
-        assertThat(ConfigurationForServer.parse(new String[]{"--port=80"}).getPort(), equalTo(80));
+    public static ConfigurationForFS parse(String[] args) {
+        ConfigurationForFS configuration = new ConfigurationForFS();
+
+        if (args.length < 3) {
+            configuration.showHelp = true;
+            return configuration;
+        }
+
+        for (int i=0; i<args.length-2; i++) {
+            String arg = args[i];
+            if (arg.startsWith(Main.FILESYSTEM_PREFIX)) {
+            //Ignore this
+            } else if (arg.equals(HELP_PREFIX1) || arg.equals(HELP_PREFIX2)) {
+                configuration.showHelp = true;
+                return configuration;
+            } else if (arg.startsWith(NO_INSTRUMENT_PREFIX)) {
+                configuration.noInstruments.add(arg.substring(NO_INSTRUMENT_PREFIX.length()));
+            } else if (arg.startsWith(JS_VERSION_PREFIX)) {
+                configuration.JSVersion = (int)(Float.valueOf(arg.substring(JS_VERSION_PREFIX.length()))*100);
+            } else {
+                configuration.showHelp = true;
+                return configuration;
+            }
+        }
+
+        configuration.srcDir = new File(args[args.length-2]);
+        configuration.destDir = new File(args[args.length-1]);
+        if (!validDirectory(configuration.srcDir)) {
+            System.out.println(String.format("Source directory '%s' is invalid",configuration.srcDir));
+            System.exit(1);
+        }
+        if (!validDirectory(configuration.destDir)) {
+            System.out.println(String.format("Destination directory '%s' is invalid",configuration.destDir));
+            System.exit(1);
+        }
+        configuration.compilerEnvirons.setLanguageVersion(configuration.JSVersion);
+        return configuration;
     }
 
-    @Test
-    public void shouldParseJSVersion() {
-        assertThat(ConfigurationForServer.parse(new String[]{"--js-version=1.8"}).getJSVersion(), equalTo(180));
+    private static boolean validDirectory(File dir) {
+        return dir.exists() && dir.isDirectory();
     }
 
-    @Test
-    public void shouldParseReportDir() {
-        assertThat(ConfigurationForServer.parse(new String[]{"--report-dir=/"}).getReportDir(), equalTo(new File("/")));
+    public String getHelpText() {
+        return IoUtils.toString(getClass().getResourceAsStream("help.txt"));
     }
 
-    @Test
-    public void shouldParseNoInstrument() {
-        ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--no-instrument=/lib1", "--no-instrument=/lib2"});
-        assertThat(configuration.skipInstrumentation("/test.js"), equalTo(false));
-        assertThat(configuration.skipInstrumentation("/lib1/test.js"), equalTo(true));
-        assertThat(configuration.skipInstrumentation("/lib2/test.js"), equalTo(true));
-        assertThat(configuration.skipInstrumentation("/lib3/test.js"), equalTo(false));
+    public int getJSVersion() {
+        return JSVersion;
     }
 
-    @Test
-    public void shouldRetrieveHelpText() {
-        String helpText = new ConfigurationForServer().getHelpText();
-        assertThat(helpText, containsString("Usage: java -jar jscover.jar -ws [OPTION]..."));
+    public CompilerEnvirons getCompilerEnvirons() {
+        return compilerEnvirons;  //To change body of created methods use File | Settings | File Templates.
     }
 }

@@ -342,5 +342,18 @@ Public License instead of this License.
 
 package jscover.filesystem;
 
-public class ConfigurationForFile {
+import org.junit.Test;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
+
+public class ConfigurationForFSTest {
+
+    @Test
+    public void shouldHaveDefaults() {
+        ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs","src","target"});
+        assertThat(configuration.showHelp(), equalTo(false));
+        assertThat(configuration.getJSVersion(), equalTo(150));
+        assertThat(configuration.skipInstrumentation("/"), equalTo(false));
+    }
 }
