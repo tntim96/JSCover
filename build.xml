@@ -58,7 +58,7 @@
         -->
         <copy file="lib/runtime/commons-io-1.4.jar" todir="${dist.dir}"/>
         <copy file="lib/runtime/commons-lang-2.4.jar" todir="${dist.dir}"/>
-        <copy file="lib/runtime/js.jar" tofile="${dist.dir}/js-1.7R4.jar"/>
+        <copy file="lib/runtime/js.jar" tofile="${dist.dir}/js.jar"/>
         <jar jarfile="${dist.dir}/${ant.project.name}.jar"
              basedir="${classes.main.dir}"
              compress="true">
@@ -66,7 +66,7 @@
                 <attribute name="Implementation-Title" value="${ant.project.name}"/>
                 <attribute name="Implementation-Version" value="${version}"/>
                 <attribute name="Main-Class" value="jscover.Main"/>
-                <attribute name="Class-Path" value="commons-io-1.4.jar commons-lang-2.4.jar js-1.7R4.jar"/>
+                <attribute name="Class-Path" value="commons-io-1.4.jar commons-lang-2.4.jar js.jar"/>
             </manifest>
         </jar>
     </target>
