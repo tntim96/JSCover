@@ -1,4 +1,4 @@
-Usage: java -jar jscover.jar -fs [OPTION]... source destination
+Usage: java -jar jscover.jar -fs [OPTION]... SOURCE-DIRECTORY DESTINATION-DIRECTORY
 Instrument JavaScript with code coverage information.
 
 Options:
