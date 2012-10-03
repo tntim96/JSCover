@@ -42,6 +42,14 @@
         java -jar target/dist/JSCover.jar -ws --document-root=doc/example-qunit/src --report-dir=target
     </div>
 
+    <p>
+        Now try again with the '--no-instrument=/test' option to remove the test scripts from the report.
+    </p>
+
+    <div class="shell">
+        java -jar target/dist/JSCover.jar -ws --document-root=doc/example-qunit/src --report-dir=target --no-instrument=/test
+    </div>
+
     <h2>JSCover File Instrumentation</h2>
 
     <p>
