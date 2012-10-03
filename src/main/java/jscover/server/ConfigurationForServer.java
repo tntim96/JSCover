@@ -342,6 +342,7 @@ Public License instead of this License.
 
 package jscover.server;
 
+import jscover.Configuration;
 import jscover.Main;
 import jscover.util.IoUtils;
 import org.mozilla.javascript.CompilerEnvirons;
@@ -351,7 +352,7 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ConfigurationForServer {
+public class ConfigurationForServer extends Configuration {
     public static final String HELP_PREFIX1 = Main.HELP_PREFIX1;
     public static final String HELP_PREFIX2 = Main.HELP_PREFIX2;
     public static final String DOC_ROOT_PREFIX = "--document-root=";
@@ -427,6 +428,6 @@ public class ConfigurationForServer {
     }
 
     public CompilerEnvirons getCompilerEnvirons() {
-        return compilerEnvirons;  //To change body of created methods use File | Settings | File Templates.
+        return compilerEnvirons;
     }
 }

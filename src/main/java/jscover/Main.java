@@ -420,6 +420,7 @@ public class Main {
 
     private static void runFileSystem(String[] args) {
         ConfigurationForFS configuration = ConfigurationForFS.parse(args);
+        configuration.setProperties(properties);
         if (configuration.showHelp()) {
             System.out.println(configuration.getHelpText());
             System.exit(0);
@@ -430,6 +431,7 @@ public class Main {
 
     private static void runServer(String[] args) {
         ConfigurationForServer configuration = ConfigurationForServer.parse(args);
+        configuration.setProperties(properties);
         if (configuration.showHelp()) {
             System.out.println(configuration.getHelpText());
             System.exit(0);

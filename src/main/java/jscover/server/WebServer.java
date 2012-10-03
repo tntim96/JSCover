@@ -393,7 +393,9 @@ public class WebServer extends NanoHTTPD {
                 }
                 IOUtils.copy(new StringReader(data), new FileOutputStream(jsonFile));
                 copyResourceToDir("jscoverage.css", configuration.getReportDir());
-                copyResourceToDir("jscoverage.html", configuration.getReportDir());
+
+                String reportHTML = IoUtils.loadFromClassPath("/jscoverage.html").replaceAll("@@version@@",configuration.getVersion());
+                IOUtils.copy(new StringReader(reportHTML), new FileOutputStream(new File(configuration.getReportDir(),"jscoverage.html")));
 
                 String reportJS = IoUtils.loadFromClassPath("/jscoverage.js") + "\njscoverage_isReport = true;";
                 IOUtils.copy(new StringReader(reportJS), new FileOutputStream(new File(configuration.getReportDir(),"jscoverage.js")));

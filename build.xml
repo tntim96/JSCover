@@ -134,7 +134,7 @@
 	</target>
 
 	<target name="coverage-check">
-		<cobertura-check totallinerate="82" totalbranchrate="84"/>
+		<cobertura-check totallinerate="81" totalbranchrate="84"/>
 	</target>
 
 	<target name="compile-tests" depends="compile">

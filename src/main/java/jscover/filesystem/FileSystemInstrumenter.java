@@ -365,15 +365,22 @@ public class FileSystemInstrumenter {
     }
 
     public void run() {
-        copyJSCoverageFiles(configuration.getDestDir());
+        try {
+            copyJSCoverageFiles(configuration.getDestDir());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         copyFolder(configuration.getSrcDir(), configuration.getDestDir());
     }
 
-    private void copyJSCoverageFiles(File destDir) {
+    private void copyJSCoverageFiles(File destDir) throws Exception {
         if (!destDir.exists())
             destDir.mkdirs();
         copyResourceToDir("jscoverage.css", destDir);
-        copyResourceToDir("jscoverage.html", destDir);
+
+        String reportHTML = IoUtils.loadFromClassPath("/jscoverage.html").replaceAll("@@version@@",configuration.getVersion());
+        IOUtils.copy(new StringReader(reportHTML), new FileOutputStream(new File(destDir, "jscoverage.html")));
+
         copyResourceToDir("jscoverage.js", destDir);
         copyResourceToDir("jscoverage-highlight.css", destDir);
         copyResourceToDir("jscoverage-ie.css", destDir);
@@ -381,12 +388,8 @@ public class FileSystemInstrumenter {
 
     }
 
-    private void copyResourceToDir(String resource, File parent) {
-        try {
-            IOUtils.copy(getClass().getResourceAsStream("/"+resource), new FileOutputStream(new File(parent,resource)));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    private void copyResourceToDir(String resource, File parent) throws Exception {
+        IOUtils.copy(getClass().getResourceAsStream("/" + resource), new FileOutputStream(new File(parent, resource)));
     }
 
     private void copyFolder(File src, File dest) {

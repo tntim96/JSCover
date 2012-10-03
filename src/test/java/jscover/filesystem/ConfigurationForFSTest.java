@@ -342,7 +342,6 @@ Public License instead of this License.
 
 package jscover.filesystem;
 
-import jscover.server.ConfigurationForServer;
 import org.junit.Test;
 
 import java.io.File;
@@ -368,8 +367,8 @@ public class ConfigurationForFSTest {
 
     @Test
     public void shouldParseHelp() {
-        assertThat(ConfigurationForFS.parse(new String[]{"-h"}).showHelp(), equalTo(true));
-        assertThat(ConfigurationForFS.parse(new String[]{"--help"}).showHelp(), equalTo(true));
+        assertThat(ConfigurationForFS.parse(new String[]{"-fs","-h"}).showHelp(), equalTo(true));
+        assertThat(ConfigurationForFS.parse(new String[]{"-fs","--help"}).showHelp(), equalTo(true));
     }
 
     @Test
