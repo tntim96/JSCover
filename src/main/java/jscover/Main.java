@@ -344,8 +344,8 @@ package jscover;
 
 import jscover.server.Configuration;
 import jscover.server.WebServer;
+import jscover.util.IoUtils;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.jar.Attributes;
@@ -354,19 +354,21 @@ import java.util.jar.Manifest;
 import static java.lang.String.format;
 
 public class Main {
-//    public static final String HELP_PREFIX1 = "-h";
-//    public static final String HELP_PREFIX2 = "--help";
-//    public static final String VERSION_PREFIX1 = "-V";
-//    public static final String VERSION_PREFIX2 = "--version";
-//    public static final Properties properties = new Properties();
+    public static final String HELP_PREFIX1 = "-h";
+    public static final String HELP_PREFIX2 = "--help";
+    public static final String VERSION_PREFIX1 = "-V";
+    public static final String VERSION_PREFIX2 = "--version";
+    public static final String SERVER_PREFIX = "-ws";
+    public static final String FILESYSTEM_PREFIX = "-fs";
+    public static final Properties properties = new Properties();
 
     static {
-//        try {
-//            properties.load(Main.class.getResourceAsStream("configuration.properties"));
-//        } catch (Exception e) {
-//            e.printStackTrace(System.err);
-//            System.exit(1);
-//        }
+        try {
+            properties.load(Main.class.getResourceAsStream("configuration.properties"));
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+            System.exit(1);
+        }
         try {
             Class.forName("org.apache.commons.lang.ClassUtils");
             Class.forName("org.apache.commons.io.IOUtils");
@@ -387,25 +389,92 @@ public class Main {
         }
     }
 
+    private boolean showHelp;
+    private boolean printVersion;
+    private boolean isServer;
+    private boolean isFileSystem;
 
     public static void main(String[] args) {
-        runServer(args);
+        Main main = Main.parse(args);
+        if (main.printVersion()) {
+            System.out.println(main.getVersionText());
+            System.exit(0);
+        } else if (main.isServer()) {
+            runServer(args);
+        } if (main.isFileSystem()) {
+            System.out.println("TODO");
+        } else {
+            System.out.println(main.getHelpText());
+        }
+    }
+
+    public String getHelpText() {
+        return IoUtils.toString(getClass().getResourceAsStream("help.txt"));
+    }
+
+    public String getVersionText() {
+        return "JSCover version: " + properties.getProperty("version");
     }
 
     private static void runServer(String[] args) {
-        Configuration configuration = Configuration.parse(args);
-        if (configuration.showHelp()) {
-            System.out.println(configuration.getHelpText());
-            System.exit(0);
-        } else if (configuration.printVersion()) {
-            System.out.println(configuration.getVersionText());
+        Configuration configurationForServer = Configuration.parse(args);
+        if (configurationForServer.showHelp()) {
+            System.out.println(configurationForServer.getHelpText());
             System.exit(0);
         }
 
         try {
-            WebServer ws = new WebServer(configuration);
+            WebServer ws = new WebServer(configurationForServer);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static Main parse(String[] args) {
+        Main main = new Main();
+        for (String arg : args) {
+            if (arg.equals(HELP_PREFIX1) || arg.equals(HELP_PREFIX2)) {
+                main.showHelp = true;
+            } else if (arg.equals(VERSION_PREFIX1) || arg.equals(VERSION_PREFIX2)) {
+                main.printVersion = true;
+            } else if (arg.equals(SERVER_PREFIX)) {
+                main.isServer = true;
+            } else if (arg.equals(FILESYSTEM_PREFIX)) {
+                main.isFileSystem = true;
+            } else {
+                main.showHelp = true;
+            }
+        }
+        if (!main.validOptions()) {
+            main.showHelp = true;
+        }
+        return main;
+    }
+
+    private boolean validOptions() {
+        if (isServer && isFileSystem) {
+            return false;
+        }
+        if (!isServer && !isFileSystem) {
+            return false;
+        }
+        return true;
+    }
+
+    public Boolean printVersion() {
+        return printVersion;
+    }
+
+
+    public Boolean showHelp() {
+        return showHelp;
+    }
+
+    public Boolean isServer() {
+        return isServer;
+    }
+
+    public boolean isFileSystem() {
+        return isFileSystem;
     }
 }

@@ -375,7 +375,7 @@ public class InstrumenterIntegrationTest {
 
         String expectedSource = IoUtils.loadFromClassPath("/test-instrumented.js");
         // assertThat(instrumentedSource, equalTo(expectedSource));
-        assertEquals(expectedSource, instrumentedSource);
+        assertEquals(expectedSource, instrumentedSource);//.replaceAll("\r\n","\n"));
     }
 
 }

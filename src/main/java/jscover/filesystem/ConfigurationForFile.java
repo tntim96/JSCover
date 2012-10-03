@@ -338,66 +338,9 @@ proprietary programs.  If your program is a subroutine library, you may
 consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
- */
+*/
 
-package jscover;
+package jscover.filesystem;
 
-import org.junit.Test;
-
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
-
-public class MainTest {
-
-    @Test
-    public void shouldHaveDefaults() {
-        Main main = Main.parse(new String[]{});
-        assertThat(main.showHelp(), equalTo(true));
-        assertThat(main.printVersion(), equalTo(false));
-        assertThat(main.isServer(), equalTo(false));
-        assertThat(main.isFileSystem(), equalTo(false));
-    }
-
-    @Test
-    public void shouldParseVersion() {
-        assertThat(Main.parse(new String[]{}).printVersion(), equalTo(false));
-        assertThat(Main.parse(new String[]{"-V"}).printVersion(), equalTo(true));
-        assertThat(Main.parse(new String[]{"--version"}).printVersion(), equalTo(true));
-    }
-
-    @Test
-    public void shouldRunFileSystem() {
-        assertThat(Main.parse(new String[]{"-fs"}).isFileSystem(), equalTo(true));
-    }
-
-    @Test
-    public void shouldRunServer() {
-        assertThat(Main.parse(new String[]{"-ws"}).isServer(), equalTo(true));
-    }
-
-    @Test
-    public void shouldParseHelp() {
-        assertThat(Main.parse(new String[]{}).showHelp(), equalTo(true));
-        assertThat(Main.parse(new String[]{"-h"}).showHelp(), equalTo(true));
-        assertThat(Main.parse(new String[]{"--help"}).showHelp(), equalTo(true));
-    }
-
-    @Test
-    public void shouldDetectValidOptions() {
-        assertThat(Main.parse(new String[]{"-ws"}).showHelp(), equalTo(false));
-        assertThat(Main.parse(new String[]{"-fs"}).showHelp(), equalTo(false));
-    }
-
-    @Test
-    public void shouldDetectInvalidOptions() {
-        assertThat(Main.parse(new String[]{"-ws","-fs"}).showHelp(), equalTo(true));
-    }
-
-    @Test
-    public void shouldRetrieveHelpText() {
-        String helpText = new Main().getHelpText();
-        assertThat(helpText, containsString("Usage: java -jar jscover.jar [OPTION]..."));
-    }
-
+public class ConfigurationForFile {
 }

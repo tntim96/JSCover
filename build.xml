@@ -3,7 +3,7 @@
 	<property environment="env" />
 
 	<property file="build.properties" />
-	<property file="src/main/resources/jscover/server/configuration.properties" />
+	<property file="src/main/resources/jscover/configuration.properties" />
 
 	<path id="classpath-main">
 		<pathelement path="${classes.main.dir}" />
@@ -134,7 +134,7 @@
 	</target>
 
 	<target name="coverage-check">
-		<cobertura-check totallinerate="90" totalbranchrate="90"/>
+		<cobertura-check totallinerate="91" totalbranchrate="89"/>
 	</target>
 
 	<target name="compile-tests" depends="compile">

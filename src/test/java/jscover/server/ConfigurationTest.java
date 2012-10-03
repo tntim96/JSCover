@@ -375,18 +375,6 @@ public class ConfigurationTest {
     }
 
     @Test
-    public void shouldParseVersion() {
-        assertThat(Configuration.parse(new String[]{}).printVersion(), equalTo(false));
-        assertThat(Configuration.parse(new String[]{"-V"}).printVersion(), equalTo(true));
-        assertThat(Configuration.parse(new String[]{"--version"}).printVersion(), equalTo(true));
-    }
-
-    @Test
-    public void shouldGetVersionText() {
-        assertThat(new Configuration().getVersionText(), equalTo("JSCover version: 0.0.2"));
-    }
-
-    @Test
     public void shouldParseDocumentRoot() {
         assertThat(Configuration.parse(new String[]{"--document-root=/"}).getDocumentRoot(), equalTo(new File("/")));
     }
@@ -408,7 +396,7 @@ public class ConfigurationTest {
 
     @Test
     public void shouldParseNoInstrument() {
-        Configuration configuration = Configuration.parse(new String[]{"--no-instrument=/lib1","--no-instrument=/lib2"});
+        Configuration configuration = Configuration.parse(new String[]{"--no-instrument=/lib1", "--no-instrument=/lib2"});
         assertThat(configuration.skipInstrumentation("/test.js"), equalTo(false));
         assertThat(configuration.skipInstrumentation("/lib1/test.js"), equalTo(true));
         assertThat(configuration.skipInstrumentation("/lib2/test.js"), equalTo(true));
@@ -418,6 +406,6 @@ public class ConfigurationTest {
     @Test
     public void shouldRetrieveHelpText() {
         String helpText = new Configuration().getHelpText();
-        assertThat(helpText, containsString("Usage: java -jar jscover.jar [OPTION]..."));
+        assertThat(helpText, containsString("Usage: java -jar jscover.jar -ws [OPTION]..."));
     }
 }

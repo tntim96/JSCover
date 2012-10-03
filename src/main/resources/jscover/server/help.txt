@@ -1,4 +1,4 @@
-Usage: java -jar jscover.jar [OPTION]...
+Usage: java -jar jscover.jar -ws [OPTION]...
 Run a server for instrumenting JavaScript with code coverage information.
 
 Options:
@@ -8,4 +8,3 @@ Options:
       --port=PORT           use PORT for TCP port (default: 8080)
       --js-version=VERSION  JavaScript version 1.0, 1.2, ..., 1.8 (default: 1.3)
   -h, --help                display this help and exit
-  -V, --version             display version information and exit

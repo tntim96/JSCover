@@ -348,33 +348,18 @@ import org.mozilla.javascript.Context;
 
 import java.io.File;
 import java.util.HashSet;
-import java.util.Properties;
 import java.util.Set;
 
 public class Configuration {
     public static final String HELP_PREFIX1 = "-h";
     public static final String HELP_PREFIX2 = "--help";
-    public static final String VERSION_PREFIX1 = "-V";
-    public static final String VERSION_PREFIX2 = "--version";
     public static final String DOC_ROOT_PREFIX = "--document-root=";
     public static final String PORT_PREFIX = "--port=";
     public static final String REPORT_DIR_PREFIX = "--report-dir=";
     public static final String NO_INSTRUMENT_PREFIX = "--no-instrument=";
     public static final String JS_VERSION_PREFIX = "--js-version=";
 
-    public static final Properties properties = new Properties();
-
-    static {
-        try {
-            properties.load(Configuration.class.getResourceAsStream("configuration.properties"));
-        } catch (Exception e) {
-            e.printStackTrace(System.err);
-            System.exit(1);
-        }
-    }
-
     private boolean showHelp;
-    private boolean printVersion;
     private File documentRoot = new File(System.getProperty("user.dir"));
     private Integer port = 8080;
     private final Set<String> noInstruments = new HashSet<String>();
@@ -384,10 +369,6 @@ public class Configuration {
 
     public Boolean showHelp() {
         return showHelp;
-    }
-
-    public boolean printVersion() {
-        return printVersion;
     }
 
     public File getDocumentRoot() {
@@ -415,8 +396,6 @@ public class Configuration {
         for (String arg : args) {
             if (arg.equals(HELP_PREFIX1) || arg.equals(HELP_PREFIX2)) {
                 configuration.showHelp = true;
-            } else if (arg.equals(VERSION_PREFIX1) || arg.equals(VERSION_PREFIX2)) {
-                configuration.printVersion = true;
             } else if (arg.startsWith(DOC_ROOT_PREFIX)) {
                 configuration.documentRoot = new File(arg.substring(DOC_ROOT_PREFIX.length()));
             } else if (arg.startsWith(PORT_PREFIX)) {
@@ -437,11 +416,7 @@ public class Configuration {
     }
 
     public String getHelpText() {
-        return IoUtils.toString(Configuration.class.getResourceAsStream("help.txt"));
-    }
-
-    public String getVersionText() {
-        return "JSCover version: " + properties.getProperty("version");
+        return IoUtils.toString(getClass().getResourceAsStream("help.txt"));
     }
 
     public int getJSVersion() {

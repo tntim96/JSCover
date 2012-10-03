@@ -17,13 +17,18 @@
         <a class="nav" href="https://github.com/tntim96/JSCover/downloads" target="_blank">Downloads</a>
     </div>
 
-    <h2>JSCover Server</h2>
+    <h2>General Information</h2>
 
     <p>
         For an overview of the basic workings of of JSCover, see the
-        <a href="http://siliconforks.com/jscoverage/manual.html">JSCoverage documentation</a>. JSCover currently
-        supports these features of JSCoverage:
+        <a href="http://siliconforks.com/jscoverage/manual.html">JSCoverage documentation</a>.
     </p>
+
+    <p>NB - The binary <i>JSCover.jar</i> must have all dependent JARs available in the same directory.</p>
+
+    <h2>JSCover Server</h2>
+
+    <p>JSCover currently supports these features of JSCoverage:</p>
 
     <ul>
         <li>Server mode with switches indicated below (i.e. JSCoverage's jscoverage-server)</li>
@@ -31,10 +36,7 @@
         <li>Merging of coverage data if multiple runs are stored at the same location</li>
     </ul>
 
-    <p>
-        NB - The binary <i>JSCover.jar</i> must have all dependent JARs available in the same directory.
-        The server usage is:
-    </p>
+    <p>The server usage is:</p>
 
     <div class="shell">
         java -jar JSCover.jar [OPTION]...
@@ -89,7 +91,10 @@
         <tr>
             <td>--js-version=VERSION</td>
             <td>1.5</td>
-            <td>Use the specified JavaScript version; valid values for VERSION are 1.0, 1.1, 1.2, ..., 1.8.</td>
+            <td>
+                Use the specified JavaScript version; valid values for VERSION are
+                <a href="http://en.wikipedia.org/wiki/JavaScript#Versions" target="_blank">1.0, 1.1, 1.2, ..., 1.8</a>.
+            </td>
         </tr>
     </table>
     <p>
