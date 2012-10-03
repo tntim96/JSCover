@@ -2,7 +2,7 @@
 ================================
 
 JSCover is an easy-to-use JavaScript code coverage measuring tool. It is based on the popular
-[JSCoverage](http://tntim96.github.com/JSCover)
+[JSCoverage](http://siliconforks.com/jscoverage/)
 tool which is no
 longer maintained. It's big distinguishing factor from other JavaScript tools is that it runs in browser allowing
 coverage measurement of tests that include DOM interaction. It can be run with most tools (e.g. Jasmine, QUnit, etc...)
