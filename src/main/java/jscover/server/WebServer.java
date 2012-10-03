@@ -404,6 +404,9 @@ public class WebServer extends NanoHTTPD {
                 copyResourceToDir("jscoverage-ie.css", configuration.getReportDir());
                 copyResourceToDir("jscoverage-throbber.gif",configuration.getReportDir());
                 return new NanoHTTPD.Response(HTTP_OK, HTTP_OK, "Report stored at "+configuration.getReportDir());
+            } else if (uri.startsWith("/jscoverage.html")) {
+                String reportHTML = IoUtils.loadFromClassPath("/jscoverage.html").replaceAll("@@version@@",configuration.getVersion());
+                return new NanoHTTPD.Response(HTTP_OK, getMime(uri), reportHTML);
             } else if (uri.startsWith("/jscoverage")) {
                 return new NanoHTTPD.Response(HTTP_OK, getMime(uri), getClass().getResourceAsStream(uri));
             } else if (uri.endsWith(".js") && !configuration.skipInstrumentation(uri)) {

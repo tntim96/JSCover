@@ -18,6 +18,11 @@
         <a class="nav" href="https://github.com/tntim96/JSCover/downloads" target="_blank">Downloads</a>
     </div>
 
+    <p>
+        The file system example can be run online by clicking on the links below.
+        The server examples need to be downloaded and run manually.
+    </p>
+
     <h2>JSCover Server</h2>
 
     <p>
@@ -26,10 +31,18 @@
     </p>
 
     <div class="shell">
-        java -jar target/dist/JSCover.jar --document-root=doc/example --report-dir=target
+        java -jar target/dist/JSCover.jar -ws --document-root=doc/example --report-dir=target
+    </div>
+    <p>
+        Manually run the command below the go to:
+        <a href="http://localhost:8080/jscoverage.html?/">http://localhost:8080/jscoverage.html?/test</a>.
+    </p>
+
+    <div class="shell">
+        java -jar target/dist/JSCover.jar -ws --document-root=doc/example-qunit/src --report-dir=target
     </div>
 
-     <h2>JSCover File Instrumentation</h2>
+    <h2>JSCover File Instrumentation</h2>
 
     <p>
         Run example-filesystem.sh (see below) and then go to
