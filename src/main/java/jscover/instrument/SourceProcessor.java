@@ -371,14 +371,18 @@ public class SourceProcessor {
 
     }
 
-    public String processSource(String source) {
+    public String processSourceForServer(String source) {
+        String report = IoUtils.loadFromClassPath("/report.js");
+        return report + processSource(null, source);
+    }
+
+    public String processSourceForFileSystem(String source) {
         return processSource(null, source);
     }
 
     protected String processSource(String sourceURI, String source) {
-        String report = IoUtils.loadFromClassPath("/report.js");
         String header = IoUtils.loadFromClassPath("/header.js");
-        return report + header + processSourceWithoutHeader(sourceURI, source);
+        return header + processSourceWithoutHeader(sourceURI, source);
     }
 
     protected String processSourceWithoutHeader(String source) {

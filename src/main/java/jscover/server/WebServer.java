@@ -407,7 +407,7 @@ public class WebServer extends NanoHTTPD {
             } else if (uri.endsWith(".js") && !configuration.skipInstrumentation(uri)) {
                 SourceProcessor sourceProcessor = new SourceProcessor(configuration.getCompilerEnvirons(), uri, sourceFormatter, log);
                 String source = IoUtils.toString(new FileInputStream(myRootDir + uri));
-                String jsInstrumented = sourceProcessor.processSource(source);
+                String jsInstrumented = sourceProcessor.processSourceForServer(source);
                 return new NanoHTTPD.Response(HTTP_OK, "text/javascript", jsInstrumented);
             } else {
                 return super.serve(uri, method, header, parms, files, data);

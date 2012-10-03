@@ -354,11 +354,13 @@ import java.util.Set;
 public class ConfigurationForFS {
     public static final String HELP_PREFIX1 = Main.HELP_PREFIX1;
     public static final String HELP_PREFIX2 = Main.HELP_PREFIX2;
+    public static final String EXLCUDE_PREFIX = "--exclude=";
     public static final String NO_INSTRUMENT_PREFIX = "--no-instrument=";
     public static final String JS_VERSION_PREFIX = "--js-version=";
 
     private boolean showHelp;
     private final Set<String> noInstruments = new HashSet<String>();
+    private final Set<String> excludes = new HashSet<String>();
     private File srcDir = new File(System.getProperty("user.dir"));
     private File destDir = new File(System.getProperty("user.dir"));
     private int JSVersion = Context.VERSION_1_5;
@@ -388,6 +390,14 @@ public class ConfigurationForFS {
         return false;
     }
 
+    public boolean exclude(String path) {
+        for (String exclude : excludes) {
+            if (path.startsWith(exclude))
+                return true;
+        }
+        return false;
+    }
+
     public static ConfigurationForFS parse(String[] args) {
         ConfigurationForFS configuration = new ConfigurationForFS();
 
@@ -405,6 +415,8 @@ public class ConfigurationForFS {
                 return configuration;
             } else if (arg.startsWith(NO_INSTRUMENT_PREFIX)) {
                 configuration.noInstruments.add(arg.substring(NO_INSTRUMENT_PREFIX.length()));
+            } else if (arg.startsWith(EXLCUDE_PREFIX)) {
+                configuration.excludes.add(arg.substring(EXLCUDE_PREFIX.length()));
             } else if (arg.startsWith(JS_VERSION_PREFIX)) {
                 configuration.JSVersion = (int)(Float.valueOf(arg.substring(JS_VERSION_PREFIX.length()))*100);
             } else {
@@ -417,10 +429,6 @@ public class ConfigurationForFS {
         configuration.destDir = new File(args[args.length-1]);
         if (!validDirectory(configuration.srcDir)) {
             System.out.println(String.format("Source directory '%s' is invalid",configuration.srcDir));
-            System.exit(1);
-        }
-        if (!validDirectory(configuration.destDir)) {
-            System.out.println(String.format("Destination directory '%s' is invalid",configuration.destDir));
             System.exit(1);
         }
         configuration.compilerEnvirons.setLanguageVersion(configuration.JSVersion);

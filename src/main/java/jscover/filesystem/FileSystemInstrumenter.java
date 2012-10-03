@@ -342,72 +342,96 @@ Public License instead of this License.
 
 package jscover.filesystem;
 
-import jscover.server.ConfigurationForServer;
-import org.junit.Test;
+import jscover.format.PlainFormatter;
+import jscover.format.SourceFormatter;
+import jscover.instrument.SourceProcessor;
+import jscover.util.IoUtils;
+import org.apache.commons.io.IOUtils;
 
-import java.io.File;
+import java.io.*;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
+public class FileSystemInstrumenter {
+    private static SourceFormatter sourceFormatter = new PlainFormatter();
+    private ConfigurationForFS configuration;
+    private SourceProcessor sourceProcessor;
+    private File log;
 
-public class ConfigurationForFSTest {
-
-    @Test
-    public void shouldHaveDefaults() {
-        ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs","src","doc"});
-        assertThat(configuration.showHelp(), equalTo(false));
-        assertThat(configuration.getJSVersion(), equalTo(150));
-        assertThat(configuration.skipInstrumentation("/"), equalTo(false));
+    public FileSystemInstrumenter(ConfigurationForFS configuration) {
+        this.configuration = configuration;
+        this.log = new File(configuration.getDestDir(), "errors.log");
+        if (this.log.exists()) {
+            this.log.delete();
+        }
     }
 
-    @Test
-    public void shouldShowHelpOnError() {
-        assertThat(ConfigurationForFS.parse(new String[]{"-fs"}).showHelp(), equalTo(true));
+    public void run() {
+        copyJSCoverageFiles(configuration.getDestDir());
+        copyFolder(configuration.getSrcDir(), configuration.getDestDir());
     }
 
-    @Test
-    public void shouldParseHelp() {
-        assertThat(ConfigurationForFS.parse(new String[]{"-h"}).showHelp(), equalTo(true));
-        assertThat(ConfigurationForFS.parse(new String[]{"--help"}).showHelp(), equalTo(true));
+    private void copyJSCoverageFiles(File destDir) {
+        if (!destDir.exists())
+            destDir.mkdirs();
+        copyResourceToDir("jscoverage.css", destDir);
+        copyResourceToDir("jscoverage.html", destDir);
+        copyResourceToDir("jscoverage.js", destDir);
+        copyResourceToDir("jscoverage-highlight.css", destDir);
+        copyResourceToDir("jscoverage-ie.css", destDir);
+        copyResourceToDir("jscoverage-throbber.gif",destDir);
+
     }
 
-    @Test
-    public void shouldParseSourceDirectory() {
-        assertThat(ConfigurationForFS.parse(new String[]{"-fs","src","doc"}).getSrcDir(), equalTo(new File("src")));
+    private void copyResourceToDir(String resource, File parent) {
+        try {
+            IOUtils.copy(getClass().getResourceAsStream("/"+resource), new FileOutputStream(new File(parent,resource)));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    @Test
-    public void shouldParseDestinationDirectory() {
-        assertThat(ConfigurationForFS.parse(new String[]{"-fs","src","doc"}).getDestDir(), equalTo(new File("doc")));
+    private void copyFolder(File src, File dest) {
+        if (src.isDirectory()) {
+            if (!dest.exists())
+                dest.mkdirs();
+
+            String files[] = src.list();
+            for (String file : files) {
+                File srcFile = new File(src, file);
+                String path = getRelativePath(srcFile).replaceAll("\\\\","/");
+                if (configuration.exclude(path)) {
+                    continue;
+                }
+                File destFile = new File(dest, file);
+                //recursive copy
+                copyFolder(srcFile, destFile);
+            }
+        } else {
+            String path = getRelativePath(src).replaceAll("\\\\","/");
+            if (src.isFile() && src.toString().endsWith(".js") && !configuration.skipInstrumentation(path)) {
+                SourceProcessor sourceProcessor = new SourceProcessor(configuration.getCompilerEnvirons(), path, sourceFormatter, log);
+                String source = null;
+                try {
+                    source = IoUtils.toString(new FileInputStream(src));
+                } catch (FileNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+                String jsInstrumented = sourceProcessor.processSourceForFileSystem(source);
+                try {
+                    IOUtils.copy(new StringReader(jsInstrumented), new FileOutputStream(dest));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                try {
+                    IOUtils.copy(new FileInputStream(src), new FileOutputStream(dest));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
     }
 
-    @Test
-    public void shouldParseJSVersion() {
-        assertThat(ConfigurationForFS.parse(new String[]{"-fs","--js-version=1.8","src","doc"}).getJSVersion(), equalTo(180));
-    }
-
-    @Test
-    public void shouldParseNoInstrument() {
-        ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs","--no-instrument=/lib1", "--no-instrument=/lib2","src","doc"});
-        assertThat(configuration.skipInstrumentation("/test.js"), equalTo(false));
-        assertThat(configuration.skipInstrumentation("/lib1/test.js"), equalTo(true));
-        assertThat(configuration.skipInstrumentation("/lib2/test.js"), equalTo(true));
-        assertThat(configuration.skipInstrumentation("/lib3/test.js"), equalTo(false));
-    }
-
-    @Test
-    public void shouldParseExclude() {
-        ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs","--exclude=/lib1", "--exclude=/lib2","src","doc"});
-        assertThat(configuration.exclude("/test.js"), equalTo(false));
-        assertThat(configuration.exclude("/lib1/test.js"), equalTo(true));
-        assertThat(configuration.exclude("/lib2/test.js"), equalTo(true));
-        assertThat(configuration.exclude("/lib3/test.js"), equalTo(false));
-    }
-
-    @Test
-    public void shouldRetrieveHelpText() {
-        String helpText = new ConfigurationForFS().getHelpText();
-        assertThat(helpText, containsString("Usage: java -jar jscover.jar -fs [OPTION]..."));
+    private String getRelativePath(File file) {
+        return file.getAbsolutePath().substring(configuration.getSrcDir().getAbsolutePath().length()+File.separator.length());
     }
 }

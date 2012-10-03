@@ -342,6 +342,8 @@ Public License instead of this License.
 
 package jscover;
 
+import jscover.filesystem.ConfigurationForFS;
+import jscover.filesystem.FileSystemInstrumenter;
 import jscover.server.ConfigurationForServer;
 import jscover.server.WebServer;
 import jscover.util.IoUtils;
@@ -401,8 +403,8 @@ public class Main {
             System.exit(0);
         } else if (main.isServer()) {
             runServer(args);
-        } if (main.isFileSystem()) {
-            System.out.println("TODO");
+        } else if (main.isFileSystem()) {
+            runFileSystem(args);
         } else {
             System.out.println(main.getHelpText());
         }
@@ -416,15 +418,25 @@ public class Main {
         return "JSCover version: " + properties.getProperty("version");
     }
 
+    private static void runFileSystem(String[] args) {
+        ConfigurationForFS configuration = ConfigurationForFS.parse(args);
+        if (configuration.showHelp()) {
+            System.out.println(configuration.getHelpText());
+            System.exit(0);
+        }
+
+        new FileSystemInstrumenter(configuration).run();
+    }
+
     private static void runServer(String[] args) {
-        ConfigurationForServer configurationForServer = ConfigurationForServer.parse(args);
-        if (configurationForServer.showHelp()) {
-            System.out.println(configurationForServer.getHelpText());
+        ConfigurationForServer configuration = ConfigurationForServer.parse(args);
+        if (configuration.showHelp()) {
+            System.out.println(configuration.getHelpText());
             System.exit(0);
         }
 
         try {
-            WebServer ws = new WebServer(configurationForServer);
+            new WebServer(configuration);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

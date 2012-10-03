@@ -367,12 +367,12 @@ public class MainTest {
     }
 
     @Test
-    public void shouldRunFileSystem() {
+    public void shouldParseFileSystem() {
         assertThat(Main.parse(new String[]{"-fs"}).isFileSystem(), equalTo(true));
     }
 
     @Test
-    public void shouldRunServer() {
+    public void shouldParseServer() {
         assertThat(Main.parse(new String[]{"-ws"}).isServer(), equalTo(true));
     }
 

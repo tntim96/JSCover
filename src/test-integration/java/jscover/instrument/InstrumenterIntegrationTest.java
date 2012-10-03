@@ -366,14 +366,27 @@ public class InstrumenterIntegrationTest {
     private SourceProcessor instrumenter;
 
     @Test
-    public void shouldInstrumentStatements() throws URISyntaxException {
+    public void shouldInstrumentForFileSystem() throws URISyntaxException {
         String fileName = "test-simple.js";
         String source = IoUtils.loadFromClassPath("/" + fileName);
         instrumenter = new SourceProcessor(compilerEnv, fileName, new PlainFormatter(), null);
 
-        String instrumentedSource = instrumenter.processSource(null, source);
+        String instrumentedSource = instrumenter.processSourceForFileSystem(source);
 
-        String expectedSource = IoUtils.loadFromClassPath("/test-instrumented.js");
+        String expectedSource = IoUtils.loadFromClassPath("/test-instrumented-file-system.js");
+        // assertThat(instrumentedSource, equalTo(expectedSource));
+        assertEquals(expectedSource, instrumentedSource);//.replaceAll("\r\n","\n"));
+    }
+
+    @Test
+    public void shouldInstrumentForServer() throws URISyntaxException {
+        String fileName = "test-simple.js";
+        String source = IoUtils.loadFromClassPath("/" + fileName);
+        instrumenter = new SourceProcessor(compilerEnv, fileName, new PlainFormatter(), null);
+
+        String instrumentedSource = instrumenter.processSourceForServer(source);
+
+        String expectedSource = IoUtils.loadFromClassPath("/test-instrumented-server.js");
         // assertThat(instrumentedSource, equalTo(expectedSource));
         assertEquals(expectedSource, instrumentedSource);//.replaceAll("\r\n","\n"));
     }

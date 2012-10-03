@@ -115,7 +115,7 @@
 			<ignore regex="org.apache.log4j.*" />
 			<fileset dir="${classes.main.dir}">
 				<include name="**/*.class" />
-				<exclude name="**/Main.class" /><!-- Todo add this back in with tests -->
+				<exclude name="**/FileSystemInstrumenter.class" /><!-- Todo add this back in with tests -->
 				<exclude name="**/WebServer.class" /><!-- Todo add this back in with tests -->
 				<exclude name="**/NanoHTTPD*.class" />
 			</fileset>
@@ -134,7 +134,7 @@
 	</target>
 
 	<target name="coverage-check">
-		<cobertura-check totallinerate="91" totalbranchrate="89"/>
+		<cobertura-check totallinerate="82" totalbranchrate="84"/>
 	</target>
 
 	<target name="compile-tests" depends="compile">
