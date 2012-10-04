@@ -1,6 +1,0 @@
-Version 0.0.2
- - Addition of command line file instrumentation
- - Working example of QUnit test suite
-
- Version 0.0.1
- - Initial release comprising of web-server
