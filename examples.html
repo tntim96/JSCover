@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+<head>
+    <title>JSCover - Documentation</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+<div class="container">
+    <h1>JSCover</h1>
+
+    <div>
+        <a class="nav" href="index.html">Home</a>
+        <a class="nav" href="documentation.html">Documentation</a>
+        <span class="nav selected">Examples</span>
+        <a class="nav" href="to-do.html">To-do</a>
+        <a class="nav" href="links.html">Links</a>
+        <a class="nav" href="license.html">License</a>
+        <a class="nav" href="https://github.com/tntim96/JSCover/downloads" target="_blank">Downloads</a>
+    </div>
+
+    <p>
+        The file system example can be run online by clicking on the links below.
+        The server examples need to be downloaded and run manually.
+    </p>
+
+    <h2>JSCover Server</h2>
+
+    <p>
+        Run example-server.sh (see below) and then go to
+        <a href="http://localhost:8080/jscoverage.html?/">http://localhost:8080/jscoverage.html?/</a>.
+    </p>
+
+    <div class="shell">
+        java -jar target/dist/JSCover.jar -ws --document-root=doc/example --report-dir=target
+    </div>
+    <p>
+        Manually run the command below the go to:
+        <a href="http://localhost:8080/jscoverage.html?/test">http://localhost:8080/jscoverage.html?/test</a>.
+    </p>
+
+    <div class="shell">
+        java -jar target/dist/JSCover.jar -ws --document-root=doc/example-qunit/src --report-dir=target
+    </div>
+
+    <p>
+        Now try again with the '--no-instrument=/test' option to remove the test scripts from the report.
+    </p>
+
+    <div class="shell">
+        java -jar target/dist/JSCover.jar -ws --document-root=doc/example-qunit/src --report-dir=target --no-instrument=/test
+    </div>
+
+    <h2>JSCover File Instrumentation</h2>
+
+    <p>
+        Run example-filesystem.sh (see below) and then go to
+        <a href="example-qunit/out/jscoverage.html?test/index.html" target="_blank">QUnit test suite</a>.
+    </p>
+
+    <div class="shell">
+        java -jar target/dist/JSCover.jar -fs --no-instrument=test doc/example-qunit/src doc/example-qunit/out
+    </div>
+
+    <p>&nbsp;</p>
+
+</div>
+</body>
+</html>
