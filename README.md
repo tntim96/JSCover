@@ -12,7 +12,9 @@ It can be run with most tools (e.g.
 Development
 -----------
 
-Before checking-out, make sure your git client has "Auto CrLf convert" turned off.
+Before checking-out,
+[https://help.github.com/articles/dealing-with-line-endings]
+(make sure your git client has "Auto CrLf convert" turned off).
 If not, this will cause some tests to fail on Windows machine (the tests may be altered to over-come this if it
 proves to be a common problem).
 
