@@ -200,7 +200,7 @@
 
     <target name="run-acceptance-tests" depends="compile-acceptance-tests, jar">
         <java jar="${dist.dir}/JSCover.jar" fork="true" spawn="true">
-            <arg line="-ws --report-dir=${report.test.dir}"/>
+            <arg line="-ws --report-dir=${build.dir}"/>
         </java>
         <waitfor maxwait="10" maxwaitunit="second" checkevery="250" checkeveryunit="millisecond">
             <socket port="8080" server="localhost"/>
