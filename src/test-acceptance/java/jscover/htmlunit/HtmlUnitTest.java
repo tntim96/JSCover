@@ -347,6 +347,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import org.apache.commons.io.IOUtils;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.FileInputStream;
@@ -357,10 +358,15 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class HtmlUnitTest {
+    private WebClient webClient = new WebClient();
+
+    @Before
+    public void setUp() {
+        webClient.setJavaScriptEnabled(true);
+    }
 
     @Test
     public void shouldWorkWithServerIFrameByURL() throws Exception {
-        WebClient webClient = new WebClient();
         String url = "http://localhost:8080/jscoverage.html?doc/example";
         HtmlPage page = webClient.getPage(url);
 
@@ -369,7 +375,6 @@ public class HtmlUnitTest {
 
     @Test
     public void shouldWorkWithServerIFrameByURLWithDOMInteraction() throws Exception {
-        WebClient webClient = new WebClient();
         String url = "http://localhost:8080/jscoverage.html?doc/example";
         HtmlPage page = webClient.getPage(url);
         HtmlPage frame = (HtmlPage)page.getFrameByName("browserIframe").getEnclosedPage();
@@ -380,9 +385,6 @@ public class HtmlUnitTest {
 
     @Test
     public void shouldStoreResult() throws Exception {
-        WebClient webClient = new WebClient();
-        webClient.setJavaScriptEnabled(true);
-
         String url = "http://localhost:8080/jscoverage.html?doc/example";
         HtmlPage page = webClient.getPage(url);
 
@@ -402,7 +404,6 @@ public class HtmlUnitTest {
 
     @Test
     public void shouldWorkWithServerIFrameByNavigationButtons() throws Exception {
-        WebClient webClient = new WebClient();
         String url = "http://localhost:8080/jscoverage.html";
         HtmlPage page = webClient.getPage(url);
         ((HtmlInput)page.getHtmlElementById("location")).setValueAttribute("http://localhost:8080/doc/example/");
