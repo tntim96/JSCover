@@ -385,8 +385,7 @@ public class HtmlUnitTest {
 
     @Test
     public void shouldStoreResult() throws Exception {
-        String url = "http://localhost:8080/jscoverage.html?doc/example";
-        HtmlPage page = webClient.getPage(url);
+        HtmlPage page = webClient.getPage("http://localhost:8080/jscoverage.html?doc/example");
 
         page.getHtmlElementById("storeTab").click();
         webClient.waitForBackgroundJavaScript(500);
@@ -404,8 +403,7 @@ public class HtmlUnitTest {
 
     @Test
     public void shouldWorkWithServerIFrameByNavigationButtons() throws Exception {
-        String url = "http://localhost:8080/jscoverage.html";
-        HtmlPage page = webClient.getPage(url);
+        HtmlPage page = webClient.getPage("http://localhost:8080/jscoverage.html");
         ((HtmlInput)page.getHtmlElementById("location")).setValueAttribute("http://localhost:8080/doc/example/");
         page.getHtmlElementById("openInFrameButton").click();
         webClient.waitForBackgroundJavaScript(100);
@@ -413,9 +411,24 @@ public class HtmlUnitTest {
         verifyTotal(webClient, page, 6);
     }
 
+    @Test
+    public void shouldIncreaseCoverage() throws Exception {
+        HtmlPage page = webClient.getPage("http://localhost:8080/jscoverage.html?doc/example");
+
+        verifyTotal(webClient, page, 6);
+
+        page.getHtmlElementById("browserTab").click();
+        HtmlPage frame = (HtmlPage)page.getFrameByName("browserIframe").getEnclosedPage();
+        frame.getElementById("radio1").click();
+        frame.getElementById("radio2").click();
+        frame.getElementById("radio3").click();
+        frame.getElementById("radio4").click();
+        verifyTotal(webClient, page, 100);
+    }
+
     private void verifyTotal(WebClient webClient, HtmlPage page, int percentage) throws IOException {
         page.getHtmlElementById("summaryTab").click();
-        webClient.waitForBackgroundJavaScript(100);
+        webClient.waitForBackgroundJavaScript(2000);
         String total = page.getElementById("summaryTotal").getTextContent();
         assertEquals(percentage+"%", total);
     }
