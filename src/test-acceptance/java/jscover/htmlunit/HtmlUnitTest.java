@@ -350,6 +350,7 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
@@ -384,7 +385,7 @@ public class HtmlUnitTest {
     }
 
     @Test
-    public void shouldStoreResult() throws Exception {
+    public void shouldStoreAndLoadResult() throws Exception {
         HtmlPage page = webClient.getPage("http://localhost:8080/jscoverage.html?doc/example");
 
         page.getHtmlElementById("storeTab").click();
@@ -397,8 +398,15 @@ public class HtmlUnitTest {
 
         assertThat(result, containsString("Report stored at target"));
 
-        String json = IOUtils.toString(new FileInputStream("target/jscoverage.json"));
+        FileInputStream fis = new FileInputStream("target/jscoverage.json");
+        String json = IOUtils.toString(fis);
+        fis.close();
         assertThat(json, containsString("/doc/example/script.js"));
+
+        File file = new File("target/jscoverage.html");
+
+        page = webClient.getPage("file:///"+file.getAbsolutePath());
+        verifyTotal(webClient, page, 6);
     }
 
     @Test
@@ -420,9 +428,13 @@ public class HtmlUnitTest {
         page.getHtmlElementById("browserTab").click();
         HtmlPage frame = (HtmlPage)page.getFrameByName("browserIframe").getEnclosedPage();
         frame.getElementById("radio1").click();
+        webClient.waitForBackgroundJavaScript(500);
         frame.getElementById("radio2").click();
+        webClient.waitForBackgroundJavaScript(500);
         frame.getElementById("radio3").click();
+        webClient.waitForBackgroundJavaScript(500);
         frame.getElementById("radio4").click();
+        webClient.waitForBackgroundJavaScript(500);
         verifyTotal(webClient, page, 100);
     }
 
