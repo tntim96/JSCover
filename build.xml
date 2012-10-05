@@ -9,6 +9,7 @@
 		<pathelement path="${classes.main.dir}" />
 		<pathelement path="${classes.test-unit.dir}" />
 		<pathelement path="${classes.test-integration.dir}" />
+		<pathelement path="${classes.test-acceptance.dir}" />
 		<fileset dir="${lib.build.dir}" includes="**/*.jar" />
 		<fileset dir="${lib.run.dir}" includes="*.jar" />
 	</path>
@@ -18,9 +19,16 @@
 		<pathelement path="${classes.main.dir}" />
 		<pathelement path="${classes.test-unit.dir}" />
 		<pathelement path="${classes.test-integration.dir}" />
+		<pathelement path="${classes.test-acceptance.dir}" />
 		<fileset dir="${lib.build.dir}" includes="**/*.jar" />
 		<fileset dir="${lib.run.dir}" includes="*.jar" />
 	</path>
+
+	<path id="classpath-htmlunit">
+        <fileset dir="${html.unit.dir}/lib">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
 
 	<target name="clean">
 		<delete dir="target" />
@@ -38,6 +46,7 @@
 		<mkdir dir="${classes.instrumented.dir}" />
 		<mkdir dir="${classes.test-unit.dir}" />
 		<mkdir dir="${classes.test-integration.dir}" />
+		<mkdir dir="${classes.test-acceptance.dir}" />
 	</target>
 
 	<target name="compile" depends="dirsetup">
@@ -153,11 +162,24 @@
 		</copy>
 	</target>
 
+	<target name="compile-acceptance-tests" depends="compile-integration-tests">
+		<javac includeantruntime="false" debug="true" srcdir="${src.test-acceptance.dir}"
+			destdir="${classes.test-acceptance.dir}">
+            <classpath>
+                <path refid="classpath-main" />
+                <path refid="classpath-htmlunit" />
+            </classpath>
+        </javac>
+		<copy todir="${classes.test-acceptance.dir}" includeemptydirs="no">
+			<fileset dir="${src.test-acceptance.resources.dir}" />
+		</copy>
+	</target>
+
 	<target name="run-tests" depends="compile-integration-tests, cobertura-setup">
 		<property name="tests" value="*Test" />
 		<delete dir="${report.test.dir}" />
 		<mkdir dir="${report.test.dir}" />
-		<junit forkmode="perBatch" haltonfailure="no" haltonerror="no" failureProperty="test.failure">
+		<junit forkmode="perBatch" haltonfailure="no" haltonerror="no" failureProperty="test.failure" errorproperty="test.failure">
 			<classpath>
 				<path refid="classpath-cobertura" />
 			</classpath>
@@ -176,7 +198,33 @@
 		<fail if="test.failure"/>
 	</target>
 
-	<target name="junitreport" unless="continuous.integration">
+    <target name="run-acceptance-tests" depends="compile-acceptance-tests, jar">
+        <java jar="${dist.dir}/JSCover.jar" fork="true" spawn="true">
+            <arg line="-ws --report-dir=${report.test.dir}"/>
+        </java>
+        <waitfor maxwait="10" maxwaitunit="second" checkevery="250" checkeveryunit="millisecond">
+            <socket port="8080" server="localhost"/>
+        </waitfor>
+        <property name="tests" value="*Test" />
+        <junit forkmode="perBatch" haltonfailure="no" haltonerror="no" failureProperty="test.failure" errorproperty="test.failure">
+            <classpath>
+                <path refid="classpath-main" />
+                <path refid="classpath-htmlunit" />
+            </classpath>
+            <formatter type="xml" />
+            <formatter type="brief" usefile="no" />
+            <batchtest fork="yes" todir="${report.test.dir}">
+                <fileset dir="${classes.test-acceptance.dir}">
+                    <include name="**/${tests}.class" />
+                </fileset>
+            </batchtest>
+        </junit>
+        <get src="http://localhost:8080/stop" dest="${report.test.dir}/stop.txt"/>
+        <antcall target="junitreport" />
+        <fail if="test.failure"/>
+    </target>
+
+    <target name="junitreport" unless="continuous.integration">
 		<junitreport todir="${report.test.dir}">
 			<fileset dir="${report.test.dir}">
 				<include name="TEST-*.xml" />
@@ -185,7 +233,7 @@
 		</junitreport>
 	</target>
 
-	<target name="junit" depends="run-tests, junitreport, cobertura-report, coverage-check"/>
+	<target name="junit" depends="run-tests, cobertura-report, coverage-check"/>
 
-	<target name="pre-commit" depends="clean, junit"/>
+	<target name="pre-commit" depends="clean, junit, run-acceptance-tests, junitreport"/>
 </project>

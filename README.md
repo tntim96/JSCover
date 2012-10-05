@@ -24,5 +24,8 @@ Project files for both IDEs are checked in, but any editor can be used.
 Before checking in any changes, be sure to run the build files `pre-commit`.
 Some care needs to be taken as coverage is currently only just above 80%  - this needs to be improved.
 
-
+To save repository space, the acceptance test framework HTMLUnit is not checked in.
+Download HTML Unit (2.10) and unzip it to the same parent directory as JSCover to match
+the build property `html.unit.dir=${basedir}/../htmlunit-2.10`.
+If this property needs changing, the IntelliJ and Eclipse project files will also need altering.
 

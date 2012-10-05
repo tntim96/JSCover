@@ -24,6 +24,8 @@
       <sourceFolder url="file://$MODULE_DIR$/src/test/resources" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/test-integration/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/test-integration/resources" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test-acceptance/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test-acceptance/resources" isTestSource="true" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library">
@@ -88,6 +90,7 @@
         <jarDirectory url="file://$MODULE_DIR$/lib/runtime" recursive="false" />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="HtmlUnit" level="project" />
   </component>
 </module>
 
