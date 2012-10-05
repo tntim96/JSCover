@@ -391,14 +391,20 @@ public class WebServer extends NanoHTTPD {
                     String existingJSON = IOUtils.toString(new FileInputStream(jsonFile));
                     data = jsonDataMerger.mergeJSONCoverageData(existingJSON, data);
                 }
-                IOUtils.copy(new StringReader(data), new FileOutputStream(jsonFile));
+                FileOutputStream fos = new FileOutputStream(jsonFile);
+                IOUtils.copy(new StringReader(data), fos);
                 copyResourceToDir("jscoverage.css", configuration.getReportDir());
+                fos.close();
 
                 String reportHTML = IoUtils.loadFromClassPath("/jscoverage.html").replaceAll("@@version@@",configuration.getVersion());
-                IOUtils.copy(new StringReader(reportHTML), new FileOutputStream(new File(configuration.getReportDir(),"jscoverage.html")));
+                fos = new FileOutputStream(new File(configuration.getReportDir(), "jscoverage.html"));
+                IOUtils.copy(new StringReader(reportHTML), fos);
+                fos.close();
 
                 String reportJS = IoUtils.loadFromClassPath("/jscoverage.js") + "\njscoverage_isReport = true;";
-                IOUtils.copy(new StringReader(reportJS), new FileOutputStream(new File(configuration.getReportDir(),"jscoverage.js")));
+                fos = new FileOutputStream(new File(configuration.getReportDir(), "jscoverage.js"));
+                IOUtils.copy(new StringReader(reportJS), fos);
+                fos.close();
 
                 copyResourceToDir("jscoverage-highlight.css", configuration.getReportDir());
                 copyResourceToDir("jscoverage-ie.css", configuration.getReportDir());
@@ -425,7 +431,9 @@ public class WebServer extends NanoHTTPD {
     }
 
     private void copyResourceToDir(String resource, File parent) throws Exception {
-        IOUtils.copy(getClass().getResourceAsStream("/"+resource), new FileOutputStream(new File(parent,resource)));
+        FileOutputStream fos = new FileOutputStream(new File(parent, resource));
+        IOUtils.copy(getClass().getResourceAsStream("/"+resource), fos);
+        fos.close();
     }
 
     private String getMime(String uri) {

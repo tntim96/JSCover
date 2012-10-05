@@ -343,13 +343,18 @@ Public License instead of this License.
 package jscover.htmlunit;
 
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 
 import static junit.framework.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class HtmlUnitTest {
 
@@ -369,8 +374,30 @@ public class HtmlUnitTest {
         HtmlPage page = webClient.getPage(url);
         HtmlPage frame = (HtmlPage)page.getFrameByName("browserIframe").getEnclosedPage();
         frame.getElementById("radio2").click();
-        webClient.waitForBackgroundJavaScript(100);
+        webClient.waitForBackgroundJavaScript(500);
         verifyTotal(webClient, page, 66);
+    }
+
+    @Test
+    public void shouldStoreResult() throws Exception {
+        WebClient webClient = new WebClient();
+        webClient.setJavaScriptEnabled(true);
+
+        String url = "http://localhost:8080/jscoverage.html?doc/example";
+        HtmlPage page = webClient.getPage(url);
+
+        page.getHtmlElementById("storeTab").click();
+        webClient.waitForBackgroundJavaScript(500);
+        HtmlElement storeButton = page.getHtmlElementById("storeButton");
+        storeButton.click();
+//        page.executeJavaScript("jscoverage_storeButton_click();");
+        webClient.waitForBackgroundJavaScript(2000);
+        String result = page.getElementById("storeDiv").getTextContent();
+
+        assertThat(result, containsString("Report stored at target"));
+
+        String json = IOUtils.toString(new FileInputStream("target/jscoverage.json"));
+        assertThat(json, containsString("/doc/example/script.js"));
     }
 
     @Test
