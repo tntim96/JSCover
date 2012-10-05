@@ -465,7 +465,7 @@ public class InstrumentAndHighlightRegressionTest {
     }
 
     @Test
-    @Ignore
+    @Ignore//https://bugzilla.mozilla.org/show_bug.cgi?id=798642
     public void shouldInstrumentGetterSetter() {
         testFile("javascript-getter-setter.js");
     }
