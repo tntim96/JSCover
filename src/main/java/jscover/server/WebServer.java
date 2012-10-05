@@ -346,7 +346,6 @@ import jscover.format.PlainFormatter;
 import jscover.format.SourceFormatter;
 import jscover.instrument.SourceProcessor;
 import jscover.json.JSONDataMerger;
-import org.apache.commons.io.IOUtils;
 import jscover.util.IoUtils;
 
 import java.io.*;
@@ -388,23 +387,17 @@ public class WebServer extends NanoHTTPD {
             } else if (uri.startsWith("/jscoverage-store")) {
                 File jsonFile = new File(configuration.getReportDir(), "jscoverage.json");
                 if (jsonFile.exists()) {
-                    String existingJSON = IOUtils.toString(new FileInputStream(jsonFile));
+                    String existingJSON = IoUtils.toString(jsonFile);
                     data = jsonDataMerger.mergeJSONCoverageData(existingJSON, data);
                 }
-                FileOutputStream fos = new FileOutputStream(jsonFile);
-                IOUtils.copy(new StringReader(data), fos);
+                IoUtils.copy(new StringReader(data), jsonFile);
                 copyResourceToDir("jscoverage.css", configuration.getReportDir());
-                fos.close();
 
                 String reportHTML = IoUtils.loadFromClassPath("/jscoverage.html").replaceAll("@@version@@",configuration.getVersion());
-                fos = new FileOutputStream(new File(configuration.getReportDir(), "jscoverage.html"));
-                IOUtils.copy(new StringReader(reportHTML), fos);
-                fos.close();
+                IoUtils.copy(new StringReader(reportHTML), new File(configuration.getReportDir(), "jscoverage.html"));
 
                 String reportJS = IoUtils.loadFromClassPath("/jscoverage.js") + "\njscoverage_isReport = true;";
-                fos = new FileOutputStream(new File(configuration.getReportDir(), "jscoverage.js"));
-                IOUtils.copy(new StringReader(reportJS), fos);
-                fos.close();
+                IoUtils.copy(new StringReader(reportJS), new File(configuration.getReportDir(), "jscoverage.js"));
 
                 copyResourceToDir("jscoverage-highlight.css", configuration.getReportDir());
                 copyResourceToDir("jscoverage-ie.css", configuration.getReportDir());
@@ -430,10 +423,8 @@ public class WebServer extends NanoHTTPD {
         }
     }
 
-    private void copyResourceToDir(String resource, File parent) throws Exception {
-        FileOutputStream fos = new FileOutputStream(new File(parent, resource));
-        IOUtils.copy(getClass().getResourceAsStream("/"+resource), fos);
-        fos.close();
+    private void copyResourceToDir(String resource, File parent) {
+        IoUtils.copy(getClass().getResourceAsStream("/"+resource), new File(parent, resource));
     }
 
     private String getMime(String uri) {

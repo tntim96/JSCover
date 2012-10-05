@@ -342,15 +342,13 @@ Public License instead of this License.
 
 package jscover.util;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+
+import java.io.*;
+
+import static org.junit.Assert.assertEquals;
 
 @RunWith(JUnit4.class)
 public class IoUtilsTest {
@@ -371,12 +369,12 @@ public class IoUtilsTest {
 
     @Test
     public void shouldLoadFileFromClasspathAbsolutePath() {
-        assertEquals(IoUtils.loadFromClassPath("/jscover/util/test.txt"),"Working!");
+        assertEquals("Working!", IoUtils.loadFromClassPath("/jscover/util/test.txt"));
     }
 
     @Test//(expected = RuntimeException.class)
     public void shouldLoadFileFromClasspathRelativePath() {
-        assertEquals(IoUtils.loadFromClassPath("test.txt"),"Working!");
+        assertEquals("Working!", IoUtils.loadFromClassPath("test.txt"));
     }
 
     @Test(expected = RuntimeException.class)
@@ -384,12 +382,59 @@ public class IoUtilsTest {
         IoUtils.loadFromClassPath("/test.txt");
     }
 
+    @Test
+    public void shouldLoadFileFromFileSystem() {
+        assertEquals("Working!", IoUtils.loadFromFileSystem(new File("src/test/resources/jscover/util/test.txt")));
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void shouldThrowExceptionLoadingFileFromFileSystem() {
+        IoUtils.loadFromFileSystem(new File("notThere"));
+    }
+
+    @Test
+    public void shouldCopyInputStreamToOutputStream() {
+        ByteArrayInputStream bais = new ByteArrayInputStream("shouldCopyInputStreamToOutputStream".getBytes());
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        IoUtils.copy(bais, baos);
+        assertEquals("shouldCopyInputStreamToOutputStream", baos.toString());
+    }
+
+    @Test
+    public void shouldCopyFromReaderToFile() throws IOException {
+        StringReader reader = new StringReader("shouldCopyFromReaderToInputStream");
+        File file = File.createTempFile("shouldCopyFromReaderToInputStream",".txt", new File("target"));
+        IoUtils.copy(reader, file);
+        assertEquals("shouldCopyFromReaderToInputStream", IoUtils.loadFromFileSystem(file));
+        file.delete();
+    }
+
+    @Test
+    public void shouldCopyFromInputStreamToFile() throws IOException {
+        ByteArrayInputStream bais = new ByteArrayInputStream("shouldCopyFromInputStreamToFile".getBytes());
+        File file = File.createTempFile("shouldCopyFromInputStreamToFile",".txt", new File("target"));
+        IoUtils.copy(bais, file);
+        assertEquals("shouldCopyFromInputStreamToFile", IoUtils.loadFromFileSystem(file));
+        file.delete();
+    }
+
+    @Test
+    public void shouldCopyFromFileToFile() throws IOException {
+        StringReader reader = new StringReader("shouldCopyFromFileToFile");
+        File src = File.createTempFile("shouldCopyFromInputStreamToFile",".src", new File("target"));
+        IoUtils.copy(reader, src);
+        File dest = File.createTempFile("shouldCopyFromInputStreamToFile",".dest", new File("target"));
+        IoUtils.copy(src, dest);
+        assertEquals("shouldCopyFromFileToFile", IoUtils.loadFromFileSystem(dest));
+        src.delete();
+        dest.delete();
+    }
+
     static class MyInputStream extends InputStream {
         @Override
         public int read() throws IOException {
             throw new IOException();
         }
-
     }
 
     static class MyReader extends Reader {

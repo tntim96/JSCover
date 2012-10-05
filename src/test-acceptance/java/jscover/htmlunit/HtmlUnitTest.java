@@ -346,7 +346,7 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import org.apache.commons.io.IOUtils;
+import jscover.util.IoUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -399,7 +399,7 @@ public class HtmlUnitTest {
         assertThat(result, containsString("Report stored at target"));
 
         FileInputStream fis = new FileInputStream("target/jscoverage.json");
-        String json = IOUtils.toString(fis);
+        String json = IoUtils.toString(fis);
         fis.close();
         assertThat(json, containsString("/doc/example/script.js"));
 

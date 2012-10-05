@@ -342,17 +342,25 @@ Public License instead of this License.
 
 package jscover.util;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.util.List;
-
 import org.apache.commons.io.IOUtils;
+
+import java.io.*;
+import java.util.List;
 
 public abstract class IoUtils {
     public static String toString(InputStream is) {
         try {
             return IOUtils.toString(is);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            IOUtils.closeQuietly(is);
+        }
+    }
+
+    public static String toString(File file) {
+        try {
+            return IOUtils.toString(new FileInputStream(file));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -386,6 +394,70 @@ public abstract class IoUtils {
             throw new RuntimeException(String.format("Problem loading file: '%s'",dataFile),e);
         } finally {
             IOUtils.closeQuietly(is);
+        }
+    }
+
+    public static String loadFromFileSystem(File dataFile) {
+        InputStream is = null;
+        try {
+            is = new FileInputStream(dataFile);
+            return IOUtils.toString(is, "UTF-8");
+        } catch (Throwable e) {
+            throw new RuntimeException(String.format("Problem loading file: '%s'",dataFile),e);
+        } finally {
+            IOUtils.closeQuietly(is);
+        }
+    }
+
+    public static void copy(InputStream is, OutputStream os) {
+        try {
+            IOUtils.copy(is, os);
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        } finally {
+            IOUtils.closeQuietly(is);
+            IOUtils.closeQuietly(os);
+        }
+    }
+
+    public static void copy(Reader reader, File dest) {
+        FileOutputStream os = null;
+        try {
+            os = new FileOutputStream(dest);
+            IOUtils.copy(reader, os);
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        } finally {
+            IOUtils.closeQuietly(reader);
+            IOUtils.closeQuietly(os);
+        }
+    }
+
+    public static void copy(InputStream is, File dest) {
+        FileOutputStream os = null;
+        try {
+            os = new FileOutputStream(dest);
+            IOUtils.copy(is, os);
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        } finally {
+            IOUtils.closeQuietly(is);
+            IOUtils.closeQuietly(os);
+        }
+    }
+
+    public static void copy(File src, File dest) {
+        FileInputStream is = null;
+        FileOutputStream os = null;
+        try {
+            is = new FileInputStream(src);
+            os = new FileOutputStream(dest);
+            IOUtils.copy(is, os);
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        } finally {
+            IOUtils.closeQuietly(is);
+            IOUtils.closeQuietly(os);
         }
     }
 }

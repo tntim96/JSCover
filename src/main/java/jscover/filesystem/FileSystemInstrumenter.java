@@ -346,7 +346,6 @@ import jscover.format.PlainFormatter;
 import jscover.format.SourceFormatter;
 import jscover.instrument.SourceProcessor;
 import jscover.util.IoUtils;
-import org.apache.commons.io.IOUtils;
 
 import java.io.*;
 
@@ -373,13 +372,13 @@ public class FileSystemInstrumenter {
         copyFolder(configuration.getSrcDir(), configuration.getDestDir());
     }
 
-    private void copyJSCoverageFiles(File destDir) throws Exception {
+    private void copyJSCoverageFiles(File destDir) {
         if (!destDir.exists())
             destDir.mkdirs();
         copyResourceToDir("jscoverage.css", destDir);
 
         String reportHTML = IoUtils.loadFromClassPath("/jscoverage.html").replaceAll("@@version@@",configuration.getVersion());
-        IOUtils.copy(new StringReader(reportHTML), new FileOutputStream(new File(destDir, "jscoverage.html")));
+        IoUtils.copy(new StringReader(reportHTML), new File(destDir, "jscoverage.html"));
 
         copyResourceToDir("jscoverage.js", destDir);
         copyResourceToDir("jscoverage-highlight.css", destDir);
@@ -388,8 +387,8 @@ public class FileSystemInstrumenter {
 
     }
 
-    private void copyResourceToDir(String resource, File parent) throws Exception {
-        IOUtils.copy(getClass().getResourceAsStream("/" + resource), new FileOutputStream(new File(parent, resource)));
+    private void copyResourceToDir(String resource, File parent) {
+        IoUtils.copy(getClass().getResourceAsStream("/" + resource), new File(parent, resource));
     }
 
     private void copyFolder(File src, File dest) {
@@ -412,24 +411,11 @@ public class FileSystemInstrumenter {
             String path = getRelativePath(src).replaceAll("\\\\","/");
             if (src.isFile() && src.toString().endsWith(".js") && !configuration.skipInstrumentation(path)) {
                 SourceProcessor sourceProcessor = new SourceProcessor(configuration.getCompilerEnvirons(), path, sourceFormatter, log);
-                String source = null;
-                try {
-                    source = IoUtils.toString(new FileInputStream(src));
-                } catch (FileNotFoundException e) {
-                    throw new RuntimeException(e);
-                }
+                String source = IoUtils.loadFromFileSystem(src);
                 String jsInstrumented = sourceProcessor.processSourceForFileSystem(source);
-                try {
-                    IOUtils.copy(new StringReader(jsInstrumented), new FileOutputStream(dest));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                IoUtils.copy(new StringReader(jsInstrumented), dest);
             } else {
-                try {
-                    IOUtils.copy(new FileInputStream(src), new FileOutputStream(dest));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                IoUtils.copy(src, dest);
             }
         }
     }
