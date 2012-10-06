@@ -398,14 +398,10 @@ public class HtmlUnitTest {
 
         assertThat(result, containsString("Report stored at target"));
 
-        FileInputStream fis = new FileInputStream("target/jscoverage.json");
-        String json = IoUtils.toString(fis);
-        fis.close();
+        String json = IoUtils.toString(new File("target/jscoverage.json"));
         assertThat(json, containsString("/doc/example/script.js"));
 
-        File file = new File("target/jscoverage.html");
-
-        page = webClient.getPage("file:///"+file.getAbsolutePath());
+        page = webClient.getPage("file:///"+ new File("target/jscoverage.html").getAbsolutePath());
         verifyTotal(webClient, page, 6);
     }
 
