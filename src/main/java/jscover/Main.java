@@ -349,6 +349,8 @@ import jscover.server.WebServer;
 import jscover.util.IoUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
@@ -364,30 +366,33 @@ public class Main {
     public static final String FILESYSTEM_PREFIX = "-fs";
     public static final Properties properties = new Properties();
 
-    static {
+    private String manifestName = "MANIFEST.MF";
+    private List<String> dependantClasses = new ArrayList<String>() {{
+        add("org.apache.commons.lang.ClassUtils");
+        add("org.apache.commons.io.IOUtils");
+        add("org.mozilla.javascript.ast.AstNode");
+    }};
+
+    void initialize() throws IOException {
+        properties.load(Main.class.getResourceAsStream("configuration.properties"));
+        checkDependantClasses();
+    }
+
+    private void checkDependantClasses() throws IOException {
         try {
-            properties.load(Main.class.getResourceAsStream("configuration.properties"));
-        } catch (Exception e) {
-            e.printStackTrace(System.err);
-            System.exit(1);
-        }
-        try {
-            Class.forName("org.apache.commons.lang.ClassUtils");
-            Class.forName("org.apache.commons.io.IOUtils");
-            Class.forName("org.mozilla.javascript.ast.AstNode");
-        } catch (Exception e) {
-            e.printStackTrace(System.err);
-            try {
-                Manifest mf = new Manifest(Main.class.getResourceAsStream("/META-INF/MANIFEST.MF"));
-                Attributes mainAttributes = mf.getMainAttributes();
-                String name = mainAttributes.get(Attributes.Name.IMPLEMENTATION_TITLE).toString();
-                String classPathJARs = mainAttributes.get(Attributes.Name.CLASS_PATH).toString();
-                String message = "%nEnsure these JARs are in the same directory as %s.jar:%n%s";
-                System.err.println(format(message, name , classPathJARs));
-            } catch (IOException error) {
-                error.printStackTrace(System.err);
+            for (String dependantClass : dependantClasses) {
+                Class.forName(dependantClass);
             }
-            System.exit(1);
+        } catch (ClassNotFoundException e) {
+            String manifest = IoUtils.loadFromClassPath("/META-INF/MANIFEST.MF");
+            System.out.println("manifest = " + manifest);
+
+            Manifest mf = new Manifest(getClass().getResourceAsStream("/META-INF/" + manifestName));
+            Attributes mainAttributes = mf.getMainAttributes();
+            String name = mainAttributes.get(Attributes.Name.IMPLEMENTATION_TITLE).toString();
+            String classPathJARs = mainAttributes.get(Attributes.Name.CLASS_PATH).toString();
+            String message = "%nEnsure these JARs are in the same directory as %s.jar:%n%s";
+            throw new IllegalStateException(format(message, name , classPathJARs), e);
         }
     }
 
@@ -396,8 +401,9 @@ public class Main {
     private boolean isServer;
     private boolean isFileSystem;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Main main = Main.parse(args);
+        main.initialize();
         if (main.printVersion()) {
             System.out.println(main.getVersionText());
             System.exit(0);

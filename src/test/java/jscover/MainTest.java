@@ -342,11 +342,16 @@ Public License instead of this License.
 
 package jscover;
 
+import jscover.util.ReflectionUtils;
 import org.junit.Test;
+
+import java.io.IOException;
+import java.util.ArrayList;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 public class MainTest {
 
@@ -357,6 +362,24 @@ public class MainTest {
         assertThat(main.printVersion(), equalTo(false));
         assertThat(main.isServer(), equalTo(false));
         assertThat(main.isFileSystem(), equalTo(false));
+    }
+
+    @Test
+    public void shouldDetectMissingJARs() throws IOException {
+        Main main = Main.parse(new String[]{});
+        ArrayList<String> dependantClasses = new ArrayList<String>() {{
+            add("this.shouldn't.Exist");
+        }};
+        ReflectionUtils.setField(main, "manifestName", "MANIFEST-TEST.MF");
+        ReflectionUtils.setField(main, "dependantClasses", dependantClasses);
+        try {
+            main.initialize();
+            fail("Should have thrwn exception");
+        } catch(IllegalStateException e) {
+            String message = e.getMessage();
+            assertThat(message, containsString("Ensure these JARs are in the same directory as JSCover.jar:"));
+            assertThat(message, containsString("commons-io-1.4.jar commons-lang-2.4.jar js.jar"));
+        }
     }
 
     @Test

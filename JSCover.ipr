@@ -32,6 +32,7 @@
       <entry name="?*.css" />
       <entry name="?*.txt" />
       <entry name="?*.json" />
+      <entry name="?*.MF" />
     </wildcardResourcePatterns>
     <annotationProcessing enabled="false" useClasspath="true" />
   </component>
