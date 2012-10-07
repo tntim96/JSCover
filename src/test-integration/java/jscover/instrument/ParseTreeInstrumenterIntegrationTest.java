@@ -339,32 +339,71 @@ consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
  */
+
 package jscover.instrument;
 
+import jscover.util.IoUtils;
+import jscover.util.ReflectionUtils;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
-import org.mozilla.javascript.ast.ExpressionStatement;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.mozilla.javascript.ast.AstNode;
 
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.StringContains.containsString;
+import static org.mockito.BDDMockito.given;
 
-public class StatementBuilderTest {
-    private StatementBuilder builder = new StatementBuilder();
-    private SortedSet<Integer> validLines = new TreeSet<Integer>();
+@RunWith(MockitoJUnitRunner.class)
+public class ParseTreeInstrumenterIntegrationTest {
+    private File log;
+    private ParseTreeInstrumenter instrumenter;
+    @Mock NodeProcessor nodeProcessor;
+    @Mock AstNode astNode;
 
-    @Test
-    public void shouldCreateInstrumentationStatement() {
-        ExpressionStatement statement = builder.buildInstrumentationStatement(7, "/dir/file.js", validLines);
-
-        assertThat("_$jscoverage['/dir/file.js'][7]++;\n", equalTo(statement.toSource()));
-        assertThat(validLines, hasItem(7));
+    @Before
+    public void setUp() throws IOException {
+        log = File.createTempFile("test","log");
+        log.deleteOnExit();
+        instrumenter = new ParseTreeInstrumenter("/dir/file.js", log);
+        ReflectionUtils.setField(instrumenter, "nodeProcessor", nodeProcessor);
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void shouldThrowExceptionIfLineNumberInvalid() {
-        builder.buildInstrumentationStatement(0, "/dir/file.js", validLines);
+    @After
+    public void tearDown() {
+        log.delete();
+    }
+
+    @Test
+    public void shouldLogException() {
+        given(nodeProcessor.processNode(astNode)).willThrow(new RuntimeException("Ouch!"));
+        given(astNode.getLineno()).willReturn(7);
+
+        instrumenter.visit(astNode);
+
+        String message = IoUtils.loadFromFileSystem(log);
+        assertThat(message, containsString("Error on line 7 of /dir/file.js"));
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void shouldRethrowExceptionIfNoLog() {
+        ReflectionUtils.setField(instrumenter, "log", null);
+        given(nodeProcessor.processNode(astNode)).willThrow(new RuntimeException("Ouch!"));
+
+        instrumenter.visit(astNode);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void shouldRethrowExceptionWhileLoggin() {
+        given(nodeProcessor.processNode(astNode)).willThrow(new RuntimeException("Ouch!"));
+        given(astNode.getLineno()).willThrow(new IllegalArgumentException("Ouchy!"));
+
+        instrumenter.visit(astNode);
     }
 }

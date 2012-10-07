@@ -339,32 +339,19 @@ consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
  */
-package jscover.instrument;
 
-import org.junit.Test;
-import org.mozilla.javascript.ast.ExpressionStatement;
+package jscover.util;
 
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.lang.reflect.Field;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.MatcherAssert.assertThat;
-
-public class StatementBuilderTest {
-    private StatementBuilder builder = new StatementBuilder();
-    private SortedSet<Integer> validLines = new TreeSet<Integer>();
-
-    @Test
-    public void shouldCreateInstrumentationStatement() {
-        ExpressionStatement statement = builder.buildInstrumentationStatement(7, "/dir/file.js", validLines);
-
-        assertThat("_$jscoverage['/dir/file.js'][7]++;\n", equalTo(statement.toSource()));
-        assertThat(validLines, hasItem(7));
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void shouldThrowExceptionIfLineNumberInvalid() {
-        builder.buildInstrumentationStatement(0, "/dir/file.js", validLines);
+public class ReflectionUtils {
+    public static void setField(Object object, String fieldName, Object value) {
+        try {
+            Field field = object.getClass().getDeclaredField(fieldName);
+            field.setAccessible(true);
+            field.set(object, value);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -379,8 +379,8 @@ public class ParseTreeInstrumenter implements NodeVisitor {
                     ps.println("-------------------------------------------------------------------------------");
                     ps.println(String.format("Error on line %s of %s", node.getLineno(), fileName));
                     t.printStackTrace(ps);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
                 }
             }
             return true;
