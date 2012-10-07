@@ -194,21 +194,14 @@
 				</fileset>
 			</batchtest>
 		</junit>
-		<antcall target="junitreport" />
 		<fail if="test.failure"/>
 	</target>
 
-    <target name="run-acceptance-tests" depends="compile-acceptance-tests, jar">
-        <java jar="${dist.dir}/JSCover.jar" fork="true" spawn="true">
-            <arg line="-ws --report-dir=${build.dir}"/>
-        </java>
-        <waitfor maxwait="10" maxwaitunit="second" checkevery="250" checkeveryunit="millisecond">
-            <socket port="8080" server="localhost"/>
-        </waitfor>
+    <target name="run-acceptance-tests" depends="compile-acceptance-tests">
         <property name="tests" value="*Test" />
         <junit forkmode="perBatch" haltonfailure="no" haltonerror="no" failureProperty="test.failure" errorproperty="test.failure">
             <classpath>
-                <path refid="classpath-main" />
+                <path refid="classpath-cobertura" />
                 <path refid="classpath-htmlunit" />
             </classpath>
             <formatter type="xml" />
@@ -219,9 +212,14 @@
                 </fileset>
             </batchtest>
         </junit>
-        <get src="http://localhost:8080/stop" dest="${report.test.dir}/stop.txt"/>
-        <antcall target="junitreport" />
         <fail if="test.failure"/>
+    </target>
+
+    <target name="jar-test" depends="jar">
+        <java jar="${dist.dir}/JSCover.jar" fork="true" output="${build.dir}/help.txt">
+            <arg line="-h"/>
+        </java>
+        <!-- TODO:How to check it's running OK? Combine with Unit test ? -->
     </target>
 
     <target name="junitreport" unless="continuous.integration">
