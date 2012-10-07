@@ -338,53 +338,28 @@ proprietary programs.  If your program is a subroutine library, you may
 consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
-*/
-
+ */
 package jscover.instrument;
 
-import org.mozilla.javascript.ast.AstNode;
-import org.mozilla.javascript.ast.NodeVisitor;
+import org.junit.Test;
+import org.mozilla.javascript.ast.ExpressionStatement;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
-public class ParseTreeInstrumenter implements NodeVisitor {
-    private final File log;
-    private String fileName;
-    private NodeProcessor nodeProcessor;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.MatcherAssert.assertThat;
 
-    public ParseTreeInstrumenter(String uri, File log) {
-        this.fileName = uri;
-        this.log = log;
-        this.nodeProcessor = new NodeProcessor(uri);
+public class StatementBuilderTest {
+    private StatementBuilder builder = new StatementBuilder();
+    private SortedSet<Integer> validLines = new TreeSet<Integer>();
+
+    @Test
+    public void shouldCreateInstrumentationStatement() {
+        ExpressionStatement statement = builder.buildInstrumentationStatement(7, "/dir/file.js", validLines);
+
+        assertThat("_$jscoverage['/dir/file.js'][7]++;\n", equalTo(statement.toSource()));
+        assertThat(validLines, hasItem(7));
     }
-
-    public SortedSet<Integer> getValidLines() {
-        return nodeProcessor.getValidLines();
-    }
-
-    public boolean visit(AstNode node) {
-        try {
-            return nodeProcessor.processNode(node);
-        } catch (RuntimeException t) {
-            if (log == null) {
-                throw t;
-            }
-            synchronized (log) {
-                try {
-                    PrintStream ps = new PrintStream(new FileOutputStream(log, true));
-                    ps.println("-------------------------------------------------------------------------------");
-                    ps.println(String.format("Error on line %s of %s", node.getLineno(), fileName));
-                    t.printStackTrace(ps);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-            }
-            return true;
-        }
-    }
-
 }

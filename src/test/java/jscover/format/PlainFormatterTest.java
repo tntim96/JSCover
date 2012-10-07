@@ -338,53 +338,49 @@ proprietary programs.  If your program is a subroutine library, you may
 consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
-*/
+ */
+package jscover.format;
 
-package jscover.instrument;
+import org.junit.Test;
 
-import org.mozilla.javascript.ast.AstNode;
-import org.mozilla.javascript.ast.NodeVisitor;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
-import java.util.SortedSet;
+public class PlainFormatterTest {
+    private PlainFormatter formatter = new PlainFormatter();
 
-public class ParseTreeInstrumenter implements NodeVisitor {
-    private final File log;
-    private String fileName;
-    private NodeProcessor nodeProcessor;
-
-    public ParseTreeInstrumenter(String uri, File log) {
-        this.fileName = uri;
-        this.log = log;
-        this.nodeProcessor = new NodeProcessor(uri);
+    @Test
+    public void shouldCreateJSArray() {
+        assertThat(formatter.toJsArrayOfHtml("var x;\nx++;"), equalTo("\"var x;\",\"x++;\""));
     }
 
-    public SortedSet<Integer> getValidLines() {
-        return nodeProcessor.getValidLines();
+    @Test
+    public void shouldEscapeAmpersand() {
+        assertThat(formatter.toJsArrayOfHtml("x & y;"), equalTo("\"x &amp; y;\""));
     }
 
-    public boolean visit(AstNode node) {
-        try {
-            return nodeProcessor.processNode(node);
-        } catch (RuntimeException t) {
-            if (log == null) {
-                throw t;
-            }
-            synchronized (log) {
-                try {
-                    PrintStream ps = new PrintStream(new FileOutputStream(log, true));
-                    ps.println("-------------------------------------------------------------------------------");
-                    ps.println(String.format("Error on line %s of %s", node.getLineno(), fileName));
-                    t.printStackTrace(ps);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-            }
-            return true;
-        }
+    @Test
+    public void shouldEscapeGreatThanLessThan() {
+        assertThat(formatter.toJsArrayOfHtml("x <> y;"), equalTo("\"x &lt;&gt; y;\""));
     }
 
+    @Test
+    public void shouldEscapeDoubleQuotes() {
+        assertThat(formatter.toJsArrayOfHtml("x = \"y\";"), equalTo("\"x = \\\"y\\\";\""));
+    }
+
+    @Test
+    public void shouldEscapeBackSlash() {
+        assertThat(formatter.toJsArrayOfHtml("\\"), equalTo("\"\\\\\""));
+    }
+
+    @Test
+    public void shouldEscapeTab() {
+        assertThat(formatter.toJsArrayOfHtml("\t"), equalTo("\"\\t\""));
+    }
+
+    @Test
+    public void shouldEscapeASCIIGreaterThan126() {
+        assertThat(formatter.toJsArrayOfHtml(""+(char)127), equalTo("\"&#127;\""));
+    }
 }

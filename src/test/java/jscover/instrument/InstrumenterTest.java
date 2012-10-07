@@ -390,15 +390,6 @@ public class InstrumenterTest {
     }
 
     @Test
-    public void shouldBuildInstrumentStatement() {
-        ParseTreeInstrumenter instrumenter = new ParseTreeInstrumenter("test.js", null);
-        ExpressionStatement expressionStatement = instrumenter.buildInstrumentationStatement(5);
-
-        String expectedSource = "_$jscoverage['test.js'][5]++;\n";
-        assertEquals(expectedSource, expressionStatement.toSource());
-    }
-
-    @Test
     public void shouldInstrumentStatements() {
         String source = "var x,y;\nx = 1;\ny = x * 1;";
         String instrumentedSource = instrumenter.instrumentSource(source);

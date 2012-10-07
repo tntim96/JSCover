@@ -338,53 +338,34 @@ proprietary programs.  If your program is a subroutine library, you may
 consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
-*/
+ */
 
 package jscover.instrument;
 
-import org.mozilla.javascript.ast.AstNode;
-import org.mozilla.javascript.ast.NodeVisitor;
+import org.mozilla.javascript.Token;
+import org.mozilla.javascript.ast.*;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
 import java.util.SortedSet;
 
-public class ParseTreeInstrumenter implements NodeVisitor {
-    private final File log;
-    private String fileName;
-    private NodeProcessor nodeProcessor;
+public class StatementBuilder {
 
-    public ParseTreeInstrumenter(String uri, File log) {
-        this.fileName = uri;
-        this.log = log;
-        this.nodeProcessor = new NodeProcessor(uri);
+    public ExpressionStatement buildInstrumentationStatement(int lineNumber, String fileName, SortedSet<Integer> validLines) {
+        if (lineNumber < 1)
+            throw new IllegalStateException("Illegal line number: " + lineNumber);
+        validLines.add(lineNumber);
+
+        Name var = new Name(0, "_$jscoverage");
+        StringLiteral fileNameLiteral = new StringLiteral();
+        fileNameLiteral.setValue(fileName);
+        fileNameLiteral.setQuoteCharacter('\'');
+        ElementGet indexJSFile = new ElementGet(var, fileNameLiteral);
+
+        NumberLiteral lineNumberLiteral = new NumberLiteral();
+        lineNumberLiteral.setValue("" + lineNumber);
+        ElementGet indexLineNumber = new ElementGet(indexJSFile, lineNumberLiteral);
+
+        boolean postFix = true;
+        UnaryExpression unaryExpression = new UnaryExpression(Token.INC, 0, indexLineNumber, postFix);
+        return new ExpressionStatement(unaryExpression);
     }
-
-    public SortedSet<Integer> getValidLines() {
-        return nodeProcessor.getValidLines();
-    }
-
-    public boolean visit(AstNode node) {
-        try {
-            return nodeProcessor.processNode(node);
-        } catch (RuntimeException t) {
-            if (log == null) {
-                throw t;
-            }
-            synchronized (log) {
-                try {
-                    PrintStream ps = new PrintStream(new FileOutputStream(log, true));
-                    ps.println("-------------------------------------------------------------------------------");
-                    ps.println(String.format("Error on line %s of %s", node.getLineno(), fileName));
-                    t.printStackTrace(ps);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-            }
-            return true;
-        }
-    }
-
 }

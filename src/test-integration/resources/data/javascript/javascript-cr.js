@@ -1,4 +1,1 @@
-/*
-This file has CR line endings.
-*/
-var x = 1;
+/*This file has CR line endings.*/var x = 1;
