@@ -358,6 +358,7 @@ public class ConfigurationForFSTest {
         assertThat(configuration.showHelp(), equalTo(false));
         assertThat(configuration.getJSVersion(), equalTo(150));
         assertThat(configuration.skipInstrumentation("/"), equalTo(false));
+        assertThat(configuration.getCompilerEnvirons().getLanguageVersion(), equalTo(150));
     }
 
     @Test
@@ -383,7 +384,9 @@ public class ConfigurationForFSTest {
 
     @Test
     public void shouldParseJSVersion() {
-        assertThat(ConfigurationForFS.parse(new String[]{"-fs","--js-version=1.8","src","doc"}).getJSVersion(), equalTo(180));
+        ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs", "--js-version=1.8", "src", "doc"});
+        assertThat(configuration.getJSVersion(), equalTo(180));
+        assertThat(configuration.getCompilerEnvirons().getLanguageVersion(), equalTo(180));
     }
 
     @Test

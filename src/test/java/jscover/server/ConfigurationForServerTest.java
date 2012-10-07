@@ -360,6 +360,17 @@ public class ConfigurationForServerTest {
         assertThat(configuration.getPort(), equalTo(8080));
         assertThat(configuration.getJSVersion(), equalTo(150));
         assertThat(configuration.skipInstrumentation("/"), equalTo(false));
+        assertThat(configuration.getCompilerEnvirons().getLanguageVersion(), equalTo(150));
+    }
+
+    @Test
+    public void shouldIgnoreServerSwitch() {
+        ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"-ws"});
+        assertThat(configuration.showHelp(), equalTo(false));
+        assertThat(configuration.getDocumentRoot().toString(), equalTo(System.getProperty("user.dir")));
+        assertThat(configuration.getPort(), equalTo(8080));
+        assertThat(configuration.getJSVersion(), equalTo(150));
+        assertThat(configuration.skipInstrumentation("/"), equalTo(false));
     }
 
     @Test
@@ -386,7 +397,9 @@ public class ConfigurationForServerTest {
 
     @Test
     public void shouldParseJSVersion() {
-        assertThat(ConfigurationForServer.parse(new String[]{"--js-version=1.8"}).getJSVersion(), equalTo(180));
+        ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--js-version=1.8"});
+        assertThat(configuration.getJSVersion(), equalTo(180));
+        assertThat(configuration.getCompilerEnvirons().getLanguageVersion(), equalTo(180));
     }
 
     @Test
