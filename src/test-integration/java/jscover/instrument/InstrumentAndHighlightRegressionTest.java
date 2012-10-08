@@ -459,7 +459,6 @@ public class InstrumentAndHighlightRegressionTest {
     }
 
     @Test
-    @Ignore
     public void shouldInstrumentGeneratorExpression() {
         testFile("javascript-generator-expression.js");
     }
