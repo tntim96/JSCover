@@ -456,6 +456,27 @@ public class HtmlUnitServerTest {
     }
 
     @Test
+    public void shouldStoreResultViaJavaScriptCall() throws Exception {
+        HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?example");
+
+        page.executeJavaScript("jscoverage_storeButton_click();");
+        //page.executeJavaScript("jscoverage_report('directory');");
+        webClient.waitForBackgroundJavaScript(500);
+        HtmlElement storeButton = page.getHtmlElementById("storeButton");
+        storeButton.click();
+        webClient.waitForBackgroundJavaScript(2000);
+        String result = page.getElementById("storeDiv").getTextContent();
+
+        assertThat(result, containsString("Report stored at target"));
+
+        String json = IoUtils.toString(new File(reportDir+"/jscoverage.json"));
+        assertThat(json, containsString("/script.js"));
+
+        page = webClient.getPage("file:///"+ new File(reportDir+"/jscoverage.html").getAbsolutePath());
+        verifyTotal(webClient, page, 6);
+    }
+
+    @Test
     public void shouldWorkWithServerIFrameByNavigationButtons() throws Exception {
         HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html");
         ((HtmlInput)page.getHtmlElementById("location")).setValueAttribute("http://localhost:9001/example/index.html");
