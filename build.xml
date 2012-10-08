@@ -103,7 +103,7 @@
         </jar>
     </target>
 
-    <target name="zip" depends="pre-commit, jar">
+    <target name="zip" depends="pre-commit, jar-test">
         <zip destfile="${dist.dir}/${ant.project.name}-${version}.zip">
             <fileset dir="${basedir}">
                 <include name="**/*"/>
@@ -216,10 +216,10 @@
     </target>
 
     <target name="jar-test" depends="jar">
-        <java jar="${dist.dir}/JSCover.jar" fork="true" output="${build.dir}/help.txt">
-            <arg line="-h"/>
+        <java jar="${dist.dir}/JSCover.jar" fork="true" spawn="true">
+            <arg line="-ws --port=9080"/>
         </java>
-        <!-- TODO:How to check it's running OK? Combine with Unit test ? -->
+        <get maxtime="2" src="http://localhost:9080/stop" dest="${build.dir}/stop.txt"/>
     </target>
 
     <target name="junitreport" unless="continuous.integration">

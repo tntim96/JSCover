@@ -363,7 +363,8 @@ public class HtmlUnitFileSystemTest {
             "-fs",
             "--no-instrument=example/lib",
             "--exclude=example/noCopy",
-            "src/test-acceptance/resources", reportDir
+            "src/test-acceptance/resources",
+            reportDir
     };
 
     @Test
