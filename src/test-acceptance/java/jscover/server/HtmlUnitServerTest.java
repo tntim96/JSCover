@@ -350,6 +350,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import jscover.Main;
 import jscover.util.IoUtils;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -398,7 +399,30 @@ public class HtmlUnitServerTest {
     @Test
     public void shouldWorkWithServerIFrameByURL() throws Exception {
         HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?example");
+        verifyTotal(webClient, page, 6);
+    }
 
+    @Test
+    public void shouldWorkWithServerIFrameByURLParameterU() throws Exception {
+        HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?u=example");
+        verifyTotal(webClient, page, 6);
+    }
+
+    @Test
+    public void shouldWorkWithServerIFrameByURLParameterURL() throws Exception {
+        HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?url=example");
+        verifyTotal(webClient, page, 6);
+    }
+
+    @Test
+    public void shouldWorkWithServerIFrameByURLParameterF() throws Exception {
+        HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?f=example");
+        verifyTotal(webClient, page, 6);
+    }
+
+    @Test
+    public void shouldWorkWithServerIFrameByURLParameterFrame() throws Exception {
+        HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?frame=example");
         verifyTotal(webClient, page, 6);
     }
 
@@ -419,7 +443,6 @@ public class HtmlUnitServerTest {
         webClient.waitForBackgroundJavaScript(500);
         HtmlElement storeButton = page.getHtmlElementById("storeButton");
         storeButton.click();
-//        page.executeJavaScript("jscoverage_storeButton_click();");
         webClient.waitForBackgroundJavaScript(2000);
         String result = page.getElementById("storeDiv").getTextContent();
 
@@ -440,6 +463,12 @@ public class HtmlUnitServerTest {
         webClient.waitForBackgroundJavaScript(100);
 
         verifyTotal(webClient, page, 6);
+    }
+
+    @Test
+    @Ignore
+    public void shouldWorkWithServerWindowByNavigationButtons() throws Exception {
+        //TODO
     }
 
     @Test
