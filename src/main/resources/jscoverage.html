@@ -50,7 +50,7 @@
     <div id="locationDiv">
     URL: <input id="location" type="text" size="70" onkeypress="jscoverage_input_keypress(event)">
     <button id="openInFrameButton" onclick="jscoverage_openInFrameButton_click();" title="open URL in the iframe below [Enter]">Open in frame</button>
-    <button onclick="jscoverage_openInWindowButton_click();" title="open URL in a new window (or tab) [Shift+Enter]">Open in window</button>
+    <button id="openInWindowButton" onclick="jscoverage_openInWindowButton_click();" title="open URL in a new window (or tab) [Shift+Enter]">Open in window</button>
     </div>
     <div id="iframeDiv">
     <iframe id="browserIframe" name="browserIframe" onload="jscoverage_browser_load();"></iframe>

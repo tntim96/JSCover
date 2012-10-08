@@ -487,9 +487,13 @@ public class HtmlUnitServerTest {
     }
 
     @Test
-    @Ignore
     public void shouldWorkWithServerWindowByNavigationButtons() throws Exception {
-        //TODO
+        HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html");
+        ((HtmlInput)page.getHtmlElementById("location")).setValueAttribute("http://localhost:9001/example/index.html");
+        page.getHtmlElementById("openInWindowButton").click();
+        webClient.waitForBackgroundJavaScript(100);
+
+        verifyTotal(webClient, page, 6);
     }
 
     @Test
