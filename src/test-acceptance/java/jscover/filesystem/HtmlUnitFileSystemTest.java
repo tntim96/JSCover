@@ -343,6 +343,7 @@ Public License instead of this License.
 package jscover.filesystem;
 
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import jscover.Main;
 import jscover.util.IoUtils;
@@ -361,17 +362,27 @@ public class HtmlUnitFileSystemTest {
     private String[] args = new String[]{
             "-fs",
             "--no-instrument=example/lib",
+            "--exclude=example/noCopy",
             "src/test-acceptance/resources", reportDir
     };
 
     @Test
-    public void shouldWorkWithFileSystemIFrameByURL() throws Exception {
+    public void shouldWorkWithFileSystem() throws Exception {
         Main.main(args);
 
         String noInstrumentJS = IoUtils.loadFromFileSystem(new File(reportDir+"/example/lib/noInstrument.js"));
         assertThat(noInstrumentJS, equalTo("alert('Hey');"));
 
+        assertThat(new File(reportDir+"/example/script.js").exists(), equalTo(true));
+        assertThat(new File(reportDir+"/example/noCopy/test.txt").exists(), equalTo(false));
+
         HtmlPage page = webClient.getPage(getFileURL(reportDir + "/jscoverage.html?example/index.html"));
+        verifyTotal(webClient, page, 6);
+
+        page = webClient.getPage(getFileURL(reportDir + "/jscoverage.html"));
+        ((HtmlInput)page.getHtmlElementById("location")).setValueAttribute(getFileURL(reportDir+"/example/index.html"));
+        page.getHtmlElementById("openInFrameButton").click();
+        webClient.waitForBackgroundJavaScript(100);
         verifyTotal(webClient, page, 6);
     }
 
