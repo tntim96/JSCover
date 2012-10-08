@@ -342,7 +342,7 @@ Public License instead of this License.
 
 package jscover.server;
 
-import com.gargoylesoftware.htmlunit.JavaScriptPage;
+import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
@@ -350,7 +350,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import jscover.Main;
 import jscover.util.IoUtils;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -392,8 +391,8 @@ public class HtmlUnitServerTest {
 
     @Test
     public void shouldNotInstrument() throws Exception {
-        JavaScriptPage page = webClient.getPage("http://localhost:9001/example/lib/noInstrument.js");
-        assertThat(page.getContent(), equalTo("alert('Hey');"));
+        Page page = webClient.getPage("http://localhost:9001/example/lib/noInstrument.js");
+        assertThat(page.getWebResponse().getContentAsString(), equalTo("alert('Hey');"));
     }
 
     @Test
