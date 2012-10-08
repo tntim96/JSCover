@@ -365,7 +365,13 @@ public class HtmlUnitServerTest {
 
     private WebClient webClient = new WebClient();
     private String reportDir = "target/ws-report";
-    private String[] args = new String[]{"-ws", "--document-root=src/test-acceptance/resources", "--port=9001", "--no-instrument=/example/lib", "--report-dir=" + reportDir};
+    private String[] args = new String[]{
+            "-ws",
+            "--document-root=src/test-acceptance/resources",
+            "--port=9001",
+            "--no-instrument=/example/lib",
+            "--report-dir=" + reportDir
+    };
 
     @Before
     public void setUp() throws IOException {

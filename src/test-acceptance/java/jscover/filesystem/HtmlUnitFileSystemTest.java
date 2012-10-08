@@ -358,7 +358,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class HtmlUnitFileSystemTest {
     private WebClient webClient = new WebClient();
     private String reportDir = "target/fs-instrument";
-    private String[] args = new String[]{"-fs","--no-instrument=example/lib","src/test-acceptance/resources",reportDir};
+    private String[] args = new String[]{
+            "-fs",
+            "--no-instrument=example/lib",
+            "src/test-acceptance/resources", reportDir
+    };
 
     @Test
     public void shouldWorkWithFileSystemIFrameByURL() throws Exception {
