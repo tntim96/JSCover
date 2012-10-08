@@ -340,12 +340,9 @@ library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
  */
 
-package jscover.server;
+package jscover.filesystem;
 
-import com.gargoylesoftware.htmlunit.JavaScriptPage;
 import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import jscover.Main;
 import jscover.util.IoUtils;
@@ -356,109 +353,29 @@ import java.io.File;
 import java.io.IOException;
 
 import static junit.framework.Assert.assertEquals;
-import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class HtmlUnitServerTest {
-    private static Thread server;
-
+public class HtmlUnitFileSystemTest {
     private WebClient webClient = new WebClient();
-    private String reportDir = "target/ws-report";
-    private String[] args = new String[]{"-ws", "--document-root=src/test-acceptance/resources", "--port=9001", "--no-instrument=/example/lib", "--report-dir=" + reportDir};
-
-    @Before
-    public void setUp() throws IOException {
-        if (server == null) {
-            server = new Thread(new Runnable() {
-                public void run() {
-                    try {
-                        Main.main(args);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            });
-            server.start();
-        }
-    }
+    private String reportDir = "target/fs-instrument";
+    private String[] args = new String[]{"-fs","--no-instrument=example/lib","src/test-acceptance/resources",reportDir};
 
     @Test
-    public void shouldNotInstrument() throws Exception {
-        JavaScriptPage page = webClient.getPage("http://localhost:9001/example/lib/noInstrument.js");
-        assertThat(page.getContent(), equalTo("alert('Hey');"));
-    }
+    public void shouldWorkWithFileSystemIFrameByURL() throws Exception {
+        Main.main(args);
 
-    @Test
-    public void shouldWorkWithServerIFrameByURL() throws Exception {
-        HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?example");
+        String noInstrumentJS = IoUtils.loadFromFileSystem(new File(reportDir+"/example/lib/noInstrument.js"));
+        assertThat(noInstrumentJS, equalTo("alert('Hey');"));
 
-        verifyTotal(webClient, page, 6);
-    }
-
-    @Test
-    public void shouldWorkWithServerIFrameByURLWithDOMInteraction() throws Exception {
-        HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?example");
-        HtmlPage frame = (HtmlPage)page.getFrameByName("browserIframe").getEnclosedPage();
-        frame.getElementById("radio2").click();
-        webClient.waitForBackgroundJavaScript(500);
-        verifyTotal(webClient, page, 66);
-    }
-
-    @Test
-    public void shouldStoreAndLoadResult() throws Exception {
-        HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?example");
-
-        page.getHtmlElementById("storeTab").click();
-        webClient.waitForBackgroundJavaScript(500);
-        HtmlElement storeButton = page.getHtmlElementById("storeButton");
-        storeButton.click();
-//        page.executeJavaScript("jscoverage_storeButton_click();");
-        webClient.waitForBackgroundJavaScript(2000);
-        String result = page.getElementById("storeDiv").getTextContent();
-
-        assertThat(result, containsString("Report stored at target"));
-
-        String json = IoUtils.toString(new File(reportDir+"/jscoverage.json"));
-        assertThat(json, containsString("/script.js"));
-
-        page = webClient.getPage("file:///"+ new File(reportDir+"/jscoverage.html").getAbsolutePath());
-        verifyTotal(webClient, page, 6);
-    }
-
-    @Test
-    public void shouldWorkWithServerIFrameByNavigationButtons() throws Exception {
-        HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html");
-        ((HtmlInput)page.getHtmlElementById("location")).setValueAttribute("http://localhost:9001/example/index.html");
-        page.getHtmlElementById("openInFrameButton").click();
-        webClient.waitForBackgroundJavaScript(100);
-
-        verifyTotal(webClient, page, 6);
-    }
-
-    @Test
-    public void shouldIncreaseCoverage() throws Exception {
-        HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?example");
-
-        verifyTotal(webClient, page, 6);
-
-        page.getHtmlElementById("browserTab").click();
-        HtmlPage frame = (HtmlPage)page.getFrameByName("browserIframe").getEnclosedPage();
-        frame.getElementById("radio1").click();
-        webClient.waitForBackgroundJavaScript(500);
-        frame.getElementById("radio2").click();
-        webClient.waitForBackgroundJavaScript(500);
-        frame.getElementById("radio3").click();
-        webClient.waitForBackgroundJavaScript(500);
-        frame.getElementById("radio4").click();
-        webClient.waitForBackgroundJavaScript(500);
-        verifyTotal(webClient, page, 100);
+//        HtmlPage page = webClient.getPage("file:///"+ new File("target/jscoverage.html?example/index.html").getAbsolutePath());
+//        verifyTotal(webClient, page, 6);
     }
 
     private void verifyTotal(WebClient webClient, HtmlPage page, int percentage) throws IOException {
         page.getHtmlElementById("summaryTab").click();
         webClient.waitForBackgroundJavaScript(2000);
         String total = page.getElementById("summaryTotal").getTextContent();
-        assertEquals(percentage+"%", total);
+        assertEquals(percentage + "%", total);
     }
 }
