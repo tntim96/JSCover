@@ -1064,7 +1064,7 @@ public class NanoHTTPD
 			"flv		video/x-flv " +
 			"mov		video/quicktime " +
 			"swf		application/x-shockwave-flash " +
-			"js			application/javascript "+
+			"js			text/javascript "+
 			"json		application/json "+
 			"pdf		application/pdf "+
 			"doc		application/msword "+

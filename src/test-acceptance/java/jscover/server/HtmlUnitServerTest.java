@@ -342,6 +342,7 @@ Public License instead of this License.
 
 package jscover.server;
 
+import com.gargoylesoftware.htmlunit.JavaScriptPage;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
@@ -356,14 +357,15 @@ import java.io.IOException;
 
 import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class HtmlUnitServerTest {
     private static Thread server;
 
     private WebClient webClient = new WebClient();
-    private String reportDir = "target";
-    private String[] args = new String[]{"-ws","--report-dir="+reportDir};
+    private String reportDir = "target/ws-report";
+    private String[] args = new String[]{"-ws","--document-root=src/test-acceptance/resources","--port=9001","--no-instrument=/example/lib","--report-dir="+reportDir};
 
     @Before
     public void setUp() throws IOException {
@@ -378,22 +380,30 @@ public class HtmlUnitServerTest {
                 }
             });
             server.start();
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
         }
-        webClient.setJavaScriptEnabled(true);
+    }
+
+    @Test
+    public void shouldNotInstrument() throws Exception {
+        JavaScriptPage page = webClient.getPage("http://localhost:9001/example/lib/noInstrument.js");
+        assertThat(page.getContent(), equalTo("alert('Hey');"));
     }
 
     @Test
     public void shouldWorkWithServerIFrameByURL() throws Exception {
-        String url = "http://localhost:8080/jscoverage.html?doc/example";
-        HtmlPage page = webClient.getPage(url);
+        HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?example");
 
         verifyTotal(webClient, page, 6);
     }
 
     @Test
     public void shouldWorkWithServerIFrameByURLWithDOMInteraction() throws Exception {
-        String url = "http://localhost:8080/jscoverage.html?doc/example";
-        HtmlPage page = webClient.getPage(url);
+        HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?example");
         HtmlPage frame = (HtmlPage)page.getFrameByName("browserIframe").getEnclosedPage();
         frame.getElementById("radio2").click();
         webClient.waitForBackgroundJavaScript(500);
@@ -402,7 +412,7 @@ public class HtmlUnitServerTest {
 
     @Test
     public void shouldStoreAndLoadResult() throws Exception {
-        HtmlPage page = webClient.getPage("http://localhost:8080/jscoverage.html?doc/example");
+        HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?example");
 
         page.getHtmlElementById("storeTab").click();
         webClient.waitForBackgroundJavaScript(500);
@@ -414,17 +424,17 @@ public class HtmlUnitServerTest {
 
         assertThat(result, containsString("Report stored at target"));
 
-        String json = IoUtils.toString(new File("target/jscoverage.json"));
-        assertThat(json, containsString("/doc/example/script.js"));
+        String json = IoUtils.toString(new File(reportDir+"/jscoverage.json"));
+        assertThat(json, containsString("/script.js"));
 
-        page = webClient.getPage("file:///"+ new File("target/jscoverage.html").getAbsolutePath());
+        page = webClient.getPage("file:///"+ new File(reportDir+"/jscoverage.html").getAbsolutePath());
         verifyTotal(webClient, page, 6);
     }
 
     @Test
     public void shouldWorkWithServerIFrameByNavigationButtons() throws Exception {
-        HtmlPage page = webClient.getPage("http://localhost:8080/jscoverage.html");
-        ((HtmlInput)page.getHtmlElementById("location")).setValueAttribute("http://localhost:8080/doc/example/");
+        HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html");
+        ((HtmlInput)page.getHtmlElementById("location")).setValueAttribute("http://localhost:9001/example/index.html");
         page.getHtmlElementById("openInFrameButton").click();
         webClient.waitForBackgroundJavaScript(100);
 
@@ -433,7 +443,7 @@ public class HtmlUnitServerTest {
 
     @Test
     public void shouldIncreaseCoverage() throws Exception {
-        HtmlPage page = webClient.getPage("http://localhost:8080/jscoverage.html?doc/example");
+        HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?example");
 
         verifyTotal(webClient, page, 6);
 
