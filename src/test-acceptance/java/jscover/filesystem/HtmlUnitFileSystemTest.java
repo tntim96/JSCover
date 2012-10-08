@@ -346,7 +346,6 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import jscover.Main;
 import jscover.util.IoUtils;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
@@ -368,8 +367,12 @@ public class HtmlUnitFileSystemTest {
         String noInstrumentJS = IoUtils.loadFromFileSystem(new File(reportDir+"/example/lib/noInstrument.js"));
         assertThat(noInstrumentJS, equalTo("alert('Hey');"));
 
-//        HtmlPage page = webClient.getPage("file:///"+ new File("target/jscoverage.html?example/index.html").getAbsolutePath());
-//        verifyTotal(webClient, page, 6);
+        HtmlPage page = webClient.getPage(getFileURL(reportDir + "/jscoverage.html?example/index.html"));
+        verifyTotal(webClient, page, 6);
+    }
+
+    private String getFileURL(String file) {
+        return "file:///"+ new File(file).getAbsolutePath();
     }
 
     private void verifyTotal(WebClient webClient, HtmlPage page, int percentage) throws IOException {
