@@ -380,11 +380,6 @@ public class HtmlUnitServerTest {
                 }
             });
             server.start();
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            }
         }
     }
 
