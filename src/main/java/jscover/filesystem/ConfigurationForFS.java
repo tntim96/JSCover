@@ -402,7 +402,7 @@ public class ConfigurationForFS extends Configuration {
     public static ConfigurationForFS parse(String[] args) {
         ConfigurationForFS configuration = new ConfigurationForFS();
 
-        for (int i=0; i<args.length-2; i++) {
+        for (int i=0; i<args.length; i++) {
             String arg = args[i];
             if (arg.startsWith(Main.FILESYSTEM_PREFIX)) {
             //Ignore this
@@ -415,9 +415,6 @@ public class ConfigurationForFS extends Configuration {
                 configuration.excludes.add(arg.substring(EXLCUDE_PREFIX.length()));
             } else if (arg.startsWith(JS_VERSION_PREFIX)) {
                 configuration.JSVersion = (int)(Float.valueOf(arg.substring(JS_VERSION_PREFIX.length()))*100);
-            } else {
-                configuration.showHelp = true;
-                return configuration;
             }
         }
 
@@ -428,8 +425,9 @@ public class ConfigurationForFS extends Configuration {
         configuration.srcDir = new File(args[args.length-2]);
         configuration.destDir = new File(args[args.length-1]);
         if (!validDirectory(configuration.srcDir)) {
-            System.out.println(String.format("Source directory '%s' is invalid",configuration.srcDir));
-            System.exit(1);
+            System.err.println(String.format("Source directory '%s' is invalid",configuration.srcDir));
+            configuration.showHelp = true;
+            return configuration;
         }
         configuration.compilerEnvirons.setLanguageVersion(configuration.JSVersion);
         return configuration;

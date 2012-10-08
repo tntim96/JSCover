@@ -364,11 +364,7 @@ public class FileSystemInstrumenter {
     }
 
     public void run() {
-        try {
-            copyJSCoverageFiles(configuration.getDestDir());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        copyJSCoverageFiles(configuration.getDestDir());
         copyFolder(configuration.getSrcDir(), configuration.getDestDir());
     }
 

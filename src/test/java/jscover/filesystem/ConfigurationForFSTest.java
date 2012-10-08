@@ -383,6 +383,12 @@ public class ConfigurationForFSTest {
     }
 
     @Test
+    public void shouldHandleNonExistingDirectory() {
+        assertThat(ConfigurationForFS.parse(new String[]{"-fs","unknown","doc"}).showHelp(), equalTo(true));
+        assertThat(ConfigurationForFS.parse(new String[]{"-fs","build.xml","doc"}).showHelp(), equalTo(true));
+    }
+
+    @Test
     public void shouldParseJSVersion() {
         ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs", "--js-version=1.8", "src", "doc"});
         assertThat(configuration.getJSVersion(), equalTo(180));

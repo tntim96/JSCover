@@ -385,8 +385,6 @@ public class Main {
             }
         } catch (ClassNotFoundException e) {
             String manifest = IoUtils.loadFromClassPath("/META-INF/MANIFEST.MF");
-            System.out.println("manifest = " + manifest);
-
             Manifest mf = new Manifest(getClass().getResourceAsStream("/META-INF/" + manifestName));
             Attributes mainAttributes = mf.getMainAttributes();
             String name = mainAttributes.get(Attributes.Name.IMPLEMENTATION_TITLE).toString();
@@ -406,7 +404,6 @@ public class Main {
         main.initialize();
         if (main.printVersion()) {
             System.out.println(main.getVersionText());
-            System.exit(0);
         } else if (main.isServer()) {
             runServer(args);
         } else if (main.isFileSystem()) {
