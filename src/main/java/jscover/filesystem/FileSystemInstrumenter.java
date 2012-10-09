@@ -345,13 +345,15 @@ package jscover.filesystem;
 import jscover.format.PlainFormatter;
 import jscover.format.SourceFormatter;
 import jscover.instrument.SourceProcessor;
+import jscover.util.IoService;
 import jscover.util.IoUtils;
 
 import java.io.File;
 import java.io.StringReader;
 
 public class FileSystemInstrumenter {
-    private static SourceFormatter sourceFormatter = new PlainFormatter();
+    private SourceFormatter sourceFormatter = new PlainFormatter();
+    private IoService ioService = new IoService();
     private ConfigurationForFS configuration;
     private File log;
 
@@ -364,27 +366,8 @@ public class FileSystemInstrumenter {
     }
 
     public void run() {
-        copyJSCoverageFiles(configuration.getDestDir());
+        ioService.generateJSCoverFilesForFileSystem(configuration.getDestDir(), configuration.getVersion());
         copyFolder(configuration.getSrcDir(), configuration.getDestDir());
-    }
-
-    private void copyJSCoverageFiles(File destDir) {
-        if (!destDir.exists())
-            destDir.mkdirs();
-        copyResourceToDir("jscoverage.css", destDir);
-
-        String reportHTML = IoUtils.loadFromClassPath("/jscoverage.html").replaceAll("@@version@@",configuration.getVersion());
-        IoUtils.copy(new StringReader(reportHTML), new File(destDir, "jscoverage.html"));
-
-        copyResourceToDir("jscoverage.js", destDir);
-        copyResourceToDir("jscoverage-highlight.css", destDir);
-        copyResourceToDir("jscoverage-ie.css", destDir);
-        copyResourceToDir("jscoverage-throbber.gif",destDir);
-
-    }
-
-    private void copyResourceToDir(String resource, File parent) {
-        IoUtils.copy(getClass().getResourceAsStream("/" + resource), new File(parent, resource));
     }
 
     private void copyFolder(File src, File dest) {
