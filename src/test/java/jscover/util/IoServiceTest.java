@@ -347,6 +347,7 @@ import org.junit.Test;
 import java.io.File;
 
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class IoServiceTest {
@@ -356,14 +357,22 @@ public class IoServiceTest {
     @Test
     public void shouldIncludeVersionForFileSystem() {
         ioService.generateJSCoverFilesForFileSystem(destDir, "theVersion");
+
         String html = IoUtils.loadFromFileSystem(new File(destDir,"jscoverage.html"));
         assertThat(html, containsString("This is version theVersion of JSCover"));
+
+        String js = IoUtils.loadFromFileSystem(new File(destDir,"jscoverage.js"));
+        assertThat(js, not(containsString("\njscoverage_isReport = true;")));
     }
 
     @Test
     public void shouldIncludeVersionForWebServer() {
         ioService.generateJSCoverFilesForWebServer(destDir, "theVersion");
+
         String html = IoUtils.loadFromFileSystem(new File(destDir,"jscoverage.html"));
         assertThat(html, containsString("This is version theVersion of JSCover"));
+
+        String js = IoUtils.loadFromFileSystem(new File(destDir,"jscoverage.js"));
+        assertThat(js, containsString("\njscoverage_isReport = true;"));
     }
 }
