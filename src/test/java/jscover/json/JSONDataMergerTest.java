@@ -392,6 +392,11 @@ public class JSONDataMergerTest {
         assertThat(map.values().iterator().next().getSource().get(2), equalTo("z++;"));
     }
 
+    @Test(expected = RuntimeException.class)
+    public void shouldReThrowException() {
+        jsonMerger.jsonToMap("{\"/test.js\":{\"coverage\":\"}}");
+    }
+
     @Test
     public void shouldConvertMapToJSONString() {
         String data = "{\"/test.js\":{\"coverage\":[null,0,1],\"source\":[\"x++;\",\"y++;\",\"z++;\"]}}";
