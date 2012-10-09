@@ -343,11 +343,14 @@ Public License instead of this License.
 package jscover.json;
 
 import jscover.util.IoUtils;
+import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 
+import java.io.File;
 import java.util.List;
 import java.util.TreeMap;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;

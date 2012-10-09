@@ -338,93 +338,54 @@ proprietary programs.  If your program is a subroutine library, you may
 consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
-*/
+ */
 
-package jscover.server;
+package jscover.json;
 
-import jscover.format.PlainFormatter;
-import jscover.format.SourceFormatter;
-import jscover.instrument.SourceProcessor;
-import jscover.json.JSONDataSaver;
-import jscover.util.IoService;
 import jscover.util.IoUtils;
+import jscover.util.ReflectionUtils;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
-import java.io.*;
-import java.util.Properties;
+import java.io.File;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
+import static org.mockito.BDDMockito.given;
 
-public class WebServer extends NanoHTTPD {
-    private static SourceFormatter sourceFormatter = new PlainFormatter();
-    public static final String JSCOVERAGE_STORE = "/jscoverage-store";
-    private ConfigurationForServer configuration;
-    private IoService ioService = new IoService();
+@RunWith(MockitoJUnitRunner.class)
+public class JSONDataSaverTest {
     private JSONDataSaver jsonDataSaver = new JSONDataSaver();
-    private File log;
+    private @Mock JSONDataMerger jsonDataMerger;
+    private File destDir = new File("target");
 
-    public WebServer(ConfigurationForServer configuration) throws IOException, InterruptedException {
-        super(configuration.getPort(), configuration.getDocumentRoot());
-        this.configuration = configuration;
-        this.log = new File(configuration.getReportDir(), "errors.log");
-        if (this.log.exists()) {
-            this.log.delete();
-        }
-        File wwwroot = configuration.getDocumentRoot();
-        myOut.println("Now serving files in port " + configuration.getPort() + " from \"" + wwwroot + "\"");
-        synchronized (this) {
-            this.wait();
-        }
-        Thread.yield();
-        Thread.sleep(10);
+    @Before
+    public void setUp() {
+        ReflectionUtils.setField(jsonDataSaver, "jsonDataMerger", jsonDataMerger);
+        File file = new File(destDir,"jscoverage.json");
+        if (file.exists())
+            file.delete();
     }
 
-    public Response serve(String uri, String method, Properties header, Properties parms, Properties files, String data) {
-        try {
-            if (uri.equals("/stop")) {
-                synchronized (this) {
-                    this.notifyAll();
-                }
-                return new NanoHTTPD.Response(HTTP_OK, MIME_PLAINTEXT, "Shutting down server.");
-            } else if (uri.equals("/jscoverage.js")) {
-                return new NanoHTTPD.Response(HTTP_OK, getMime(uri), ioService.generateJSCoverageServerJS());
-            } else if (uri.startsWith(JSCOVERAGE_STORE)) {
-                File reportDir = configuration.getReportDir();
-                if (uri.length() > JSCOVERAGE_STORE.length()) {
-                    reportDir = new File(reportDir, uri.substring(JSCOVERAGE_STORE.length()));
-                }
+    @Test
+    public void shouldSaveData() {
+        jsonDataSaver.saveJSONData(destDir, "data");
 
-                jsonDataSaver.saveJSONData(reportDir, data);
-                ioService.generateJSCoverFilesForWebServer(reportDir, configuration.getVersion());
-                return new NanoHTTPD.Response(HTTP_OK, HTTP_OK, "Report stored at "+ reportDir);
-            } else if (uri.startsWith("/jscoverage.html")) {
-                String reportHTML = ioService.generateJSCoverageHtml(configuration.getVersion());
-                return new NanoHTTPD.Response(HTTP_OK, getMime(uri), reportHTML);
-            } else if (uri.startsWith("/jscoverage") && !uri.startsWith("/jscoverage.json")) {
-                return new NanoHTTPD.Response(HTTP_OK, getMime(uri), getClass().getResourceAsStream(uri));
-            } else if (uri.endsWith(".js") && !configuration.skipInstrumentation(uri)) {
-                SourceProcessor sourceProcessor = new SourceProcessor(configuration.getCompilerEnvirons(), uri, sourceFormatter, log);
-                String source = IoUtils.toString(new FileInputStream(myRootDir + uri));
-                String jsInstrumented = sourceProcessor.processSourceForServer(source);
-                return new NanoHTTPD.Response(HTTP_OK, "application/javascript", jsInstrumented);
-            } else {
-                return super.serve(uri, method, header, parms, files, data);
-            }
-        } catch (Throwable e) {
-            StringWriter stringWriter = new StringWriter();
-            e.printStackTrace(new PrintWriter(stringWriter));
-            return new NanoHTTPD.Response(HTTP_INTERNALERROR, MIME_PLAINTEXT, stringWriter.toString());
-        }
+        String json = IoUtils.loadFromFileSystem(new File(destDir, "jscoverage.json"));
+        assertThat(json, equalTo("data"));
     }
 
-    private String getMime(String uri) {
-        String extension = null;
-        int dot = uri.lastIndexOf('.');
-        //Get everything after the dot
-        if (dot >= 0)
-            extension = uri.substring(dot + 1).toLowerCase();
+    @Test
+    public void shouldSaveAndMergedData() {
+        given(jsonDataMerger.mergeJSONCoverageData("data1", "data2")).willReturn("dataMerged");
 
-        String mime = (String) theMimeTypes.get(extension);
-        if (mime == null)
-            mime = MIME_DEFAULT_BINARY;
-        return mime;
+        jsonDataSaver.saveJSONData(destDir, "data1");
+        jsonDataSaver.saveJSONData(destDir, "data2");
+
+        String json = IoUtils.loadFromFileSystem(new File(destDir,"jscoverage.json"));
+        assertThat(json, equalTo("dataMerged"));
     }
 }

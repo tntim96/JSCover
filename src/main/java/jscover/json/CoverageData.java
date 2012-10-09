@@ -363,12 +363,4 @@ public class CoverageData {
     public List<String> getSource() {
         return source;
     }
-
-    @Override
-    public String toString() {
-        return "CoverageData{" +
-                "coverage=" + coverage +
-                ", source='" + source + '\'' +
-                '}';
-    }
 }
