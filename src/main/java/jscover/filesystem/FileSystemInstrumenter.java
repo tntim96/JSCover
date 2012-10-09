@@ -347,12 +347,12 @@ import jscover.format.SourceFormatter;
 import jscover.instrument.SourceProcessor;
 import jscover.util.IoUtils;
 
-import java.io.*;
+import java.io.File;
+import java.io.StringReader;
 
 public class FileSystemInstrumenter {
     private static SourceFormatter sourceFormatter = new PlainFormatter();
     private ConfigurationForFS configuration;
-    private SourceProcessor sourceProcessor;
     private File log;
 
     public FileSystemInstrumenter(ConfigurationForFS configuration) {
