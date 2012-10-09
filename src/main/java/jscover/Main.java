@@ -472,10 +472,7 @@ public class Main {
         if (isServer && isFileSystem) {
             return false;
         }
-        if (!isServer && !isFileSystem) {
-            return false;
-        }
-        return true;
+        return isServer || isFileSystem;
     }
 
     public Boolean printVersion() {
