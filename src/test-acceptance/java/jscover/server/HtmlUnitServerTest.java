@@ -343,7 +343,9 @@ Public License instead of this License.
 package jscover.server;
 
 import com.gargoylesoftware.htmlunit.Page;
+import com.gargoylesoftware.htmlunit.ScriptResult;
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.WebWindow;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -456,22 +458,22 @@ public class HtmlUnitServerTest {
 
     @Test
     public void shouldStoreResultViaJavaScriptCall() throws Exception {
-        HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?example");
+        HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html");
+        ((HtmlInput)page.getHtmlElementById("location")).setValueAttribute("http://localhost:9001/example/index.html");
+        page.getHtmlElementById("openInWindowButton").click();
+        webClient.waitForBackgroundJavaScript(100);
 
-        page.executeJavaScript("jscoverage_storeButton_click();");
-        //page.executeJavaScript("jscoverage_report('directory');");
-        webClient.waitForBackgroundJavaScript(500);
-        HtmlElement storeButton = page.getHtmlElementById("storeButton");
-        storeButton.click();
-        webClient.waitForBackgroundJavaScript(2000);
-        String result = page.getElementById("storeDiv").getTextContent();
+        verifyTotal(webClient, page, 6);
 
-        assertThat(result, containsString("Report stored at target"));
+        WebWindow webWindow = webClient.getWebWindowByName("jscoverage_window");
+        ScriptResult result = ((HtmlPage)webWindow.getEnclosedPage()).executeJavaScript("jscoverage_report('directory');");
 
-        String json = IoUtils.toString(new File(reportDir+"/jscoverage.json"));
+        assertThat(result.getJavaScriptResult().toString(), equalTo("Report stored at "+new File(reportDir+"/directory").getPath()));
+
+        String json = IoUtils.toString(new File(reportDir+"/directory/jscoverage.json"));
         assertThat(json, containsString("/script.js"));
 
-        page = webClient.getPage("file:///"+ new File(reportDir+"/jscoverage.html").getAbsolutePath());
+        page = webClient.getPage("file:///"+ new File(reportDir+"/directory/jscoverage.html").getAbsolutePath());
         verifyTotal(webClient, page, 6);
     }
 

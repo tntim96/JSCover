@@ -354,6 +354,7 @@ import java.util.Properties;
 
 public class WebServer extends NanoHTTPD {
     private static SourceFormatter sourceFormatter = new PlainFormatter();
+    public static final String JSCOVERAGE_STORE = "/jscoverage-store";
     private ConfigurationForServer configuration;
     private JSONDataMerger jsonDataMerger = new JSONDataMerger();
     private File log;
@@ -384,25 +385,31 @@ public class WebServer extends NanoHTTPD {
             } else if (uri.startsWith("/jscoverage.js")) {
                 String serverJS = "jscoverage_isServer = true;";
                 return new NanoHTTPD.Response(HTTP_OK, getMime(uri), IoUtils.loadFromClassPath(uri)+serverJS);
-            } else if (uri.startsWith("/jscoverage-store")) {
-                File jsonFile = new File(configuration.getReportDir(), "jscoverage.json");
+            } else if (uri.startsWith(JSCOVERAGE_STORE)) {
+                File reportDir = configuration.getReportDir();
+                if (uri.length() > JSCOVERAGE_STORE.length()) {
+                    reportDir = new File(reportDir, uri.substring(JSCOVERAGE_STORE.length()));
+                    reportDir.mkdirs();
+                }
+
+                File jsonFile = new File(reportDir, "jscoverage.json");
                 if (jsonFile.exists()) {
                     String existingJSON = IoUtils.toString(jsonFile);
                     data = jsonDataMerger.mergeJSONCoverageData(existingJSON, data);
                 }
                 IoUtils.copy(new StringReader(data), jsonFile);
-                copyResourceToDir("jscoverage.css", configuration.getReportDir());
+                copyResourceToDir("jscoverage.css", reportDir);
 
                 String reportHTML = IoUtils.loadFromClassPath("/jscoverage.html").replaceAll("@@version@@",configuration.getVersion());
-                IoUtils.copy(new StringReader(reportHTML), new File(configuration.getReportDir(), "jscoverage.html"));
+                IoUtils.copy(new StringReader(reportHTML), new File(reportDir, "jscoverage.html"));
 
                 String reportJS = IoUtils.loadFromClassPath("/jscoverage.js") + "\njscoverage_isReport = true;";
-                IoUtils.copy(new StringReader(reportJS), new File(configuration.getReportDir(), "jscoverage.js"));
+                IoUtils.copy(new StringReader(reportJS), new File(reportDir, "jscoverage.js"));
 
-                copyResourceToDir("jscoverage-highlight.css", configuration.getReportDir());
-                copyResourceToDir("jscoverage-ie.css", configuration.getReportDir());
-                copyResourceToDir("jscoverage-throbber.gif",configuration.getReportDir());
-                return new NanoHTTPD.Response(HTTP_OK, HTTP_OK, "Report stored at "+configuration.getReportDir());
+                copyResourceToDir("jscoverage-highlight.css", reportDir);
+                copyResourceToDir("jscoverage-ie.css", reportDir);
+                copyResourceToDir("jscoverage-throbber.gif", reportDir);
+                return new NanoHTTPD.Response(HTTP_OK, HTTP_OK, "Report stored at "+ reportDir);
             } else if (uri.startsWith("/jscoverage.html")) {
                 String reportHTML = IoUtils.loadFromClassPath("/jscoverage.html").replaceAll("@@version@@",configuration.getVersion());
                 return new NanoHTTPD.Response(HTTP_OK, getMime(uri), reportHTML);
