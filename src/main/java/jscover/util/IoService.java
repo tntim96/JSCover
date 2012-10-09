@@ -365,7 +365,7 @@ public class IoService {
         IoUtils.copy(new StringReader(reportHTML), new File(destDir, "jscoverage.html"));
 
         if (isServer) {
-            String reportJS = IoUtils.loadFromClassPath("/jscoverage.js") + "\njscoverage_isReport = true;";
+            String reportJS = generateJSCoverageReportJS();
             IoUtils.copy(new StringReader(reportJS), new File(destDir, "jscoverage.js"));
         } else {
             copyResourceToDir("jscoverage.js", destDir);
@@ -374,6 +374,14 @@ public class IoService {
         copyResourceToDir("jscoverage-highlight.css", destDir);
         copyResourceToDir("jscoverage-ie.css", destDir);
         copyResourceToDir("jscoverage-throbber.gif", destDir);
+    }
+
+    private String generateJSCoverageReportJS() {
+        return IoUtils.loadFromClassPath("/jscoverage.js") + "\njscoverage_isReport = true;";
+    }
+
+    public String generateJSCoverageServerJS() {
+        return IoUtils.loadFromClassPath("/jscoverage.js") + "\njscoverage_isServer = true;";
     }
 
     public String generateJSCoverageHtml(String version) {

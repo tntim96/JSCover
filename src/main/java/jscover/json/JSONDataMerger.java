@@ -340,12 +340,15 @@ library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License. */
 package jscover.json;
 
+import jscover.util.IoUtils;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.NativeArray;
 import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.ScriptRuntime;
 import org.mozilla.javascript.json.JsonParser;
 
+import java.io.File;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
@@ -426,5 +429,15 @@ public class JSONDataMerger {
         }
         json.append("}");
         return json.toString();
+    }
+
+    public void saveJSONData(File reportDir, String data) {
+        reportDir.mkdirs();
+        File jsonFile = new File(reportDir, "jscoverage.json");
+        if (jsonFile.exists()) {
+            String existingJSON = IoUtils.toString(jsonFile);
+            data = mergeJSONCoverageData(existingJSON, data);
+        }
+        IoUtils.copy(new StringReader(data), jsonFile);
     }
 }

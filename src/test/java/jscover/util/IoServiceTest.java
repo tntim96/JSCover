@@ -355,7 +355,7 @@ public class IoServiceTest {
     private File destDir = new File("target/IoService");
 
     @Test
-    public void shouldIncludeVersionForFileSystem() {
+    public void shouldGenerateReportForFileSystem() {
         ioService.generateJSCoverFilesForFileSystem(destDir, "theVersion");
 
         String html = IoUtils.loadFromFileSystem(new File(destDir,"jscoverage.html"));
@@ -366,7 +366,7 @@ public class IoServiceTest {
     }
 
     @Test
-    public void shouldIncludeVersionForWebServer() {
+    public void shouldGenerateReportForWebServerStoredReport() {
         ioService.generateJSCoverFilesForWebServer(destDir, "theVersion");
 
         String html = IoUtils.loadFromFileSystem(new File(destDir,"jscoverage.html"));
@@ -374,5 +374,11 @@ public class IoServiceTest {
 
         String js = IoUtils.loadFromFileSystem(new File(destDir,"jscoverage.js"));
         assertThat(js, containsString("\njscoverage_isReport = true;"));
+    }
+
+    @Test
+    public void shouldGenerateJSForWebServer() {
+        String js = ioService.generateJSCoverageServerJS();
+        assertThat(js, containsString("\njscoverage_isServer = true;"));
     }
 }

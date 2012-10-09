@@ -384,28 +384,21 @@ public class WebServer extends NanoHTTPD {
                     this.notifyAll();
                 }
                 return new NanoHTTPD.Response(HTTP_OK, MIME_PLAINTEXT, "Shutting down server.");
-            } else if (uri.startsWith("/jscoverage.js")) {
-                String serverJS = "jscoverage_isServer = true;";
-                return new NanoHTTPD.Response(HTTP_OK, getMime(uri), IoUtils.loadFromClassPath(uri)+serverJS);
+            } else if (uri.equals("/jscoverage.js")) {
+                return new NanoHTTPD.Response(HTTP_OK, getMime(uri), ioService.generateJSCoverageServerJS());
             } else if (uri.startsWith(JSCOVERAGE_STORE)) {
                 File reportDir = configuration.getReportDir();
                 if (uri.length() > JSCOVERAGE_STORE.length()) {
                     reportDir = new File(reportDir, uri.substring(JSCOVERAGE_STORE.length()));
-                    reportDir.mkdirs();
                 }
 
-                File jsonFile = new File(reportDir, "jscoverage.json");
-                if (jsonFile.exists()) {
-                    String existingJSON = IoUtils.toString(jsonFile);
-                    data = jsonDataMerger.mergeJSONCoverageData(existingJSON, data);
-                }
-                IoUtils.copy(new StringReader(data), jsonFile);
+                jsonDataMerger.saveJSONData(reportDir, data);
                 ioService.generateJSCoverFilesForWebServer(reportDir, configuration.getVersion());
                 return new NanoHTTPD.Response(HTTP_OK, HTTP_OK, "Report stored at "+ reportDir);
             } else if (uri.startsWith("/jscoverage.html")) {
                 String reportHTML = ioService.generateJSCoverageHtml(configuration.getVersion());
                 return new NanoHTTPD.Response(HTTP_OK, getMime(uri), reportHTML);
-            } else if (uri.startsWith("/jscoverage")) {
+            } else if (uri.startsWith("/jscoverage") && !uri.startsWith("/jscoverage.json")) {
                 return new NanoHTTPD.Response(HTTP_OK, getMime(uri), getClass().getResourceAsStream(uri));
             } else if (uri.endsWith(".js") && !configuration.skipInstrumentation(uri)) {
                 SourceProcessor sourceProcessor = new SourceProcessor(configuration.getCompilerEnvirons(), uri, sourceFormatter, log);
