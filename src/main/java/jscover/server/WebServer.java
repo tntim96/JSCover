@@ -358,15 +358,16 @@ public class WebServer extends NanoHTTPD {
     private InstrumenterService instrumenterService = new InstrumenterService();
     private File log;
 
-    public WebServer(ConfigurationForServer configuration) throws IOException, InterruptedException {
-        super(configuration.getPort(), configuration.getDocumentRoot());
+    public void start(ConfigurationForServer configuration) throws IOException, InterruptedException {
         this.configuration = configuration;
         this.log = new File(configuration.getReportDir(), "errors.log");
         if (this.log.exists()) {
             this.log.delete();
         }
         File wwwroot = configuration.getDocumentRoot();
-        myOut.println("Now serving files in port " + configuration.getPort() + " from \"" + wwwroot + "\"");
+
+        start(configuration.getPort(), configuration.getDocumentRoot());
+        myOut.println("Now serving files in port " + configuration.getPort() + " from \"" + configuration.getDocumentRoot() + "\"");
         synchronized (this) {
             this.wait();
         }

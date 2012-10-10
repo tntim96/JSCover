@@ -342,157 +342,90 @@ Public License instead of this License.
 
 package jscover;
 
-import jscover.filesystem.ConfigurationForFS;
-import jscover.filesystem.FileSystemInstrumenter;
-import jscover.server.ConfigurationForServer;
-import jscover.server.WebServer;
-import jscover.util.IoUtils;
+import jscover.util.ReflectionUtils;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.jar.Attributes;
-import java.util.jar.Manifest;
 
-import static java.lang.String.format;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
-public class Main {
-    public static final String HELP_PREFIX1 = "-h";
-    public static final String HELP_PREFIX2 = "--help";
-    public static final String VERSION_PREFIX1 = "-V";
-    public static final String VERSION_PREFIX2 = "--version";
-    public static final String SERVER_PREFIX = "-ws";
-    public static final String FILESYSTEM_PREFIX = "-fs";
-    public static final Properties properties = new Properties();
+public class MainParsingTest {
+    private Main main = new Main();
+    
 
-    private String manifestName = "MANIFEST.MF";
-    private List<String> dependantClasses = new ArrayList<String>() {{
-        add("org.apache.commons.lang.ClassUtils");
-        add("org.apache.commons.io.IOUtils");
-        add("org.mozilla.javascript.ast.AstNode");
-    }};
-    private WebServer webServer = new WebServer();
-    private FileSystemInstrumenter fileSystemInstrumenter = new FileSystemInstrumenter();
-
-    void initialize() throws IOException {
-        properties.load(Main.class.getResourceAsStream("configuration.properties"));
-        checkDependantClasses();
+    @Test
+    public void shouldHaveDefaults() {
+        main.parse(new String[]{});
+        assertThat(main.showHelp(), equalTo(true));
+        assertThat(main.printVersion(), equalTo(false));
+        assertThat(main.isServer(), equalTo(false));
+        assertThat(main.isFileSystem(), equalTo(false));
     }
 
-    private void checkDependantClasses() throws IOException {
+    @Test
+    public void shouldDetectMissingJARs() throws IOException {
+        main.parse(new String[]{});
+        ArrayList<String> dependantClasses = new ArrayList<String>() {{
+            add("this.shouldn't.Exist");
+        }};
+        ReflectionUtils.setField(main, "manifestName", "MANIFEST-TEST.MF");
+        ReflectionUtils.setField(main, "dependantClasses", dependantClasses);
         try {
-            for (String dependantClass : dependantClasses) {
-                Class.forName(dependantClass);
-            }
-        } catch (ClassNotFoundException e) {
-            String manifest = IoUtils.loadFromClassPath("/META-INF/MANIFEST.MF");
-            Manifest mf = new Manifest(getClass().getResourceAsStream("/META-INF/" + manifestName));
-            Attributes mainAttributes = mf.getMainAttributes();
-            String name = mainAttributes.get(Attributes.Name.IMPLEMENTATION_TITLE).toString();
-            String classPathJARs = mainAttributes.get(Attributes.Name.CLASS_PATH).toString();
-            String message = "%nEnsure these JARs are in the same directory as %s.jar:%n%s";
-            throw new IllegalStateException(format(message, name , classPathJARs), e);
+            main.initialize();
+            fail("Should have thrwn exception");
+        } catch(IllegalStateException e) {
+            String message = e.getMessage();
+            assertThat(message, containsString("Ensure these JARs are in the same directory as JSCover.jar:"));
+            assertThat(message, containsString("commons-io-1.4.jar commons-lang-2.4.jar js.jar"));
         }
     }
 
-    private boolean showHelp;
-    private boolean printVersion;
-    private boolean isServer;
-    private boolean isFileSystem;
-
-    public static void main(String[] args) throws IOException {
-        new Main().runMain(args);
+    @Test
+    public void shouldParseVersion() {
+        assertThat(main.parse(new String[]{}).printVersion(), equalTo(false));
+        assertThat(main.parse(new String[]{"-V"}).printVersion(), equalTo(true));
+        assertThat(main.parse(new String[]{"--version"}).printVersion(), equalTo(true));
     }
 
-    public void runMain(String[] args) throws IOException {
-        parse(args);
-        initialize();
-        if (printVersion()) {
-            System.out.println(getVersionText());
-        } else if (isServer()) {
-            runServer(args);
-        } else if (isFileSystem()) {
-            runFileSystem(args);
-        } else {
-            System.out.println(getHelpText());
-        }
+    @Test
+    public void shouldParseFileSystem() {
+        assertThat(main.parse(new String[]{"-fs"}).isFileSystem(), equalTo(true));
     }
 
-    public String getHelpText() {
-        return IoUtils.toString(getClass().getResourceAsStream("help.txt"));
+    @Test
+    public void shouldParseServer() {
+        assertThat(main.parse(new String[]{"-ws"}).isServer(), equalTo(true));
     }
 
-    public String getVersionText() {
-        return "JSCover version: " + properties.getProperty("version");
+    @Test
+    public void shouldParseHelp() {
+        assertThat(main.parse(new String[]{}).showHelp(), equalTo(true));
+        assertThat(main.parse(new String[]{"-h"}).showHelp(), equalTo(true));
+        assertThat(main.parse(new String[]{"--help"}).showHelp(), equalTo(true));
     }
 
-    private void runFileSystem(String[] args) {
-        ConfigurationForFS configuration = ConfigurationForFS.parse(args);
-        configuration.setProperties(properties);
-        if (configuration.showHelp()) {
-            System.out.println(configuration.getHelpText());
-            System.exit(0);
-        }
-
-        fileSystemInstrumenter.run(configuration);
+    @Test
+    public void shouldDetectValidOptionsForWebServer() {
+        assertThat(main.parse(new String[]{"-ws"}).showHelp(), equalTo(false));
     }
 
-    private void runServer(String[] args) {
-        ConfigurationForServer configuration = ConfigurationForServer.parse(args);
-        configuration.setProperties(properties);
-        if (configuration.showHelp()) {
-            System.out.println(configuration.getHelpText());
-        } else {
-            try {
-                webServer.start(configuration);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
+    @Test
+    public void shouldDetectValidOptionsForFileSystem() {
+        assertThat(main.parse(new String[]{"-fs"}).showHelp(), equalTo(false));
     }
 
-    public Main parse(String[] args) {
-        for (String arg : args) {
-            if (arg.equals(HELP_PREFIX1) || arg.equals(HELP_PREFIX2)) {
-                showHelp = true;
-            } else if (arg.equals(VERSION_PREFIX1) || arg.equals(VERSION_PREFIX2)) {
-                printVersion = true;
-            } else if (arg.equals(SERVER_PREFIX)) {
-                isServer = true;
-            } else if (arg.equals(FILESYSTEM_PREFIX)) {
-                isFileSystem = true;
-            } else {
-                showHelp = true;
-            }
-        }
-        if (!validOptions()) {
-            showHelp = true;
-        }
-        return this;
+    @Test
+    public void shouldDetectInvalidOptions() {
+        assertThat(main.parse(new String[]{"-ws", "-fs"}).showHelp(), equalTo(true));
     }
 
-    private boolean validOptions() {
-        if (isServer && isFileSystem) {
-            return false;
-        }
-        return isServer || isFileSystem;
-    }
-
-    public Boolean printVersion() {
-        return printVersion;
-    }
-
-
-    public Boolean showHelp() {
-        return showHelp;
-    }
-
-    public Boolean isServer() {
-        return isServer;
-    }
-
-    public boolean isFileSystem() {
-        return isFileSystem;
+    @Test
+    public void shouldRetrieveHelpText() {
+        String helpText = new Main().getHelpText();
+        assertThat(helpText, containsString("Usage: java -jar jscover.jar [OPTION]..."));
     }
 }

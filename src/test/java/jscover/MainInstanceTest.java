@@ -342,85 +342,71 @@ Public License instead of this License.
 
 package jscover;
 
+import jscover.server.ConfigurationForServer;
+import jscover.server.WebServer;
 import jscover.util.ReflectionUtils;
+import org.hamcrest.Description;
+import org.hamcrest.TypeSafeMatcher;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.argThat;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.spy;
 
-public class MainTest {
+@RunWith(MockitoJUnitRunner.class)
+public class MainInstanceTest {
+    private Main main = new Main();
+    private WebServer webServer = mock(WebServer.class);
 
-    @Test
-    public void shouldHaveDefaults() {
-        Main main = Main.parse(new String[]{});
-        assertThat(main.showHelp(), equalTo(true));
-        assertThat(main.printVersion(), equalTo(false));
-        assertThat(main.isServer(), equalTo(false));
-        assertThat(main.isFileSystem(), equalTo(false));
+    @Before
+    public void setUp() {
+        ReflectionUtils.setField(main, "webServer", webServer);
     }
 
     @Test
-    public void shouldDetectMissingJARs() throws IOException {
-        Main main = Main.parse(new String[]{});
-        ArrayList<String> dependantClasses = new ArrayList<String>() {{
-            add("this.shouldn't.Exist");
-        }};
-        ReflectionUtils.setField(main, "manifestName", "MANIFEST-TEST.MF");
-        ReflectionUtils.setField(main, "dependantClasses", dependantClasses);
+    public void shouldShowHelp() throws IOException, InterruptedException {
+        main.runMain(new String[]{"-ws","-h"});
+        verifyZeroInteractions(webServer);
+    }
+
+    @Test
+    public void shouldRunWebServer() throws IOException, InterruptedException {
+        main.runMain(new String[]{"-ws","--port=1234"});
+
+        TypeSafeMatcher<ConfigurationForServer> matcher = new TypeSafeMatcher<ConfigurationForServer>() {
+            @Override
+            protected boolean matchesSafely(ConfigurationForServer item) {
+                return item.getPort()==1234;
+            }
+
+            public void describeTo(Description description) {
+
+            }
+        };
+        verify(webServer, times(1)).start(argThat(matcher));
+    }
+
+    @Test
+    public void shouldReThrowWebServerException() throws IOException, InterruptedException {
+        WebServer webServer = spy(new WebServer());
+        ReflectionUtils.setField(main, "webServer", webServer);
+
+        InterruptedException toBeThrown = new InterruptedException("Ouch!");
+        doThrow(toBeThrown).when(webServer).start(any(ConfigurationForServer.class));
+
         try {
-            main.initialize();
-            fail("Should have thrwn exception");
-        } catch(IllegalStateException e) {
-            String message = e.getMessage();
-            assertThat(message, containsString("Ensure these JARs are in the same directory as JSCover.jar:"));
-            assertThat(message, containsString("commons-io-1.4.jar commons-lang-2.4.jar js.jar"));
+            main.runMain(new String[]{"-ws", "--port=1234"});
+        } catch(RuntimeException rte) {
+            assertThat((InterruptedException)rte.getCause(), sameInstance(toBeThrown));
         }
     }
-
-    @Test
-    public void shouldParseVersion() {
-        assertThat(Main.parse(new String[]{}).printVersion(), equalTo(false));
-        assertThat(Main.parse(new String[]{"-V"}).printVersion(), equalTo(true));
-        assertThat(Main.parse(new String[]{"--version"}).printVersion(), equalTo(true));
-    }
-
-    @Test
-    public void shouldParseFileSystem() {
-        assertThat(Main.parse(new String[]{"-fs"}).isFileSystem(), equalTo(true));
-    }
-
-    @Test
-    public void shouldParseServer() {
-        assertThat(Main.parse(new String[]{"-ws"}).isServer(), equalTo(true));
-    }
-
-    @Test
-    public void shouldParseHelp() {
-        assertThat(Main.parse(new String[]{}).showHelp(), equalTo(true));
-        assertThat(Main.parse(new String[]{"-h"}).showHelp(), equalTo(true));
-        assertThat(Main.parse(new String[]{"--help"}).showHelp(), equalTo(true));
-    }
-
-    @Test
-    public void shouldDetectValidOptions() {
-        assertThat(Main.parse(new String[]{"-ws"}).showHelp(), equalTo(false));
-        assertThat(Main.parse(new String[]{"-fs"}).showHelp(), equalTo(false));
-    }
-
-    @Test
-    public void shouldDetectInvalidOptions() {
-        assertThat(Main.parse(new String[]{"-ws","-fs"}).showHelp(), equalTo(true));
-    }
-
-    @Test
-    public void shouldRetrieveHelpText() {
-        String helpText = new Main().getHelpText();
-        assertThat(helpText, containsString("Usage: java -jar jscover.jar [OPTION]..."));
-    }
-
 }

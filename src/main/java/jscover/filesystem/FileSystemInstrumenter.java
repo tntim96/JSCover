@@ -357,15 +357,12 @@ public class FileSystemInstrumenter {
     private ConfigurationForFS configuration;
     private File log;
 
-    public FileSystemInstrumenter(ConfigurationForFS configuration) {
+    public void run(ConfigurationForFS configuration) {
         this.configuration = configuration;
         this.log = new File(configuration.getDestDir(), "errors.log");
         if (this.log.exists()) {
             this.log.delete();
         }
-    }
-
-    public void run() {
         ioService.generateJSCoverFilesForFileSystem(configuration.getDestDir(), configuration.getVersion());
         copyFolder(configuration.getSrcDir(), configuration.getDestDir());
     }
