@@ -351,9 +351,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
+import static jscover.server.WebServer.JSCOVERAGE_STORE;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import java.io.File;
 
 @RunWith(MockitoJUnitRunner.class)
 public class WebServerTest {
@@ -369,6 +372,30 @@ public class WebServerTest {
         ReflectionUtils.setField(webServer, "jsonDataSaver", jsonDataSaver);
         ReflectionUtils.setField(webServer, "instrumenterService", instrumenterService);
         ReflectionUtils.setField(webServer, "configuration", configuration);
+    }
+
+    @Test
+    public void shouldServeJSCoverageJS() {
+        webServer.serve("/jscoverage.js", "GET", null, null, null, null);
+        verify(ioService).generateJSCoverageServerJS();
+    }
+
+    @Test
+    public void shouldStoreJSCoverageJSON() {
+        File file = new File("target/temp");
+        file.deleteOnExit();
+        given(configuration.getReportDir()).willReturn(file);
+        webServer.serve(JSCOVERAGE_STORE, "GET", null, null, null, "data");
+        verify(jsonDataSaver).saveJSONData(file, "data");
+    }
+
+    @Test
+    public void shouldStoreJSCoverageJSONInSpecifiedSubDirectory() {
+        File file = new File("target/temp");
+        file.deleteOnExit();
+        given(configuration.getReportDir()).willReturn(file);
+        webServer.serve(JSCOVERAGE_STORE+"subdirectory", "GET", null, null, null, "data");
+        verify(jsonDataSaver).saveJSONData(new File(file,"subdirectory"), "data");
     }
 
     @Test
