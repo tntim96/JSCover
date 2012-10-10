@@ -22,8 +22,6 @@ Development with JSCover is simple. It is a fairly standard Ant and Java build.
 Most development has been done with IntelliJ community edition, and some with Eclipse.
 Project files for both IDEs are checked in, but any editor can be used.
 Before checking in any changes, be sure to run the build files `pre-commit`.
-Unit/Integration test coverage is around 89% (and increasing).
-Adding acceptance test coverage takes it to around 93%.
 NB: `pre-commit` runs the report and enforces coverage limits on unit and integration tests.
 Acceptance test coverage is collected and can be viewed by running the `cobertura-report`
 target manually after `pre-commit`.
@@ -32,4 +30,3 @@ To save repository space, the acceptance test framework HTMLUnit is not checked 
 Download HTML Unit (2.10) and unzip it to the same parent directory as JSCover to match
 the build property `html.unit.dir=${basedir}/../htmlunit-2.10`.
 If this property needs changing, the IntelliJ and Eclipse project files will also need altering.
-

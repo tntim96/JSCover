@@ -432,10 +432,9 @@ public class Main {
         configuration.setProperties(properties);
         if (configuration.showHelp()) {
             System.out.println(configuration.getHelpText());
-            System.exit(0);
+        } else {
+            fileSystemInstrumenter.run(configuration);
         }
-
-        fileSystemInstrumenter.run(configuration);
     }
 
     private void runServer(String[] args) {

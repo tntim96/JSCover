@@ -342,6 +342,8 @@ Public License instead of this License.
 
 package jscover;
 
+import jscover.filesystem.ConfigurationForFS;
+import jscover.filesystem.FileSystemInstrumenter;
 import jscover.server.ConfigurationForServer;
 import jscover.server.WebServer;
 import jscover.util.ReflectionUtils;
@@ -356,6 +358,7 @@ import java.io.IOException;
 
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.*;
@@ -366,16 +369,24 @@ import static org.mockito.Mockito.spy;
 public class MainInstanceTest {
     private Main main = new Main();
     private WebServer webServer = mock(WebServer.class);
+    private FileSystemInstrumenter fileSystemInstrumenter = mock(FileSystemInstrumenter.class);
 
     @Before
     public void setUp() {
         ReflectionUtils.setField(main, "webServer", webServer);
+        ReflectionUtils.setField(main, "fileSystemInstrumenter", fileSystemInstrumenter);
     }
 
     @Test
-    public void shouldShowHelp() throws IOException, InterruptedException {
-        main.runMain(new String[]{"-ws","-h"});
+    public void shouldShowWebServerHelp() throws IOException, InterruptedException {
+        main.runMain(new String[]{"-ws", "-h"});
         verifyZeroInteractions(webServer);
+    }
+
+    @Test
+    public void shouldShowFileSystemHelp() throws IOException, InterruptedException {
+        main.runMain(new String[]{"-ws", "-h"});
+        verifyZeroInteractions(fileSystemInstrumenter);
     }
 
     @Test
@@ -396,6 +407,23 @@ public class MainInstanceTest {
     }
 
     @Test
+    public void shouldRunFileSystem() throws IOException, InterruptedException {
+        main.runMain(new String[]{"-fs","--js-version=1.0","src","dest"});
+
+        TypeSafeMatcher<ConfigurationForFS> matcher = new TypeSafeMatcher<ConfigurationForFS>() {
+            @Override
+            protected boolean matchesSafely(ConfigurationForFS item) {
+                return item.getCompilerEnvirons().getLanguageVersion()==100;
+            }
+
+            public void describeTo(Description description) {
+
+            }
+        };
+        verify(fileSystemInstrumenter, times(1)).run(argThat(matcher));
+    }
+
+    @Test
     public void shouldReThrowWebServerException() throws IOException, InterruptedException {
         WebServer webServer = spy(new WebServer());
         ReflectionUtils.setField(main, "webServer", webServer);
@@ -405,6 +433,7 @@ public class MainInstanceTest {
 
         try {
             main.runMain(new String[]{"-ws", "--port=1234"});
+            fail("Should have thrown exception");
         } catch(RuntimeException rte) {
             assertThat((InterruptedException)rte.getCause(), sameInstance(toBeThrown));
         }
