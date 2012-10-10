@@ -338,89 +338,43 @@ proprietary programs.  If your program is a subroutine library, you may
 consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
-*/
+ */
 
 package jscover.server;
 
 import jscover.instrument.InstrumenterService;
 import jscover.json.JSONDataSaver;
 import jscover.util.IoService;
+import jscover.util.ReflectionUtils;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
 
-import java.io.*;
-import java.util.Properties;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
+import org.mockito.runners.MockitoJUnitRunner;
 
+@RunWith(MockitoJUnitRunner.class)
+public class WebServerTest {
+    private WebServer webServer = new WebServer();
+    private @Mock IoService ioService;
+    private @Mock JSONDataSaver jsonDataSaver;
+    private @Mock InstrumenterService instrumenterService;
+    private @Mock ConfigurationForServer configuration;
 
-public class WebServer extends NanoHTTPD {
-    public static final String JSCOVERAGE_STORE = "/jscoverage-store";
-    private ConfigurationForServer configuration;
-    private IoService ioService = new IoService();
-    private JSONDataSaver jsonDataSaver = new JSONDataSaver();
-    private InstrumenterService instrumenterService = new InstrumenterService();
-    private File log;
-
-    public void start(ConfigurationForServer configuration) throws IOException, InterruptedException {
-        this.configuration = configuration;
-        this.log = new File(configuration.getReportDir(), "errors.log");
-        if (this.log.exists()) {
-            this.log.delete();
-        }
-        File wwwroot = configuration.getDocumentRoot();
-
-        start(configuration.getPort(), configuration.getDocumentRoot());
-        myOut.println("Now serving files in port " + configuration.getPort() + " from \"" + wwwroot + "\"");
-        synchronized (this) {
-            this.wait();
-        }
-        Thread.yield();
-        Thread.sleep(10);
+    @Before
+    public void setUp() {
+        ReflectionUtils.setField(webServer, "ioService", ioService);
+        ReflectionUtils.setField(webServer, "jsonDataSaver", jsonDataSaver);
+        ReflectionUtils.setField(webServer, "instrumenterService", instrumenterService);
+        ReflectionUtils.setField(webServer, "configuration", configuration);
     }
 
-    public Response serve(String uri, String method, Properties header, Properties parms, Properties files, String data) {
-        try {
-            if (uri.equals("/stop")) {
-                synchronized (this) {
-                    this.notifyAll();
-                }
-                return new NanoHTTPD.Response(HTTP_OK, MIME_PLAINTEXT, "Shutting down server.");
-            } else if (uri.equals("/jscoverage.js")) {
-                return new NanoHTTPD.Response(HTTP_OK, getMime(uri), ioService.generateJSCoverageServerJS());
-            } else if (uri.startsWith(JSCOVERAGE_STORE)) {
-                File reportDir = configuration.getReportDir();
-                if (uri.length() > JSCOVERAGE_STORE.length()) {
-                    reportDir = new File(reportDir, uri.substring(JSCOVERAGE_STORE.length()));
-                }
-
-                jsonDataSaver.saveJSONData(reportDir, data);
-                ioService.generateJSCoverFilesForWebServer(reportDir, configuration.getVersion());
-                return new NanoHTTPD.Response(HTTP_OK, HTTP_OK, "Report stored at "+ reportDir);
-            } else if (uri.startsWith("/jscoverage.html")) {
-                String reportHTML = ioService.generateJSCoverageHtml(configuration.getVersion());
-                return new NanoHTTPD.Response(HTTP_OK, getMime(uri), reportHTML);
-            } else if (uri.startsWith("/jscoverage") && !uri.startsWith("/jscoverage.json")) {
-                return new NanoHTTPD.Response(HTTP_OK, getMime(uri), getClass().getResourceAsStream(uri));
-            } else if (uri.endsWith(".js") && !configuration.skipInstrumentation(uri)) {
-                String jsInstrumented = instrumenterService.instrumentJSForWebServer(configuration.getCompilerEnvirons(), new File(myRootDir + uri), uri, log);
-                return new NanoHTTPD.Response(HTTP_OK, "application/javascript", jsInstrumented);
-            } else {
-                return super.serve(uri, method, header, parms, files, data);
-            }
-        } catch (Throwable e) {
-            StringWriter stringWriter = new StringWriter();
-            e.printStackTrace(new PrintWriter(stringWriter));
-            return new NanoHTTPD.Response(HTTP_INTERNALERROR, MIME_PLAINTEXT, stringWriter.toString());
-        }
-    }
-
-    private String getMime(String uri) {
-        String extension = null;
-        int dot = uri.lastIndexOf('.');
-        //Get everything after the dot
-        if (dot >= 0)
-            extension = uri.substring(dot + 1).toLowerCase();
-
-        String mime = (String) theMimeTypes.get(extension);
-        if (mime == null)
-            mime = MIME_DEFAULT_BINARY;
-        return mime;
+    @Test
+    public void shouldServeJSCoverageHTML() {
+        given(configuration.getVersion()).willReturn("123");
+        webServer.serve("/jscoverage.html", "GET", null, null, null, null);
+        verify(ioService).generateJSCoverageHtml("123");
     }
 }
