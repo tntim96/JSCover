@@ -353,7 +353,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.SortedSet;
 
-public class SourceProcessor {
+class SourceProcessor {
 
     private static final String initLine = "  _$jscoverage['%s'][%d] = 0;\n";
     private static final String sourceInOneLine = "_$jscoverage['%s'].source = [%s];\n";

@@ -351,7 +351,7 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.SortedSet;
 
-public class ParseTreeInstrumenter implements NodeVisitor {
+class ParseTreeInstrumenter implements NodeVisitor {
     private final File log;
     private String fileName;
     private NodeProcessor nodeProcessor;

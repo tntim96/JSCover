@@ -342,23 +342,20 @@ Public License instead of this License.
 
 package jscover.server;
 
-import jscover.format.PlainFormatter;
-import jscover.format.SourceFormatter;
-import jscover.instrument.SourceProcessor;
+import jscover.instrument.InstrumenterService;
 import jscover.json.JSONDataSaver;
 import jscover.util.IoService;
-import jscover.util.IoUtils;
 
 import java.io.*;
 import java.util.Properties;
 
 
 public class WebServer extends NanoHTTPD {
-    private static SourceFormatter sourceFormatter = new PlainFormatter();
     public static final String JSCOVERAGE_STORE = "/jscoverage-store";
     private ConfigurationForServer configuration;
     private IoService ioService = new IoService();
     private JSONDataSaver jsonDataSaver = new JSONDataSaver();
+    private InstrumenterService instrumenterService = new InstrumenterService();
     private File log;
 
     public WebServer(ConfigurationForServer configuration) throws IOException, InterruptedException {
@@ -401,9 +398,7 @@ public class WebServer extends NanoHTTPD {
             } else if (uri.startsWith("/jscoverage") && !uri.startsWith("/jscoverage.json")) {
                 return new NanoHTTPD.Response(HTTP_OK, getMime(uri), getClass().getResourceAsStream(uri));
             } else if (uri.endsWith(".js") && !configuration.skipInstrumentation(uri)) {
-                SourceProcessor sourceProcessor = new SourceProcessor(configuration.getCompilerEnvirons(), uri, sourceFormatter, log);
-                String source = IoUtils.toString(new FileInputStream(myRootDir + uri));
-                String jsInstrumented = sourceProcessor.processSourceForServer(source);
+                String jsInstrumented = instrumenterService.instrumentJSForWebServer(configuration.getCompilerEnvirons(), new File(myRootDir + uri), uri, log);
                 return new NanoHTTPD.Response(HTTP_OK, "application/javascript", jsInstrumented);
             } else {
                 return super.serve(uri, method, header, parms, files, data);

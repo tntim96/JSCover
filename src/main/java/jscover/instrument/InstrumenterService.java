@@ -338,65 +338,37 @@ proprietary programs.  If your program is a subroutine library, you may
 consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
-*/
+ */
 
-package jscover.filesystem;
+package jscover.instrument;
 
 import jscover.format.PlainFormatter;
 import jscover.format.SourceFormatter;
-import jscover.instrument.InstrumenterService;
-import jscover.util.IoService;
 import jscover.util.IoUtils;
+import org.mozilla.javascript.CompilerEnvirons;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.StringReader;
 
-public class FileSystemInstrumenter {
+public class InstrumenterService {
     private SourceFormatter sourceFormatter = new PlainFormatter();
-    private IoService ioService = new IoService();
-    private InstrumenterService instrumenterService = new InstrumenterService();
-    private ConfigurationForFS configuration;
-    private File log;
 
-    public FileSystemInstrumenter(ConfigurationForFS configuration) {
-        this.configuration = configuration;
-        this.log = new File(configuration.getDestDir(), "errors.log");
-        if (this.log.exists()) {
-            this.log.delete();
+    public String instrumentJSForWebServer(CompilerEnvirons compilerEnvirons, File srcFile, String uri, File log) {
+        SourceProcessor sourceProcessor = new SourceProcessor(compilerEnvirons, uri, sourceFormatter, log);
+        try {
+            String source = IoUtils.toString(new FileInputStream(srcFile));
+            return sourceProcessor.processSourceForServer(source);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    public void run() {
-        ioService.generateJSCoverFilesForFileSystem(configuration.getDestDir(), configuration.getVersion());
-        copyFolder(configuration.getSrcDir(), configuration.getDestDir());
-    }
-
-    private void copyFolder(File src, File dest) {
-        if (src.isDirectory()) {
-            if (!dest.exists())
-                dest.mkdirs();
-
-            String files[] = src.list();
-            for (String file : files) {
-                File srcFile = new File(src, file);
-                String path = getRelativePath(srcFile).replaceAll("\\\\","/");
-                if (configuration.exclude(path)) {
-                    continue;
-                }
-                File destFile = new File(dest, file);
-                //recursive copy
-                copyFolder(srcFile, destFile);
-            }
-        } else {
-            String path = getRelativePath(src).replaceAll("\\\\","/");
-            if (src.isFile() && src.toString().endsWith(".js") && !configuration.skipInstrumentation(path)) {
-                instrumenterService.instrumentJSForFileSystem(configuration.getCompilerEnvirons(), src, dest, path, log);
-            } else {
-                IoUtils.copy(src, dest);
-            }
-        }
-    }
-
-    private String getRelativePath(File file) {
-        return file.getAbsolutePath().substring(configuration.getSrcDir().getAbsolutePath().length()+File.separator.length());
+    public void instrumentJSForFileSystem(CompilerEnvirons compilerEnvirons, File srcFile, File dest, String uri, File log) {
+        SourceProcessor sourceProcessor = new SourceProcessor(compilerEnvirons, uri, sourceFormatter, log);
+        String source = IoUtils.loadFromFileSystem(srcFile);
+        String jsInstrumented = sourceProcessor.processSourceForFileSystem(source);
+        IoUtils.copy(new StringReader(jsInstrumented), dest);
     }
 }

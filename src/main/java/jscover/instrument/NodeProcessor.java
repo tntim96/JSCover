@@ -349,7 +349,7 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-public class NodeProcessor {
+class NodeProcessor {
     private StatementBuilder statementBuilder = new StatementBuilder();
     private SortedSet<Integer> validLines = new TreeSet<Integer>();
     private String fileName;

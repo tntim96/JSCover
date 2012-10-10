@@ -347,7 +347,7 @@ import org.mozilla.javascript.ast.*;
 
 import java.util.SortedSet;
 
-public class StatementBuilder {
+class StatementBuilder {
 
     public ExpressionStatement buildInstrumentationStatement(int lineNumber, String fileName, SortedSet<Integer> validLines) {
         if (lineNumber < 1)
