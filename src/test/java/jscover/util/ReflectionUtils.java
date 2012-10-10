@@ -354,4 +354,14 @@ public class ReflectionUtils {
             throw new RuntimeException(e);
         }
     }
+
+    public static void setField(Object object, Class clazz, String fieldName, Object value) {
+        try {
+            Field field = clazz.getDeclaredField(fieldName);
+            field.setAccessible(true);
+            field.set(object, value);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

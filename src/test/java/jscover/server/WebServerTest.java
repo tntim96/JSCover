@@ -355,6 +355,7 @@ import static jscover.server.WebServer.JSCOVERAGE_STORE;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.mozilla.javascript.CompilerEnvirons;
 
 import java.io.File;
 
@@ -378,6 +379,8 @@ public class WebServerTest {
     public void shouldServeJSCoverageJS() {
         webServer.serve("/jscoverage.js", "GET", null, null, null, null);
         verify(ioService).generateJSCoverageServerJS();
+        verifyZeroInteractions(jsonDataSaver);
+        verifyZeroInteractions(instrumenterService);
     }
 
     @Test
@@ -385,8 +388,11 @@ public class WebServerTest {
         File file = new File("target/temp");
         file.deleteOnExit();
         given(configuration.getReportDir()).willReturn(file);
+        given(configuration.getVersion()).willReturn("theVersion");
         webServer.serve(JSCOVERAGE_STORE, "GET", null, null, null, "data");
         verify(jsonDataSaver).saveJSONData(file, "data");
+        verify(ioService).generateJSCoverFilesForWebServer(file, "theVersion");
+        verifyZeroInteractions(instrumenterService);
     }
 
     @Test
@@ -394,8 +400,12 @@ public class WebServerTest {
         File file = new File("target/temp");
         file.deleteOnExit();
         given(configuration.getReportDir()).willReturn(file);
-        webServer.serve(JSCOVERAGE_STORE+"subdirectory", "GET", null, null, null, "data");
-        verify(jsonDataSaver).saveJSONData(new File(file,"subdirectory"), "data");
+        given(configuration.getVersion()).willReturn("theVersion");
+        webServer.serve(JSCOVERAGE_STORE + "subdirectory", "GET", null, null, null, "data");
+        File subdirectory = new File(file, "subdirectory");
+        verify(jsonDataSaver).saveJSONData(subdirectory, "data");
+        verify(ioService).generateJSCoverFilesForWebServer(subdirectory, "theVersion");
+        verifyZeroInteractions(instrumenterService);
     }
 
     @Test
@@ -403,5 +413,41 @@ public class WebServerTest {
         given(configuration.getVersion()).willReturn("123");
         webServer.serve("/jscoverage.html", "GET", null, null, null, null);
         verify(ioService).generateJSCoverageHtml("123");
+        verifyZeroInteractions(jsonDataSaver);
+        verifyZeroInteractions(instrumenterService);
+    }
+
+    @Test
+    public void shouldServeJSCoverageHighlightCSS() {
+        webServer.serve("/jscoverage-highlight.css", "GET", null, null, null, null);
+        verify(ioService).getResourceAsStream("/jscoverage-highlight.css");
+        verifyZeroInteractions(jsonDataSaver);
+        verifyZeroInteractions(instrumenterService);
+    }
+
+    @Test
+    public void shouldServeInstrumentedJS() {
+        File wwwRoot = new File("wwwRoot");
+        ReflectionUtils.setField(webServer, NanoHTTPD.class, "myRootDir", wwwRoot);
+        CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
+        given(configuration.getCompilerEnvirons()).willReturn(compilerEnvirons);
+        given(configuration.skipInstrumentation("/js/production.js")).willReturn(false);
+        webServer.serve("/js/production.js", "GET", null, null, null, null);
+        verify(instrumenterService).instrumentJSForWebServer(compilerEnvirons, new File("wwwRoot/js/production.js"), "/js/production.js", null);
+        verifyZeroInteractions(ioService);
+        verifyZeroInteractions(jsonDataSaver);
+    }
+
+    @Test
+    public void shouldServeNonInstrumentedJS() {
+        File wwwRoot = new File("wwwRoot");
+        ReflectionUtils.setField(webServer, NanoHTTPD.class, "myRootDir", wwwRoot);
+        CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
+        given(configuration.getCompilerEnvirons()).willReturn(compilerEnvirons);
+        given(configuration.skipInstrumentation("/test/production.js")).willReturn(true);
+        webServer.serve("/test/production.js", "GET", null, null, null, null);
+        verifyZeroInteractions(instrumenterService);
+        verifyZeroInteractions(ioService);
+        verifyZeroInteractions(jsonDataSaver);
     }
 }

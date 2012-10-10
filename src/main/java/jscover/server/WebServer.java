@@ -396,8 +396,8 @@ public class WebServer extends NanoHTTPD {
             } else if (uri.startsWith("/jscoverage.html")) {
                 String reportHTML = ioService.generateJSCoverageHtml(configuration.getVersion());
                 return new NanoHTTPD.Response(HTTP_OK, getMime(uri), reportHTML);
-            } else if (uri.startsWith("/jscoverage") && !uri.startsWith("/jscoverage.json")) {
-                return new NanoHTTPD.Response(HTTP_OK, getMime(uri), getClass().getResourceAsStream(uri));
+            } else if (uri.startsWith("/jscoverage")) {
+                return new NanoHTTPD.Response(HTTP_OK, getMime(uri), ioService.getResourceAsStream(uri));
             } else if (uri.endsWith(".js") && !configuration.skipInstrumentation(uri)) {
                 String jsInstrumented = instrumenterService.instrumentJSForWebServer(configuration.getCompilerEnvirons(), new File(myRootDir + uri), uri, log);
                 return new NanoHTTPD.Response(HTTP_OK, "application/javascript", jsInstrumented);

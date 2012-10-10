@@ -343,6 +343,7 @@ Public License instead of this License.
 package jscover.util;
 
 import java.io.File;
+import java.io.InputStream;
 import java.io.StringReader;
 
 public class IoService {
@@ -389,7 +390,10 @@ public class IoService {
     }
 
     private void copyResourceToDir(String resource, File parent) {
-        IoUtils.copy(getClass().getResourceAsStream("/"+resource), new File(parent, resource));
+        IoUtils.copy(getResourceAsStream("/"+resource), new File(parent, resource));
     }
 
+    public InputStream getResourceAsStream(String uri) {
+        return getClass().getResourceAsStream(uri);
+    }
 }
