@@ -468,7 +468,7 @@ public class HtmlUnitServerTest {
         WebWindow webWindow = webClient.getWebWindowByName("jscoverage_window");
         ScriptResult result = ((HtmlPage)webWindow.getEnclosedPage()).executeJavaScript("jscoverage_report('directory');");
 
-        assertThat(result.getJavaScriptResult().toString(), equalTo("Report stored at "+new File(reportDir+"/directory").getPath()));
+        assertThat(result.getJavaScriptResult().toString(), equalTo("Report stored at " + new File(reportDir + "/directory").getPath()));
 
         String json = IoUtils.toString(new File(reportDir+"/directory/jscoverage.json"));
         assertThat(json, containsString("/script.js"));
@@ -504,9 +504,16 @@ public class HtmlUnitServerTest {
         webClient.waitForBackgroundJavaScript(100);
 
         WebWindow webWindow = webClient.getWebWindowByName("jsCoverWindow");
-        page = (HtmlPage)webWindow.getEnclosedPage();
+        HtmlPage jsCoverPage = (HtmlPage)webWindow.getEnclosedPage();
 
-        verifyTotal(webClient, page, 6);
+        verifyTotal(webClient, jsCoverPage, 6);
+
+        page.getElementById("radio3").click();
+        webClient.waitForBackgroundJavaScript(100);
+
+        jsCoverPage.executeJavaScript("jscoverage_recalculateSummaryTab();");
+        webClient.waitForBackgroundJavaScript(500);
+        verifyTotal(webClient, jsCoverPage, 73);
     }
 
     @Test
@@ -518,20 +525,22 @@ public class HtmlUnitServerTest {
         page.getHtmlElementById("browserTab").click();
         HtmlPage frame = (HtmlPage)page.getFrameByName("browserIframe").getEnclosedPage();
         frame.getElementById("radio1").click();
-        webClient.waitForBackgroundJavaScript(500);
+        page.executeJavaScript("jscoverage_recalculateSummaryTab();");
+        assertEquals("60%", page.getElementById("summaryTotal").getTextContent());
         frame.getElementById("radio2").click();
-        webClient.waitForBackgroundJavaScript(500);
+        page.executeJavaScript("jscoverage_recalculateSummaryTab();");
+        assertEquals("73%", page.getElementById("summaryTotal").getTextContent());
         frame.getElementById("radio3").click();
-        webClient.waitForBackgroundJavaScript(500);
+        page.executeJavaScript("jscoverage_recalculateSummaryTab();");
+        assertEquals("86%", page.getElementById("summaryTotal").getTextContent());
         frame.getElementById("radio4").click();
-        webClient.waitForBackgroundJavaScript(500);
-        verifyTotal(webClient, page, 100);
+        page.executeJavaScript("jscoverage_recalculateSummaryTab();");
+        assertEquals("100%", page.getElementById("summaryTotal").getTextContent());
     }
 
     private void verifyTotal(WebClient webClient, HtmlPage page, int percentage) throws IOException {
         page.getHtmlElementById("summaryTab").click();
         webClient.waitForBackgroundJavaScript(2000);
-        String total = page.getElementById("summaryTotal").getTextContent();
-        assertEquals(percentage+"%", total);
+        assertEquals(percentage+"%", page.getElementById("summaryTotal").getTextContent());
     }
 }
