@@ -368,8 +368,6 @@ public class Main {
 
     private String manifestName = "MANIFEST.MF";
     private List<String> dependantClasses = new ArrayList<String>() {{
-        add("org.apache.commons.lang.ClassUtils");
-        add("org.apache.commons.io.IOUtils");
         add("org.mozilla.javascript.ast.AstNode");
     }};
     private WebServer webServer = new WebServer();

@@ -380,7 +380,7 @@ public class MainParsingTest {
         } catch(IllegalStateException e) {
             String message = e.getMessage();
             assertThat(message, containsString("Ensure these JARs are in the same directory as JSCover.jar:"));
-            assertThat(message, containsString("commons-io-1.4.jar commons-lang-2.4.jar js.jar"));
+            assertThat(message, containsString("js.jar"));
         }
     }
 

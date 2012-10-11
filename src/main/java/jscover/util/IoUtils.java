@@ -342,45 +342,101 @@ Public License instead of this License.
 
 package jscover.util;
 
-import org.apache.commons.io.IOUtils;
-
 import java.io.*;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class IoUtils {
+    private static void closeQuietly(InputStream s) {
+        if (s != null) {
+            try {
+                s.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private static void closeQuietly(OutputStream s) {
+        if (s != null) {
+            try {
+                s.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private static void closeQuietly(Reader s) {
+        if (s != null) {
+            try {
+                s.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private static void closeQuietly(Writer s) {
+        if (s != null) {
+            try {
+                s.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public static String toString(InputStream is) {
+        return toString(is, Charset.defaultCharset().name());
+    }
+
+    private static String toString(InputStream is, String encoding) {
+        StringBuilder result = new StringBuilder();
+        int bufSize = 1024;
+        char buf[] = new char[bufSize];
+        BufferedReader br = null;
         try {
-            return IOUtils.toString(is);
+            br = new BufferedReader(new InputStreamReader(is, encoding));
+            for (int read = 0; (read = br.read(buf)) != -1; ) {
+                result.append(buf, 0, read);
+            }
+            return result.toString();
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
-            IOUtils.closeQuietly(is);
+            closeQuietly(br);
         }
     }
 
     public static String toString(File file) {
         try {
-            return IOUtils.toString(new FileInputStream(file));
+            return toString(new FileInputStream(file));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    @SuppressWarnings("unchecked")
     public static List<String> readLines(InputStream is) {
-        try {
-            return IOUtils.readLines(is);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return readLines(new BufferedReader(new InputStreamReader(is)));
     }
 
-    @SuppressWarnings("unchecked")
     public static List<String> readLines(Reader reader) {
+        return readLines(new BufferedReader(reader));
+    }
+
+    public static List<String> readLines(BufferedReader br) {
+        List<String> result = new ArrayList<String>();
         try {
-            return IOUtils.readLines(reader);
+            for (String line; (line = br.readLine()) != null; ) {
+                result.add(line);
+            }
+            return result;
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } finally {
+            closeQuietly(br);
         }
     }
 
@@ -389,11 +445,11 @@ public abstract class IoUtils {
         try {
 //            is = Thread.currentThread().getContextClassLoader().getResourceAsStream(dataFile);
             is = IoUtils.class.getResourceAsStream(dataFile);
-            return IOUtils.toString(is, "UTF-8");
+            return toString(is, "UTF-8");
         } catch (Throwable e) {
             throw new RuntimeException(String.format("Problem loading file: '%s'",dataFile),e);
         } finally {
-            IOUtils.closeQuietly(is);
+            closeQuietly(is);
         }
     }
 
@@ -401,22 +457,26 @@ public abstract class IoUtils {
         InputStream is = null;
         try {
             is = new FileInputStream(dataFile);
-            return IOUtils.toString(is, "UTF-8");
+            return toString(is, "UTF-8");
         } catch (Throwable e) {
             throw new RuntimeException(String.format("Problem loading file: '%s'",dataFile),e);
         } finally {
-            IOUtils.closeQuietly(is);
+            closeQuietly(is);
         }
     }
 
     public static void copy(InputStream is, OutputStream os) {
+        int bufSize = 1024;
+        byte buf[] = new byte[bufSize];
         try {
-            IOUtils.copy(is, os);
-        } catch (Throwable e) {
+            for (int read = 0; (read = is.read(buf)) != -1; ) {
+                os.write(buf, 0, read);
+            }
+        } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
-            IOUtils.closeQuietly(is);
-            IOUtils.closeQuietly(os);
+            closeQuietly(is);
+            closeQuietly(os);
         }
     }
 
@@ -424,25 +484,43 @@ public abstract class IoUtils {
         FileOutputStream os = null;
         try {
             os = new FileOutputStream(dest);
-            IOUtils.copy(reader, os);
+            copy(reader, os);
         } catch (Throwable e) {
             throw new RuntimeException(e);
         } finally {
-            IOUtils.closeQuietly(reader);
-            IOUtils.closeQuietly(os);
+            closeQuietly(reader);
+            closeQuietly(os);
         }
+    }
+
+    private static void copy(Reader reader, OutputStream os) {
+        int bufSize = 1024;
+        char buf[] = new char[bufSize];
+        BufferedWriter bw = null;
+        try {
+            bw = new BufferedWriter(new OutputStreamWriter(os));
+            for (int read = 0; (read = reader.read(buf)) != -1; ) {
+                bw.write(buf, 0, read);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            closeQuietly(reader);
+            closeQuietly(bw);
+        }
+
     }
 
     public static void copy(InputStream is, File dest) {
         FileOutputStream os = null;
         try {
             os = new FileOutputStream(dest);
-            IOUtils.copy(is, os);
+            copy(is, os);
         } catch (Throwable e) {
             throw new RuntimeException(e);
         } finally {
-            IOUtils.closeQuietly(is);
-            IOUtils.closeQuietly(os);
+            closeQuietly(is);
+            closeQuietly(os);
         }
     }
 
@@ -452,12 +530,12 @@ public abstract class IoUtils {
         try {
             is = new FileInputStream(src);
             os = new FileOutputStream(dest);
-            IOUtils.copy(is, os);
+            copy(is, os);
         } catch (Throwable e) {
             throw new RuntimeException(e);
         } finally {
-            IOUtils.closeQuietly(is);
-            IOUtils.closeQuietly(os);
+            closeQuietly(is);
+            closeQuietly(os);
         }
     }
 }

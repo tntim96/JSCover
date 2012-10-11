@@ -25,7 +25,16 @@
         <a href="http://siliconforks.com/jscoverage/manual.html">JSCoverage documentation</a>.
     </p>
 
-    <p>NB - The binary <i>JSCover.jar</i> must have all dependent JARs available in the same directory.</p>
+    <p>
+        JSCover comes packaged in two JARs.
+        The first option is preferred to avoid class-path issues, especially as JSCover may be using a non-standard
+        version on Rhino (e.g. built from trunk).
+    </p>
+
+    <ul>
+        <li><i>JSCover-all.jar</i> which includes all dependencies</li>
+        <li><i>JSCover.jar</i> which must have all dependent JARs available in the same directory</li>
+    </ul>
 
     <p>
         A log file is also produced in the output directory which should be inspected after running.
@@ -33,6 +42,10 @@
     </p>
 
     <p>Usage:</p>
+
+    <div class="shell">
+        java -jar JSCover-all.jar [OPTIONS]...
+    </div>
 
     <div class="shell">
         java -jar JSCover.jar [OPTIONS]...

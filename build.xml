@@ -61,13 +61,7 @@
 	</target>
 
     <target name="jar" depends="compile">
-        <!--
-        TODO copy all run-time using filter *.jar and use ant-contrib to
-        dynamically create the 'Class-Path' manifest entry
-        -->
-        <copy file="lib/runtime/commons-io-1.4.jar" todir="${dist.dir}"/>
-        <copy file="lib/runtime/commons-lang-2.4.jar" todir="${dist.dir}"/>
-        <copy file="lib/runtime/js.jar" tofile="${dist.dir}/js.jar"/>
+        <copy file="lib/runtime/js.jar" todir="${dist.dir}"/>
         <jar jarfile="${dist.dir}/${ant.project.name}.jar"
              basedir="${classes.main.dir}"
              compress="true">
@@ -83,10 +77,6 @@
     <target name="jar-all" depends="compile">
         <property name="tmpDir" value="${build.dir}/tmp"/>
         <mkdir dir="${tmpDir}"/>
-        <unzip src="lib/runtime/commons-io-1.4.jar" dest="${tmpDir}"/>
-        <unzip src="lib/runtime/commons-lang-2.4.jar" dest="${tmpDir}"/>
-        <move file="${tmpDir}/META-INF/LICENSE.txt" tofile="${tmpDir}/META-INF/LICENSE-apache.txt"/>
-        <move file="${tmpDir}/META-INF/NOTICE.txt" tofile="${tmpDir}/META-INF/NOTICE-apache.txt"/>
         <unzip src="lib/runtime/js.jar" dest="${tmpDir}"/>
         <move file="${tmpDir}/LICENSE.txt" tofile="${tmpDir}/META-INF/LICENSE-mozilla.txt"/>
         <copy todir="${tmpDir}" includeemptydirs="no">
@@ -103,7 +93,7 @@
         </jar>
     </target>
 
-    <target name="zip" depends="pre-commit, jar-test">
+    <target name="zip" depends="pre-commit, jar-test, jar-all-test">
         <zip destfile="${dist.dir}/${ant.project.name}-${version}.zip">
             <fileset dir="${basedir}">
                 <include name="**/*"/>
@@ -142,7 +132,7 @@
 	</target>
 
 	<target name="coverage-check">
-		<cobertura-check totallinerate="92" totalbranchrate="91"/>
+		<cobertura-check totallinerate="91" totalbranchrate="91"/>
 	</target>
 
 	<target name="compile-tests" depends="compile">
@@ -216,6 +206,13 @@
 
     <target name="jar-test" depends="jar">
         <java jar="${dist.dir}/JSCover.jar" fork="true" spawn="true">
+            <arg line="-ws --port=9080"/>
+        </java>
+        <get maxtime="2" src="http://localhost:9080/stop" dest="${build.dir}/stop.txt"/>
+    </target>
+
+    <target name="jar-all-test" depends="jar-all">
+        <java jar="${dist.dir}/JSCover-all.jar" fork="true" spawn="true">
             <arg line="-ws --port=9080"/>
         </java>
         <get maxtime="2" src="http://localhost:9080/stop" dest="${build.dir}/stop.txt"/>

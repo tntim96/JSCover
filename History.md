@@ -1,3 +1,8 @@
+0.0.4 / 2012-10-11
+==================
+  * Include JAR, JSCover-all.jar, containing dependencies in distribution
+  * Internal - More tests, remove Apache commons JARs, upgrade Mockito
+
 0.0.3 / 2012-10-09
 ==================
   * Add server handling of JavaScript-programmatic triggering of report storage
