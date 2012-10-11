@@ -498,6 +498,18 @@ public class HtmlUnitServerTest {
     }
 
     @Test
+    public void shouldWorkInInvertedMode() throws Exception {
+        HtmlPage page = webClient.getPage("http://localhost:9001/example/index.html");
+        page.getElementById("launchJSCover").click();
+        webClient.waitForBackgroundJavaScript(100);
+
+        WebWindow webWindow = webClient.getWebWindowByName("jsCoverWindow");
+        page = (HtmlPage)webWindow.getEnclosedPage();
+
+        verifyTotal(webClient, page, 6);
+    }
+
+    @Test
     public void shouldIncreaseCoverage() throws Exception {
         HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?example");
 
