@@ -1,7 +1,7 @@
 0.0.4 / 2012-10-11
 ==================
-  * Include JAR, JSCover-all.jar, containing dependencies in distribution
-  * Internal - More tests, remove Apache commons JARs, upgrade Mockito
+  * Include JSCover-all.jar, containing all JAR dependencies, in distribution
+  * Internal - More tests, remove Apache commons JARs, upgrade Mockito, Inverted mode test
 
 0.0.3 / 2012-10-09
 ==================
