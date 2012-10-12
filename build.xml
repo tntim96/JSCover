@@ -229,5 +229,5 @@
 
 	<target name="junit" depends="run-tests, cobertura-report, coverage-check"/>
 
-	<target name="pre-commit" depends="clean, junit, run-acceptance-tests, junitreport"/>
+	<target name="pre-commit" depends="clean, junit, run-acceptance-tests, junitreport" description="Run this before committing"/>
 </project>

@@ -1,6 +1,7 @@
-0.0.4 / 2012-10-11
+0.0.4 / 2012-10-12
 ==================
   * Include JSCover-all.jar, containing all JAR dependencies, in distribution
+  * Fix https://github.com/tntim96/JSCover/issues/2, https://bugzilla.mozilla.org/show_bug.cgi?id=800616
   * Internal - More tests, remove Apache commons JARs, upgrade Mockito, Inverted mode test
 
 0.0.3 / 2012-10-09
