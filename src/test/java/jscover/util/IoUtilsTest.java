@@ -503,7 +503,7 @@ public class IoUtilsTest {
 
     @Test
     public void should() {
-        Dummy dummy = new Dummy();
+        new Dummy();
     }
 
     static class MyOutputStream extends OutputStream {
