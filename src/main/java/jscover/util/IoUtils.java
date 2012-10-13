@@ -348,37 +348,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class IoUtils {
-    private static void closeQuietly(InputStream s) {
-        if (s != null) {
-            try {
-                s.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private static void closeQuietly(OutputStream s) {
-        if (s != null) {
-            try {
-                s.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private static void closeQuietly(Reader s) {
-        if (s != null) {
-            try {
-                s.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private static void closeQuietly(Writer s) {
+    static void closeQuietly(Closeable s) {
         if (s != null) {
             try {
                 s.close();
@@ -416,10 +386,6 @@ public abstract class IoUtils {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public static List<String> readLines(InputStream is) {
-        return readLines(new BufferedReader(new InputStreamReader(is)));
     }
 
     public static List<String> readLines(Reader reader) {
@@ -493,7 +459,7 @@ public abstract class IoUtils {
         }
     }
 
-    private static void copy(Reader reader, OutputStream os) {
+    static void copy(Reader reader, OutputStream os) {
         int bufSize = 1024;
         char buf[] = new char[bufSize];
         BufferedWriter bw = null;

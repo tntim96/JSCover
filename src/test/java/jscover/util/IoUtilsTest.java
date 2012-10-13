@@ -338,33 +338,93 @@ proprietary programs.  If your program is a subroutine library, you may
 consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
-*/
+ */
 
 package jscover.util;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.mockito.Mock;
+import org.mockito.Spy;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.*;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
 
-@RunWith(JUnit4.class)
+@RunWith(MockitoJUnitRunner.class)
 public class IoUtilsTest {
-    @Test(expected = RuntimeException.class)
-    public void shouldWrapExceptionsInReadLinesInputStream() {
-        IoUtils.readLines(new MyInputStream());
+    private @Mock InputStream is;
+    private @Spy OutputStream os = new MyOutputStream();
+    private @Mock Reader reader;
+    private @Mock Writer writer;
+
+    @Test
+    public void shouldCloseStreamQuietly() throws IOException {
+        doThrow(new IOException("Ouch!")).when(os).close();
+        IoUtils.closeQuietly(os);
     }
 
     @Test(expected = RuntimeException.class)
-    public void shouldWrapExceptionsInReadLinesStringReader() {
-        IoUtils.readLines(new MyReader());
+    public void shouldWrapExceptionsInReadLinesStringReader() throws IOException {
+        given(reader.read(any(char[].class), anyInt(), anyInt())).willThrow(new IOException("Ouch!"));
+        IoUtils.readLines(reader);
     }
 
     @Test(expected = RuntimeException.class)
-    public void shouldWrapExceptionsInToStringInputStream() {
-        IoUtils.toString(new MyInputStream());
+    public void shouldWrapExceptionsInToStringInputStream() throws IOException {
+        given(is.read(any(byte[].class))).willThrow(new IOException("Ouch!"));
+        IoUtils.toString(is);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void shouldWrapExceptionsInToStringFile() {
+        IoUtils.toString(new File("/"));
+    }
+
+    @Test
+    public void shouldWrapExceptionsInCopyISToOS() throws Exception {
+        doThrow(new IOException("Ouch!")).when(os).write(any(byte[].class), anyInt(), anyInt());
+        try {
+            IoUtils.copy(is, os);
+            fail();
+        } catch(Throwable throwable) {
+            verify(is).close();
+        }
+    }
+
+    @Test
+    public void shouldCloseOSInCopyISToOS() throws Exception {
+        given(is.read(any(byte[].class))).willThrow(new IOException("Ouch!"));
+        try {
+            IoUtils.copy(is, os);
+            fail();
+        } catch(Throwable throwable) {
+            verify(os).close();
+        }
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void shouldWrapExceptionsInCopyReaderToFile() throws IOException {
+        given(reader.read(any(char[].class))).willThrow(new IOException("Ouch!"));
+        IoUtils.copy(reader, new File("target/dummy.txt"));
+    }
+
+    @Test
+    public void shouldWrapExceptionsInCopyReaderToOS() throws Exception {
+        given(reader.read(any(char[].class))).willThrow(new IOException("Ouch!"));
+        try {
+            IoUtils.copy(reader, os);
+            fail();
+        } catch(Throwable throwable) {
+            verify(os).close();
+        }
     }
 
     @Test
@@ -372,7 +432,7 @@ public class IoUtilsTest {
         assertEquals("Working!", IoUtils.loadFromClassPath("/jscover/util/test.txt"));
     }
 
-    @Test//(expected = RuntimeException.class)
+    @Test
     public void shouldLoadFileFromClasspathRelativePath() {
         assertEquals("Working!", IoUtils.loadFromClassPath("test.txt"));
     }
@@ -430,22 +490,26 @@ public class IoUtilsTest {
         dest.delete();
     }
 
-    static class MyInputStream extends InputStream {
-        @Override
-        public int read() throws IOException {
-            throw new IOException();
-        }
+    @Test(expected = RuntimeException.class)
+    public void shouldWrapExceptionsInCopyInputStreamToFile() throws IOException {
+        given(is.read(any(byte[].class))).willThrow(new IOException("Ouch!"));
+        IoUtils.copy(is, new File("target"));
     }
 
-    static class MyReader extends Reader {
-        @Override
-        public void close() throws IOException {
-            throw new IOException();
-        }
-
-        @Override
-        public int read(char[] arg0, int arg1, int arg2) throws IOException {
-            throw new IOException();
-        }
+    @Test(expected = RuntimeException.class)
+    public void shouldWrapExceptionsInCopyFileToFile() throws IOException {
+        IoUtils.copy(new File("target"), new File("target"));
     }
+
+    @Test
+    public void should() {
+        Dummy dummy = new Dummy();
+    }
+
+    static class MyOutputStream extends OutputStream {
+        @Override
+        public void write(int b) throws IOException {}
+    }
+
+    static class Dummy extends IoUtils {}
 }
