@@ -342,81 +342,21 @@ Public License instead of this License.
 
 package jscover.server;
 
-import jscover.instrument.InstrumenterService;
-import jscover.json.JSONDataSaver;
-import jscover.util.IoService;
-
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Properties;
 
-public class InstrumentingRequestHandler extends HttpServer {
-    public static void main(String args[]) throws Exception {
-        ConfigurationForServer configuration = ConfigurationForServer.parse(
-                new String[]{
-                        "--port=8081",
-                        "--report-dir=target"
-                }
-        );
-        Properties properties = new Properties();
-        properties.put("version", "test");
-        configuration.setProperties(properties);
-        boolean running = true;
+public class WebDaemon {
+    public void start(ConfigurationForServer configuration) throws IOException, InterruptedException {
+        File log = new File(configuration.getReportDir(), "errors.log");
+        if (log.exists()) {
+            log.delete();
+        }
         ServerSocket Server = new ServerSocket(configuration.getPort());
-        while (running) {
+        while (true) {
             Socket socket = Server.accept();
-            (new InstrumentingRequestHandler(socket, configuration, null)).start();
-        }
-    }
-
-    public static final String JSCOVERAGE_STORE = "/jscoverage-store";
-    private ConfigurationForServer configuration;
-    private IoService ioService = new IoService();
-    private JSONDataSaver jsonDataSaver = new JSONDataSaver();
-    private InstrumenterService instrumenterService = new InstrumenterService();
-    private File log;
-
-    public InstrumentingRequestHandler(Socket socket, ConfigurationForServer configuration, File log) {
-        super(socket, configuration.getDocumentRoot());
-        this.configuration = configuration;
-        this.log = log;
-    }
-
-    @Override
-    protected void handlePost(HttpRequest request, String data) {
-        String uri = request.getUrl();
-        File reportDir = configuration.getReportDir();
-        if (uri.length() > JSCOVERAGE_STORE.length()) {
-            reportDir = new File(reportDir, uri.substring(JSCOVERAGE_STORE.length()));
-        }
-
-        jsonDataSaver.saveJSONData(reportDir, data);
-        ioService.generateJSCoverFilesForWebServer(reportDir, configuration.getVersion());
-        sendResponse(HTTP_STATUS.HTTP_OK, "text/plain", "Report stored at " + reportDir);
-    }
-
-    @Override
-    protected void handleGet(HttpRequest request) throws IOException {
-        String uri = request.getUrl();
-        try {
-            if (uri.equals("/jscoverage.js")) {
-                sendResponse(HTTP_STATUS.HTTP_OK, request.getMime(), ioService.generateJSCoverageServerJS());
-            } else if (uri.startsWith("/jscoverage.html")) {
-                String reportHTML = ioService.generateJSCoverageHtml(configuration.getVersion());
-                sendResponse(HTTP_STATUS.HTTP_OK, request.getMime(), reportHTML);
-            } else if (uri.startsWith("/jscoverage")) {
-                sendResponse(HTTP_STATUS.HTTP_OK, request.getMime(), ioService.getResourceAsStream(uri));
-            } else if (uri.endsWith(".js") && !configuration.skipInstrumentation(uri)) {
-                String jsInstrumented = instrumenterService.instrumentJSForWebServer(configuration.getCompilerEnvirons(), new File(wwwRoot, uri), uri, log);
-                sendResponse(HTTP_STATUS.HTTP_OK, "application/javascript", jsInstrumented);
-            } else {
-                super.handleGet(request);
-            }
-        } catch (Throwable e) {
-            StringWriter stringWriter = new StringWriter();
-            e.printStackTrace(new PrintWriter(stringWriter));
-            sendResponse(HTTP_STATUS.HTTP_INTERNAL_SERVER_ERROR, "text/plain", stringWriter.toString());
+            (new InstrumentingRequestHandler(socket, configuration, log)).start();
         }
     }
 }

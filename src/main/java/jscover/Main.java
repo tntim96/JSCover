@@ -345,6 +345,7 @@ package jscover;
 import jscover.filesystem.ConfigurationForFS;
 import jscover.filesystem.FileSystemInstrumenter;
 import jscover.server.ConfigurationForServer;
+import jscover.server.WebDaemon;
 import jscover.server.WebServer;
 import jscover.util.IoUtils;
 
@@ -371,6 +372,7 @@ public class Main {
         add("org.mozilla.javascript.ast.AstNode");
     }};
     private WebServer webServer = new WebServer();
+    private WebDaemon webDaemon = new WebDaemon();
     private FileSystemInstrumenter fileSystemInstrumenter = new FileSystemInstrumenter();
 
     void initialize() throws IOException {
@@ -443,7 +445,8 @@ public class Main {
             throw new UnsupportedOperationException("The proxy server is not yet implemented");
         } else {
             try {
-                webServer.start(configuration);
+//                webServer.start(configuration);
+                webDaemon.start(configuration);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
