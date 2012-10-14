@@ -393,9 +393,15 @@ public class HttpServer extends Thread {
                     headers.put(headerLine.substring(0, index).trim().toLowerCase(), headerLine.substring(index + 1).trim());
             }
 
-            if (httpMethod.equals("GET"))
+            if (httpMethod.equals("GET")) {
+                if (httpRequest.getUrl().equals("/stop")) {
+                    sendResponse(HTTP_STATUS.HTTP_OK, "text/plain", "Shutting down the server.");
+                    IoUtils.closeQuietly(br);
+                    IoUtils.closeQuietly(os);
+                    System.exit(0);
+                }
                 handleGet(httpRequest);
-            else if (httpMethod.equals("POST")) {
+            } else if (httpMethod.equals("POST")) {
                 int length = Integer.valueOf(headers.get("content-length"));
                 handlePost(httpRequest, IoUtils.toStringNoClose(br, length));
             } else
