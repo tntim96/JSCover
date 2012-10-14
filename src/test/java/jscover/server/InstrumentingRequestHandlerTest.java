@@ -389,30 +389,30 @@ public class InstrumentingRequestHandlerTest {
         verifyZeroInteractions(instrumenterService);
     }
 
-//    @Test
-//    public void shouldStoreJSCoverageJSON() {
-//        File file = new File("target/temp");
-//        file.deleteOnExit();
-//        given(configuration.getReportDir()).willReturn(file);
-//        given(configuration.getVersion()).willReturn("theVersion");
-//        webServer.serve(JSCOVERAGE_STORE, "GET", null, null, null, "data");
-//        verify(jsonDataSaver).saveJSONData(file, "data");
-//        verify(ioService).generateJSCoverFilesForWebServer(file, "theVersion");
-//        verifyZeroInteractions(instrumenterService);
-//    }
+    @Test
+    public void shouldStoreJSCoverageJSON() {
+        File file = new File("target/temp");
+        file.deleteOnExit();
+        given(configuration.getReportDir()).willReturn(file);
+        given(configuration.getVersion()).willReturn("theVersion");
+        webServer.handlePost(new HttpRequest(JSCOVERAGE_STORE), "data");
+        verify(jsonDataSaver).saveJSONData(file, "data");
+        verify(ioService).generateJSCoverFilesForWebServer(file, "theVersion");
+        verifyZeroInteractions(instrumenterService);
+    }
 
-//    @Test
-//    public void shouldStoreJSCoverageJSONInSpecifiedSubDirectory() {
-//        File file = new File("target/temp");
-//        file.deleteOnExit();
-//        given(configuration.getReportDir()).willReturn(file);
-//        given(configuration.getVersion()).willReturn("theVersion");
-//        webServer.serve(JSCOVERAGE_STORE + "subdirectory", "GET", null, null, null, "data");
-//        File subdirectory = new File(file, "subdirectory");
-//        verify(jsonDataSaver).saveJSONData(subdirectory, "data");
-//        verify(ioService).generateJSCoverFilesForWebServer(subdirectory, "theVersion");
-//        verifyZeroInteractions(instrumenterService);
-//    }
+    @Test
+    public void shouldStoreJSCoverageJSONInSpecifiedSubDirectory() {
+        File file = new File("target/temp");
+        file.deleteOnExit();
+        given(configuration.getReportDir()).willReturn(file);
+        given(configuration.getVersion()).willReturn("theVersion");
+        webServer.handlePost(new HttpRequest(JSCOVERAGE_STORE + "subdirectory"), "data");
+        File subdirectory = new File(file, "subdirectory");
+        verify(jsonDataSaver).saveJSONData(subdirectory, "data");
+        verify(ioService).generateJSCoverFilesForWebServer(subdirectory, "theVersion");
+        verifyZeroInteractions(instrumenterService);
+    }
 
     @Test
     public void shouldServeJSCoverageHTML() throws IOException {
