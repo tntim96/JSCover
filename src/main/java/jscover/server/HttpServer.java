@@ -391,7 +391,12 @@ public class HttpServer extends Thread {
                     headers.put(headerLine.substring(0, index).trim().toLowerCase(), headerLine.substring(index + 1).trim());
             }
 
-            handleRequest(httpMethod, uri, is, os);
+            if (httpMethod.equals("GET"))
+                handleGet(uri, is, os);
+            else if (httpMethod.equals("GET"))
+                handlePost(uri, is, os);
+            else
+              throw new UnsupportedOperationException("No support for "+httpMethod);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -400,42 +405,48 @@ public class HttpServer extends Thread {
         }
     }
 
-    private void handleRequest(String httpMethod, String uriString, InputStream is, OutputStream os) throws IOException {
+    protected void handlePost(String uri, InputStream is, OutputStream os) {
+        throw new UnsupportedOperationException("No support for POST");
+    }
+
+    protected void handleGet(String uriString, InputStream is, OutputStream os) throws IOException {
         String path = uriString.startsWith("/") ? uriString.substring(1) : uriString;
         File file = new File(wwwRoot, path);
-        PrintWriter pw = new PrintWriter(os);
         if (!file.exists()) {
-            pw.print("HTTP/1.0 404 \n");
-            pw.write("Content-type: " + URI.contentType.get("html") + "\n\n");
-            pw.write("<html><body>Not found</body></html>");
+            String data = "<html><body>Not found</body></html>";
+            sendResponse(HTTP_STATUS.HTTP_FILE_NOT_FOUND, URI.contentType.get("html"), data);
         } else if (file.isFile()) {
-            pw.print("HTTP/1.0 200 \n");
-            pw.write("Content-type: " + new URI(uriString).getMime() + "\n");
-            pw.write(format("Content-length: %d\n\n", file.length()));
-            pw.flush();
-            IoUtils.copy(new FileInputStream(file), os);
+            sendResponse(HTTP_STATUS.HTTP_OK, new URI(uriString).getMime(), IoUtils.toString(new FileInputStream(file)));
         } else {
-            pw.print("HTTP/1.0 200 \n");
-            pw.write("Content-type: " + URI.contentType.get("html") + "\n\n");
-            pw.write("<html><body>");
-            pw.print(format("<h1>Directory %s</h1>", uriString));
+            StringBuilder data = new StringBuilder();
+            data.append("<html>\n<body>\n");
+            data.append(format("<h1>Directory %s</h1>\n", uriString));
             File parentDir = file.getParentFile();
             if (!file.equals(wwwRoot)) {
                 if (parentDir.equals(wwwRoot))
-                    pw.print("<a href=\"/\">..</a><br/>");
+                    data.append("<a href=\"/\">..</a><br/>\n");
                 else
-                    pw.print(format("<a href=\"%s\">..</a><br/>", getRelativePath(parentDir)));
+                    data.append(format("<a href=\"%s\">..</a><br/>\n", getRelativePath(parentDir)));
             }
             for (File linkTo : file.listFiles()) {
-                pw.print(format("<a href=\"%s\">%s</a><br/>", getRelativePath(linkTo), linkTo.getName()));
+                data.append(format("<a href=\"%s\">%s</a><br/>\n", getRelativePath(linkTo), linkTo.getName()));
             }
-            pw.write("</body></html>");
+            data.append("</body>\n</html>");
+            sendResponse(HTTP_STATUS.HTTP_OK, URI.contentType.get("html"), data.toString());
         }
-        pw.flush();
     }
 
     private String getRelativePath(File linkTo) {
         String path = linkTo.getAbsolutePath().substring(wwwRoot.getAbsolutePath().length());
         return path.replaceAll("\\\\", "/");
+    }
+
+    protected void sendResponse(HTTP_STATUS status, String mime, String data) {
+        PrintWriter pw = new PrintWriter(os);
+        pw.print(format("HTTP/1.0 %s \n", status));
+        pw.write(format("Content-type: %s \n", mime));
+        pw.write(format("Content-length: %d\n\n", data.length()));
+        pw.write(data);
+        pw.flush();
     }
 }
