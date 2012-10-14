@@ -356,6 +356,20 @@ public class URITest {
     }
 
     @Test
+    public void shouldHaveDefaultForUnknowExtension() {
+        URI uri = new URI("/test.unknown");
+        assertThat(uri.getUri(), equalTo("/test.unknown"));
+        assertThat(uri.getMime(), equalTo("application/octet-stream"));
+    }
+
+    @Test
+    public void shouldHaveDefaultForNoExtension() {
+        URI uri = new URI("/test");
+        assertThat(uri.getUri(), equalTo("/test"));
+        assertThat(uri.getMime(), equalTo("application/octet-stream"));
+    }
+
+    @Test
     public void shouldHandleQueryString() {
         URI uri = new URI("/test.html?a=b");
         assertThat(uri.getUri(), equalTo("/test.html"));
