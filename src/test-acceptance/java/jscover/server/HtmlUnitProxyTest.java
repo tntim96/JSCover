@@ -339,106 +339,99 @@ consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
  */
+ 
+ package jscover.server;
 
-package jscover;
-
-import jscover.filesystem.ConfigurationForFS;
-import jscover.filesystem.FileSystemInstrumenter;
-import jscover.server.ConfigurationForServer;
-import jscover.server.WebDaemon;
-import jscover.server.WebServer;
-import jscover.util.ReflectionUtils;
-import org.hamcrest.Description;
-import org.hamcrest.TypeSafeMatcher;
+import com.gargoylesoftware.htmlunit.Page;
+import com.gargoylesoftware.htmlunit.ProxyConfig;
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlInput;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import jscover.Main;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 
-import static org.hamcrest.CoreMatchers.sameInstance;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.argThat;
-import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.spy;
+import static junit.framework.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 
-@RunWith(MockitoJUnitRunner.class)
-public class MainInstanceTest {
-    private Main main = new Main();
-    private WebServer webServer = mock(WebServer.class);
-    private WebDaemon webDaemon = mock(WebDaemon.class);
-    private FileSystemInstrumenter fileSystemInstrumenter = mock(FileSystemInstrumenter.class);
+public class HtmlUnitProxyTest {
+    private static Thread webServer;
+    private static Thread server;
+
+    private WebClient webClient = new WebClient();
+    private String reportDir = "target/ws-report";
+    private String[] args = new String[]{
+            "-ws",
+            "--document-root=src/test-acceptance/resources",
+            "--port=3128",
+            "--proxy",
+            "--no-instrument=/example/lib",
+            "--report-dir=" + reportDir
+    };
 
     @Before
-    public void setUp() {
-        ReflectionUtils.setField(main, "webServer", webServer);
-        ReflectionUtils.setField(main, "webDaemon", webDaemon);
-        ReflectionUtils.setField(main, "fileSystemInstrumenter", fileSystemInstrumenter);
-    }
-
-    @Test
-    public void shouldShowWebServerHelp() throws IOException, InterruptedException {
-        main.runMain(new String[]{"-ws", "-h"});
-        verifyZeroInteractions(webServer);
-    }
-
-    @Test
-    public void shouldShowFileSystemHelp() throws IOException, InterruptedException {
-        main.runMain(new String[]{"-ws", "-h"});
-        verifyZeroInteractions(fileSystemInstrumenter);
-    }
-
-    @Test
-    public void shouldRunWebServer() throws IOException, InterruptedException {
-        main.runMain(new String[]{"-ws","--port=1234"});
-
-        TypeSafeMatcher<ConfigurationForServer> matcher = new TypeSafeMatcher<ConfigurationForServer>() {
-            @Override
-            protected boolean matchesSafely(ConfigurationForServer item) {
-                return item.getPort()==1234;
-            }
-
-            public void describeTo(Description description) {
-
-            }
-        };
-        verify(webDaemon, times(1)).start(argThat(matcher));
-    }
-
-    @Test
-    public void shouldRunFileSystem() throws IOException, InterruptedException {
-        main.runMain(new String[]{"-fs","--js-version=1.0","src","dest"});
-
-        TypeSafeMatcher<ConfigurationForFS> matcher = new TypeSafeMatcher<ConfigurationForFS>() {
-            @Override
-            protected boolean matchesSafely(ConfigurationForFS item) {
-                return item.getCompilerEnvirons().getLanguageVersion()==100;
-            }
-
-            public void describeTo(Description description) {
-
-            }
-        };
-        verify(fileSystemInstrumenter, times(1)).run(argThat(matcher));
-    }
-
-    @Test
-    public void shouldReThrowWebServerException() throws IOException, InterruptedException {
-        WebServer webServer = spy(new WebServer());
-        ReflectionUtils.setField(main, "webServer", webServer);
-
-        InterruptedException toBeThrown = new InterruptedException("Ouch!");
-        doThrow(toBeThrown).when(webDaemon).start(any(ConfigurationForServer.class));
-
-        try {
-            main.runMain(new String[]{"-ws", "--port=1234"});
-            fail("Should have thrown exception");
-        } catch(RuntimeException rte) {
-            assertThat((InterruptedException)rte.getCause(), sameInstance(toBeThrown));
+    public void setUp() throws IOException {
+        if (server == null) {
+            server = new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        Main.main(args);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
+            server.start();
         }
+        if (webServer == null) {
+            webServer = new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        ServerSocket Server = new ServerSocket(9001);
+                        File wwwRoot = new File("src/test-acceptance/resources");
+                        while (true) {
+                            Socket socket = Server.accept();
+                            (new HttpServer(socket, wwwRoot)).start();
+                        }
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
+            webServer.start();
+        }
+        ProxyConfig proxyConfig = new ProxyConfig("localhost", 3128);
+        proxyConfig.addHostsToProxyBypass("127.0.0.1");
+        webClient.setProxyConfig(proxyConfig);
     }
+
+
+    @Test
+    public void shouldNotInstrument() throws Exception {
+        Page page = webClient.getPage("http://localhost:9001/example/lib/noInstrument.js");
+        assertThat(page.getWebResponse().getContentAsString(), equalTo("alert('Hey');"));
+    }
+
+    @Test
+    public void shouldWorkWithServerIFrameByNavigationButtons() throws Exception {
+        HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html");
+        ((HtmlInput)page.getHtmlElementById("location")).setValueAttribute("http://localhost:9001/example/index.html");
+        page.getHtmlElementById("openInFrameButton").click();
+        webClient.waitForBackgroundJavaScript(100);
+
+        verifyTotal(webClient, page, 6);
+    }
+
+    protected void verifyTotal(WebClient webClient, HtmlPage page, int percentage) throws IOException {
+        page.getHtmlElementById("summaryTab").click();
+        webClient.waitForBackgroundJavaScript(2000);
+        assertEquals(percentage + "%", page.getElementById("summaryTotal").getTextContent());
+    }
+
 }

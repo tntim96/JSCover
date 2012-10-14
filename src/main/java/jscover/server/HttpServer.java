@@ -355,8 +355,8 @@ public class HttpServer extends Thread {
     private Socket socket;
     protected File wwwRoot;
     private InputStream is;
-    private OutputStream os;
-    private PrintWriter pw = null;
+    protected OutputStream os;
+    protected PrintWriter pw = null;
 
     public HttpServer(Socket socket, File wwwRoot) {
         this.wwwRoot = wwwRoot;
@@ -381,8 +381,9 @@ public class HttpServer extends Thread {
             while (!(headerLine = br.readLine()).equals("")) {
                 int index = headerLine.indexOf(':');
                 if (index >= 0)
-                    headers.put(headerLine.substring(0, index).trim().toLowerCase(), headerLine.substring(index + 1).trim());
+                    headers.put(headerLine.substring(0, index).toLowerCase().trim(), headerLine.substring(index + 1).trim());
             }
+            httpRequest.setHeaders(headers);
 
             if (httpMethod.equals("GET")) {
                 if (httpRequest.getPath().equals("/stop")) {
@@ -443,23 +444,23 @@ public class HttpServer extends Thread {
 
     protected void sendResponse(HTTP_STATUS status, String mime, String data) {
         pw.print(format("HTTP/1.0 %s \n", status));
-        pw.write(format("Content-type: %s \n", mime));
-        pw.write(format("Content-length: %d\n\n", data.length()));
+        pw.write(format("Content-Type: %s \n", mime));
+        pw.write(format("Content-Length: %d\n\n", data.length()));
         pw.write(data);
         pw.flush();
     }
 
     private void sendResponse(HTTP_STATUS status, String mime, File data) {
         pw.print(format("HTTP/1.0 %s \n", status));
-        pw.write(format("Content-type: %s \n", mime));
-        pw.write(format("Content-length: %d\n\n", data.length()));
+        pw.write(format("Content-Type: %s \n", mime));
+        pw.write(format("Content-Length: %d\n\n", data.length()));
         pw.flush();
         IoUtils.copyNoClose(data, os);
     }
 
     protected void sendResponse(HTTP_STATUS status, String mime, InputStream is) {
         pw.print(format("HTTP/1.0 %s \n", status));
-        pw.write(format("Content-type: %s \n\n", mime));
+        pw.write(format("Content-Type: %s \n\n", mime));
         pw.flush();
         IoUtils.copy(is, os);
     }

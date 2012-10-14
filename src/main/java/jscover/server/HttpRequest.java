@@ -365,11 +365,13 @@ public class HttpRequest {
     }
 
     private String path;
+    private URL url;
+    private Map<String, String> headers;
 
     public HttpRequest(String path) {
         try {
-            URL javaURL = new URL(path);
-            this.path = javaURL.getPath();
+            this.url = new URL(path);
+            this.path = url.getPath();
         } catch (MalformedURLException e) {
             int index = path.indexOf("?");
             if (index > 0)
@@ -397,4 +399,18 @@ public class HttpRequest {
     public String getRelativePath() {
         return getPath().startsWith("/") ? getPath().substring(1) : getPath();
     }
+
+    public URL getUrl() {
+        return url;
+    }
+
+    public void setHeaders(Map<String,String> headers) {
+        this.headers = headers;
+    }
+
+    /* For proxy mode if required
+    public Map<String, String> getHeaders() {
+        return headers;
+    }
+    */
 }

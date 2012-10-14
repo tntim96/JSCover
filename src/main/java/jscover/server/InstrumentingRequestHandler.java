@@ -345,9 +345,16 @@ package jscover.server;
 import jscover.instrument.InstrumenterService;
 import jscover.json.JSONDataSaver;
 import jscover.util.IoService;
+import jscover.util.IoUtils;
 
 import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.Socket;
+import java.net.URL;
+import java.util.List;
+import java.util.Map;
+
+import static java.lang.String.format;
 
 public class InstrumentingRequestHandler extends HttpServer {
     public static final String JSCOVERAGE_STORE = "/jscoverage-store";
@@ -391,12 +398,36 @@ public class InstrumentingRequestHandler extends HttpServer {
                 String jsInstrumented = instrumenterService.instrumentJSForWebServer(configuration.getCompilerEnvirons(), new File(wwwRoot, uri), uri, log);
                 sendResponse(HTTP_STATUS.HTTP_OK, "application/javascript", jsInstrumented);
             } else {
-                super.handleGet(request);
+                if (configuration.isProxy())
+                    handleProxyRequest(request);
+                else
+                    super.handleGet(request);
             }
         } catch (Throwable e) {
             StringWriter stringWriter = new StringWriter();
             e.printStackTrace(new PrintWriter(stringWriter));
             sendResponse(HTTP_STATUS.HTTP_INTERNAL_SERVER_ERROR, "text/plain", stringWriter.toString());
+        }
+    }
+
+    private void handleProxyRequest(HttpRequest request) {
+        try {
+            URL url = request.getUrl();
+            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+            conn.setDoInput(true);
+            conn.setDoOutput(false);
+            pw.print(format("HTTP/1.0 %d \n", conn.getResponseCode()));
+            Map<String, List<String>> headerFields = conn.getHeaderFields();
+            for (String headerField : headerFields.keySet()) {
+                for (String headerValue : headerFields.get(headerField)) {
+                    pw.write(format("%s: %s \n", headerField, headerValue));
+                }
+            }
+            pw.write("\n");
+            pw.flush();
+            IoUtils.copy(conn.getInputStream(), os);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

@@ -441,8 +441,6 @@ public class Main {
         configuration.setProperties(properties);
         if (configuration.showHelp()) {
             System.out.println(configuration.getHelpText());
-        } else if (configuration.isProxy()) {
-            throw new UnsupportedOperationException("The proxy server is not yet implemented");
         } else {
             try {
 //                webServer.start(configuration);

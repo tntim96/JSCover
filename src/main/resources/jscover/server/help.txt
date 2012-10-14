@@ -6,5 +6,6 @@ Options:
       --no-instrument=URL   do not instrument URL
       --report-dir=DIR      store report to DIR (default: current directory)
       --port=PORT           use PORT for TCP port (default: 8080)
+      --proxy               run as a proxy
       --js-version=VERSION  JavaScript version 1.0, 1.2, ..., 1.8 (default: 1.3)
   -h, --help                display this help and exit

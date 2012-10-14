@@ -1,3 +1,8 @@
+0.0.5 / 2012-10-??
+==================
+  * Add proxy support
+  * Internal - Swap from NanoHTTPD to JSCover's own web-server
+
 0.0.4 / 2012-10-12
 ==================
   * Include JSCover-all.jar, containing all JAR dependencies, in distribution
