@@ -365,6 +365,7 @@ public class HttpServer extends Thread {
     private File wwwRoot;
     private InputStream is;
     private OutputStream os;
+    private PrintWriter pw = null;
 
     public HttpServer(Socket socket, File wwwRoot) {
         this.wwwRoot = wwwRoot;
@@ -377,12 +378,13 @@ public class HttpServer extends Thread {
             is = socket.getInputStream();
             os = socket.getOutputStream();
             br = new BufferedReader(new InputStreamReader(is));
+            pw = new PrintWriter(os);
 
             String requestString = br.readLine();
 
             StringTokenizer tokenizer = new StringTokenizer(requestString);
             String httpMethod = tokenizer.nextToken();
-            String uri = tokenizer.nextToken();
+            HttpRequest httpRequest = new HttpRequest(tokenizer.nextToken());
             String headerLine;
             Map<String, String> headers = new HashMap<String, String>();
             while (!(headerLine = br.readLine()).equals("")) {
@@ -392,10 +394,11 @@ public class HttpServer extends Thread {
             }
 
             if (httpMethod.equals("GET"))
-                handleGet(uri, is, os);
-            else if (httpMethod.equals("GET"))
-                handlePost(uri, is, os);
-            else
+                handleGet(httpRequest);
+            else if (httpMethod.equals("POST")) {
+                int length = Integer.valueOf(headers.get("content-length"));
+                handlePost(httpRequest, IoUtils.toStringNoClose(br, length));
+            } else
               throw new UnsupportedOperationException("No support for "+httpMethod);
         } catch (Exception e) {
             e.printStackTrace();
@@ -405,22 +408,22 @@ public class HttpServer extends Thread {
         }
     }
 
-    protected void handlePost(String uri, InputStream is, OutputStream os) {
+    protected void handlePost(HttpRequest request, String data) {
         throw new UnsupportedOperationException("No support for POST");
     }
 
-    protected void handleGet(String uriString, InputStream is, OutputStream os) throws IOException {
-        String path = uriString.startsWith("/") ? uriString.substring(1) : uriString;
+    protected void handleGet(HttpRequest request) throws IOException {
+        String path = request.getRelativePath();
         File file = new File(wwwRoot, path);
         if (!file.exists()) {
             String data = "<html><body>Not found</body></html>";
-            sendResponse(HTTP_STATUS.HTTP_FILE_NOT_FOUND, URI.contentType.get("html"), data);
+            sendResponse(HTTP_STATUS.HTTP_FILE_NOT_FOUND, HttpRequest.contentType.get("html"), data);
         } else if (file.isFile()) {
-            sendResponse(HTTP_STATUS.HTTP_OK, new URI(uriString).getMime(), IoUtils.toString(new FileInputStream(file)));
+            sendResponse(HTTP_STATUS.HTTP_OK, request.getMime(), file);
         } else {
             StringBuilder data = new StringBuilder();
             data.append("<html>\n<body>\n");
-            data.append(format("<h1>Directory %s</h1>\n", uriString));
+            data.append(format("<h1>Directory %s</h1>\n", request.getUrl()));
             File parentDir = file.getParentFile();
             if (!file.equals(wwwRoot)) {
                 if (parentDir.equals(wwwRoot))
@@ -432,7 +435,7 @@ public class HttpServer extends Thread {
                 data.append(format("<a href=\"%s\">%s</a><br/>\n", getRelativePath(linkTo), linkTo.getName()));
             }
             data.append("</body>\n</html>");
-            sendResponse(HTTP_STATUS.HTTP_OK, URI.contentType.get("html"), data.toString());
+            sendResponse(HTTP_STATUS.HTTP_OK, HttpRequest.contentType.get("html"), data.toString());
         }
     }
 
@@ -442,11 +445,18 @@ public class HttpServer extends Thread {
     }
 
     protected void sendResponse(HTTP_STATUS status, String mime, String data) {
-        PrintWriter pw = new PrintWriter(os);
         pw.print(format("HTTP/1.0 %s \n", status));
         pw.write(format("Content-type: %s \n", mime));
         pw.write(format("Content-length: %d\n\n", data.length()));
         pw.write(data);
         pw.flush();
+    }
+
+    private void sendResponse(HTTP_STATUS status, String mime, File data) {
+        pw.print(format("HTTP/1.0 %s \n", status));
+        pw.write(format("Content-type: %s \n", mime));
+        pw.write(format("Content-length: %d\n\n", data.length()));
+        pw.flush();
+        IoUtils.copyNoClose(data, os);
     }
 }

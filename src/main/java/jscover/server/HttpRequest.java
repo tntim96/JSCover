@@ -342,37 +342,52 @@ Public License instead of this License.
 
 package jscover.server;
 
-import org.junit.Test;
+import java.util.HashMap;
+import java.util.Map;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
+public class HttpRequest {
+    static Map<String, String> contentType = new HashMap<String, String>();
+    private static String contentDefault = "application/octet-stream";
 
-public class URITest {
-    @Test
-    public void shouldReadSimpleURI() {
-        URI uri = new URI("/test.html");
-        assertThat(uri.getUri(), equalTo("/test.html"));
-        assertThat(uri.getMime(), equalTo("text/html"));
+    static {
+        contentType.put("css","text/css");
+        contentType.put("js","application/javascript");
+        contentType.put("json","application/json");
+        contentType.put("htm","text/html");
+        contentType.put("html","text/html");
+        contentType.put("gif","image/gif");
+        contentType.put("jpg","image/jpeg");
+        contentType.put("jpeg","image/jpeg");
+        contentType.put("png","text/png");
+        contentType.put("txt","text/plain");
     }
 
-    @Test
-    public void shouldHaveDefaultForUnknowExtension() {
-        URI uri = new URI("/test.unknown");
-        assertThat(uri.getUri(), equalTo("/test.unknown"));
-        assertThat(uri.getMime(), equalTo("application/octet-stream"));
+    private String url;
+
+    public HttpRequest(String url) {
+        int index = url.indexOf("?");
+        if (index > 0)
+            url = url.substring(0, index);
+        this.url = url;
     }
 
-    @Test
-    public void shouldHaveDefaultForNoExtension() {
-        URI uri = new URI("/test");
-        assertThat(uri.getUri(), equalTo("/test"));
-        assertThat(uri.getMime(), equalTo("application/octet-stream"));
+    public String getUrl() {
+        return url;
     }
 
-    @Test
-    public void shouldHandleQueryString() {
-        URI uri = new URI("/test.html?a=b");
-        assertThat(uri.getUri(), equalTo("/test.html"));
-        assertThat(uri.getMime(), equalTo("text/html"));
+    protected String getMime() {
+        String extension = null;
+        int dot = url.lastIndexOf('.');
+        if (dot >= 0)
+            extension = url.substring(dot + 1).toLowerCase();
+
+        String mime = contentType.get(extension);
+        if (mime == null)
+            mime = contentDefault;
+        return mime;
+    }
+
+    public String getRelativePath() {
+        return getUrl().startsWith("/") ? getUrl().substring(1) : getUrl();
     }
 }

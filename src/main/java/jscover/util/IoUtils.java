@@ -380,6 +380,22 @@ public abstract class IoUtils {
         }
     }
 
+    public static String toStringNoClose(BufferedReader br, int length) {
+        StringBuilder result = new StringBuilder();
+        int bufSize = 1024;
+        char buf[] = new char[bufSize];
+        int total = 0;
+        try {
+            for (int read = 0; total < length && (read = br.read(buf)) != -1; ) {
+                total += read;
+                result.append(buf, 0, read);
+            }
+            return result.toString();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static String toString(File file) {
         try {
             return toString(new FileInputStream(file));
@@ -443,6 +459,22 @@ public abstract class IoUtils {
         } finally {
             closeQuietly(is);
             closeQuietly(os);
+        }
+    }
+
+    public static void copyNoClose(File file, OutputStream os) {
+        InputStream is = null;
+        int bufSize = 1024;
+        byte buf[] = new byte[bufSize];
+        try {
+            is = new FileInputStream(file);
+            for (int read = 0; (read = is.read(buf)) != -1; ) {
+                os.write(buf, 0, read);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            closeQuietly(is);
         }
     }
 

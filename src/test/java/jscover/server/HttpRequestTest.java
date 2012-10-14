@@ -342,47 +342,37 @@ Public License instead of this License.
 
 package jscover.server;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.junit.Test;
 
-public class URI {
-    static Map<String, String> contentType = new HashMap<String, String>();
-    private static String contentDefault = "application/octet-stream";
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 
-    static {
-        contentType.put("css","text/css");
-        contentType.put("js","application/javascript");
-        contentType.put("json","application/json");
-        contentType.put("htm","text/html");
-        contentType.put("html","text/html");
-        contentType.put("gif","image/gif");
-        contentType.put("jpg","image/jpeg");
-        contentType.put("jpeg","image/jpeg");
-        contentType.put("png","text/png");
+public class HttpRequestTest {
+    @Test
+    public void shouldReadSimpleURI() {
+        HttpRequest httpRequest = new HttpRequest("/test.html");
+        assertThat(httpRequest.getUrl(), equalTo("/test.html"));
+        assertThat(httpRequest.getMime(), equalTo("text/html"));
     }
 
-    private String uri;
-
-    public URI(String uri) {
-        int index = uri.indexOf("?");
-        if (index > 0)
-            uri = uri.substring(0, index);
-        this.uri = uri;
+    @Test
+    public void shouldHaveDefaultForUnknowExtension() {
+        HttpRequest httpRequest = new HttpRequest("/test.unknown");
+        assertThat(httpRequest.getUrl(), equalTo("/test.unknown"));
+        assertThat(httpRequest.getMime(), equalTo("application/octet-stream"));
     }
 
-    public String getUri() {
-        return uri;
+    @Test
+    public void shouldHaveDefaultForNoExtension() {
+        HttpRequest httpRequest = new HttpRequest("/test");
+        assertThat(httpRequest.getUrl(), equalTo("/test"));
+        assertThat(httpRequest.getMime(), equalTo("application/octet-stream"));
     }
 
-    protected String getMime() {
-        String extension = null;
-        int dot = uri.lastIndexOf('.');
-        if (dot >= 0)
-            extension = uri.substring(dot + 1).toLowerCase();
-
-        String mime = contentType.get(extension);
-        if (mime == null)
-            mime = contentDefault;
-        return mime;
+    @Test
+    public void shouldHandleQueryString() {
+        HttpRequest httpRequest = new HttpRequest("/test.html?a=b");
+        assertThat(httpRequest.getUrl(), equalTo("/test.html"));
+        assertThat(httpRequest.getMime(), equalTo("text/html"));
     }
 }
