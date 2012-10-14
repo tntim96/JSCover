@@ -342,136 +342,82 @@ Public License instead of this License.
 
 package jscover.server;
 
-import jscover.util.IoUtils;
+import jscover.instrument.InstrumenterService;
+import jscover.json.JSONDataSaver;
+import jscover.util.IoService;
 
 import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.Properties;
 
-import static java.lang.String.format;
-
-public class HttpServer extends Thread {
-    private static boolean running = true;
-
+public class InstrumentingRequestHandler extends HttpServer {
     public static void main(String args[]) throws Exception {
-        ServerSocket Server = new ServerSocket(8081);
-        File wwwRoot = new File(".");
+
+        ConfigurationForServer configuration = ConfigurationForServer.parse(
+                new String[]{
+                        "--port=8081",
+                        "--report-dir=target"
+                }
+        );
+        Properties properties = new Properties();
+        properties.put("version", "test");
+        configuration.setProperties(properties);
+        boolean running = true;
+        ServerSocket Server = new ServerSocket(configuration.getPort());
         while (running) {
             Socket socket = Server.accept();
-            (new HttpServer(socket, wwwRoot)).start();
+            (new InstrumentingRequestHandler(socket, configuration, null)).start();
         }
     }
 
-    private Socket socket;
-    protected File wwwRoot;
-    private InputStream is;
-    private OutputStream os;
-    private PrintWriter pw = null;
+    public static final String JSCOVERAGE_STORE = "/jscoverage-store";
+    private ConfigurationForServer configuration;
+    private IoService ioService = new IoService();
+    private JSONDataSaver jsonDataSaver = new JSONDataSaver();
+    private InstrumenterService instrumenterService = new InstrumenterService();
+    private File log;
 
-    public HttpServer(Socket socket, File wwwRoot) {
-        this.wwwRoot = wwwRoot;
-        this.socket = socket;
+    public InstrumentingRequestHandler(Socket socket, ConfigurationForServer configuration, File log) {
+        super(socket, configuration.getDocumentRoot());
+        this.configuration = configuration;
+        this.log = log;
     }
 
-    public void run() {
-        BufferedReader br = null;
-        try {
-            is = socket.getInputStream();
-            os = socket.getOutputStream();
-            br = new BufferedReader(new InputStreamReader(is));
-            pw = new PrintWriter(os);
-
-            String requestString = br.readLine();
-
-            StringTokenizer tokenizer = new StringTokenizer(requestString);
-            String httpMethod = tokenizer.nextToken();
-            HttpRequest httpRequest = new HttpRequest(tokenizer.nextToken());
-            String headerLine;
-            Map<String, String> headers = new HashMap<String, String>();
-            while (!(headerLine = br.readLine()).equals("")) {
-                int index = headerLine.indexOf(':');
-                if (index >= 0)
-                    headers.put(headerLine.substring(0, index).trim().toLowerCase(), headerLine.substring(index + 1).trim());
-            }
-
-            if (httpMethod.equals("GET")) {
-                if (httpRequest.getUrl().equals("/stop")) {
-                    running = false;
-                    sendResponse(HTTP_STATUS.HTTP_OK, "text/plain", "Shutting down the server.");
-                    IoUtils.closeQuietly(br);
-                    IoUtils.closeQuietly(os);
-                    System.exit(0);
-                }
-                handleGet(httpRequest);
-            } else if (httpMethod.equals("POST")) {
-                int length = Integer.valueOf(headers.get("content-length"));
-                handlePost(httpRequest, IoUtils.toStringNoClose(br, length));
-            } else
-              throw new UnsupportedOperationException("No support for "+httpMethod);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            IoUtils.closeQuietly(br);
-            IoUtils.closeQuietly(os);
-        }
-    }
-
+    @Override
     protected void handlePost(HttpRequest request, String data) {
-        throw new UnsupportedOperationException("No support for POST");
-    }
-
-    protected void handleGet(HttpRequest request) throws IOException {
-        String path = request.getRelativePath();
-        File file = new File(wwwRoot, path);
-        if (!file.exists()) {
-            String data = "<html><body>Not found</body></html>";
-            sendResponse(HTTP_STATUS.HTTP_FILE_NOT_FOUND, HttpRequest.contentType.get("html"), data);
-        } else if (file.isFile()) {
-            sendResponse(HTTP_STATUS.HTTP_OK, request.getMime(), file);
-        } else {
-            StringBuilder data = new StringBuilder();
-            data.append("<html>\n<body>\n");
-            data.append(format("<h1>Directory %s</h1>\n", request.getUrl()));
-            File parentDir = file.getParentFile();
-            if (!file.equals(wwwRoot)) {
-                if (parentDir.equals(wwwRoot))
-                    data.append("<a href=\"/\">..</a><br/>\n");
-                else
-                    data.append(format("<a href=\"%s\">..</a><br/>\n", getRelativePath(parentDir)));
-            }
-            for (File linkTo : file.listFiles()) {
-                data.append(format("<a href=\"%s\">%s</a><br/>\n", getRelativePath(linkTo), linkTo.getName()));
-            }
-            data.append("</body>\n</html>");
-            sendResponse(HTTP_STATUS.HTTP_OK, HttpRequest.contentType.get("html"), data.toString());
+        String uri = request.getUrl();
+        File reportDir = configuration.getReportDir();
+        if (uri.length() > JSCOVERAGE_STORE.length()) {
+            reportDir = new File(reportDir, uri.substring(JSCOVERAGE_STORE.length()));
         }
+
+        jsonDataSaver.saveJSONData(reportDir, data);
+        ioService.generateJSCoverFilesForWebServer(reportDir, configuration.getVersion());
+        sendResponse(HTTP_STATUS.HTTP_OK, "text/plain", "Report stored at " + reportDir);
     }
 
-    private String getRelativePath(File linkTo) {
-        String path = linkTo.getAbsolutePath().substring(wwwRoot.getAbsolutePath().length());
-        return path.replaceAll("\\\\", "/");
-    }
-
-    protected void sendResponse(HTTP_STATUS status, String mime, String data) {
-        pw.print(format("HTTP/1.0 %s \n", status));
-        pw.write(format("Content-type: %s \n", mime));
-        pw.write(format("Content-length: %d\n\n", data.length()));
-        pw.write(data);
-        pw.flush();
-    }
-
-    private void sendResponse(HTTP_STATUS status, String mime, File data) {
-        pw.print(format("HTTP/1.0 %s \n", status));
-        pw.write(format("Content-type: %s \n", mime));
-        pw.write(format("Content-length: %d\n\n", data.length()));
-        pw.flush();
-        IoUtils.copyNoClose(data, os);
-    }
-
-    protected void sendResponse(HTTP_STATUS status, String mime, InputStream is) {
-        pw.print(format("HTTP/1.0 %s \n", status));
-        pw.write(format("Content-type: %s \n\n", mime));
-        pw.flush();
-        IoUtils.copy(is, os);
+    @Override
+    protected void handleGet(HttpRequest request) throws IOException {
+        String uri = request.getUrl();
+        try {
+            if (uri.equals("/jscoverage.js")) {
+                sendResponse(HTTP_STATUS.HTTP_OK, request.getMime(), ioService.generateJSCoverageServerJS());
+            } else if (uri.startsWith("/jscoverage.html")) {
+                String reportHTML = ioService.generateJSCoverageHtml(configuration.getVersion());
+                sendResponse(HTTP_STATUS.HTTP_OK, request.getMime(), reportHTML);
+            } else if (uri.startsWith("/jscoverage")) {
+                sendResponse(HTTP_STATUS.HTTP_OK, request.getMime(), ioService.getResourceAsStream(uri));
+            } else if (uri.endsWith(".js") && !configuration.skipInstrumentation(uri)) {
+                String jsInstrumented = instrumenterService.instrumentJSForWebServer(configuration.getCompilerEnvirons(), new File(wwwRoot, uri), uri, log);
+                sendResponse(HTTP_STATUS.HTTP_OK, "application/javascript", jsInstrumented);
+            } else {
+                super.handleGet(request);
+            }
+        } catch (Throwable e) {
+            StringWriter stringWriter = new StringWriter();
+            e.printStackTrace(new PrintWriter(stringWriter));
+            sendResponse(HTTP_STATUS.HTTP_INTERNAL_SERVER_ERROR, "text/plain", stringWriter.toString());
+        }
     }
 }
