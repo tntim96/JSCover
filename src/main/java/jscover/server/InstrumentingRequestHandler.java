@@ -352,24 +352,6 @@ import java.net.Socket;
 import java.util.Properties;
 
 public class InstrumentingRequestHandler extends HttpServer {
-    public static void main(String args[]) throws Exception {
-        ConfigurationForServer configuration = ConfigurationForServer.parse(
-                new String[]{
-                        "--port=8081",
-                        "--report-dir=target"
-                }
-        );
-        Properties properties = new Properties();
-        properties.put("version", "test");
-        configuration.setProperties(properties);
-        boolean running = true;
-        ServerSocket Server = new ServerSocket(configuration.getPort());
-        while (running) {
-            Socket socket = Server.accept();
-            (new InstrumentingRequestHandler(socket, configuration, null)).start();
-        }
-    }
-
     public static final String JSCOVERAGE_STORE = "/jscoverage-store";
     private ConfigurationForServer configuration;
     private IoService ioService = new IoService();

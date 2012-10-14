@@ -340,226 +340,29 @@ library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
  */
 
-package jscover.util;
+package jscover.server;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.Spy;
-import org.mockito.runners.MockitoJUnitRunner;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.Properties;
 
-import java.io.*;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.*;
-
-@RunWith(MockitoJUnitRunner.class)
-public class IoUtilsTest {
-    private @Mock InputStream is;
-    private @Spy OutputStream os = new MyOutputStream();
-    private @Mock Reader reader;
-    private @Mock Writer writer;
-
-    @Test
-    public void shouldCloseStreamQuietly() throws IOException {
-        doThrow(new IOException("Ouch!")).when(os).close();
-        IoUtils.closeQuietly(os);
-    }
-
-    @Test(expected = RuntimeException.class)
-    public void shouldWrapExceptionsInReadLinesStringReader() throws IOException {
-        given(reader.read(any(char[].class), anyInt(), anyInt())).willThrow(new IOException("Ouch!"));
-        IoUtils.readLines(reader);
-    }
-
-    @Test(expected = RuntimeException.class)
-    public void shouldWrapExceptionsInToStringInputStream() throws IOException {
-        given(is.read(any(byte[].class))).willThrow(new IOException("Ouch!"));
-        IoUtils.toString(is);
-    }
-
-    @Test(expected = RuntimeException.class)
-    public void shouldWrapExceptionsInToStringFile() {
-        IoUtils.toString(new File("/"));
-    }
-
-    @Test
-    public void shouldWrapExceptionsInCopyISToOS() throws Exception {
-        doThrow(new IOException("Ouch!")).when(os).write(any(byte[].class), anyInt(), anyInt());
-        try {
-            IoUtils.copy(is, os);
-            fail();
-        } catch(Throwable throwable) {
-            verify(is).close();
+public class InstrumentingRequestHandlerDriver {
+    public static void main(String args[]) throws Exception {
+        ConfigurationForServer configuration = ConfigurationForServer.parse(
+                new String[]{
+                        "--port=8081",
+                        "--report-dir=target"
+                }
+        );
+        Properties properties = new Properties();
+        properties.put("version", "test");
+        configuration.setProperties(properties);
+        boolean running = true;
+        ServerSocket Server = new ServerSocket(configuration.getPort());
+        while (running) {
+            Socket socket = Server.accept();
+            (new InstrumentingRequestHandler(socket, configuration, null)).start();
         }
     }
 
-    @Test
-    public void shouldCloseOSInCopyISToOS() throws Exception {
-        given(is.read(any(byte[].class))).willThrow(new IOException("Ouch!"));
-        try {
-            IoUtils.copy(is, os);
-            fail();
-        } catch(Throwable throwable) {
-            verify(os).close();
-        }
-    }
-
-    @Test
-    public void shouldWrapExceptionsInCopyFileToOSNoClose() throws Exception {
-        File file = new File("target/test.txt");
-        doThrow(new IOException("Ouch!")).when(os).write(any(byte[].class), anyInt(), anyInt());
-        try {
-            IoUtils.copyNoClose(file, os);
-            fail();
-        } catch(Throwable throwable) {
-            verify(os, times(0)).close();
-        }
-    }
-
-    @Test
-    public void shouldNotCloseOSInCopyFileToOSNoClose() throws Exception {
-        File fileSrc = new File("target/test-src.txt");
-        IoUtils.copy(new StringReader("Working!!!"), fileSrc);
-        File fileDest = new File("target/test-dest.txt");
-        FileOutputStream fos = new FileOutputStream(fileDest);
-        try {
-            IoUtils.copyNoClose(fileSrc, fos);
-            assertEquals("Working!!!", IoUtils.loadFromFileSystem(fileDest));
-            verify(os, times(0)).close();
-        } finally {
-            os.close();
-        }
-    }
-
-
-    @Test
-    public void shouldNotCloseReaderInToStringNoClose() throws Exception {
-        String string = "Working!";
-        given(reader.read(any(char[].class))).willThrow(new IOException("Ouch!"));
-        try {
-            IoUtils.toStringNoClose(reader, string.length());
-            fail();
-        } catch(Throwable throwable) {
-            verify(reader, times(0)).close();
-        }
-    }
-
-    @Test
-    public void shouldToStringReaderInToStringNoClose() throws Exception {
-        String string = "Working!!";
-        BufferedReader br = new BufferedReader(new StringReader(string));
-        try {
-            assertEquals("Working!!", IoUtils.toStringNoClose(br, string.length()));
-        } finally {
-            br.close();
-        }
-    }
-
-    @Test(expected = RuntimeException.class)
-    public void shouldWrapExceptionsInCopyReaderToFile() throws IOException {
-        given(reader.read(any(char[].class))).willThrow(new IOException("Ouch!"));
-        IoUtils.copy(reader, new File("target/dummy.txt"));
-    }
-
-    @Test
-    public void shouldWrapExceptionsInCopyReaderToOS() throws Exception {
-        given(reader.read(any(char[].class))).willThrow(new IOException("Ouch!"));
-        try {
-            IoUtils.copy(reader, os);
-            fail();
-        } catch(Throwable throwable) {
-            verify(os).close();
-        }
-    }
-
-    @Test
-    public void shouldLoadFileFromClasspathAbsolutePath() {
-        assertEquals("Working!", IoUtils.loadFromClassPath("/jscover/util/test.txt"));
-    }
-
-    @Test
-    public void shouldLoadFileFromClasspathRelativePath() {
-        assertEquals("Working!", IoUtils.loadFromClassPath("test.txt"));
-    }
-
-    @Test(expected = RuntimeException.class)
-    public void shouldNotLoadFileFromClasspath() {
-        IoUtils.loadFromClassPath("/test.txt");
-    }
-
-    @Test
-    public void shouldLoadFileFromFileSystem() {
-        assertEquals("Working!", IoUtils.loadFromFileSystem(new File("src/test/resources/jscover/util/test.txt")));
-    }
-
-    @Test(expected = RuntimeException.class)
-    public void shouldThrowExceptionLoadingFileFromFileSystem() {
-        IoUtils.loadFromFileSystem(new File("notThere"));
-    }
-
-    @Test
-    public void shouldCopyInputStreamToOutputStream() {
-        ByteArrayInputStream bais = new ByteArrayInputStream("shouldCopyInputStreamToOutputStream".getBytes());
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        IoUtils.copy(bais, baos);
-        assertEquals("shouldCopyInputStreamToOutputStream", baos.toString());
-    }
-
-    @Test
-    public void shouldCopyFromReaderToFile() throws IOException {
-        StringReader reader = new StringReader("shouldCopyFromReaderToInputStream");
-        File file = File.createTempFile("shouldCopyFromReaderToInputStream",".txt", new File("target"));
-        IoUtils.copy(reader, file);
-        assertEquals("shouldCopyFromReaderToInputStream", IoUtils.loadFromFileSystem(file));
-        file.delete();
-    }
-
-    @Test
-    public void shouldCopyFromInputStreamToFile() throws IOException {
-        ByteArrayInputStream bais = new ByteArrayInputStream("shouldCopyFromInputStreamToFile".getBytes());
-        File file = File.createTempFile("shouldCopyFromInputStreamToFile",".txt", new File("target"));
-        IoUtils.copy(bais, file);
-        assertEquals("shouldCopyFromInputStreamToFile", IoUtils.loadFromFileSystem(file));
-        file.delete();
-    }
-
-    @Test
-    public void shouldCopyFromFileToFile() throws IOException {
-        StringReader reader = new StringReader("shouldCopyFromFileToFile");
-        File src = File.createTempFile("shouldCopyFromInputStreamToFile",".src", new File("target"));
-        IoUtils.copy(reader, src);
-        File dest = File.createTempFile("shouldCopyFromInputStreamToFile",".dest", new File("target"));
-        IoUtils.copy(src, dest);
-        assertEquals("shouldCopyFromFileToFile", IoUtils.loadFromFileSystem(dest));
-        src.delete();
-        dest.delete();
-    }
-
-    @Test(expected = RuntimeException.class)
-    public void shouldWrapExceptionsInCopyInputStreamToFile() throws IOException {
-        given(is.read(any(byte[].class))).willThrow(new IOException("Ouch!"));
-        IoUtils.copy(is, new File("target"));
-    }
-
-    @Test(expected = RuntimeException.class)
-    public void shouldWrapExceptionsInCopyFileToFile() throws IOException {
-        IoUtils.copy(new File("target"), new File("target"));
-    }
-
-    @Test
-    public void should() {
-        new Dummy();
-    }
-
-    static class MyOutputStream extends OutputStream {
-        @Override
-        public void write(int b) throws IOException {}
-    }
-
-    static class Dummy extends IoUtils {}
 }

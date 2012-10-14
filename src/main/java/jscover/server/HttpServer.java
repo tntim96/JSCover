@@ -351,16 +351,6 @@ import java.util.*;
 import static java.lang.String.format;
 
 public class HttpServer extends Thread {
-    private static boolean running = true;
-
-    public static void main(String args[]) throws Exception {
-        ServerSocket Server = new ServerSocket(8081);
-        File wwwRoot = new File(".");
-        while (running) {
-            Socket socket = Server.accept();
-            (new HttpServer(socket, wwwRoot)).start();
-        }
-    }
 
     private Socket socket;
     protected File wwwRoot;
@@ -396,7 +386,6 @@ public class HttpServer extends Thread {
 
             if (httpMethod.equals("GET")) {
                 if (httpRequest.getUrl().equals("/stop")) {
-                    running = false;
                     sendResponse(HTTP_STATUS.HTTP_OK, "text/plain", "Shutting down the server.");
                     IoUtils.closeQuietly(br);
                     IoUtils.closeQuietly(os);

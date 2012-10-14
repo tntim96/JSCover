@@ -345,6 +345,7 @@ package jscover;
 import jscover.filesystem.ConfigurationForFS;
 import jscover.filesystem.FileSystemInstrumenter;
 import jscover.server.ConfigurationForServer;
+import jscover.server.WebDaemon;
 import jscover.server.WebServer;
 import jscover.util.ReflectionUtils;
 import org.hamcrest.Description;
@@ -369,11 +370,13 @@ import static org.mockito.Mockito.spy;
 public class MainInstanceTest {
     private Main main = new Main();
     private WebServer webServer = mock(WebServer.class);
+    private WebDaemon webDaemon = mock(WebDaemon.class);
     private FileSystemInstrumenter fileSystemInstrumenter = mock(FileSystemInstrumenter.class);
 
     @Before
     public void setUp() {
         ReflectionUtils.setField(main, "webServer", webServer);
+        ReflectionUtils.setField(main, "webDaemon", webDaemon);
         ReflectionUtils.setField(main, "fileSystemInstrumenter", fileSystemInstrumenter);
     }
 
@@ -403,7 +406,7 @@ public class MainInstanceTest {
 
             }
         };
-        verify(webServer, times(1)).start(argThat(matcher));
+        verify(webDaemon, times(1)).start(argThat(matcher));
     }
 
     @Test(expected = UnsupportedOperationException.class)
@@ -434,7 +437,7 @@ public class MainInstanceTest {
         ReflectionUtils.setField(main, "webServer", webServer);
 
         InterruptedException toBeThrown = new InterruptedException("Ouch!");
-        doThrow(toBeThrown).when(webServer).start(any(ConfigurationForServer.class));
+        doThrow(toBeThrown).when(webDaemon).start(any(ConfigurationForServer.class));
 
         try {
             main.runMain(new String[]{"-ws", "--port=1234"});

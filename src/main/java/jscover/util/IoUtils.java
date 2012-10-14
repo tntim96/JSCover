@@ -380,13 +380,13 @@ public abstract class IoUtils {
         }
     }
 
-    public static String toStringNoClose(BufferedReader br, int length) {
+    public static String toStringNoClose(Reader reader, int length) {
         StringBuilder result = new StringBuilder();
         int bufSize = 1024;
         char buf[] = new char[bufSize];
         int total = 0;
         try {
-            for (int read = 0; total < length && (read = br.read(buf)) != -1; ) {
+            for (int read = 0; total < length && (read = reader.read(buf)) != -1; ) {
                 total += read;
                 result.append(buf, 0, read);
             }
