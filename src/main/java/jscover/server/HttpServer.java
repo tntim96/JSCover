@@ -385,7 +385,7 @@ public class HttpServer extends Thread {
             }
 
             if (httpMethod.equals("GET")) {
-                if (httpRequest.getUrl().equals("/stop")) {
+                if (httpRequest.getPath().equals("/stop")) {
                     sendResponse(HTTP_STATUS.HTTP_OK, "text/plain", "Shutting down the server.");
                     IoUtils.closeQuietly(br);
                     IoUtils.closeQuietly(os);
@@ -420,7 +420,7 @@ public class HttpServer extends Thread {
         } else {
             StringBuilder data = new StringBuilder();
             data.append("<html>\n<body>\n");
-            data.append(format("<h1>Directory %s</h1>\n", request.getUrl()));
+            data.append(format("<h1>Directory %s</h1>\n", request.getPath()));
             File parentDir = file.getParentFile();
             if (!file.equals(wwwRoot)) {
                 if (parentDir.equals(wwwRoot))

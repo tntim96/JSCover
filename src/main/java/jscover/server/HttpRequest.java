@@ -342,6 +342,8 @@ Public License instead of this License.
 
 package jscover.server;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -362,24 +364,29 @@ public class HttpRequest {
         contentType.put("txt","text/plain");
     }
 
-    private String url;
+    private String path;
 
-    public HttpRequest(String url) {
-        int index = url.indexOf("?");
-        if (index > 0)
-            url = url.substring(0, index);
-        this.url = url;
+    public HttpRequest(String path) {
+        try {
+            URL javaURL = new URL(path);
+            this.path = javaURL.getPath();
+        } catch (MalformedURLException e) {
+            int index = path.indexOf("?");
+            if (index > 0)
+                path = path.substring(0, index);
+            this.path = path;
+        }
     }
 
-    public String getUrl() {
-        return url;
+    public String getPath() {
+        return path;
     }
 
     protected String getMime() {
         String extension = null;
-        int dot = url.lastIndexOf('.');
+        int dot = path.lastIndexOf('.');
         if (dot >= 0)
-            extension = url.substring(dot + 1).toLowerCase();
+            extension = path.substring(dot + 1).toLowerCase();
 
         String mime = contentType.get(extension);
         if (mime == null)
@@ -388,6 +395,6 @@ public class HttpRequest {
     }
 
     public String getRelativePath() {
-        return getUrl().startsWith("/") ? getUrl().substring(1) : getUrl();
+        return getPath().startsWith("/") ? getPath().substring(1) : getPath();
     }
 }

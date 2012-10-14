@@ -349,30 +349,37 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class HttpRequestTest {
     @Test
-    public void shouldReadSimpleURI() {
+    public void shouldReadSimplePath() {
         HttpRequest httpRequest = new HttpRequest("/test.html");
-        assertThat(httpRequest.getUrl(), equalTo("/test.html"));
+        assertThat(httpRequest.getPath(), equalTo("/test.html"));
         assertThat(httpRequest.getMime(), equalTo("text/html"));
     }
 
     @Test
-    public void shouldHaveDefaultForUnknowExtension() {
+    public void shouldReadSimpleURL() {
+        HttpRequest httpRequest = new HttpRequest("http://localhost:8080/test.html");
+        assertThat(httpRequest.getPath(), equalTo("/test.html"));
+        assertThat(httpRequest.getMime(), equalTo("text/html"));
+    }
+
+    @Test
+    public void shouldHaveDefaultForUnknownExtension() {
         HttpRequest httpRequest = new HttpRequest("/test.unknown");
-        assertThat(httpRequest.getUrl(), equalTo("/test.unknown"));
+        assertThat(httpRequest.getPath(), equalTo("/test.unknown"));
         assertThat(httpRequest.getMime(), equalTo("application/octet-stream"));
     }
 
     @Test
     public void shouldHaveDefaultForNoExtension() {
         HttpRequest httpRequest = new HttpRequest("/test");
-        assertThat(httpRequest.getUrl(), equalTo("/test"));
+        assertThat(httpRequest.getPath(), equalTo("/test"));
         assertThat(httpRequest.getMime(), equalTo("application/octet-stream"));
     }
 
     @Test
     public void shouldHandleQueryString() {
         HttpRequest httpRequest = new HttpRequest("/test.html?a=b");
-        assertThat(httpRequest.getUrl(), equalTo("/test.html"));
+        assertThat(httpRequest.getPath(), equalTo("/test.html"));
         assertThat(httpRequest.getMime(), equalTo("text/html"));
     }
 }

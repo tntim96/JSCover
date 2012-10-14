@@ -347,9 +347,7 @@ import jscover.json.JSONDataSaver;
 import jscover.util.IoService;
 
 import java.io.*;
-import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Properties;
 
 public class InstrumentingRequestHandler extends HttpServer {
     public static final String JSCOVERAGE_STORE = "/jscoverage-store";
@@ -367,7 +365,7 @@ public class InstrumentingRequestHandler extends HttpServer {
 
     @Override
     protected void handlePost(HttpRequest request, String data) {
-        String uri = request.getUrl();
+        String uri = request.getPath();
         File reportDir = configuration.getReportDir();
         if (uri.length() > JSCOVERAGE_STORE.length()) {
             reportDir = new File(reportDir, uri.substring(JSCOVERAGE_STORE.length()));
@@ -380,7 +378,7 @@ public class InstrumentingRequestHandler extends HttpServer {
 
     @Override
     protected void handleGet(HttpRequest request) throws IOException {
-        String uri = request.getUrl();
+        String uri = request.getPath();
         try {
             if (uri.equals("/jscoverage.js")) {
                 sendResponse(HTTP_STATUS.HTTP_OK, request.getMime(), ioService.generateJSCoverageServerJS());
