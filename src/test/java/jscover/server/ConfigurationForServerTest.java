@@ -348,6 +348,7 @@ import java.io.File;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 public class ConfigurationForServerTest {
@@ -369,6 +370,7 @@ public class ConfigurationForServerTest {
         assertThat(configuration.showHelp(), equalTo(false));
         assertThat(configuration.getDocumentRoot().toString(), equalTo(System.getProperty("user.dir")));
         assertThat(configuration.getPort(), equalTo(8080));
+        assertThat(configuration.isProxy(), is(false));
         assertThat(configuration.getJSVersion(), equalTo(150));
         assertThat(configuration.skipInstrumentation("/"), equalTo(false));
     }
@@ -393,6 +395,11 @@ public class ConfigurationForServerTest {
     @Test
     public void shouldParsePort() {
         assertThat(ConfigurationForServer.parse(new String[]{"--port=80"}).getPort(), equalTo(80));
+    }
+
+    @Test
+    public void shouldParseProxy() {
+        assertThat(ConfigurationForServer.parse(new String[]{"--proxy"}).isProxy(), is(true));
     }
 
     @Test

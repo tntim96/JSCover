@@ -115,6 +115,7 @@
 			<fileset dir="${classes.main.dir}">
 				<include name="**/*.class" />
 				<exclude name="**/FileSystemInstrumenter.class" /><!-- Todo add this back in with tests -->
+				<exclude name="**/HttpServer.class" />
 				<exclude name="**/NanoHTTPD*.class" />
 			</fileset>
 			<classpath>

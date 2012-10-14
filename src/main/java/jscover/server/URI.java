@@ -340,157 +340,49 @@ library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
  */
 
-package jscover;
+package jscover.server;
 
-import jscover.filesystem.ConfigurationForFS;
-import jscover.filesystem.FileSystemInstrumenter;
-import jscover.server.ConfigurationForServer;
-import jscover.server.WebServer;
-import jscover.util.IoUtils;
+import java.util.HashMap;
+import java.util.Map;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.jar.Attributes;
-import java.util.jar.Manifest;
+public class URI {
+    static Map<String, String> contentType = new HashMap<String, String>();
+    private static String contentDefault = "application/octet-stream";
 
-import static java.lang.String.format;
-
-public class Main {
-    public static final String HELP_PREFIX1 = "-h";
-    public static final String HELP_PREFIX2 = "--help";
-    public static final String VERSION_PREFIX1 = "-V";
-    public static final String VERSION_PREFIX2 = "--version";
-    public static final String SERVER_PREFIX = "-ws";
-    public static final String FILESYSTEM_PREFIX = "-fs";
-    public static final Properties properties = new Properties();
-
-    private String manifestName = "MANIFEST.MF";
-    private List<String> dependantClasses = new ArrayList<String>() {{
-        add("org.mozilla.javascript.ast.AstNode");
-    }};
-    private WebServer webServer = new WebServer();
-    private FileSystemInstrumenter fileSystemInstrumenter = new FileSystemInstrumenter();
-
-    void initialize() throws IOException {
-        properties.load(Main.class.getResourceAsStream("configuration.properties"));
-        checkDependantClasses();
+    static {
+        contentType.put("css","text/css");
+        contentType.put("js","application/javascript");
+        contentType.put("json","application/json");
+        contentType.put("htm","text/html");
+        contentType.put("html","text/html");
+        contentType.put("gif","image/gif");
+        contentType.put("jpg","image/jpeg");
+        contentType.put("jpeg","image/jpeg");
+        contentType.put("png","text/png");
     }
 
-    private void checkDependantClasses() throws IOException {
-        try {
-            for (String dependantClass : dependantClasses) {
-                Class.forName(dependantClass);
-            }
-        } catch (ClassNotFoundException e) {
-            Manifest mf = new Manifest(getClass().getResourceAsStream("/META-INF/" + manifestName));
-            Attributes mainAttributes = mf.getMainAttributes();
-            String name = mainAttributes.get(Attributes.Name.IMPLEMENTATION_TITLE).toString();
-            String classPathJARs = mainAttributes.get(Attributes.Name.CLASS_PATH).toString();
-            String message = "%nEnsure these JARs are in the same directory as %s.jar:%n%s";
-            throw new IllegalStateException(format(message, name , classPathJARs), e);
-        }
+    private String uri;
+
+    public URI(String uri) {
+        int index = uri.indexOf("?");
+        if (index > 0)
+            uri = uri.substring(0, index);
+        this.uri = uri;
     }
 
-    private boolean showHelp;
-    private boolean printVersion;
-    private boolean isServer;
-    private boolean isFileSystem;
-
-    public static void main(String[] args) throws IOException {
-        new Main().runMain(args);
+    public String getUri() {
+        return uri;
     }
 
-    public void runMain(String[] args) throws IOException {
-        parse(args);
-        initialize();
-        if (printVersion()) {
-            System.out.println(getVersionText());
-        } else if (isServer()) {
-            runServer(args);
-        } else if (isFileSystem()) {
-            runFileSystem(args);
-        } else {
-            System.out.println(getHelpText());
-        }
-    }
+    protected String getMime() {
+        String extension = null;
+        int dot = uri.lastIndexOf('.');
+        if (dot >= 0)
+            extension = uri.substring(dot + 1).toLowerCase();
 
-    public String getHelpText() {
-        return IoUtils.toString(getClass().getResourceAsStream("help.txt"));
-    }
-
-    public String getVersionText() {
-        return "JSCover version: " + properties.getProperty("version");
-    }
-
-    private void runFileSystem(String[] args) {
-        ConfigurationForFS configuration = ConfigurationForFS.parse(args);
-        configuration.setProperties(properties);
-        if (configuration.showHelp()) {
-            System.out.println(configuration.getHelpText());
-        } else {
-            fileSystemInstrumenter.run(configuration);
-        }
-    }
-
-    private void runServer(String[] args) {
-        ConfigurationForServer configuration = ConfigurationForServer.parse(args);
-        configuration.setProperties(properties);
-        if (configuration.showHelp()) {
-            System.out.println(configuration.getHelpText());
-        } else if (configuration.isProxy()) {
-            throw new UnsupportedOperationException("The proxy server is not yet implemented");
-        } else {
-            try {
-                webServer.start(configuration);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
-
-    public Main parse(String[] args) {
-        for (String arg : args) {
-            if (arg.equals(HELP_PREFIX1) || arg.equals(HELP_PREFIX2)) {
-                showHelp = true;
-            } else if (arg.equals(VERSION_PREFIX1) || arg.equals(VERSION_PREFIX2)) {
-                printVersion = true;
-            } else if (arg.equals(SERVER_PREFIX)) {
-                isServer = true;
-            } else if (arg.equals(FILESYSTEM_PREFIX)) {
-                isFileSystem = true;
-            } else {
-                showHelp = true;
-            }
-        }
-        if (!validOptions()) {
-            showHelp = true;
-        }
-        return this;
-    }
-
-    private boolean validOptions() {
-        if (isServer && isFileSystem) {
-            return false;
-        }
-        return isServer || isFileSystem;
-    }
-
-    public Boolean printVersion() {
-        return printVersion;
-    }
-
-
-    public Boolean showHelp() {
-        return showHelp;
-    }
-
-    public Boolean isServer() {
-        return isServer;
-    }
-
-    public boolean isFileSystem() {
-        return isFileSystem;
+        String mime = contentType.get(extension);
+        if (mime == null)
+            mime = contentDefault;
+        return mime;
     }
 }

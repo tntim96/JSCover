@@ -406,6 +406,11 @@ public class MainInstanceTest {
         verify(webServer, times(1)).start(argThat(matcher));
     }
 
+    @Test(expected = UnsupportedOperationException.class)
+    public void shouldNotSupportProxyYet() throws IOException, InterruptedException {
+        main.runMain(new String[]{"-ws","--proxy"});
+    }
+
     @Test
     public void shouldRunFileSystem() throws IOException, InterruptedException {
         main.runMain(new String[]{"-fs","--js-version=1.0","src","dest"});

@@ -360,6 +360,7 @@ public class ConfigurationForServer extends Configuration {
     public static final String REPORT_DIR_PREFIX = "--report-dir=";
     public static final String NO_INSTRUMENT_PREFIX = "--no-instrument=";
     public static final String JS_VERSION_PREFIX = "--js-version=";
+    public static final String PROXY_PREFIX = "--proxy";
 
     private boolean showHelp;
     private File documentRoot = new File(System.getProperty("user.dir"));
@@ -367,6 +368,7 @@ public class ConfigurationForServer extends Configuration {
     private final Set<String> noInstruments = new HashSet<String>();
     private File reportDir = new File(System.getProperty("user.dir"));
     private int JSVersion = Context.VERSION_1_5;
+    private boolean proxy;
     private CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
 
     public Boolean showHelp() {
@@ -408,6 +410,8 @@ public class ConfigurationForServer extends Configuration {
                 configuration.documentRoot = new File(arg.substring(DOC_ROOT_PREFIX.length()));
             } else if (arg.startsWith(PORT_PREFIX)) {
                 configuration.port = Integer.valueOf(arg.substring(PORT_PREFIX.length()));
+            } else if (arg.equals(PROXY_PREFIX)) {
+                configuration.proxy = true;
             } else if (arg.startsWith(REPORT_DIR_PREFIX)) {
                 configuration.reportDir = new File(arg.substring(REPORT_DIR_PREFIX.length()));
                 configuration.reportDir.mkdirs();
@@ -429,5 +433,9 @@ public class ConfigurationForServer extends Configuration {
 
     public CompilerEnvirons getCompilerEnvirons() {
         return compilerEnvirons;
+    }
+
+    public boolean isProxy() {
+        return proxy;
     }
 }

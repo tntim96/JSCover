@@ -340,157 +340,25 @@ library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
  */
 
-package jscover;
+package jscover.server;
 
-import jscover.filesystem.ConfigurationForFS;
-import jscover.filesystem.FileSystemInstrumenter;
-import jscover.server.ConfigurationForServer;
-import jscover.server.WebServer;
-import jscover.util.IoUtils;
+import org.junit.Test;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.jar.Attributes;
-import java.util.jar.Manifest;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 
-import static java.lang.String.format;
-
-public class Main {
-    public static final String HELP_PREFIX1 = "-h";
-    public static final String HELP_PREFIX2 = "--help";
-    public static final String VERSION_PREFIX1 = "-V";
-    public static final String VERSION_PREFIX2 = "--version";
-    public static final String SERVER_PREFIX = "-ws";
-    public static final String FILESYSTEM_PREFIX = "-fs";
-    public static final Properties properties = new Properties();
-
-    private String manifestName = "MANIFEST.MF";
-    private List<String> dependantClasses = new ArrayList<String>() {{
-        add("org.mozilla.javascript.ast.AstNode");
-    }};
-    private WebServer webServer = new WebServer();
-    private FileSystemInstrumenter fileSystemInstrumenter = new FileSystemInstrumenter();
-
-    void initialize() throws IOException {
-        properties.load(Main.class.getResourceAsStream("configuration.properties"));
-        checkDependantClasses();
+public class URITest {
+    @Test
+    public void shouldReadSimpleURI() {
+        URI uri = new URI("/test.html");
+        assertThat(uri.getUri(), equalTo("/test.html"));
+        assertThat(uri.getMime(), equalTo("text/html"));
     }
 
-    private void checkDependantClasses() throws IOException {
-        try {
-            for (String dependantClass : dependantClasses) {
-                Class.forName(dependantClass);
-            }
-        } catch (ClassNotFoundException e) {
-            Manifest mf = new Manifest(getClass().getResourceAsStream("/META-INF/" + manifestName));
-            Attributes mainAttributes = mf.getMainAttributes();
-            String name = mainAttributes.get(Attributes.Name.IMPLEMENTATION_TITLE).toString();
-            String classPathJARs = mainAttributes.get(Attributes.Name.CLASS_PATH).toString();
-            String message = "%nEnsure these JARs are in the same directory as %s.jar:%n%s";
-            throw new IllegalStateException(format(message, name , classPathJARs), e);
-        }
-    }
-
-    private boolean showHelp;
-    private boolean printVersion;
-    private boolean isServer;
-    private boolean isFileSystem;
-
-    public static void main(String[] args) throws IOException {
-        new Main().runMain(args);
-    }
-
-    public void runMain(String[] args) throws IOException {
-        parse(args);
-        initialize();
-        if (printVersion()) {
-            System.out.println(getVersionText());
-        } else if (isServer()) {
-            runServer(args);
-        } else if (isFileSystem()) {
-            runFileSystem(args);
-        } else {
-            System.out.println(getHelpText());
-        }
-    }
-
-    public String getHelpText() {
-        return IoUtils.toString(getClass().getResourceAsStream("help.txt"));
-    }
-
-    public String getVersionText() {
-        return "JSCover version: " + properties.getProperty("version");
-    }
-
-    private void runFileSystem(String[] args) {
-        ConfigurationForFS configuration = ConfigurationForFS.parse(args);
-        configuration.setProperties(properties);
-        if (configuration.showHelp()) {
-            System.out.println(configuration.getHelpText());
-        } else {
-            fileSystemInstrumenter.run(configuration);
-        }
-    }
-
-    private void runServer(String[] args) {
-        ConfigurationForServer configuration = ConfigurationForServer.parse(args);
-        configuration.setProperties(properties);
-        if (configuration.showHelp()) {
-            System.out.println(configuration.getHelpText());
-        } else if (configuration.isProxy()) {
-            throw new UnsupportedOperationException("The proxy server is not yet implemented");
-        } else {
-            try {
-                webServer.start(configuration);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
-
-    public Main parse(String[] args) {
-        for (String arg : args) {
-            if (arg.equals(HELP_PREFIX1) || arg.equals(HELP_PREFIX2)) {
-                showHelp = true;
-            } else if (arg.equals(VERSION_PREFIX1) || arg.equals(VERSION_PREFIX2)) {
-                printVersion = true;
-            } else if (arg.equals(SERVER_PREFIX)) {
-                isServer = true;
-            } else if (arg.equals(FILESYSTEM_PREFIX)) {
-                isFileSystem = true;
-            } else {
-                showHelp = true;
-            }
-        }
-        if (!validOptions()) {
-            showHelp = true;
-        }
-        return this;
-    }
-
-    private boolean validOptions() {
-        if (isServer && isFileSystem) {
-            return false;
-        }
-        return isServer || isFileSystem;
-    }
-
-    public Boolean printVersion() {
-        return printVersion;
-    }
-
-
-    public Boolean showHelp() {
-        return showHelp;
-    }
-
-    public Boolean isServer() {
-        return isServer;
-    }
-
-    public boolean isFileSystem() {
-        return isFileSystem;
+    @Test
+    public void shouldHandleQueryString() {
+        URI uri = new URI("/test.html?a=b");
+        assertThat(uri.getUri(), equalTo("/test.html"));
+        assertThat(uri.getMime(), equalTo("text/html"));
     }
 }

@@ -340,157 +340,95 @@ library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
  */
 
-package jscover;
+package jscover.server;
 
-import jscover.filesystem.ConfigurationForFS;
-import jscover.filesystem.FileSystemInstrumenter;
-import jscover.server.ConfigurationForServer;
-import jscover.server.WebServer;
 import jscover.util.IoUtils;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.jar.Attributes;
-import java.util.jar.Manifest;
+import java.io.*;
+import java.net.*;
+import java.util.*;
 
 import static java.lang.String.format;
 
-public class Main {
-    public static final String HELP_PREFIX1 = "-h";
-    public static final String HELP_PREFIX2 = "--help";
-    public static final String VERSION_PREFIX1 = "-V";
-    public static final String VERSION_PREFIX2 = "--version";
-    public static final String SERVER_PREFIX = "-ws";
-    public static final String FILESYSTEM_PREFIX = "-fs";
-    public static final Properties properties = new Properties();
-
-    private String manifestName = "MANIFEST.MF";
-    private List<String> dependantClasses = new ArrayList<String>() {{
-        add("org.mozilla.javascript.ast.AstNode");
-    }};
-    private WebServer webServer = new WebServer();
-    private FileSystemInstrumenter fileSystemInstrumenter = new FileSystemInstrumenter();
-
-    void initialize() throws IOException {
-        properties.load(Main.class.getResourceAsStream("configuration.properties"));
-        checkDependantClasses();
+public class HttpServer extends Thread {
+    public static void main(String args[]) throws Exception {
+        boolean running = true;
+        ServerSocket Server = new ServerSocket(8081);
+        File wwwRoot = new File(".");
+        while (running) {
+            Socket socket = Server.accept();
+            (new HttpServer(socket, wwwRoot)).start();
+        }
     }
 
-    private void checkDependantClasses() throws IOException {
+    private Socket socket;
+    private File wwwRoot;
+
+    public HttpServer(Socket socket, File wwwRoot) {
+        this.wwwRoot = wwwRoot;
+        this.socket = socket;
+    }
+
+    public void run() {
         try {
-            for (String dependantClass : dependantClasses) {
-                Class.forName(dependantClass);
+            InputStream is = socket.getInputStream();
+            OutputStream os = socket.getOutputStream();
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+
+            String requestString = br.readLine();
+
+            StringTokenizer tokenizer = new StringTokenizer(requestString);
+            String httpMethod = tokenizer.nextToken();
+            String uri = tokenizer.nextToken();
+            String headerLine;
+            Map<String, String> headers = new HashMap<String, String>();
+            while (!(headerLine = br.readLine()).equals("")) {
+                int index = headerLine.indexOf(':');
+                if (index >= 0)
+                    headers.put(headerLine.substring(0, index).trim().toLowerCase(), headerLine.substring(index + 1).trim());
             }
-        } catch (ClassNotFoundException e) {
-            Manifest mf = new Manifest(getClass().getResourceAsStream("/META-INF/" + manifestName));
-            Attributes mainAttributes = mf.getMainAttributes();
-            String name = mainAttributes.get(Attributes.Name.IMPLEMENTATION_TITLE).toString();
-            String classPathJARs = mainAttributes.get(Attributes.Name.CLASS_PATH).toString();
-            String message = "%nEnsure these JARs are in the same directory as %s.jar:%n%s";
-            throw new IllegalStateException(format(message, name , classPathJARs), e);
+
+            handleRequest(httpMethod, uri, is, os);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
-    private boolean showHelp;
-    private boolean printVersion;
-    private boolean isServer;
-    private boolean isFileSystem;
-
-    public static void main(String[] args) throws IOException {
-        new Main().runMain(args);
-    }
-
-    public void runMain(String[] args) throws IOException {
-        parse(args);
-        initialize();
-        if (printVersion()) {
-            System.out.println(getVersionText());
-        } else if (isServer()) {
-            runServer(args);
-        } else if (isFileSystem()) {
-            runFileSystem(args);
-        } else {
-            System.out.println(getHelpText());
-        }
-    }
-
-    public String getHelpText() {
-        return IoUtils.toString(getClass().getResourceAsStream("help.txt"));
-    }
-
-    public String getVersionText() {
-        return "JSCover version: " + properties.getProperty("version");
-    }
-
-    private void runFileSystem(String[] args) {
-        ConfigurationForFS configuration = ConfigurationForFS.parse(args);
-        configuration.setProperties(properties);
-        if (configuration.showHelp()) {
-            System.out.println(configuration.getHelpText());
-        } else {
-            fileSystemInstrumenter.run(configuration);
-        }
-    }
-
-    private void runServer(String[] args) {
-        ConfigurationForServer configuration = ConfigurationForServer.parse(args);
-        configuration.setProperties(properties);
-        if (configuration.showHelp()) {
-            System.out.println(configuration.getHelpText());
-        } else if (configuration.isProxy()) {
-            throw new UnsupportedOperationException("The proxy server is not yet implemented");
-        } else {
-            try {
-                webServer.start(configuration);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
-
-    public Main parse(String[] args) {
-        for (String arg : args) {
-            if (arg.equals(HELP_PREFIX1) || arg.equals(HELP_PREFIX2)) {
-                showHelp = true;
-            } else if (arg.equals(VERSION_PREFIX1) || arg.equals(VERSION_PREFIX2)) {
-                printVersion = true;
-            } else if (arg.equals(SERVER_PREFIX)) {
-                isServer = true;
-            } else if (arg.equals(FILESYSTEM_PREFIX)) {
-                isFileSystem = true;
+    private void handleRequest(String httpMethod, String uriString, InputStream is, OutputStream os) throws IOException {
+        try {
+            String path = uriString.startsWith("/") ? uriString.substring(1) : uriString;
+            File file = new File(wwwRoot, path);
+            PrintWriter pw = new PrintWriter(os);
+            if (!file.exists()) {
+                pw.print("HTTP/1.0 404 \n");
+                pw.write("Content-type: " + URI.contentType.get("html") + "\n\n");
+                pw.write("<html><body>Not found</body></html>");
+            } else if (file.isFile()) {
+                pw.print("HTTP/1.0 200 \n");
+                pw.write("Content-type: " + new URI(uriString).getMime() + "\n");
+                pw.write(format("Content-length: %d\n\n", file.length()));
+                pw.flush();
+                IoUtils.copy(new FileInputStream(file), os);
             } else {
-                showHelp = true;
+                pw.print("HTTP/1.0 200 \n");
+                pw.write("Content-type: " + URI.contentType.get("html") + "\n\n");
+                pw.write("<html><body>");
+                pw.print(format("<h1>Directory %s</h1>", uriString));
+                File parentDir = file.getParentFile();
+                if (!file.equals(wwwRoot)) {
+                    if (parentDir.equals(wwwRoot))
+                        pw.print("<a href=\"/\">..</a><br/>");
+                    else
+                        pw.print(format("<a href=\"%s\">..</a><br/>", parentDir.getPath().substring(1).replaceAll("\\\\", "/")));
+                }
+                for (File linkTo : file.listFiles()) {
+                    pw.print(format("<a href=\"%s\">%s</a><br/>", linkTo.getPath().substring(1).replaceAll("\\\\", "/"), linkTo.getName()));
+                }
+                pw.write("</body></html>");
             }
+            pw.flush();
+        } finally {
+            IoUtils.closeQuietly(os);
         }
-        if (!validOptions()) {
-            showHelp = true;
-        }
-        return this;
-    }
-
-    private boolean validOptions() {
-        if (isServer && isFileSystem) {
-            return false;
-        }
-        return isServer || isFileSystem;
-    }
-
-    public Boolean printVersion() {
-        return printVersion;
-    }
-
-
-    public Boolean showHelp() {
-        return showHelp;
-    }
-
-    public Boolean isServer() {
-        return isServer;
-    }
-
-    public boolean isFileSystem() {
-        return isFileSystem;
     }
 }

@@ -348,7 +348,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class IoUtils {
-    static void closeQuietly(Closeable s) {
+    public static void closeQuietly(Closeable s) {
         if (s != null) {
             try {
                 s.close();
