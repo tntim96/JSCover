@@ -363,6 +363,8 @@ public class HttpServer extends Thread {
 
     private Socket socket;
     private File wwwRoot;
+    private InputStream is;
+    private OutputStream os;
 
     public HttpServer(Socket socket, File wwwRoot) {
         this.wwwRoot = wwwRoot;
@@ -370,10 +372,11 @@ public class HttpServer extends Thread {
     }
 
     public void run() {
+        BufferedReader br = null;
         try {
-            InputStream is = socket.getInputStream();
-            OutputStream os = socket.getOutputStream();
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            is = socket.getInputStream();
+            os = socket.getOutputStream();
+            br = new BufferedReader(new InputStreamReader(is));
 
             String requestString = br.readLine();
 
@@ -391,44 +394,48 @@ public class HttpServer extends Thread {
             handleRequest(httpMethod, uri, is, os);
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            IoUtils.closeQuietly(br);
+            IoUtils.closeQuietly(os);
         }
     }
 
     private void handleRequest(String httpMethod, String uriString, InputStream is, OutputStream os) throws IOException {
-        try {
-            String path = uriString.startsWith("/") ? uriString.substring(1) : uriString;
-            File file = new File(wwwRoot, path);
-            PrintWriter pw = new PrintWriter(os);
-            if (!file.exists()) {
-                pw.print("HTTP/1.0 404 \n");
-                pw.write("Content-type: " + URI.contentType.get("html") + "\n\n");
-                pw.write("<html><body>Not found</body></html>");
-            } else if (file.isFile()) {
-                pw.print("HTTP/1.0 200 \n");
-                pw.write("Content-type: " + new URI(uriString).getMime() + "\n");
-                pw.write(format("Content-length: %d\n\n", file.length()));
-                pw.flush();
-                IoUtils.copy(new FileInputStream(file), os);
-            } else {
-                pw.print("HTTP/1.0 200 \n");
-                pw.write("Content-type: " + URI.contentType.get("html") + "\n\n");
-                pw.write("<html><body>");
-                pw.print(format("<h1>Directory %s</h1>", uriString));
-                File parentDir = file.getParentFile();
-                if (!file.equals(wwwRoot)) {
-                    if (parentDir.equals(wwwRoot))
-                        pw.print("<a href=\"/\">..</a><br/>");
-                    else
-                        pw.print(format("<a href=\"%s\">..</a><br/>", parentDir.getPath().substring(1).replaceAll("\\\\", "/")));
-                }
-                for (File linkTo : file.listFiles()) {
-                    pw.print(format("<a href=\"%s\">%s</a><br/>", linkTo.getPath().substring(1).replaceAll("\\\\", "/"), linkTo.getName()));
-                }
-                pw.write("</body></html>");
-            }
+        String path = uriString.startsWith("/") ? uriString.substring(1) : uriString;
+        File file = new File(wwwRoot, path);
+        PrintWriter pw = new PrintWriter(os);
+        if (!file.exists()) {
+            pw.print("HTTP/1.0 404 \n");
+            pw.write("Content-type: " + URI.contentType.get("html") + "\n\n");
+            pw.write("<html><body>Not found</body></html>");
+        } else if (file.isFile()) {
+            pw.print("HTTP/1.0 200 \n");
+            pw.write("Content-type: " + new URI(uriString).getMime() + "\n");
+            pw.write(format("Content-length: %d\n\n", file.length()));
             pw.flush();
-        } finally {
-            IoUtils.closeQuietly(os);
+            IoUtils.copy(new FileInputStream(file), os);
+        } else {
+            pw.print("HTTP/1.0 200 \n");
+            pw.write("Content-type: " + URI.contentType.get("html") + "\n\n");
+            pw.write("<html><body>");
+            pw.print(format("<h1>Directory %s</h1>", uriString));
+            File parentDir = file.getParentFile();
+            if (!file.equals(wwwRoot)) {
+                if (parentDir.equals(wwwRoot))
+                    pw.print("<a href=\"/\">..</a><br/>");
+                else
+                    pw.print(format("<a href=\"%s\">..</a><br/>", getRelativePath(parentDir)));
+            }
+            for (File linkTo : file.listFiles()) {
+                pw.print(format("<a href=\"%s\">%s</a><br/>", getRelativePath(linkTo), linkTo.getName()));
+            }
+            pw.write("</body></html>");
         }
+        pw.flush();
+    }
+
+    private String getRelativePath(File linkTo) {
+        String path = linkTo.getAbsolutePath().substring(wwwRoot.getAbsolutePath().length());
+        return path.replaceAll("\\\\", "/");
     }
 }
