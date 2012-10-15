@@ -344,11 +344,9 @@ package jscover.instrument;
 
 
 import jscover.format.PlainFormatter;
+import org.junit.Ignore;
 import org.junit.Test;
-import org.mozilla.javascript.CompilerEnvirons;
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.Scriptable;
-import org.mozilla.javascript.ScriptableObject;
+import org.mozilla.javascript.*;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -384,6 +382,32 @@ public class InMemoryCoverageTest extends ScriptableObject {
         Object expected = cx.evaluateString(scope, source, "inMemory.js", 1, null);
         Object actual = cx.evaluateString(scope, instrumentedJS, "inMemory.js", 1, null);
         assertThat(actual, equalTo(expected));
+    }
+
+    @Test
+    @Ignore
+    public void shouldPrintLineCoverage() {
+        Context cx = Context.enter();
+        Scriptable scope = cx.initStandardObjects();
+        String source = "function isNegative(x) {\n  if (x>=0)\n    return false;\n  else\n    return true;\n}; isNegative(12);";
+
+        processor = new SourceProcessor(compilerEnv, "inMemory.js", new PlainFormatter(), null);
+        String instrumentedJS = processor.processSource("inMemory.js", source);
+        instrumentedJS += "_$jscoverage;";
+
+        NativeObject coverage = (NativeObject)cx.evaluateString(scope, instrumentedJS, "inMemory.js", 1, null);
+        for (Object o : coverage.getIds()) {
+            System.out.println("o = " + o + " " + o.getClass().getName());
+            NativeArray array = (NativeArray)coverage.get(o);
+            for (int i=0; i< array.size(); i++) {
+                System.out.println(i + " " + array.get(i));
+            }
+//            for (Object o2 : ((NativeObject)o).getIds()) {
+//                System.out.println("o = " + o2);
+//            }
+        }
+        System.out.println("coverage = " + coverage);
+        System.out.println("coverage = " + coverage.getClass().getName());
     }
 
     @Override
