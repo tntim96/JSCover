@@ -349,6 +349,7 @@ import org.junit.Test;
 import org.mozilla.javascript.*;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
@@ -389,7 +390,14 @@ public class InMemoryCoverageTest extends ScriptableObject {
     public void shouldPrintLineCoverage() {
         Context cx = Context.enter();
         Scriptable scope = cx.initStandardObjects();
-        String source = "function isNegative(x) {\n  if (x>=0)\n    return false;\n  else\n    return true;\n}; isNegative(12);";
+        String source =
+                "function isNegative(x) {\n" +
+                "  if (x>=0)\n" +
+                "    return false;\n" +
+                "  else\n" +
+                "    return true;\n" +
+                "};\n" +
+                "isNegative(12);";
 
         processor = new SourceProcessor(compilerEnv, "inMemory.js", new PlainFormatter(), null);
         String instrumentedJS = processor.processSource("inMemory.js", source);
@@ -402,12 +410,22 @@ public class InMemoryCoverageTest extends ScriptableObject {
             for (int i=0; i< array.size(); i++) {
                 System.out.println(i + " " + array.get(i));
             }
-//            for (Object o2 : ((NativeObject)o).getIds()) {
-//                System.out.println("o = " + o2);
-//            }
         }
-        System.out.println("coverage = " + coverage);
-        System.out.println("coverage = " + coverage.getClass().getName());
+        verifyLineCount((NativeArray)coverage.get("inMemory.js"), 0, null);
+        verifyLineCount((NativeArray)coverage.get("inMemory.js"), 1, 1.0);
+        verifyLineCount((NativeArray)coverage.get("inMemory.js"), 2, 1.0);
+        verifyLineCount((NativeArray)coverage.get("inMemory.js"), 3, 1.0);
+        verifyLineCount((NativeArray)coverage.get("inMemory.js"), 4, null);
+        verifyLineCount((NativeArray)coverage.get("inMemory.js"), 5, 0.0);
+        verifyLineCount((NativeArray)coverage.get("inMemory.js"), 6, 1.0);
+        verifyLineCount((NativeArray)coverage.get("inMemory.js"), 7, 1.0);
+    }
+
+    private void verifyLineCount(NativeArray array, Integer line, Double count) {
+        if (count == null)
+            assertThat(array.get(line), nullValue());
+        else
+            assertThat((Double)array.get(line), equalTo(count));
     }
 
     @Override
