@@ -350,6 +350,7 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
@@ -380,9 +381,9 @@ public class InMemoryCoverageTest extends ScriptableObject {
         processor = new SourceProcessor(compilerEnv, "inMemory.js", new PlainFormatter(), null);
         String instrumentedJS = processor.processSource("inMemory.js", source);
 
-        System.out.println("instrumentedJS = " + instrumentedJS);
-        Object result = cx.evaluateString(scope, instrumentedJS, "inMemory.js", 1, null);
-        assertThat((Boolean)result, is(false));
+        Object expected = cx.evaluateString(scope, source, "inMemory.js", 1, null);
+        Object actual = cx.evaluateString(scope, instrumentedJS, "inMemory.js", 1, null);
+        assertThat(actual, equalTo(expected));
     }
 
     @Override
