@@ -380,7 +380,7 @@ public class InstrumentingRequestHandler extends HttpServer {
 
         jsonDataSaver.saveJSONData(reportDir, data);
         ioService.generateJSCoverFilesForWebServer(reportDir, configuration.getVersion());
-        sendResponse(HTTP_STATUS.HTTP_OK, "text/plain", "Report stored at " + reportDir);
+        sendResponse(HTTP_STATUS.HTTP_OK, "text/plain", "Coverage data stored at " + reportDir);
     }
 
     @Override

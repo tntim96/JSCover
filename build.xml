@@ -134,7 +134,7 @@
 	</target>
 
 	<target name="coverage-check">
-		<cobertura-check totallinerate="92" totalbranchrate="89"/>
+		<cobertura-check totallinerate="92" totalbranchrate="90"/>
 	</target>
 
 	<target name="compile-tests" depends="compile">
@@ -189,7 +189,7 @@
 		<fail if="test.failure"/>
 	</target>
 
-    <target name="run-acceptance-tests" depends="compile-acceptance-tests">
+    <target name="run-acceptance-tests" depends="compile-acceptance-tests, jar">
         <property name="tests" value="*Test" />
         <junit forkmode="perTest" haltonfailure="no" haltonerror="no" failureProperty="test.failure" errorproperty="test.failure">
             <classpath>

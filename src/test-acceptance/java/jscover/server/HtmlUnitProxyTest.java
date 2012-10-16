@@ -363,13 +363,14 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class HtmlUnitProxyTest {
     private static Thread webServer;
     private static Thread server;
+    private static int proxyPort = 3129;
 
     private WebClient webClient = new WebClient();
     private String reportDir = "target/ws-report";
     private String[] args = new String[]{
             "-ws",
             "--document-root=src/test-acceptance/resources",
-            "--port=3128",
+            "--port="+proxyPort,
             "--proxy",
             "--no-instrument=/example/lib",
             "--report-dir=" + reportDir
@@ -406,7 +407,7 @@ public class HtmlUnitProxyTest {
             });
             webServer.start();
         }
-        ProxyConfig proxyConfig = new ProxyConfig("localhost", 3128);
+        ProxyConfig proxyConfig = new ProxyConfig("localhost", proxyPort);
         proxyConfig.addHostsToProxyBypass("127.0.0.1");
         webClient.setProxyConfig(proxyConfig);
     }

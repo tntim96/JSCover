@@ -1,6 +1,7 @@
-0.0.5 / 2012-10-??
+0.0.5 / 2012-10-16
 ==================
   * Add proxy support
+  * Message 'Report stored at' changed to 'Coverage data stored at' (important for HtmlUnit/Selenium)
   * Internal - Swap from NanoHTTPD to JSCover's own web-server
 
 0.0.4 / 2012-10-12

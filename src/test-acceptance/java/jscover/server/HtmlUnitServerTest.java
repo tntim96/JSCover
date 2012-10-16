@@ -451,7 +451,7 @@ public class HtmlUnitServerTest {
         webClient.waitForBackgroundJavaScript(2000);
         String result = page.getElementById("storeDiv").getTextContent();
 
-        assertThat(result, containsString("Report stored at target"));
+        assertThat(result, containsString("Coverage data stored at target"));
 
         String json = IoUtils.toString(jsonFile);
         assertThat(json, containsString("/script.js"));
@@ -476,7 +476,7 @@ public class HtmlUnitServerTest {
         WebWindow webWindow = webClient.getWebWindowByName("jscoverage_window");
         ScriptResult result = ((HtmlPage)webWindow.getEnclosedPage()).executeJavaScript("jscoverage_report('directory');");
 
-        assertThat(result.getJavaScriptResult().toString(), equalTo("Report stored at " + new File(reportDir + "/directory").getPath()));
+        assertThat(result.getJavaScriptResult().toString(), equalTo("Coverage data stored at " + new File(reportDir + "/directory").getPath()));
 
         String json = IoUtils.toString(jsonFile);
         assertThat(json, containsString("/script.js"));

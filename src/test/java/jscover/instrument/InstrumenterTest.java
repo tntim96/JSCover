@@ -398,6 +398,14 @@ public class InstrumenterTest {
     }
 
     @Test
+    public void shouldInstrumentStatementFunctionAssignment() {
+        String source = "this.someFn()\n    ._renderItem = function() {};";
+        String instrumentedSource = instrumenter.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'][1]++;\nthis.someFn()._renderItem = function() {\n};\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+    @Test
     public void shouldInstrumentIfWithBraces() {
         String source = "if (x > 10)\n{\n  x++;\n}";
         String instrumentedSource = instrumenter.instrumentSource(source);

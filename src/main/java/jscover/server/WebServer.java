@@ -392,7 +392,7 @@ public class WebServer extends NanoHTTPD {
 
                 jsonDataSaver.saveJSONData(reportDir, data);
                 ioService.generateJSCoverFilesForWebServer(reportDir, configuration.getVersion());
-                return new NanoHTTPD.Response(HTTP_OK, HTTP_OK, "Report stored at "+ reportDir);
+                return new NanoHTTPD.Response(HTTP_OK, HTTP_OK, "Coverage data stored at "+ reportDir);
             } else if (uri.startsWith("/jscoverage.html")) {
                 String reportHTML = ioService.generateJSCoverageHtml(configuration.getVersion());
                 return new NanoHTTPD.Response(HTTP_OK, getMime(uri), reportHTML);

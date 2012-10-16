@@ -431,7 +431,9 @@ class NodeProcessor {
             }
         } else if (node instanceof FunctionNode || node instanceof TryStatement || isDebugStatement(node)) {
             ExpressionStatement newChild = buildInstrumentationStatement(node.getLineno());
-            parent.addChildBefore(newChild, node);
+            if (!(parent instanceof Assignment)) {
+                parent.addChildBefore(newChild, node);
+            }
         } else if (node instanceof ReturnStatement) {
             ExpressionStatement newChild = buildInstrumentationStatement(node.getLineno());
             if (parent instanceof Block) {
