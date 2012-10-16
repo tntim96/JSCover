@@ -375,7 +375,7 @@ public class FileSystemInstrumenter {
             String files[] = src.list();
             for (String file : files) {
                 File srcFile = new File(src, file);
-                String path = getRelativePath(srcFile).replaceAll("\\\\","/");
+                String path = IoUtils.getRelativePath(srcFile, configuration.getSrcDir()).replaceAll("\\\\","/");
                 if (configuration.exclude(path)) {
                     continue;
                 }
@@ -384,16 +384,12 @@ public class FileSystemInstrumenter {
                 copyFolder(srcFile, destFile);
             }
         } else {
-            String path = getRelativePath(src).replaceAll("\\\\","/");
+            String path = IoUtils.getRelativePath(src, configuration.getSrcDir()).replaceAll("\\\\","/");
             if (src.isFile() && src.toString().endsWith(".js") && !configuration.skipInstrumentation(path)) {
                 instrumenterService.instrumentJSForFileSystem(configuration.getCompilerEnvirons(), src, dest, path, log);
             } else {
                 IoUtils.copy(src, dest);
             }
         }
-    }
-
-    private String getRelativePath(File file) {
-        return file.getAbsolutePath().substring(configuration.getSrcDir().getAbsolutePath().length()+File.separator.length());
     }
 }

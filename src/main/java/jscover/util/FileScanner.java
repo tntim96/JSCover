@@ -366,7 +366,7 @@ public class FileScanner {
             String files[] = src.list();
             for (String file : files) {
                 File srcFile = new File(src, file);
-                String path = getRelativePath(srcFile).replaceAll("\\\\","/");
+                String path = IoUtils.getRelativePath(srcFile, configuration.getDocumentRoot()).replaceAll("\\\\","/");
                 if (configuration.skipInstrumentation(path)) {
                     continue;
                 }
@@ -379,9 +379,4 @@ public class FileScanner {
             }
         }
     }
-
-    private String getRelativePath(File file) {
-        return file.getAbsolutePath().substring(configuration.getDocumentRoot().getAbsolutePath().length()+File.separator.length());
-    }
-
 }

@@ -536,4 +536,8 @@ public abstract class IoUtils {
             closeQuietly(os);
         }
     }
+
+    public static String getRelativePath(File file1, File file2) {
+        return file1.getAbsolutePath().substring(file2.getAbsolutePath().length()+File.separator.length());
+    }
 }
