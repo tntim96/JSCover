@@ -2,7 +2,7 @@
 ==================
   * Add proxy support
   * Message 'Report stored at' changed to 'Coverage data stored at' (important for HtmlUnit/Selenium)
-  * Internal - Swap from NanoHTTPD to JSCover's own web-server
+  * Internal - Swap from NanoHTTPD to JSCover's own web-server - index.htm(l) no longer served automatically
 
 0.0.4 / 2012-10-12
 ==================
