@@ -189,7 +189,7 @@
 		<fail if="test.failure"/>
 	</target>
 
-    <target name="run-acceptance-tests" depends="compile-acceptance-tests, jar">
+    <target name="run-acceptance-tests" depends="compile-acceptance-tests">
         <property name="tests" value="*Test" />
         <junit forkmode="perTest" haltonfailure="no" haltonerror="no" failureProperty="test.failure" errorproperty="test.failure">
             <classpath>
