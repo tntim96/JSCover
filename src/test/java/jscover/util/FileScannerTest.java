@@ -340,37 +340,56 @@ library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
  */
 
-package jscover.instrument;
+package jscover.util;
 
-import org.mozilla.javascript.CompilerEnvirons;
-import org.mozilla.javascript.Parser;
-import org.mozilla.javascript.ast.AstNode;
-import org.mozilla.javascript.ast.NodeVisitor;
+import jscover.server.ConfigurationForServer;
+import org.junit.Before;
+import org.junit.Test;
 
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.io.File;
+import java.util.Set;
 
-public class LineCountNodeVisitor implements NodeVisitor {
-    private CompilerEnvirons compilerEnv;
-    private SortedSet<Integer> validLines = new TreeSet<Integer>();
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsCollectionContaining.hasItem;
 
-    public LineCountNodeVisitor(CompilerEnvirons compilerEnv) {
-        this.compilerEnv = compilerEnv;
+public class FileScannerTest {
+    private ConfigurationForServer configuration;
+
+    private FileScanner fileScanner;
+
+    @Before
+    public void setUp() {
+        //fileScanner = new FileScanner(configuration);
     }
 
-    public SortedSet<Integer> getCodeLines(String source) {
-        Parser parser = new Parser(compilerEnv);
-        parser.parse(source, null, 1).visitAll(this);
-        return validLines;
+    @Test
+    public void shouldFindAllJavaScriptFiles() {
+        configuration = ConfigurationForServer.parse(new String[]{
+                "--document-root=src/test-integration/resources/jsSearch"
+        });
+        fileScanner = new FileScanner(configuration);
+
+        Set<File> files = fileScanner.getFiles();
+        assertThat(files.size(), equalTo(4));
+        assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/root.js")));
+        assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/level1/level1.js")));
+        assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/level1/level1.js")));
+        assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/noInstrument/noInstrument.js")));
     }
 
-    public boolean visit(AstNode node) {
-        try {
-            validLines.add(node.getLineno());
-            return true;
-        } catch(Throwable t) {
-            t.printStackTrace(System.err);
-        }
-        return true;
+    @Test
+    public void shouldExcludeNoInstrument() {
+        configuration = ConfigurationForServer.parse(new String[]{
+                "--document-root=src/test-integration/resources/jsSearch",
+                "--no-instrument=noInstrument"
+        });
+        fileScanner = new FileScanner(configuration);
+
+        Set<File> files = fileScanner.getFiles();
+        assertThat(files.size(), equalTo(3));
+        assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/root.js")));
+        assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/level1/level1.js")));
+        assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/level1/level2/level2.js")));
     }
 }

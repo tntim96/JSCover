@@ -340,37 +340,48 @@ library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
  */
 
-package jscover.instrument;
+package jscover.util;
 
-import org.mozilla.javascript.CompilerEnvirons;
-import org.mozilla.javascript.Parser;
-import org.mozilla.javascript.ast.AstNode;
-import org.mozilla.javascript.ast.NodeVisitor;
+import jscover.server.ConfigurationForServer;
 
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
 
-public class LineCountNodeVisitor implements NodeVisitor {
-    private CompilerEnvirons compilerEnv;
-    private SortedSet<Integer> validLines = new TreeSet<Integer>();
+public class FileScanner {
+    private ConfigurationForServer configuration;
 
-    public LineCountNodeVisitor(CompilerEnvirons compilerEnv) {
-        this.compilerEnv = compilerEnv;
+    public FileScanner(ConfigurationForServer configuration) {
+        this.configuration = configuration;
     }
 
-    public SortedSet<Integer> getCodeLines(String source) {
-        Parser parser = new Parser(compilerEnv);
-        parser.parse(source, null, 1).visitAll(this);
-        return validLines;
+    public Set<File> getFiles() {
+        Set<File> files = new HashSet<File>();
+        searchFolder(configuration.getDocumentRoot(), files);
+        return files;
     }
 
-    public boolean visit(AstNode node) {
-        try {
-            validLines.add(node.getLineno());
-            return true;
-        } catch(Throwable t) {
-            t.printStackTrace(System.err);
+    private void searchFolder(File src, Set<File> list) {
+        if (src.isDirectory()) {
+            String files[] = src.list();
+            for (String file : files) {
+                File srcFile = new File(src, file);
+                String path = getRelativePath(srcFile).replaceAll("\\\\","/");
+                if (configuration.skipInstrumentation(path)) {
+                    continue;
+                }
+                //recursive copy
+                searchFolder(srcFile, list);
+            }
+        } else {
+            if (src.getName().endsWith(".js")) {
+                list.add(src);
+            }
         }
-        return true;
     }
+
+    private String getRelativePath(File file) {
+        return file.getAbsolutePath().substring(configuration.getDocumentRoot().getAbsolutePath().length()+File.separator.length());
+    }
+
 }
