@@ -352,34 +352,34 @@ public class HttpRequestTest {
     public void shouldReadSimplePath() {
         HttpRequest httpRequest = new HttpRequest("/test.html");
         assertThat(httpRequest.getPath(), equalTo("/test.html"));
-        assertThat(httpRequest.getMime(), equalTo("text/html"));
+        assertThat(httpRequest.getMime().getContentType(), equalTo("text/html"));
     }
 
     @Test
     public void shouldReadSimpleURL() {
         HttpRequest httpRequest = new HttpRequest("http://localhost:8080/test.html");
         assertThat(httpRequest.getPath(), equalTo("/test.html"));
-        assertThat(httpRequest.getMime(), equalTo("text/html"));
+        assertThat(httpRequest.getMime().getContentType(), equalTo("text/html"));
     }
 
     @Test
     public void shouldHaveDefaultForUnknownExtension() {
         HttpRequest httpRequest = new HttpRequest("/test.unknown");
         assertThat(httpRequest.getPath(), equalTo("/test.unknown"));
-        assertThat(httpRequest.getMime(), equalTo("application/octet-stream"));
+        assertThat(httpRequest.getMime().getContentType(), equalTo("application/octet-stream"));
     }
 
     @Test
     public void shouldHaveDefaultForNoExtension() {
         HttpRequest httpRequest = new HttpRequest("/test");
         assertThat(httpRequest.getPath(), equalTo("/test"));
-        assertThat(httpRequest.getMime(), equalTo("application/octet-stream"));
+        assertThat(httpRequest.getMime().getContentType(), equalTo("application/octet-stream"));
     }
 
     @Test
     public void shouldHandleQueryString() {
         HttpRequest httpRequest = new HttpRequest("/test.html?a=b");
         assertThat(httpRequest.getPath(), equalTo("/test.html"));
-        assertThat(httpRequest.getMime(), equalTo("text/html"));
+        assertThat(httpRequest.getMime().getContentType(), equalTo("text/html"));
     }
 }

@@ -381,7 +381,7 @@ public class InstrumentingRequestHandler extends HttpServer {
 
             jsonDataSaver.saveJSONData(reportDir, data);
             ioService.generateJSCoverFilesForWebServer(reportDir, configuration.getVersion());
-            sendResponse(HTTP_STATUS.HTTP_OK, "text/plain", "Coverage data stored at " + reportDir);
+            sendResponse(HTTP_STATUS.HTTP_OK, MIME.TEXT_PLAIN, "Coverage data stored at " + reportDir);
         } else {
             if (configuration.isProxy())
                 handleProxyPost(request, data);
@@ -411,7 +411,7 @@ public class InstrumentingRequestHandler extends HttpServer {
                 } else {
                     jsInstrumented = instrumenterService.instrumentJSForWebServer(configuration.getCompilerEnvirons(), new File(wwwRoot, uri), uri, log);
                 }
-                sendResponse(HTTP_STATUS.HTTP_OK, "application/javascript", jsInstrumented);
+                sendResponse(HTTP_STATUS.HTTP_OK, MIME.JS, jsInstrumented);
             } else {
                 if (configuration.isProxy())
                     handleProxyGet(request);
@@ -421,7 +421,7 @@ public class InstrumentingRequestHandler extends HttpServer {
         } catch (Throwable e) {
             StringWriter stringWriter = new StringWriter();
             e.printStackTrace(new PrintWriter(stringWriter));
-            sendResponse(HTTP_STATUS.HTTP_INTERNAL_SERVER_ERROR, "text/plain", stringWriter.toString());
+            sendResponse(HTTP_STATUS.HTTP_INTERNAL_SERVER_ERROR, MIME.TEXT_PLAIN, stringWriter.toString());
         }
     }
 

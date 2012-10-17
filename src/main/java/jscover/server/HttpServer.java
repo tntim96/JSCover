@@ -389,7 +389,7 @@ public class HttpServer extends Thread {
 
             if (httpMethod.equals("GET")) {
                 if (httpRequest.getPath().equals("/stop")) {
-                    sendResponse(HTTP_STATUS.HTTP_OK, "text/plain", "Shutting down the server.");
+                    sendResponse(HTTP_STATUS.HTTP_OK, MIME.TEXT_PLAIN, "Shutting down the server.");
                     IoUtils.closeQuietly(br);
                     IoUtils.closeQuietly(os);
                     System.exit(0);
@@ -410,7 +410,7 @@ public class HttpServer extends Thread {
 
     protected void handlePost(HttpRequest request, String data) {
         String response = format("<html><body>Posted<pre id=\"postData\">%s</pre></body></html>", data);
-        sendResponse(HTTP_STATUS.HTTP_OK, HttpRequest.contentType.get("html"), response);
+        sendResponse(HTTP_STATUS.HTTP_OK, MIME.HTML, response);
     }
 
     protected void handleGet(HttpRequest request) throws IOException {
@@ -418,7 +418,7 @@ public class HttpServer extends Thread {
         File file = new File(wwwRoot, path);
         if (!file.exists()) {
             String data = "<html><body>Not found</body></html>";
-            sendResponse(HTTP_STATUS.HTTP_FILE_NOT_FOUND, HttpRequest.contentType.get("html"), data);
+            sendResponse(HTTP_STATUS.HTTP_FILE_NOT_FOUND, MIME.HTML, data);
         } else if (file.isFile()) {
             sendResponse(HTTP_STATUS.HTTP_OK, request.getMime(), file);
         } else {
@@ -436,7 +436,7 @@ public class HttpServer extends Thread {
                 data.append(format("<a href=\"%s\">%s</a><br/>\n", getRelativePath(linkTo), linkTo.getName()));
             }
             data.append("</body>\n</html>");
-            sendResponse(HTTP_STATUS.HTTP_OK, HttpRequest.contentType.get("html"), data.toString());
+            sendResponse(HTTP_STATUS.HTTP_OK, MIME.HTML, data.toString());
         }
     }
 
@@ -445,25 +445,25 @@ public class HttpServer extends Thread {
         return path.replaceAll("\\\\", "/");
     }
 
-    protected void sendResponse(HTTP_STATUS status, String mime, String data) {
+    protected void sendResponse(HTTP_STATUS status, MIME mime, String data) {
         pw.print(format("HTTP/1.0 %s \n", status));
-        pw.write(format("Content-Type: %s \n", mime));
+        pw.write(format("Content-Type: %s \n", mime.getContentType()));
         pw.write(format("Content-Length: %d\n\n", data.length()));
         pw.write(data);
         pw.flush();
     }
 
-    private void sendResponse(HTTP_STATUS status, String mime, File data) {
+    private void sendResponse(HTTP_STATUS status, MIME mime, File data) {
         pw.print(format("HTTP/1.0 %s \n", status));
-        pw.write(format("Content-Type: %s \n", mime));
+        pw.write(format("Content-Type: %s \n", mime.getContentType()));
         pw.write(format("Content-Length: %d\n\n", data.length()));
         pw.flush();
         IoUtils.copyNoClose(data, os);
     }
 
-    protected void sendResponse(HTTP_STATUS status, String mime, InputStream is) {
+    protected void sendResponse(HTTP_STATUS status, MIME mime, InputStream is) {
         pw.print(format("HTTP/1.0 %s \n", status));
-        pw.write(format("Content-Type: %s \n\n", mime));
+        pw.write(format("Content-Type: %s \n\n", mime.getContentType()));
         pw.flush();
         IoUtils.copy(is, os);
     }

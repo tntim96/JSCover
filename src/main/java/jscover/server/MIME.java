@@ -342,53 +342,42 @@ Public License instead of this License.
 
 package jscover.server;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
-public class HttpRequest {
-    private String path;
-    private URL url;
-    private Map<String, String> headers;
+public enum MIME {
+    DEFAULT("application/octet-stream"),
+    CSS("text/css", "css"),
+    JS("application/javascript", "js"),
+    JSON("application/json", "json"),
+    HTML("text/html", "htm", "html"),
+    GIF("image/gif", "gif"),
+    JPG("image/gif", "jpg"),
+    JPEG("image/gif", "jpeg"),
+    PNG("image/gif", "png"),
+    TEXT_PLAIN("text/plain", "txt")
+    ;
+    private String contentType;
+    private List<String> extensions;
 
-    public HttpRequest(String path) {
-        try {
-            this.url = new URL(path);
-            this.path = url.getPath();
-        } catch (MalformedURLException e) {
-            int index = path.indexOf("?");
-            if (index > 0)
-                path = path.substring(0, index);
-            this.path = path;
+    MIME(String contentType, String... extensions) {
+        this.contentType = contentType;
+        this.extensions = new ArrayList<String>();
+        for (String extension : extensions) {
+            this.extensions.add(extension);
         }
     }
 
-    public String getPath() {
-        return path;
+    public String getContentType() {
+        return contentType;
     }
 
-    protected MIME getMime() {
-        String extension = null;
-        int dot = path.lastIndexOf('.');
-        if (dot >= 0)
-            extension = path.substring(dot + 1).toLowerCase();
-        return MIME.getMime(extension);
-    }
-
-    public String getRelativePath() {
-        return getPath().startsWith("/") ? getPath().substring(1) : getPath();
-    }
-
-    public URL getUrl() {
-        return url;
-    }
-
-    public void setHeaders(Map<String,String> headers) {
-        this.headers = headers;
-    }
-
-    public Map<String, String> getHeaders() {
-        return headers;
+    public static MIME getMime(String extension) {
+        if (extension == null)
+        return DEFAULT;
+        for (MIME mime : MIME.values())
+            if (mime.extensions.contains(extension.toLowerCase()))
+                return mime;
+        return DEFAULT;
     }
 }
