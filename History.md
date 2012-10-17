@@ -1,3 +1,7 @@
+0.0.6 / 2012-10-17
+==================
+  * Add POST, cookie and redirect support for proxy mode
+
 0.0.5 / 2012-10-16
 ==================
   * Add proxy support

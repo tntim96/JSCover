@@ -371,7 +371,9 @@ public class HttpServer extends Thread {
             br = new BufferedReader(new InputStreamReader(is));
             pw = new PrintWriter(os);
 
-            String requestString = br.readLine();
+            String requestString = null;
+            while (requestString == null)
+                requestString = br.readLine();
 
             StringTokenizer tokenizer = new StringTokenizer(requestString);
             String httpMethod = tokenizer.nextToken();
@@ -381,7 +383,7 @@ public class HttpServer extends Thread {
             while (!(headerLine = br.readLine()).equals("")) {
                 int index = headerLine.indexOf(':');
                 if (index >= 0)
-                    headers.put(headerLine.substring(0, index).toLowerCase().trim(), headerLine.substring(index + 1).trim());
+                    headers.put(headerLine.substring(0, index).trim(), headerLine.substring(index + 1).trim());
             }
             httpRequest.setHeaders(headers);
 
@@ -394,7 +396,7 @@ public class HttpServer extends Thread {
                 }
                 handleGet(httpRequest);
             } else if (httpMethod.equals("POST")) {
-                int length = Integer.valueOf(headers.get("content-length"));
+                int length = Integer.valueOf(headers.get("Content-Length"));
                 handlePost(httpRequest, IoUtils.toStringNoClose(br, length));
             } else
               throw new UnsupportedOperationException("No support for "+httpMethod);
@@ -407,7 +409,8 @@ public class HttpServer extends Thread {
     }
 
     protected void handlePost(HttpRequest request, String data) {
-        throw new UnsupportedOperationException("No support for POST");
+        String response = format("<html><body>Posted<pre>%s</pre></body></html>", data);
+        sendResponse(HTTP_STATUS.HTTP_OK, HttpRequest.contentType.get("html"), response);
     }
 
     protected void handleGet(HttpRequest request) throws IOException {

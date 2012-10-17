@@ -408,9 +408,7 @@ public class HttpRequest {
         this.headers = headers;
     }
 
-    /* For proxy mode if required
     public Map<String, String> getHeaders() {
         return headers;
     }
-    */
 }

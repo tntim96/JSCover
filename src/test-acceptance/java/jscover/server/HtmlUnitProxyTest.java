@@ -11,7 +11,7 @@
 
   The licenses for most software are designed to take away your
 freedom to share and change it.  By contrast, the GNU General Public
-License is intended to guarantee your freedom to share and change free
+License is intended to guarantee your freedom to share and cha_ge free
 software--to make sure the software is free for all its users.  This
 General Public License applies to most of the Free Software
 Foundation's software and to any other program whose authors commit to

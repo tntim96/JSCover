@@ -350,8 +350,9 @@ public class InstrumentingRequestHandlerDriver {
     public static void main(String args[]) throws Exception {
         ConfigurationForServer configuration = ConfigurationForServer.parse(
                 new String[]{
-                        "--port=3128",
+                        "--port=3129",
                         "--proxy",
+                        "--no-instrument=/js/lib",
                         "--report-dir=target"
                 }
         );

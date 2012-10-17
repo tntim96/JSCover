@@ -365,6 +365,11 @@ public class InstrumenterService {
         }
     }
 
+    public String instrumentJSForWebServer(CompilerEnvirons compilerEnvirons, String source, String uri, File log) {
+        SourceProcessor sourceProcessor = new SourceProcessor(compilerEnvirons, uri, sourceFormatter, log);
+        return sourceProcessor.processSourceForServer(source);
+    }
+
     public void instrumentJSForFileSystem(CompilerEnvirons compilerEnvirons, File srcFile, File dest, String uri, File log) {
         SourceProcessor sourceProcessor = new SourceProcessor(compilerEnvirons, uri, sourceFormatter, log);
         String source = IoUtils.loadFromFileSystem(srcFile);

@@ -373,14 +373,21 @@ public class InstrumentingRequestHandler extends HttpServer {
     @Override
     protected void handlePost(HttpRequest request, String data) {
         String uri = request.getPath();
-        File reportDir = configuration.getReportDir();
-        if (uri.length() > JSCOVERAGE_STORE.length()) {
-            reportDir = new File(reportDir, uri.substring(JSCOVERAGE_STORE.length()));
-        }
+        if (uri.startsWith(JSCOVERAGE_STORE)) {
+            File reportDir = configuration.getReportDir();
+            if (uri.length() > JSCOVERAGE_STORE.length()) {
+                reportDir = new File(reportDir, uri.substring(JSCOVERAGE_STORE.length()));
+            }
 
-        jsonDataSaver.saveJSONData(reportDir, data);
-        ioService.generateJSCoverFilesForWebServer(reportDir, configuration.getVersion());
-        sendResponse(HTTP_STATUS.HTTP_OK, "text/plain", "Coverage data stored at " + reportDir);
+            jsonDataSaver.saveJSONData(reportDir, data);
+            ioService.generateJSCoverFilesForWebServer(reportDir, configuration.getVersion());
+            sendResponse(HTTP_STATUS.HTTP_OK, "text/plain", "Coverage data stored at " + reportDir);
+        } else {
+            if (configuration.isProxy())
+                handleProxyPost(request, data);
+            else
+                super.handlePost(request, data);
+        }
     }
 
     @Override
@@ -395,11 +402,19 @@ public class InstrumentingRequestHandler extends HttpServer {
             } else if (uri.startsWith("/jscoverage")) {
                 sendResponse(HTTP_STATUS.HTTP_OK, request.getMime(), ioService.getResourceAsStream(uri));
             } else if (uri.endsWith(".js") && !configuration.skipInstrumentation(uri)) {
-                String jsInstrumented = instrumenterService.instrumentJSForWebServer(configuration.getCompilerEnvirons(), new File(wwwRoot, uri), uri, log);
+                String jsInstrumented;
+                if (configuration.isProxy()) {
+                    URL url = request.getUrl();
+                    HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+                    String originalJS = IoUtils.toString(conn.getInputStream());
+                    jsInstrumented = instrumenterService.instrumentJSForWebServer(configuration.getCompilerEnvirons(), originalJS, uri, log);
+                } else {
+                    jsInstrumented = instrumenterService.instrumentJSForWebServer(configuration.getCompilerEnvirons(), new File(wwwRoot, uri), uri, log);
+                }
                 sendResponse(HTTP_STATUS.HTTP_OK, "application/javascript", jsInstrumented);
             } else {
                 if (configuration.isProxy())
-                    handleProxyRequest(request);
+                    handleProxyGet(request);
                 else
                     super.handleGet(request);
             }
@@ -410,24 +425,66 @@ public class InstrumentingRequestHandler extends HttpServer {
         }
     }
 
-    private void handleProxyRequest(HttpRequest request) {
+    private void handleProxyGet(HttpRequest request) {
         try {
             URL url = request.getUrl();
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+            conn.setInstanceFollowRedirects(false);
             conn.setDoInput(true);
             conn.setDoOutput(false);
+
+            Map<String, String> clientHeaders = request.getHeaders();
+            if (clientHeaders.containsKey("Cookie")) {
+                conn.setRequestProperty("Cookie", clientHeaders.get("Cookie"));
+            }
+
             pw.print(format("HTTP/1.0 %d \n", conn.getResponseCode()));
             Map<String, List<String>> headerFields = conn.getHeaderFields();
-            for (String headerField : headerFields.keySet()) {
-                for (String headerValue : headerFields.get(headerField)) {
-                    pw.write(format("%s: %s \n", headerField, headerValue));
-                }
+            setHeader(headerFields, "Set-Cookie");
+            setHeader(headerFields, "Location");
+
+            pw.write("\n");
+            pw.flush();
+
+            IoUtils.copy(conn.getInputStream(), os);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleProxyPost(HttpRequest request, String data) {
+        try {
+            URL url = request.getUrl();
+            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+            conn.setInstanceFollowRedirects(false);
+            conn.setDoOutput(true);
+            conn.setRequestMethod("POST");
+
+            Map<String, String> clientHeaders = request.getHeaders();
+            if (clientHeaders.containsKey("Cookie")) {
+                conn.setRequestProperty("Cookie", clientHeaders.get("Cookie"));
             }
+
+            IoUtils.copy(new ByteArrayInputStream(data.getBytes()), conn.getOutputStream());
+            pw.print(format("HTTP/1.0 %d \n", conn.getResponseCode()));
+            Map<String, List<String>> headerFields = conn.getHeaderFields();
+            setHeader(headerFields, "Set-Cookie");
+            setHeader(headerFields, "Location");
+
             pw.write("\n");
             pw.flush();
             IoUtils.copy(conn.getInputStream(), os);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void setHeader(Map<String, List<String>> headerFields, String field) {
+        List<String> values = headerFields.get(field);
+        if (values != null) {
+            for (String value : values) {
+                pw.write(format("%s: %s \n", field, value));
+            }
         }
     }
 }
