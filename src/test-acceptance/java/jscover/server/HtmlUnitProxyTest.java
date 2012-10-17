@@ -429,6 +429,16 @@ public class HtmlUnitProxyTest {
         verifyTotal(webClient, page, 6);
     }
 
+    @Test
+    public void shouldWorkWithPost() throws Exception {
+        HtmlPage page = webClient.getPage("http://localhost:9001/example/post.html");
+        ((HtmlInput)page.getHtmlElementById("inputName")).setValueAttribute("POST data!!!");
+        page = page.getHtmlElementById("submitButton").click();
+
+        String data = page.getHtmlElementById("postData").getTextContent();
+        assertThat(data, equalTo("inputName=POST+data%21%21%21"));
+    }
+
     protected void verifyTotal(WebClient webClient, HtmlPage page, int percentage) throws IOException {
         page.getHtmlElementById("summaryTab").click();
         webClient.waitForBackgroundJavaScript(2000);

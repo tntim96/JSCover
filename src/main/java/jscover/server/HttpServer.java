@@ -409,7 +409,7 @@ public class HttpServer extends Thread {
     }
 
     protected void handlePost(HttpRequest request, String data) {
-        String response = format("<html><body>Posted<pre>%s</pre></body></html>", data);
+        String response = format("<html><body>Posted<pre id=\"postData\">%s</pre></body></html>", data);
         sendResponse(HTTP_STATUS.HTTP_OK, HttpRequest.contentType.get("html"), response);
     }
 
