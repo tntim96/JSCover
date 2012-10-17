@@ -1,10 +1,11 @@
 0.0.6 / 2012-10-17
 ==================
+  * Fixed basic non-SSL proxy support
   * Add POST, cookie and redirect support for proxy mode
 
 0.0.5 / 2012-10-16
 ==================
-  * Add proxy support
+  * Add proxy support (flawed and download has been replaced with 0.0.6)
   * Message 'Report stored at' changed to 'Coverage data stored at' (important for HtmlUnit/Selenium)
   * Internal - Swap from NanoHTTPD to JSCover's own web-server - index.htm(l) no longer served automatically
 
