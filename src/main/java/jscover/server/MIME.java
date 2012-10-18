@@ -342,7 +342,7 @@ Public License instead of this License.
 
 package jscover.server;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public enum MIME {
@@ -362,10 +362,7 @@ public enum MIME {
 
     MIME(String contentType, String... extensions) {
         this.contentType = contentType;
-        this.extensions = new ArrayList<String>();
-        for (String extension : extensions) {
-            this.extensions.add(extension);
-        }
+        this.extensions = Arrays.asList(extensions);
     }
 
     public String getContentType() {
