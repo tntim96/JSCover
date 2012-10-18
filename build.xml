@@ -42,6 +42,8 @@
 		<mkdir dir="${report.test.dir}" />
 		<mkdir dir="${report.spec.dir}" />
 		<mkdir dir="${report.checkstyle.dir}" />
+		<mkdir dir="${report.coverage.dir}" />
+		<mkdir dir="${report.coverage.all.dir}" />
 		<mkdir dir="${classes.main.dir}" />
 		<mkdir dir="${classes.instrumented.dir}" />
 		<mkdir dir="${classes.test-unit.dir}" />
@@ -115,8 +117,7 @@
 			<fileset dir="${classes.main.dir}">
 				<include name="**/*.class" />
 				<exclude name="**/FileSystemInstrumenter.class" /><!-- Todo add this back in with tests -->
-				<exclude name="**/WebDaemon.class" />
-				<exclude name="**/HttpServer.class" />
+				<exclude name="**/WebServer.class" />
 				<exclude name="**/NanoHTTPD*.class" />
 			</fileset>
 			<classpath>
@@ -133,8 +134,16 @@
 		<cobertura-report format="html" destdir="${report.coverage.dir}" srcdir="${src.main.dir}" />
 	</target>
 
+	<target name="coverage-report-all">
+		<cobertura-report format="html" destdir="${report.coverage.all.dir}" srcdir="${src.main.dir}" />
+	</target>
+
 	<target name="coverage-check">
-		<cobertura-check totallinerate="88" totalbranchrate="88"/>
+		<cobertura-check totallinerate="83" totalbranchrate="83"/>
+	</target>
+
+	<target name="coverage-check-all">
+		<cobertura-check totallinerate="94" totalbranchrate="89"/>
 	</target>
 
 	<target name="compile-tests" depends="compile">
@@ -237,5 +246,5 @@
 
 	<target name="junit" depends="run-tests, coverage-report, coverage-check"/>
 
-	<target name="pre-commit" depends="clean, junit, run-acceptance-tests, junit-report" description="Run this before committing"/>
+	<target name="pre-commit" depends="clean, junit, run-acceptance-tests, junit-report, coverage-report-all, coverage-check-all" description="Run this before committing"/>
 </project>
