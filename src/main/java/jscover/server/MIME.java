@@ -355,8 +355,7 @@ public enum MIME {
     JPG("image/gif", "jpg"),
     JPEG("image/gif", "jpeg"),
     PNG("image/gif", "png"),
-    TEXT_PLAIN("text/plain", "txt")
-    ;
+    TEXT_PLAIN("text/plain", "txt");
     private String contentType;
     private List<String> extensions;
 
@@ -371,7 +370,7 @@ public enum MIME {
 
     public static MIME getMime(String extension) {
         if (extension == null)
-        return DEFAULT;
+            return DEFAULT;
         for (MIME mime : MIME.values())
             if (mime.extensions.contains(extension.toLowerCase()))
                 return mime;
