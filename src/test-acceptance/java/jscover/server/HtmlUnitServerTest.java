@@ -365,7 +365,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class HtmlUnitServerTest {
     private static Thread server;
 
-    private WebClient webClient = new WebClient();
+    protected WebClient webClient = new WebClient();
     private String reportDir = "target/ws-report";
     private String[] args = new String[]{
             "-ws",
@@ -391,6 +391,10 @@ public class HtmlUnitServerTest {
         }
     }
 
+    protected String getTestUrl() {
+        return "example/index.html";
+    }
+
     @Test
     public void shouldNotInstrument() throws Exception {
         Page page = webClient.getPage("http://localhost:9001/example/lib/noInstrument.js");
@@ -399,37 +403,37 @@ public class HtmlUnitServerTest {
 
     @Test
     public void shouldWorkWithServerIFrameByURL() throws Exception {
-        HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?example/index.html");
+        HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?" + getTestUrl());
         verifyTotal(webClient, page, 6);
     }
 
     @Test
     public void shouldWorkWithServerIFrameByURLParameterU() throws Exception {
-        HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?u=example/index.html");
+        HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?u=" + getTestUrl());
         verifyTotal(webClient, page, 6);
     }
 
     @Test
     public void shouldWorkWithServerIFrameByURLParameterURL() throws Exception {
-        HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?url=example/index.html");
+        HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?url=" + getTestUrl());
         verifyTotal(webClient, page, 6);
     }
 
     @Test
     public void shouldWorkWithServerIFrameByURLParameterF() throws Exception {
-        HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?f=example/index.html");
+        HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?f=" + getTestUrl());
         verifyTotal(webClient, page, 6);
     }
 
     @Test
     public void shouldWorkWithServerIFrameByURLParameterFrame() throws Exception {
-        HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?frame=example/index.html");
+        HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?frame=" + getTestUrl());
         verifyTotal(webClient, page, 6);
     }
 
     @Test
     public void shouldWorkWithServerIFrameByURLWithDOMInteraction() throws Exception {
-        HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?example/index.html");
+        HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?" + getTestUrl());
         HtmlPage frame = (HtmlPage)page.getFrameByName("browserIframe").getEnclosedPage();
         frame.getElementById("radio2").click();
         webClient.waitForBackgroundJavaScript(500);
@@ -442,7 +446,7 @@ public class HtmlUnitServerTest {
         if (jsonFile.exists())
             jsonFile.delete();
 
-        HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?example/index.html");
+        HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?" + getTestUrl());
 
         page.getHtmlElementById("storeTab").click();
         webClient.waitForBackgroundJavaScript(500);
@@ -526,7 +530,7 @@ public class HtmlUnitServerTest {
 
     @Test
     public void shouldIncreaseCoverage() throws Exception {
-        HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?example/index.html");
+        HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?" + getTestUrl());
 
         verifyTotal(webClient, page, 6);
 
@@ -546,7 +550,17 @@ public class HtmlUnitServerTest {
         assertEquals("100%", page.getElementById("summaryTotal").getTextContent());
     }
 
-    private void verifyTotal(WebClient webClient, HtmlPage page, int percentage) throws IOException {
+    @Test
+    public void shouldWorkWithPost() throws Exception {
+        HtmlPage page = webClient.getPage("http://localhost:9001/example/post.html");
+        ((HtmlInput)page.getHtmlElementById("inputName")).setValueAttribute("POST data!!!");
+        page = page.getHtmlElementById("submitButton").click();
+
+        String data = page.getHtmlElementById("postData").getTextContent();
+        assertThat(data, equalTo("inputName=POST+data%21%21%21"));
+    }
+
+    protected void verifyTotal(WebClient webClient, HtmlPage page, int percentage) throws IOException {
         page.getHtmlElementById("summaryTab").click();
         webClient.waitForBackgroundJavaScript(2000);
         assertEquals(percentage+"%", page.getElementById("summaryTotal").getTextContent());

@@ -342,30 +342,20 @@ Public License instead of this License.
  
  package jscover.server;
 
-import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.ProxyConfig;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlInput;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import jscover.Main;
 import org.junit.Before;
-import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import static junit.framework.Assert.assertEquals;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-
-public class HtmlUnitProxyTest {
+public class HtmlUnitProxyTest extends HtmlUnitServerTest {
     private static Thread webServer;
     private static Thread server;
     private static int proxyPort = 3129;
 
-    private WebClient webClient = new WebClient();
     private String reportDir = "target/ws-report";
     private String[] args = new String[]{
             "-ws",
@@ -412,37 +402,8 @@ public class HtmlUnitProxyTest {
         webClient.setProxyConfig(proxyConfig);
     }
 
-
-    @Test
-    public void shouldNotInstrument() throws Exception {
-        Page page = webClient.getPage("http://localhost:9001/example/lib/noInstrument.js");
-        assertThat(page.getWebResponse().getContentAsString(), equalTo("alert('Hey');"));
+    @Override
+    protected String getTestUrl() {
+        return "http://localhost:9001/"+super.getTestUrl();
     }
-
-    @Test
-    public void shouldWorkWithServerIFrameByNavigationButtons() throws Exception {
-        HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html");
-        ((HtmlInput)page.getHtmlElementById("location")).setValueAttribute("http://localhost:9001/example/index.html");
-        page.getHtmlElementById("openInFrameButton").click();
-        webClient.waitForBackgroundJavaScript(100);
-
-        verifyTotal(webClient, page, 6);
-    }
-
-    @Test
-    public void shouldWorkWithPost() throws Exception {
-        HtmlPage page = webClient.getPage("http://localhost:9001/example/post.html");
-        ((HtmlInput)page.getHtmlElementById("inputName")).setValueAttribute("POST data!!!");
-        page = page.getHtmlElementById("submitButton").click();
-
-        String data = page.getHtmlElementById("postData").getTextContent();
-        assertThat(data, equalTo("inputName=POST+data%21%21%21"));
-    }
-
-    protected void verifyTotal(WebClient webClient, HtmlPage page, int percentage) throws IOException {
-        page.getHtmlElementById("summaryTab").click();
-        webClient.waitForBackgroundJavaScript(2000);
-        assertEquals(percentage + "%", page.getElementById("summaryTotal").getTextContent());
-    }
-
 }
