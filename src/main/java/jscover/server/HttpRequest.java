@@ -344,13 +344,13 @@ package jscover.server;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class HttpRequest {
     private String path;
     private URL url;
-    private Map<String, String> headers;
+    private Map<String, List<String>> headers;
 
     public HttpRequest(String path) {
         try {
@@ -384,11 +384,11 @@ public class HttpRequest {
         return url;
     }
 
-    public void setHeaders(Map<String,String> headers) {
+    public void setHeaders(Map<String, List<String>> headers) {
         this.headers = headers;
     }
 
-    public Map<String, String> getHeaders() {
+    public Map<String, List<String>> getHeaders() {
         return headers;
     }
 }

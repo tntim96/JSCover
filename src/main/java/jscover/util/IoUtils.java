@@ -462,6 +462,18 @@ public abstract class IoUtils {
         }
     }
 
+    public static void copyNoClose(InputStream is, OutputStream os) {
+        int bufSize = 1024;
+        byte buf[] = new byte[bufSize];
+        try {
+            for (int read = 0; (read = is.read(buf)) != -1; ) {
+                os.write(buf, 0, read);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static void copyNoClose(File file, OutputStream os) {
         InputStream is = null;
         int bufSize = 1024;

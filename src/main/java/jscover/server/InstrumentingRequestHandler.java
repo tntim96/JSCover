@@ -432,65 +432,67 @@ public class InstrumentingRequestHandler extends HttpServer {
     }
 
     private void handleProxyGet(HttpRequest request) {
+        URL url = request.getUrl();
+        Socket socket = null;
+        InputStream remoteInputStream = null;
+        OutputStream remoteOutputStream = null;
         try {
-            URL url = request.getUrl();
-            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-            conn.setInstanceFollowRedirects(false);
-            conn.setDoInput(true);
-            conn.setDoOutput(false);
+            socket = new Socket(url.getHost(), url.getPort());
+            remoteInputStream = socket.getInputStream();
+            remoteOutputStream = socket.getOutputStream();
+            PrintWriter remotePrintWriter = new PrintWriter(remoteOutputStream);
 
-            Map<String, String> clientHeaders = request.getHeaders();
-            if (clientHeaders.containsKey("Cookie")) {
-                conn.setRequestProperty("Cookie", clientHeaders.get("Cookie"));
+            String uri = url.getPath();
+            if (url.getQuery()!= null && url.getQuery().length()!=0) {
+                uri += "?"+url.getQuery();
             }
-
-            pw.print(format("HTTP/1.0 %d \n", conn.getResponseCode()));
-            Map<String, List<String>> headerFields = conn.getHeaderFields();
-            setHeader(headerFields, "Set-Cookie");
-            setHeader(headerFields, "Location");
-
-            pw.write("\n");
-            pw.flush();
-
-            IoUtils.copy(conn.getInputStream(), os);
+            remotePrintWriter.print("GET "+uri+" HTTP/1.0\n");
+            sendHeaders(request, remotePrintWriter);
+            IoUtils.copyNoClose(remoteInputStream, os);
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            IoUtils.closeQuietly(remoteOutputStream);
+            IoUtils.closeQuietly(remoteInputStream);
         }
     }
 
     private void handleProxyPost(HttpRequest request, String data) {
+        URL url = request.getUrl();
+        Socket socket = null;
+        InputStream remoteInputStream = null;
+        OutputStream remoteOutputStream = null;
         try {
-            URL url = request.getUrl();
-            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-            conn.setInstanceFollowRedirects(false);
-            conn.setDoOutput(true);
-            conn.setRequestMethod("POST");
+            socket = new Socket(url.getHost(), url.getPort());
+            remoteInputStream = socket.getInputStream();
+            remoteOutputStream = socket.getOutputStream();
+            PrintWriter remotePrintWriter = new PrintWriter(remoteOutputStream);
 
-            Map<String, String> clientHeaders = request.getHeaders();
-            if (clientHeaders.containsKey("Cookie")) {
-                conn.setRequestProperty("Cookie", clientHeaders.get("Cookie"));
+            String uri = url.getPath();
+            if (url.getQuery()!= null && url.getQuery().length()!=0) {
+                uri += "?"+url.getQuery();
             }
-
-            IoUtils.copy(new ByteArrayInputStream(data.getBytes()), conn.getOutputStream());
-            pw.print(format("HTTP/1.0 %d \n", conn.getResponseCode()));
-            Map<String, List<String>> headerFields = conn.getHeaderFields();
-            setHeader(headerFields, "Set-Cookie");
-            setHeader(headerFields, "Location");
-
-            pw.write("\n");
-            pw.flush();
-            IoUtils.copy(conn.getInputStream(), os);
+            remotePrintWriter.print("POST "+uri+" HTTP/1.0\n");
+            sendHeaders(request, remotePrintWriter);
+            IoUtils.copyNoClose(new ByteArrayInputStream(data.getBytes()), remoteOutputStream);
+            IoUtils.copyNoClose(remoteInputStream, os);
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            IoUtils.closeQuietly(remoteOutputStream);
+            IoUtils.closeQuietly(remoteInputStream);
         }
     }
 
-    private void setHeader(Map<String, List<String>> headerFields, String field) {
-        List<String> values = headerFields.get(field);
-        if (values != null) {
+    private void sendHeaders(HttpRequest request, PrintWriter remotePrintWriter) {
+        Map<String, List<String>> clientHeaders = request.getHeaders();
+        for (String header : clientHeaders.keySet()) {
+            List<String> values = clientHeaders.get(header);
             for (String value : values) {
-                pw.write(format("%s: %s \n", field, value));
+                remotePrintWriter.print(format("%s: %s\n",header, value));
             }
         }
+        remotePrintWriter.print("\n");
+        remotePrintWriter.flush();
     }
 }

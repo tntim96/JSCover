@@ -354,7 +354,7 @@ public class HttpServer extends Thread {
 
     private Socket socket;
     protected File wwwRoot;
-    private InputStream is;
+    protected InputStream is;
     protected OutputStream os;
     protected PrintWriter pw = null;
 
@@ -379,11 +379,16 @@ public class HttpServer extends Thread {
             String httpMethod = tokenizer.nextToken();
             HttpRequest httpRequest = new HttpRequest(tokenizer.nextToken());
             String headerLine;
-            Map<String, String> headers = new HashMap<String, String>();
+            Map<String, List<String>> headers = new HashMap<String, List<String>>();
             while (!(headerLine = br.readLine()).equals("")) {
                 int index = headerLine.indexOf(':');
-                if (index >= 0)
-                    headers.put(headerLine.substring(0, index).trim(), headerLine.substring(index + 1).trim());
+                if (index >= 0) {
+                    String headerField = headerLine.substring(0, index).trim();
+                    String headerValue = headerLine.substring(index + 1).trim();
+                    if (!headers.containsKey(headerField))
+                        headers.put(headerField, new ArrayList<String>());
+                    headers.get(headerField).add(headerValue);
+                }
             }
             httpRequest.setHeaders(headers);
 
@@ -396,7 +401,7 @@ public class HttpServer extends Thread {
                 }
                 handleGet(httpRequest);
             } else if (httpMethod.equals("POST")) {
-                int length = Integer.valueOf(headers.get("Content-Length"));
+                int length = Integer.valueOf(headers.get("Content-Length").get(0));
                 handlePost(httpRequest, IoUtils.toStringNoClose(br, length));
             } else
               throw new UnsupportedOperationException("No support for "+httpMethod);
