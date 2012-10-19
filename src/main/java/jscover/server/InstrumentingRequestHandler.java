@@ -437,7 +437,8 @@ public class InstrumentingRequestHandler extends HttpServer {
         InputStream remoteInputStream = null;
         OutputStream remoteOutputStream = null;
         try {
-            socket = new Socket(url.getHost(), url.getPort());
+            int port = url.getPort();
+            socket = new Socket(url.getHost(), port == -1 ? 80 : port);
             remoteInputStream = socket.getInputStream();
             remoteOutputStream = socket.getOutputStream();
             PrintWriter remotePrintWriter = new PrintWriter(remoteOutputStream);
@@ -463,7 +464,8 @@ public class InstrumentingRequestHandler extends HttpServer {
         InputStream remoteInputStream = null;
         OutputStream remoteOutputStream = null;
         try {
-            socket = new Socket(url.getHost(), url.getPort());
+            int port = url.getPort();
+            socket = new Socket(url.getHost(), port == -1 ? 80 : port);
             remoteInputStream = socket.getInputStream();
             remoteOutputStream = socket.getOutputStream();
             PrintWriter remotePrintWriter = new PrintWriter(remoteOutputStream);
