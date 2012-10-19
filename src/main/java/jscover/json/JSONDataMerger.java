@@ -426,17 +426,17 @@ class JSONDataMerger {
         return json.toString();
     }
 
-    public String createEmptyJSON(String uri, List<Integer> validLines, List<String> sourceLines) {
-        //Collections.sort(validLines);required?
-        Integer[] lines = new Integer[validLines.get(validLines.size()-1)+1];
-        lines[0] = null;
-        for (int i=1; i<lines.length ; i++) {
-            lines[i] = 0;
-        }
-
+    public String createEmptyJSON(List<ScriptLinesAndSource> scripts) {
         TreeMap<String, CoverageData> map = new TreeMap<String, CoverageData>();
-        CoverageData coverageData = new CoverageData(Arrays.asList(lines), sourceLines);
-        map.put(uri, coverageData);
+        for (ScriptLinesAndSource script : scripts) {
+            Integer[] lines = new Integer[script.getLines().get(script.getLines().size() - 1)+1];
+            for (int i=0; i < script.getLines().size() ; i++) {
+                lines[script.getLines().get(i)] = 0;
+            }
+
+            CoverageData coverageData = new CoverageData(Arrays.asList(lines), script.getSource());
+            map.put(script.getUri(), coverageData);
+        }
         return toJSON(map);
     }
 }

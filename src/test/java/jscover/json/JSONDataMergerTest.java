@@ -410,11 +410,23 @@ public class JSONDataMergerTest {
 
     @Test
     public void shouldGenerateEmptyCoverageJSONString() {
-        List<Integer> validLines = new ArrayList<Integer>(){{add(1);add(2);add(3);}};
+        List<Integer> lines = new ArrayList<Integer>(){{add(1);add(2);add(3);}};
         List<String> sourceLines = new ArrayList<String>(){{add("x++;");add("y++;");add("z++;");}};
-        String json = jsonMerger.createEmptyJSON("/test.js", validLines, sourceLines);
+        final ScriptLinesAndSource script = new ScriptLinesAndSource("/test.js", lines, sourceLines);
+        String json = jsonMerger.createEmptyJSON(new ArrayList<ScriptLinesAndSource>(){{add(script);}});
 
         String expected = "{\"/test.js\":{\"coverage\":[null,0,0,0],\"source\":[\"x++;\",\"y++;\",\"z++;\"]}}";
+        assertThat(json, equalTo(expected));
+    }
+
+    @Test
+    public void shouldGenerateEmptyCoverageJSONStringWithComments() {
+        List<Integer> lines = new ArrayList<Integer>(){{add(1);add(3);}};
+        List<String> sourceLines = new ArrayList<String>(){{add("x++;");add("//Comment");add("z++;");}};
+        final ScriptLinesAndSource script = new ScriptLinesAndSource("/test.js", lines, sourceLines);
+        String json = jsonMerger.createEmptyJSON(new ArrayList<ScriptLinesAndSource>(){{add(script);}});
+
+        String expected = "{\"/test.js\":{\"coverage\":[null,0,null,0],\"source\":[\"x++;\",\"//Comment\",\"z++;\"]}}";
         assertThat(json, equalTo(expected));
     }
 }
