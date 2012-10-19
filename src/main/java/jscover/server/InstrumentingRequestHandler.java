@@ -379,9 +379,15 @@ public class InstrumentingRequestHandler extends HttpServer {
                 reportDir = new File(reportDir, uri.substring(JSCOVERAGE_STORE.length()));
             }
 
-            jsonDataSaver.saveJSONData(reportDir, data);
-            ioService.generateJSCoverFilesForWebServer(reportDir, configuration.getVersion());
-            sendResponse(HTTP_STATUS.HTTP_OK, MIME.TEXT_PLAIN, "Coverage data stored at " + reportDir);
+            try {
+                jsonDataSaver.saveJSONData(reportDir, data);
+                ioService.generateJSCoverFilesForWebServer(reportDir, configuration.getVersion());
+                sendResponse(HTTP_STATUS.HTTP_OK, MIME.TEXT_PLAIN, "Coverage data stored at " + reportDir);
+            } catch(Throwable t) {
+                t.printStackTrace();
+                String message = format("Error saving coverage data. Try deleting JSON file at %s\n",reportDir);
+                sendResponse(HTTP_STATUS.HTTP_OK, MIME.TEXT_PLAIN, message);
+            }
         } else {
             if (configuration.isProxy())
                 handleProxyPost(request, data);

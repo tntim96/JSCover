@@ -346,9 +346,7 @@ import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.ScriptRuntime;
 import org.mozilla.javascript.json.JsonParser;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TreeMap;
+import java.util.*;
 
 class JSONDataMerger {
     private Context cx = Context.enter();
@@ -426,5 +424,19 @@ class JSONDataMerger {
         }
         json.append("}");
         return json.toString();
+    }
+
+    public String createEmptyJSON(String uri, List<Integer> validLines, List<String> sourceLines) {
+        //Collections.sort(validLines);required?
+        Integer[] lines = new Integer[validLines.get(validLines.size()-1)+1];
+        lines[0] = null;
+        for (int i=1; i<lines.length ; i++) {
+            lines[i] = 0;
+        }
+
+        TreeMap<String, CoverageData> map = new TreeMap<String, CoverageData>();
+        CoverageData coverageData = new CoverageData(Arrays.asList(lines), sourceLines);
+        map.put(uri, coverageData);
+        return toJSON(map);
     }
 }
