@@ -353,13 +353,18 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mozilla.javascript.CompilerEnvirons;
 
-import java.io.*;
-import java.net.Socket;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
+import static java.lang.String.format;
 import static jscover.server.WebServer.JSCOVERAGE_STORE;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class InstrumentingRequestHandlerTest {
@@ -391,14 +396,33 @@ public class InstrumentingRequestHandlerTest {
 
     @Test
     public void shouldStoreJSCoverageJSON() {
-        File file = new File("target/temp");
-        file.deleteOnExit();
-        given(configuration.getReportDir()).willReturn(file);
+        File reportDir = new File("target/temp");
+        reportDir.deleteOnExit();
+        given(configuration.getReportDir()).willReturn(reportDir);
         given(configuration.getVersion()).willReturn("theVersion");
+
         webServer.handlePost(new HttpRequest(JSCOVERAGE_STORE), "data");
-        verify(jsonDataSaver).saveJSONData(file, "data");
-        verify(ioService).generateJSCoverFilesForWebServer(file, "theVersion");
+
+        verify(jsonDataSaver).saveJSONData(reportDir, "data");
+        verify(ioService).generateJSCoverFilesForWebServer(reportDir, "theVersion");
         verifyZeroInteractions(instrumenterService);
+        assertThat(stringWriter.toString(), containsString(format("Coverage data stored at %s", reportDir)));
+    }
+
+    @Test
+    public void shouldHandleErrorOnStoreJSCoverageJSON() {
+        File reportDir = new File("target/temp");
+        reportDir.deleteOnExit();
+        given(configuration.getReportDir()).willReturn(reportDir);
+        RuntimeException toBeThrown = new RuntimeException("Ouch!");
+        doThrow(toBeThrown).when(jsonDataSaver).saveJSONData(reportDir, "data");
+
+        webServer.handlePost(new HttpRequest(JSCOVERAGE_STORE), "data");
+
+        verify(jsonDataSaver).saveJSONData(reportDir, "data");
+        verifyZeroInteractions(ioService);
+        verifyZeroInteractions(instrumenterService);
+        assertThat(stringWriter.toString(), containsString(format("Error saving coverage data. Try deleting JSON file at %s", reportDir)));
     }
 
     @Test
@@ -407,25 +431,37 @@ public class InstrumentingRequestHandlerTest {
         file.deleteOnExit();
         given(configuration.getReportDir()).willReturn(file);
         given(configuration.getVersion()).willReturn("theVersion");
+
         webServer.handlePost(new HttpRequest(JSCOVERAGE_STORE + "subdirectory"), "data");
+
         File subdirectory = new File(file, "subdirectory");
         verify(jsonDataSaver).saveJSONData(subdirectory, "data");
         verify(ioService).generateJSCoverFilesForWebServer(subdirectory, "theVersion");
         verifyZeroInteractions(instrumenterService);
+        assertThat(stringWriter.toString(), containsString(format("Coverage data stored at %s", subdirectory)));
     }
 
     @Test
     public void shouldServeJSCoverageHTML() throws IOException {
         given(configuration.getVersion()).willReturn("123");
+        given(ioService.generateJSCoverageHtml("123")).willReturn("theHtml");
+
         webServer.handleGet(new HttpRequest("/jscoverage.html"));
+
         verify(ioService).generateJSCoverageHtml("123");
         verifyZeroInteractions(jsonDataSaver);
         verifyZeroInteractions(instrumenterService);
+        assertThat(stringWriter.toString(), equalTo("HTTP/1.0 200 OK \n" +
+                "Content-Type: text/html \n" +
+                "Content-Length: 7\n" +
+                "\n" +
+                "theHtml"));
     }
 
     @Test
     public void shouldServeJSCoverageHighlightCSS() throws IOException {
         webServer.handleGet(new HttpRequest("/jscoverage-highlight.css"));
+
         verify(ioService).getResourceAsStream("/jscoverage-highlight.css");
         verifyZeroInteractions(jsonDataSaver);
         verifyZeroInteractions(instrumenterService);
@@ -438,7 +474,9 @@ public class InstrumentingRequestHandlerTest {
         CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
         given(configuration.getCompilerEnvirons()).willReturn(compilerEnvirons);
         given(configuration.skipInstrumentation("/js/production.js")).willReturn(false);
+
         webServer.handleGet(new HttpRequest("/js/production.js"));
+
         verify(instrumenterService).instrumentJSForWebServer(compilerEnvirons, new File("wwwRoot/js/production.js"), "/js/production.js", null);
         verifyZeroInteractions(ioService);
         verifyZeroInteractions(jsonDataSaver);
@@ -451,7 +489,9 @@ public class InstrumentingRequestHandlerTest {
         CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
         given(configuration.getCompilerEnvirons()).willReturn(compilerEnvirons);
         given(configuration.skipInstrumentation("/test/production.js")).willReturn(true);
+
         webServer.handleGet(new HttpRequest("/test/production.js"));
+
         verifyZeroInteractions(instrumenterService);
         verifyZeroInteractions(ioService);
         verifyZeroInteractions(jsonDataSaver);

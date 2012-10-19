@@ -1,3 +1,7 @@
+0.0.7 / 2012-10-??
+==================
+  * Replace URL based proxy with raw sockets for pure tunneling of requests. All headers now forwarded as received.
+
 0.0.6 / 2012-10-17
 ==================
   * Fixed basic non-SSL proxy support

@@ -343,14 +343,12 @@ Public License instead of this License.
 package jscover.json;
 
 import jscover.util.IoUtils;
-import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 
-import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
-import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -408,5 +406,15 @@ public class JSONDataMergerTest {
         String jsonString = jsonMerger.toJSON(map);
 
         assertThat(jsonString, equalTo(data));
+    }
+
+    @Test
+    public void shouldGenerateEmptyCoverageJSONString() {
+        List<Integer> validLines = new ArrayList<Integer>(){{add(1);add(2);add(3);}};
+        List<String> sourceLines = new ArrayList<String>(){{add("x++;");add("y++;");add("z++;");}};
+        String json = jsonMerger.createEmptyJSON("/test.js", validLines, sourceLines);
+
+        String expected = "{\"/test.js\":{\"coverage\":[null,0,0,0],\"source\":[\"x++;\",\"y++;\",\"z++;\"]}}";
+        assertThat(json, equalTo(expected));
     }
 }
