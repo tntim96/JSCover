@@ -342,88 +342,26 @@ Public License instead of this License.
 
 package jscover.server;
 
-import jscover.util.IoUtils;
+import org.junit.Test;
 
-import java.io.*;
-import java.net.Socket;
+import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.List;
-import java.util.Map;
 
-import static java.lang.String.format;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 
-public class ProxyRequestHandler extends HttpServer {
+public class ProxyRequestHandlerTest {
+    private ProxyRequestHandler proxyRequestHandler = new ProxyRequestHandler(null, null);
 
-    public ProxyRequestHandler(Socket socket, File wwwRoot) {
-        super(socket, wwwRoot);
+    @Test
+    public void shouldGetRequestURIFromURL() throws MalformedURLException {
+        URL url = new URL("http://localhost/test.html");
+        assertThat(proxyRequestHandler.getRawURI(url), equalTo("/test.html"));
     }
 
-    protected void handleProxyGet(HttpRequest request) {
-        URL url = request.getUrl();
-        Socket socket = null;
-        InputStream remoteInputStream = null;
-        OutputStream remoteOutputStream = null;
-        try {
-            int port = url.getPort();
-            socket = new Socket(url.getHost(), port == -1 ? 80 : port);
-            remoteInputStream = socket.getInputStream();
-            remoteOutputStream = socket.getOutputStream();
-            PrintWriter remotePrintWriter = new PrintWriter(remoteOutputStream);
-
-            String uri = getRawURI(url);
-            remotePrintWriter.print("GET "+uri+" HTTP/1.0\n");
-            sendHeaders(request, remotePrintWriter);
-            IoUtils.copyNoClose(remoteInputStream, os);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            IoUtils.closeQuietly(remoteOutputStream);
-            IoUtils.closeQuietly(remoteInputStream);
-        }
-    }
-
-    protected void handleProxyPost(HttpRequest request, String data) {
-        URL url = request.getUrl();
-        Socket socket = null;
-        InputStream remoteInputStream = null;
-        OutputStream remoteOutputStream = null;
-        try {
-            int port = url.getPort();
-            socket = new Socket(url.getHost(), port == -1 ? 80 : port);
-            remoteInputStream = socket.getInputStream();
-            remoteOutputStream = socket.getOutputStream();
-            PrintWriter remotePrintWriter = new PrintWriter(remoteOutputStream);
-
-            String uri = getRawURI(url);
-            remotePrintWriter.print(format("POST %s HTTP/1.0\n", uri));
-            sendHeaders(request, remotePrintWriter);
-            IoUtils.copyNoClose(new ByteArrayInputStream(data.getBytes()), remoteOutputStream);
-            IoUtils.copyNoClose(remoteInputStream, os);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            IoUtils.closeQuietly(remoteOutputStream);
-            IoUtils.closeQuietly(remoteInputStream);
-        }
-    }
-
-    String getRawURI(URL url) {
-        String uri = url.getPath();
-        if (url.getQuery()!= null && url.getQuery().length()!=0) {
-            uri += "?"+url.getQuery();
-        }
-        return uri;
-    }
-
-    private void sendHeaders(HttpRequest request, PrintWriter remotePrintWriter) {
-        Map<String, List<String>> clientHeaders = request.getHeaders();
-        for (String header : clientHeaders.keySet()) {
-            List<String> values = clientHeaders.get(header);
-            for (String value : values) {
-                remotePrintWriter.print(format("%s: %s\n",header, value));
-            }
-        }
-        remotePrintWriter.print("\n");
-        remotePrintWriter.flush();
+    @Test
+    public void shouldGetRequestURIFromURLWithQueryParameters() throws MalformedURLException {
+        URL url = new URL("http://localhost/test.html?a=b");
+        assertThat(proxyRequestHandler.getRawURI(url), equalTo("/test.html?a=b"));
     }
 }
