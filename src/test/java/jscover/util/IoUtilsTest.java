@@ -350,8 +350,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
@@ -547,8 +547,16 @@ public class IoUtilsTest {
     }
 
     @Test(expected = RuntimeException.class)
-    public void shouldWrapExceptionsInCopyFileToFile() throws IOException {
+    public void shouldWrapExceptionsInCopyFileToFile() {
         IoUtils.copy(new File("target"), new File("target"));
+    }
+
+    @Test
+    public void shouldGetRelativePath() {
+        assertThat(IoUtils.getRelativePath(new File("target/test.txt"), new File("target")), equalTo("test.txt"));
+        assertThat(IoUtils.getRelativePath(new File("target/level1/test.txt"), new File("target")), equalTo("level1/test.txt"));
+        assertThat(IoUtils.getRelativePath(new File("target\\test.txt"), new File("target")), equalTo("test.txt"));
+        assertThat(IoUtils.getRelativePath(new File("target"), new File("target")), equalTo(""));
     }
 
     @Test
