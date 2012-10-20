@@ -346,17 +346,27 @@ import jscover.util.IoUtils;
 
 import java.io.File;
 import java.io.StringReader;
+import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 public class JSONDataSaver {
     private JSONDataMerger jsonDataMerger = new JSONDataMerger();
 
-    public void saveJSONData(File reportDir, String data) {
+    public void saveJSONData(File reportDir, String data, List<ScriptLinesAndSource> unloadJSData) {
         reportDir.mkdirs();
         File jsonFile = new File(reportDir, "jscoverage.json");
+        SortedMap<String, CoverageData> extraData = new TreeMap<String, CoverageData>();
         if (jsonFile.exists()) {
             String existingJSON = IoUtils.toString(jsonFile);
-            data = jsonDataMerger.mergeJSONCoverageData(existingJSON, data);
-        }
-        IoUtils.copy(new StringReader(data), jsonFile);
+            extraData.putAll(jsonDataMerger.mergeJSONCoverageData(existingJSON, data));
+            IoUtils.copy(new StringReader(jsonDataMerger.toJSON(extraData)), jsonFile);
+        } else if (unloadJSData != null) {
+            //Only scan for unloaded JS if JSON not saved before
+            extraData.putAll(jsonDataMerger.createEmptyJSON(unloadJSData));
+            extraData.putAll(jsonDataMerger.jsonToMap(data));
+            IoUtils.copy(new StringReader(jsonDataMerger.toJSON(extraData)), jsonFile);
+        } else
+            IoUtils.copy(new StringReader(data), jsonFile);
     }
 }

@@ -342,111 +342,94 @@ Public License instead of this License.
 
 package jscover.server;
 
-import jscover.Configuration;
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlElement;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import jscover.Main;
 import jscover.util.IoUtils;
-import org.mozilla.javascript.CompilerEnvirons;
-import org.mozilla.javascript.Context;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
+import java.io.IOException;
 
-public class ConfigurationForServer extends Configuration {
-    public static final String HELP_PREFIX1 = Main.HELP_PREFIX1;
-    public static final String HELP_PREFIX2 = Main.HELP_PREFIX2;
-    public static final String DOC_ROOT_PREFIX = "--document-root=";
-    public static final String PORT_PREFIX = "--port=";
-    public static final String REPORT_DIR_PREFIX = "--report-dir=";
-    public static final String NO_INSTRUMENT_PREFIX = "--no-instrument=";
-    public static final String JS_VERSION_PREFIX = "--js-version=";
-    public static final String PROXY_PREFIX = "--proxy";
-    public static final String INCLUDE_UNLOADED_JS_PREFIX = "--include-unloaded-js";
+import static junit.framework.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 
-    private boolean showHelp;
-    private File documentRoot = new File(System.getProperty("user.dir"));
-    private Integer port = 8080;
-    private final Set<String> noInstruments = new HashSet<String>();
-    private File reportDir = new File(System.getProperty("user.dir"));
-    private int JSVersion = Context.VERSION_1_5;
-    private boolean proxy;
-    private CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
-    private boolean includeUnloadedJS;
+public class HtmlServerUnloadedJSTest {
+    private static Thread server;
 
-    public Boolean showHelp() {
-        return showHelp;
-    }
+    protected WebClient webClient = new WebClient();
+    private String reportDir = "target/ws-report";
+    private String[] args = new String[]{
+            "-ws",
+            "--document-root=src/test-integration/resources/jsSearch",
+            "--port=9001",
+            "--no-instrument=noInstrument",
+            "--include-unloaded-js",
+            "--report-dir=" + reportDir
+    };
 
-    public File getDocumentRoot() {
-        return documentRoot;
-    }
-
-    public Integer getPort() {
-        return port;
-    }
-
-    public File getReportDir() {
-        return reportDir;
-    }
-
-    public int getJSVersion() {
-        return JSVersion;
-    }
-
-    public boolean skipInstrumentation(String uri) {
-        for (String noInstrument : noInstruments) {
-            if (uri.startsWith(noInstrument))
-                return true;
+    @Before
+    public void setUp() throws IOException {
+        if (server == null) {
+            server = new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        Main.main(args);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
+            server.start();
         }
-        return false;
+        webClient.setTimeout(30000);
     }
 
-    public static ConfigurationForServer parse(String[] args) {
-        ConfigurationForServer configuration = new ConfigurationForServer();
-        for (String arg : args) {
-            if (arg.startsWith(Main.SERVER_PREFIX)) {
-            //Ignore this
-            } else if (arg.equals(HELP_PREFIX1) || arg.equals(HELP_PREFIX2)) {
-                configuration.showHelp = true;
-            } else if (arg.startsWith(DOC_ROOT_PREFIX)) {
-                configuration.documentRoot = new File(arg.substring(DOC_ROOT_PREFIX.length()));
-            } else if (arg.startsWith(PORT_PREFIX)) {
-                configuration.port = Integer.valueOf(arg.substring(PORT_PREFIX.length()));
-            } else if (arg.equals(PROXY_PREFIX)) {
-                configuration.proxy = true;
-            } else if (arg.equals(INCLUDE_UNLOADED_JS_PREFIX)) {
-                configuration.includeUnloadedJS = true;
-            } else if (arg.startsWith(REPORT_DIR_PREFIX)) {
-                configuration.reportDir = new File(arg.substring(REPORT_DIR_PREFIX.length()));
-                configuration.reportDir.mkdirs();
-            } else if (arg.startsWith(NO_INSTRUMENT_PREFIX)) {
-                String uri = arg.substring(NO_INSTRUMENT_PREFIX.length());
-                if (uri.startsWith("/"))
-                    uri = uri.substring(1);
-                configuration.noInstruments.add(uri);
-            } else if (arg.startsWith(JS_VERSION_PREFIX)) {
-                configuration.JSVersion = (int)(Float.valueOf(arg.substring(JS_VERSION_PREFIX.length()))*100);
-            } else {
-                configuration.showHelp = true;
-            }
-        }
-        configuration.compilerEnvirons.setLanguageVersion(configuration.JSVersion);
-        return configuration;
+
+    @Test
+    public void shouldIncludeUnloadJSInSavedReport() throws Exception {
+        File jsonFile = new File(reportDir+"/jscoverage.json");
+        if (jsonFile.exists())
+            jsonFile.delete();
+
+        HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?index.html");
+
+        page.getHtmlElementById("summaryTab").click();
+        webClient.waitForBackgroundJavaScript(2000);
+        assertEquals("77%", page.getElementById("summaryTotal").getTextContent());
+
+        verifyCoverage(page, "/root.js", 80);
+        verifyCoverage(page, "/level1/level1.js", 75);
+
+
+        page.getHtmlElementById("storeTab").click();
+        webClient.waitForBackgroundJavaScript(500);
+        HtmlElement storeButton = page.getHtmlElementById("storeButton");
+        storeButton.click();
+        webClient.waitForBackgroundJavaScript(2000);
+        String result = page.getElementById("storeDiv").getTextContent();
+
+        assertThat(result, containsString("Coverage data stored at target"));
+
+        String json = IoUtils.toString(jsonFile);
+        assertThat(json, containsString("/root.js"));
+        assertThat(json, containsString("/level1/level2/level2.js"));
+
+        String url = "file:///" + new File(reportDir + "/jscoverage.html").getAbsolutePath();
+        System.out.println("url = " + url);
+        page = webClient.getPage(url);
+        webClient.waitForBackgroundJavaScript(1000);
+        assertEquals("58%", page.getElementById("summaryTotal").getTextContent());
+        verifyCoverage(page, "/root.js", 80);
+        verifyCoverage(page, "/level1/level1.js", 75);
+        verifyCoverage(page, "/level1/level2/level2.js", 0);
     }
 
-    public String getHelpText() {
-        return IoUtils.toString(getClass().getResourceAsStream("help.txt"));
-    }
-
-    public CompilerEnvirons getCompilerEnvirons() {
-        return compilerEnvirons;
-    }
-
-    public boolean isProxy() {
-        return proxy;
-    }
-
-    public boolean isIncludeUnloadedJS() {
-        return includeUnloadedJS && !proxy;
+    private void verifyCoverage(HtmlPage page, String uri, int percentage) {
+        assertThat(page.getElementById("row-" + uri).getLastChild().getTextContent(), equalTo(percentage + "%"));
     }
 }

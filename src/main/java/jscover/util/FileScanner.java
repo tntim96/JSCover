@@ -355,26 +355,27 @@ public class FileScanner {
         this.configuration = configuration;
     }
 
-    public Set<File> getFiles() {
+    public Set<File> getFiles(Set<String> urisAlreadyProcessed) {
         Set<File> files = new HashSet<File>();
-        searchFolder(configuration.getDocumentRoot(), files);
+        searchFolder(configuration.getDocumentRoot(), files, urisAlreadyProcessed);
         return files;
     }
 
-    private void searchFolder(File src, Set<File> list) {
+    private void searchFolder(File src, Set<File> list, Set<String> urisAlreadyProcessed) {
         if (src.isDirectory()) {
             String files[] = src.list();
             for (String file : files) {
                 File srcFile = new File(src, file);
-                String path = IoUtils.getRelativePath(srcFile, configuration.getDocumentRoot()).replaceAll("\\\\","/");
+                String path = IoUtils.getRelativePath(srcFile, configuration.getDocumentRoot());
                 if (configuration.skipInstrumentation(path)) {
                     continue;
                 }
                 //recursive copy
-                searchFolder(srcFile, list);
+                searchFolder(srcFile, list, urisAlreadyProcessed);
             }
         } else {
-            if (src.getName().endsWith(".js")) {
+            String path = IoUtils.getRelativePath(src, configuration.getDocumentRoot());
+            if (src.getName().endsWith(".js") && !urisAlreadyProcessed.contains(path)) {
                 list.add(src);
             }
         }

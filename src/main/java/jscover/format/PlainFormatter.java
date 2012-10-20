@@ -345,6 +345,8 @@ package jscover.format;
 import static java.lang.String.format;
 
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 
 import jscover.util.IoUtils;
 
@@ -360,6 +362,14 @@ public class PlainFormatter implements SourceFormatter {
             sb.append("\"");
         }
         return sb.toString();
+    }
+
+    public List<String> toHtmlLines(String source) {
+        List<String> lines = new ArrayList<String>();
+        for (String line : IoUtils.readLines(new StringReader(source))) {
+            lines.add(escapeHtml(line));
+        }
+        return lines;
     }
 
     private String escapeHtml(String string) {

@@ -117,8 +117,6 @@
 			<fileset dir="${classes.main.dir}">
 				<include name="**/*.class" />
 				<exclude name="**/FileSystemInstrumenter.class" /><!-- Todo add this back in with tests -->
-				<exclude name="**/WebServer.class" />
-				<exclude name="**/NanoHTTPD*.class" />
 			</fileset>
 			<classpath>
 				<path refid="classpath-cobertura" />
@@ -139,11 +137,11 @@
 	</target>
 
 	<target name="coverage-check">
-		<cobertura-check totallinerate="81" totalbranchrate="81"/>
+		<cobertura-check totallinerate="80" totalbranchrate="80"/>
 	</target>
 
 	<target name="coverage-check-all">
-		<cobertura-check totallinerate="94" totalbranchrate="89"/>
+		<cobertura-check totallinerate="95" totalbranchrate="89"/>
 	</target>
 
 	<target name="compile-tests" depends="compile">

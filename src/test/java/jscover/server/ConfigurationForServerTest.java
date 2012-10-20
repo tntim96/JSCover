@@ -362,6 +362,8 @@ public class ConfigurationForServerTest {
         assertThat(configuration.getJSVersion(), equalTo(150));
         assertThat(configuration.skipInstrumentation("/"), equalTo(false));
         assertThat(configuration.getCompilerEnvirons().getLanguageVersion(), equalTo(150));
+        assertThat(configuration.isProxy(), is(false));
+        assertThat(configuration.isIncludeUnloadedJS(), is(false));
     }
 
     @Test
@@ -403,6 +405,16 @@ public class ConfigurationForServerTest {
     }
 
     @Test
+    public void shouldParseIncludedUnloadedJS() {
+        assertThat(ConfigurationForServer.parse(new String[]{"--include-unloaded-js"}).isIncludeUnloadedJS(), is(true));
+    }
+
+    @Test
+    public void shouldNotIncludedUnloadedJSIfProxy() {
+        assertThat(ConfigurationForServer.parse(new String[]{"--proxy", "--include-unloaded-js"}).isIncludeUnloadedJS(), is(false));
+    }
+
+    @Test
     public void shouldParseJSVersion() {
         ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--js-version=1.8"});
         assertThat(configuration.getJSVersion(), equalTo(180));
@@ -416,11 +428,20 @@ public class ConfigurationForServerTest {
 
     @Test
     public void shouldParseNoInstrument() {
+        ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--no-instrument=lib1", "--no-instrument=lib2"});
+        assertThat(configuration.skipInstrumentation("test.js"), equalTo(false));
+        assertThat(configuration.skipInstrumentation("lib1/test.js"), equalTo(true));
+        assertThat(configuration.skipInstrumentation("lib2/test.js"), equalTo(true));
+        assertThat(configuration.skipInstrumentation("lib3/test.js"), equalTo(false));
+    }
+
+    @Test
+    public void shouldParseNoInstrumentWithLeadingSlash() {
         ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--no-instrument=/lib1", "--no-instrument=/lib2"});
-        assertThat(configuration.skipInstrumentation("/test.js"), equalTo(false));
-        assertThat(configuration.skipInstrumentation("/lib1/test.js"), equalTo(true));
-        assertThat(configuration.skipInstrumentation("/lib2/test.js"), equalTo(true));
-        assertThat(configuration.skipInstrumentation("/lib3/test.js"), equalTo(false));
+        assertThat(configuration.skipInstrumentation("test.js"), equalTo(false));
+        assertThat(configuration.skipInstrumentation("lib1/test.js"), equalTo(true));
+        assertThat(configuration.skipInstrumentation("lib2/test.js"), equalTo(true));
+        assertThat(configuration.skipInstrumentation("lib3/test.js"), equalTo(false));
     }
 
     @Test

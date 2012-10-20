@@ -557,6 +557,7 @@ function jscoverage_recalculateSummaryTab(cc) {
     row.className = ( rowCounter++ % 2 == 0 ? "odd" : "even" );
 
     var cell = document.createElement("td");
+    row.id = "row-"+file;
     cell.className = 'leftColumn';
     var link = jscoverage_createLink(file);
     cell.appendChild(link);

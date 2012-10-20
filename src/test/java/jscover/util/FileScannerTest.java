@@ -347,6 +347,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -357,6 +360,7 @@ public class FileScannerTest {
     private ConfigurationForServer configuration;
 
     private FileScanner fileScanner;
+    private Set<String> urisAlreadyProcessed = new HashSet<String>();
 
     @Before
     public void setUp() {
@@ -370,11 +374,27 @@ public class FileScannerTest {
         });
         fileScanner = new FileScanner(configuration);
 
-        Set<File> files = fileScanner.getFiles();
+        Set<File> files = fileScanner.getFiles(urisAlreadyProcessed);
         assertThat(files.size(), equalTo(4));
         assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/root.js")));
         assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/level1/level1.js")));
+        assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/level1/level2/level2.js")));
+        assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/noInstrument/noInstrument.js")));
+    }
+
+    @Test
+    public void shouldFindAllJavaScriptFilesExcludingAlreadyParsedScripts() {
+        configuration = ConfigurationForServer.parse(new String[]{
+                "--document-root=src/test-integration/resources/jsSearch"
+        });
+        fileScanner = new FileScanner(configuration);
+        urisAlreadyProcessed.add("root.js");
+        urisAlreadyProcessed.add("level2/level2.js");
+
+        Set<File> files = fileScanner.getFiles(urisAlreadyProcessed);
+        assertThat(files.size(), equalTo(3));
         assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/level1/level1.js")));
+        assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/level1/level2/level2.js")));
         assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/noInstrument/noInstrument.js")));
     }
 
@@ -386,7 +406,7 @@ public class FileScannerTest {
         });
         fileScanner = new FileScanner(configuration);
 
-        Set<File> files = fileScanner.getFiles();
+        Set<File> files = fileScanner.getFiles(urisAlreadyProcessed);
         assertThat(files.size(), equalTo(3));
         assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/root.js")));
         assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/level1/level1.js")));

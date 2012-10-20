@@ -448,14 +448,8 @@ public abstract class IoUtils {
     }
 
     public static void copy(InputStream is, OutputStream os) {
-        int bufSize = 1024;
-        byte buf[] = new byte[bufSize];
         try {
-            for (int read = 0; (read = is.read(buf)) != -1; ) {
-                os.write(buf, 0, read);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            copyNoClose(is, os);
         } finally {
             closeQuietly(is);
             closeQuietly(os);
@@ -550,6 +544,8 @@ public abstract class IoUtils {
     }
 
     public static String getRelativePath(File file1, File file2) {
-        return file1.getAbsolutePath().substring(file2.getAbsolutePath().length()+File.separator.length());
+        if (file1.equals(file2))
+            return "";
+        return file1.getAbsolutePath().substring(file2.getAbsolutePath().length()+File.separator.length()).replaceAll("\\\\","/");
     }
 }

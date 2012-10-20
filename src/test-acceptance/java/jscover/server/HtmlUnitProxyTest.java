@@ -362,7 +362,7 @@ public class HtmlUnitProxyTest extends HtmlUnitServerTest {
             "--document-root=src/test-acceptance/resources",
             "--port="+proxyPort,
             "--proxy",
-            "--no-instrument=/example/lib",
+            "--no-instrument=example/lib",
             "--report-dir=" + reportDir
     };
 

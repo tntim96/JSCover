@@ -410,9 +410,15 @@ public class ConfigurationForFS extends Configuration {
                 configuration.showHelp = true;
                 return configuration;
             } else if (arg.startsWith(NO_INSTRUMENT_PREFIX)) {
-                configuration.noInstruments.add(arg.substring(NO_INSTRUMENT_PREFIX.length()));
+                String uri = arg.substring(NO_INSTRUMENT_PREFIX.length());
+                if (uri.startsWith("/"))
+                    uri = uri.substring(1);
+                configuration.noInstruments.add(uri);
             } else if (arg.startsWith(EXLCUDE_PREFIX)) {
-                configuration.excludes.add(arg.substring(EXLCUDE_PREFIX.length()));
+                String uri = arg.substring(EXLCUDE_PREFIX.length());
+                if (uri.startsWith("/"))
+                    uri = uri.substring(1);
+                configuration.excludes.add(uri);
             } else if (arg.startsWith(JS_VERSION_PREFIX)) {
                 configuration.JSVersion = (int)(Float.valueOf(arg.substring(JS_VERSION_PREFIX.length()))*100);
             }

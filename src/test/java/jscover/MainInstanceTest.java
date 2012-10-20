@@ -346,7 +346,6 @@ import jscover.filesystem.ConfigurationForFS;
 import jscover.filesystem.FileSystemInstrumenter;
 import jscover.server.ConfigurationForServer;
 import jscover.server.WebDaemon;
-import jscover.server.WebServer;
 import jscover.util.ReflectionUtils;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
@@ -369,13 +368,11 @@ import static org.mockito.Mockito.spy;
 @RunWith(MockitoJUnitRunner.class)
 public class MainInstanceTest {
     private Main main = new Main();
-    private WebServer webServer = mock(WebServer.class);
     private WebDaemon webDaemon = mock(WebDaemon.class);
     private FileSystemInstrumenter fileSystemInstrumenter = mock(FileSystemInstrumenter.class);
 
     @Before
     public void setUp() {
-        ReflectionUtils.setField(main, "webServer", webServer);
         ReflectionUtils.setField(main, "webDaemon", webDaemon);
         ReflectionUtils.setField(main, "fileSystemInstrumenter", fileSystemInstrumenter);
     }
@@ -383,7 +380,7 @@ public class MainInstanceTest {
     @Test
     public void shouldShowWebServerHelp() throws IOException, InterruptedException {
         main.runMain(new String[]{"-ws", "-h"});
-        verifyZeroInteractions(webServer);
+        verifyZeroInteractions(webDaemon);
     }
 
     @Test
@@ -428,8 +425,8 @@ public class MainInstanceTest {
 
     @Test
     public void shouldReThrowWebServerException() throws IOException, InterruptedException {
-        WebServer webServer = spy(new WebServer());
-        ReflectionUtils.setField(main, "webServer", webServer);
+        WebDaemon webDaemon = spy(new WebDaemon());
+        ReflectionUtils.setField(main, "webDaemon", webDaemon);
 
         InterruptedException toBeThrown = new InterruptedException("Ouch!");
         doThrow(toBeThrown).when(webDaemon).start(any(ConfigurationForServer.class));

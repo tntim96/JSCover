@@ -338,6 +338,7 @@ proprietary programs.  If your program is a subroutine library, you may
 consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License. */
+
 package jscover.json;
 
 import org.mozilla.javascript.Context;
@@ -353,9 +354,9 @@ class JSONDataMerger {
     private JsonParser parser = new JsonParser(cx, cx.initStandardObjects());
 
 
-    public String mergeJSONCoverageData(String data1, String data2) {
-        TreeMap<String, CoverageData> map1 = jsonToMap(data1);
-        TreeMap<String, CoverageData> map2 = jsonToMap(data2);
+    public SortedMap<String, CoverageData> mergeJSONCoverageData(String data1, String data2) {
+        SortedMap<String, CoverageData> map1 = jsonToMap(data1);
+        SortedMap<String, CoverageData> map2 = jsonToMap(data2);
         for (String scriptName : map1.keySet()) {
             if (map2.containsKey(scriptName)) {
                 CoverageData coverageData = map1.get(scriptName);
@@ -371,10 +372,10 @@ class JSONDataMerger {
                 map1.put(scriptName, map2.get(scriptName));
             }
         }
-        return toJSON(map1);
+        return map1;
     }
 
-    TreeMap<String, CoverageData> jsonToMap(String data) {
+    SortedMap<String, CoverageData> jsonToMap(String data) {
         TreeMap<String, CoverageData> map = new TreeMap<String, CoverageData>();
         try {
             NativeObject json = (NativeObject) parser.parseValue(data);
@@ -396,7 +397,7 @@ class JSONDataMerger {
         return map;
     }
 
-    String toJSON(TreeMap<String, CoverageData> map) {
+    String toJSON(SortedMap<String, CoverageData> map) {
         StringBuilder json = new StringBuilder("{");
         int scriptCount = 0;
         for (String scriptURI : map.keySet()) {
@@ -426,8 +427,8 @@ class JSONDataMerger {
         return json.toString();
     }
 
-    public String createEmptyJSON(List<ScriptLinesAndSource> scripts) {
-        TreeMap<String, CoverageData> map = new TreeMap<String, CoverageData>();
+    public SortedMap<String, CoverageData> createEmptyJSON(List<ScriptLinesAndSource> scripts) {
+        SortedMap<String, CoverageData> map = new TreeMap<String, CoverageData>();
         for (ScriptLinesAndSource script : scripts) {
             Integer[] lines = new Integer[script.getLines().get(script.getLines().size() - 1)+1];
             for (int i=0; i < script.getLines().size() ; i++) {
@@ -437,6 +438,6 @@ class JSONDataMerger {
             CoverageData coverageData = new CoverageData(Arrays.asList(lines), script.getSource());
             map.put(script.getUri(), coverageData);
         }
-        return toJSON(map);
+        return map;
     }
 }

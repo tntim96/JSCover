@@ -342,6 +342,10 @@ Public License instead of this License.
 
 package jscover.format;
 
+import java.util.List;
+
 public interface SourceFormatter {
     String toJsArrayOfHtml(String source);
+
+    List<String> toHtmlLines(String source);
 }

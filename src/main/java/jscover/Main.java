@@ -346,7 +346,6 @@ import jscover.filesystem.ConfigurationForFS;
 import jscover.filesystem.FileSystemInstrumenter;
 import jscover.server.ConfigurationForServer;
 import jscover.server.WebDaemon;
-import jscover.server.WebServer;
 import jscover.util.IoUtils;
 
 import java.io.IOException;
@@ -371,7 +370,6 @@ public class Main {
     private List<String> dependantClasses = new ArrayList<String>() {{
         add("org.mozilla.javascript.ast.AstNode");
     }};
-    private WebServer webServer = new WebServer();
     private WebDaemon webDaemon = new WebDaemon();
     private FileSystemInstrumenter fileSystemInstrumenter = new FileSystemInstrumenter();
 

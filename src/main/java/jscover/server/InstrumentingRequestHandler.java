@@ -343,7 +343,9 @@ Public License instead of this License.
 package jscover.server;
 
 import jscover.instrument.InstrumenterService;
+import jscover.instrument.UnloadedSourceProcessor;
 import jscover.json.JSONDataSaver;
+import jscover.json.ScriptLinesAndSource;
 import jscover.util.IoService;
 import jscover.util.IoUtils;
 
@@ -351,22 +353,24 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.Socket;
 import java.net.URL;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.lang.String.format;
 
 public class InstrumentingRequestHandler extends HttpServer {
     public static final String JSCOVERAGE_STORE = "/jscoverage-store";
+    private static Set<String> uris = new HashSet<String>();
     private ConfigurationForServer configuration;
     private IoService ioService = new IoService();
     private JSONDataSaver jsonDataSaver = new JSONDataSaver();
     private InstrumenterService instrumenterService = new InstrumenterService();
+    private UnloadedSourceProcessor unloadedSourceProcessor;
     private File log;
 
     public InstrumentingRequestHandler(Socket socket, ConfigurationForServer configuration, File log) {
         super(socket, configuration.getDocumentRoot());
         this.configuration = configuration;
+        this.unloadedSourceProcessor = new UnloadedSourceProcessor(configuration);
         this.log = log;
     }
 
@@ -378,9 +382,11 @@ public class InstrumentingRequestHandler extends HttpServer {
             if (uri.length() > JSCOVERAGE_STORE.length()) {
                 reportDir = new File(reportDir, uri.substring(JSCOVERAGE_STORE.length()));
             }
-
             try {
-                jsonDataSaver.saveJSONData(reportDir, data);
+                List<ScriptLinesAndSource> unloadJSData = null;
+                if (configuration.isIncludeUnloadedJS())
+                    unloadJSData = unloadedSourceProcessor.getEmptyCoverageData(uris);
+                jsonDataSaver.saveJSONData(reportDir, data, unloadJSData);
                 ioService.generateJSCoverFilesForWebServer(reportDir, configuration.getVersion());
                 sendResponse(HTTP_STATUS.HTTP_OK, MIME.TEXT_PLAIN, "Coverage data stored at " + reportDir);
             } catch(Throwable t) {
@@ -407,7 +413,7 @@ public class InstrumentingRequestHandler extends HttpServer {
                 sendResponse(HTTP_STATUS.HTTP_OK, request.getMime(), reportHTML);
             } else if (uri.startsWith("/jscoverage")) {
                 sendResponse(HTTP_STATUS.HTTP_OK, request.getMime(), ioService.getResourceAsStream(uri));
-            } else if (uri.endsWith(".js") && !configuration.skipInstrumentation(uri)) {
+            } else if (uri.endsWith(".js") && !configuration.skipInstrumentation(uri.substring(1))) {
                 String jsInstrumented;
                 if (configuration.isProxy()) {
                     URL url = request.getUrl();
@@ -415,6 +421,8 @@ public class InstrumentingRequestHandler extends HttpServer {
                     String originalJS = IoUtils.toString(conn.getInputStream());
                     jsInstrumented = instrumenterService.instrumentJSForWebServer(configuration.getCompilerEnvirons(), originalJS, uri, log);
                 } else {
+                    if (configuration.isIncludeUnloadedJS())
+                        uris.add(uri.substring(1));
                     jsInstrumented = instrumenterService.instrumentJSForWebServer(configuration.getCompilerEnvirons(), new File(wwwRoot, uri), uri, log);
                 }
                 sendResponse(HTTP_STATUS.HTTP_OK, MIME.JS, jsInstrumented);

@@ -338,115 +338,44 @@ proprietary programs.  If your program is a subroutine library, you may
 consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
-*/
+ */
 
-package jscover.server;
+package jscover.instrument;
 
-import jscover.Configuration;
-import jscover.Main;
+import jscover.format.PlainFormatter;
+import jscover.format.SourceFormatter;
+import jscover.json.ScriptLinesAndSource;
+import jscover.server.ConfigurationForServer;
+import jscover.util.FileScanner;
 import jscover.util.IoUtils;
-import org.mozilla.javascript.CompilerEnvirons;
-import org.mozilla.javascript.Context;
 
 import java.io.File;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
 
-public class ConfigurationForServer extends Configuration {
-    public static final String HELP_PREFIX1 = Main.HELP_PREFIX1;
-    public static final String HELP_PREFIX2 = Main.HELP_PREFIX2;
-    public static final String DOC_ROOT_PREFIX = "--document-root=";
-    public static final String PORT_PREFIX = "--port=";
-    public static final String REPORT_DIR_PREFIX = "--report-dir=";
-    public static final String NO_INSTRUMENT_PREFIX = "--no-instrument=";
-    public static final String JS_VERSION_PREFIX = "--js-version=";
-    public static final String PROXY_PREFIX = "--proxy";
-    public static final String INCLUDE_UNLOADED_JS_PREFIX = "--include-unloaded-js";
+public class UnloadedSourceProcessor {
+    private ConfigurationForServer config;
+    private SourceFormatter sourceFormatter = new PlainFormatter();
+    private FileScanner fileScanner;
 
-    private boolean showHelp;
-    private File documentRoot = new File(System.getProperty("user.dir"));
-    private Integer port = 8080;
-    private final Set<String> noInstruments = new HashSet<String>();
-    private File reportDir = new File(System.getProperty("user.dir"));
-    private int JSVersion = Context.VERSION_1_5;
-    private boolean proxy;
-    private CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
-    private boolean includeUnloadedJS;
-
-    public Boolean showHelp() {
-        return showHelp;
+    public UnloadedSourceProcessor(ConfigurationForServer config) {
+        fileScanner = new FileScanner(config);
+        this.config = config;
     }
 
-    public File getDocumentRoot() {
-        return documentRoot;
-    }
-
-    public Integer getPort() {
-        return port;
-    }
-
-    public File getReportDir() {
-        return reportDir;
-    }
-
-    public int getJSVersion() {
-        return JSVersion;
-    }
-
-    public boolean skipInstrumentation(String uri) {
-        for (String noInstrument : noInstruments) {
-            if (uri.startsWith(noInstrument))
-                return true;
+    public List<ScriptLinesAndSource> getEmptyCoverageData(Set<String> urisAlreadyProcessed) {
+        List<ScriptLinesAndSource> scripts = new ArrayList<ScriptLinesAndSource>();
+        for (File file: fileScanner.getFiles(urisAlreadyProcessed)) {
+            LineCountNodeVisitor visitor = new LineCountNodeVisitor(config.getCompilerEnvirons());
+            String uri = IoUtils.getRelativePath(file, config.getDocumentRoot());
+            String source = IoUtils.loadFromFileSystem(file);
+            List<String> htmlLines = sourceFormatter.toHtmlLines(source);
+            SortedSet<Integer> codeLines = visitor.getCodeLines(source);
+            ScriptLinesAndSource script = new ScriptLinesAndSource("/"+uri, new ArrayList<Integer>(codeLines), htmlLines);
+            scripts.add(script);
         }
-        return false;
-    }
-
-    public static ConfigurationForServer parse(String[] args) {
-        ConfigurationForServer configuration = new ConfigurationForServer();
-        for (String arg : args) {
-            if (arg.startsWith(Main.SERVER_PREFIX)) {
-            //Ignore this
-            } else if (arg.equals(HELP_PREFIX1) || arg.equals(HELP_PREFIX2)) {
-                configuration.showHelp = true;
-            } else if (arg.startsWith(DOC_ROOT_PREFIX)) {
-                configuration.documentRoot = new File(arg.substring(DOC_ROOT_PREFIX.length()));
-            } else if (arg.startsWith(PORT_PREFIX)) {
-                configuration.port = Integer.valueOf(arg.substring(PORT_PREFIX.length()));
-            } else if (arg.equals(PROXY_PREFIX)) {
-                configuration.proxy = true;
-            } else if (arg.equals(INCLUDE_UNLOADED_JS_PREFIX)) {
-                configuration.includeUnloadedJS = true;
-            } else if (arg.startsWith(REPORT_DIR_PREFIX)) {
-                configuration.reportDir = new File(arg.substring(REPORT_DIR_PREFIX.length()));
-                configuration.reportDir.mkdirs();
-            } else if (arg.startsWith(NO_INSTRUMENT_PREFIX)) {
-                String uri = arg.substring(NO_INSTRUMENT_PREFIX.length());
-                if (uri.startsWith("/"))
-                    uri = uri.substring(1);
-                configuration.noInstruments.add(uri);
-            } else if (arg.startsWith(JS_VERSION_PREFIX)) {
-                configuration.JSVersion = (int)(Float.valueOf(arg.substring(JS_VERSION_PREFIX.length()))*100);
-            } else {
-                configuration.showHelp = true;
-            }
-        }
-        configuration.compilerEnvirons.setLanguageVersion(configuration.JSVersion);
-        return configuration;
-    }
-
-    public String getHelpText() {
-        return IoUtils.toString(getClass().getResourceAsStream("help.txt"));
-    }
-
-    public CompilerEnvirons getCompilerEnvirons() {
-        return compilerEnvirons;
-    }
-
-    public boolean isProxy() {
-        return proxy;
-    }
-
-    public boolean isIncludeUnloadedJS() {
-        return includeUnloadedJS && !proxy;
+        return scripts;
     }
 }

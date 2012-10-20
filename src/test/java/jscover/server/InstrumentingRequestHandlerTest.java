@@ -359,7 +359,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import static java.lang.String.format;
-import static jscover.server.WebServer.JSCOVERAGE_STORE;
+import static jscover.server.InstrumentingRequestHandler.JSCOVERAGE_STORE;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -403,7 +403,7 @@ public class InstrumentingRequestHandlerTest {
 
         webServer.handlePost(new HttpRequest(JSCOVERAGE_STORE), "data");
 
-        verify(jsonDataSaver).saveJSONData(reportDir, "data");
+        verify(jsonDataSaver).saveJSONData(reportDir, "data", null);
         verify(ioService).generateJSCoverFilesForWebServer(reportDir, "theVersion");
         verifyZeroInteractions(instrumenterService);
         assertThat(stringWriter.toString(), containsString(format("Coverage data stored at %s", reportDir)));
@@ -415,11 +415,11 @@ public class InstrumentingRequestHandlerTest {
         reportDir.deleteOnExit();
         given(configuration.getReportDir()).willReturn(reportDir);
         RuntimeException toBeThrown = new RuntimeException("Ouch!");
-        doThrow(toBeThrown).when(jsonDataSaver).saveJSONData(reportDir, "data");
+        doThrow(toBeThrown).when(jsonDataSaver).saveJSONData(reportDir, "data", null);
 
         webServer.handlePost(new HttpRequest(JSCOVERAGE_STORE), "data");
 
-        verify(jsonDataSaver).saveJSONData(reportDir, "data");
+        verify(jsonDataSaver).saveJSONData(reportDir, "data", null);
         verifyZeroInteractions(ioService);
         verifyZeroInteractions(instrumenterService);
         assertThat(stringWriter.toString(), containsString(format("Error saving coverage data. Try deleting JSON file at %s", reportDir)));
@@ -435,7 +435,7 @@ public class InstrumentingRequestHandlerTest {
         webServer.handlePost(new HttpRequest(JSCOVERAGE_STORE + "subdirectory"), "data");
 
         File subdirectory = new File(file, "subdirectory");
-        verify(jsonDataSaver).saveJSONData(subdirectory, "data");
+        verify(jsonDataSaver).saveJSONData(subdirectory, "data", null);
         verify(ioService).generateJSCoverFilesForWebServer(subdirectory, "theVersion");
         verifyZeroInteractions(instrumenterService);
         assertThat(stringWriter.toString(), containsString(format("Coverage data stored at %s", subdirectory)));
@@ -488,7 +488,7 @@ public class InstrumentingRequestHandlerTest {
         ReflectionUtils.setField(webServer, HttpServer.class, "wwwRoot", wwwRoot);
         CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
         given(configuration.getCompilerEnvirons()).willReturn(compilerEnvirons);
-        given(configuration.skipInstrumentation("/test/production.js")).willReturn(true);
+        given(configuration.skipInstrumentation("test/production.js")).willReturn(true);
 
         webServer.handleGet(new HttpRequest("/test/production.js"));
 

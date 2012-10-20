@@ -368,6 +368,9 @@ public class FileSystemInstrumenter {
     }
 
     private void copyFolder(File src, File dest) {
+        String path = IoUtils.getRelativePath(src, configuration.getSrcDir());
+        if (configuration.exclude(path))
+            return;
         if (src.isDirectory()) {
             if (!dest.exists())
                 dest.mkdirs();
@@ -375,16 +378,10 @@ public class FileSystemInstrumenter {
             String files[] = src.list();
             for (String file : files) {
                 File srcFile = new File(src, file);
-                String path = IoUtils.getRelativePath(srcFile, configuration.getSrcDir()).replaceAll("\\\\","/");
-                if (configuration.exclude(path)) {
-                    continue;
-                }
                 File destFile = new File(dest, file);
-                //recursive copy
                 copyFolder(srcFile, destFile);
             }
         } else {
-            String path = IoUtils.getRelativePath(src, configuration.getSrcDir()).replaceAll("\\\\","/");
             if (src.isFile() && src.toString().endsWith(".js") && !configuration.skipInstrumentation(path)) {
                 instrumenterService.instrumentJSForFileSystem(configuration.getCompilerEnvirons(), src, dest, path, log);
             } else {

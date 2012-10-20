@@ -347,6 +347,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedMap;
 import java.util.TreeMap;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -362,7 +363,7 @@ public class JSONDataMergerTest {
         String data2 = IoUtils.loadFromClassPath("/jscover/json/jscoverage-select-3.json");
         String expected = IoUtils.loadFromClassPath("/jscover/json/jscoverage-select-1-3.json");
 
-        String merged = jsonMerger.mergeJSONCoverageData(data1, data2);
+        String merged = jsonMerger.toJSON(jsonMerger.mergeJSONCoverageData(data1, data2));
 
         assertThat(merged, equalTo(expected));
     }
@@ -373,7 +374,7 @@ public class JSONDataMergerTest {
         String data2 = "{\"/test2.js\":{\"coverage\":[null,0,1],\"source\":[\"x++;\",\"y++;\",\"z++;\"]}}";
         String expected = "{\"/test1.js\":{\"coverage\":[null,0,1],\"source\":[\"x++;\",\"y++;\",\"z++;\"]},\"/test2.js\":{\"coverage\":[null,0,1],\"source\":[\"x++;\",\"y++;\",\"z++;\"]}}";
 
-        String merged = jsonMerger.mergeJSONCoverageData(data1, data2);
+        String merged = jsonMerger.toJSON(jsonMerger.mergeJSONCoverageData(data1, data2));
 
         assertThat(merged, equalTo(expected));
     }
@@ -381,7 +382,7 @@ public class JSONDataMergerTest {
     @Test
     public void shouldParseData() {
         String data = "{\"/test.js\":{\"coverage\":[null,0,1],\"source\":[\"x++;\",\"y++;\",\"z++;\"]}}";
-        TreeMap<String, CoverageData> map = jsonMerger.jsonToMap(data);
+        SortedMap<String, CoverageData> map = jsonMerger.jsonToMap(data);
 
         assertThat(map.keySet().size(), equalTo(1));
         assertThat(map.keySet().iterator().next(), equalTo("/test.js"));
@@ -401,7 +402,7 @@ public class JSONDataMergerTest {
     @Test
     public void shouldConvertMapToJSONString() {
         String data = "{\"/test.js\":{\"coverage\":[null,0,1],\"source\":[\"x++;\",\"y++;\",\"z++;\"]}}";
-        TreeMap<String, CoverageData> map = jsonMerger.jsonToMap(data);
+        SortedMap<String, CoverageData> map = jsonMerger.jsonToMap(data);
 
         String jsonString = jsonMerger.toJSON(map);
 
@@ -413,10 +414,16 @@ public class JSONDataMergerTest {
         List<Integer> lines = new ArrayList<Integer>(){{add(1);add(2);add(3);}};
         List<String> sourceLines = new ArrayList<String>(){{add("x++;");add("y++;");add("z++;");}};
         final ScriptLinesAndSource script = new ScriptLinesAndSource("/test.js", lines, sourceLines);
-        String json = jsonMerger.createEmptyJSON(new ArrayList<ScriptLinesAndSource>(){{add(script);}});
+        SortedMap<String, CoverageData> map = jsonMerger.createEmptyJSON(new ArrayList<ScriptLinesAndSource>(){{add(script);}});
 
-        String expected = "{\"/test.js\":{\"coverage\":[null,0,0,0],\"source\":[\"x++;\",\"y++;\",\"z++;\"]}}";
-        assertThat(json, equalTo(expected));
+        assertThat(map.keySet().iterator().next(), equalTo("/test.js"));
+        assertThat(map.values().iterator().next().getCoverage().get(0), nullValue());
+        assertThat(map.values().iterator().next().getSource().get(0), equalTo("x++;"));
+        assertThat(map.values().iterator().next().getCoverage().get(1), equalTo(0));
+        assertThat(map.values().iterator().next().getSource().get(1), equalTo("y++;"));
+        assertThat(map.values().iterator().next().getCoverage().get(2), equalTo(0));
+        assertThat(map.values().iterator().next().getSource().get(2), equalTo("z++;"));
+        assertThat(map.values().iterator().next().getCoverage().get(3), equalTo(0));
     }
 
     @Test
@@ -424,9 +431,15 @@ public class JSONDataMergerTest {
         List<Integer> lines = new ArrayList<Integer>(){{add(1);add(3);}};
         List<String> sourceLines = new ArrayList<String>(){{add("x++;");add("//Comment");add("z++;");}};
         final ScriptLinesAndSource script = new ScriptLinesAndSource("/test.js", lines, sourceLines);
-        String json = jsonMerger.createEmptyJSON(new ArrayList<ScriptLinesAndSource>(){{add(script);}});
+        SortedMap<String, CoverageData> map = jsonMerger.createEmptyJSON(new ArrayList<ScriptLinesAndSource>(){{add(script);}});
 
-        String expected = "{\"/test.js\":{\"coverage\":[null,0,null,0],\"source\":[\"x++;\",\"//Comment\",\"z++;\"]}}";
-        assertThat(json, equalTo(expected));
+        assertThat(map.keySet().iterator().next(), equalTo("/test.js"));
+        assertThat(map.values().iterator().next().getCoverage().get(0), nullValue());
+        assertThat(map.values().iterator().next().getSource().get(0), equalTo("x++;"));
+        assertThat(map.values().iterator().next().getCoverage().get(1), equalTo(0));
+        assertThat(map.values().iterator().next().getSource().get(1), equalTo("//Comment"));
+        assertThat(map.values().iterator().next().getCoverage().get(2), nullValue());
+        assertThat(map.values().iterator().next().getSource().get(2), equalTo("z++;"));
+        assertThat(map.values().iterator().next().getCoverage().get(3), equalTo(0));
     }
 }

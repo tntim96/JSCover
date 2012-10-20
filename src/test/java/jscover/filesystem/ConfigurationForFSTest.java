@@ -397,20 +397,29 @@ public class ConfigurationForFSTest {
 
     @Test
     public void shouldParseNoInstrument() {
+        ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs","--no-instrument=lib1", "--no-instrument=/lib2","src","doc"});
+        assertThat(configuration.skipInstrumentation("test.js"), equalTo(false));
+        assertThat(configuration.skipInstrumentation("lib1/test.js"), equalTo(true));
+        assertThat(configuration.skipInstrumentation("lib2/test.js"), equalTo(true));
+        assertThat(configuration.skipInstrumentation("lib3/test.js"), equalTo(false));
+    }
+
+    @Test
+    public void shouldParseNoInstrumentWithLeadingSlash() {
         ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs","--no-instrument=/lib1", "--no-instrument=/lib2","src","doc"});
-        assertThat(configuration.skipInstrumentation("/test.js"), equalTo(false));
-        assertThat(configuration.skipInstrumentation("/lib1/test.js"), equalTo(true));
-        assertThat(configuration.skipInstrumentation("/lib2/test.js"), equalTo(true));
-        assertThat(configuration.skipInstrumentation("/lib3/test.js"), equalTo(false));
+        assertThat(configuration.skipInstrumentation("test.js"), equalTo(false));
+        assertThat(configuration.skipInstrumentation("lib1/test.js"), equalTo(true));
+        assertThat(configuration.skipInstrumentation("lib2/test.js"), equalTo(true));
+        assertThat(configuration.skipInstrumentation("lib3/test.js"), equalTo(false));
     }
 
     @Test
     public void shouldParseExclude() {
-        ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs","--exclude=/lib1", "--exclude=/lib2","src","doc"});
-        assertThat(configuration.exclude("/test.js"), equalTo(false));
-        assertThat(configuration.exclude("/lib1/test.js"), equalTo(true));
-        assertThat(configuration.exclude("/lib2/test.js"), equalTo(true));
-        assertThat(configuration.exclude("/lib3/test.js"), equalTo(false));
+        ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs","--exclude=lib1", "--exclude=/lib2","src","doc"});
+        assertThat(configuration.exclude("test.js"), equalTo(false));
+        assertThat(configuration.exclude("lib1/test.js"), equalTo(true));
+        assertThat(configuration.exclude("lib2/test.js"), equalTo(true));
+        assertThat(configuration.exclude("lib3/test.js"), equalTo(false));
     }
 
     @Test
