@@ -351,7 +351,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ProxyRequestHandlerTest {
-    private ProxyRequestHandler proxyRequestHandler = new ProxyRequestHandler(null, null);
+    private ProxyService proxyRequestHandler = new ProxyService();
 
     @Test
     public void shouldGetRequestURIFromURL() throws MalformedURLException {

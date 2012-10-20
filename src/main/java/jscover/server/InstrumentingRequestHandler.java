@@ -347,23 +347,26 @@ import jscover.instrument.UnloadedSourceProcessor;
 import jscover.json.JSONDataSaver;
 import jscover.json.ScriptLinesAndSource;
 import jscover.util.IoService;
-import jscover.util.IoUtils;
 
-import java.io.*;
-import java.net.HttpURLConnection;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.Socket;
-import java.net.URL;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static java.lang.String.format;
 
-public class InstrumentingRequestHandler extends ProxyRequestHandler {
+public class InstrumentingRequestHandler extends HttpServer {
     public static final String JSCOVERAGE_STORE = "/jscoverage-store";
     static Set<String> uris = new HashSet<String>();
     private ConfigurationForServer configuration;
     private IoService ioService = new IoService();
     private JSONDataSaver jsonDataSaver = new JSONDataSaver();
     private InstrumenterService instrumenterService = new InstrumenterService();
+    private ProxyService proxyService = new ProxyService();
     private UnloadedSourceProcessor unloadedSourceProcessor;
     private File log;
 
@@ -396,7 +399,7 @@ public class InstrumentingRequestHandler extends ProxyRequestHandler {
             }
         } else {
             if (configuration.isProxy())
-                handleProxyPost(request, data);
+                proxyService.handleProxyPost(request, data, os);
             else
                 super.handlePost(request, data);
         }
@@ -416,9 +419,7 @@ public class InstrumentingRequestHandler extends ProxyRequestHandler {
             } else if (uri.endsWith(".js") && !configuration.skipInstrumentation(uri.substring(1))) {
                 String jsInstrumented;
                 if (configuration.isProxy()) {
-                    URL url = request.getUrl();
-                    HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-                    String originalJS = IoUtils.toString(conn.getInputStream());
+                    String originalJS = proxyService.getUrl(request.getUrl());
                     jsInstrumented = instrumenterService.instrumentJSForWebServer(configuration.getCompilerEnvirons(), originalJS, uri, log);
                 } else {
                     if (configuration.isIncludeUnloadedJS())
@@ -428,7 +429,7 @@ public class InstrumentingRequestHandler extends ProxyRequestHandler {
                 sendResponse(HTTP_STATUS.HTTP_OK, MIME.JS, jsInstrumented);
             } else {
                 if (configuration.isProxy())
-                    handleProxyGet(request);
+                    proxyService.handleProxyGet(request, os);
                 else
                     super.handleGet(request);
             }

@@ -373,6 +373,7 @@ public class InstrumentingRequestHandlerTest {
     private @Mock IoService ioService;
     private @Mock JSONDataSaver jsonDataSaver;
     private @Mock InstrumenterService instrumenterService;
+    private @Mock ProxyService proxyService;
     private @Mock ConfigurationForServer configuration;
     private final StringWriter stringWriter = new StringWriter();
     private PrintWriter pw = new PrintWriter(stringWriter);
@@ -384,6 +385,7 @@ public class InstrumentingRequestHandlerTest {
         ReflectionUtils.setField(webServer, "ioService", ioService);
         ReflectionUtils.setField(webServer, "jsonDataSaver", jsonDataSaver);
         ReflectionUtils.setField(webServer, "instrumenterService", instrumenterService);
+        ReflectionUtils.setField(webServer, "proxyService", proxyService);
         ReflectionUtils.setField(webServer, "configuration", configuration);
         ReflectionUtils.setField(webServer, HttpServer.class, "pw", pw);
     }

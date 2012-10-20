@@ -345,6 +345,7 @@ package jscover.server;
 import jscover.util.IoUtils;
 
 import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.Socket;
 import java.net.URL;
 import java.util.List;
@@ -352,13 +353,9 @@ import java.util.Map;
 
 import static java.lang.String.format;
 
-public class ProxyRequestHandler extends HttpServer {
+public class ProxyService {
 
-    public ProxyRequestHandler(Socket socket, File wwwRoot) {
-        super(socket, wwwRoot);
-    }
-
-    protected void handleProxyGet(HttpRequest request) {
+    protected void handleProxyGet(HttpRequest request, OutputStream os) {
         URL url = request.getUrl();
         Socket socket = null;
         InputStream remoteInputStream = null;
@@ -382,7 +379,7 @@ public class ProxyRequestHandler extends HttpServer {
         }
     }
 
-    protected void handleProxyPost(HttpRequest request, String data) {
+    protected void handleProxyPost(HttpRequest request, String data, OutputStream os) {
         URL url = request.getUrl();
         Socket socket = null;
         InputStream remoteInputStream = null;
@@ -425,5 +422,10 @@ public class ProxyRequestHandler extends HttpServer {
         }
         remotePrintWriter.print("\n");
         remotePrintWriter.flush();
+    }
+
+    public String getUrl(URL url) throws IOException {
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        return IoUtils.toString(conn.getInputStream());
     }
 }
