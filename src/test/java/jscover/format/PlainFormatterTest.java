@@ -339,9 +339,12 @@ consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
  */
+
 package jscover.format;
 
 import org.junit.Test;
+
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -357,6 +360,15 @@ public class PlainFormatterTest {
     @Test
     public void shouldEscapeAmpersand() {
         assertThat(formatter.toJsArrayOfHtml("x & y;"), equalTo("\"x &amp; y;\""));
+    }
+
+    @Test
+    public void shouldCreateHtmlLines() {
+        List<String> lines = formatter.toHtmlLines("var x;\nx++;\nx = x > y ? x : y;");
+        assertThat(lines.size(), equalTo(3));
+        assertThat(lines.get(0), equalTo("var x;"));
+        assertThat(lines.get(1), equalTo("x++;"));
+        assertThat(lines.get(2), equalTo("x = x &gt; y ? x : y;"));
     }
 
     @Test
