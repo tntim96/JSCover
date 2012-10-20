@@ -359,7 +359,7 @@ import static java.lang.String.format;
 
 public class InstrumentingRequestHandler extends ProxyRequestHandler {
     public static final String JSCOVERAGE_STORE = "/jscoverage-store";
-    private static Set<String> uris = new HashSet<String>();
+    static Set<String> uris = new HashSet<String>();
     private ConfigurationForServer configuration;
     private IoService ioService = new IoService();
     private JSONDataSaver jsonDataSaver = new JSONDataSaver();

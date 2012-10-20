@@ -357,6 +357,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.HashSet;
 
 import static java.lang.String.format;
 import static jscover.server.InstrumentingRequestHandler.JSCOVERAGE_STORE;
@@ -378,6 +379,7 @@ public class InstrumentingRequestHandlerTest {
 
     @Before
     public void setUp() throws IOException {
+        InstrumentingRequestHandler.uris = new HashSet<String>();
         webServer = new InstrumentingRequestHandler(null, configuration, null);
         ReflectionUtils.setField(webServer, "ioService", ioService);
         ReflectionUtils.setField(webServer, "jsonDataSaver", jsonDataSaver);
@@ -468,7 +470,7 @@ public class InstrumentingRequestHandlerTest {
     }
 
     @Test
-    public void shouldServeInstrumentedJS() throws IOException {
+    public void shouldServeInstrumentedJSForWebServer() throws IOException {
         File wwwRoot = new File("wwwRoot");
         ReflectionUtils.setField(webServer, HttpServer.class, "wwwRoot", wwwRoot);
         CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
@@ -480,6 +482,25 @@ public class InstrumentingRequestHandlerTest {
         verify(instrumenterService).instrumentJSForWebServer(compilerEnvirons, new File("wwwRoot/js/production.js"), "/js/production.js", null);
         verifyZeroInteractions(ioService);
         verifyZeroInteractions(jsonDataSaver);
+        assertThat(InstrumentingRequestHandler.uris.size(), equalTo(0));
+    }
+
+    @Test
+    public void shouldRecordInstrumentedURIsForWebServer() throws IOException {
+        given(configuration.isIncludeUnloadedJS()).willReturn(true);
+        File wwwRoot = new File("wwwRoot");
+        ReflectionUtils.setField(webServer, HttpServer.class, "wwwRoot", wwwRoot);
+        CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
+        given(configuration.getCompilerEnvirons()).willReturn(compilerEnvirons);
+        given(configuration.skipInstrumentation("/js/production.js")).willReturn(false);
+
+        webServer.handleGet(new HttpRequest("/js/production.js"));
+
+        verify(instrumenterService).instrumentJSForWebServer(compilerEnvirons, new File("wwwRoot/js/production.js"), "/js/production.js", null);
+        verifyZeroInteractions(ioService);
+        verifyZeroInteractions(jsonDataSaver);
+        assertThat(InstrumentingRequestHandler.uris.size(), equalTo(1));
+        assertThat(InstrumentingRequestHandler.uris.iterator().next(), equalTo("js/production.js"));
     }
 
     @Test
