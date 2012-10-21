@@ -343,9 +343,14 @@ Public License instead of this License.
 package jscover.server;
 
 import jscover.instrument.InstrumenterService;
+import jscover.instrument.UnloadedSourceProcessor;
 import jscover.json.JSONDataSaver;
+import jscover.json.ScriptLinesAndSource;
 import jscover.util.IoService;
 import jscover.util.ReflectionUtils;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeMatcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -357,7 +362,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 import static java.lang.String.format;
 import static jscover.server.InstrumentingRequestHandler.JSCOVERAGE_STORE;
@@ -365,6 +374,7 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willReturn;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -373,6 +383,7 @@ public class InstrumentingRequestHandlerTest {
     private @Mock IoService ioService;
     private @Mock JSONDataSaver jsonDataSaver;
     private @Mock InstrumenterService instrumenterService;
+    private @Mock UnloadedSourceProcessor unloadedSourceProcessor;
     private @Mock ProxyService proxyService;
     private @Mock ConfigurationForServer configuration;
     private final StringWriter stringWriter = new StringWriter();
@@ -385,6 +396,7 @@ public class InstrumentingRequestHandlerTest {
         ReflectionUtils.setField(webServer, "ioService", ioService);
         ReflectionUtils.setField(webServer, "jsonDataSaver", jsonDataSaver);
         ReflectionUtils.setField(webServer, "instrumenterService", instrumenterService);
+        ReflectionUtils.setField(webServer, "unloadedSourceProcessor", unloadedSourceProcessor);
         ReflectionUtils.setField(webServer, "proxyService", proxyService);
         ReflectionUtils.setField(webServer, "configuration", configuration);
         ReflectionUtils.setField(webServer, HttpServer.class, "pw", pw);
@@ -446,6 +458,24 @@ public class InstrumentingRequestHandlerTest {
     }
 
     @Test
+    public void shouldStoreJSCoverageJSONWithUnloadedJS() {
+        File reportDir = new File("target/temp");
+        reportDir.deleteOnExit();
+        given(configuration.isIncludeUnloadedJS()).willReturn(true);
+        given(configuration.getReportDir()).willReturn(reportDir);
+        given(configuration.getVersion()).willReturn("theVersion");
+        List<ScriptLinesAndSource> emptyCoverage = new ArrayList<ScriptLinesAndSource>();
+        given(unloadedSourceProcessor.getEmptyCoverageData(anySet())).willReturn(emptyCoverage);
+
+        webServer.handlePost(new HttpRequest(JSCOVERAGE_STORE), "data");
+
+        verify(jsonDataSaver).saveJSONData(reportDir, "data", emptyCoverage);
+        verify(ioService).generateJSCoverFilesForWebServer(reportDir, "theVersion");
+        verifyZeroInteractions(instrumenterService);
+        assertThat(stringWriter.toString(), containsString(format("Coverage data stored at %s", reportDir)));
+    }
+
+    @Test
     public void shouldServeJSCoverageHTML() throws IOException {
         given(configuration.getVersion()).willReturn("123");
         given(ioService.generateJSCoverageHtml("123")).willReturn("theHtml");
@@ -484,6 +514,7 @@ public class InstrumentingRequestHandlerTest {
         verify(instrumenterService).instrumentJSForWebServer(compilerEnvirons, new File("wwwRoot/js/production.js"), "/js/production.js", null);
         verifyZeroInteractions(ioService);
         verifyZeroInteractions(jsonDataSaver);
+        verifyZeroInteractions(proxyService);
         assertThat(InstrumentingRequestHandler.uris.size(), equalTo(0));
     }
 
@@ -501,8 +532,44 @@ public class InstrumentingRequestHandlerTest {
         verify(instrumenterService).instrumentJSForWebServer(compilerEnvirons, new File("wwwRoot/js/production.js"), "/js/production.js", null);
         verifyZeroInteractions(ioService);
         verifyZeroInteractions(jsonDataSaver);
+        verifyZeroInteractions(proxyService);
         assertThat(InstrumentingRequestHandler.uris.size(), equalTo(1));
         assertThat(InstrumentingRequestHandler.uris.iterator().next(), equalTo("js/production.js"));
+    }
+
+    @Test
+    public void shouldServeInstrumentedJSForProxyServer() throws IOException {
+        given(configuration.isProxy()).willReturn(true);
+        File wwwRoot = new File("wwwRoot");
+        ReflectionUtils.setField(webServer, HttpServer.class, "wwwRoot", wwwRoot);
+        CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
+        given(configuration.getCompilerEnvirons()).willReturn(compilerEnvirons);
+        given(configuration.skipInstrumentation("/js/production.js")).willReturn(false);
+        String uri = "http://someserver.org/js/production.js";
+        given(proxyService.getUrl(argThat(matchesUrl(uri)))).willReturn("someJavaScript;");
+
+        webServer.handleGet(new HttpRequest(uri));
+
+        verify(instrumenterService).instrumentJSForWebServer(compilerEnvirons, "someJavaScript;", "/js/production.js", null);
+        verifyZeroInteractions(ioService);
+        verifyZeroInteractions(jsonDataSaver);
+        assertThat(InstrumentingRequestHandler.uris.size(), equalTo(0));
+    }
+
+    private Matcher<URL> matchesUrl(final String uri) {
+        return new TypeSafeMatcher<URL>() {
+            @Override
+            protected boolean matchesSafely(URL url) {
+                try {
+                    return new URL(uri).equals(url);
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            public void describeTo(Description description) {
+            }
+        };
     }
 
     @Test
