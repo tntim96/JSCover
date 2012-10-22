@@ -234,35 +234,41 @@
         <heading id="other">Other</heading>
         <item>
             <heading id="jsCoverageVJSCover">JSCover V. JSCoverage</heading>
-            <text>
-                The main difference in the implementation is the tools used for parsing.
-                All JavaScript code is the same, and so the UI interaction is the same.
-                <table>
-                    <tr>
-                        <th>Tool</th>
-                        <th>Parser Language</th>
-                        <th>Parser Implementation</th>
-                    </tr>
-                    <tr>
-                        <td>JSCover</td>
-                        <td>Java</td>
-                        <td>
-                            <a href="http://www.mozilla.org/rhino/">Rhino</a>
-                            1.7R5pre
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>JSCoverage</td>
-                        <td>C/C++</td>
-                        <td>
-                            <a href="https://developer.mozilla.org/en/SpiderMonkey">SpiderMonkey</a>
-                        </td>
-                    </tr>
-                </table>
-                As SpiderMonkey is used in FireFox which is used for much development and testing of web-based
-                JavaScript, it is
-                arguably the best JavaScript implementation currently available.
-            </text>
+            <item>
+                <heading id="jsCoverageVJSCoverImplementation">Implementation</heading>
+                <text>
+                    The main difference in the implementation is the tools used for parsing.
+                    All JavaScript code is the same, and so the UI interaction is the same.
+                </text>
+                <text>
+                    <table>
+                        <tr>
+                            <th>Tool</th>
+                            <th>Parser Language</th>
+                            <th>Parser Implementation</th>
+                        </tr>
+                        <tr>
+                            <td>JSCover</td>
+                            <td>Java</td>
+                            <td>
+                                <a href="http://www.mozilla.org/rhino/">Rhino</a>
+                                1.7R5pre
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>JSCoverage</td>
+                            <td>C/C++</td>
+                            <td>
+                                <a href="https://developer.mozilla.org/en/SpiderMonkey">SpiderMonkey</a>
+                            </td>
+                        </tr>
+                    </table>
+                </text>
+                <text>
+                    As SpiderMonkey is used in FireFox which is used for much development and testing of web-based
+                    JavaScript, it is arguably the best JavaScript implementation currently available.
+                </text>
+            </item>
         </item>
     </item>
 </document>
