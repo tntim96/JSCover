@@ -234,6 +234,9 @@
         <heading id="execModes">Execution Modes</heading>
         <item>
             <heading id="iframeMode">IFrame Mode</heading>
+            <text>
+                <img src="images/screenshot.png"/>
+            </text>
         </item>
         <item>
             <heading id="windowMode">Window Mode</heading>

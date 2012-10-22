@@ -14,6 +14,13 @@
   </a>
 </xsl:template>
 
+<xsl:template match="img">
+  <img>
+    <xsl:attribute name="src"><xsl:value-of select="@src"/></xsl:attribute>
+    <xsl:attribute name="border">0</xsl:attribute>
+  </img>
+</xsl:template>
+
 <xsl:template match="b">
   <b><xsl:apply-templates/></b>
 </xsl:template>
