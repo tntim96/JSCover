@@ -354,7 +354,7 @@ public class HttpServerDriver {
         File wwwRoot = new File(".");
         while (running) {
             Socket socket = Server.accept();
-            (new HttpServer(socket, wwwRoot)).start();
+            (new HttpServer(socket, wwwRoot, "testVersion")).start();
         }
     }
 }

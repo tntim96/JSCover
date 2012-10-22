@@ -409,6 +409,12 @@ public class MainParsingTest {
     }
 
     @Test
+    public void shouldParseEncodingHelp() {
+        assertThat(main.parse(new String[]{"-ws","encoding"}).showCharSets(), equalTo(false));
+        assertThat(main.parse(new String[]{"-h","encoding"}).showCharSets(), equalTo(true));
+    }
+
+    @Test
     public void shouldDetectValidOptionsForWebServer() {
         assertThat(main.parse(new String[]{"-ws"}).showHelp(), equalTo(false));
     }

@@ -371,7 +371,7 @@ public class InstrumentingRequestHandler extends HttpServer {
     private File log;
 
     public InstrumentingRequestHandler(Socket socket, ConfigurationForServer configuration, File log) {
-        super(socket, configuration.getDocumentRoot());
+        super(socket, configuration.getDocumentRoot(), configuration.getVersion());
         this.configuration = configuration;
         this.unloadedSourceProcessor = new UnloadedSourceProcessor(configuration);
         this.log = log;

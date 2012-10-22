@@ -353,14 +353,16 @@ import static java.lang.String.format;
 public class HttpServer extends Thread {
 
     private Socket socket;
+    private String version;
     protected File wwwRoot;
     protected InputStream is;
     protected OutputStream os;
     protected PrintWriter pw = null;
 
-    public HttpServer(Socket socket, File wwwRoot) {
+    public HttpServer(Socket socket, File wwwRoot, String version) {
         this.wwwRoot = wwwRoot;
         this.socket = socket;
+        this.version = version;
     }
 
     public void run() {
@@ -451,24 +453,27 @@ public class HttpServer extends Thread {
     }
 
     protected void sendResponse(HTTP_STATUS status, MIME mime, String data) {
-        pw.print(format("HTTP/1.0 %s \n", status));
-        pw.write(format("Content-Type: %s \n", mime.getContentType()));
+        pw.print(format("HTTP/1.0 %s\n", status));
+        pw.write(format("Server: JSCover/%s\n", version));
+        pw.write(format("Content-Type: %s\n", mime.getContentType()));
         pw.write(format("Content-Length: %d\n\n", data.length()));
         pw.write(data);
         pw.flush();
     }
 
     private void sendResponse(HTTP_STATUS status, MIME mime, File data) {
-        pw.print(format("HTTP/1.0 %s \n", status));
-        pw.write(format("Content-Type: %s \n", mime.getContentType()));
+        pw.print(format("HTTP/1.0 %s\n", status));
+        pw.write(format("Server: JSCover/%s\n", version));
+        pw.write(format("Content-Type: %s\n", mime.getContentType()));
         pw.write(format("Content-Length: %d\n\n", data.length()));
         pw.flush();
         IoUtils.copyNoClose(data, os);
     }
 
     protected void sendResponse(HTTP_STATUS status, MIME mime, InputStream is) {
-        pw.print(format("HTTP/1.0 %s \n", status));
-        pw.write(format("Content-Type: %s \n\n", mime.getContentType()));
+        pw.print(format("HTTP/1.0 %s\n", status));
+        pw.write(format("Server: JSCover/%s\n", version));
+        pw.write(format("Content-Type: %s\n\n", mime.getContentType()));
         pw.flush();
         IoUtils.copy(is, os);
     }

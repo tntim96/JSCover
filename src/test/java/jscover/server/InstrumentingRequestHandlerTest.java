@@ -400,6 +400,7 @@ public class InstrumentingRequestHandlerTest {
         ReflectionUtils.setField(webServer, "proxyService", proxyService);
         ReflectionUtils.setField(webServer, "configuration", configuration);
         ReflectionUtils.setField(webServer, HttpServer.class, "pw", pw);
+        ReflectionUtils.setField(webServer, HttpServer.class, "version", "testVersion");
     }
 
     @Test
@@ -485,8 +486,9 @@ public class InstrumentingRequestHandlerTest {
         verify(ioService).generateJSCoverageHtml("123");
         verifyZeroInteractions(jsonDataSaver);
         verifyZeroInteractions(instrumenterService);
-        assertThat(stringWriter.toString(), equalTo("HTTP/1.0 200 OK \n" +
-                "Content-Type: text/html \n" +
+        assertThat(stringWriter.toString(), equalTo("HTTP/1.0 200 OK\n" +
+                "Server: JSCover/testVersion\n" +
+                "Content-Type: text/html\n" +
                 "Content-Length: 7\n" +
                 "\n" +
                 "theHtml"));

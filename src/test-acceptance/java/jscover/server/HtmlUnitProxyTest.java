@@ -388,7 +388,7 @@ public class HtmlUnitProxyTest extends HtmlUnitServerTest {
                         File wwwRoot = new File("src/test-acceptance/resources");
                         while (true) {
                             Socket socket = Server.accept();
-                            (new HttpServer(socket, wwwRoot)).start();
+                            (new HttpServer(socket, wwwRoot, "testVersion")).start();
                         }
                     } catch (IOException e) {
                         throw new RuntimeException(e);

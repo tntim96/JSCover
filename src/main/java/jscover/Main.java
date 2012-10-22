@@ -349,9 +349,11 @@ import jscover.server.WebDaemon;
 import jscover.util.IoUtils;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.SortedMap;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
@@ -359,6 +361,7 @@ import static java.lang.String.format;
 
 public class Main {
     public static final String HELP_PREFIX1 = "-h";
+    public static final String CHARSET_PREFIX = "encoding";
     public static final String HELP_PREFIX2 = "--help";
     public static final String VERSION_PREFIX1 = "-V";
     public static final String VERSION_PREFIX2 = "--version";
@@ -394,6 +397,7 @@ public class Main {
     }
 
     private boolean showHelp;
+    private boolean showCharsets;
     private boolean printVersion;
     private boolean isServer;
     private boolean isFileSystem;
@@ -411,6 +415,14 @@ public class Main {
             runServer(args);
         } else if (isFileSystem()) {
             runFileSystem(args);
+        } else if (showCharSets()) {
+            System.out.println("Valid encodings:");
+            SortedMap<String, Charset> charSet = Charset.availableCharsets();
+            for (String charSetName : charSet.keySet()) {
+                System.out.println(charSetName);
+            }
+            System.out.println("Default encoding:" + Charset.defaultCharset().name());
+
         } else {
             System.out.println(getHelpText());
         }
@@ -441,7 +453,6 @@ public class Main {
             System.out.println(configuration.getHelpText());
         } else {
             try {
-//                webServer.start(configuration);
                 webDaemon.start(configuration);
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -459,6 +470,8 @@ public class Main {
                 isServer = true;
             } else if (arg.equals(FILESYSTEM_PREFIX)) {
                 isFileSystem = true;
+            } else if (arg.equals(CHARSET_PREFIX)) {
+                showCharsets = true;
             } else {
                 showHelp = true;
             }
@@ -483,6 +496,10 @@ public class Main {
 
     public Boolean showHelp() {
         return showHelp;
+    }
+
+    public Boolean showCharSets() {
+        return showHelp && showCharsets;
     }
 
     public Boolean isServer() {
