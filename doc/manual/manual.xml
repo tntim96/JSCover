@@ -231,6 +231,18 @@
         </item>
     </item>
     <item>
+        <heading id="execModes">Execution Modes</heading>
+        <item>
+            <heading id="iframeMode">IFrame Mode</heading>
+        </item>
+        <item>
+            <heading id="windowMode">Window Mode</heading>
+        </item>
+        <item>
+            <heading id="invertedMode">Inverted Mode</heading>
+        </item>
+    </item>
+    <item>
         <heading id="other">Other</heading>
         <item>
             <heading id="jsCoverageVJSCover">JSCover V. JSCoverage</heading>
