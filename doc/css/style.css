@@ -51,11 +51,11 @@ h2 {
     padding: 10px;
 
     background-color: #eeffff; /* fallback color if gradients are not supported */
-    background-image: -webkit-linear-gradient(top, hsl(0, 0%, 70%), #999999);
-    background-image:    -moz-linear-gradient(top, hsl(0, 0%, 70%), #666666);  For Fx 3.6 to Fx 15
-    background-image:     -ms-linear-gradient(top, hsl(0, 0%, 70%), #999999);  For IE 10 Platform Previews and Consumer Preview
-    background-image:      -o-linear-gradient(top, hsl(0, 0%, 70%), #999999);  For Opera 11.1 to 12.0
-    background-image:         linear-gradient(to bottom, hsl(0, 0%, 70%), #999999);  Standard syntax; must be the last statement
+    background-image: -webkit-linear-gradient(top, hsl(0, 0%, 70%), #333399);
+    background-image:    -moz-linear-gradient(top, hsl(0, 0%, 70%), #333399);  /*For Fx 3.6 to Fx 15*/
+    background-image:     -ms-linear-gradient(top, hsl(0, 0%, 70%), #333399);  /*For IE 10 Platform Previews and Consumer Preview*/
+    background-image:      -o-linear-gradient(top, hsl(0, 0%, 70%), #333399);  /*For Opera 11.1 to 12.0*/
+    background-image:         linear-gradient(to bottom, hsl(0, 0%, 70%), #333399);  /*Standard syntax; must be the last statement*/
 }
 
 .navButton {
