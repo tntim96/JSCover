@@ -5,13 +5,19 @@ html {
 }
 
 #container {
-    background: #eeffff;
+    background: #ffffff;
     margin-top: 10px;
     margin-bottom: 10px;
-    border: 2px solid #000000;
     padding-left: 20px;
     padding-right: 20px;
     border-radius: 20px;
+
+    background-color: #eeffff; /* fallback color if gradients are not supported */
+    background-image: -webkit-linear-gradient(bottom, hsl(0, 0%, 70%), #ffffcc);
+    background-image:    -moz-linear-gradient(bottom, hsl(0, 0%, 80%), #ffffcc);  /*For Fx 3.6 to Fx 15*/
+    background-image:     -ms-linear-gradient(bottom, hsl(0, 0%, 70%), #ffffcc);  /*For IE 10 Platform Previews and Consumer Preview*/
+    background-image:      -o-linear-gradient(bottom, hsl(0, 0%, 70%), #ffffcc);  /*For Opera 11.1 to 12.0*/
+    background-image:         linear-gradient(to top, hsl(0, 0%, 70%), #ffffcc);  /*Standard syntax; must be the last statement*/
 }
 
 table {
@@ -47,7 +53,7 @@ h2 {
 
 .navPanel {
     border-radius: 15px;
-    border: 2px solid #000000;
+    border: 1px solid #999999;
     padding: 10px;
 
     background-color: #eeffff; /* fallback color if gradients are not supported */
