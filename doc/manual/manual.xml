@@ -14,6 +14,7 @@
     <item>
         <heading id="generalInformation">General Information</heading>
         <text>
+            This document is not yet complete...but should be soon.
             For an overview of the basic workings of of JSCover, see the
             <a href="http://siliconforks.com/jscoverage/manual.html" target="_blank">JSCoverage documentation</a>
         </text>
@@ -284,6 +285,47 @@
                     JavaScript, it is arguably the best JavaScript implementation currently available.
                 </text>
             </item>
+        </item>
+    </item>
+    <item>
+        <heading id="howWork">How does it work</heading>
+        <item>
+            <heading id="implementationInstrumentation">Instrumentation</heading>
+            <text>
+                JSCover works by instrumenting the specified JavaScript. An simple example is shown below:
+                <code>alert('Hello World!');</code>
+                ...becomes...
+                <code>
+                    //...header code above
+                    if (! this._$jscoverage) {
+                    this._$jscoverage = {};
+                    }
+                    if (! _$jscoverage['test.js']) {
+                    _$jscoverage['test.js'] = [];
+                    _$jscoverage['test.js'][1] = 0;
+                    }
+                    _$jscoverage['test.js'].source = ["alert('Hello World!');"];
+                    _$jscoverage['test.js'][1]++;
+                    alert('Hello World!');
+                </code>
+                This illustrates that when the target code is executed, a counter for the file nam and line
+                is incrmented. The header code manages the declaration of _$jscoverage.
+            </text>
+        </item>
+        <item>
+            <heading id="implementationStoreReport">Storing reports</heading>
+            <text>
+                This only works in server mode. The store button triggers the POSTing of the coverage
+                data to the server in JSON format. The following will then occur:
+                <ul>
+                    <li>If a JSON file, jscoverage.json, already exists, the coverage data will be merged</li>
+                    <li>
+                        If no JSON file exists, but --include-unloaded-js is set, all un-loaded JavaScript
+                        files will be merged with the submitted JSON and saved to the report.
+                    </li>
+                    <li>If neither of the above is true, the raw JSON is stored.</li>
+                </ul>
+            </text>
         </item>
     </item>
 </document>
