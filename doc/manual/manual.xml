@@ -292,21 +292,21 @@
         <item>
             <heading id="implementationInstrumentation">Instrumentation</heading>
             <text>
-                JSCover works by instrumenting the specified JavaScript. An simple example is shown below:
+                JSCover works by instrumenting the specified JavaScript. A simple example is shown below:
                 <code>alert('Hello World!');</code>
                 ...becomes...
                 <code>
-                    //...header code above
-                    if (! this._$jscoverage) {
-                    this._$jscoverage = {};
-                    }
-                    if (! _$jscoverage['test.js']) {
-                    _$jscoverage['test.js'] = [];
-                    _$jscoverage['test.js'][1] = 0;
-                    }
-                    _$jscoverage['test.js'].source = ["alert('Hello World!');"];
-                    _$jscoverage['test.js'][1]++;
-                    alert('Hello World!');
+//...header code above
+if (! this._$jscoverage) {
+this._$jscoverage = {};
+}
+if (! _$jscoverage['test.js']) {
+_$jscoverage['test.js'] = [];
+_$jscoverage['test.js'][1] = 0;
+}
+_$jscoverage['test.js'].source = ["alert('Hello World!');"];
+_$jscoverage['test.js'][1]++;
+alert('Hello World!');
                 </code>
                 This illustrates that when the target code is executed, a counter for the file nam and line
                 is incrmented. The header code manages the declaration of _$jscoverage.
