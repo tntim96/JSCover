@@ -308,8 +308,8 @@ _$jscoverage['test.js'].source = ["alert('Hello World!');"];
 _$jscoverage['test.js'][1]++;
 alert('Hello World!');
                 </code>
-                This illustrates that when the target code is executed, a counter for the file nam and line
-                is incrmented. The header code manages the declaration of _$jscoverage.
+                This illustrates that when the target code is executed, a counter for the file name and line
+                is incremented. The header code manages the declaration of _$jscoverage.
             </text>
         </item>
         <item>
