@@ -1,7 +1,8 @@
-0.0.7 / 2012-10-??
+0.0.7 / 2012-10-23
 ==================
   * Add '--include-unloaded-js', only for non-proxy web-server, to scan beneath www-root for unloaded/untested JS files
   * Leading slash in --no-instrument and --exclude are ignored for consistent internal handling.
+  * Double forward slashes in URLs replaced with single forward slashes
   * Internal - Replace URL based proxy with sockets. All headers now forwarded as received.
 
 0.0.6 / 2012-10-17
