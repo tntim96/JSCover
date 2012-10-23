@@ -1,3 +1,7 @@
+0.0.8 / 2012-??-??
+==================
+  * Fix bug where destination folder can be in the source folder
+
 0.0.7 / 2012-10-23
 ==================
   * Add '--include-unloaded-js', only for non-proxy web-server, to scan beneath www-root for unloaded/untested JS files

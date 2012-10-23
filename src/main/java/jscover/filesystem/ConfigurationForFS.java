@@ -352,6 +352,8 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
+import static java.lang.String.format;
+
 public class ConfigurationForFS extends Configuration {
     public static final String HELP_PREFIX1 = Main.HELP_PREFIX1;
     public static final String HELP_PREFIX2 = Main.HELP_PREFIX2;
@@ -402,10 +404,10 @@ public class ConfigurationForFS extends Configuration {
     public static ConfigurationForFS parse(String[] args) {
         ConfigurationForFS configuration = new ConfigurationForFS();
 
-        for (int i=0; i<args.length; i++) {
+        for (int i = 0; i < args.length; i++) {
             String arg = args[i];
             if (arg.startsWith(Main.FILESYSTEM_PREFIX)) {
-            //Ignore this
+                //Ignore this
             } else if (arg.equals(HELP_PREFIX1) || arg.equals(HELP_PREFIX2)) {
                 configuration.showHelp = true;
                 return configuration;
@@ -420,7 +422,7 @@ public class ConfigurationForFS extends Configuration {
                     uri = uri.substring(1);
                 configuration.excludes.add(uri);
             } else if (arg.startsWith(JS_VERSION_PREFIX)) {
-                configuration.JSVersion = (int)(Float.valueOf(arg.substring(JS_VERSION_PREFIX.length()))*100);
+                configuration.JSVersion = (int) (Float.valueOf(arg.substring(JS_VERSION_PREFIX.length())) * 100);
             }
         }
 
@@ -428,19 +430,25 @@ public class ConfigurationForFS extends Configuration {
             configuration.showHelp = true;
             return configuration;
         }
-        configuration.srcDir = new File(args[args.length-2]);
-        configuration.destDir = new File(args[args.length-1]);
-        if (!validDirectory(configuration.srcDir)) {
-            System.err.println(String.format("Source directory '%s' is invalid",configuration.srcDir));
+        configuration.srcDir = new File(args[args.length - 2]);
+        configuration.destDir = new File(args[args.length - 1]);
+        if (!configuration.validSourceDirectory()) {
+            System.err.println(format("Source directory '%s' is invalid", configuration.srcDir));
             configuration.showHelp = true;
-            return configuration;
+        } else if (!configuration.validDestinationDirectory()) {
+            System.err.println(format("Destination directory '%s' must be in the source directory", configuration.destDir));
+            configuration.showHelp = true;
         }
         configuration.compilerEnvirons.setLanguageVersion(configuration.JSVersion);
         return configuration;
     }
 
-    private static boolean validDirectory(File dir) {
-        return dir.exists() && dir.isDirectory();
+    private boolean validSourceDirectory() {
+        return srcDir.exists() && srcDir.isDirectory();
+    }
+
+    boolean validDestinationDirectory() {
+        return !destDir.getAbsolutePath().startsWith(srcDir.getAbsolutePath());
     }
 
     public String getHelpText() {

@@ -362,6 +362,18 @@ public class ConfigurationForFSTest {
     }
 
     @Test
+    public void shouldNotAllowDestinationDirectoryToEqualSourceDirectory() {
+        ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs","src","src"});
+        assertThat(configuration.showHelp(), equalTo(true));
+    }
+
+    @Test
+    public void shouldNotAllowDestinationDirectoryToBeSubDirectoryOfSourceDirectory() {
+        ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs","src","src/java"});
+        assertThat(configuration.showHelp(), equalTo(true));
+    }
+
+    @Test
     public void shouldShowHelpOnError() {
         assertThat(ConfigurationForFS.parse(new String[]{"-fs"}).showHelp(), equalTo(true));
     }
