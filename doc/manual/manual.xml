@@ -18,6 +18,32 @@
             For an overview of the basic workings of of JSCover, see the
             <a href="http://siliconforks.com/jscoverage/manual.html" target="_blank">JSCoverage documentation</a>
         </text>
+        <text>
+            JSCover is a tool that measures code coverage for JavaScript programs.
+            It is based on the popular JSCoverage, with the C++/SpiderMonkey instrumentation replaced with Java/Rhino.
+        </text>
+        <text>
+            JSCover works by adding instrumentation to JavaScript code before it is executed in a web browser.
+            JSCover provides several alternative ways of doing this:
+            <ul>
+                <li>The simplest method is to use the file-system mode program to generate instrumented JavaScript
+                    files.
+                </li>
+                <li>Alternatively, you can use the server mode, a simple web server that instruments JavaScript code as
+                    it is served.
+                </li>
+                <li>Finally, server mode can be run with the --proxy option to act as a proxy server which instruments
+                    any JavaScript code proxied through it.
+                </li>
+            </ul>
+        </text>
+        <text>
+            The server mode has two advantages:
+            <ol>
+                <li>can store coverage reports to the filesystem (with/without the proxy option)</li>
+                <li>can include unloaded/untested JavaScript (only without the proxy option)</li>
+            </ol>
+        </text>
         <item>
             <heading id="packaging">Packaging</heading>
             <text>
@@ -140,8 +166,8 @@
                         <td>false</td>
                         <td>
                             When storing report in web-server mode, search beneath the document root path for JavaScript
-                            file not
-                            served and include in the coverage report.
+                            file not served and include in the coverage report. Not compatible with --proxy. Will
+                            respect --no-instrument.
                         </td>
                     </tr>
                     <tr>
@@ -296,17 +322,17 @@
                 <code>alert('Hello World!');</code>
                 ...becomes...
                 <code>
-//...header code above
-if (! this._$jscoverage) {
-this._$jscoverage = {};
-}
-if (! _$jscoverage['test.js']) {
-_$jscoverage['test.js'] = [];
-_$jscoverage['test.js'][1] = 0;
-}
-_$jscoverage['test.js'].source = ["alert('Hello World!');"];
-_$jscoverage['test.js'][1]++;
-alert('Hello World!');
+                    //...header code above
+                    if (! this._$jscoverage) {
+                    this._$jscoverage = {};
+                    }
+                    if (! _$jscoverage['test.js']) {
+                    _$jscoverage['test.js'] = [];
+                    _$jscoverage['test.js'][1] = 0;
+                    }
+                    _$jscoverage['test.js'].source = ["alert('Hello World!');"];
+                    _$jscoverage['test.js'][1]++;
+                    alert('Hello World!');
                 </code>
                 This illustrates that when the target code is executed, a counter for the file name and line
                 is incremented. The header code manages the declaration of _$jscoverage.
