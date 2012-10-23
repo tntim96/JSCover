@@ -1,0 +1,109 @@
+html {
+    background: #000000;
+    color: #000000;
+    font-family: arial, sans-serif;
+}
+
+#container {
+    background: #ffffff;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    border-radius: 20px;
+
+    background-color: #eeffff; /* fallback color if gradients are not supported */
+    background-image: -webkit-linear-gradient(bottom, hsl(0, 0%, 70%), #ffffcc);
+    background-image:    -moz-linear-gradient(bottom, hsl(0, 0%, 80%), #ffffcc);  /*For Fx 3.6 to Fx 15*/
+    background-image:     -ms-linear-gradient(bottom, hsl(0, 0%, 70%), #ffffcc);  /*For IE 10 Platform Previews and Consumer Preview*/
+    background-image:      -o-linear-gradient(bottom, hsl(0, 0%, 70%), #ffffcc);  /*For Opera 11.1 to 12.0*/
+    background-image:         linear-gradient(to top, hsl(0, 0%, 70%), #ffffcc);  /*Standard syntax; must be the last statement*/
+}
+
+table {
+    border-collapse: collapse;
+    padding: 0;
+    margin: 0;
+}
+
+table th {
+    border: 1px solid #000;
+    padding: 2px;
+    margin: 0;
+}
+
+table td {
+    border: 1px solid #000;
+    padding: 2px;
+    margin: 0;
+}
+
+h1 {
+    text-align: center;
+    margin: 0 0 8 0px;
+    color: #ccffee;
+    text-shadow: #66ff99 0px 0px 10px;
+    font-size: 30pt;
+    font-family: "Economica", sans-serif;
+}
+
+h2 {
+    color: #000000;
+}
+
+.navPanel {
+    border-radius: 15px;
+    border: 1px solid #999999;
+    padding: 10px;
+
+    background-color: #eeffff; /* fallback color if gradients are not supported */
+    background-image: -webkit-linear-gradient(top, hsl(0, 0%, 70%), #333399);
+    background-image:    -moz-linear-gradient(top, hsl(0, 0%, 70%), #333399);  /*For Fx 3.6 to Fx 15*/
+    background-image:     -ms-linear-gradient(top, hsl(0, 0%, 70%), #333399);  /*For IE 10 Platform Previews and Consumer Preview*/
+    background-image:      -o-linear-gradient(top, hsl(0, 0%, 70%), #333399);  /*For Opera 11.1 to 12.0*/
+    background-image:         linear-gradient(to bottom, hsl(0, 0%, 70%), #333399);  /*Standard syntax; must be the last statement*/
+}
+
+.navButton {
+    font-size: 20px;
+    font-weight: bold;
+    cursor: default;
+    /*color: #eeeeee;*/
+    color: #000000;
+    border: 2px solid #000000;
+    border-radius: 5px;
+    margin: 3;
+    padding: 5;
+    text-decoration: none;
+}
+
+/*.navPanel {*/
+    /*border-radius: 5px;*/
+    /*border: 1px solid #333333;*/
+    /*padding: 10px;*/
+/*}*/
+
+/*.navButton {*/
+    /*font-size: 15px;*/
+    /*font-weight: bold;*/
+    /*cursor: default;*/
+    /*color: #000000;*/
+    /*border: 1px solid #444444;*/
+    /*border-radius: 5px;*/
+    /*margin: 3;*/
+    /*padding: 5;*/
+    /*text-decoration: none;*/
+/*}*/
+
+.selected {
+    font-weight: bold;
+    background: #a0b8ff;
+}
+
+.shell {
+    border: 1px groove #000;
+    margin: 5px;
+    padding: 5px;
+    background: #000000;
+    color: yellow;
+}

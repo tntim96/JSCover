@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="manual.xsl"?>
+<!DOCTYPE document-root [
+        <!ELEMENT document (title, item+)>
+        <!ELEMENT item ((item | (heading, text?))+)>
+        <!ELEMENT title (#PCDATA)>
+        <!ELEMENT heading (#PCDATA)>
+        <!ELEMENT text (#PCDATA)>
+        <!ATTLIST heading id ID #REQUIRED>
+        ]>
+<document>
+    <title>JSCover User Manual</title>
+
+    <item>
+        <heading id="generalInformation">General Information</heading>
+        <text>
+            This document is not yet complete...but should be soon.
+            For an overview of the basic workings of of JSCover, see the
+            <a href="http://siliconforks.com/jscoverage/manual.html" target="_blank">JSCoverage documentation</a>
+        </text>
+        <item>
+            <heading id="packaging">Packaging</heading>
+            <text>
+                JSCover comes packaged in two JARs.
+                The first option is preferred to avoid class-path issues, especially as JSCover may be using a
+                non-standard
+                version on Rhino (e.g. built from trunk).
+            </text>
+            <text>
+                <ul>
+                    <li>
+                        JSCover-all.jar
+                        which includes all dependencies
+                    </li>
+                    <li>
+                        JSCover.jar
+                        which must have all dependent JARs available in the same directory
+                    </li>
+                </ul>
+            </text>
+            <text>
+                A log file is also produced in the output directory which should be inspected after running.
+                It will contain any errors that occurred during instrumentation.
+            </text>
+        </item>
+    </item>
+    <item>
+        <heading id="usage">Usage</heading>
+        <item>
+            <heading id="usage">General</heading>
+            <text>
+                <code>java -jar JSCover-all.jar [OPTIONS]...</code>
+                <code>java -jar JSCover.jar [OPTIONS]...</code>
+            </text>
+            <text>
+                Command line options are:
+            </text>
+            <text>
+                <table>
+                    <tr>
+                        <th>Option</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                    <tr>
+                        <td>-ws</td>
+                        <td>N/A</td>
+                        <td>Run in<b>w</b>eb<b>s</b>erver mode - see
+                            <a href="#serverMode">below</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>-fs</td>
+                        <td>N/A</td>
+                        <td>Run in<b>f</b>ile<b>s</b>ystem mode - see
+                            <a href="#fileMode">below</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>-h,--help</td>
+                        <td>N/A</td>
+                        <td>Display command line help</td>
+                    </tr>
+                    <tr>
+                        <td>-V,--version</td>
+                        <td>N/A</td>
+                        <td>Display version</td>
+                    </tr>
+                </table>
+            </text>
+        </item>
+        <item>
+            <heading id="serverMode">Server Mode</heading>
+            <text>
+                <code>java -jar JSCover.jar -fs [OPTION]... SOURCE-DIRECTORY DESTINATION-DIRECTORY</code>
+                For example:
+                <code>java -jar JSCover.jar -ws --port=80 --no-instrument=lib --no-instrument=test</code>
+            </text>
+            <text>
+                <table>
+                    <tr>
+                        <th>Option</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                    <tr>
+                        <td>-h,--help</td>
+                        <td>N/A</td>
+                        <td>Display command line help</td>
+                    </tr>
+                    <tr>
+                        <td>--document-root=PATH</td>
+                        <td>current directory</td>
+                        <td>Serve web content from the directory given by PATH (can be relative or absolute)</td>
+                    </tr>
+                    <tr>
+                        <td>--no-instrument=URL</td>
+                        <td>None</td>
+                        <td>Specify URLs not to be instrumented. Can be specified multiple times.</td>
+                    </tr>
+                    <tr>
+                        <td>--report-dir=PATH</td>
+                        <td>current directory</td>
+                        <td>Use the directory given by PATH (can be relative or absolute) for storing coverage
+                            reports.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>--port=PORT</td>
+                        <td>8080</td>
+                        <td>Specify the port to listen on</td>
+                    </tr>
+                    <tr>
+                        <td>--proxy</td>
+                        <td>N/A</td>
+                        <td>Run in proxy mode</td>
+                    </tr>
+                    <tr>
+                        <td>--include-unloaded-js</td>
+                        <td>false</td>
+                        <td>
+                            When storing report in web-server mode, search beneath the document root path for JavaScript
+                            file not
+                            served and include in the coverage report.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>--js-version=VERSION</td>
+                        <td>1.5</td>
+                        <td>
+                            Use the specified JavaScript version; valid values for VERSION are
+                            <a href="http://en.wikipedia.org/wiki/JavaScript#Versions" target="_blank">1.0, 1.1, 1.2,
+                                ..., 1.8</a>.
+                        </td>
+                    </tr>
+                </table>
+            </text>
+        </item>
+        <item>
+            <heading id="fileMode">File Mode</heading>
+            <text>
+                <ul>
+                    <li>Server mode with switches indicated below (i.e. JSCoverage's jscoverage-server)</li>
+                    <li>Storing of report data to the file system</li>
+                    <li>Merging of coverage data if multiple runs are stored at the same location</li>
+                </ul>
+            </text>
+            <text>
+                <code>java -jar JSCover.jar -ws [OPTION]...</code>
+                For example:
+                <code>java -jar JSCover.jar -ws --port=80 --no-instrument=lib --no-instrument=test</code>
+            </text>
+            <text>
+                <table>
+                    <tr>
+                        <th>Option</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                    <tr>
+                        <td>-h,--help</td>
+                        <td>N/A</td>
+                        <td>Display command line help</td>
+                    </tr>
+                    <tr>
+                        <td>--document-root=PATH</td>
+                        <td>current directory</td>
+                        <td>Serve web content from the directory given by PATH (can be relative or absolute)</td>
+                    </tr>
+                    <tr>
+                        <td>--no-instrument=URL</td>
+                        <td>None</td>
+                        <td>Specify URLs not to be instrumented. Can be specified multiple times.</td>
+                    </tr>
+                    <tr>
+                        <td>--report-dir=PATH</td>
+                        <td>current directory</td>
+                        <td>Use the directory given by PATH (can be relative or absolute) for storing coverage
+                            reports.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>--port=PORT</td>
+                        <td>8080</td>
+                        <td>Specify the port to listen on</td>
+                    </tr>
+                    <tr>
+                        <td>--proxy</td>
+                        <td>N/A</td>
+                        <td>Run in proxy mode</td>
+                    </tr>
+                    <tr>
+                        <td>--include-unloaded-js</td>
+                        <td>false</td>
+                        <td>
+                            When storing report in web-server mode, search beneath the document root path for JavaScript
+                            file not
+                            served and include in the coverage report.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>--js-version=VERSION</td>
+                        <td>1.5</td>
+                        <td>
+                            Use the specified JavaScript version; valid values for VERSION are
+                            <a href="http://en.wikipedia.org/wiki/JavaScript#Versions" target="_blank">1.0, 1.1, 1.2,
+                                ..., 1.8</a>.
+                        </td>
+                    </tr>
+                </table>
+            </text>
+        </item>
+    </item>
+    <item>
+        <heading id="execModes">Execution Modes</heading>
+        <item>
+            <heading id="iframeMode">IFrame Mode</heading>
+            <text>
+                <img src="images/screenshot.png"/>
+            </text>
+        </item>
+        <item>
+            <heading id="windowMode">Window Mode</heading>
+        </item>
+        <item>
+            <heading id="invertedMode">Inverted Mode</heading>
+        </item>
+    </item>
+    <item>
+        <heading id="other">Other</heading>
+        <item>
+            <heading id="jsCoverageVJSCover">JSCover V. JSCoverage</heading>
+            <item>
+                <heading id="jsCoverageVJSCoverImplementation">Implementation</heading>
+                <text>
+                    The main difference in the implementation is the tools used for parsing.
+                    All JavaScript code is the same, and so the UI interaction is the same.
+                </text>
+                <text>
+                    <table>
+                        <tr>
+                            <th>Tool</th>
+                            <th>Parser Language</th>
+                            <th>Parser Implementation</th>
+                        </tr>
+                        <tr>
+                            <td>JSCover</td>
+                            <td>Java</td>
+                            <td>
+                                <a href="http://www.mozilla.org/rhino/">Rhino</a>
+                                1.7R5pre
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>JSCoverage</td>
+                            <td>C/C++</td>
+                            <td>
+                                <a href="https://developer.mozilla.org/en/SpiderMonkey">SpiderMonkey</a>
+                            </td>
+                        </tr>
+                    </table>
+                </text>
+                <text>
+                    As SpiderMonkey is used in FireFox which is used for much development and testing of web-based
+                    JavaScript, it is arguably the best JavaScript implementation currently available.
+                </text>
+            </item>
+        </item>
+    </item>
+    <item>
+        <heading id="howWork">How does it work</heading>
+        <item>
+            <heading id="implementationInstrumentation">Instrumentation</heading>
+            <text>
+                JSCover works by instrumenting the specified JavaScript. An simple example is shown below:
+                <code>alert('Hello World!');</code>
+                ...becomes...
+                <code>
+                    //...header code above
+                    if (! this._$jscoverage) {
+                    this._$jscoverage = {};
+                    }
+                    if (! _$jscoverage['test.js']) {
+                    _$jscoverage['test.js'] = [];
+                    _$jscoverage['test.js'][1] = 0;
+                    }
+                    _$jscoverage['test.js'].source = ["alert('Hello World!');"];
+                    _$jscoverage['test.js'][1]++;
+                    alert('Hello World!');
+                </code>
+                This illustrates that when the target code is executed, a counter for the file nam and line
+                is incrmented. The header code manages the declaration of _$jscoverage.
+            </text>
+        </item>
+        <item>
+            <heading id="implementationStoreReport">Storing reports</heading>
+            <text>
+                This only works in server mode. The store button triggers the POSTing of the coverage
+                data to the server in JSON format. The following will then occur:
+                <ul>
+                    <li>If a JSON file, jscoverage.json, already exists, the coverage data will be merged</li>
+                    <li>
+                        If no JSON file exists, but --include-unloaded-js is set, all un-loaded JavaScript
+                        files will be merged with the submitted JSON and saved to the report.
+                    </li>
+                    <li>If neither of the above is true, the raw JSON is stored.</li>
+                </ul>
+            </text>
+        </item>
+    </item>
+</document>

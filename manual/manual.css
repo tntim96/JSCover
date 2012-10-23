@@ -1,0 +1,183 @@
+BODY {
+	font-family: arial;
+	font-size: 10pt;
+	color : #ccffff;
+	background-color : #003355;
+	SCROLLBAR-ARROW-COLOR: #ccffcc;
+	SCROLLBAR-FACE-COLOR: #003366;
+	SCROLLBAR-HIGHLIGHT-COLOR: #003355;
+	SCROLLBAR-SHADOW-COLOR: #99ccff;
+	SCROLLBAR-BASE-COLOR: #99ccff;
+	scrollbar-3d-light-color: #cc3399;
+	scrollbar-dark-shadow-color: #003355;
+}
+
+.floating-menu {
+    position: fixed;
+    float: left;
+    border: 1px solid #ccffff;
+    width: 300px;
+    z-index: 100;
+    height: 800px;
+    overflow-y: auto;
+}
+
+.content {
+    padding-left: 350px;
+}
+
+div .floating-menu a, div.floating-menu h3 {
+    display: block;
+    margin: 0 0.5em;
+}
+div .floating-menu {
+    position: fixed;
+    background: #fff4c8;
+    border: 1px solid #ffcc00;
+    width: 150px;
+    z-index: 100;
+}
+
+div .floating-menu a, div.floating-menu h3 {
+    display: block;
+    margin: 0 0.5em;
+}
+
+table {
+    border-collapse: collapse;
+    padding: 0;
+    margin: 0;
+}
+
+TH {
+	font-family: arial;
+	font-weight: bold;
+	font-size: 12pt;
+	color: #ccffcc;
+}
+
+TD {
+	font-family: arial;
+	font-size: 10pt;
+	color: #99ccff;
+}
+
+HR {
+	align: center;
+	color: #99ccff;
+}
+
+.heading0 {
+	font-family: arial;
+	font-size: 18pt;
+	color: #99ccff;
+}
+
+.heading1 {
+	font-family: arial;
+	font-size: 15pt;
+	color: #99ccff;
+}
+
+.heading2 {
+	font-family: arial;
+	font-size: 12pt;
+	color: #99ccff;
+}
+
+.heading3 {
+	font-family: arial;
+	font-size: 10pt;
+	color: #99ccff;
+}
+
+A {
+	color: #99ccff;
+}
+
+A:hover {
+	color: #ccffcc;
+}
+
+A:active {
+	color: #ffcc00;
+}
+
+.contentHeading1 {
+	font-size: 20pt;
+}
+
+.contentHeading2 {
+	font-size: 12pt;
+}
+
+.contentHeading2 {
+	font-size: 10pt;
+}
+
+UL,OL,LI,I {
+	font-family: arial;
+	font-size: 10pt;
+	color: #ccffff;
+}
+
+P {
+	font-family: arial;
+	font-size: 10pt;
+	color: #ccffff;
+}
+
+PRE {
+	font-size: 9pt;
+	font-weight: bold;
+	COLOR: #669999;
+	background-color : #000033;
+}
+
+.menuLev1
+{
+	font-family:"Comic Sans MS";
+	font-size : 14pt;
+	text-decoration: none;
+}
+.menuLev2
+{
+	font-family:"Comic Sans MS";
+	position:relative;
+	left:10px;
+	font-size : 10pt;
+	text-decoration: none;
+}
+.menuLev3
+{
+	font-family:"Comic Sans MS";
+	position:relative;
+	left:20px;
+	font-size : 8pt;
+}
+
+.normalText {
+	font-family: arial;
+	font-size: 10pt;
+	color : #ccffff;
+}
+
+.fg
+{
+	width : 15;
+	height : 15;
+	background-color : ffffff;
+}
+
+.bg
+{
+	width : 15;
+	height : 15;
+	background-color : 006666;
+}
+
+.empty
+{
+	width : 15;
+	height : 15;
+}

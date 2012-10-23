@@ -1,0 +1,36 @@
+<h2>Current State</h2>
+
+<p>
+    JSCover is ready to use and should support most language features, the most notable omission being the
+    <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=798642" target="_blank">getter/setter</a> logic.
+    For differences with JSCoverage, please see the
+    <a href="manual/manual.xml#jsCoverageVJSCover" target="_blank">manual</a>.
+    Also, check these To-Dos below don't affect you.
+</p>
+
+<h2><a name="todo"></a>To-Do</h2>
+
+<p>
+    In order of priority unless feedback or other circumstances dictates otherwise:
+</p>
+<ul>
+    <ul>
+        <li>Add caching of instrumented source (switch option?)</li>
+        <li>Documentation on usage rather than refer to JSCoverage URL</li>
+        <li>
+            100% ECMAScript support (see @Ignore tests in
+            <a href="https://github.com/tntim96/JSCover/blob/master/src/test-integration/java/jscover/instrument/InstrumentAndHighlightRegressionTest.java">InstrumentAndHighlightRegressionTest</a>)
+        </li>
+        <li>Tidy logic in ParseTreeInstrumenter</li>
+        <li>Add branch coverage</li>
+        <li>Add API for headless testing without the need of network</li>
+        <li>JavaScript syntax highlighting</li>
+        <li>Add in check-style</li>
+        <li>SSL proxy support? Combine with another tool?</li>
+    </ul>
+</ul>
+
+<p>
+    The code is currently compatible with JSCoverage, but major changes are likely to be implemented.
+    If someone would like to fork JSCoverage and maintain compatibility, let us know.
+</p>

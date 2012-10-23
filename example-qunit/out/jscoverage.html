@@ -49,11 +49,11 @@
   <div class="TabPage" id="browserTabPage">
     <div id="locationDiv">
     URL: <input id="location" type="text" size="70" onkeypress="jscoverage_input_keypress(event)">
-    <button onclick="jscoverage_openInFrameButton_click();" title="open URL in the iframe below [Enter]">Open in frame</button>
+    <button id="openInFrameButton" onclick="jscoverage_openInFrameButton_click();" title="open URL in the iframe below [Enter]">Open in frame</button>
     <button onclick="jscoverage_openInWindowButton_click();" title="open URL in a new window (or tab) [Shift+Enter]">Open in window</button>
     </div>
     <div id="iframeDiv">
-    <iframe id="browserIframe" onload="jscoverage_browser_load();"></iframe>
+    <iframe id="browserIframe" name="browserIframe" onload="jscoverage_browser_load();"></iframe>
     </div>
   </div>
   <div class="TabPage">
@@ -79,7 +79,7 @@
             <div class="pctGraph">
                 <div class="covered"></div>
             </div>
-            <span class="pct">0%</span>
+            <span id="summaryTotal" class="pct">0%</span>
         </td>
     </tr>
 
