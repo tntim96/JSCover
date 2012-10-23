@@ -356,6 +356,13 @@ public class HttpRequestTest {
     }
 
     @Test
+    public void shouldReplaceDoubleSlashes() {
+        HttpRequest httpRequest = new HttpRequest("//lib//test.html");
+        assertThat(httpRequest.getPath(), equalTo("/lib/test.html"));
+        assertThat(httpRequest.getMime().getContentType(), equalTo("text/html"));
+    }
+
+    @Test
     public void shouldReadSimpleURL() {
         HttpRequest httpRequest = new HttpRequest("http://localhost:8080/test.html");
         assertThat(httpRequest.getPath(), equalTo("/test.html"));

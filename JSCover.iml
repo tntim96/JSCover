@@ -53,9 +53,7 @@
           <root url="jar://$MODULE_DIR$/lib/runtime/js.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES>
-          <root url="file://C:/java/rhino1_7R4/src" />
-        </SOURCES>
+        <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="module-library">

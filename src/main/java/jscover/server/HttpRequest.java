@@ -360,7 +360,7 @@ public class HttpRequest {
             int index = path.indexOf("?");
             if (index > 0)
                 path = path.substring(0, index);
-            this.path = path;
+            this.path = path.replaceAll("//","/");
         }
     }
 

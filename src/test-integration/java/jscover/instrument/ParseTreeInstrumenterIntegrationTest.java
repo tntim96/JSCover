@@ -353,7 +353,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.mozilla.javascript.ast.AstNode;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
