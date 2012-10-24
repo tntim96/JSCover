@@ -309,8 +309,7 @@
                     <tbody>
                         <tr>
                             <td>
-                                <code>
-<var>SOURCE-DIRECTORY</var>/
+<code><var>SOURCE-DIRECTORY</var>/
     dir/
         index.html
         script.js
@@ -318,8 +317,7 @@
                             </td>
                             <td class="arrow">&#8594;</td>
                             <td>
-                                <code>
-<var>DESTINATION-DIRECTORY</var>/
+<code><var>DESTINATION-DIRECTORY</var>/
     dir/
         index.html
         script.js [instrumented]
@@ -344,20 +342,16 @@
                     <tbody>
                         <tr>
                             <td>
-                                <code>
-doc/example/
+<code>doc/example/
     index.html
-    script.js
-                                </code>
+    script.js</code>
                             </td>
                             <td class="arrow">&#8594;</td>
                             <td>
-                                <code>
-doc/instrumented/
+<code>doc/instrumented/
     index.html
     script.js [instrumented]
-    jscoverage.html
-                                </code>
+    jscoverage.html</code>
                             </td>
                         </tr>
                     </tbody>
@@ -500,8 +494,7 @@ doc/instrumented/
                 JSCover works by instrumenting the specified JavaScript. A simple example is shown below:
                 <code>alert('Hello World!');</code>
                 ...becomes...
-                <code>
-//...header code above
+<code>//...header code above
 if (! this._$jscoverage) {
 this._$jscoverage = {};
 }
@@ -511,8 +504,7 @@ _$jscoverage['test.js'][1] = 0;
 }
 _$jscoverage['test.js'].source = ["alert('Hello World!');"];
 _$jscoverage['test.js'][1]++;
-alert('Hello World!');
-                </code>
+alert('Hello World!');</code>
                 This illustrates that when the target code is executed, a counter for the file name and line
                 is incremented. The header code manages the declaration of _$jscoverage.
             </text>
