@@ -91,14 +91,14 @@
                     <tr>
                         <td>-ws</td>
                         <td>N/A</td>
-                        <td>Run in<b>w</b>eb<b>s</b>erver mode - see
+                        <td>Run in&#160;<b>w</b>eb&#160;<b>s</b>erver mode - see
                             <a href="#serverMode">below</a>
                         </td>
                     </tr>
                     <tr>
                         <td>-fs</td>
                         <td>N/A</td>
-                        <td>Run in<b>f</b>ile<b>s</b>ystem mode - see
+                        <td>Run in&#160;<b>f</b>ile&#160;<b>s</b>ystem mode - see
                             <a href="#fileMode">below</a>
                         </td>
                     </tr>
