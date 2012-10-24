@@ -27,9 +27,7 @@
 
 <xsl:template match="table">
   <table>
-    <xsl:attribute name="border"><xsl:value-of select="@border"/></xsl:attribute>
-    <xsl:attribute name="cellpadding"><xsl:value-of select="@cellpadding"/></xsl:attribute>
-    <xsl:attribute name="cellspacing"><xsl:value-of select="@cellspacing"/></xsl:attribute>
+    <xsl:attribute name="class"><xsl:value-of select="@class"/></xsl:attribute>
     <xsl:apply-templates/>
   </table>
 </xsl:template>
@@ -43,7 +41,10 @@
 </xsl:template>
 
 <xsl:template match="td">
-  <td><xsl:apply-templates/></td>
+  <td>
+      <xsl:attribute name="class"><xsl:value-of select="@class"/></xsl:attribute>
+      <xsl:apply-templates/>
+  </td>
 </xsl:template>
 
 <xsl:template match="ul">

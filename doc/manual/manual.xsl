@@ -18,7 +18,7 @@
                 <a name="top"></a>
                 <div class="floating-menu">
                     <h1><xsl:value-of select="title"/></h1>
-                    <table border="0">
+                    <table class="noBorder">
                         <xsl:apply-templates select="item">
                             <xsl:with-param name="area">contents</xsl:with-param>
                         </xsl:apply-templates>

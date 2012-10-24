@@ -54,12 +54,24 @@ TH {
 	font-weight: bold;
 	font-size: 12pt;
 	color: #ccffcc;
+    vertical-align: top;
 }
 
 TD {
+    border: 1px solid #ccffff;
 	font-family: arial;
 	font-size: 10pt;
 	color: #99ccff;
+    vertical-align: top;
+}
+
+table.noBorder td {
+    border: 0px;
+}
+
+TD.arrow {
+	font: 20pt arial bold;
+    vertical-align: middle;
 }
 
 HR {
