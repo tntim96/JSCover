@@ -345,6 +345,29 @@
             <text>Another example is located in the doc/example-jsunit directory. See the FAQ for more information.
             </text>
         </item>
+        <item>
+            <heading id="queryStringOptions">Query String Options</heading>
+            <text>
+                When accessing jscoverage.html in a web browser, you may provide a query string consisting of options
+                separated by ampersand (&amp;) or semicolon (;). Any option not containing an equals sign (=) is considered
+                to be a URL which will be loaded in the &lt;iframe&gt; within the "Browser" tab.
+            </text>
+            <text>
+                u=URL, url=URL, frame=URL, f=URL<br/>
+                Load URL in the &lt;iframe&gt;
+                within the "Browser" tab. (This is the same as specifying an option without an equals sign.)
+            </text>
+            <text>
+                w=URL, window=URL<br/>
+                Load URL in a new window (window mode).
+            </text>
+            <text>
+                m=BOOLEAN, missing=BOOLEAN<br/>
+                Determines whether to initially display the "Missing" column in the "Summary" tab. BOOLEAN can be true,
+                t, yes, y, on, 1 (to display the "Missing" column), or false, f, no, n, off, 0 (to hide the "Missing"
+                column). By default, the "Missing" column is not displayed.
+            </text>
+        </item>
     </item>
     <item>
         <heading id="other">Other</heading>
