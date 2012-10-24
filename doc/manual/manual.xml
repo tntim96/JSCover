@@ -10,7 +10,6 @@
         ]>
 <document>
     <title>JSCover User Manual</title>
-
     <item>
         <heading id="generalInformation">General Information</heading>
         <text>
@@ -74,6 +73,12 @@
                 A log file is also produced in the output directory which should be inspected after running.
                 It will contain any errors that occurred during instrumentation.
             </text>
+        </item>
+    </item>
+    <item>
+        <heading id="gettingStarted">Getting started</heading>
+        <item>
+            <heading id="gettingStartedServer">Server</heading>
         </item>
     </item>
     <item>
