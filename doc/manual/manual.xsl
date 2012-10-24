@@ -29,6 +29,7 @@
                     <xsl:with-param name="area">body</xsl:with-param>
                 </xsl:apply-templates>
                 </div>
+                <p style="margin-top: 800px;">&#160;</p>
             </body>
         </html>
     </xsl:template>

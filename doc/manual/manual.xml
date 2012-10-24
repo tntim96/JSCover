@@ -446,6 +446,30 @@
         </item>
     </item>
     <item>
+        <heading id="howWork">How does it work</heading>
+        <item>
+            <heading id="implementationInstrumentation">Instrumentation</heading>
+            <text>
+                JSCover works by instrumenting the specified JavaScript. A simple example is shown below:
+                <code>alert('Hello World!');</code>
+                ...becomes...
+<code>//...header code above
+if (! this._$jscoverage) {
+this._$jscoverage = {};
+}
+if (! _$jscoverage['test.js']) {
+_$jscoverage['test.js'] = [];
+_$jscoverage['test.js'][1] = 0;
+}
+_$jscoverage['test.js'].source = ["alert('Hello World!');"];
+_$jscoverage['test.js'][1]++;
+alert('Hello World!');</code>
+                This illustrates that when the target code is executed, a counter for the file name and line
+                is incremented. The header code manages the declaration of _$jscoverage.
+            </text>
+        </item>
+    </item>
+    <item>
         <heading id="other">Other</heading>
         <item>
             <heading id="jsCoverageVJSCover">JSCover V. JSCoverage</heading>
@@ -485,28 +509,18 @@
                 </text>
             </item>
         </item>
-    </item>
-    <item>
-        <heading id="howWork">How does it work</heading>
         <item>
-            <heading id="implementationInstrumentation">Instrumentation</heading>
+            <heading id="caveats">Caveats</heading>
             <text>
-                JSCover works by instrumenting the specified JavaScript. A simple example is shown below:
-                <code>alert('Hello World!');</code>
-                ...becomes...
-<code>//...header code above
-if (! this._$jscoverage) {
-this._$jscoverage = {};
-}
-if (! _$jscoverage['test.js']) {
-_$jscoverage['test.js'] = [];
-_$jscoverage['test.js'][1] = 0;
-}
-_$jscoverage['test.js'].source = ["alert('Hello World!');"];
-_$jscoverage['test.js'][1]++;
-alert('Hello World!');</code>
-                This illustrates that when the target code is executed, a counter for the file name and line
-                is incremented. The header code manages the declaration of _$jscoverage.
+                Caveats
+                <ul>
+                    <li>JSCover adds instrumentation to JavaScript code, which will slow down execution speed. Expect instrumented code to take at least twice as much time to run.</li>
+                    <li>JSCover currently instruments only .js files; it does not instrument code in &lt;script&gt; elements in HTML files.</li>
+                    <li>HTML files must use relative URLs to reference scripts. If you use an absolute URL, your page will reference the original uninstrumented script rather than the instrumented one, and no code coverage data will be collected.</li>
+                    <li>JSCover instruments physical lines of code rather than logical JavaScript statements; it works bests with code that has exactly one statement per line. If you put multiple statements on a line, or split a line across two or more statements, you may get strange results.</li>
+                    <li>JSCover uses frames. Some web pages that use frames may not function properly when run under JSCoverage, especially those which try to access the top-level frame (window.top, target="_top", etc.).</li>
+                    <li>JSCover is distributed without any warranty. See the license for more details.</li>
+                </ul>
             </text>
         </item>
     </item>
