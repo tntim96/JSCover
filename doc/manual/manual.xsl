@@ -55,19 +55,14 @@
                 <tr>
                     <td>
                         <a>
-                            <xsl:attribute name="href">#<xsl:value-of select="@id"/>
-                            </xsl:attribute>
-                            <xsl:attribute name="class">contentHeading<xsl:value-of select="$level"/>
-                            </xsl:attribute>
-                            <xsl:attribute name="style">padding-left:<xsl:value-of select="$level*10-10"/>px;
-                            </xsl:attribute>
+                            <xsl:attribute name="href">#<xsl:value-of select="@id"/></xsl:attribute>
+                            <xsl:attribute name="class">contentHeading<xsl:value-of select="$level"/></xsl:attribute>
+                            <xsl:attribute name="style">padding-left:<xsl:value-of select="$level*10-10"/>px;</xsl:attribute>
                             <xsl:value-of select="$levelNumber"/>
                         </a>
                         <a>
-                            <xsl:attribute name="href">#<xsl:value-of select="@id"/>
-                            </xsl:attribute>
-                            <xsl:attribute name="class">contentHeading<xsl:value-of select="$level"/>
-                            </xsl:attribute>
+                            <xsl:attribute name="href">#<xsl:value-of select="@id"/></xsl:attribute>
+                            <xsl:attribute name="class">contentHeading<xsl:value-of select="$level"/></xsl:attribute>
                             <xsl:attribute name="style">padding-left:10px;</xsl:attribute>
                             <xsl:value-of select="."/>
                         </a>
@@ -76,8 +71,7 @@
             </xsl:when>
             <xsl:when test="$area='body'">
                 <div style="margin-top:20px;">
-                    <xsl:attribute name="class">heading<xsl:value-of select="$level"/>
-                    </xsl:attribute>
+                    <xsl:attribute name="class">heading<xsl:value-of select="$level"/></xsl:attribute>
                     <a>
                         <xsl:attribute name="name">
                             <xsl:value-of select="@id"/>
@@ -103,8 +97,7 @@
             <xsl:number count="item" format="1" level="multiple" grouping-separator="."/>
         </xsl:variable>
         <xsl:choose>
-            <xsl:when test="$area='contents'">
-            </xsl:when>
+            <xsl:when test="$area='contents'"/>
             <xsl:when test="$area='body'">
                 <p>
                     <xsl:apply-templates/>
