@@ -118,7 +118,7 @@
         <item>
             <heading id="serverMode">Server Mode</heading>
             <text>
-                <code>java -jar JSCover.jar -fs [OPTION]... SOURCE-DIRECTORY DESTINATION-DIRECTORY</code>
+                <code>java -jar JSCover.jar -ws [OPTIONS]</code>
                 For example:
                 <code>java -jar JSCover.jar -ws --port=80 --no-instrument=lib --no-instrument=test</code>
             </text>
@@ -185,16 +185,9 @@
         <item>
             <heading id="fileMode">File Mode</heading>
             <text>
-                <ul>
-                    <li>Server mode with switches indicated below (i.e. JSCoverage's jscoverage-server)</li>
-                    <li>Storing of report data to the file system</li>
-                    <li>Merging of coverage data if multiple runs are stored at the same location</li>
-                </ul>
-            </text>
-            <text>
-                <code>java -jar JSCover.jar -ws [OPTION]...</code>
+                <code>java -jar JSCover.jar -fs [OPTIONS] SOURCE-DIRECTORY DESTINATION-DIRECTORY</code>
                 For example:
-                <code>java -jar JSCover.jar -ws --port=80 --no-instrument=lib --no-instrument=test</code>
+                <code>java -jar JSCover.jar -fs --no-instrument=lib --no-instrument=test</code>
             </text>
             <text>
                 <table>
@@ -209,39 +202,17 @@
                         <td>Display command line help</td>
                     </tr>
                     <tr>
-                        <td>--document-root=PATH</td>
-                        <td>current directory</td>
-                        <td>Serve web content from the directory given by PATH (can be relative or absolute)</td>
-                    </tr>
-                    <tr>
                         <td>--no-instrument=URL</td>
                         <td>None</td>
                         <td>Specify URLs not to be instrumented. Can be specified multiple times.</td>
                     </tr>
                     <tr>
-                        <td>--report-dir=PATH</td>
-                        <td>current directory</td>
-                        <td>Use the directory given by PATH (can be relative or absolute) for storing coverage
-                            reports.
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>--port=PORT</td>
-                        <td>8080</td>
-                        <td>Specify the port to listen on</td>
-                    </tr>
-                    <tr>
-                        <td>--proxy</td>
-                        <td>N/A</td>
-                        <td>Run in proxy mode</td>
-                    </tr>
-                    <tr>
-                        <td>--include-unloaded-js</td>
-                        <td>false</td>
-                        <td>
-                            When storing report in web-server mode, search beneath the document root path for JavaScript
-                            file not
-                            served and include in the coverage report.
+                        <td>---exclude=PATH</td>
+                        <td>None</td>
+                        <td>Copies SOURCE-DIRECTORY to DESTINATION-DIRECTORY recursively, but does not copy
+                            SOURCE-DIRECTORY/PATH. PATH must be a complete path relative to SOURCE-DIRECTORY. PATH can
+                            be a file or a directory (in which case the directory and its entire contents are skipped).
+                            This option may be given multiple times.
                         </td>
                     </tr>
                     <tr>
@@ -254,6 +225,25 @@
                         </td>
                     </tr>
                 </table>
+            </text>
+            <text>
+                The first step is to add instrumentation to your JavaScript code. You do this by executing jscoverage
+                with two arguments:
+                <code>java -jar JSCover-all.jar -fs SOURCE-DIRECTORY DESTINATION-DIRECTORY</code>
+            </text>
+            <text>
+                SOURCE-DIRECTORY is the directory containing the JavaScript code to be instrumented, and
+                DESTINATION-DIRECTORY is the name of the directory to which JSCover should output the instrumented
+                code. The JSCover program will create DESTINATION-DIRECTORY if necessary and (recursively) copy
+                SOURCE-DIRECTORY to DESTINATION-DIRECTORY, instrumenting any files ending with a .js extension.
+            </text>
+            <text>
+                The directory structure under SOURCE-DIRECTORY will be preserved, so that if you have a file
+                SOURCE-DIRECTORY/dir/index.html referencing the script SOURCE-DIRECTORY/dir/script.js, then JSCover
+                will create a copy of the HTML file at DESTINATION-DIRECTORY/dir/index.html and an instrumented version
+                of the script at DESTINATION-DIRECTORY/dir/script.js. In addition, JSCover will create a file called
+                jscoverage.html which will be used to execute the instrumented code.
+                <code>java -jar JSCover-all.jar -fs SOURCE-DIRECTORY DESTINATION-DIRECTORY</code>
             </text>
             <text>
                 <table class="noBorder">
@@ -275,6 +265,39 @@
         index.html
         script.js [instrumented]
         jscoverage.html
+                                </code>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </text>
+            <text>
+                For the example code in the doc/example/ directory, you can execute the following command line from the
+                top-level directory of the JSCoverage distribution:
+                <code>java -jar JSCover-all.jar -fs doc/example doc/instrumented</code>
+            </text>
+            <text>
+                This will create the directory doc/instrumented/ and place an instrumented copy of the code from
+                doc/example/ in doc/instrumented/.
+            </text>
+            <text>
+                <table class="noBorder">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <code>
+doc/example/
+    index.html
+    script.js
+                                </code>
+                            </td>
+                            <td class="arrow">&#8594;</td>
+                            <td>
+                                <code>
+doc/instrumented/
+    index.html
+    script.js [instrumented]
+    jscoverage.html
                                 </code>
                             </td>
                         </tr>
