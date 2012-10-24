@@ -293,9 +293,57 @@
         </item>
         <item>
             <heading id="windowMode">Window Mode</heading>
+            <text>
+                In some situations it may be difficult to execute your code within the
+                &lt;iframe&gt;
+                in the JSCover "Browser" tab. For example, the code may assume that it is running in the top-level
+                browser window, generating errors if it is executed from within a frame. JSCover has an alternative
+                mode of operation, called window mode, which may be useful in this case.
+            </text>
+            <text>
+                To use JSCover in window mode, load your URL by clicking the "Open in window" button instead of the
+                "Open in frame" button. This will cause your URL to be opened in a new window. (Depending on your
+                browser settings, it may be opened in a new browser tab instead.) Execute your code in this new window,
+                and then return to the jscoverage.html window and click the "Summary" tab to get code coverage
+                statistics.
+            </text>
         </item>
         <item>
             <heading id="invertedMode">Inverted Mode</heading>
+            <text>
+                There is another alternative mode of operation, called inverted mode. Like window mode, this allows you
+                to avoid running your code inside an &lt;iframe&gt;.
+            </text>
+            <text>
+                Normally you load jscoverage.html in your web browser, and in its "Browser" tab you launch your test
+                code.
+                In inverted mode, you do the opposite: you load your test page directly in your web browser, and from
+                there you launch JSCover.
+                To do this you need to add some code to your test page:
+                <code>window.open('path/to/jscoverage.html');</code>
+            </text>
+            <text>
+                The "path/to/jscoverage.html" should be a URL pointing to the location of the jscoverage.html file
+                (remember, this will be in the top level of the DESTINATION-DIRECTORY you specified when running the
+                jscoverage executable).
+            </text>
+            <text>
+                You can place this code wherever you like in your page: for example, you could attach it to a button:
+                <code>&lt;button type="button" onclick="window.open('path/to/jscoverage.html');"&gt;Coverage report&lt;/button&gt;</code>
+            </text>
+            <text>Note that you must use a window.open call; simply making a link to jscoverage.html is not
+                sufficient.
+            </text>
+            <text>An example is located in the doc/example-inverted directory. You can instrument the code with the
+                jscoverage program:
+            </text>
+            <text><code>jscoverage doc/example-inverted doc/instrumented-inverted</code></text>
+            <text>You can load the page doc/instrumented-inverted/index.html directly in your web browser. From this
+                page, you select one of the radio buttons and then click the "Coverage report" button to launch the
+                JSCover report.
+            </text>
+            <text>Another example is located in the doc/example-jsunit directory. See the FAQ for more information.
+            </text>
         </item>
     </item>
     <item>
