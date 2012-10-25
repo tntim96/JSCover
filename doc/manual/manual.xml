@@ -13,7 +13,7 @@
     <item>
         <heading id="generalInformation">General Information</heading>
         <text>
-            This document should now be complete an accurate, however, please feel free to consult the
+            This document should now be complete and accurate, however, please feel free to consult the
             <a href="http://siliconforks.com/jscoverage/manual.html" target="_blank">JSCoverage documentation</a>.
         </text>
         <item>
@@ -27,16 +27,14 @@
                 JSCover works by adding instrumentation to JavaScript code before it is executed in a web browser.
                 JSCover provides several alternative ways of doing this:
                 <ul>
-                    <li>The simplest method is to use the file-system mode program to generate instrumented JavaScript
+                    <li>The simplest method is to use the server mode, a simple web server that instruments JavaScript
+                        code as it is served.
+                    </li>
+                    <li>Alternatively, you can use the file-system mode program to generate instrumented JavaScript
                         files.
                     </li>
-                    <li>Alternatively, you can use the server mode, a simple web server that instruments JavaScript code
-                        as
-                        it is served.
-                    </li>
-                    <li>Finally, server mode can be run with the --proxy option to act as a proxy server which
-                        instruments
-                        any JavaScript code proxied through it.
+                    <li>Finally, the server mode can be run with the --proxy option to act as a proxy server which
+                        instruments any JavaScript code proxied through it.
                     </li>
                 </ul>
             </text>
@@ -44,7 +42,7 @@
                 The server mode has two advantages:
                 <ol>
                     <li>can store coverage reports to the filesystem (with/without the proxy option)</li>
-                    <li>can include unloaded/untested JavaScript (only without the proxy option)</li>
+                    <li>can include unloaded/untested JavaScript in the report (only without the proxy option)</li>
                 </ol>
             </text>
         </item>
@@ -79,53 +77,77 @@
         <item>
             <text>The best way to get started is to run the the examples included in the distribution.</text>
             <heading id="gettingStartedServer">Server</heading>
-            <text>
-                Run
-                <var>example-server.bat</var> or <var>example-server.sh</var>. The contents are:
-                <code>java -jar target/dist/JSCover-all.jar -ws --document-root=doc/example --report-dir=target</code>
-                This will start a web server, and the JSCover interface can be loaded by going to
-                <a href="http://localhost:8080/jscoverage.html">http://localhost:8080/jscoverage.html</a>.
-                <img src="images/ws-1-browser.png"/><br/>
-                You can then enter the URL <var>http://localhost:8080/index.html</var> in the URL input box and click
-                on the <var>Open in frame</var> button.
-            </text>
-            <text>
-                To automatically load the web-page without entering it in the URL section, got to
-                <a href="http://localhost:8080/jscoverage.html?index.html">http://localhost:8080/jscoverage.html?index.html</a>.
-                <img src="images/ws-2-browser.png"/>
-            </text>
-            <text>
-                Tests that exercise the JavaScript can now be run.
-                <note>As long as you do not reload the jscoverage.html page, the coverage report statistics are
-                    cumulative.</note>
-                <img src="images/ws-3-browser.png"/>
-            </text>
-            <text>
-                To see a summary of the coverage, click the <var>Summary</var> tab. Note, you can change the sorting
-                order by clicking on the <var>Coverage</var> link:
-                <img src="images/ws-4-summary.png"/>
-            </text>
-            <text>
-                To see uncovered lines, check the <var>Show missing statements column</var> check-box:
-                <img src="images/ws-5-summary.png"/>
-            </text>
-            <text>
-                To view the source, click on the link in the <var>File</var> column
-                <img src="images/ws-6-source.png"/>
-            </text>
-            <text>
-                To store the report, click on the <var>Store</var> tab and then the <var>Store Report</var> button.
-                <img src="images/ws-7-store.png"/><br/>
-                <note>The report does not work in Google Chrome when viewed using a file: URL. Either use an ordinary
-                    web server to serve the report (JSCover comes with a
-                    <a href="#simpleWebServer">simple web server</a>) or start Google Chrome with the
-                    <var>--allow-file-access-from-files</var> command line option.
-                </note>
-            </text>
-            <text>
-                Version and other information can be viewed by clicking on the <var>About</var> tab:
-                <img src="images/ws-8-about.png"/>
-            </text>
+            <item>
+                <heading id="gettingStartedServerStartServer">Start The Server</heading>
+                <text>
+                    Run
+                    <var>example-server.bat</var> or <var>example-server.sh</var>. The contents are:
+                    <code>java -jar target/dist/JSCover-all.jar -ws --document-root=doc/example --report-dir=target</code>
+                    This will start a web server, and the JSCover interface can be loaded by going to
+                    <a href="http://localhost:8080/jscoverage.html">http://localhost:8080/jscoverage.html</a>.
+                    <img src="images/ws-1-browser.png"/><br/>
+                    You can then enter the URL <var>http://localhost:8080/index.html</var> in the URL input box and click
+                    on the <var>Open in frame</var> button.
+                </text>
+            </item>
+            <item>
+                <heading id="gettingStartedServerLoadURL">Load The Test Page</heading>
+                <text>
+                    To automatically load the web-page without entering it in the URL section, got to
+                    <a href="http://localhost:8080/jscoverage.html?index.html">http://localhost:8080/jscoverage.html?index.html</a>.
+                    <img src="images/ws-2-browser.png"/>
+                </text>
+            </item>
+            <item>
+                <heading id="gettingStartedServerRunTests">Run Tests</heading>
+                <text>
+                    Tests that exercise the JavaScript can now be run.
+                    <note>As long as you do not reload the jscoverage.html page, the coverage report statistics are
+                        cumulative.</note>
+                    <img src="images/ws-3-browser.png"/>
+                </text>
+            </item>
+            <item>
+                <heading id="gettingStartedServerCoverageSummary">View The Coverage Summary</heading>
+                <text>
+                    To see a summary of the coverage, click the <var>Summary</var> tab. Note, you can change the sorting
+                    order by clicking on the <var>Coverage</var> link:
+                    <img src="images/ws-4-summary.png"/>
+                </text>
+            </item>
+            <item>
+                <heading id="gettingStartedServerUncoveredLines">View Uncovered Lines</heading>
+                <text>
+                    To see uncovered lines, check the <var>Show missing statements column</var> check-box:
+                    <img src="images/ws-5-summary.png"/>
+                </text>
+            </item>
+            <item>
+                <heading id="gettingStartedServerViewSource">View The Source</heading>
+                <text>
+                    To view the source, click on the link in the <var>File</var> column
+                    <img src="images/ws-6-source.png"/>
+                </text>
+            </item>
+            <item>
+                <heading id="gettingStartedServerReportStorage">Store The Report</heading>
+                <text>
+                    To store the report, click on the <var>Store</var> tab and then the <var>Store Report</var> button.
+                    <img src="images/ws-7-store.png"/><br/>
+                    <note>The report does not work in Google Chrome when viewed using a file: URL. Either use an ordinary
+                        web server to serve the report (JSCover comes with a
+                        <a href="#simpleWebServer">simple web server</a>) or start Google Chrome with the
+                        <var>--allow-file-access-from-files</var> command line option.
+                    </note>
+                </text>
+            </item>
+            <item>
+                <heading id="gettingStartedServerAbout">About Page</heading>
+                <text>
+                    Version and other information can be viewed by clicking on the <var>About</var> tab:
+                    <img src="images/ws-8-about.png"/>
+                </text>
+            </item>
         </item>
         <item>
             <heading id="gettingStartedFileSystem">File System</heading>
@@ -145,6 +167,7 @@
             </text>
             <heading id="simpleWebServer">Non-Instrumenting Web Server</heading>
             <text>
+                To avoid any file-system issues (described above),
                 JSCover comes with a simple non-instrumenting web server.
                 Run it from the distribution's root directory:
                 <code>java -cp target\dist\JSCover-all.jar jscover.server.SimpleWebServer 8080</code>
@@ -443,7 +466,8 @@
         <item>
             <heading id="iframeMode">IFrame Mode</heading>
             <text>
-                This is the most commonly used mode, and is described in the examples above.
+                This is the most commonly used mode, and is described in the
+                <a href="#gettingStarted">Getting Started</a> section above.
             </text>
         </item>
         <item>
@@ -511,6 +535,83 @@
                 Determines whether to initially display the "Missing" column in the "Summary" tab. BOOLEAN can be true,
                 t, yes, y, on, 1 (to display the "Missing" column), or false, f, no, n, off, 0 (to hide the "Missing"
                 column). By default, the "Missing" column is not displayed.
+            </text>
+        </item>
+    </item>
+    <item>
+        <heading id="automating">Automated Tests</heading>
+        <text>JSCover has made some additions to jscoverage.html to provide DOM ID hooks to assist with automated
+            testing with tools such as Selenium and HtmlUnit.
+        </text>
+        <item>
+            <heading id="automatingDomIds">DOM IDs &amp; JavaScript</heading>
+            <text>
+                <table>
+                    <tr>
+                        <th>Area</th>
+                        <th>ID</th>
+                        <th>JavaScript</th>
+                    </tr>
+                    <tr>
+                        <td>URL Text Input</td>
+                        <td>location</td>
+                        <td><a href="#queryStringOptions">Use Query String</a></td>
+                    </tr>
+                    <tr>
+                        <td>Open In Frame Button</td>
+                        <td>openInFrameButton</td>
+                        <td>jscoverage_openInFrameButton_click()</td>
+                    </tr>
+                    <tr>
+                        <td>Open In Window Button</td>
+                        <td>openInWindowButton</td>
+                        <td>jscoverage_openInWindowButton_click()</td>
+                    </tr>
+                    <tr>
+                        <td>Summary tab<note>*</note></td>
+                        <td>summaryTab</td>
+                        <td>N/A</td>
+                    </tr>
+                    <tr>
+                        <td>Coverage Total</td>
+                        <td>summaryTotal</td>
+                        <td>N/A</td>
+                    </tr>
+                    <tr>
+                        <td>Storage tab</td>
+                        <td>storeTab</td>
+                        <td>N/A</td>
+                    </tr>
+                    <tr>
+                        <td>Store Report Button<note>*</note></td>
+                        <td>storeButton</td>
+                        <td>See <a href="#jsReportStorage">Programmatic Report Storage</a></td>
+                    </tr>
+                </table>
+            </text>
+            <text><note>* - You will need to wait for the JavaScript operation to complete</note></text>
+        </item>
+        <item>
+            <heading id="automatingHtmlUnit">HtmlUnit</heading>
+            <text>
+                For a working example see
+                <a href="https://github.com/tntim96/JSCover/blob/master/src/test-acceptance/java/jscover/server/HtmlUnitServerTest.java"
+                        >HtmlUnitServerTest</a>
+            </text>
+            <text>
+                Example of JavaScript to store the report:
+                <code>ScriptResult result = ((HtmlPage)webWindow.getEnclosedPage()).executeJavaScript("jscoverage_report('directory');");</code>
+            </text>
+        </item>
+        <item>
+            <heading id="automatingSelenium">Selenium</heading>
+            <text>
+                Example of JavaScript to store the report:
+                <code>String jscoverageJson = selenium.getEval("selenium.browserbot.getUserWindow().jscoverage_report();");</code>
+            </text>
+            <text>
+                Example of JavaScript to retrieve the JSON coverage data:
+                <code>String jscoverageJson = selenium.getEval("selenium.browserbot.getUserWindow().jscoverage_serializeCoverageToJSON();");</code>
             </text>
         </item>
     </item>
@@ -588,6 +689,7 @@ alert('Hello World!');</code>
                     <li>HTML files must use relative URLs to reference scripts. If you use an absolute URL, your page will reference the original uninstrumented script rather than the instrumented one, and no code coverage data will be collected.</li>
                     <li>JSCover instruments physical lines of code rather than logical JavaScript statements; it works bests with code that has exactly one statement per line. If you put multiple statements on a line, or split a line across two or more statements, you may get strange results.</li>
                     <li>JSCover uses frames. Some web pages that use frames may not function properly when run with JSCover, especially those which try to access the top-level frame (window.top, target="_top", etc.).</li>
+                    <li>JSCover proxy currently only supports HTTP, not HTTPS</li>
                     <li>JSCover is distributed without any warranty. See the license for more details.</li>
                 </ul>
             </text>

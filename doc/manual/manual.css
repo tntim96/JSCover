@@ -50,6 +50,7 @@ table {
 }
 
 TH {
+    border: 1px solid #ccffff;
 	font-family: arial;
 	font-weight: bold;
 	font-size: 12pt;
