@@ -85,7 +85,7 @@
                     <code>java -jar target/dist/JSCover-all.jar -ws --document-root=doc/example --report-dir=target</code>
                     This will start a web server, and the JSCover interface can be loaded by going to
                     <a href="http://localhost:8080/jscoverage.html">http://localhost:8080/jscoverage.html</a>.
-                    <img src="images/ws-1-browser.png"/><br/>
+                    <br/><img src="images/ws-1-browser.png"/><br/>
                     You can then enter the URL <var>http://localhost:8080/index.html</var> in the URL input box and click
                     on the <var>Open in frame</var> button.
                 </text>
@@ -95,7 +95,7 @@
                 <text>
                     To automatically load the web-page without entering it in the URL section, got to
                     <a href="http://localhost:8080/jscoverage.html?index.html">http://localhost:8080/jscoverage.html?index.html</a>.
-                    <img src="images/ws-2-browser.png"/>
+                    <br/><img src="images/ws-2-browser.png"/>
                 </text>
             </item>
             <item>
@@ -112,28 +112,28 @@
                 <text>
                     To see a summary of the coverage, click the <var>Summary</var> tab. Note, you can change the sorting
                     order by clicking on the <var>Coverage</var> link:
-                    <img src="images/ws-4-summary.png"/>
+                    <br/><img src="images/ws-4-summary.png"/>
                 </text>
             </item>
             <item>
                 <heading id="gettingStartedServerUncoveredLines">View Uncovered Lines</heading>
                 <text>
                     To see uncovered lines, check the <var>Show missing statements column</var> check-box:
-                    <img src="images/ws-5-summary.png"/>
+                    <br/><img src="images/ws-5-summary.png"/>
                 </text>
             </item>
             <item>
                 <heading id="gettingStartedServerViewSource">View The Source</heading>
                 <text>
                     To view the source, click on the link in the <var>File</var> column
-                    <img src="images/ws-6-source.png"/>
+                    <br/><img src="images/ws-6-source.png"/>
                 </text>
             </item>
             <item>
                 <heading id="gettingStartedServerReportStorage">Store The Report</heading>
                 <text>
                     To store the report, click on the <var>Store</var> tab and then the <var>Store Report</var> button.
-                    <img src="images/ws-7-store.png"/><br/>
+                    <br/><img src="images/ws-7-store.png"/><br/>
                     <note>The report does not work in Google Chrome when viewed using a file: URL. Either use an ordinary
                         web server to serve the report (JSCover comes with a
                         <a href="#simpleWebServer">simple web server</a>) or start Google Chrome with the
@@ -145,7 +145,7 @@
                 <heading id="gettingStartedServerAbout">About Page</heading>
                 <text>
                     Version and other information can be viewed by clicking on the <var>About</var> tab:
-                    <img src="images/ws-8-about.png"/>
+                    <br/><img src="images/ws-8-about.png"/>
                 </text>
             </item>
         </item>
@@ -163,7 +163,7 @@
                 <a href="http://code.google.com/p/chromium/issues/detail?id=4197">security restrictions</a></note>.
                 You would enter something like the following in you address bar:
                 <var>file:///C:/Java/JSCover/target/example/jscoverage.html?index.html</var>
-                <img src="images/fs-1-file-system.png"/>
+                <br/><img src="images/fs-1-file-system.png"/>
             </text>
             <heading id="simpleWebServer">Non-Instrumenting Web Server</heading>
             <text>
