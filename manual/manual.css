@@ -79,6 +79,15 @@ HR {
 	color: #99ccff;
 }
 
+.var {
+	color: #CCFFCC;
+    font-style: italic;
+}
+
+.note {
+	color: #FF9933;
+}
+
 .heading0 {
 	font-family: arial;
 	font-size: 18pt;

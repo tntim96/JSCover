@@ -113,9 +113,15 @@
     </xsl:template>
 
     <xsl:template match="code">
-        <pre>
-            <xsl:apply-templates/>
-        </pre>
+        <pre><xsl:apply-templates/></pre>
+    </xsl:template>
+
+    <xsl:template match="var">
+        <span class="var"><xsl:apply-templates/></span>
+    </xsl:template>
+
+    <xsl:template match="note">
+        <span class="note"><xsl:apply-templates/></span>
     </xsl:template>
 
 </xsl:stylesheet>
