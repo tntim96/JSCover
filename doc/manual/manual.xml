@@ -116,9 +116,10 @@
             <text>
                 To store the report, click on the <var>Store</var> tab and then the <var>Store Report</var> button.
                 <img src="images/ws-7-store.png"/><br/>
-                <note>The report does not work in Google Chrome when viewed using a file: URL. Either use a web server
-                    to serve the report (not jscoverage-server, but an ordinary web server) or start Google Chrome with
-                    the <var>--allow-file-access-from-files</var> command line option.
+                <note>The report does not work in Google Chrome when viewed using a file: URL. Either use an ordinary
+                    web server to serve the report (JSCover comes with a
+                    <a href="#simpleWebServer">simple web server</a>) or start Google Chrome with the
+                    <var>--allow-file-access-from-files</var> command line option.
                 </note>
             </text>
             <text>
@@ -142,6 +143,7 @@
                 <var>file:///C:/Java/JSCover/target/example/jscoverage.html?index.html</var>
                 <img src="images/fs-1-file-system.png"/>
             </text>
+            <heading id="simpleWebServer">Non-Instrumenting Web Server</heading>
             <text>
                 JSCover comes with a simple non-instrumenting web server.
                 Run it from the distribution's root directory:
@@ -363,7 +365,7 @@
                 </table>
             </text>
             <text>
-                The first step is to add instrumentation to your JavaScript code. You do this by executing jscoverage
+                The first step is to add instrumentation to your JavaScript code. You do this by executing JSCover
                 with two arguments:
                 <code>java -jar JSCover-all.jar -fs SOURCE-DIRECTORY DESTINATION-DIRECTORY</code>
             </text>
@@ -477,8 +479,8 @@
             </text>
             <text>
                 The "path/to/jscoverage.html" should be a URL pointing to the location of the jscoverage.html file
-                (remember, this will be in the top level of the DESTINATION-DIRECTORY you specified when running the
-                jscoverage executable).
+                (remember, this will be in the top level of the DESTINATION-DIRECTORY you specified when running
+                JSCover).
             </text>
             <text>
                 You can place this code wherever you like in your page: for example, you could attach it to a button:
@@ -486,16 +488,6 @@
             </text>
             <text>Note that you must use a window.open call; simply making a link to jscoverage.html is not
                 sufficient.
-            </text>
-            <text>An example is located in the doc/example-inverted directory. You can instrument the code with the
-                jscoverage program:
-            </text>
-            <text><code>jscoverage doc/example-inverted doc/instrumented-inverted</code></text>
-            <text>You can load the page doc/instrumented-inverted/index.html directly in your web browser. From this
-                page, you select one of the radio buttons and then click the "Coverage report" button to launch the
-                JSCover report.
-            </text>
-            <text>Another example is located in the doc/example-jsunit directory. See the FAQ for more information.
             </text>
         </item>
         <item>
@@ -595,7 +587,7 @@ alert('Hello World!');</code>
                     <li>JSCover currently instruments only .js files; it does not instrument code in &lt;script&gt; elements in HTML files.</li>
                     <li>HTML files must use relative URLs to reference scripts. If you use an absolute URL, your page will reference the original uninstrumented script rather than the instrumented one, and no code coverage data will be collected.</li>
                     <li>JSCover instruments physical lines of code rather than logical JavaScript statements; it works bests with code that has exactly one statement per line. If you put multiple statements on a line, or split a line across two or more statements, you may get strange results.</li>
-                    <li>JSCover uses frames. Some web pages that use frames may not function properly when run under JSCoverage, especially those which try to access the top-level frame (window.top, target="_top", etc.).</li>
+                    <li>JSCover uses frames. Some web pages that use frames may not function properly when run with JSCover, especially those which try to access the top-level frame (window.top, target="_top", etc.).</li>
                     <li>JSCover is distributed without any warranty. See the license for more details.</li>
                 </ul>
             </text>

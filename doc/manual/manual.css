@@ -82,10 +82,12 @@ HR {
 .var {
 	color: #CCFFCC;
     font-style: italic;
+    background-color : #002244;
 }
 
 .note {
 	color: #FF9933;
+    background-color : #002244;
 }
 
 .heading0 {
