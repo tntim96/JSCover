@@ -1,5 +1,7 @@
-0.0.8 / 2012-??-??
+0.0.8 / 2012-10-25
 ==================
+  * Add simple non-instrumenting web-server used in the manual's examples
+  * Improve manual to a usable state independent of JSCoverage's documentation
   * Fix bug where destination folder can be in the source folder
 
 0.0.7 / 2012-10-23

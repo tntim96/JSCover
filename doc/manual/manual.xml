@@ -13,9 +13,8 @@
     <item>
         <heading id="generalInformation">General Information</heading>
         <text>
-            This document is not yet complete...but should be soon.
-            For an overview of the basic workings of of JSCover, see the
-            <a href="http://siliconforks.com/jscoverage/manual.html" target="_blank">JSCoverage documentation</a>
+            This document should now be complete an accurate, however, please feel free to consult the
+            <a href="http://siliconforks.com/jscoverage/manual.html" target="_blank">JSCoverage documentation</a>.
         </text>
         <item>
             <heading id="introduction">Introduction</heading>
@@ -78,7 +77,80 @@
     <item>
         <heading id="gettingStarted">Getting started</heading>
         <item>
+            <text>The best way to get started is to run the the examples included in the distribution.</text>
             <heading id="gettingStartedServer">Server</heading>
+            <text>
+                Run
+                <var>example-server.bat</var> or <var>example-server.sh</var>. The contents are:
+                <code>java -jar target/dist/JSCover-all.jar -ws --document-root=doc/example --report-dir=target</code>
+                This will start a web server, and the JSCover interface can be loaded by going to
+                <a href="http://localhost:8080/jscoverage.html">http://localhost:8080/jscoverage.html</a>.
+                <img src="images/ws-1-browser.png"/><br/>
+                You can then enter the URL <var>http://localhost:8080/index.html</var> in the URL input box and click
+                on the <var>Open in frame</var> button.
+            </text>
+            <text>
+                To automatically load the web-page without entering it in the URL section, got to
+                <a href="http://localhost:8080/jscoverage.html?index.html">http://localhost:8080/jscoverage.html?index.html</a>.
+                <img src="images/ws-2-browser.png"/>
+            </text>
+            <text>
+                Tests that exercise the JavaScript can now be run.
+                <note>As long as you do not reload the jscoverage.html page, the coverage report statistics are
+                    cumulative.</note>
+                <img src="images/ws-3-browser.png"/>
+            </text>
+            <text>
+                To see a summary of the coverage, click the <var>Summary</var> tab. Note, you can change the sorting
+                order by clicking on the <var>Coverage</var> link:
+                <img src="images/ws-4-summary.png"/>
+            </text>
+            <text>
+                To see uncovered lines, check the <var>Show missing statements column</var> check-box:
+                <img src="images/ws-5-summary.png"/>
+            </text>
+            <text>
+                To view the source, click on the link in the <var>File</var> column
+                <img src="images/ws-6-source.png"/>
+            </text>
+            <text>
+                To store the report, click on the <var>Store</var> tab and then the <var>Store Report</var> button.
+                <img src="images/ws-7-store.png"/><br/>
+                <note>The report does not work in Google Chrome when viewed using a file: URL. Either use a web server
+                    to serve the report (not jscoverage-server, but an ordinary web server) or start Google Chrome with
+                    the <var>--allow-file-access-from-files</var> command line option.
+                </note>
+            </text>
+            <text>
+                Version and other information can be viewed by clicking on the <var>About</var> tab:
+                <img src="images/ws-8-about.png"/>
+            </text>
+        </item>
+        <item>
+            <heading id="gettingStartedFileSystem">File System</heading>
+            <text>
+                Run
+                <var>example-filesystem.bat</var> or <var>example-filesystem.sh</var>. The contents are:
+                <code>java -jar target\dist\JSCover-all.jar -fs doc/example target/example</code>
+                This will recursively copy all the resources from <var>doc/example</var> to <var>target/example</var>,
+                and create the JSCover files (e.g. jscoverage.html) at <var>target/example</var>.
+            </text>
+            <text>
+                This can either be via the file-system, <note>but is not recommended due to
+                <a href="http://code.google.com/p/chromium/issues/detail?id=4197">security restrictions</a></note>.
+                You would enter something like the following in you address bar:
+                <var>file:///C:/Java/JSCover/target/example/jscoverage.html?index.html</var>
+                <img src="images/fs-1-file-system.png"/>
+            </text>
+            <text>
+                JSCover comes with a simple non-instrumenting web server.
+                Run it from the distribution's root directory:
+                <code>java -cp target\dist\JSCover-all.jar jscover.server.SimpleWebServer 8080</code>
+                The point your browser at:
+                <a href="http://localhost:8080/target/example/jscoverage.html?index.html"
+                        >http://localhost:8080/target/example/jscoverage.html?index.html</a>
+                The UI interaction should now be the same as for the server except for the missing "Store" tab.
+            </text>
         </item>
     </item>
     <item>

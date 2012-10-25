@@ -116,6 +116,7 @@
 			<ignore regex="org.apache.log4j.*" />
 			<fileset dir="${classes.main.dir}">
 				<include name="**/*.class" />
+				<exclude name="**/SimpleWebServer.class" />
 			</fileset>
 			<classpath>
 				<path refid="classpath-cobertura" />
@@ -136,11 +137,11 @@
 	</target>
 
 	<target name="coverage-check">
-		<cobertura-check totallinerate="79" totalbranchrate="79"/>
+		<cobertura-check totallinerate="80" totalbranchrate="79"/>
 	</target>
 
 	<target name="coverage-check-all">
-		<cobertura-check totallinerate="94" totalbranchrate="89"/>
+		<cobertura-check totallinerate="94" totalbranchrate="90"/>
 	</target>
 
 	<target name="compile-tests" depends="compile">
