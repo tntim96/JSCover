@@ -119,6 +119,13 @@ A {
 	color: #99ccff;
 }
 
+A.ExpandCollapse {
+    color: #ccccff;
+    font-size: 20pt;
+    font-family: Courier;
+    text-decoration: none;
+}
+
 A:hover {
 	color: #ccffcc;
 }

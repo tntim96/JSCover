@@ -2,7 +2,8 @@
 <?xml-stylesheet type="text/xsl" href="manual.xsl"?>
 <!DOCTYPE document-root [
         <!ELEMENT document (title, item+)>
-        <!ELEMENT item ((item | (heading, text?))+)>
+        <!ELEMENT item ((item | (heading, (section? | text?)))+)>
+        <!ELEMENT section ((item | text))+>
         <!ELEMENT title (#PCDATA)>
         <!ELEMENT heading (#PCDATA)>
         <!ELEMENT text (#PCDATA)>
@@ -12,6 +13,7 @@
     <title>JSCover User Manual</title>
     <item>
         <heading id="generalInformation">General Information</heading>
+        <section>
         <text>
             This document should now be complete and accurate, however, please feel free to consult the
             <a href="http://siliconforks.com/jscoverage/manual.html" target="_blank">JSCoverage documentation</a>.
@@ -71,9 +73,11 @@
                 It will contain any errors that occurred during instrumentation.
             </text>
         </item>
+        </section>
     </item>
     <item>
         <heading id="gettingStarted">Getting started</heading>
+        <section>
         <item>
             <text>The best way to get started is to run the the examples included in the distribution.</text>
             <heading id="gettingStartedServer">Server</heading>
@@ -177,9 +181,11 @@
                 The UI interaction should now be the same as for the server except for the missing "Store" tab.
             </text>
         </item>
+        </section>
     </item>
     <item>
         <heading id="usage">Usage</heading>
+        <section>
         <item>
             <heading id="usage">General</heading>
             <text>
@@ -460,9 +466,11 @@
                 </table>
             </text>
         </item>
+        </section>
     </item>
     <item>
         <heading id="execModes">Execution Modes</heading>
+        <section>
         <item>
             <heading id="iframeMode">IFrame Mode</heading>
             <text>
@@ -537,9 +545,11 @@
                 column). By default, the "Missing" column is not displayed.
             </text>
         </item>
+        </section>
     </item>
     <item>
         <heading id="automating">Automated Tests</heading>
+        <section>
         <text>JSCover has made some additions to jscoverage.html to provide DOM ID hooks to assist with automated
             testing with tools such as Selenium and HtmlUnit.
         </text>
@@ -614,9 +624,11 @@
                 <code>String jscoverageJson = selenium.getEval("selenium.browserbot.getUserWindow().jscoverage_serializeCoverageToJSON();");</code>
             </text>
         </item>
+        </section>
     </item>
     <item>
         <heading id="howWork">How does it work</heading>
+        <section>
         <item>
             <heading id="implementationInstrumentation">Instrumentation</heading>
             <text>
@@ -625,11 +637,11 @@
                 ...becomes...
 <code>//...header code above
 if (! this._$jscoverage) {
-this._$jscoverage = {};
+    this._$jscoverage = {};
 }
 if (! _$jscoverage['test.js']) {
-_$jscoverage['test.js'] = [];
-_$jscoverage['test.js'][1] = 0;
+    _$jscoverage['test.js'] = [];
+    _$jscoverage['test.js'][1] = 0;
 }
 _$jscoverage['test.js'].source = ["alert('Hello World!');"];
 _$jscoverage['test.js'][1]++;
@@ -638,9 +650,11 @@ alert('Hello World!');</code>
                 is incremented. The header code manages the declaration of _$jscoverage.
             </text>
         </item>
+        </section>
     </item>
     <item>
         <heading id="other">Other</heading>
+        <section>
         <item>
             <heading id="jsCoverageVJSCover">JSCover V. JSCoverage</heading>
             <item>
@@ -694,5 +708,6 @@ alert('Hello World!');</code>
                 </ul>
             </text>
         </item>
+        </section>
     </item>
 </document>
