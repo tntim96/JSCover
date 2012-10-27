@@ -13,16 +13,15 @@
                     <xsl:value-of select="title"/>
                 </title>
                 <link REL="stylesheet" TYPE="text/css" href="manual.css"/>
+                <script type="text/javascript" src="manual.js"></script>
             </head>
             <body>
                 <a name="top"></a>
                 <div class="floating-menu">
                     <h1><xsl:value-of select="title"/></h1>
-                    <table class="noBorder">
-                        <xsl:apply-templates select="item">
-                            <xsl:with-param name="area">contents</xsl:with-param>
-                        </xsl:apply-templates>
-                    </table>
+                    <xsl:apply-templates select="item">
+                        <xsl:with-param name="area">contents</xsl:with-param>
+                    </xsl:apply-templates>
                 </div>
                 <div class="content">
                 <xsl:apply-templates select="item">
@@ -43,6 +42,26 @@
         </xsl:apply-templates>
     </xsl:template>
 
+    <xsl:template match="section">
+        <xsl:param name="area" select="''"/>
+        <div>
+            <xsl:choose>
+                <xsl:when test="$area='contents'">
+                    <xsl:attribute name="id"><xsl:value-of select="concat(../heading/@id,'Section')"/></xsl:attribute>
+                    <xsl:attribute name="style">display: none;</xsl:attribute>
+                </xsl:when>
+                <xsl:when test="$area='body'"/>
+                <xsl:otherwise>
+                    Error in XSL: param area=<xsl:value-of select="$area"/>
+                </xsl:otherwise>
+            </xsl:choose>
+            <xsl:apply-templates>
+                <xsl:with-param name="area">
+                    <xsl:value-of select="$area"/>
+                </xsl:with-param>
+            </xsl:apply-templates>
+        </div>
+    </xsl:template>
 
     <xsl:template match="heading">
         <xsl:param name="area" select="''"/>
@@ -52,22 +71,27 @@
         </xsl:variable>
         <xsl:choose>
             <xsl:when test="$area='contents'">
-                <tr>
-                    <td>
-                        <a>
-                            <xsl:attribute name="href">#<xsl:value-of select="@id"/></xsl:attribute>
-                            <xsl:attribute name="class">contentHeading<xsl:value-of select="$level"/></xsl:attribute>
-                            <xsl:attribute name="style">padding-left:<xsl:value-of select="$level*10-10"/>px;</xsl:attribute>
-                            <xsl:value-of select="$levelNumber"/>
-                        </a>
-                        <a>
-                            <xsl:attribute name="href">#<xsl:value-of select="@id"/></xsl:attribute>
-                            <xsl:attribute name="class">contentHeading<xsl:value-of select="$level"/></xsl:attribute>
-                            <xsl:attribute name="style">padding-left:10px;</xsl:attribute>
-                            <xsl:value-of select="."/>
-                        </a>
-                    </td>
-                </tr>
+                <div>
+                    <xsl:choose>
+                        <xsl:when test="$level = 1">
+                            <a><xsl:attribute name="id"><xsl:value-of select="@id"/>Toggle</xsl:attribute>
+                                <xsl:attribute name="class">ExpandCollapse</xsl:attribute>
+                                <xsl:attribute name="href">javascript:toggle_visibility('<xsl:value-of select="@id"/>Toggle', '<xsl:value-of select="@id"/>Section');</xsl:attribute>
+                                +</a>
+                        </xsl:when>
+                    </xsl:choose>
+                    <span>
+                        <xsl:attribute name="class">contentHeading<xsl:value-of select="$level"/></xsl:attribute>
+                        <xsl:attribute name="style">padding-left:<xsl:value-of select="$level*10-10"/>px;</xsl:attribute>
+                        <xsl:value-of select="$levelNumber"/>
+                    </span>
+                    <a>
+                        <xsl:attribute name="href">#<xsl:value-of select="@id"/></xsl:attribute>
+                        <xsl:attribute name="class">contentHeading<xsl:value-of select="$level"/></xsl:attribute>
+                        <xsl:attribute name="style">padding-left:10px;</xsl:attribute>
+                        <xsl:value-of select="."/>
+                    </a>
+                </div>
             </xsl:when>
             <xsl:when test="$area='body'">
                 <div style="margin-top:20px;">
