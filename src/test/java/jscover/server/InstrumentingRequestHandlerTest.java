@@ -358,10 +358,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mozilla.javascript.CompilerEnvirons;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -370,6 +367,7 @@ import java.util.List;
 
 import static java.lang.String.format;
 import static jscover.server.InstrumentingRequestHandler.JSCOVERAGE_STORE;
+import static org.hamcrest.CoreMatchers.any;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -424,6 +422,45 @@ public class InstrumentingRequestHandlerTest {
         verify(ioService).generateJSCoverFilesForWebServer(reportDir, "theVersion");
         verifyZeroInteractions(instrumenterService);
         assertThat(stringWriter.toString(), containsString(format("Coverage data stored at %s", reportDir)));
+    }
+
+    @Test
+    public void shouldDirectPOSTToHttpServer() {
+        given(configuration.isProxy()).willReturn(false);
+
+        HttpRequest request = new HttpRequest("somePostUrl");
+        webServer.handlePost(request, "thePostData");
+
+        verifyZeroInteractions(ioService);
+        verifyZeroInteractions(jsonDataSaver);
+        verifyZeroInteractions(instrumenterService);
+        assertThat(stringWriter.toString(), containsString("thePostData"));
+    }
+
+    @Test
+    public void shouldDirectGETToProxy() throws IOException {
+        given(configuration.isProxy()).willReturn(true);
+
+        HttpRequest request = new HttpRequest("somePostUrl");
+        webServer.handleGet(request);
+
+        verify(proxyService).handleProxyGet(request, null);
+        verifyZeroInteractions(ioService);
+        verifyZeroInteractions(jsonDataSaver);
+        verifyZeroInteractions(instrumenterService);
+    }
+
+    @Test
+    public void shouldDirectPOSTToProxy() {
+        given(configuration.isProxy()).willReturn(true);
+
+        HttpRequest request = new HttpRequest("somePostUrl");
+        webServer.handlePost(request, "data");
+
+        verify(proxyService).handleProxyPost(request, "data", null);
+        verifyZeroInteractions(ioService);
+        verifyZeroInteractions(jsonDataSaver);
+        verifyZeroInteractions(instrumenterService);
     }
 
     @Test
