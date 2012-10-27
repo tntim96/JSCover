@@ -345,10 +345,10 @@ package jscover.json;
 import jscover.util.IoUtils;
 import org.junit.Test;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedMap;
-import java.util.TreeMap;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -441,5 +441,17 @@ public class JSONDataMergerTest {
         assertThat(map.values().iterator().next().getCoverage().get(2), nullValue());
         assertThat(map.values().iterator().next().getSource().get(2), equalTo("z++;"));
         assertThat(map.values().iterator().next().getCoverage().get(3), equalTo(0));
+    }
+
+    @Test
+    public void shouldGenerateLCOVFormat() {
+        File rootDir = new File(".");
+        String data = IoUtils.loadFromClassPath("/jscover/json/jscoverage-select-3.json");
+        SortedMap<String, CoverageData> map = jsonMerger.jsonToMap(data);
+
+        String lcovString = jsonMerger.toLCOV(rootDir, map);
+
+        String expected = IoUtils.loadFromClassPath("/jscover/json/lcov-select-3.dat").replaceAll("@file@", rootDir.getAbsolutePath().replaceAll("\\\\","/")+map.firstKey());
+        assertThat(lcovString, equalTo(expected));
     }
 }

@@ -347,7 +347,10 @@ import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.ScriptRuntime;
 import org.mozilla.javascript.json.JsonParser;
 
+import java.io.File;
 import java.util.*;
+
+import static java.lang.String.format;
 
 class JSONDataMerger {
     private Context cx = Context.enter();
@@ -439,5 +442,21 @@ class JSONDataMerger {
             map.put(script.getUri(), coverageData);
         }
         return map;
+    }
+
+    String toLCOV(File rootDir, SortedMap<String, CoverageData> map) {
+        StringBuilder lcov = new StringBuilder();
+        for (String scriptURI : map.keySet()) {
+            lcov.append(format("SF:%s\n", rootDir.getAbsolutePath().replaceAll("\\\\","/") + scriptURI));
+            CoverageData coverageData = map.get(scriptURI);
+            for (int lineNumber=0; lineNumber<coverageData.getCoverage().size(); lineNumber++) {
+                Integer count = coverageData.getCoverage().get(lineNumber);
+                if (count != null) {
+                    lcov.append(format("DA:%d,%d\n", lineNumber, count));
+                }
+            }
+            lcov.append("end_of_record\n");
+        }
+        return lcov.toString();
     }
 }
