@@ -75,6 +75,14 @@ TD.arrow {
     vertical-align: middle;
 }
 
+TD.tick {
+	background-color: #00ff00;
+}
+
+TD.cross {
+	background-color: #ff0000;
+}
+
 HR {
 	align: center;
 	color: #99ccff;

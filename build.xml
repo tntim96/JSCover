@@ -35,6 +35,11 @@
 		<delete file="cobertura.ser" />
 	</target>
 
+	<target name="init">
+        <available file="../htmlunit-2.10" type="dir" property="htmlUnitPresent"/>
+        <fail unless="htmlUnitPresent" message="Please download HTMLUnit 2.10 and extract to '../htmlunit-2.10'"/>
+	</target>
+
 	<target name="dirsetup">
 		<mkdir dir="${build.dir}" />
 		<mkdir dir="${build.dir}/reports" />
@@ -51,7 +56,7 @@
 		<mkdir dir="${classes.test-acceptance.dir}" />
 	</target>
 
-	<target name="compile" depends="dirsetup">
+	<target name="compile" depends="init, dirsetup">
 		<javac includeantruntime="false" debug="true" srcdir="${src.main.dir}" destdir="${classes.main.dir}" classpathref="classpath-main" />
 		<copy todir="${classes.main.dir}" includeemptydirs="no">
 			<fileset dir="${src.resources.dir}" />
