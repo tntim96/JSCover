@@ -694,13 +694,13 @@ alert('Hello World!');</code>
                 <text>
                     <table>
                         <tr><th>Feature</th><th>JSCoverage (0.5.1)</th><th>JSCover (0.0.8)</th></tr>
-                        <tr><td>File Instrumentation</td><td class="tick">&#160;</td><td class="tick">&#160;</td></tr>
-                        <tr><td>Web Server Instrumentation</td><td class="tick">&#160;</td><td class="tick">&#160;</td></tr>
-                        <tr><td>Proxy Server Instrumentation</td><td class="tick">&#160;</td><td class="tick">&#160;</td></tr>
-                        <tr><td>Inclusion of Uncovered/Unloaded JavaScript</td><td class="cross">&#160;</td><td class="tick">&#160;</td></tr>
-                        <tr><td>JavaScript Syntax Highlighting</td><td class="tick">&#160;</td><td class="cross">&#160;</td></tr>
-                        <tr><td>Ignoring certain lines of code</td><td class="tick">&#160;</td><td class="cross">&#160;</td></tr>
-                        <tr><td>Branch Coverage</td><td class="cross">&#160;</td><td class="cross">&#160;</td></tr>
+                        <tr><td>File Instrumentation</td><td class="tick"></td><td class="tick"></td></tr>
+                        <tr><td>Web Server Instrumentation</td><td class="tick"></td><td class="tick"></td></tr>
+                        <tr><td>Proxy Server Instrumentation</td><td class="tick"></td><td class="tick"></td></tr>
+                        <tr><td>Inclusion of Uncovered/Unloaded JavaScript</td><td class="cross"></td><td class="tick"></td></tr>
+                        <tr><td>JavaScript Syntax Highlighting</td><td class="tick"></td><td class="cross"></td></tr>
+                        <tr><td>Ignoring certain lines of code</td><td class="tick"></td><td class="cross"></td></tr>
+                        <tr><td>Branch Coverage</td><td class="cross"></td><td class="cross"></td></tr>
                     </table>
                 </text>
                 <text>
@@ -709,6 +709,7 @@ alert('Hello World!');</code>
                         <li>JSCover's server mode works on Windows 7 (this was part of the incentive to write JSCover)</li>
                         <li>JSCover allows sorting of files by coverage</li>
                         <li>JSCover <a href="#automating">has added hooks</a> to assist with automated testing</li>
+                        <li>JSCover's default encoding is UTF-8, while JSCoverage's is ISO-8859-1</li>
                         <li>JSCoverage has an option for code coverage for Mozilla platform applications</li>
                     </ul>
                 </text>
