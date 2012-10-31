@@ -362,8 +362,19 @@ public class BranchInvestigationTest  implements NodeVisitor {
     private List<Integer> tokens = new ArrayList<Integer>();
 
     @Test
-    public void shouldDetectSimpleCondition() {
+    public void shouldHandleSimpleCondition() {
         String script = "if (x < 0) {\n" +
+                "  x++;\n" +
+                "};";
+        runTest(script);
+
+        assertThat(tokens.size(), equalTo(1));
+        assertThat(tokens, hasItem(Token.LT));
+    }
+
+    @Test
+    public void shouldHandleSimpleExpression() {
+        String script = "if (x++ < 0) {\n" +
                 "  x++;\n" +
                 "};";
         runTest(script);
@@ -419,23 +430,7 @@ public class BranchInvestigationTest  implements NodeVisitor {
     }
 
     private boolean isBoolean(AstNode node) {
-//        System.out.println(format("node: %s %d",Token.typeToName(node.getType()), node.getType()));
-        return node instanceof InfixExpression;// && !(node.getParent() instanceof InfixExpression);
-//        switch (node.getType()) {
-//            case Token.EQ:
-//            case Token.NE:
-//            case Token.LT:
-//            case Token.LE:
-//            case Token.GT:
-//            case Token.GE:
-//            case Token.NOT:
-//            case Token.SHEQ:
-//            case Token.SHNE:
-//            case Token.OR:
-//            case Token.AND:
-//                return true;
-//            default:return false;
-//        }
+        return node instanceof InfixExpression;
     }
 
     private void replaceWithFunction(InfixExpression node) {
@@ -444,22 +439,20 @@ public class BranchInvestigationTest  implements NodeVisitor {
         Name functionName = new Name();
         functionName.setIdentifier("visit"+(++count));
         FunctionNode functionNode = new FunctionNode(node.getPosition(), functionName);
-        if (node.getLeft() instanceof Name)
-            functionNode.addParam(node.getLeft());
-        if (node.getRight() instanceof Name)
-            functionNode.addParam(node.getRight());
 
-        Scope scope = new Scope();
         Name resultName = new Name();
         resultName.setIdentifier("result");
-        VariableDeclaration declaration = new VariableDeclaration();
-        declaration.setIsStatement(true);
-        VariableInitializer variableInitializer = new VariableInitializer();
-        variableInitializer.setTarget(resultName);
-        variableInitializer.setInitializer(node);
-        declaration.addVariable(variableInitializer);
+        functionNode.addParam(resultName);
+
+        Scope scope = new Scope();
+//        VariableDeclaration declaration = new VariableDeclaration();
+//        declaration.setIsStatement(true);
+//        VariableInitializer variableInitializer = new VariableInitializer();
+//        variableInitializer.setTarget(resultName);
+//        variableInitializer.setInitializer(node);
+//        declaration.addVariable(variableInitializer);
 //        variableInitializer.s
-        scope.addChild(declaration);
+//        scope.addChild(declaration);
 //        declaration.addVariable(variableInitializer);
 //        Assignment assignment = new Assignment(resultName, node);
 //        assignment.setOperator(Token.ASSIGN);
@@ -469,7 +462,6 @@ public class BranchInvestigationTest  implements NodeVisitor {
         ReturnStatement returnStatement = new ReturnStatement();
         returnStatement.setReturnValue(resultName);
         scope.addChild(returnStatement);
-//        functionNode.setBody(returnStatement);
         functionNode.setBody(scope);
         if (astRoot != null)
             astRoot.addChildrenToFront(functionNode);
@@ -479,18 +471,12 @@ public class BranchInvestigationTest  implements NodeVisitor {
         List<AstNode> arguments = new ArrayList<AstNode>();
         functionCall.setTarget(functionName);
 
-        AstNode left = node.getLeft();
-        if (left instanceof Name)
-            arguments.add(left);
-        AstNode right = node.getRight();
-        if (right instanceof Name)
-            arguments.add(right);
-//        System.out.println("functionCall = " + functionCall.toSource());
+        arguments.add(node);
         functionCall.setArguments(arguments);
         if (parent instanceof IfStatement && node == ((IfStatement) parent).getCondition()) {
             ((IfStatement) parent).setCondition(functionCall);
+        } else if (parent instanceof ParenthesizedExpression) {
+            ((ParenthesizedExpression)parent).setExpression(functionCall);
         }
-//        functionNode.setBody(node);
-//        node.getParent().replaceChild(node, functionNode);
     }
 }
