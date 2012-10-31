@@ -344,7 +344,9 @@ package jscover.instrument;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Parser;
+import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.Token;
 import org.mozilla.javascript.ast.*;
 
@@ -357,22 +359,27 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class BranchInvestigationTest  implements NodeVisitor {
-    private static int count = 0;
+    private static int visitCount = 0;
+    private static int conditionId = 1;
     private Parser parser = new Parser();
     private List<Integer> tokens = new ArrayList<Integer>();
 
     @Test
     public void shouldHandleSimpleCondition() {
-        String script = "if (x < 0) {\n" +
+        String script = "var branchData = {};" +
+                "var x = -1;\n" +
+                "if (x < 0) {\n" +
                 "  x++;\n" +
                 "};";
-        runTest(script);
+        Object result = runTest(script);
+        System.out.println("result = " + result);
 
         assertThat(tokens.size(), equalTo(1));
         assertThat(tokens, hasItem(Token.LT));
     }
 
     @Test
+    @Ignore
     public void shouldHandleSimpleExpression() {
         String script = "if (x++ < 0) {\n" +
                 "  x++;\n" +
@@ -384,6 +391,7 @@ public class BranchInvestigationTest  implements NodeVisitor {
     }
 
     @Test
+    @Ignore
     public void shouldDetectMultipleConditions() {
         String script = "if ((x < y) && (y >= z)) {\n" +
                 "  x++;\n" +
@@ -407,17 +415,22 @@ public class BranchInvestigationTest  implements NodeVisitor {
     }
 
     @Test
+    @Ignore
     public void shouldVarDec() {
         String script = "var result = 0;";
         runTest(script);
     }
 
-    private void runTest(String script) {
+    private Object runTest(String script) {
         System.out.println("--------------------------------------");
         System.out.println("script = " + script);
         AstRoot astRoot = parser.parse(script, null, 1);
         astRoot.visitAll(this);
         System.out.println("astRoot.toSource() = " + astRoot.toSource());
+
+        Context cx = Context.enter();
+        Scriptable scope = cx.initStandardObjects();
+        return cx.evaluateString(scope, astRoot.toSource(), "inMemory.js", 1, null);
     }
 
 
@@ -437,7 +450,7 @@ public class BranchInvestigationTest  implements NodeVisitor {
         AstRoot astRoot = node.getAstRoot();
         AstNode parent = node.getParent();
         Name functionName = new Name();
-        functionName.setIdentifier("visit"+(++count));
+        functionName.setIdentifier("visit"+(++visitCount));
         FunctionNode functionNode = new FunctionNode(node.getPosition(), functionName);
 
         Name resultName = new Name();
@@ -445,20 +458,14 @@ public class BranchInvestigationTest  implements NodeVisitor {
         functionNode.addParam(resultName);
 
         Scope scope = new Scope();
-//        VariableDeclaration declaration = new VariableDeclaration();
-//        declaration.setIsStatement(true);
-//        VariableInitializer variableInitializer = new VariableInitializer();
-//        variableInitializer.setTarget(resultName);
-//        variableInitializer.setInitializer(node);
-//        declaration.addVariable(variableInitializer);
-//        variableInitializer.s
-//        scope.addChild(declaration);
-//        declaration.addVariable(variableInitializer);
-//        Assignment assignment = new Assignment(resultName, node);
+
+        //Record visit
+//        Name branchDataVar = new Name();
+//        resultName.setIdentifier("branchData");
+//        Assignment assignment = new Assignment(branchDataVar, node);
 //        assignment.setOperator(Token.ASSIGN);
 //        scope.addChild(assignment);
-//        Scope scope = new Scope();
-//        scope.addChild();
+
         ReturnStatement returnStatement = new ReturnStatement();
         returnStatement.setReturnValue(resultName);
         scope.addChild(returnStatement);
@@ -475,6 +482,7 @@ public class BranchInvestigationTest  implements NodeVisitor {
         functionCall.setArguments(arguments);
         if (parent instanceof IfStatement && node == ((IfStatement) parent).getCondition()) {
             ((IfStatement) parent).setCondition(functionCall);
+
         } else if (parent instanceof ParenthesizedExpression) {
             ((ParenthesizedExpression)parent).setExpression(functionCall);
         }
