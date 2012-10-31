@@ -53,6 +53,12 @@ public class BranchInvestigationTest  implements NodeVisitor {
         assertThat(tokens, hasItem(Token.SHEQ));
     }
 
+    @Test
+    public void shouldVarDec() {
+        String script = "var result = 0;";
+        runTest(script);
+    }
+
     private void runTest(String script) {
         System.out.println("--------------------------------------");
         System.out.println("script = " + script);
@@ -93,21 +99,43 @@ public class BranchInvestigationTest  implements NodeVisitor {
     private void replaceWithFunction(InfixExpression node) {
         AstRoot astRoot = node.getAstRoot();
         AstNode parent = node.getParent();
-        Name name = new Name(1, "visit"+(++count));
-        FunctionNode functionNode = new FunctionNode(node.getPosition(), name);
+        Name functionName = new Name();
+        functionName.setIdentifier("visit"+(++count));
+        FunctionNode functionNode = new FunctionNode(node.getPosition(), functionName);
         if (node.getLeft() instanceof Name)
             functionNode.addParam(node.getLeft());
         if (node.getRight() instanceof Name)
             functionNode.addParam(node.getRight());
+
+        Scope scope = new Scope();
+        Name resultName = new Name();
+        resultName.setIdentifier("result");
+        VariableDeclaration declaration = new VariableDeclaration();
+        declaration.setIsStatement(true);
+        VariableInitializer variableInitializer = new VariableInitializer();
+        variableInitializer.setTarget(resultName);
+        variableInitializer.setInitializer(node);
+        declaration.addVariable(variableInitializer);
+//        variableInitializer.s
+        scope.addChild(declaration);
+//        declaration.addVariable(variableInitializer);
+//        Assignment assignment = new Assignment(resultName, node);
+//        assignment.setOperator(Token.ASSIGN);
+//        scope.addChild(assignment);
+//        Scope scope = new Scope();
+//        scope.addChild();
         ReturnStatement returnStatement = new ReturnStatement();
-        returnStatement.setReturnValue(node);
-        functionNode.setBody(returnStatement);
+        returnStatement.setReturnValue(resultName);
+        scope.addChild(returnStatement);
+//        functionNode.setBody(returnStatement);
+        functionNode.setBody(scope);
         if (astRoot != null)
             astRoot.addChildrenToFront(functionNode);
 
+
         FunctionCall functionCall = new FunctionCall();
         List<AstNode> arguments = new ArrayList<AstNode>();
-        functionCall.setTarget(name);
+        functionCall.setTarget(functionName);
 
         AstNode left = node.getLeft();
         if (left instanceof Name)
