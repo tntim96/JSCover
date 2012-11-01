@@ -345,12 +345,15 @@ package jscover.instrument;
 import org.junit.Test;
 import org.mozilla.javascript.ast.ExpressionStatement;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 public class BranchStatementBuilderTest {
     private BranchStatementBuilder builder = new BranchStatementBuilder();
 
     @Test
     public void shouldBuildDeclaration() {
-        ExpressionStatement statement = builder.buildDeclaration("test.js");
-        System.out.println("statement.toSource() = " + statement.toSource());
+        ExpressionStatement statement = builder.buildDeclaration("test.js", 4);
+        assertThat(statement.toSource(), equalTo("_$jscoverage.branchData['test.js'][4];\n"));
     }
 }

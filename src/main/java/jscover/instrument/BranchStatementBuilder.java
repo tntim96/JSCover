@@ -345,7 +345,7 @@ package jscover.instrument;
 import org.mozilla.javascript.ast.*;
 
 public class BranchStatementBuilder {
-    public ExpressionStatement buildDeclaration(String fileName) {
+    public ExpressionStatement buildDeclaration(String uri, int lineNo) {
         Name jscoverageVar = new Name();
         jscoverageVar.setIdentifier("_$jscoverage");
 
@@ -353,20 +353,18 @@ public class BranchStatementBuilder {
         branchPropertyName.setIdentifier("branchData");
         PropertyGet branchProperty = new PropertyGet(jscoverageVar, branchPropertyName);
 
+        StringLiteral fileNameLiteral = new StringLiteral();
+        fileNameLiteral.setValue(uri);
+        fileNameLiteral.setQuoteCharacter('\'');
+        ElementGet indexJSFile = new ElementGet(branchProperty, fileNameLiteral);
 
-
-//        StringLiteral fileNameLiteral = new StringLiteral();
-//        fileNameLiteral.setValue("test.js");
-//        fileNameLiteral.setQuoteCharacter('\'');
-//        ElementGet indexJSFile = new ElementGet(branchProperty, fileNameLiteral);
-
-//        NumberLiteral lineNumberLiteral = new NumberLiteral();
-//        lineNumberLiteral.setValue("" + node.getLineno());
-//        ElementGet indexLineNumber = new ElementGet(indexJSFile, lineNumberLiteral);
+        NumberLiteral lineNumberLiteral = new NumberLiteral();
+        lineNumberLiteral.setValue("" + lineNo);
+        ElementGet indexLineNumber = new ElementGet(indexJSFile, lineNumberLiteral);
 
 //        NumberLiteral conditionNumberLiteral = new NumberLiteral();
 //        conditionNumberLiteral.setValue("" + visitCount);
 //        ElementGet indexConditionNumber = new ElementGet(indexLineNumber, conditionNumberLiteral);
-        return new ExpressionStatement(branchProperty);
+        return new ExpressionStatement(indexLineNumber);
     }
 }
