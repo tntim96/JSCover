@@ -1,0 +1,22 @@
+<html>
+<head>
+    <title>Jasmine Test Suite</title>
+
+    <link rel="stylesheet" href="../lib/jasmine/jasmine.css">
+    <script src="../../../../doc/js/jquery-1.8.2.min.js"></script>
+    <script src="../lib/jasmine/jasmine.js"></script>
+    <script src="../lib/jasmine/jasmine-html.js"></script>
+
+    <script type="text/javascript" src="../../../main/resources/jscoverage-branch.js"></script>
+    <script type="text/javascript" src="branch_data_spec.js"></script>
+
+    <script type="text/javascript">
+    $(document).ready(function(){
+      jasmine.getEnv().addReporter(new jasmine.TrivialReporter());
+      jasmine.getEnv().execute();
+    });
+    </script>
+</head>
+<body>
+</body>
+</html>

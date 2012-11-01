@@ -49,6 +49,7 @@
 		<mkdir dir="${report.checkstyle.dir}" />
 		<mkdir dir="${report.coverage.dir}" />
 		<mkdir dir="${report.coverage.all.dir}" />
+		<mkdir dir="${report.jscoverage.dir}" />
 		<mkdir dir="${classes.main.dir}" />
 		<mkdir dir="${classes.instrumented.dir}" />
 		<mkdir dir="${classes.test-unit.dir}" />
