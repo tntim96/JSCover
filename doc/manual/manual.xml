@@ -625,6 +625,34 @@
                 <code>String jscoverageJson = selenium.getEval("selenium.browserbot.getUserWindow().jscoverage_serializeCoverageToJSON();");</code>
             </text>
         </item>
+        <item>
+            <heading id="automatingAnt">Ant</heading>
+            <text>
+                Example starting the server
+<code>    &lt;target name="JSCover-start"&gt;
+        &lt;java jar="JSCover-all.jar" fork="true" spawn="true"&gt;
+            &lt;arg value="-ws"/&gt;
+            &lt;arg value="--report-dir=${jscover.dir}"/&gt;
+            &lt;arg value="--no-instrument=src/main/webapp/js/lib"/&gt;
+            &lt;arg value="--no-instrument=src/test/"/&gt;
+            &lt;arg value="--include-unloaded-js"/&gt;
+            &lt;arg value="--port=8081"/&gt;
+        &lt;/java&gt;
+        &lt;waitfor maxwait="5" maxwaitunit="second" checkevery="250" checkeveryunit="millisecond" timeoutproperty="failed"&gt;
+            &lt;http url="http://localhost:8081/jscoverage.html"/&gt;
+        &lt;/waitfor&gt;
+        &lt;fail if="failed"/&gt;
+    &lt;/target&gt;
+</code>
+            </text>
+            <text>
+                Example stopping the server
+<code>    &lt;target name="JSCover-stop"&gt;
+        &lt;get src="http://localhost:8081/stop" dest="${build.dir}/stop.txt" /&gt;
+    &lt;/target&gt;
+</code>
+            </text>
+        </item>
         </section>
     </item>
     <item>

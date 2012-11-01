@@ -366,11 +366,12 @@ public class BranchInvestigationTest  implements NodeVisitor {
 
     @Test
     public void shouldHandleSimpleCondition() {
-        String script = "var branchData = {};" +
+        String script = "var _$jscoverage = {};" +
                 "var x = -1;\n" +
                 "if (x < 0) {\n" +
                 "  x++;\n" +
-                "};";
+                "};\n" +
+                "_$jscoverage.branchData;";
         Object result = runTest(script);
         System.out.println("result = " + result);
 
@@ -443,7 +444,7 @@ public class BranchInvestigationTest  implements NodeVisitor {
     }
 
     private boolean isBoolean(AstNode node) {
-        return node instanceof InfixExpression;
+        return node instanceof InfixExpression && !(node instanceof Assignment);
     }
 
     private void replaceWithFunction(InfixExpression node) {
@@ -460,11 +461,32 @@ public class BranchInvestigationTest  implements NodeVisitor {
         Scope scope = new Scope();
 
         //Record visit
-//        Name branchDataVar = new Name();
-//        resultName.setIdentifier("branchData");
-//        Assignment assignment = new Assignment(branchDataVar, node);
-//        assignment.setOperator(Token.ASSIGN);
-//        scope.addChild(assignment);
+        Name jscoverageVar = new Name();
+        jscoverageVar.setIdentifier("_$jscoverage");
+
+        Name branchPropertyName = new Name();
+        branchPropertyName.setIdentifier("branchData");
+        PropertyGet branchProperty = new PropertyGet(jscoverageVar, branchPropertyName);
+
+        StringLiteral fileNameLiteral = new StringLiteral();
+        fileNameLiteral.setValue("test.js");
+        fileNameLiteral.setQuoteCharacter('\'');
+        ElementGet indexJSFile = new ElementGet(branchProperty, fileNameLiteral);
+
+        NumberLiteral lineNumberLiteral = new NumberLiteral();
+        lineNumberLiteral.setValue("" + node.getLineno());
+        ElementGet indexLineNumber = new ElementGet(indexJSFile, lineNumberLiteral);
+
+        NumberLiteral conditionNumberLiteral = new NumberLiteral();
+        conditionNumberLiteral.setValue("" + visitCount);
+        ElementGet indexConditionNumber = new ElementGet(indexLineNumber, conditionNumberLiteral);
+
+
+        NumberLiteral value = new NumberLiteral();
+        value.setValue("12");
+        Assignment assignment = new Assignment(indexConditionNumber, value);
+        assignment.setOperator(Token.ASSIGN);
+        scope.addChild(new ExpressionStatement(assignment));
 
         ReturnStatement returnStatement = new ReturnStatement();
         returnStatement.setReturnValue(resultName);
