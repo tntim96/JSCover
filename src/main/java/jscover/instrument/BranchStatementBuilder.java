@@ -342,126 +342,10 @@ Public License instead of this License.
 
 package jscover.instrument;
 
-import org.junit.Ignore;
-import org.junit.Test;
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.Parser;
-import org.mozilla.javascript.Scriptable;
-import org.mozilla.javascript.Token;
 import org.mozilla.javascript.ast.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static java.lang.String.format;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.MatcherAssert.assertThat;
-
-public class BranchInvestigationTest  implements NodeVisitor {
-    private static int visitCount = 0;
-    private static int conditionId = 1;
-    private Parser parser = new Parser();
-    private List<Integer> tokens = new ArrayList<Integer>();
-
-    @Test
-    @Ignore
-    public void shouldHandleSimpleCondition() {
-        String script = "var _$jscoverage = {};" +
-                "var x = -1;\n" +
-                "if (x < 0) {\n" +
-                "  x++;\n" +
-                "};\n" +
-                "_$jscoverage.branchData;";
-        Object result = runTest(script);
-        System.out.println("result = " + result);
-
-        assertThat(tokens.size(), equalTo(1));
-        assertThat(tokens, hasItem(Token.LT));
-    }
-
-    @Test
-    @Ignore
-    public void shouldHandleSimpleExpression() {
-        String script = "if (x++ < 0) {\n" +
-                "  x++;\n" +
-                "};";
-        runTest(script);
-
-        assertThat(tokens.size(), equalTo(1));
-        assertThat(tokens, hasItem(Token.LT));
-    }
-
-    @Test
-    @Ignore
-    public void shouldDetectMultipleConditions() {
-        String script = "if ((x < y) && (y >= z)) {\n" +
-                "  x++;\n" +
-                "};";
-        runTest(script);
-
-        assertThat(tokens.size(), equalTo(3));
-        assertThat(tokens, hasItem(Token.LT));
-        assertThat(tokens, hasItem(Token.GE));
-        assertThat(tokens, hasItem(Token.AND));
-    }
-
-    @Test
-    @Ignore
-    public void shouldDetectTernary() {
-        String script = "x = x === 0 ? x : y;";
-        runTest(script);
-
-        assertThat(tokens.size(), equalTo(1));
-        assertThat(tokens, hasItem(Token.SHEQ));
-    }
-
-    @Test
-    @Ignore
-    public void shouldVarDec() {
-        String script = "var result = 0;";
-        runTest(script);
-    }
-
-    private Object runTest(String script) {
-        System.out.println("--------------------------------------");
-        System.out.println("script = " + script);
-        AstRoot astRoot = parser.parse(script, null, 1);
-        astRoot.visitAll(this);
-        System.out.println("astRoot.toSource() = " + astRoot.toSource());
-
-        Context cx = Context.enter();
-        Scriptable scope = cx.initStandardObjects();
-        return cx.evaluateString(scope, astRoot.toSource(), "inMemory.js", 1, null);
-    }
-
-
-    public boolean visit(AstNode node) {
-        if (isBoolean(node)) {
-            tokens.add(node.getType());
-            replaceWithFunction((InfixExpression)node);
-        }
-        return true;
-    }
-
-    private boolean isBoolean(AstNode node) {
-        return node instanceof InfixExpression && !(node instanceof Assignment);
-    }
-
-    private void replaceWithFunction(InfixExpression node) {
-        AstRoot astRoot = node.getAstRoot();
-        AstNode parent = node.getParent();
-        Name functionName = new Name();
-        functionName.setIdentifier("visit"+(++visitCount));
-        FunctionNode functionNode = new FunctionNode(node.getPosition(), functionName);
-
-        Name resultName = new Name();
-        resultName.setIdentifier("result");
-        functionNode.addParam(resultName);
-
-        Scope scope = new Scope();
-
-        //Record visit
+public class BranchStatementBuilder {
+    public ExpressionStatement buildDeclaration(String fileName) {
         Name jscoverageVar = new Name();
         jscoverageVar.setIdentifier("_$jscoverage");
 
@@ -469,45 +353,20 @@ public class BranchInvestigationTest  implements NodeVisitor {
         branchPropertyName.setIdentifier("branchData");
         PropertyGet branchProperty = new PropertyGet(jscoverageVar, branchPropertyName);
 
-        StringLiteral fileNameLiteral = new StringLiteral();
-        fileNameLiteral.setValue("test.js");
-        fileNameLiteral.setQuoteCharacter('\'');
-        ElementGet indexJSFile = new ElementGet(branchProperty, fileNameLiteral);
-
-        NumberLiteral lineNumberLiteral = new NumberLiteral();
-        lineNumberLiteral.setValue("" + node.getLineno());
-        ElementGet indexLineNumber = new ElementGet(indexJSFile, lineNumberLiteral);
-
-        NumberLiteral conditionNumberLiteral = new NumberLiteral();
-        conditionNumberLiteral.setValue("" + visitCount);
-        ElementGet indexConditionNumber = new ElementGet(indexLineNumber, conditionNumberLiteral);
 
 
-        NumberLiteral value = new NumberLiteral();
-        value.setValue("12");
-        Assignment assignment = new Assignment(indexConditionNumber, value);
-        assignment.setOperator(Token.ASSIGN);
-        scope.addChild(new ExpressionStatement(assignment));
+//        StringLiteral fileNameLiteral = new StringLiteral();
+//        fileNameLiteral.setValue("test.js");
+//        fileNameLiteral.setQuoteCharacter('\'');
+//        ElementGet indexJSFile = new ElementGet(branchProperty, fileNameLiteral);
 
-        ReturnStatement returnStatement = new ReturnStatement();
-        returnStatement.setReturnValue(resultName);
-        scope.addChild(returnStatement);
-        functionNode.setBody(scope);
-        if (astRoot != null)
-            astRoot.addChildrenToFront(functionNode);
+//        NumberLiteral lineNumberLiteral = new NumberLiteral();
+//        lineNumberLiteral.setValue("" + node.getLineno());
+//        ElementGet indexLineNumber = new ElementGet(indexJSFile, lineNumberLiteral);
 
-
-        FunctionCall functionCall = new FunctionCall();
-        List<AstNode> arguments = new ArrayList<AstNode>();
-        functionCall.setTarget(functionName);
-
-        arguments.add(node);
-        functionCall.setArguments(arguments);
-        if (parent instanceof IfStatement && node == ((IfStatement) parent).getCondition()) {
-            ((IfStatement) parent).setCondition(functionCall);
-
-        } else if (parent instanceof ParenthesizedExpression) {
-            ((ParenthesizedExpression)parent).setExpression(functionCall);
-        }
+//        NumberLiteral conditionNumberLiteral = new NumberLiteral();
+//        conditionNumberLiteral.setValue("" + visitCount);
+//        ElementGet indexConditionNumber = new ElementGet(indexLineNumber, conditionNumberLiteral);
+        return new ExpressionStatement(branchProperty);
     }
 }

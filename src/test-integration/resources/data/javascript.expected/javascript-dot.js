@@ -1,5 +1,6 @@
 if (! _$jscoverage['javascript-dot.js']) {
   _$jscoverage['javascript-dot.js'] = [];
+  _$jscoverage.branchData['javascript-dot.js'] = [];
   _$jscoverage['javascript-dot.js'][1] = 0;
   _$jscoverage['javascript-dot.js'][2] = 0;
   _$jscoverage['javascript-dot.js'][3] = 0;

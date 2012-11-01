@@ -353,6 +353,8 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.SortedSet;
 
+import static java.lang.String.format;
+
 class SourceProcessor {
 
     private static final String initLine = "  _$jscoverage['%s'][%d] = 0;\n";
@@ -395,7 +397,7 @@ class SourceProcessor {
         String jsLineInitialization = getJsLineInitialization(uri, instrumenter.getValidLines());
 
         String jsArrayOfHtml = sourceFormatter.toJsArrayOfHtml(source);
-        String jsSourceLine = String.format(sourceInOneLine, uri, jsArrayOfHtml);
+        String jsSourceLine = format(sourceInOneLine, uri, jsArrayOfHtml);
         return jsLineInitialization + jsSourceLine + instrumentedSource;
     }
 
@@ -415,10 +417,11 @@ class SourceProcessor {
     }
 
     protected String getJsLineInitialization(String fileName, SortedSet<Integer> validlines) {
-        StringBuilder sb = new StringBuilder(String.format("if (! _$jscoverage['%s']) {\n", fileName));
-        sb.append(String.format("  _$jscoverage['%s'] = [];\n", fileName));
+        StringBuilder sb = new StringBuilder(format("if (! _$jscoverage['%s']) {\n", fileName));
+        sb.append(format("  _$jscoverage['%s'] = [];\n", fileName));
+        sb.append(format("  _$jscoverage.branchData['%s'] = [];\n", fileName));
         for (Integer line : validlines) {
-            sb.append(String.format(initLine, fileName, line));
+            sb.append(format(initLine, fileName, line));
         }
         sb.append("}\n");
         return sb.toString();

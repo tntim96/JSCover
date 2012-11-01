@@ -1,5 +1,6 @@
 if (! _$jscoverage['javascript-let.js']) {
   _$jscoverage['javascript-let.js'] = [];
+  _$jscoverage.branchData['javascript-let.js'] = [];
   _$jscoverage['javascript-let.js'][5] = 0;
   _$jscoverage['javascript-let.js'][6] = 0;
   _$jscoverage['javascript-let.js'][11] = 0;

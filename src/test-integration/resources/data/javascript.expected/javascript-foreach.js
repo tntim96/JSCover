@@ -1,5 +1,6 @@
 if (! _$jscoverage['javascript-foreach.js']) {
   _$jscoverage['javascript-foreach.js'] = [];
+  _$jscoverage.branchData['javascript-foreach.js'] = [];
   _$jscoverage['javascript-foreach.js'][6] = 0;
   _$jscoverage['javascript-foreach.js'][7] = 0;
 }

@@ -1,5 +1,6 @@
 if (! _$jscoverage['javascript-generator-expression.js']) {
   _$jscoverage['javascript-generator-expression.js'] = [];
+  _$jscoverage.branchData['javascript-generator-expression.js'] = [];
   _$jscoverage['javascript-generator-expression.js'][3] = 0;
   _$jscoverage['javascript-generator-expression.js'][4] = 0;
   _$jscoverage['javascript-generator-expression.js'][5] = 0;

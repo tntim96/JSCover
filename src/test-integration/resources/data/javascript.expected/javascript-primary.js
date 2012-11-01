@@ -1,5 +1,6 @@
 if (! _$jscoverage['javascript-primary.js']) {
   _$jscoverage['javascript-primary.js'] = [];
+  _$jscoverage.branchData['javascript-primary.js'] = [];
   _$jscoverage['javascript-primary.js'][1] = 0;
   _$jscoverage['javascript-primary.js'][2] = 0;
   _$jscoverage['javascript-primary.js'][3] = 0;

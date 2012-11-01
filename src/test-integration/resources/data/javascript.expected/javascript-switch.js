@@ -1,5 +1,6 @@
 if (! _$jscoverage['javascript-switch.js']) {
   _$jscoverage['javascript-switch.js'] = [];
+  _$jscoverage.branchData['javascript-switch.js'] = [];
   _$jscoverage['javascript-switch.js'][1] = 0;
   _$jscoverage['javascript-switch.js'][3] = 0;
   _$jscoverage['javascript-switch.js'][4] = 0;

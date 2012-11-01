@@ -35,4 +35,5 @@ try {
 catch (e) {}
 if (! this._$jscoverage) {
   this._$jscoverage = {};
+  this._$jscoverage.branchData = {};
 }

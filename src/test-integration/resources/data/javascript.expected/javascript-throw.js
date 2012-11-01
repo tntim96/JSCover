@@ -1,5 +1,6 @@
 if (! _$jscoverage['javascript-throw.js']) {
   _$jscoverage['javascript-throw.js'] = [];
+  _$jscoverage.branchData['javascript-throw.js'] = [];
   _$jscoverage['javascript-throw.js'][1] = 0;
   _$jscoverage['javascript-throw.js'][2] = 0;
   _$jscoverage['javascript-throw.js'][5] = 0;

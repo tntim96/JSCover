@@ -1,5 +1,6 @@
 if (! _$jscoverage['javascript-unaryop.js']) {
   _$jscoverage['javascript-unaryop.js'] = [];
+  _$jscoverage.branchData['javascript-unaryop.js'] = [];
   _$jscoverage['javascript-unaryop.js'][1] = 0;
   _$jscoverage['javascript-unaryop.js'][2] = 0;
   _$jscoverage['javascript-unaryop.js'][3] = 0;

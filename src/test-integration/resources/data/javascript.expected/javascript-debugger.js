@@ -1,5 +1,6 @@
 if (! _$jscoverage['javascript-debugger.js']) {
   _$jscoverage['javascript-debugger.js'] = [];
+  _$jscoverage.branchData['javascript-debugger.js'] = [];
   _$jscoverage['javascript-debugger.js'][1] = 0;
   _$jscoverage['javascript-debugger.js'][2] = 0;
   _$jscoverage['javascript-debugger.js'][5] = 0;

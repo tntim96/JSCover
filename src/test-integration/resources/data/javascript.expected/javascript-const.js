@@ -1,5 +1,6 @@
 if (! _$jscoverage['javascript-const.js']) {
   _$jscoverage['javascript-const.js'] = [];
+  _$jscoverage.branchData['javascript-const.js'] = [];
   _$jscoverage['javascript-const.js'][1] = 0;
   _$jscoverage['javascript-const.js'][2] = 0;
 }

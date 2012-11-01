@@ -35,9 +35,11 @@ try {
 catch (e) {}
 if (! this._$jscoverage) {
   this._$jscoverage = {};
+  this._$jscoverage.branchData = {};
 }
 if (! _$jscoverage['test-simple.js']) {
   _$jscoverage['test-simple.js'] = [];
+  _$jscoverage.branchData['test-simple.js'] = [];
   _$jscoverage['test-simple.js'][1] = 0;
   _$jscoverage['test-simple.js'][2] = 0;
   _$jscoverage['test-simple.js'][3] = 0;

@@ -1,5 +1,6 @@
 if (! _$jscoverage['javascript-hook.js']) {
   _$jscoverage['javascript-hook.js'] = [];
+  _$jscoverage.branchData['javascript-hook.js'] = [];
   _$jscoverage['javascript-hook.js'][1] = 0;
   _$jscoverage['javascript-hook.js'][2] = 0;
 }

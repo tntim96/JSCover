@@ -1,5 +1,6 @@
 if (! _$jscoverage['javascript-function.js']) {
   _$jscoverage['javascript-function.js'] = [];
+  _$jscoverage.branchData['javascript-function.js'] = [];
   _$jscoverage['javascript-function.js'][1] = 0;
   _$jscoverage['javascript-function.js'][3] = 0;
   _$jscoverage['javascript-function.js'][4] = 0;

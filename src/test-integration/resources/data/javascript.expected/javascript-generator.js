@@ -1,5 +1,6 @@
 if (! _$jscoverage['javascript-generator.js']) {
   _$jscoverage['javascript-generator.js'] = [];
+  _$jscoverage.branchData['javascript-generator.js'] = [];
   _$jscoverage['javascript-generator.js'][3] = 0;
   _$jscoverage['javascript-generator.js'][4] = 0;
   _$jscoverage['javascript-generator.js'][5] = 0;
