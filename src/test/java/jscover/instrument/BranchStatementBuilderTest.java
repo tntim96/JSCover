@@ -354,6 +354,6 @@ public class BranchStatementBuilderTest {
     @Test
     public void shouldBuildDeclaration() {
         ExpressionStatement statement = builder.buildDeclaration("test.js", 4);
-        assertThat(statement.toSource(), equalTo("_$jscoverage.branchData['test.js'][4];\n"));
+        assertThat(statement.toSource(), equalTo("_$jscoverage.branchData['test.js'][4] = {};\n"));
     }
 }

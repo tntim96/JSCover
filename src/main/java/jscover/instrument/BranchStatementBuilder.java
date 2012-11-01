@@ -342,6 +342,7 @@ Public License instead of this License.
 
 package jscover.instrument;
 
+import org.mozilla.javascript.Token;
 import org.mozilla.javascript.ast.*;
 
 public class BranchStatementBuilder {
@@ -362,9 +363,12 @@ public class BranchStatementBuilder {
         lineNumberLiteral.setValue("" + lineNo);
         ElementGet indexLineNumber = new ElementGet(indexJSFile, lineNumberLiteral);
 
+        Assignment assignment = new Assignment(indexLineNumber, new ObjectLiteral());
+        assignment.setOperator(Token.ASSIGN);
+
 //        NumberLiteral conditionNumberLiteral = new NumberLiteral();
 //        conditionNumberLiteral.setValue("" + visitCount);
 //        ElementGet indexConditionNumber = new ElementGet(indexLineNumber, conditionNumberLiteral);
-        return new ExpressionStatement(indexLineNumber);
+        return new ExpressionStatement(assignment);
     }
 }
