@@ -4,6 +4,7 @@ try {
 
     if (! top.opener._$jscoverage) {
       top.opener._$jscoverage = {};
+      top.opener._$jscoverage.branchData = {};
     }
   }
 }
@@ -22,6 +23,7 @@ try {
 
     if (! top._$jscoverage) {
       top._$jscoverage = {};
+      top._$jscoverage.branchData = {};
     }
   }
 }

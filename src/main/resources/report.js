@@ -44,6 +44,8 @@ if (! window.jscoverage_report) {
     var json = [];
     for (var file in _$jscoverage) {
       var coverage = _$jscoverage[file];
+      if (file === 'branchData')
+          continue;
 
       var array = [];
       var length = coverage.length;

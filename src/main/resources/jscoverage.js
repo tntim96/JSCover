@@ -68,6 +68,7 @@ function jscoverage_init(w) {
   if (! jscoverage_isInvertedMode) {
     if (! w._$jscoverage) {
       w._$jscoverage = {};
+      w._$jscoverage.branchData = {};
     }
   }
 }
@@ -496,6 +497,8 @@ function jscoverage_recalculateSummaryTab(cc) {
   var file;
   var files = [];
   for (file in cc) {
+    if (file === 'branchData')
+        continue;
     files.push(file);
   }
   if (files.length === 0)
@@ -1092,6 +1095,8 @@ function jscoverage_quote(s) {
 function jscoverage_serializeCoverageToJSON() {
   var json = [];
   for (var file in _$jscoverage) {
+    if (file === 'branchData')
+        continue;
     var coverage = _$jscoverage[file];
 
     var array = [];
