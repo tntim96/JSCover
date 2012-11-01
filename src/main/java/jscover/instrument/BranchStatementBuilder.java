@@ -346,7 +346,27 @@ import org.mozilla.javascript.Token;
 import org.mozilla.javascript.ast.*;
 
 public class BranchStatementBuilder {
-    public ExpressionStatement buildDeclaration(String uri, int lineNo) {
+    public ExpressionStatement buildLineInitialisation(String uri, int lineNo) {
+        ElementGet indexLineNumber = buildLineDeclaration(uri, lineNo);
+
+        Assignment assignment = new Assignment(indexLineNumber, new ObjectLiteral());
+        assignment.setOperator(Token.ASSIGN);
+        return new ExpressionStatement(assignment);
+    }
+
+    public ExpressionStatement buildLineAndConditionInitialisation(String uri, int lineNo, int conditionNo) {
+        ElementGet indexLineNumber = buildLineDeclaration(uri, lineNo);
+
+        NumberLiteral conditionNumberLiteral = new NumberLiteral();
+        conditionNumberLiteral.setValue("" + conditionNo);
+        ElementGet indexConditionNumber = new ElementGet(indexLineNumber, conditionNumberLiteral);
+
+        Assignment assignment = new Assignment(indexConditionNumber, new ObjectLiteral());
+        assignment.setOperator(Token.ASSIGN);
+        return new ExpressionStatement(assignment);
+    }
+
+    private ElementGet buildLineDeclaration(String uri, int lineNo) {
         Name jscoverageVar = new Name();
         jscoverageVar.setIdentifier("_$jscoverage");
 
@@ -361,14 +381,6 @@ public class BranchStatementBuilder {
 
         NumberLiteral lineNumberLiteral = new NumberLiteral();
         lineNumberLiteral.setValue("" + lineNo);
-        ElementGet indexLineNumber = new ElementGet(indexJSFile, lineNumberLiteral);
-
-        Assignment assignment = new Assignment(indexLineNumber, new ObjectLiteral());
-        assignment.setOperator(Token.ASSIGN);
-
-//        NumberLiteral conditionNumberLiteral = new NumberLiteral();
-//        conditionNumberLiteral.setValue("" + visitCount);
-//        ElementGet indexConditionNumber = new ElementGet(indexLineNumber, conditionNumberLiteral);
-        return new ExpressionStatement(assignment);
+        return new ElementGet(indexJSFile, lineNumberLiteral);
     }
 }
