@@ -342,97 +342,111 @@ Public License instead of this License.
 
 package jscover.instrument;
 
-import org.mozilla.javascript.Token;
+import jscover.util.IoUtils;
+import org.junit.Test;
+import org.mozilla.javascript.*;
 import org.mozilla.javascript.ast.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.lang.String.format;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 
-public class BranchStatementBuilder {
-    public ExpressionStatement buildLineInitialisation(String uri, int lineNo) {
-        ElementGet indexLineNumber = buildLineDeclaration(uri, lineNo);
+public class BranchStatementBuilderIntegrationTest implements NodeVisitor {
+    private static String branchObjectHeader = IoUtils.loadFromClassPath("/jscoverage-branch.js");
+    private static String header = "var _$jscoverage = {};\n" +
+            "_$jscoverage.branchData = {};\n" +
+            "_$jscoverage.branchData['test.js'] = {};\n";
+    private int conditionId = 1;
+    private BranchStatementBuilder branchStatementBuilder = new BranchStatementBuilder();
+    private Parser parser = new Parser();
 
-        Assignment assignment = new Assignment(indexLineNumber, new ObjectLiteral());
-        assignment.setOperator(Token.ASSIGN);
-        return new ExpressionStatement(assignment);
+    @Test
+    public void shouldHandleSimpleCondition() {
+        String script = "var x = -1;\n" +
+                "if (x < 0) {\n" +
+                "  x++;\n" +
+                "};\n" +
+                "_$jscoverage.branchData['test.js'][2][1];";
+        NativeObject result = (NativeObject)runTest(script);
+        System.out.println("result = " + result);
+
+        assertThat((Boolean)result.get("evalTrue"), equalTo(true));
+        assertThat((Boolean)result.get("evalFalse"), equalTo(false));
     }
 
-    public ExpressionStatement buildLineAndConditionInitialisation(String uri, int lineNo, int conditionNo) {
-        ElementGet indexLineNumber = buildLineDeclaration(uri, lineNo);
+    private Object runTest(String script) {
+        System.out.println("--------------------------------------");
+        System.out.println("script = " + script);
+        AstRoot astRoot = parser.parse(script, null, 1);
+        astRoot.visitAll(this);
+        System.out.println("astRoot.toSource() = " + astRoot.toSource());
 
-        NumberLiteral conditionNumberLiteral = new NumberLiteral();
-        conditionNumberLiteral.setValue("" + conditionNo);
-        ElementGet indexConditionNumber = new ElementGet(indexLineNumber, conditionNumberLiteral);
-
-        NewExpression branchDataObject = new NewExpression();
-        Name branchDataName = new Name();
-        branchDataName.setIdentifier("BranchData");
-        branchDataObject.setTarget(branchDataName);
-
-        Assignment assignment = new Assignment(indexConditionNumber, branchDataObject);
-        assignment.setOperator(Token.ASSIGN);
-        return new ExpressionStatement(assignment);
+        Context cx = Context.enter();
+        Scriptable scope = cx.initStandardObjects();
+//        cx.evaluateString(scope, branchObjectHeader, "jscoverage-branch.js", 1, null);
+        String source = branchObjectHeader + header + astRoot.toSource();
+        System.out.println("source = " + source);
+        return cx.evaluateString(scope, source, "test.js", 1, null);
     }
 
-    public ExpressionStatement buildLineAndConditionCall(String uri, int lineNo, int conditionNo) {
-        ElementGet indexLineNumber = buildLineDeclaration(uri, lineNo);
 
-        NumberLiteral conditionNumberLiteral = new NumberLiteral();
-        conditionNumberLiteral.setValue("" + conditionNo);
-        ElementGet indexConditionNumber = new ElementGet(indexLineNumber, conditionNumberLiteral);
+    public boolean visit(AstNode node) {
+        if (isBoolean(node)) {
+            replaceWithFunction((InfixExpression)node);
+        }
+        return true;
+    }
 
-        Name resultName = new Name();
-        resultName.setIdentifier("result");
+    private boolean isBoolean(AstNode node) {
+        switch (node.getType()) {
+            case Token.EQ:
+            case Token.NE:
+            case Token.LT:
+            case Token.LE:
+            case Token.GT:
+            case Token.GE:
+            case Token.NOT:
+            case Token.SHEQ:
+            case Token.SHNE:
+            case Token.OR:
+            case Token.AND:
+                return true;
+            default:return false;
+        }
+    }
 
-        FunctionCall fnCall = new FunctionCall();
-        Name propertyName = new Name();
-        propertyName.setIdentifier("ranCondition");
-        PropertyGet propertyGet = new PropertyGet(indexConditionNumber, propertyName);
-        fnCall.setTarget(propertyGet);
+    private void replaceWithFunction(InfixExpression node) {
+        AstRoot astRoot = node.getAstRoot();
+        AstNode parent = node.getParent();
+
+        int thisConditionId = conditionId++;
+        FunctionNode functionNode = branchStatementBuilder.buildBranchRecordingFunction("test.js", 1, node.getLineno(), thisConditionId);
+
+        //TODO - the astRoot.addChildrenToFront is too early in the script. Need to find a suitable node to insert after
+        //Use a comment as a marker?
+        if (astRoot != null) {
+            astRoot.addChildrenToFront(functionNode);
+            if (thisConditionId == 1) {
+                ExpressionStatement declaration = branchStatementBuilder.buildLineAndConditionInitialisation("test.js", node.getLineno(), thisConditionId);
+                astRoot.addChildrenToFront(declaration);
+                declaration = branchStatementBuilder.buildLineInitialisation("test.js", node.getLineno());
+                astRoot.addChildrenToFront(declaration);
+            }
+        }
+
+        FunctionCall functionCall = new FunctionCall();
         List<AstNode> arguments = new ArrayList<AstNode>();
-        arguments.add(resultName);
-        fnCall.setArguments(arguments);
+        functionCall.setTarget(functionNode.getFunctionName());
 
-        return new ExpressionStatement(fnCall);
-    }
+        arguments.add(node);
+        functionCall.setArguments(arguments);
+        if (parent instanceof IfStatement && node == ((IfStatement) parent).getCondition()) {
+            ((IfStatement) parent).setCondition(functionCall);
 
-    private ElementGet buildLineDeclaration(String uri, int lineNo) {
-        Name jscoverageVar = new Name();
-        jscoverageVar.setIdentifier("_$jscoverage");
-
-        Name branchPropertyName = new Name();
-        branchPropertyName.setIdentifier("branchData");
-        PropertyGet branchProperty = new PropertyGet(jscoverageVar, branchPropertyName);
-
-        StringLiteral fileNameLiteral = new StringLiteral();
-        fileNameLiteral.setValue(uri);
-        fileNameLiteral.setQuoteCharacter('\'');
-        ElementGet indexJSFile = new ElementGet(branchProperty, fileNameLiteral);
-
-        NumberLiteral lineNumberLiteral = new NumberLiteral();
-        lineNumberLiteral.setValue("" + lineNo);
-        return new ElementGet(indexJSFile, lineNumberLiteral);
-    }
-
-    public FunctionNode buildBranchRecordingFunction(String uri, int id, int lineNo, int conditionNo) {
-        Name functionName = new Name();
-        functionName.setIdentifier(format("visit%d_%d_%d", id, lineNo, conditionNo));
-        FunctionNode functionNode = new FunctionNode();
-        functionNode.setFunctionName(functionName);
-
-        Name resultName = new Name();
-        resultName.setIdentifier("result");
-        functionNode.addParam(resultName);
-
-        Block block = new Block();
-        block.addStatement(buildLineAndConditionCall(uri, lineNo, conditionNo));
-
-        ReturnStatement returnStatement = new ReturnStatement();
-        returnStatement.setReturnValue(resultName);
-        block.addChild(returnStatement);
-        functionNode.setBody(block);
-        return functionNode;
+        } else if (parent instanceof ParenthesizedExpression) {
+            ((ParenthesizedExpression)parent).setExpression(functionCall);
+        }
     }
 }
