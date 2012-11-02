@@ -365,28 +365,32 @@ public class BranchStatementBuilderIntegrationTest implements NodeVisitor {
     @Test
     public void shouldEvaluateFalsePath() {
         NativeObject result = runScript(-1);
-        System.out.println("result = " + result);
 
-        assertThat((Boolean)result.get("evalTrue"), equalTo(true));
-        assertThat((Boolean)result.get("evalFalse"), equalTo(false));
+        verifyProperty(result, "evalTrue", true);
+        verifyProperty(result, "evalFalse", false);
+        assertThat((Boolean)result.get("covered"), equalTo(false));
     }
 
     @Test
     public void shouldEvaluateTruePath() {
         NativeObject result = runScript(1);
-        System.out.println("result = " + result);
 
-        assertThat((Boolean)result.get("evalTrue"), equalTo(false));
-        assertThat((Boolean)result.get("evalFalse"), equalTo(true));
+        verifyProperty(result, "evalTrue", false);
+        verifyProperty(result, "evalFalse", true);
+        assertThat((Boolean)result.get("covered"), equalTo(false));
     }
 
     @Test
     public void shouldEvaluateBothPaths() {
         NativeObject result = runScript(-1, 1);
-        System.out.println("result = " + result);
 
-        assertThat((Boolean)result.get("evalTrue"), equalTo(true));
-        assertThat((Boolean)result.get("evalFalse"), equalTo(true));
+        verifyProperty(result, "evalTrue", true);
+        verifyProperty(result, "evalFalse", true);
+        assertThat((Boolean)result.get("covered"), equalTo(true));
+    }
+
+    private void verifyProperty(NativeObject result, String evalPath, boolean value) {
+        assertThat((Boolean)((NativeObject)result.get("dataArray")).get(evalPath), equalTo(value));
     }
 
     private NativeObject runScript(int... testNumbers) {
@@ -397,7 +401,11 @@ public class BranchStatementBuilderIntegrationTest implements NodeVisitor {
         for (int testNumber : testNumbers) {
             script.append("test("+testNumber+");\n");
         }
-                script.append("_$jscoverage.branchData['test.js'][1][1];");
+        script.append("var result = {\n");
+        script.append("  dataArray: _$jscoverage.branchData['test.js'][1][1],\n");
+        script.append("  covered: _$jscoverage.branchData['test.js'][1][1].covered()\n");
+        script.append("};");
+        script.append("result;");
         return (NativeObject)runTest(script.toString());
     }
 
@@ -464,7 +472,6 @@ public class BranchStatementBuilderIntegrationTest implements NodeVisitor {
         functionCall.setArguments(arguments);
         if (parent instanceof IfStatement && node == ((IfStatement) parent).getCondition()) {
             ((IfStatement) parent).setCondition(functionCall);
-
         } else if (parent instanceof ParenthesizedExpression) {
             ((ParenthesizedExpression)parent).setExpression(functionCall);
         }
