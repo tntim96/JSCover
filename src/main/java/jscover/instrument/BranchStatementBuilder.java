@@ -345,6 +345,11 @@ package jscover.instrument;
 import org.mozilla.javascript.Token;
 import org.mozilla.javascript.ast.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.lang.String.format;
+
 public class BranchStatementBuilder {
     public ExpressionStatement buildLineInitialisation(String uri, int lineNo) {
         ElementGet indexLineNumber = buildLineDeclaration(uri, lineNo);
@@ -361,9 +366,38 @@ public class BranchStatementBuilder {
         conditionNumberLiteral.setValue("" + conditionNo);
         ElementGet indexConditionNumber = new ElementGet(indexLineNumber, conditionNumberLiteral);
 
-        Assignment assignment = new Assignment(indexConditionNumber, new ObjectLiteral());
+        NewExpression branchDataObject = new NewExpression();
+        Name branchDataName = new Name();
+        branchDataName.setIdentifier("BranchData");
+        branchDataObject.setTarget(branchDataName);
+
+        Assignment assignment = new Assignment(indexConditionNumber, branchDataObject);
         assignment.setOperator(Token.ASSIGN);
         return new ExpressionStatement(assignment);
+    }
+
+    public ExpressionStatement buildLineAndConditionCall(String uri, int lineNo, int conditionNo) {
+        ElementGet indexLineNumber = buildLineDeclaration(uri, lineNo);
+
+        NumberLiteral conditionNumberLiteral = new NumberLiteral();
+        conditionNumberLiteral.setValue("" + conditionNo);
+        ElementGet indexConditionNumber = new ElementGet(indexLineNumber, conditionNumberLiteral);
+
+        Name resultName = new Name();
+        resultName.setIdentifier("result");
+
+        FunctionCall fnCall = new FunctionCall();
+        Name propertyName = new Name();
+        propertyName.setIdentifier("ranCondition");
+//        fnCall.set
+        PropertyGet propertyGet = new PropertyGet(indexConditionNumber, propertyName);
+        fnCall.setTarget(propertyGet);
+        //fnCall.setType()
+        List<AstNode> arguments = new ArrayList<AstNode>();
+        arguments.add(resultName);
+        fnCall.setArguments(arguments);
+
+        return new ExpressionStatement(fnCall);
     }
 
     private ElementGet buildLineDeclaration(String uri, int lineNo) {
@@ -382,5 +416,25 @@ public class BranchStatementBuilder {
         NumberLiteral lineNumberLiteral = new NumberLiteral();
         lineNumberLiteral.setValue("" + lineNo);
         return new ElementGet(indexJSFile, lineNumberLiteral);
+    }
+
+    public FunctionNode buildBranchRecordingFunction(String uri, int id, int lineNo, int conditionNo) {
+        Name functionName = new Name();
+        functionName.setIdentifier(format("visit%d_%d_%d", id, lineNo, conditionNo));
+        FunctionNode functionNode = new FunctionNode();
+        functionNode.setFunctionName(functionName);
+
+        Name resultName = new Name();
+        resultName.setIdentifier("result");
+        functionNode.addParam(resultName);
+
+        Block block = new Block();
+        block.addStatement(buildLineAndConditionCall(uri, lineNo, conditionNo));
+
+        ReturnStatement returnStatement = new ReturnStatement();
+        returnStatement.setReturnValue(resultName);
+        block.addChild(returnStatement);
+        functionNode.setBody(block);
+        return functionNode;
     }
 }

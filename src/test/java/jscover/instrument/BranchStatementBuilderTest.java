@@ -344,6 +344,7 @@ package jscover.instrument;
 
 import org.junit.Test;
 import org.mozilla.javascript.ast.ExpressionStatement;
+import org.mozilla.javascript.ast.FunctionNode;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -360,6 +361,21 @@ public class BranchStatementBuilderTest {
     @Test
     public void shouldBuildLineAndConditionDeclaration() {
         ExpressionStatement statement = builder.buildLineAndConditionInitialisation("test.js", 4, 2);
-        assertThat(statement.toSource(), equalTo("_$jscoverage.branchData['test.js'][4][2] = {};\n"));
+        assertThat(statement.toSource(), equalTo("_$jscoverage.branchData['test.js'][4][2] = new BranchData();\n"));
+    }
+
+    @Test
+    public void shouldBuildLineAndConditionCall() {
+        ExpressionStatement statement = builder.buildLineAndConditionCall("test.js", 4, 2);
+        assertThat(statement.toSource(), equalTo("_$jscoverage.branchData['test.js'][4][2].ranCondition(result);\n"));
+    }
+
+    @Test
+    public void shouldBuildLineAndConditionRecordingFunction() {
+        FunctionNode statement = builder.buildBranchRecordingFunction("test.js", 1, 4, 2);
+        assertThat(statement.toSource(), equalTo("function visit1_4_2(result) {\n" +
+                "  _$jscoverage.branchData['test.js'][4][2].ranCondition(result);\n" +
+                "  return result;\n" +
+                "}"));
     }
 }

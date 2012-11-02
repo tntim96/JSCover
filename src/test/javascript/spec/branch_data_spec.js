@@ -12,18 +12,18 @@ $(document).ready(function() {
         });
 
         it("should not be covered if only false path evaluated", function() {
-            branchData.evalFalse = true;
+            branchData.ranCondition(false);
             expect(branchData.covered()).toBeFalsy();
         });
 
         it("should not be covered if only true path evaluated", function() {
-            branchData.evalTrue = true;
+            branchData.ranCondition(false);
             expect(branchData.covered()).toBeFalsy();
         });
 
         it("should be covered if both paths evaluated", function() {
-            branchData.evalFalse = true;
-            branchData.evalTrue = true;
+            branchData.ranCondition(false);
+            branchData.ranCondition(true);
             expect(branchData.covered()).toBeTruthy();
         });
     });

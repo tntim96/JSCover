@@ -388,13 +388,12 @@ public class HtmlUnitJSTest {
         HtmlPage page = webClient.getPage("http://localhost:8080/jscoverage.html?src/test/javascript/spec/suite.html");
         webClient.waitForBackgroundJavaScript(2000);
 
-//        ScriptResult result = ((HtmlPage)page.getEnclosingWindow().getEnclosedPage()).executeJavaScript("jscoverage_report();");
+//        ScriptResult result = page.executeJavaScript("if (window.jscoverage_report) {jscoverage_report();}");
         page.getHtmlElementById("storeTab").click();
         webClient.waitForBackgroundJavaScript(500);
         HtmlElement storeButton = page.getHtmlElementById("storeButton");
         storeButton.click();
         webClient.waitForBackgroundJavaScript(2000);
-
 
         page.getHtmlElementById("summaryTab").click();
         webClient.waitForBackgroundJavaScript(2000);
