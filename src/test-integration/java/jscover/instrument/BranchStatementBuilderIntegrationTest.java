@@ -363,17 +363,42 @@ public class BranchStatementBuilderIntegrationTest implements NodeVisitor {
     private Parser parser = new Parser();
 
     @Test
-    public void shouldHandleSimpleCondition() {
-        String script = "var x = -1;\n" +
-                "if (x < 0) {\n" +
-                "  x++;\n" +
-                "};\n" +
-                "_$jscoverage.branchData['test.js'][2][1];";
-        NativeObject result = (NativeObject)runTest(script);
+    public void shouldEvaluateFalsePath() {
+        NativeObject result = runScript(-1);
         System.out.println("result = " + result);
 
         assertThat((Boolean)result.get("evalTrue"), equalTo(true));
         assertThat((Boolean)result.get("evalFalse"), equalTo(false));
+    }
+
+    @Test
+    public void shouldEvaluateTruePath() {
+        NativeObject result = runScript(1);
+        System.out.println("result = " + result);
+
+        assertThat((Boolean)result.get("evalTrue"), equalTo(false));
+        assertThat((Boolean)result.get("evalFalse"), equalTo(true));
+    }
+
+    @Test
+    public void shouldEvaluateBothPaths() {
+        NativeObject result = runScript(-1, 1);
+        System.out.println("result = " + result);
+
+        assertThat((Boolean)result.get("evalTrue"), equalTo(true));
+        assertThat((Boolean)result.get("evalFalse"), equalTo(true));
+    }
+
+    private NativeObject runScript(int... testNumbers) {
+        StringBuilder script = new StringBuilder("function test(x) {");
+                script.append("  if (x < 0)\n");
+                script.append("    x++;\n");
+                script.append("};\n");
+        for (int testNumber : testNumbers) {
+            script.append("test("+testNumber+");\n");
+        }
+                script.append("_$jscoverage.branchData['test.js'][1][1];");
+        return (NativeObject)runTest(script.toString());
     }
 
     private Object runTest(String script) {
@@ -407,7 +432,6 @@ public class BranchStatementBuilderIntegrationTest implements NodeVisitor {
             case Token.LE:
             case Token.GT:
             case Token.GE:
-            case Token.NOT:
             case Token.SHEQ:
             case Token.SHNE:
             case Token.OR:
@@ -424,16 +448,12 @@ public class BranchStatementBuilderIntegrationTest implements NodeVisitor {
         int thisConditionId = conditionId++;
         FunctionNode functionNode = branchStatementBuilder.buildBranchRecordingFunction("test.js", 1, node.getLineno(), thisConditionId);
 
-        //TODO - the astRoot.addChildrenToFront is too early in the script. Need to find a suitable node to insert after
-        //Use a comment as a marker?
-        if (astRoot != null) {
-            astRoot.addChildrenToFront(functionNode);
-            if (thisConditionId == 1) {
-                ExpressionStatement declaration = branchStatementBuilder.buildLineAndConditionInitialisation("test.js", node.getLineno(), thisConditionId);
-                astRoot.addChildrenToFront(declaration);
-                declaration = branchStatementBuilder.buildLineInitialisation("test.js", node.getLineno());
-                astRoot.addChildrenToFront(declaration);
-            }
+        astRoot.addChildrenToFront(functionNode);
+        if (thisConditionId == 1) {
+            ExpressionStatement declaration = branchStatementBuilder.buildLineAndConditionInitialisation("test.js", node.getLineno(), thisConditionId);
+            astRoot.addChildrenToFront(declaration);
+            declaration = branchStatementBuilder.buildLineInitialisation("test.js", node.getLineno());
+            astRoot.addChildrenToFront(declaration);
         }
 
         FunctionCall functionCall = new FunctionCall();
