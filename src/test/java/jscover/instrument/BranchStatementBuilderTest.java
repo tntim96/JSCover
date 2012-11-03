@@ -360,8 +360,8 @@ public class BranchStatementBuilderTest {
 
     @Test
     public void shouldBuildLineAndConditionDeclaration() {
-        ExpressionStatement statement = builder.buildLineAndConditionInitialisation("test.js", 4, 2);
-        assertThat(statement.toSource(), equalTo("_$jscoverage.branchData['test.js'][4][2] = new BranchData();\n"));
+        ExpressionStatement statement = builder.buildLineAndConditionInitialisation("test.js", 4, 2, 12, 15);
+        assertThat(statement.toSource(), equalTo("_$jscoverage.branchData['test.js'][4][2] = new BranchData(12, 15);\n"));
     }
 
     @Test

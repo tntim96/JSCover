@@ -359,17 +359,23 @@ public class BranchStatementBuilder {
         return new ExpressionStatement(assignment);
     }
 
-    public ExpressionStatement buildLineAndConditionInitialisation(String uri, int lineNo, int conditionNo) {
+    public ExpressionStatement buildLineAndConditionInitialisation(String uri, int lineNo, int conditionNo, int position, int length) {
         ElementGet indexLineNumber = buildLineDeclaration(uri, lineNo);
 
         NumberLiteral conditionNumberLiteral = new NumberLiteral();
         conditionNumberLiteral.setValue("" + conditionNo);
         ElementGet indexConditionNumber = new ElementGet(indexLineNumber, conditionNumberLiteral);
 
-        NewExpression branchDataObject = new NewExpression();
         Name branchDataName = new Name();
         branchDataName.setIdentifier("BranchData");
+        NewExpression branchDataObject = new NewExpression();
         branchDataObject.setTarget(branchDataName);
+        NumberLiteral positionLiteral = new NumberLiteral();
+        positionLiteral.setValue(""+position);
+        branchDataObject.addArgument(positionLiteral);
+        NumberLiteral lengthLiteral = new NumberLiteral();
+        lengthLiteral.setValue(""+length);
+        branchDataObject.addArgument(lengthLiteral);
 
         Assignment assignment = new Assignment(indexConditionNumber, branchDataObject);
         assignment.setOperator(Token.ASSIGN);

@@ -4,7 +4,12 @@ $(document).ready(function() {
         var branchData;
 
         beforeEach(function() {
-            branchData = new BranchData();
+            branchData = new BranchData(10,5);
+        });
+
+        it("should record position and length", function() {
+            expect(branchData.position).toEqual(10);
+            expect(branchData.length).toEqual(5);
         });
 
         it("should not be covered if neither path evaluated", function() {

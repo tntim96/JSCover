@@ -368,7 +368,9 @@ public class BranchStatementBuilderIntegrationTest implements NodeVisitor {
 
         verifyProperty(result, "evalTrue", true);
         verifyProperty(result, "evalFalse", false);
-        assertThat((Boolean)result.get("covered"), equalTo(false));
+        assertThat((Boolean) result.get("covered"), equalTo(false));
+        verifyProperty(result, "position", 7);
+        verifyProperty(result, "length", 5);
     }
 
     @Test
@@ -377,7 +379,7 @@ public class BranchStatementBuilderIntegrationTest implements NodeVisitor {
 
         verifyProperty(result, "evalTrue", false);
         verifyProperty(result, "evalFalse", true);
-        assertThat((Boolean)result.get("covered"), equalTo(false));
+        assertThat((Boolean) result.get("covered"), equalTo(false));
     }
 
     @Test
@@ -389,12 +391,16 @@ public class BranchStatementBuilderIntegrationTest implements NodeVisitor {
         assertThat((Boolean)result.get("covered"), equalTo(true));
     }
 
+    private void verifyProperty(NativeObject result, String propertyName, int value) {
+        assertThat((Integer)((NativeObject)result.get("dataArray")).get(propertyName), equalTo(value));
+    }
+
     private void verifyProperty(NativeObject result, String evalPath, boolean value) {
         assertThat((Boolean)((NativeObject)result.get("dataArray")).get(evalPath), equalTo(value));
     }
 
     private NativeObject runScript(int... testNumbers) {
-        StringBuilder script = new StringBuilder("function test(x) {");
+        StringBuilder script = new StringBuilder("function test(x) {\n");
                 script.append("  if (x < 0)\n");
                 script.append("    x++;\n");
                 script.append("};\n");
@@ -402,8 +408,8 @@ public class BranchStatementBuilderIntegrationTest implements NodeVisitor {
             script.append("test("+testNumber+");\n");
         }
         script.append("var result = {\n");
-        script.append("  dataArray: _$jscoverage.branchData['test.js'][1][1],\n");
-        script.append("  covered: _$jscoverage.branchData['test.js'][1][1].covered()\n");
+        script.append("  dataArray: _$jscoverage.branchData['test.js'][2][1],\n");
+        script.append("  covered: _$jscoverage.branchData['test.js'][2][1].covered()\n");
         script.append("};");
         script.append("result;");
         return (NativeObject)runTest(script.toString());
@@ -458,7 +464,8 @@ public class BranchStatementBuilderIntegrationTest implements NodeVisitor {
 
         astRoot.addChildrenToFront(functionNode);
         if (thisConditionId == 1) {
-            ExpressionStatement declaration = branchStatementBuilder.buildLineAndConditionInitialisation("test.js", node.getLineno(), thisConditionId);
+            ExpressionStatement declaration = branchStatementBuilder.buildLineAndConditionInitialisation("test.js"
+                    , node.getLineno(), thisConditionId, getLinePosition(node), node.getLength());
             astRoot.addChildrenToFront(declaration);
             declaration = branchStatementBuilder.buildLineInitialisation("test.js", node.getLineno());
             astRoot.addChildrenToFront(declaration);
@@ -475,5 +482,15 @@ public class BranchStatementBuilderIntegrationTest implements NodeVisitor {
         } else if (parent instanceof ParenthesizedExpression) {
             ((ParenthesizedExpression)parent).setExpression(functionCall);
         }
+    }
+
+    public int getLinePosition(AstNode node) {
+        int pos = node.getPosition();
+        AstNode parent = node.getParent();
+        while (parent != null && parent.getLineno() == node.getLineno()) {
+            pos += parent.getPosition();
+            parent = parent.getParent();
+        }
+        return pos-1;
     }
 }
