@@ -366,39 +366,43 @@ public class BranchInstrumentorIntegrationTest {
     @Test
     public void shouldHandleSingleCondition() {
         StringBuilder script = new StringBuilder("function test(x) {\n");
-                script.append("  if (x < 0)\n");
-                script.append("    ;\n");
-                script.append("};\n");
+        script.append("  if (x < 0)\n");
+        script.append("    ;\n");
+        script.append("};\n");
         runScript(script.toString());
         Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
         Function coveredFn = (Function) ScriptableObject.getProperty(coverageData, "covered");
         Function testFn = (Function) scope.get("test", scope);
 
-        assertThat((Boolean)coverageData.get("evalTrue", coverageData), equalTo(false));
-        assertThat((Boolean)coverageData.get("evalFalse", coverageData), equalTo(false));
-        assertThat((Integer)coverageData.get("position", coverageData), equalTo(7));
-        assertThat((Integer)coverageData.get("length", coverageData), equalTo(5));
-        assertThat((Boolean)coveredFn.call(context, scope, coverageData, new Object[0]), equalTo(false));
-
-        testFn.call(context, scope, coverageData, new ArrayList(){{add(-1);}}.toArray());
-        assertThat((Boolean) coverageData.get("evalTrue", coverageData), equalTo(true));
-        assertThat((Boolean)coverageData.get("evalFalse", coverageData), equalTo(false));
+        assertThat((Boolean) coverageData.get("evalTrue", coverageData), equalTo(false));
+        assertThat((Boolean) coverageData.get("evalFalse", coverageData), equalTo(false));
+        assertThat((Integer) coverageData.get("position", coverageData), equalTo(7));
+        assertThat((Integer) coverageData.get("length", coverageData), equalTo(5));
         assertThat((Boolean) coveredFn.call(context, scope, coverageData, new Object[0]), equalTo(false));
 
-        testFn.call(context, scope, coverageData, new ArrayList(){{add(1);}}.toArray());
+        testFn.call(context, scope, coverageData, new ArrayList() {{
+            add(-1);
+        }}.toArray());
         assertThat((Boolean) coverageData.get("evalTrue", coverageData), equalTo(true));
-        assertThat((Boolean)coverageData.get("evalFalse", coverageData), equalTo(true));
+        assertThat((Boolean) coverageData.get("evalFalse", coverageData), equalTo(false));
+        assertThat((Boolean) coveredFn.call(context, scope, coverageData, new Object[0]), equalTo(false));
+
+        testFn.call(context, scope, coverageData, new ArrayList() {{
+            add(1);
+        }}.toArray());
+        assertThat((Boolean) coverageData.get("evalTrue", coverageData), equalTo(true));
+        assertThat((Boolean) coverageData.get("evalFalse", coverageData), equalTo(true));
         assertThat((Boolean) coveredFn.call(context, scope, coverageData, new Object[0]), equalTo(true));
     }
 
     @Test
     public void shouldHandleTwoSeparateConditions() {
         StringBuilder script = new StringBuilder("function test(x) {\n");
-                script.append("  if (x < 0)\n");
-                script.append("    ;\n");
-                script.append("  else if (x > 100)\n");
-                script.append("    ;\n");
-                script.append("};\n");
+        script.append("  if (x < 0)\n");
+        script.append("    ;\n");
+        script.append("  else if (x > 100)\n");
+        script.append("    ;\n");
+        script.append("};\n");
         runScript(script.toString());
         Scriptable coverageData1 = getCoverageData(scope, "test.js", 2, 1);
         Scriptable coverageData2 = getCoverageData(scope, "test.js", 4, 1);
@@ -406,32 +410,72 @@ public class BranchInstrumentorIntegrationTest {
         Function coveredFn2 = (Function) ScriptableObject.getProperty(coverageData2, "covered");
         Function testFn = (Function) scope.get("test", scope);
 
-        assertThat((Boolean)coveredFn1.call(context, scope, coverageData1, new Object[0]), equalTo(false));
-        assertThat((Boolean)coveredFn2.call(context, scope, coverageData1, new Object[0]), equalTo(false));
-
-        testFn.call(context, scope, coverageData1, new ArrayList(){{add(-1);}}.toArray());
         assertThat((Boolean) coveredFn1.call(context, scope, coverageData1, new Object[0]), equalTo(false));
-        assertThat((Boolean) coveredFn2.call(context, scope, coverageData1, new Object[0]), equalTo(false));
+        assertThat((Boolean) coveredFn2.call(context, scope, coverageData2, new Object[0]), equalTo(false));
 
-        testFn.call(context, scope, coverageData1, new ArrayList(){{add(1);}}.toArray());
+        testFn.call(context, scope, coverageData1, new ArrayList() {{
+            add(-1);
+        }}.toArray());
+        assertThat((Boolean) coveredFn1.call(context, scope, coverageData1, new Object[0]), equalTo(false));
+        assertThat((Boolean) coveredFn2.call(context, scope, coverageData2, new Object[0]), equalTo(false));
+
+        testFn.call(context, scope, coverageData1, new ArrayList() {{
+            add(1);
+        }}.toArray());
         assertThat((Boolean) coveredFn1.call(context, scope, coverageData1, new Object[0]), equalTo(true));
         assertThat((Boolean) coveredFn2.call(context, scope, coverageData2, new Object[0]), equalTo(false));
 
-        testFn.call(context, scope, coverageData1, new ArrayList(){{add(1000);}}.toArray());
+        testFn.call(context, scope, coverageData1, new ArrayList() {{
+            add(1000);
+        }}.toArray());
         assertThat((Boolean) coveredFn1.call(context, scope, coverageData1, new Object[0]), equalTo(true));
         assertThat((Boolean) coveredFn2.call(context, scope, coverageData2, new Object[0]), equalTo(true));
     }
 
+    @Test
+    public void shouldHandleNestedConditions() {
+        StringBuilder script = new StringBuilder("function test(x, y) {\n");
+        script.append("  if ((x < 0) && (y < 0))\n");
+        script.append("    ;\n");
+        script.append("};\n");
+        runScript(script.toString());
+        Scriptable coverageData1 = getCoverageData(scope, "test.js", 2, 1);
+        Scriptable coverageData2 = getCoverageData(scope, "test.js", 2, 2);
+        Scriptable coverageData3 = getCoverageData(scope, "test.js", 2, 3);
+        Function coveredFn1 = (Function) ScriptableObject.getProperty(coverageData1, "covered");
+        Function coveredFn2 = (Function) ScriptableObject.getProperty(coverageData2, "covered");
+        Function coveredFn3 = (Function) ScriptableObject.getProperty(coverageData3, "covered");
+        Function testFn = (Function) scope.get("test", scope);
+
+        assertThat((Boolean) coveredFn1.call(context, scope, coverageData1, new Object[0]), equalTo(false));
+        assertThat((Boolean) coveredFn2.call(context, scope, coverageData2, new Object[0]), equalTo(false));
+        assertThat((Boolean) coveredFn2.call(context, scope, coverageData3, new Object[0]), equalTo(false));
+
+        testFn.call(context, scope, coverageData1, new ArrayList() {{add(-1);add(-1);}}.toArray());
+        assertThat((Boolean) coveredFn1.call(context, scope, coverageData1, new Object[0]), equalTo(false));
+        assertThat((Boolean) coveredFn2.call(context, scope, coverageData2, new Object[0]), equalTo(false));
+        assertThat((Boolean) coveredFn3.call(context, scope, coverageData3, new Object[0]), equalTo(false));
+
+        testFn.call(context, scope, coverageData1, new ArrayList() {{add(1);add(-1);}}.toArray());
+        assertThat((Boolean) coveredFn1.call(context, scope, coverageData1, new Object[0]), equalTo(true));
+        assertThat((Boolean) coveredFn2.call(context, scope, coverageData2, new Object[0]), equalTo(true));
+        assertThat((Boolean) coveredFn3.call(context, scope, coverageData3, new Object[0]), equalTo(false));
+
+        testFn.call(context, scope, coverageData1, new ArrayList() {{add(-1);add(1);}}.toArray());
+        assertThat((Boolean) coveredFn1.call(context, scope, coverageData1, new Object[0]), equalTo(true));
+        assertThat((Boolean) coveredFn2.call(context, scope, coverageData2, new Object[0]), equalTo(true));
+        assertThat((Boolean) coveredFn3.call(context, scope, coverageData3, new Object[0]), equalTo(true));
+    }
+
     private Object runScript(String script) {
-        System.out.println("--------------------------------------");
-        System.out.println("script = " + script);
         AstRoot astRoot = parser.parse(script, null, 1);
         astRoot.visitAll(branchInstrumentor);
-        System.out.println("astRoot.toSource() = " + astRoot.toSource());
+        branchInstrumentor.postProcess(astRoot);
 
         context = Context.enter();
         scope = context.initStandardObjects();
         String source = branchObjectHeader + header + astRoot.toSource();
+        System.out.println("--------------------------------------");
         System.out.println("source = " + source);
 
         return context.evaluateString(scope, source, "test.js", 1, null);

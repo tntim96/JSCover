@@ -345,15 +345,19 @@ package jscover.instrument;
 import org.mozilla.javascript.Token;
 import org.mozilla.javascript.ast.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class BranchInstrumentor implements NodeVisitor {
     private Map<Integer, Integer> lineConditionMap = new HashMap<Integer, Integer>();
     private int functionId = 1;
     private BranchStatementBuilder branchStatementBuilder = new BranchStatementBuilder();
+    private Set<ExpressionStatement> lineArrayDeclarations = new HashSet<ExpressionStatement>();
+
+    public void postProcess(AstRoot node) {
+        for (ExpressionStatement lineArrayDeclaration : lineArrayDeclarations) {
+            node.addChildToFront(lineArrayDeclaration);
+        }
+    }
 
     public void replaceWithFunction(InfixExpression node) {
         AstRoot astRoot = node.getAstRoot();
@@ -369,12 +373,12 @@ public class BranchInstrumentor implements NodeVisitor {
         FunctionNode functionNode = branchStatementBuilder.buildBranchRecordingFunction("test.js", functionId++, node.getLineno(), conditionId);
 
         astRoot.addChildrenToFront(functionNode);
+        ExpressionStatement conditionArrayDeclaration = branchStatementBuilder.buildLineAndConditionInitialisation("test.js"
+                , node.getLineno(), conditionId, getLinePosition(node), node.getLength());
+        astRoot.addChildrenToFront(conditionArrayDeclaration);
         if (conditionId == 1) {
-            ExpressionStatement declaration = branchStatementBuilder.buildLineAndConditionInitialisation("test.js"
-                    , node.getLineno(), conditionId, getLinePosition(node), node.getLength());
-            astRoot.addChildrenToFront(declaration);
-            declaration = branchStatementBuilder.buildLineInitialisation("test.js", node.getLineno());
-            astRoot.addChildrenToFront(declaration);
+            ExpressionStatement lineArrayDeclaration = branchStatementBuilder.buildLineInitialisation("test.js", node.getLineno());
+            lineArrayDeclarations.add(lineArrayDeclaration);
         }
 
         FunctionCall functionCall = new FunctionCall();
