@@ -347,20 +347,16 @@ import org.junit.Test;
 import org.mozilla.javascript.*;
 import org.mozilla.javascript.ast.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class BranchStatementBuilderIntegrationTest implements NodeVisitor {
+public class BranchStatementBuilderIntegrationTest {
     private static String branchObjectHeader = IoUtils.loadFromClassPath("/jscoverage-branch.js");
     private static String header = "var _$jscoverage = {};\n" +
             "_$jscoverage.branchData = {};\n" +
             "_$jscoverage.branchData['test.js'] = {};\n";
-    private int conditionId = 1;
-    private BranchStatementBuilder branchStatementBuilder = new BranchStatementBuilder();
     private Parser parser = new Parser();
+    private BranchInstrumentor branchInstrumentor = new BranchInstrumentor();
 
     @Test
     public void shouldEvaluateFalsePath() {
@@ -419,7 +415,7 @@ public class BranchStatementBuilderIntegrationTest implements NodeVisitor {
         System.out.println("--------------------------------------");
         System.out.println("script = " + script);
         AstRoot astRoot = parser.parse(script, null, 1);
-        astRoot.visitAll(this);
+        astRoot.visitAll(branchInstrumentor);
         System.out.println("astRoot.toSource() = " + astRoot.toSource());
 
         Context cx = Context.enter();
@@ -428,69 +424,5 @@ public class BranchStatementBuilderIntegrationTest implements NodeVisitor {
         String source = branchObjectHeader + header + astRoot.toSource();
         System.out.println("source = " + source);
         return cx.evaluateString(scope, source, "test.js", 1, null);
-    }
-
-
-    public boolean visit(AstNode node) {
-        if (isBoolean(node)) {
-            replaceWithFunction((InfixExpression)node);
-        }
-        return true;
-    }
-
-    private boolean isBoolean(AstNode node) {
-        switch (node.getType()) {
-            case Token.EQ:
-            case Token.NE:
-            case Token.LT:
-            case Token.LE:
-            case Token.GT:
-            case Token.GE:
-            case Token.SHEQ:
-            case Token.SHNE:
-            case Token.OR:
-            case Token.AND:
-                return true;
-            default:return false;
-        }
-    }
-
-    private void replaceWithFunction(InfixExpression node) {
-        AstRoot astRoot = node.getAstRoot();
-        AstNode parent = node.getParent();
-
-        int thisConditionId = conditionId++;
-        FunctionNode functionNode = branchStatementBuilder.buildBranchRecordingFunction("test.js", 1, node.getLineno(), thisConditionId);
-
-        astRoot.addChildrenToFront(functionNode);
-        if (thisConditionId == 1) {
-            ExpressionStatement declaration = branchStatementBuilder.buildLineAndConditionInitialisation("test.js"
-                    , node.getLineno(), thisConditionId, getLinePosition(node), node.getLength());
-            astRoot.addChildrenToFront(declaration);
-            declaration = branchStatementBuilder.buildLineInitialisation("test.js", node.getLineno());
-            astRoot.addChildrenToFront(declaration);
-        }
-
-        FunctionCall functionCall = new FunctionCall();
-        List<AstNode> arguments = new ArrayList<AstNode>();
-        functionCall.setTarget(functionNode.getFunctionName());
-
-        arguments.add(node);
-        functionCall.setArguments(arguments);
-        if (parent instanceof IfStatement && node == ((IfStatement) parent).getCondition()) {
-            ((IfStatement) parent).setCondition(functionCall);
-        } else if (parent instanceof ParenthesizedExpression) {
-            ((ParenthesizedExpression)parent).setExpression(functionCall);
-        }
-    }
-
-    public int getLinePosition(AstNode node) {
-        int pos = node.getPosition();
-        AstNode parent = node.getParent();
-        while (parent != null && parent.getLineno() == node.getLineno()) {
-            pos += parent.getPosition();
-            parent = parent.getParent();
-        }
-        return pos-1;
     }
 }
