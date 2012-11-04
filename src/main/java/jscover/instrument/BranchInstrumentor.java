@@ -346,23 +346,32 @@ import org.mozilla.javascript.Token;
 import org.mozilla.javascript.ast.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BranchInstrumentor implements NodeVisitor {
-    private int conditionId = 1;
+    private Map<Integer, Integer> lineConditionMap = new HashMap<Integer, Integer>();
+    private int functionId = 1;
     private BranchStatementBuilder branchStatementBuilder = new BranchStatementBuilder();
 
     public void replaceWithFunction(InfixExpression node) {
         AstRoot astRoot = node.getAstRoot();
         AstNode parent = node.getParent();
 
-        int thisConditionId = conditionId++;
-        FunctionNode functionNode = branchStatementBuilder.buildBranchRecordingFunction("test.js", 1, node.getLineno(), thisConditionId);
+        Integer conditionId = lineConditionMap.get(node.getLineno());
+        if (conditionId == null) {
+            conditionId = 1;
+        } else {
+            conditionId++;
+        }
+        lineConditionMap.put(node.getLineno(), conditionId);
+        FunctionNode functionNode = branchStatementBuilder.buildBranchRecordingFunction("test.js", functionId++, node.getLineno(), conditionId);
 
         astRoot.addChildrenToFront(functionNode);
-        if (thisConditionId == 1) {
+        if (conditionId == 1) {
             ExpressionStatement declaration = branchStatementBuilder.buildLineAndConditionInitialisation("test.js"
-                    , node.getLineno(), thisConditionId, getLinePosition(node), node.getLength());
+                    , node.getLineno(), conditionId, getLinePosition(node), node.getLength());
             astRoot.addChildrenToFront(declaration);
             declaration = branchStatementBuilder.buildLineInitialisation("test.js", node.getLineno());
             astRoot.addChildrenToFront(declaration);
