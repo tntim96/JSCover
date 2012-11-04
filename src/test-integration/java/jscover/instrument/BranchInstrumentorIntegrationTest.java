@@ -438,6 +438,19 @@ public class BranchInstrumentorIntegrationTest {
         script.append("  if ((x < 0) && (y < 0))\n");
         script.append("    ;\n");
         script.append("};\n");
+        testNestedScript(script);
+    }
+
+    @Test
+    public void shouldHandleNestedConditionsWithoutBraces() {
+        StringBuilder script = new StringBuilder("function test(x, y) {\n");
+        script.append("  if (x < 0 && y < 0)\n");
+        script.append("    ;\n");
+        script.append("};\n");
+        testNestedScript(script);
+    }
+
+    private void testNestedScript(StringBuilder script) {
         runScript(script.toString());
         Scriptable coverageData1 = getCoverageData(scope, "test.js", 2, 1);
         Scriptable coverageData2 = getCoverageData(scope, "test.js", 2, 2);

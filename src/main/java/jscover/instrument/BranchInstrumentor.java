@@ -391,6 +391,12 @@ public class BranchInstrumentor implements NodeVisitor {
             ((IfStatement) parent).setCondition(functionCall);
         } else if (parent instanceof ParenthesizedExpression) {
             ((ParenthesizedExpression)parent).setExpression(functionCall);
+        } else if (parent instanceof InfixExpression) {
+            InfixExpression infixExpression = (InfixExpression) parent;
+            if (infixExpression.getLeft() == node)
+                infixExpression.setLeft(functionCall);
+            else
+                infixExpression.setRight(functionCall);
         }
     }
 
