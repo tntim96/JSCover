@@ -345,7 +345,9 @@ package jscover.instrument;
 import jscover.util.IoUtils;
 import org.junit.Test;
 import org.mozilla.javascript.*;
-import org.mozilla.javascript.ast.*;
+import org.mozilla.javascript.ast.AstRoot;
+
+import java.util.ArrayList;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -355,74 +357,60 @@ public class BranchInstrumentorIntegrationTest {
     private static String header = "var _$jscoverage = {};\n" +
             "_$jscoverage.branchData = {};\n" +
             "_$jscoverage.branchData['test.js'] = {};\n";
-    private Parser parser = new Parser();
+
     private BranchInstrumentor branchInstrumentor = new BranchInstrumentor();
+    private Parser parser = new Parser();
+    private Context context;
+    private Scriptable scope;
 
     @Test
     public void shouldEvaluateFalsePath() {
-        NativeObject result = runScript(-1);
-
-        verifyProperty(result, "evalTrue", true);
-        verifyProperty(result, "evalFalse", false);
-        assertThat((Boolean) result.get("covered"), equalTo(false));
-        verifyProperty(result, "position", 7);
-        verifyProperty(result, "length", 5);
-    }
-
-    @Test
-    public void shouldEvaluateTruePath() {
-        NativeObject result = runScript(1);
-
-        verifyProperty(result, "evalTrue", false);
-        verifyProperty(result, "evalFalse", true);
-        assertThat((Boolean) result.get("covered"), equalTo(false));
-    }
-
-    @Test
-    public void shouldEvaluateBothPaths() {
-        NativeObject result = runScript(-1, 1);
-
-        verifyProperty(result, "evalTrue", true);
-        verifyProperty(result, "evalFalse", true);
-        assertThat((Boolean)result.get("covered"), equalTo(true));
-    }
-
-    private void verifyProperty(NativeObject result, String propertyName, int value) {
-        assertThat((Integer)((NativeObject)result.get("dataArray")).get(propertyName), equalTo(value));
-    }
-
-    private void verifyProperty(NativeObject result, String evalPath, boolean value) {
-        assertThat((Boolean)((NativeObject)result.get("dataArray")).get(evalPath), equalTo(value));
-    }
-
-    private NativeObject runScript(int... testNumbers) {
         StringBuilder script = new StringBuilder("function test(x) {\n");
                 script.append("  if (x < 0)\n");
                 script.append("    x++;\n");
                 script.append("};\n");
-        for (int testNumber : testNumbers) {
-            script.append("test("+testNumber+");\n");
-        }
-        script.append("var result = {\n");
-        script.append("  dataArray: _$jscoverage.branchData['test.js'][2][1],\n");
-        script.append("  covered: _$jscoverage.branchData['test.js'][2][1].covered()\n");
-        script.append("};");
-        script.append("result;");
-        return (NativeObject)runTest(script.toString());
+        runScript(script.toString());
+        Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
+        Function coveredFn = (Function) ScriptableObject.getProperty(coverageData, "covered");
+        Function testFn = (Function) scope.get("test", scope);
+
+        assertThat((Boolean)coverageData.get("evalTrue", coverageData), equalTo(false));
+        assertThat((Boolean)coverageData.get("evalFalse", coverageData), equalTo(false));
+        assertThat((Integer)coverageData.get("position", coverageData), equalTo(7));
+        assertThat((Integer)coverageData.get("length", coverageData), equalTo(5));
+        assertThat((Boolean)coveredFn.call(context, scope, coverageData, new Object[0]), equalTo(false));
+
+        testFn.call(context, scope, coverageData, new ArrayList(){{add(-1);}}.toArray());
+        assertThat((Boolean) coverageData.get("evalTrue", coverageData), equalTo(true));
+        assertThat((Boolean)coverageData.get("evalFalse", coverageData), equalTo(false));
+        assertThat((Boolean) coveredFn.call(context, scope, coverageData, new Object[0]), equalTo(false));
+
+        testFn.call(context, scope, coverageData, new ArrayList(){{add(1);}}.toArray());
+        assertThat((Boolean) coverageData.get("evalTrue", coverageData), equalTo(true));
+        assertThat((Boolean)coverageData.get("evalFalse", coverageData), equalTo(true));
+        assertThat((Boolean) coveredFn.call(context, scope, coverageData, new Object[0]), equalTo(true));
     }
 
-    private Object runTest(String script) {
+    private Object runScript(String script) {
         System.out.println("--------------------------------------");
         System.out.println("script = " + script);
         AstRoot astRoot = parser.parse(script, null, 1);
         astRoot.visitAll(branchInstrumentor);
         System.out.println("astRoot.toSource() = " + astRoot.toSource());
 
-        Context cx = Context.enter();
-        Scriptable scope = cx.initStandardObjects();
-//        cx.evaluateString(scope, branchObjectHeader, "jscoverage-branch.js", 1, null);
+        context = Context.enter();
+        scope = context.initStandardObjects();
         String source = branchObjectHeader + header + astRoot.toSource();
         System.out.println("source = " + source);
-        return cx.evaluateString(scope, source, "test.js", 1, null);
+
+        return context.evaluateString(scope, source, "test.js", 1, null);
+    }
+
+    private Scriptable getCoverageData(Scriptable scope, String uri, int lineNo, int conditionNo) {
+        Scriptable jscoverage = (Scriptable) scope.get("_$jscoverage", scope);
+        Scriptable branchData = (Scriptable) jscoverage.get("branchData", jscoverage);
+        Scriptable scriptData = (Scriptable) branchData.get(uri, branchData);
+        Scriptable lineData = (Scriptable) scriptData.get(lineNo, scriptData);
+        return (Scriptable) lineData.get(conditionNo, lineData);
     }
 }
