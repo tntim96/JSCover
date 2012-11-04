@@ -380,14 +380,14 @@ public class BranchInstrumentorIntegrationTest {
         assertThat((Integer) coverageData.get("length", coverageData), equalTo(5));
         assertThat((Boolean) coveredFn.call(context, scope, coverageData, new Object[0]), equalTo(false));
 
-        testFn.call(context, scope, coverageData, new ArrayList() {{
+        testFn.call(context, scope, null, new ArrayList() {{
             add(-1);
         }}.toArray());
         assertThat((Boolean) coverageData.get("evalTrue", coverageData), equalTo(true));
         assertThat((Boolean) coverageData.get("evalFalse", coverageData), equalTo(false));
         assertThat((Boolean) coveredFn.call(context, scope, coverageData, new Object[0]), equalTo(false));
 
-        testFn.call(context, scope, coverageData, new ArrayList() {{
+        testFn.call(context, scope, null, new ArrayList() {{
             add(1);
         }}.toArray());
         assertThat((Boolean) coverageData.get("evalTrue", coverageData), equalTo(true));
@@ -413,19 +413,19 @@ public class BranchInstrumentorIntegrationTest {
         assertThat((Boolean) coveredFn1.call(context, scope, coverageData1, new Object[0]), equalTo(false));
         assertThat((Boolean) coveredFn2.call(context, scope, coverageData2, new Object[0]), equalTo(false));
 
-        testFn.call(context, scope, coverageData1, new ArrayList() {{
+        testFn.call(context, scope, null, new ArrayList() {{
             add(-1);
         }}.toArray());
         assertThat((Boolean) coveredFn1.call(context, scope, coverageData1, new Object[0]), equalTo(false));
         assertThat((Boolean) coveredFn2.call(context, scope, coverageData2, new Object[0]), equalTo(false));
 
-        testFn.call(context, scope, coverageData1, new ArrayList() {{
+        testFn.call(context, scope, null, new ArrayList() {{
             add(1);
         }}.toArray());
         assertThat((Boolean) coveredFn1.call(context, scope, coverageData1, new Object[0]), equalTo(true));
         assertThat((Boolean) coveredFn2.call(context, scope, coverageData2, new Object[0]), equalTo(false));
 
-        testFn.call(context, scope, coverageData1, new ArrayList() {{
+        testFn.call(context, scope, null, new ArrayList() {{
             add(1000);
         }}.toArray());
         assertThat((Boolean) coveredFn1.call(context, scope, coverageData1, new Object[0]), equalTo(true));
@@ -451,17 +451,26 @@ public class BranchInstrumentorIntegrationTest {
         assertThat((Boolean) coveredFn2.call(context, scope, coverageData2, new Object[0]), equalTo(false));
         assertThat((Boolean) coveredFn2.call(context, scope, coverageData3, new Object[0]), equalTo(false));
 
-        testFn.call(context, scope, coverageData1, new ArrayList() {{add(-1);add(-1);}}.toArray());
+        testFn.call(context, scope, null, new ArrayList() {{
+            add(-1);
+            add(-1);
+        }}.toArray());
         assertThat((Boolean) coveredFn1.call(context, scope, coverageData1, new Object[0]), equalTo(false));
         assertThat((Boolean) coveredFn2.call(context, scope, coverageData2, new Object[0]), equalTo(false));
         assertThat((Boolean) coveredFn3.call(context, scope, coverageData3, new Object[0]), equalTo(false));
 
-        testFn.call(context, scope, coverageData1, new ArrayList() {{add(1);add(-1);}}.toArray());
+        testFn.call(context, scope, null, new ArrayList() {{
+            add(1);
+            add(-1);
+        }}.toArray());
         assertThat((Boolean) coveredFn1.call(context, scope, coverageData1, new Object[0]), equalTo(true));
         assertThat((Boolean) coveredFn2.call(context, scope, coverageData2, new Object[0]), equalTo(true));
         assertThat((Boolean) coveredFn3.call(context, scope, coverageData3, new Object[0]), equalTo(false));
 
-        testFn.call(context, scope, coverageData1, new ArrayList() {{add(-1);add(1);}}.toArray());
+        testFn.call(context, scope, null, new ArrayList() {{
+            add(-1);
+            add(1);
+        }}.toArray());
         assertThat((Boolean) coveredFn1.call(context, scope, coverageData1, new Object[0]), equalTo(true));
         assertThat((Boolean) coveredFn2.call(context, scope, coverageData2, new Object[0]), equalTo(true));
         assertThat((Boolean) coveredFn3.call(context, scope, coverageData3, new Object[0]), equalTo(true));
