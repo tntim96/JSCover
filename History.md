@@ -1,3 +1,7 @@
+0.0.9 / 2012-11-05
+==================
+  * Fix https://github.com/tntim96/JSCover/issues/8, https://bugzilla.mozilla.org/show_bug.cgi?id=800616
+
 0.0.8 / 2012-10-25
 ==================
   * Add simple non-instrumenting web-server used in the manual's examples
