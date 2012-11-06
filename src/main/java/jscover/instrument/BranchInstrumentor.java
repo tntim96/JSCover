@@ -359,7 +359,7 @@ public class BranchInstrumentor implements NodeVisitor {
         }
     }
 
-    public void replaceWithFunction(InfixExpression node) {
+    public void replaceWithFunction(AstNode node) {
         AstRoot astRoot = node.getAstRoot();
         AstNode parent = node.getParent();
 
@@ -402,7 +402,7 @@ public class BranchInstrumentor implements NodeVisitor {
 
     public boolean visit(AstNode node) {
         if (isBoolean(node)) {
-            replaceWithFunction((InfixExpression)node);
+            replaceWithFunction(node);
         }
         return true;
     }
@@ -420,8 +420,11 @@ public class BranchInstrumentor implements NodeVisitor {
             case Token.OR:
             case Token.AND:
                 return true;
-            default:return false;
         }
+        if (node.getParent() instanceof IfStatement) {
+            return ((IfStatement)node.getParent()).getCondition() == node;
+        }
+        return false;
     }
 
     public int getLinePosition(AstNode node) {
