@@ -81,6 +81,7 @@ TD.tick {
 
 TD.cross {
 	background-color: #ff3333;
+    font-weight: bold;
 }
 
 HR {
