@@ -343,7 +343,6 @@ Public License instead of this License.
 package jscover.util;
 
 import java.io.*;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -359,16 +358,12 @@ public abstract class IoUtils {
     }
 
     public static String toString(InputStream is) {
-        return toString(is, Charset.defaultCharset().name());
-    }
-
-    private static String toString(InputStream is, String encoding) {
         StringBuilder result = new StringBuilder();
         int bufSize = 1024;
         char buf[] = new char[bufSize];
         BufferedReader br = null;
         try {
-            br = new BufferedReader(new InputStreamReader(is, encoding));
+            br = new BufferedReader(new InputStreamReader(is, System.getProperty("file.encoding")));
             for (int read = 0; (read = br.read(buf)) != -1; ) {
                 result.append(buf, 0, read);
             }
@@ -427,7 +422,7 @@ public abstract class IoUtils {
         try {
 //            is = Thread.currentThread().getContextClassLoader().getResourceAsStream(dataFile);
             is = IoUtils.class.getResourceAsStream(dataFile);
-            return toString(is, "UTF-8");
+            return toString(is);
         } catch (Throwable e) {
             throw new RuntimeException(String.format("Problem loading file: '%s'",dataFile),e);
         } finally {
@@ -439,7 +434,7 @@ public abstract class IoUtils {
         InputStream is = null;
         try {
             is = new FileInputStream(dataFile);
-            return toString(is, "UTF-8");
+            return toString(is);
         } catch (Throwable e) {
             throw new RuntimeException(String.format("Problem loading file: '%s'",dataFile),e);
         } finally {

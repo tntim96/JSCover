@@ -1,3 +1,7 @@
+0.0.10 / 2012-11-07
+==================
+  * Add --encoding option (https://github.com/tntim96/JSCover/issues/12) - defaults to UTF-8
+
 0.0.9 / 2012-11-05
 ==================
   * Fix https://github.com/tntim96/JSCover/issues/8, https://bugzilla.mozilla.org/show_bug.cgi?id=800616
