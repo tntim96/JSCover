@@ -218,15 +218,6 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>--encoding=ENCODING</td>
-                        <td>UTF-8</td>
-                        <td>
-                            Read JavaScript files for instrumenting using the given character encoding.<br/>
-                            <note>To see the available (and default) encodings run <var>JSCover</var>
-                            with options -h --encoding</note>
-                        </td>
-                    </tr>
-                    <tr>
                         <td>-h,--help</td>
                         <td>N/A</td>
                         <td>Display command line help</td>
@@ -304,7 +295,6 @@
                         </td>
                     </tr>
                 </table>
-                See <a href="#usage">general usage options</a> above for specifying encoding.
             </text>
             <item>
                 <heading id="implementationStoreReport">Storing reports</heading>
@@ -403,7 +393,6 @@
                         </td>
                     </tr>
                 </table>
-                See <a href="#usage">general usage options</a> above for specifying encoding.
             </text>
             <text>
                 The first step is to add instrumentation to your JavaScript code. You do this by executing JSCover
@@ -732,15 +721,14 @@ alert('Hello World!');</code>
                 <heading id="jsCoverageVJSCoverFeatures">Features</heading>
                 <text>
                     <table>
-                        <tr><th>Feature</th><th>JSCoverage (0.5.1)</th><th>JSCover (0.0.10)</th></tr>
+                        <tr><th>Feature</th><th>JSCoverage (0.5.1)</th><th>JSCover (0.0.8)</th></tr>
                         <tr><td>File Instrumentation</td><td class="tick"></td><td class="tick"></td></tr>
                         <tr><td>Web Server Instrumentation</td><td class="tick"></td><td class="tick"></td></tr>
                         <tr><td>Proxy Server Instrumentation</td><td class="tick"></td><td class="tick"></td></tr>
-                        <tr><td>Specify Encoding</td><td class="tick"></td><td class="tick"></td></tr>
                         <tr><td>Inclusion of Uncovered/Unloaded JavaScript</td><td class="cross"></td><td class="tick"></td></tr>
                         <tr><td>JavaScript Syntax Highlighting</td><td class="tick"></td><td class="cross"></td></tr>
                         <tr><td>Ignoring certain lines of code</td><td class="tick"></td><td class="cross"></td></tr>
-                        <tr><td>Branch Coverage</td><td class="cross"></td><td class="cross">Coming Soon!</td></tr>
+                        <tr><td>Branch Coverage</td><td class="cross"></td><td class="cross"></td></tr>
                     </table>
                 </text>
                 <text>
