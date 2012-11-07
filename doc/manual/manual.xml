@@ -734,7 +734,7 @@ alert('Hello World!');</code>
                 <heading id="jsCoverageVJSCoverFeatures">Features</heading>
                 <text>
                     <table>
-                        <tr><th>Feature</th><th>JSCoverage (0.5.1)</th><th>JSCover (0.0.10)</th></tr>
+                        <tr><th>Feature</th><th>JSCoverage (0.5.1)</th><th>JSCover (0.0.11)</th></tr>
                         <tr><td>File Instrumentation</td><td class="tick"></td><td class="tick"></td></tr>
                         <tr><td>Web Server Instrumentation</td><td class="tick"></td><td class="tick"></td></tr>
                         <tr><td>Proxy Server Instrumentation</td><td class="tick"></td><td class="tick"></td></tr>

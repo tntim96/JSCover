@@ -1,6 +1,10 @@
-0.0.10 / 2012-11-07
+0.0.11 / 2012-11-07
 ==================
   * Use platform default encoding. Add documentation on -Dfile.encoding JVM property usage in manual.
+
+0.0.10 / 2012-11-07
+==================
+  * Flawed and download. Replaced with 0.0.11
 
 0.0.9 / 2012-11-05
 ==================
