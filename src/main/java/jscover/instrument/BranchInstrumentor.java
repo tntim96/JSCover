@@ -352,6 +352,12 @@ public class BranchInstrumentor implements NodeVisitor {
     private int functionId = 1;
     private BranchStatementBuilder branchStatementBuilder = new BranchStatementBuilder();
     private Set<ExpressionStatement> lineArrayDeclarations = new HashSet<ExpressionStatement>();
+    private String uri;
+
+    public BranchInstrumentor(String uri) {
+        this.uri = uri;
+    }
+
 
     public void postProcess(AstRoot node) {
         for (ExpressionStatement lineArrayDeclaration : lineArrayDeclarations) {
@@ -359,7 +365,7 @@ public class BranchInstrumentor implements NodeVisitor {
         }
     }
 
-    public void replaceWithFunction(AstNode node) {
+    private void replaceWithFunction(AstNode node) {
         AstRoot astRoot = node.getAstRoot();
         AstNode parent = node.getParent();
 
@@ -370,14 +376,14 @@ public class BranchInstrumentor implements NodeVisitor {
             conditionId++;
         }
         lineConditionMap.put(node.getLineno(), conditionId);
-        FunctionNode functionNode = branchStatementBuilder.buildBranchRecordingFunction("test.js", functionId++, node.getLineno(), conditionId);
+        FunctionNode functionNode = branchStatementBuilder.buildBranchRecordingFunction(uri, functionId++, node.getLineno(), conditionId);
 
         astRoot.addChildrenToFront(functionNode);
-        ExpressionStatement conditionArrayDeclaration = branchStatementBuilder.buildLineAndConditionInitialisation("test.js"
+        ExpressionStatement conditionArrayDeclaration = branchStatementBuilder.buildLineAndConditionInitialisation(uri
                 , node.getLineno(), conditionId, getLinePosition(node), node.getLength(), node.toSource());
         astRoot.addChildrenToFront(conditionArrayDeclaration);
         if (conditionId == 1) {
-            ExpressionStatement lineArrayDeclaration = branchStatementBuilder.buildLineInitialisation("test.js", node.getLineno());
+            ExpressionStatement lineArrayDeclaration = branchStatementBuilder.buildLineInitialisation(uri, node.getLineno());
             lineArrayDeclarations.add(lineArrayDeclaration);
         }
 

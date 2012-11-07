@@ -358,7 +358,7 @@ public class BranchInstrumentorIntegrationTest {
             "_$jscoverage.branchData = {};\n" +
             "_$jscoverage.branchData['test.js'] = {};\n";
 
-    private BranchInstrumentor branchInstrumentor = new BranchInstrumentor();
+    private BranchInstrumentor branchInstrumentor = new BranchInstrumentor("test.js");
     private Parser parser = new Parser();
     private Context context;
     private Scriptable scope;
