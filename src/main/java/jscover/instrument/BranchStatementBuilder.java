@@ -358,7 +358,7 @@ public class BranchStatementBuilder {
     public ExpressionStatement buildLineInitialisation(String uri, int lineNo) {
         ElementGet indexLineNumber = buildLineDeclaration(uri, lineNo);
 
-        Assignment assignment = new Assignment(indexLineNumber, new ObjectLiteral());
+        Assignment assignment = new Assignment(indexLineNumber, new ArrayLiteral());
         assignment.setOperator(Token.ASSIGN);
         return new ExpressionStatement(assignment);
     }
