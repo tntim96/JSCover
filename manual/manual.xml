@@ -234,7 +234,7 @@
                 <text>
                     The encoding defaults to the platform's default encoding which is usually what you want.
                     To specify an encoding, add the JVM option <var>-Dfile.encoding=ENCODING</var>. For example:
-                    <code>java -Dfile.encoding=UTF-8 -jar JSCover-all.jar</code>
+                    <code>java -Dfile.encoding=UTF-8 -jar JSCover-all.jar [OPTIONS]...</code>
                     <note>To see the available encodings (as well as the current default) run <var>JSCover</var>
                         with options <var>-h encoding</var></note>
                     <code>java -jar JSCover-all.jar -h encoding</code>
@@ -734,7 +734,7 @@ alert('Hello World!');</code>
                 <heading id="jsCoverageVJSCoverFeatures">Features</heading>
                 <text>
                     <table>
-                        <tr><th>Feature</th><th>JSCoverage (0.5.1)</th><th>JSCover (0.0.10)</th></tr>
+                        <tr><th>Feature</th><th>JSCoverage (0.5.1)</th><th>JSCover (0.0.11)</th></tr>
                         <tr><td>File Instrumentation</td><td class="tick"></td><td class="tick"></td></tr>
                         <tr><td>Web Server Instrumentation</td><td class="tick"></td><td class="tick"></td></tr>
                         <tr><td>Proxy Server Instrumentation</td><td class="tick"></td><td class="tick"></td></tr>
