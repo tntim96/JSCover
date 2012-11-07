@@ -229,6 +229,17 @@
                     </tr>
                 </table>
             </text>
+            <item>
+                <heading id="encoding">Encoding</heading>
+                <text>
+                    The encoding defaults to the platform's default encoding which is usually what you want.
+                    To specify an encoding, add the JVM option <var>-Dfile.encoding=ENCODING</var>. For example:
+                    <code>java -Dfile.encoding=UTF-8 -jar JSCover-all.jar</code>
+                    <note>To see the available encodings (as well as the current default) run <var>JSCover</var>
+                        with options <var>-h encoding</var></note>
+                    <code>java -jar JSCover-all.jar -h encoding</code>
+                </text>
+            </item>
         </item>
         <item>
             <heading id="serverMode">Server Mode</heading>
@@ -295,6 +306,7 @@
                         </td>
                     </tr>
                 </table>
+                See the <a href="#encoding">encoding section</a> above for specifying encoding.
             </text>
             <item>
                 <heading id="implementationStoreReport">Storing reports</heading>
@@ -393,6 +405,7 @@
                         </td>
                     </tr>
                 </table>
+                See the <a href="#encoding">encoding section</a> above for specifying encoding.
             </text>
             <text>
                 The first step is to add instrumentation to your JavaScript code. You do this by executing JSCover
@@ -721,14 +734,15 @@ alert('Hello World!');</code>
                 <heading id="jsCoverageVJSCoverFeatures">Features</heading>
                 <text>
                     <table>
-                        <tr><th>Feature</th><th>JSCoverage (0.5.1)</th><th>JSCover (0.0.8)</th></tr>
+                        <tr><th>Feature</th><th>JSCoverage (0.5.1)</th><th>JSCover (0.0.10)</th></tr>
                         <tr><td>File Instrumentation</td><td class="tick"></td><td class="tick"></td></tr>
                         <tr><td>Web Server Instrumentation</td><td class="tick"></td><td class="tick"></td></tr>
                         <tr><td>Proxy Server Instrumentation</td><td class="tick"></td><td class="tick"></td></tr>
+                        <tr><td>Specify Encoding</td><td class="tick"></td><td class="tick"></td></tr>
                         <tr><td>Inclusion of Uncovered/Unloaded JavaScript</td><td class="cross"></td><td class="tick"></td></tr>
                         <tr><td>JavaScript Syntax Highlighting</td><td class="tick"></td><td class="cross"></td></tr>
                         <tr><td>Ignoring certain lines of code</td><td class="tick"></td><td class="cross"></td></tr>
-                        <tr><td>Branch Coverage</td><td class="cross"></td><td class="cross"></td></tr>
+                        <tr><td>Branch Coverage</td><td class="cross"></td><td class="cross">Coming Soon!</td></tr>
                     </table>
                 </text>
                 <text>
@@ -737,7 +751,7 @@ alert('Hello World!');</code>
                         <li>JSCover's server mode works on Windows 7 (this was part of the incentive to write JSCover)</li>
                         <li>JSCover allows sorting of files by coverage</li>
                         <li>JSCover <a href="#automating">has added hooks</a> to assist with automated testing</li>
-                        <li>JSCover's default encoding is UTF-8, while JSCoverage's is ISO-8859-1</li>
+                        <li>JSCover's encoding default's to that of the platform, while JSCoverage's is ISO-8859-1</li>
                         <li>JSCoverage has an option for code coverage for Mozilla platform applications</li>
                     </ul>
                 </text>
