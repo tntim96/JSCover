@@ -344,7 +344,6 @@ package jscover.util;
 
 import java.io.File;
 import java.io.InputStream;
-import java.io.StringReader;
 
 public class IoService {
 
@@ -363,11 +362,11 @@ public class IoService {
         copyResourceToDir("jscoverage.css", destDir);
 
         String reportHTML = generateJSCoverageHtml(version);
-        IoUtils.copy(new StringReader(reportHTML), new File(destDir, "jscoverage.html"));
+        IoUtils.copy(reportHTML, new File(destDir, "jscoverage.html"));
 
         if (isServer) {
             String reportJS = generateJSCoverageReportJS();
-            IoUtils.copy(new StringReader(reportJS), new File(destDir, "jscoverage.js"));
+            IoUtils.copy(reportJS, new File(destDir, "jscoverage.js"));
         } else {
             copyResourceToDir("jscoverage.js", destDir);
         }

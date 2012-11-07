@@ -1,6 +1,6 @@
 0.0.10 / 2012-11-07
 ==================
-  * Add --encoding option (https://github.com/tntim96/JSCover/issues/12) - defaults to UTF-8
+  * Use platform default encoding. Add documentation on -Dfile.encoding JVM property usage in manual.
 
 0.0.9 / 2012-11-05
 ==================

@@ -350,7 +350,6 @@ import org.mozilla.javascript.CompilerEnvirons;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.StringReader;
 
 public class InstrumenterService {
     private SourceFormatter sourceFormatter = new PlainFormatter();
@@ -374,6 +373,6 @@ public class InstrumenterService {
         SourceProcessor sourceProcessor = new SourceProcessor(compilerEnvirons, uri, sourceFormatter, log);
         String source = IoUtils.loadFromFileSystem(srcFile);
         String jsInstrumented = sourceProcessor.processSourceForFileSystem(source);
-        IoUtils.copy(new StringReader(jsInstrumented), dest);
+        IoUtils.copy(jsInstrumented, dest);
     }
 }

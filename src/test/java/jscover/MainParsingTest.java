@@ -364,7 +364,6 @@ public class MainParsingTest {
         assertThat(main.printVersion(), equalTo(false));
         assertThat(main.isServer(), equalTo(false));
         assertThat(main.isFileSystem(), equalTo(false));
-        assertThat(System.getProperty("file.encoding"), equalTo("UTF-8"));
     }
 
     @Test
@@ -393,12 +392,6 @@ public class MainParsingTest {
     }
 
     @Test
-    public void shouldParseEncoding() {
-        main.parse(new String[]{"--encoding=US-ASCII"});
-        assertThat(System.getProperty("file.encoding"), equalTo("US-ASCII"));
-    }
-
-    @Test
     public void shouldParseFileSystem() {
         assertThat(main.parse(new String[]{"-fs"}).isFileSystem(), equalTo(true));
     }
@@ -417,8 +410,8 @@ public class MainParsingTest {
 
     @Test
     public void shouldParseEncodingHelp() {
-        assertThat(main.parse(new String[]{"-ws","--encoding"}).showCharSets(), equalTo(false));
-        assertThat(main.parse(new String[]{"-h","--encoding"}).showCharSets(), equalTo(true));
+        assertThat(main.parse(new String[]{"-ws","encoding"}).showCharSets(), equalTo(false));
+        assertThat(main.parse(new String[]{"-h","encoding"}).showCharSets(), equalTo(true));
     }
 
     @Test

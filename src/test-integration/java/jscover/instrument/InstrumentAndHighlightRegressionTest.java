@@ -631,19 +631,6 @@ public class InstrumentAndHighlightRegressionTest {
         //assertEquals(removeHighlightLine(expectedSource), removeHighlightLine(instrumentedSource));
     }
 
-//    private String removeHighlightLine(String string) {
-//        StringBuffer sb = new StringBuffer();
-//        for (String line: IoUtils.readLines(new StringReader(string))) {
-//            if (sb.length()>0) {
-//                sb.append("\n");
-//            }
-//            if (line.indexOf(".js'].source = [\"")==-1) {
-//                sb.append(line);
-//            }
-//        }
-//        return sb.toString();
-//    }
-
     private void testFileWithoutStopping(String fileName) {
         System.out.print("Test " + fileName + " ");
         try {

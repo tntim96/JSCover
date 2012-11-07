@@ -343,10 +343,14 @@ Public License instead of this License.
 package jscover.util;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class IoUtils {
+
+    public static Charset charSet = Charset.defaultCharset();
+
     public static void closeQuietly(Closeable s) {
         if (s != null) {
             try {
@@ -363,7 +367,7 @@ public abstract class IoUtils {
         char buf[] = new char[bufSize];
         BufferedReader br = null;
         try {
-            br = new BufferedReader(new InputStreamReader(is, System.getProperty("file.encoding")));
+            br = new BufferedReader(new InputStreamReader(is, charSet));
             for (int read = 0; (read = br.read(buf)) != -1; ) {
                 result.append(buf, 0, read);
             }
@@ -399,11 +403,12 @@ public abstract class IoUtils {
         }
     }
 
-    public static List<String> readLines(Reader reader) {
-        return readLines(new BufferedReader(reader));
+    public static List<String> readLines(String source) {
+        ByteArrayInputStream bais = new ByteArrayInputStream(source.getBytes(charSet));
+        return readLines(new BufferedReader(new InputStreamReader(bais, charSet)));
     }
 
-    public static List<String> readLines(BufferedReader br) {
+    private static List<String> readLines(BufferedReader br) {
         List<String> result = new ArrayList<String>();
         try {
             for (String line; (line = br.readLine()) != null; ) {
@@ -497,7 +502,7 @@ public abstract class IoUtils {
         char buf[] = new char[bufSize];
         BufferedWriter bw = null;
         try {
-            bw = new BufferedWriter(new OutputStreamWriter(os));
+            bw = new BufferedWriter(new OutputStreamWriter(os, charSet));
             for (int read = 0; (read = reader.read(buf)) != -1; ) {
                 bw.write(buf, 0, read);
             }
@@ -508,6 +513,11 @@ public abstract class IoUtils {
             closeQuietly(bw);
         }
 
+    }
+
+    public static void copy(String string, File dest) {
+        ByteArrayInputStream bais = new ByteArrayInputStream(string.getBytes(charSet));
+        copy(new InputStreamReader(bais, charSet), dest);
     }
 
     public static void copy(InputStream is, File dest) {
@@ -542,5 +552,11 @@ public abstract class IoUtils {
         if (file1.equals(file2))
             return "";
         return file1.getAbsolutePath().substring(file2.getAbsolutePath().length()+File.separator.length()).replaceAll("\\\\","/");
+    }
+
+    public static Reader getReader(String source) {
+        ByteArrayInputStream bais = new ByteArrayInputStream(source.getBytes(charSet));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(bais, charSet));
+        return reader;
     }
 }

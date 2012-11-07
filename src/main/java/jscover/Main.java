@@ -361,16 +361,13 @@ import static java.lang.String.format;
 
 public class Main {
     public static final String HELP_PREFIX1 = "-h";
-    public static final String CHARSET_PREFIX = "--encoding";
+    public static final String CHARSET_PREFIX = "encoding";
     public static final String HELP_PREFIX2 = "--help";
     public static final String VERSION_PREFIX1 = "-V";
     public static final String VERSION_PREFIX2 = "--version";
     public static final String SERVER_PREFIX = "-ws";
     public static final String FILESYSTEM_PREFIX = "-fs";
     public static final Properties properties = new Properties();
-    {
-        System.setProperty("file.encoding", "UTF-8");
-    }
 
     private String manifestName = "MANIFEST.MF";
     private List<String> dependantClasses = new ArrayList<String>() {{
@@ -424,9 +421,7 @@ public class Main {
             for (String charSetName : charSet.keySet()) {
                 System.out.println(charSetName);
             }
-            //System.out.println("Default charset : " + Charset.defaultCharset().name());
-            System.out.println("Default encoding: " + System.getProperty("file.encoding"));
-
+            System.out.println("Default is: " + Charset.defaultCharset().name());
         } else {
             System.out.println(getHelpText());
         }
@@ -474,8 +469,6 @@ public class Main {
                 isServer = true;
             } else if (arg.equals(FILESYSTEM_PREFIX)) {
                 isFileSystem = true;
-            } else if (arg.startsWith(CHARSET_PREFIX + "=")) {
-                System.setProperty("file.encoding", arg.substring(CHARSET_PREFIX.length() + 1));
             } else if (arg.equals(CHARSET_PREFIX)) {
                 showCharsets = true;
             } else {

@@ -348,7 +348,6 @@ import org.junit.Test;
 import org.mozilla.javascript.CompilerEnvirons;
 
 import java.io.File;
-import java.io.StringReader;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -361,7 +360,7 @@ public class InstrumenterServiceTest {
     @Before
     public void setUp() {
         src.delete();
-        IoUtils.copy(new StringReader("x++;"), src);
+        IoUtils.copy("x++;", src);
     }
 
     @Test

@@ -343,14 +343,13 @@ Public License instead of this License.
 package jscover.instrument;
 
 import jscover.format.SourceFormatter;
+import jscover.util.IoUtils;
 import org.mozilla.javascript.CompilerEnvirons;
 import org.mozilla.javascript.Parser;
 import org.mozilla.javascript.ast.AstRoot;
-import jscover.util.IoUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.SortedSet;
 
 import static java.lang.String.format;
@@ -406,14 +405,13 @@ class SourceProcessor {
     }
 
     protected String instrumentSource(String sourceURI, String source) {
-        AstRoot astRoot;
         try {
-            astRoot = parser.parse(new StringReader(source), sourceURI, 1);
+            AstRoot astRoot = parser.parse(IoUtils.getReader(source) , sourceURI, 1);
             astRoot.visitAll(instrumenter);
+            return astRoot.toSource();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return astRoot.toSource();
     }
 
     protected String getJsLineInitialization(String fileName, SortedSet<Integer> validlines) {

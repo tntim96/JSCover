@@ -370,7 +370,7 @@ public class HttpServer extends Thread {
         try {
             is = socket.getInputStream();
             os = socket.getOutputStream();
-            br = new BufferedReader(new InputStreamReader(is, System.getProperty("file.encoding")));
+            br = new BufferedReader(new InputStreamReader(is));
             pw = new PrintWriter(os);
 
             String requestString = null;

@@ -344,7 +344,6 @@ package jscover.format;
 
 import static java.lang.String.format;
 
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -352,8 +351,8 @@ import jscover.util.IoUtils;
 
 public class PlainFormatter implements SourceFormatter {
     public String toJsArrayOfHtml(String source) {
-        StringBuffer sb = new StringBuffer();
-        for (String line : IoUtils.readLines(new StringReader(source))) {
+        StringBuilder sb = new StringBuilder();
+        for (String line : IoUtils.readLines(source)) {
             if (sb.length() > 0) {
                 sb.append(",");
             }
@@ -366,14 +365,14 @@ public class PlainFormatter implements SourceFormatter {
 
     public List<String> toHtmlLines(String source) {
         List<String> lines = new ArrayList<String>();
-        for (String line : IoUtils.readLines(new StringReader(source))) {
+        for (String line : IoUtils.readLines(source)) {
             lines.add(escapeHtml(line));
         }
         return lines;
     }
 
     private String escapeHtml(String string) {
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         for (int i = 0; i < string.length(); i++) {
             char c = string.charAt(i);
             switch (c) {

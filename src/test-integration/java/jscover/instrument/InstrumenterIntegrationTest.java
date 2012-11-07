@@ -375,7 +375,7 @@ public class InstrumenterIntegrationTest {
 
         String expectedSource = IoUtils.loadFromClassPath("/test-instrumented-file-system.js");
         // assertThat(instrumentedSource, equalTo(expectedSource));
-        //IoUtils.copy(new StringReader(instrumentedSource), new File("src/test-integration/resources/test-instrumented-file-system.js"));
+        //IoUtils.copy(instrumentedSource, new File("src/test-integration/resources/test-instrumented-file-system.js"));
         assertEquals(expectedSource, instrumentedSource);//.replaceAll("\r\n","\n"));
     }
 
@@ -389,7 +389,7 @@ public class InstrumenterIntegrationTest {
 
         String expectedSource = IoUtils.loadFromClassPath("/test-instrumented-server.js");
         // assertThat(instrumentedSource, equalTo(expectedSource));
-        //IoUtils.copy(new StringReader(instrumentedSource), new File("src/test-integration/resources/test-instrumented-server.js"));
+        //IoUtils.copy(instrumentedSource, new File("src/test-integration/resources/test-instrumented-server.js"));
         assertEquals(expectedSource, instrumentedSource);//.replaceAll("\r\n","\n"));
     }
 

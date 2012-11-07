@@ -371,12 +371,6 @@ public class IoUtilsTest {
     }
 
     @Test(expected = RuntimeException.class)
-    public void shouldWrapExceptionsInReadLinesStringReader() throws IOException {
-        given(reader.read(any(char[].class), anyInt(), anyInt())).willThrow(new IOException("Ouch!"));
-        IoUtils.readLines(reader);
-    }
-
-    @Test(expected = RuntimeException.class)
     public void shouldWrapExceptionsInToStringInputStream() throws IOException {
         given(is.read(any(byte[].class))).willThrow(new IOException("Ouch!"));
         IoUtils.toString(is);
@@ -424,7 +418,7 @@ public class IoUtilsTest {
     @Test
     public void shouldNotCloseOSInCopyFileToOSNoClose() throws Exception {
         File fileSrc = new File("target/test-src.txt");
-        IoUtils.copy(new StringReader("Working!!!"), fileSrc);
+        IoUtils.copy("Working!!!", fileSrc);
         File fileDest = new File("target/test-dest.txt");
         FileOutputStream fos = new FileOutputStream(fileDest);
         try {
@@ -503,7 +497,7 @@ public class IoUtilsTest {
     }
 
     @Test
-    public void shouldCopyInputStreamToOutputStream() {
+    public void shouldCopyInputStreamToOutputStream() throws UnsupportedEncodingException {
         ByteArrayInputStream bais = new ByteArrayInputStream("shouldCopyInputStreamToOutputStream".getBytes());
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         IoUtils.copy(bais, baos);
