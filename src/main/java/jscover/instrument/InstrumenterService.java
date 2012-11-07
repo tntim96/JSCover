@@ -352,7 +352,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 public class InstrumenterService {
-    private SourceFormatter sourceFormatter = new PlainFormatter();
+    private SourceFormatter sourceFormatter = PlainFormatter.getInstance();
 
     public String instrumentJSForWebServer(CompilerEnvirons compilerEnvirons, File srcFile, String uri, File log) {
         SourceProcessor sourceProcessor = new SourceProcessor(compilerEnvirons, uri, sourceFormatter, log);

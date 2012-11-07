@@ -143,7 +143,7 @@
 	</target>
 
 	<target name="coverage-check">
-		<cobertura-check totallinerate="82" totalbranchrate="79"/>
+		<cobertura-check totallinerate="82" totalbranchrate="80"/>
 	</target>
 
 	<target name="coverage-check-all">

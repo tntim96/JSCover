@@ -357,7 +357,7 @@ import java.util.SortedSet;
 
 public class UnloadedSourceProcessor {
     private ConfigurationForServer config;
-    private SourceFormatter sourceFormatter = new PlainFormatter();
+    private SourceFormatter sourceFormatter = PlainFormatter.getInstance();
     private FileScanner fileScanner;
 
     public UnloadedSourceProcessor(ConfigurationForServer config) {

@@ -360,7 +360,7 @@ import org.mozilla.javascript.Context;
 public class InstrumentAndHighlightRegressionTest {
     private static Set<String> tested = new HashSet<String>();
 
-    private PlainFormatter sourceFormatter = new PlainFormatter();
+    private PlainFormatter sourceFormatter = PlainFormatter.getInstance();
 
     @Test
     public void shouldInstrumentArray() {

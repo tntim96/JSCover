@@ -344,6 +344,7 @@ package jscover.instrument;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
 import java.net.URISyntaxException;
 
 import jscover.format.PlainFormatter;
@@ -369,7 +370,7 @@ public class InstrumenterIntegrationTest {
     public void shouldInstrumentForFileSystem() throws URISyntaxException {
         String fileName = "test-simple.js";
         String source = IoUtils.loadFromClassPath("/" + fileName);
-        instrumenter = new SourceProcessor(compilerEnv, fileName, new PlainFormatter(), null);
+        instrumenter = new SourceProcessor(compilerEnv, fileName, PlainFormatter.getInstance(), null);
 
         String instrumentedSource = instrumenter.processSourceForFileSystem(source);
 
@@ -383,7 +384,7 @@ public class InstrumenterIntegrationTest {
     public void shouldInstrumentForServer() throws URISyntaxException {
         String fileName = "test-simple.js";
         String source = IoUtils.loadFromClassPath("/" + fileName);
-        instrumenter = new SourceProcessor(compilerEnv, fileName, new PlainFormatter(), null);
+        instrumenter = new SourceProcessor(compilerEnv, fileName, PlainFormatter.getInstance(), null);
 
         String instrumentedSource = instrumenter.processSourceForServer(source);
 

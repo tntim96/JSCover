@@ -350,6 +350,18 @@ import java.util.List;
 import jscover.util.IoUtils;
 
 public class PlainFormatter implements SourceFormatter {
+    private static PlainFormatter plainFormatter;
+
+    public static PlainFormatter getInstance() {
+        synchronized (PlainFormatter.class) {
+            if (plainFormatter == null) {
+                plainFormatter = new PlainFormatter();
+            }
+        }
+        return plainFormatter;
+    }
+
+
     public String toJsArrayOfHtml(String source) {
         StringBuilder sb = new StringBuilder();
         for (String line : IoUtils.readLines(source)) {

@@ -351,7 +351,7 @@ import jscover.util.IoUtils;
 import java.io.File;
 
 public class FileSystemInstrumenter {
-    private SourceFormatter sourceFormatter = new PlainFormatter();
+    private SourceFormatter sourceFormatter = PlainFormatter.getInstance();
     private IoService ioService = new IoService();
     private InstrumenterService instrumenterService = new InstrumenterService();
     private ConfigurationForFS configuration;
