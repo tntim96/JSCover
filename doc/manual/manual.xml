@@ -306,7 +306,7 @@
                         </td>
                     </tr>
                 </table>
-                See <a href="#usage">general usage options</a> above for specifying encoding.
+                See the <a href="#encoding">encoding section</a> above for specifying encoding.
             </text>
             <item>
                 <heading id="implementationStoreReport">Storing reports</heading>
@@ -405,7 +405,7 @@
                         </td>
                     </tr>
                 </table>
-                See <a href="#usage">general usage options</a> above for specifying encoding.
+                See the <a href="#encoding">encoding section</a> above for specifying encoding.
             </text>
             <text>
                 The first step is to add instrumentation to your JavaScript code. You do this by executing JSCover
