@@ -362,6 +362,7 @@ public class HtmlServerUnloadedJSTest {
     private static Thread server;
 
     protected WebClient webClient = new WebClient();
+    private IoUtils ioUtils = IoUtils.getInstance();
     private String reportDir = "target/ws-report";
     private String[] args = new String[]{
             "-ws",
@@ -415,7 +416,7 @@ public class HtmlServerUnloadedJSTest {
 
         assertThat(result, containsString("Coverage data stored at target"));
 
-        String json = IoUtils.toString(jsonFile);
+        String json = ioUtils.toString(jsonFile);
         assertThat(json, containsString("/root.js"));
         assertThat(json, containsString("/level1/level2/level2.js"));
 

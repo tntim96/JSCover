@@ -368,6 +368,7 @@ public class ConfigurationForFS extends Configuration {
     private File destDir = new File(System.getProperty("user.dir"));
     private int JSVersion = Context.VERSION_1_5;
     private CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
+    private IoUtils ioUtils = IoUtils.getInstance();
 
     public Boolean showHelp() {
         return showHelp;
@@ -452,7 +453,7 @@ public class ConfigurationForFS extends Configuration {
     }
 
     public String getHelpText() {
-        return IoUtils.toString(getClass().getResourceAsStream("help.txt"));
+        return ioUtils.toString(getClass().getResourceAsStream("help.txt"));
     }
 
     public CompilerEnvirons getCompilerEnvirons() {

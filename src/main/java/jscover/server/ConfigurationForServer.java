@@ -372,6 +372,7 @@ public class ConfigurationForServer extends Configuration {
     private boolean proxy;
     private CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
     private boolean includeUnloadedJS;
+    private IoUtils ioUtils = IoUtils.getInstance();
 
     public Boolean showHelp() {
         return showHelp;
@@ -435,7 +436,7 @@ public class ConfigurationForServer extends Configuration {
     }
 
     public String getHelpText() {
-        return IoUtils.toString(getClass().getResourceAsStream("help.txt"));
+        return ioUtils.toString(getClass().getResourceAsStream("help.txt"));
     }
 
     public CompilerEnvirons getCompilerEnvirons() {

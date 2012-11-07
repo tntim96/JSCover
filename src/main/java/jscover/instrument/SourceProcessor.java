@@ -364,6 +364,7 @@ class SourceProcessor {
     private ParseTreeInstrumenter instrumenter;
     private BranchInstrumentor branchInstrumentor;
     private Parser parser;
+    private IoUtils ioUtils = IoUtils.getInstance();
     private boolean includeBranchCoverage = false;
 
     public SourceProcessor(CompilerEnvirons compilerEnv, String uri, SourceFormatter sourceFormatter, File log) {
@@ -376,7 +377,7 @@ class SourceProcessor {
     }
 
     public String processSourceForServer(String source) {
-        String report = IoUtils.loadFromClassPath("/report.js");
+        String report = ioUtils.loadFromClassPath("/report.js");
         return report + processSource(null, source);
     }
 
@@ -385,9 +386,9 @@ class SourceProcessor {
     }
 
     protected String processSource(String sourceURI, String source) {
-        String header = IoUtils.loadFromClassPath("/header.js");
+        String header = ioUtils.loadFromClassPath("/header.js");
         if (includeBranchCoverage) {
-            header = IoUtils.loadFromClassPath("/jscoverage-branch.js") + header;
+            header = ioUtils.loadFromClassPath("/jscoverage-branch.js") + header;
         }
         return header + processSourceWithoutHeader(sourceURI, source);
     }
@@ -412,7 +413,7 @@ class SourceProcessor {
 
     protected String instrumentSource(String sourceURI, String source) {
         try {
-            AstRoot astRoot = parser.parse(IoUtils.getReader(source) , sourceURI, 1);
+            AstRoot astRoot = parser.parse(ioUtils.getReader(source) , sourceURI, 1);
             astRoot.visitAll(instrumenter);
             if (includeBranchCoverage) {
                 astRoot.visitAll(branchInstrumentor);

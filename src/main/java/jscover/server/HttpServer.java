@@ -358,6 +358,7 @@ public class HttpServer extends Thread {
     protected InputStream is;
     protected OutputStream os;
     protected PrintWriter pw = null;
+    protected IoUtils ioUtils = IoUtils.getInstance();
 
     public HttpServer(Socket socket, File wwwRoot, String version) {
         this.wwwRoot = wwwRoot;
@@ -397,21 +398,21 @@ public class HttpServer extends Thread {
             if (httpMethod.equals("GET")) {
                 if (httpRequest.getPath().equals("/stop")) {
                     sendResponse(HTTP_STATUS.HTTP_OK, MIME.TEXT_PLAIN, "Shutting down the server.");
-                    IoUtils.closeQuietly(br);
-                    IoUtils.closeQuietly(os);
+                    ioUtils.closeQuietly(br);
+                    ioUtils.closeQuietly(os);
                     System.exit(0);
                 }
                 handleGet(httpRequest);
             } else if (httpMethod.equals("POST")) {
                 int length = Integer.valueOf(headers.get("Content-Length").get(0));
-                handlePost(httpRequest, IoUtils.toStringNoClose(br, length));
+                handlePost(httpRequest, ioUtils.toStringNoClose(br, length));
             } else
               throw new UnsupportedOperationException("No support for "+httpMethod);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            IoUtils.closeQuietly(br);
-            IoUtils.closeQuietly(os);
+            ioUtils.closeQuietly(br);
+            ioUtils.closeQuietly(os);
         }
     }
 
@@ -467,7 +468,7 @@ public class HttpServer extends Thread {
         pw.write(format("Content-Type: %s\n", mime.getContentType()));
         pw.write(format("Content-Length: %d\n\n", data.length()));
         pw.flush();
-        IoUtils.copyNoClose(data, os);
+        ioUtils.copyNoClose(data, os);
     }
 
     protected void sendResponse(HTTP_STATUS status, MIME mime, InputStream is) {
@@ -475,6 +476,6 @@ public class HttpServer extends Thread {
         pw.write(format("Server: JSCover/%s\n", version));
         pw.write(format("Content-Type: %s\n\n", mime.getContentType()));
         pw.flush();
-        IoUtils.copy(is, os);
+        ioUtils.copy(is, os);
     }
 }

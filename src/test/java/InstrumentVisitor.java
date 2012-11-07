@@ -11,9 +11,10 @@ import jscover.util.IoUtils;
 
 
 public class InstrumentVisitor implements NodeVisitor {
-    
+    private static IoUtils ioUtils = IoUtils.getInstance();
+
     public static void main(String args[]) throws Exception {
-        String source = IoUtils.loadFromClassPath("/test.js");
+        String source = ioUtils.loadFromClassPath("/test.js");
 //        String source = "let ({x: x0, y: y0} = point) {\n  print(x0);\n  print(y0);\n}";
         CompilerEnvirons compilerEnv = new CompilerEnvirons();
         compilerEnv.setLanguageVersion(180);

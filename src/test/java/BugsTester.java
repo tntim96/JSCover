@@ -10,11 +10,12 @@ import org.mozilla.javascript.ast.AstRoot;
 import jscover.util.IoUtils;
 
 public class BugsTester {
+    private static IoUtils ioUtils = IoUtils.getInstance();
     public static void main(String[] args) throws IOException {
 //        parseAndPrintSource("void window.open();");
 //        parseAndPrintSource("debugger;");
 //        parseAndPrintSource("if (true)\n  x++;");
-        parseAndPrintSource(IoUtils.loadFromClassPath("/test.js"));
+        parseAndPrintSource(ioUtils.loadFromClassPath("/test.js"));
 //        parseAndPrintSource("/^(\\w+)$/.exec(url);");
         //parseAndPrintSource("if (true)\n  ;\nx++;");
     }

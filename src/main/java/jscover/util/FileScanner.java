@@ -350,6 +350,7 @@ import java.util.Set;
 
 public class FileScanner {
     private ConfigurationForServer configuration;
+    private IoUtils ioUtils = IoUtils.getInstance();
 
     public FileScanner(ConfigurationForServer configuration) {
         this.configuration = configuration;
@@ -366,7 +367,7 @@ public class FileScanner {
             String files[] = src.list();
             for (String file : files) {
                 File srcFile = new File(src, file);
-                String path = IoUtils.getRelativePath(srcFile, configuration.getDocumentRoot());
+                String path = ioUtils.getRelativePath(srcFile, configuration.getDocumentRoot());
                 if (configuration.skipInstrumentation(path)) {
                     continue;
                 }
@@ -374,7 +375,7 @@ public class FileScanner {
                 searchFolder(srcFile, list, urisAlreadyProcessed);
             }
         } else {
-            String path = IoUtils.getRelativePath(src, configuration.getDocumentRoot());
+            String path = ioUtils.getRelativePath(src, configuration.getDocumentRoot());
             if (src.getName().endsWith(".js") && !urisAlreadyProcessed.contains(path)) {
                 list.add(src);
             }

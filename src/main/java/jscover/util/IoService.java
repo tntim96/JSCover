@@ -346,6 +346,7 @@ import java.io.File;
 import java.io.InputStream;
 
 public class IoService {
+    private IoUtils ioUtils = IoUtils.getInstance();
 
     public void generateJSCoverFilesForFileSystem(File destDir, String version) {
         generateJSCoverFiles(destDir, version, false);
@@ -362,11 +363,11 @@ public class IoService {
         copyResourceToDir("jscoverage.css", destDir);
 
         String reportHTML = generateJSCoverageHtml(version);
-        IoUtils.copy(reportHTML, new File(destDir, "jscoverage.html"));
+        ioUtils.copy(reportHTML, new File(destDir, "jscoverage.html"));
 
         if (isServer) {
             String reportJS = generateJSCoverageReportJS();
-            IoUtils.copy(reportJS, new File(destDir, "jscoverage.js"));
+            ioUtils.copy(reportJS, new File(destDir, "jscoverage.js"));
         } else {
             copyResourceToDir("jscoverage.js", destDir);
         }
@@ -377,19 +378,19 @@ public class IoService {
     }
 
     private String generateJSCoverageReportJS() {
-        return IoUtils.loadFromClassPath("/jscoverage.js") + "\njscoverage_isReport = true;";
+        return ioUtils.loadFromClassPath("/jscoverage.js") + "\njscoverage_isReport = true;";
     }
 
     public String generateJSCoverageServerJS() {
-        return IoUtils.loadFromClassPath("/jscoverage.js") + "\njscoverage_isServer = true;";
+        return ioUtils.loadFromClassPath("/jscoverage.js") + "\njscoverage_isServer = true;";
     }
 
     public String generateJSCoverageHtml(String version) {
-        return IoUtils.loadFromClassPath("/jscoverage.html").replaceAll("@@version@@", version);
+        return ioUtils.loadFromClassPath("/jscoverage.html").replaceAll("@@version@@", version);
     }
 
     private void copyResourceToDir(String resource, File parent) {
-        IoUtils.copy(getResourceAsStream("/"+resource), new File(parent, resource));
+        ioUtils.copy(getResourceAsStream("/"+resource), new File(parent, resource));
     }
 
     public InputStream getResourceAsStream(String uri) {

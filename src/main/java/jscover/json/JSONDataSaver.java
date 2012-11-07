@@ -351,21 +351,22 @@ import java.util.TreeMap;
 
 public class JSONDataSaver {
     private JSONDataMerger jsonDataMerger = new JSONDataMerger();
+    private IoUtils ioUtils = IoUtils.getInstance();
 
     public void saveJSONData(File reportDir, String data, List<ScriptLinesAndSource> unloadJSData) {
         reportDir.mkdirs();
         File jsonFile = new File(reportDir, "jscoverage.json");
         SortedMap<String, CoverageData> extraData = new TreeMap<String, CoverageData>();
         if (jsonFile.exists()) {
-            String existingJSON = IoUtils.toString(jsonFile);
+            String existingJSON = ioUtils.toString(jsonFile);
             extraData.putAll(jsonDataMerger.mergeJSONCoverageData(existingJSON, data));
-            IoUtils.copy(jsonDataMerger.toJSON(extraData), jsonFile);
+            ioUtils.copy(jsonDataMerger.toJSON(extraData), jsonFile);
         } else if (unloadJSData != null) {
             //Only scan for unloaded JS if JSON not saved before
             extraData.putAll(jsonDataMerger.createEmptyJSON(unloadJSData));
             extraData.putAll(jsonDataMerger.jsonToMap(data));
-            IoUtils.copy(jsonDataMerger.toJSON(extraData), jsonFile);
+            ioUtils.copy(jsonDataMerger.toJSON(extraData), jsonFile);
         } else
-            IoUtils.copy(data, jsonFile);
+            ioUtils.copy(data, jsonFile);
     }
 }

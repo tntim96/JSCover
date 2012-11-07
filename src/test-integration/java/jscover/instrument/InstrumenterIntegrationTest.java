@@ -359,6 +359,7 @@ import org.mozilla.javascript.Context;
 @RunWith(JUnit4.class)
 public class InstrumenterIntegrationTest {
     private static CompilerEnvirons compilerEnv = new CompilerEnvirons();
+    private IoUtils ioUtils = IoUtils.getInstance();
     static {
         // compilerEnv.setAllowMemberExprAsFunctionName(true);
         compilerEnv.setLanguageVersion(Context.VERSION_1_8);
@@ -369,12 +370,12 @@ public class InstrumenterIntegrationTest {
     @Test
     public void shouldInstrumentForFileSystem() throws URISyntaxException {
         String fileName = "test-simple.js";
-        String source = IoUtils.loadFromClassPath("/" + fileName);
+        String source = ioUtils.loadFromClassPath("/" + fileName);
         instrumenter = new SourceProcessor(compilerEnv, fileName, PlainFormatter.getInstance(), null);
 
         String instrumentedSource = instrumenter.processSourceForFileSystem(source);
 
-        String expectedSource = IoUtils.loadFromClassPath("/test-instrumented-file-system.js");
+        String expectedSource = ioUtils.loadFromClassPath("/test-instrumented-file-system.js");
         // assertThat(instrumentedSource, equalTo(expectedSource));
         //IoUtils.copy(instrumentedSource, new File("src/test-integration/resources/test-instrumented-file-system.js"));
         assertEquals(expectedSource, instrumentedSource);//.replaceAll("\r\n","\n"));
@@ -383,12 +384,12 @@ public class InstrumenterIntegrationTest {
     @Test
     public void shouldInstrumentForServer() throws URISyntaxException {
         String fileName = "test-simple.js";
-        String source = IoUtils.loadFromClassPath("/" + fileName);
+        String source = ioUtils.loadFromClassPath("/" + fileName);
         instrumenter = new SourceProcessor(compilerEnv, fileName, PlainFormatter.getInstance(), null);
 
         String instrumentedSource = instrumenter.processSourceForServer(source);
 
-        String expectedSource = IoUtils.loadFromClassPath("/test-instrumented-server.js");
+        String expectedSource = ioUtils.loadFromClassPath("/test-instrumented-server.js");
         // assertThat(instrumentedSource, equalTo(expectedSource));
         //IoUtils.copy(instrumentedSource, new File("src/test-integration/resources/test-instrumented-server.js"));
         assertEquals(expectedSource, instrumentedSource);//.replaceAll("\r\n","\n"));

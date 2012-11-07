@@ -375,6 +375,7 @@ public class Main {
     }};
     private WebDaemon webDaemon = new WebDaemon();
     private FileSystemInstrumenter fileSystemInstrumenter = new FileSystemInstrumenter();
+    private IoUtils ioUtils = IoUtils.getInstance();
 
     void initialize() throws IOException {
         properties.load(Main.class.getResourceAsStream("configuration.properties"));
@@ -428,7 +429,7 @@ public class Main {
     }
 
     public String getHelpText() {
-        return IoUtils.toString(getClass().getResourceAsStream("help.txt"));
+        return ioUtils.toString(getClass().getResourceAsStream("help.txt"));
     }
 
     public String getVersionText() {

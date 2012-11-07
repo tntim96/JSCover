@@ -359,6 +359,7 @@ import static org.junit.Assert.assertThat;
 public class JSONDataSaverTest {
     private JSONDataSaver jsonDataSaver = new JSONDataSaver();
     private @Mock JSONDataMerger jsonDataMerger;
+    private IoUtils ioUtils = IoUtils.getInstance();
     private File destDir = new File("target");
 
     @Before
@@ -373,7 +374,7 @@ public class JSONDataSaverTest {
     public void shouldSaveData() {
         jsonDataSaver.saveJSONData(destDir, "data", null);
 
-        String json = IoUtils.loadFromFileSystem(new File(destDir, "jscoverage.json"));
+        String json = ioUtils.loadFromFileSystem(new File(destDir, "jscoverage.json"));
         assertThat(json, equalTo("data"));
     }
 

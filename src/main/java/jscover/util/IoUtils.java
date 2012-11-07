@@ -347,11 +347,16 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class IoUtils {
+public class IoUtils {
+    private static IoUtils ioUtils = new IoUtils();
 
-    public static Charset charSet = Charset.defaultCharset();
+    public static IoUtils getInstance() {
+        return ioUtils;
+    }
 
-    public static void closeQuietly(Closeable s) {
+    public Charset charSet = Charset.defaultCharset();
+
+    public void closeQuietly(Closeable s) {
         if (s != null) {
             try {
                 s.close();
@@ -361,7 +366,7 @@ public abstract class IoUtils {
         }
     }
 
-    public static String toString(InputStream is) {
+    public String toString(InputStream is) {
         StringBuilder result = new StringBuilder();
         int bufSize = 1024;
         char buf[] = new char[bufSize];
@@ -379,7 +384,7 @@ public abstract class IoUtils {
         }
     }
 
-    public static String toStringNoClose(Reader reader, int length) {
+    public String toStringNoClose(Reader reader, int length) {
         StringBuilder result = new StringBuilder();
         int bufSize = 1024;
         char buf[] = new char[bufSize];
@@ -395,7 +400,7 @@ public abstract class IoUtils {
         }
     }
 
-    public static String toString(File file) {
+    public String toString(File file) {
         try {
             return toString(new FileInputStream(file));
         } catch (IOException e) {
@@ -403,12 +408,12 @@ public abstract class IoUtils {
         }
     }
 
-    public static List<String> readLines(String source) {
+    public List<String> readLines(String source) {
         ByteArrayInputStream bais = new ByteArrayInputStream(source.getBytes(charSet));
         return readLines(new BufferedReader(new InputStreamReader(bais, charSet)));
     }
 
-    private static List<String> readLines(BufferedReader br) {
+    private List<String> readLines(BufferedReader br) {
         List<String> result = new ArrayList<String>();
         try {
             for (String line; (line = br.readLine()) != null; ) {
@@ -422,7 +427,7 @@ public abstract class IoUtils {
         }
     }
 
-    public static String loadFromClassPath(String dataFile) {
+    public String loadFromClassPath(String dataFile) {
         InputStream is = null;
         try {
 //            is = Thread.currentThread().getContextClassLoader().getResourceAsStream(dataFile);
@@ -435,7 +440,7 @@ public abstract class IoUtils {
         }
     }
 
-    public static String loadFromFileSystem(File dataFile) {
+    public String loadFromFileSystem(File dataFile) {
         InputStream is = null;
         try {
             is = new FileInputStream(dataFile);
@@ -447,7 +452,7 @@ public abstract class IoUtils {
         }
     }
 
-    public static void copy(InputStream is, OutputStream os) {
+    public void copy(InputStream is, OutputStream os) {
         try {
             copyNoClose(is, os);
         } finally {
@@ -456,7 +461,7 @@ public abstract class IoUtils {
         }
     }
 
-    public static void copyNoClose(InputStream is, OutputStream os) {
+    public void copyNoClose(InputStream is, OutputStream os) {
         int bufSize = 1024;
         byte buf[] = new byte[bufSize];
         try {
@@ -468,7 +473,7 @@ public abstract class IoUtils {
         }
     }
 
-    public static void copyNoClose(File file, OutputStream os) {
+    public void copyNoClose(File file, OutputStream os) {
         InputStream is = null;
         int bufSize = 1024;
         byte buf[] = new byte[bufSize];
@@ -484,7 +489,7 @@ public abstract class IoUtils {
         }
     }
 
-    public static void copy(Reader reader, File dest) {
+    public void copy(Reader reader, File dest) {
         FileOutputStream os = null;
         try {
             os = new FileOutputStream(dest);
@@ -497,7 +502,7 @@ public abstract class IoUtils {
         }
     }
 
-    static void copy(Reader reader, OutputStream os) {
+    void copy(Reader reader, OutputStream os) {
         int bufSize = 1024;
         char buf[] = new char[bufSize];
         BufferedWriter bw = null;
@@ -515,12 +520,12 @@ public abstract class IoUtils {
 
     }
 
-    public static void copy(String string, File dest) {
+    public void copy(String string, File dest) {
         ByteArrayInputStream bais = new ByteArrayInputStream(string.getBytes(charSet));
         copy(new InputStreamReader(bais, charSet), dest);
     }
 
-    public static void copy(InputStream is, File dest) {
+    public void copy(InputStream is, File dest) {
         FileOutputStream os = null;
         try {
             os = new FileOutputStream(dest);
@@ -533,7 +538,7 @@ public abstract class IoUtils {
         }
     }
 
-    public static void copy(File src, File dest) {
+    public void copy(File src, File dest) {
         FileInputStream is = null;
         FileOutputStream os = null;
         try {
@@ -548,13 +553,13 @@ public abstract class IoUtils {
         }
     }
 
-    public static String getRelativePath(File file1, File file2) {
+    public String getRelativePath(File file1, File file2) {
         if (file1.equals(file2))
             return "";
         return file1.getAbsolutePath().substring(file2.getAbsolutePath().length()+File.separator.length()).replaceAll("\\\\","/");
     }
 
-    public static Reader getReader(String source) {
+    public Reader getReader(String source) {
         ByteArrayInputStream bais = new ByteArrayInputStream(source.getBytes(charSet));
         BufferedReader reader = new BufferedReader(new InputStreamReader(bais, charSet));
         return reader;

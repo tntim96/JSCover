@@ -359,6 +359,7 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class IoUtilsTest {
+    private IoUtils ioUtils = IoUtils.getInstance();
     private @Mock InputStream is;
     private @Spy OutputStream os = new MyOutputStream();
     private @Mock Reader reader;
@@ -367,25 +368,25 @@ public class IoUtilsTest {
     @Test
     public void shouldCloseStreamQuietly() throws IOException {
         doThrow(new IOException("Ouch!")).when(os).close();
-        IoUtils.closeQuietly(os);
+        ioUtils.closeQuietly(os);
     }
 
     @Test(expected = RuntimeException.class)
     public void shouldWrapExceptionsInToStringInputStream() throws IOException {
         given(is.read(any(byte[].class))).willThrow(new IOException("Ouch!"));
-        IoUtils.toString(is);
+        ioUtils.toString(is);
     }
 
     @Test(expected = RuntimeException.class)
     public void shouldWrapExceptionsInToStringFile() {
-        IoUtils.toString(new File("/"));
+        ioUtils.toString(new File("/"));
     }
 
     @Test
     public void shouldWrapExceptionsInCopyISToOS() throws Exception {
         doThrow(new IOException("Ouch!")).when(os).write(any(byte[].class), anyInt(), anyInt());
         try {
-            IoUtils.copy(is, os);
+            ioUtils.copy(is, os);
             fail();
         } catch(Throwable throwable) {
             verify(is).close();
@@ -396,7 +397,7 @@ public class IoUtilsTest {
     public void shouldCloseOSInCopyISToOS() throws Exception {
         given(is.read(any(byte[].class))).willThrow(new IOException("Ouch!"));
         try {
-            IoUtils.copy(is, os);
+            ioUtils.copy(is, os);
             fail();
         } catch(Throwable throwable) {
             verify(os).close();
@@ -408,7 +409,7 @@ public class IoUtilsTest {
         File file = new File("target/test.txt");
         doThrow(new IOException("Ouch!")).when(os).write(any(byte[].class), anyInt(), anyInt());
         try {
-            IoUtils.copyNoClose(file, os);
+            ioUtils.copyNoClose(file, os);
             fail();
         } catch(Throwable throwable) {
             verify(os, times(0)).close();
@@ -418,12 +419,12 @@ public class IoUtilsTest {
     @Test
     public void shouldNotCloseOSInCopyFileToOSNoClose() throws Exception {
         File fileSrc = new File("target/test-src.txt");
-        IoUtils.copy("Working!!!", fileSrc);
+        ioUtils.copy("Working!!!", fileSrc);
         File fileDest = new File("target/test-dest.txt");
         FileOutputStream fos = new FileOutputStream(fileDest);
         try {
-            IoUtils.copyNoClose(fileSrc, fos);
-            assertEquals("Working!!!", IoUtils.loadFromFileSystem(fileDest));
+            ioUtils.copyNoClose(fileSrc, fos);
+            assertEquals("Working!!!", ioUtils.loadFromFileSystem(fileDest));
             verify(os, times(0)).close();
         } finally {
             os.close();
@@ -436,7 +437,7 @@ public class IoUtilsTest {
         String string = "Working!";
         given(reader.read(any(char[].class))).willThrow(new IOException("Ouch!"));
         try {
-            IoUtils.toStringNoClose(reader, string.length());
+            ioUtils.toStringNoClose(reader, string.length());
             fail();
         } catch(Throwable throwable) {
             verify(reader, times(0)).close();
@@ -448,7 +449,7 @@ public class IoUtilsTest {
         String string = "Working!!";
         BufferedReader br = new BufferedReader(new StringReader(string));
         try {
-            assertEquals("Working!!", IoUtils.toStringNoClose(br, string.length()));
+            assertEquals("Working!!", ioUtils.toStringNoClose(br, string.length()));
         } finally {
             br.close();
         }
@@ -457,14 +458,14 @@ public class IoUtilsTest {
     @Test(expected = RuntimeException.class)
     public void shouldWrapExceptionsInCopyReaderToFile() throws IOException {
         given(reader.read(any(char[].class))).willThrow(new IOException("Ouch!"));
-        IoUtils.copy(reader, new File("target/dummy.txt"));
+        ioUtils.copy(reader, new File("target/dummy.txt"));
     }
 
     @Test
     public void shouldWrapExceptionsInCopyReaderToOS() throws Exception {
         given(reader.read(any(char[].class))).willThrow(new IOException("Ouch!"));
         try {
-            IoUtils.copy(reader, os);
+            ioUtils.copy(reader, os);
             fail();
         } catch(Throwable throwable) {
             verify(os).close();
@@ -473,34 +474,34 @@ public class IoUtilsTest {
 
     @Test
     public void shouldLoadFileFromClasspathAbsolutePath() {
-        assertEquals("Working!", IoUtils.loadFromClassPath("/jscover/util/test.txt"));
+        assertEquals("Working!", ioUtils.loadFromClassPath("/jscover/util/test.txt"));
     }
 
     @Test
     public void shouldLoadFileFromClasspathRelativePath() {
-        assertEquals("Working!", IoUtils.loadFromClassPath("test.txt"));
+        assertEquals("Working!", ioUtils.loadFromClassPath("test.txt"));
     }
 
     @Test(expected = RuntimeException.class)
     public void shouldNotLoadFileFromClasspath() {
-        IoUtils.loadFromClassPath("/test.txt");
+        ioUtils.loadFromClassPath("/test.txt");
     }
 
     @Test
     public void shouldLoadFileFromFileSystem() {
-        assertEquals("Working!", IoUtils.loadFromFileSystem(new File("src/test/resources/jscover/util/test.txt")));
+        assertEquals("Working!", ioUtils.loadFromFileSystem(new File("src/test/resources/jscover/util/test.txt")));
     }
 
     @Test(expected = RuntimeException.class)
     public void shouldThrowExceptionLoadingFileFromFileSystem() {
-        IoUtils.loadFromFileSystem(new File("notThere"));
+        ioUtils.loadFromFileSystem(new File("notThere"));
     }
 
     @Test
     public void shouldCopyInputStreamToOutputStream() throws UnsupportedEncodingException {
         ByteArrayInputStream bais = new ByteArrayInputStream("shouldCopyInputStreamToOutputStream".getBytes());
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        IoUtils.copy(bais, baos);
+        ioUtils.copy(bais, baos);
         assertEquals("shouldCopyInputStreamToOutputStream", baos.toString());
     }
 
@@ -508,8 +509,8 @@ public class IoUtilsTest {
     public void shouldCopyFromReaderToFile() throws IOException {
         StringReader reader = new StringReader("shouldCopyFromReaderToInputStream");
         File file = File.createTempFile("shouldCopyFromReaderToInputStream",".txt", new File("target"));
-        IoUtils.copy(reader, file);
-        assertEquals("shouldCopyFromReaderToInputStream", IoUtils.loadFromFileSystem(file));
+        ioUtils.copy(reader, file);
+        assertEquals("shouldCopyFromReaderToInputStream", ioUtils.loadFromFileSystem(file));
         file.delete();
     }
 
@@ -517,8 +518,8 @@ public class IoUtilsTest {
     public void shouldCopyFromInputStreamToFile() throws IOException {
         ByteArrayInputStream bais = new ByteArrayInputStream("shouldCopyFromInputStreamToFile".getBytes());
         File file = File.createTempFile("shouldCopyFromInputStreamToFile",".txt", new File("target"));
-        IoUtils.copy(bais, file);
-        assertEquals("shouldCopyFromInputStreamToFile", IoUtils.loadFromFileSystem(file));
+        ioUtils.copy(bais, file);
+        assertEquals("shouldCopyFromInputStreamToFile", ioUtils.loadFromFileSystem(file));
         file.delete();
     }
 
@@ -526,10 +527,10 @@ public class IoUtilsTest {
     public void shouldCopyFromFileToFile() throws IOException {
         StringReader reader = new StringReader("shouldCopyFromFileToFile");
         File src = File.createTempFile("shouldCopyFromInputStreamToFile",".src", new File("target"));
-        IoUtils.copy(reader, src);
+        ioUtils.copy(reader, src);
         File dest = File.createTempFile("shouldCopyFromInputStreamToFile",".dest", new File("target"));
-        IoUtils.copy(src, dest);
-        assertEquals("shouldCopyFromFileToFile", IoUtils.loadFromFileSystem(dest));
+        ioUtils.copy(src, dest);
+        assertEquals("shouldCopyFromFileToFile", ioUtils.loadFromFileSystem(dest));
         src.delete();
         dest.delete();
     }
@@ -537,20 +538,20 @@ public class IoUtilsTest {
     @Test(expected = RuntimeException.class)
     public void shouldWrapExceptionsInCopyInputStreamToFile() throws IOException {
         given(is.read(any(byte[].class))).willThrow(new IOException("Ouch!"));
-        IoUtils.copy(is, new File("target"));
+        ioUtils.copy(is, new File("target"));
     }
 
     @Test(expected = RuntimeException.class)
     public void shouldWrapExceptionsInCopyFileToFile() {
-        IoUtils.copy(new File("target"), new File("target"));
+        ioUtils.copy(new File("target"), new File("target"));
     }
 
     @Test
     public void shouldGetRelativePath() {
-        assertThat(IoUtils.getRelativePath(new File("target/test.txt"), new File("target")), equalTo("test.txt"));
-        assertThat(IoUtils.getRelativePath(new File("target/level1/test.txt"), new File("target")), equalTo("level1/test.txt"));
-        assertThat(IoUtils.getRelativePath(new File("target\\test.txt"), new File("target")), equalTo("test.txt"));
-        assertThat(IoUtils.getRelativePath(new File("target"), new File("target")), equalTo(""));
+        assertThat(ioUtils.getRelativePath(new File("target/test.txt"), new File("target")), equalTo("test.txt"));
+        assertThat(ioUtils.getRelativePath(new File("target/level1/test.txt"), new File("target")), equalTo("level1/test.txt"));
+        assertThat(ioUtils.getRelativePath(new File("target\\test.txt"), new File("target")), equalTo("test.txt"));
+        assertThat(ioUtils.getRelativePath(new File("target"), new File("target")), equalTo(""));
     }
 
     @Test

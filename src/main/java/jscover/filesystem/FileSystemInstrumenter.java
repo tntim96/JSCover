@@ -354,6 +354,7 @@ public class FileSystemInstrumenter {
     private SourceFormatter sourceFormatter = PlainFormatter.getInstance();
     private IoService ioService = new IoService();
     private InstrumenterService instrumenterService = new InstrumenterService();
+    private IoUtils ioUtils = IoUtils.getInstance();
     private ConfigurationForFS configuration;
     private File log;
 
@@ -368,7 +369,7 @@ public class FileSystemInstrumenter {
     }
 
     private void copyFolder(File src, File dest) {
-        String path = IoUtils.getRelativePath(src, configuration.getSrcDir());
+        String path = ioUtils.getRelativePath(src, configuration.getSrcDir());
         if (configuration.exclude(path))
             return;
         if (src.isDirectory()) {
@@ -385,7 +386,7 @@ public class FileSystemInstrumenter {
             if (src.isFile() && src.toString().endsWith(".js") && !configuration.skipInstrumentation(path)) {
                 instrumenterService.instrumentJSForFileSystem(configuration.getCompilerEnvirons(), src, dest, path, log);
             } else {
-                IoUtils.copy(src, dest);
+                ioUtils.copy(src, dest);
             }
         }
     }

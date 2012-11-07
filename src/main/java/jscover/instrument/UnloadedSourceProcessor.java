@@ -358,6 +358,7 @@ import java.util.SortedSet;
 public class UnloadedSourceProcessor {
     private ConfigurationForServer config;
     private SourceFormatter sourceFormatter = PlainFormatter.getInstance();
+    private IoUtils ioUtils = IoUtils.getInstance();
     private FileScanner fileScanner;
 
     public UnloadedSourceProcessor(ConfigurationForServer config) {
@@ -369,8 +370,8 @@ public class UnloadedSourceProcessor {
         List<ScriptLinesAndSource> scripts = new ArrayList<ScriptLinesAndSource>();
         for (File file: fileScanner.getFiles(urisAlreadyProcessed)) {
             LineCountNodeVisitor visitor = new LineCountNodeVisitor(config.getCompilerEnvirons());
-            String uri = IoUtils.getRelativePath(file, config.getDocumentRoot());
-            String source = IoUtils.loadFromFileSystem(file);
+            String uri = ioUtils.getRelativePath(file, config.getDocumentRoot());
+            String source = ioUtils.loadFromFileSystem(file);
             List<String> htmlLines = sourceFormatter.toHtmlLines(source);
             SortedSet<Integer> codeLines = visitor.getCodeLines(source);
             ScriptLinesAndSource script = new ScriptLinesAndSource("/"+uri, new ArrayList<Integer>(codeLines), htmlLines);

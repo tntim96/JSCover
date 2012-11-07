@@ -356,12 +356,13 @@ import static org.junit.Assert.assertThat;
 
 public class JSONDataMergerTest {
     private JSONDataMerger jsonMerger = new JSONDataMerger();
+    private IoUtils ioUtils = IoUtils.getInstance();
 
     @Test
     public void shouldMergeData() {
-        String data1 = IoUtils.loadFromClassPath("/jscover/json/jscoverage-select-1.json");
-        String data2 = IoUtils.loadFromClassPath("/jscover/json/jscoverage-select-3.json");
-        String expected = IoUtils.loadFromClassPath("/jscover/json/jscoverage-select-1-3.json");
+        String data1 = ioUtils.loadFromClassPath("/jscover/json/jscoverage-select-1.json");
+        String data2 = ioUtils.loadFromClassPath("/jscover/json/jscoverage-select-3.json");
+        String expected = ioUtils.loadFromClassPath("/jscover/json/jscoverage-select-1-3.json");
 
         String merged = jsonMerger.toJSON(jsonMerger.mergeJSONCoverageData(data1, data2));
 
@@ -446,12 +447,12 @@ public class JSONDataMergerTest {
     @Test
     public void shouldGenerateLCOVFormat() {
         File rootDir = new File(".");
-        String data = IoUtils.loadFromClassPath("/jscover/json/jscoverage-select-3.json");
+        String data = ioUtils.loadFromClassPath("/jscover/json/jscoverage-select-3.json");
         SortedMap<String, CoverageData> map = jsonMerger.jsonToMap(data);
 
         String lcovString = jsonMerger.toLCOV(rootDir, map);
 
-        String expected = IoUtils.loadFromClassPath("/jscover/json/lcov-select-3.dat").replaceAll("@file@", rootDir.getAbsolutePath().replaceAll("\\\\","/")+map.firstKey());
+        String expected = ioUtils.loadFromClassPath("/jscover/json/lcov-select-3.dat").replaceAll("@file@", rootDir.getAbsolutePath().replaceAll("\\\\","/")+map.firstKey());
         assertThat(lcovString, equalTo(expected));
     }
 }

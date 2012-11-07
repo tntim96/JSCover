@@ -358,6 +358,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class HtmlUnitFileSystemTest {
     private WebClient webClient = new WebClient();
+    private IoUtils ioUtils = IoUtils.getInstance();
     private String reportDir = "target/fs-instrument";
     private String[] args = new String[]{
             "-fs",
@@ -371,7 +372,7 @@ public class HtmlUnitFileSystemTest {
     public void shouldWorkWithFileSystem() throws Exception {
         Main.main(args);
 
-        String noInstrumentJS = IoUtils.loadFromFileSystem(new File(reportDir+"/example/lib/noInstrument.js"));
+        String noInstrumentJS = ioUtils.loadFromFileSystem(new File(reportDir+"/example/lib/noInstrument.js"));
         assertThat(noInstrumentJS, equalTo("alert('Hey');"));
 
         assertThat(new File(reportDir+"/example/script.js").exists(), equalTo(true));

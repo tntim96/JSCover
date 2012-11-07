@@ -352,16 +352,17 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class IoServiceTest {
     private IoService ioService = new IoService();
+    private IoUtils ioUtils = IoUtils.getInstance();
     private File destDir = new File("target/IoService");
 
     @Test
     public void shouldGenerateReportForFileSystem() {
         ioService.generateJSCoverFilesForFileSystem(destDir, "theVersion");
 
-        String html = IoUtils.loadFromFileSystem(new File(destDir,"jscoverage.html"));
+        String html = ioUtils.loadFromFileSystem(new File(destDir,"jscoverage.html"));
         assertThat(html, containsString("This is version theVersion of JSCover"));
 
-        String js = IoUtils.loadFromFileSystem(new File(destDir,"jscoverage.js"));
+        String js = ioUtils.loadFromFileSystem(new File(destDir,"jscoverage.js"));
         assertThat(js, not(containsString("\njscoverage_isReport = true;")));
     }
 
@@ -369,10 +370,10 @@ public class IoServiceTest {
     public void shouldGenerateReportForWebServerStoredReport() {
         ioService.generateJSCoverFilesForWebServer(destDir, "theVersion");
 
-        String html = IoUtils.loadFromFileSystem(new File(destDir,"jscoverage.html"));
+        String html = ioUtils.loadFromFileSystem(new File(destDir,"jscoverage.html"));
         assertThat(html, containsString("This is version theVersion of JSCover"));
 
-        String js = IoUtils.loadFromFileSystem(new File(destDir,"jscoverage.js"));
+        String js = ioUtils.loadFromFileSystem(new File(destDir,"jscoverage.js"));
         assertThat(js, containsString("\njscoverage_isReport = true;"));
     }
 

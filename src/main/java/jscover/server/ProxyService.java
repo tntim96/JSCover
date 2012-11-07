@@ -354,6 +354,7 @@ import java.util.Map;
 import static java.lang.String.format;
 
 public class ProxyService {
+    private IoUtils ioUtils = IoUtils.getInstance();
 
     protected void handleProxyGet(HttpRequest request, OutputStream os) {
         URL url = request.getUrl();
@@ -370,12 +371,12 @@ public class ProxyService {
             String uri = getRawURI(url);
             remotePrintWriter.print("GET "+uri+" HTTP/1.0\n");
             sendHeaders(request, remotePrintWriter);
-            IoUtils.copyNoClose(remoteInputStream, os);
+            ioUtils.copyNoClose(remoteInputStream, os);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            IoUtils.closeQuietly(remoteOutputStream);
-            IoUtils.closeQuietly(remoteInputStream);
+            ioUtils.closeQuietly(remoteOutputStream);
+            ioUtils.closeQuietly(remoteInputStream);
         }
     }
 
@@ -394,13 +395,13 @@ public class ProxyService {
             String uri = getRawURI(url);
             remotePrintWriter.print(format("POST %s HTTP/1.0\n", uri));
             sendHeaders(request, remotePrintWriter);
-            IoUtils.copyNoClose(new ByteArrayInputStream(data.getBytes()), remoteOutputStream);
-            IoUtils.copyNoClose(remoteInputStream, os);
+            ioUtils.copyNoClose(new ByteArrayInputStream(data.getBytes()), remoteOutputStream);
+            ioUtils.copyNoClose(remoteInputStream, os);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            IoUtils.closeQuietly(remoteOutputStream);
-            IoUtils.closeQuietly(remoteInputStream);
+            ioUtils.closeQuietly(remoteOutputStream);
+            ioUtils.closeQuietly(remoteInputStream);
         }
     }
 
@@ -426,6 +427,6 @@ public class ProxyService {
 
     public String getUrl(URL url) throws IOException {
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        return IoUtils.toString(conn.getInputStream());
+        return ioUtils.toString(conn.getInputStream());
     }
 }

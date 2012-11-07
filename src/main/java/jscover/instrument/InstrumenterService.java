@@ -353,11 +353,12 @@ import java.io.FileNotFoundException;
 
 public class InstrumenterService {
     private SourceFormatter sourceFormatter = PlainFormatter.getInstance();
+    private IoUtils ioUtils = IoUtils.getInstance();
 
     public String instrumentJSForWebServer(CompilerEnvirons compilerEnvirons, File srcFile, String uri, File log) {
         SourceProcessor sourceProcessor = new SourceProcessor(compilerEnvirons, uri, sourceFormatter, log);
         try {
-            String source = IoUtils.toString(new FileInputStream(srcFile));
+            String source = ioUtils.toString(new FileInputStream(srcFile));
             return sourceProcessor.processSourceForServer(source);
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
@@ -371,8 +372,8 @@ public class InstrumenterService {
 
     public void instrumentJSForFileSystem(CompilerEnvirons compilerEnvirons, File srcFile, File dest, String uri, File log) {
         SourceProcessor sourceProcessor = new SourceProcessor(compilerEnvirons, uri, sourceFormatter, log);
-        String source = IoUtils.loadFromFileSystem(srcFile);
+        String source = ioUtils.loadFromFileSystem(srcFile);
         String jsInstrumented = sourceProcessor.processSourceForFileSystem(source);
-        IoUtils.copy(jsInstrumented, dest);
+        ioUtils.copy(jsInstrumented, dest);
     }
 }

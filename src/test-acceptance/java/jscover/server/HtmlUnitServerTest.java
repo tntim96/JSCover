@@ -366,6 +366,7 @@ public class HtmlUnitServerTest {
     private static Thread server;
 
     protected WebClient webClient = new WebClient();
+    private IoUtils ioUtils = IoUtils.getInstance();
     private String reportDir = "target/ws-report";
     private String[] args = new String[]{
             "-ws",
@@ -457,7 +458,7 @@ public class HtmlUnitServerTest {
 
         assertThat(result, containsString("Coverage data stored at target"));
 
-        String json = IoUtils.toString(jsonFile);
+        String json = ioUtils.toString(jsonFile);
         assertThat(json, containsString("/script.js"));
 
         page = webClient.getPage("file:///"+ new File(reportDir+"/jscoverage.html").getAbsolutePath());
@@ -482,7 +483,7 @@ public class HtmlUnitServerTest {
 
         assertThat(result.getJavaScriptResult().toString(), equalTo("Coverage data stored at " + new File(reportDir + "/directory").getPath()));
 
-        String json = IoUtils.toString(jsonFile);
+        String json = ioUtils.toString(jsonFile);
         assertThat(json, containsString("/script.js"));
 
         page = webClient.getPage("file:///"+ new File(reportDir+"/directory/jscoverage.html").getAbsolutePath());

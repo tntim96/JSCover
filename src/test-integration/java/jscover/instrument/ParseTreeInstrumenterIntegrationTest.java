@@ -363,6 +363,7 @@ import static org.mockito.BDDMockito.given;
 public class ParseTreeInstrumenterIntegrationTest {
     private File log;
     private ParseTreeInstrumenter instrumenter;
+    private IoUtils ioUtils = IoUtils.getInstance();
     @Mock NodeProcessor nodeProcessor;
     @Mock AstNode astNode;
 
@@ -386,7 +387,7 @@ public class ParseTreeInstrumenterIntegrationTest {
 
         instrumenter.visit(astNode);
 
-        String message = IoUtils.loadFromFileSystem(log);
+        String message = ioUtils.loadFromFileSystem(log);
         assertThat(message, containsString("Error on line 7 of /dir/file.js"));
     }
 

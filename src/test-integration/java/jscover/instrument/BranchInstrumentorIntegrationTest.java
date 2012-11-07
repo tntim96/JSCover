@@ -353,7 +353,8 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class BranchInstrumentorIntegrationTest {
-    private static String branchObjectHeader = IoUtils.loadFromClassPath("/jscoverage-branch.js");
+    private static IoUtils ioUtils = IoUtils.getInstance();
+    private static String branchObjectHeader = ioUtils.loadFromClassPath("/jscoverage-branch.js");
     private static String header = "var _$jscoverage = {};\n" +
             "_$jscoverage.branchData = {};\n" +
             "_$jscoverage.branchData['test.js'] = {};\n";

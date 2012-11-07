@@ -351,7 +351,6 @@ import jscover.util.IoUtils;
 
 public class PlainFormatter implements SourceFormatter {
     private static PlainFormatter plainFormatter;
-
     public static PlainFormatter getInstance() {
         synchronized (PlainFormatter.class) {
             if (plainFormatter == null) {
@@ -361,10 +360,12 @@ public class PlainFormatter implements SourceFormatter {
         return plainFormatter;
     }
 
+    private IoUtils ioUtils = IoUtils.getInstance();
+
 
     public String toJsArrayOfHtml(String source) {
         StringBuilder sb = new StringBuilder();
-        for (String line : IoUtils.readLines(source)) {
+        for (String line : ioUtils.readLines(source)) {
             if (sb.length() > 0) {
                 sb.append(",");
             }
@@ -377,7 +378,7 @@ public class PlainFormatter implements SourceFormatter {
 
     public List<String> toHtmlLines(String source) {
         List<String> lines = new ArrayList<String>();
-        for (String line : IoUtils.readLines(source)) {
+        for (String line : ioUtils.readLines(source)) {
             lines.add(escapeHtml(line));
         }
         return lines;

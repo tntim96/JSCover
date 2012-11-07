@@ -355,12 +355,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class InstrumenterServiceTest {
     private InstrumenterService service = new InstrumenterService();
     private CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
+    private IoUtils ioUtils = IoUtils.getInstance();
     private File src = new File("target/src.js");
 
     @Before
     public void setUp() {
         src.delete();
-        IoUtils.copy("x++;", src);
+        ioUtils.copy("x++;", src);
     }
 
     @Test
@@ -368,7 +369,7 @@ public class InstrumenterServiceTest {
         File dest = new File("target/dest.js");
         dest.deleteOnExit();
         service.instrumentJSForFileSystem(compilerEnvirons, src, dest, "/src.js", null);
-        String jsInstrumented = IoUtils.loadFromFileSystem(dest);
+        String jsInstrumented = ioUtils.loadFromFileSystem(dest);
 
         assertThat(jsInstrumented, containsString("x++;"));
         assertThat(jsInstrumented, containsString("_$jscoverage['/src.js'][1]++;"));

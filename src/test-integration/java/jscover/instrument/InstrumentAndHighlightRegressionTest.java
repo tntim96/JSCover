@@ -361,6 +361,7 @@ public class InstrumentAndHighlightRegressionTest {
     private static Set<String> tested = new HashSet<String>();
 
     private PlainFormatter sourceFormatter = PlainFormatter.getInstance();
+    private IoUtils ioUtils = IoUtils.getInstance();
 
     @Test
     public void shouldInstrumentArray() {
@@ -624,9 +625,9 @@ public class InstrumentAndHighlightRegressionTest {
         tested.add(fileName);
         SourceProcessor instrumenter = new SourceProcessor(compilerEnv, fileName, sourceFormatter, null);
 
-        String source = IoUtils.loadFromClassPath("/data/javascript/" + fileName);
+        String source = ioUtils.loadFromClassPath("/data/javascript/" + fileName);
         String instrumentedSource = instrumenter.processSourceWithoutHeader(source);
-        String expectedSource = IoUtils.loadFromClassPath("/data/javascript.expected/" + fileName);
+        String expectedSource = ioUtils.loadFromClassPath("/data/javascript.expected/" + fileName);
         assertEquals(expectedSource, instrumentedSource);
         //assertEquals(removeHighlightLine(expectedSource), removeHighlightLine(instrumentedSource));
     }
