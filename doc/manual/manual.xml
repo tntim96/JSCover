@@ -234,7 +234,7 @@
                 <text>
                     The encoding defaults to the platform's default encoding which is usually what you want.
                     To specify an encoding, add the JVM option <var>-Dfile.encoding=ENCODING</var>. For example:
-                    <code>java -Dfile.encoding=UTF-8 -jar JSCover-all.jar</code>
+                    <code>java -Dfile.encoding=UTF-8 -jar JSCover-all.jar [OPTIONS]...</code>
                     <note>To see the available encodings (as well as the current default) run <var>JSCover</var>
                         with options <var>-h encoding</var></note>
                     <code>java -jar JSCover-all.jar -h encoding</code>
