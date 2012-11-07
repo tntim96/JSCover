@@ -348,4 +348,6 @@ public interface SourceFormatter {
     String toJsArrayOfHtml(String source);
 
     List<String> toHtmlLines(String source);
+
+    String escapeHtml(String source);
 }

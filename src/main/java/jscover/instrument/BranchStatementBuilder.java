@@ -342,6 +342,8 @@ Public License instead of this License.
 
 package jscover.instrument;
 
+import jscover.format.PlainFormatter;
+import jscover.format.SourceFormatter;
 import org.mozilla.javascript.Token;
 import org.mozilla.javascript.ast.*;
 
@@ -351,6 +353,8 @@ import java.util.List;
 import static java.lang.String.format;
 
 public class BranchStatementBuilder {
+    private SourceFormatter formatter = PlainFormatter.getInstance();
+
     public ExpressionStatement buildLineInitialisation(String uri, int lineNo) {
         ElementGet indexLineNumber = buildLineDeclaration(uri, lineNo);
 
@@ -359,7 +363,7 @@ public class BranchStatementBuilder {
         return new ExpressionStatement(assignment);
     }
 
-    public ExpressionStatement buildLineAndConditionInitialisation(String uri, int lineNo, int conditionNo, int position, int length) {
+    public ExpressionStatement buildLineAndConditionInitialisation(String uri, int lineNo, int conditionNo, int position, int length, String source) {
         ElementGet indexLineNumber = buildLineDeclaration(uri, lineNo);
 
         NumberLiteral conditionNumberLiteral = new NumberLiteral();
@@ -376,6 +380,10 @@ public class BranchStatementBuilder {
         NumberLiteral lengthLiteral = new NumberLiteral();
         lengthLiteral.setValue(""+length);
         branchDataObject.addArgument(lengthLiteral);
+        StringLiteral stringLiteral = new StringLiteral();
+        stringLiteral.setValue(formatter.escapeHtml(source));
+        stringLiteral.setQuoteCharacter('\'');
+        branchDataObject.addArgument(stringLiteral);
 
         Assignment assignment = new Assignment(indexConditionNumber, branchDataObject);
         assignment.setOperator(Token.ASSIGN);

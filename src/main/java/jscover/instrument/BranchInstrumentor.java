@@ -374,7 +374,7 @@ public class BranchInstrumentor implements NodeVisitor {
 
         astRoot.addChildrenToFront(functionNode);
         ExpressionStatement conditionArrayDeclaration = branchStatementBuilder.buildLineAndConditionInitialisation("test.js"
-                , node.getLineno(), conditionId, getLinePosition(node), node.getLength());
+                , node.getLineno(), conditionId, getLinePosition(node), node.getLength(), node.toSource());
         astRoot.addChildrenToFront(conditionArrayDeclaration);
         if (conditionId == 1) {
             ExpressionStatement lineArrayDeclaration = branchStatementBuilder.buildLineInitialisation("test.js", node.getLineno());

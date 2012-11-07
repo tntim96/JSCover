@@ -383,7 +383,7 @@ public class PlainFormatter implements SourceFormatter {
         return lines;
     }
 
-    private String escapeHtml(String string) {
+    public String escapeHtml(String string) {
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < string.length(); i++) {
             char c = string.charAt(i);

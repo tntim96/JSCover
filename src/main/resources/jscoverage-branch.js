@@ -1,6 +1,7 @@
-function BranchData(position, length) {
+function BranchData(position, length, src) {
     this.position = position;
     this.length = length;
+    this.src = src;
     this.evalFalse = false;
     this.evalTrue = false;
 
