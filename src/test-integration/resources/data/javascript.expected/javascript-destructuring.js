@@ -1,6 +1,5 @@
 if (! _$jscoverage['javascript-destructuring.js']) {
   _$jscoverage['javascript-destructuring.js'] = [];
-  _$jscoverage.branchData['javascript-destructuring.js'] = [];
   _$jscoverage['javascript-destructuring.js'][3] = 0;
   _$jscoverage['javascript-destructuring.js'][5] = 0;
   _$jscoverage['javascript-destructuring.js'][6] = 0;

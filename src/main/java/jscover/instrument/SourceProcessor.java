@@ -349,7 +349,6 @@ import org.mozilla.javascript.Parser;
 import org.mozilla.javascript.ast.AstRoot;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.SortedSet;
 
 import static java.lang.String.format;
@@ -412,23 +411,20 @@ class SourceProcessor {
     }
 
     protected String instrumentSource(String sourceURI, String source) {
-        try {
-            AstRoot astRoot = parser.parse(ioUtils.getReader(source) , sourceURI, 1);
-            astRoot.visitAll(instrumenter);
-            if (includeBranchCoverage) {
-                astRoot.visitAll(branchInstrumentor);
-                branchInstrumentor.postProcess(astRoot);
-            }
-            return astRoot.toSource();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        AstRoot astRoot = parser.parse(source , sourceURI, 1);
+        astRoot.visitAll(instrumenter);
+        if (includeBranchCoverage) {
+            astRoot.visitAll(branchInstrumentor);
+            branchInstrumentor.postProcess(astRoot);
         }
+        return astRoot.toSource();
     }
 
     protected String getJsLineInitialization(String fileName, SortedSet<Integer> validlines) {
         StringBuilder sb = new StringBuilder(format("if (! _$jscoverage['%s']) {\n", fileName));
         sb.append(format("  _$jscoverage['%s'] = [];\n", fileName));
-        sb.append(format("  _$jscoverage.branchData['%s'] = [];\n", fileName));
+        if (includeBranchCoverage)
+            sb.append(format("  _$jscoverage.branchData['%s'] = [];\n", fileName));
         for (Integer line : validlines) {
             sb.append(format(initLine, fileName, line));
         }

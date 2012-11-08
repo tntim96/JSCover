@@ -1,6 +1,5 @@
 if (! _$jscoverage['javascript-getter-setter.js']) {
   _$jscoverage['javascript-getter-setter.js'] = [];
-  _$jscoverage.branchData['javascript-getter-setter.js'] = [];
   _$jscoverage['javascript-getter-setter.js'][1] = 0;
   _$jscoverage['javascript-getter-setter.js'][4] = 0;
   _$jscoverage['javascript-getter-setter.js'][7] = 0;

@@ -1,6 +1,5 @@
 if (! _$jscoverage['javascript-array-comprehension.js']) {
   _$jscoverage['javascript-array-comprehension.js'] = [];
-  _$jscoverage.branchData['javascript-array-comprehension.js'] = [];
   _$jscoverage['javascript-array-comprehension.js'][3] = 0;
   _$jscoverage['javascript-array-comprehension.js'][4] = 0;
   _$jscoverage['javascript-array-comprehension.js'][5] = 0;

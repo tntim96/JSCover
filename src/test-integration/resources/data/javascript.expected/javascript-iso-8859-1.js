@@ -1,6 +1,5 @@
 if (! _$jscoverage['javascript-iso-8859-1.js']) {
   _$jscoverage['javascript-iso-8859-1.js'] = [];
-  _$jscoverage.branchData['javascript-iso-8859-1.js'] = [];
   _$jscoverage['javascript-iso-8859-1.js'][1] = 0;
   _$jscoverage['javascript-iso-8859-1.js'][2] = 0;
 }

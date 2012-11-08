@@ -1,6 +1,5 @@
 if (! _$jscoverage['javascript-while.js']) {
   _$jscoverage['javascript-while.js'] = [];
-  _$jscoverage.branchData['javascript-while.js'] = [];
   _$jscoverage['javascript-while.js'][1] = 0;
   _$jscoverage['javascript-while.js'][2] = 0;
   _$jscoverage['javascript-while.js'][5] = 0;

@@ -1,6 +1,5 @@
 if (! _$jscoverage['javascript-colon.js']) {
   _$jscoverage['javascript-colon.js'] = [];
-  _$jscoverage.branchData['javascript-colon.js'] = [];
   _$jscoverage['javascript-colon.js'][1] = 0;
   _$jscoverage['javascript-colon.js'][2] = 0;
   _$jscoverage['javascript-colon.js'][4] = 0;

@@ -1,6 +1,5 @@
 if (! _$jscoverage['javascript-special-characters.js']) {
   _$jscoverage['javascript-special-characters.js'] = [];
-  _$jscoverage.branchData['javascript-special-characters.js'] = [];
   _$jscoverage['javascript-special-characters.js'][1] = 0;
   _$jscoverage['javascript-special-characters.js'][2] = 0;
   _$jscoverage['javascript-special-characters.js'][5] = 0;

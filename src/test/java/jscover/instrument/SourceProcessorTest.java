@@ -342,57 +342,86 @@ Public License instead of this License.
 
 package jscover.instrument;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.File;
-import java.net.URISyntaxException;
-
-import jscover.format.PlainFormatter;
+import jscover.format.SourceFormatter;
+import jscover.util.IoUtils;
+import jscover.util.ReflectionUtils;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
-import jscover.util.IoUtils;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.mozilla.javascript.CompilerEnvirons;
-import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Parser;
+import org.mozilla.javascript.ast.AstRoot;
 
-@RunWith(JUnit4.class)
-public class InstrumenterIntegrationTest {
-    private static CompilerEnvirons compilerEnv = new CompilerEnvirons();
-    private IoUtils ioUtils = IoUtils.getInstance();
-    static {
-        // compilerEnv.setAllowMemberExprAsFunctionName(true);
-        compilerEnv.setLanguageVersion(Context.VERSION_1_8);
-        compilerEnv.setStrictMode(false);
+import java.io.IOException;
+import java.util.TreeSet;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.startsWith;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
+@RunWith(MockitoJUnitRunner.class)
+public class SourceProcessorTest {
+    private SourceProcessor sourceProcessor;
+    @Mock private CompilerEnvirons compilerEnvirons;
+    @Mock private SourceFormatter sourceFormatter;
+    @Mock private ParseTreeInstrumenter instrumenter;
+    @Mock private BranchInstrumentor branchInstrumentor;
+    @Mock private Parser parser = new Parser();
+    @Mock private IoUtils ioUtils = IoUtils.getInstance();
+
+    @Before
+    public void setUp() {
+        sourceProcessor = new SourceProcessor(compilerEnvirons, "test.js", sourceFormatter, null);
+        ReflectionUtils.setField(sourceProcessor, "ioUtils", ioUtils);
+        ReflectionUtils.setField(sourceProcessor, "parser", parser);
     }
-    private SourceProcessor instrumenter;
 
     @Test
-    public void shouldInstrumentForFileSystem() throws URISyntaxException {
-        String fileName = "test-simple.js";
-        String source = ioUtils.loadFromClassPath("/" + fileName);
-        instrumenter = new SourceProcessor(compilerEnv, fileName, PlainFormatter.getInstance(), null);
-
-        String instrumentedSource = instrumenter.processSourceForFileSystem(source);
-
-        String expectedSource = ioUtils.loadFromClassPath("/test-instrumented-file-system.js");
-        // assertThat(instrumentedSource, equalTo(expectedSource));
-        //ioUtils.copy(instrumentedSource, new File("src/test-integration/resources/test-instrumented-file-system.js"));
-        assertEquals(expectedSource, instrumentedSource);//.replaceAll("\r\n","\n"));
+    public void shouldNotIncludeBranchLogicForJsLineInitialization() {
+        String actual = sourceProcessor.getJsLineInitialization("test.js", new TreeSet<Integer>(){{add(1);}});
+        String expected = "if (! _$jscoverage['test.js']) {\n" +
+                "  _$jscoverage['test.js'] = [];\n" +
+                "  _$jscoverage['test.js'][1] = 0;\n" +
+                "}\n";
+        assertThat(actual, equalTo(expected));
     }
 
     @Test
-    public void shouldInstrumentForServer() throws URISyntaxException {
-        String fileName = "test-simple.js";
-        String source = ioUtils.loadFromClassPath("/" + fileName);
-        instrumenter = new SourceProcessor(compilerEnv, fileName, PlainFormatter.getInstance(), null);
-
-        String instrumentedSource = instrumenter.processSourceForServer(source);
-
-        String expectedSource = ioUtils.loadFromClassPath("/test-instrumented-server.js");
-        // assertThat(instrumentedSource, equalTo(expectedSource));
-        //ioUtils.copy(instrumentedSource, new File("src/test-integration/resources/test-instrumented-server.js"));
-        assertEquals(expectedSource, instrumentedSource);//.replaceAll("\r\n","\n"));
+    public void shouldIncludeBranchLogicForJsLineInitialization() {
+        ReflectionUtils.setField(sourceProcessor, "includeBranchCoverage", true);
+        String actual = sourceProcessor.getJsLineInitialization("test.js", new TreeSet<Integer>(){{add(1);}});
+        String expected = "if (! _$jscoverage['test.js']) {\n" +
+                "  _$jscoverage['test.js'] = [];\n" +
+                "  _$jscoverage.branchData['test.js'] = [];\n" +
+                "  _$jscoverage['test.js'][1] = 0;\n" +
+                "}\n";
+        assertThat(actual, equalTo(expected));
     }
 
+    @Test
+    public void shouldNotIncludeBranchLogicForProcessSource() throws IOException {
+        given(ioUtils.loadFromClassPath("/header.js")).willReturn("<header>");
+        given(parser.parse(anyString(), anyString(), anyInt())).willReturn(new AstRoot());
+
+        assertThat(sourceProcessor.processSource("test.js", "x;"), startsWith("<header>"));
+        verify(ioUtils, times(0)).loadFromClassPath("/jscoverage-branch.js");
+    }
+
+    @Test
+    public void shouldIncludeBranchLogicForProcessSource() throws IOException {
+        ReflectionUtils.setField(sourceProcessor, "includeBranchCoverage", true);
+        given(ioUtils.loadFromClassPath("/header.js")).willReturn("<header>");
+        given(ioUtils.loadFromClassPath("/jscoverage-branch.js")).willReturn("<branch>");
+        given(parser.parse(anyString(), anyString(), anyInt())).willReturn(new AstRoot());
+
+        assertThat(sourceProcessor.processSource("test.js", "x;"), startsWith("<branch><header>"));
+        verify(ioUtils, times(1)).loadFromClassPath("/jscoverage-branch.js");
+    }
 }

@@ -1,6 +1,5 @@
 if (! _$jscoverage['javascript-function-chain.js']) {
   _$jscoverage['javascript-function-chain.js'] = [];
-  _$jscoverage.branchData['javascript-function-chain.js'] = [];
   _$jscoverage['javascript-function-chain.js'][2] = 0;
   _$jscoverage['javascript-function-chain.js'][5] = 0;
   _$jscoverage['javascript-function-chain.js'][9] = 0;
