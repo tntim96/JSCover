@@ -15,22 +15,26 @@ $(document).ready(function() {
 
         it("should not be covered if neither path evaluated", function() {
             expect(branchData.covered()).toBeFalsy();
+            expect(branchData.message()).toEqual('Condition never evaluated:\nx<y');
         });
 
         it("should not be covered if only false path evaluated", function() {
             branchData.ranCondition(false);
             expect(branchData.covered()).toBeFalsy();
+            expect(branchData.message()).toEqual('Condition never evaluated to true:\nx<y');
         });
 
         it("should not be covered if only true path evaluated", function() {
-            branchData.ranCondition(false);
+            branchData.ranCondition(true);
             expect(branchData.covered()).toBeFalsy();
+            expect(branchData.message()).toEqual('Condition never evaluated to false:\nx<y');
         });
 
         it("should be covered if both paths evaluated", function() {
             branchData.ranCondition(false);
             branchData.ranCondition(true);
             expect(branchData.covered()).toBeTruthy();
+            expect(branchData.message()).toEqual('Condition covered');
         });
     });
 });

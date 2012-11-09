@@ -379,7 +379,7 @@ public class BranchInstrumentorIntegrationTest {
         assertThat((Boolean) coverageData.get("evalFalse", coverageData), equalTo(false));
         assertThat((Integer) coverageData.get("position", coverageData), equalTo(7));
         assertThat((Integer) coverageData.get("length", coverageData), equalTo(5));
-        assertThat((String) coverageData.get("src", coverageData), equalTo("x &lt; 0"));
+        assertThat((String) coverageData.get("src", coverageData), equalTo("x < 0"));
         assertThat((Boolean) coveredFn.call(context, scope, coverageData, new Object[0]), equalTo(false));
 
         testFn.call(context, scope, null, new ArrayList() {{

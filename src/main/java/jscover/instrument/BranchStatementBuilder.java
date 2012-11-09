@@ -342,8 +342,6 @@ Public License instead of this License.
 
 package jscover.instrument;
 
-import jscover.format.PlainFormatter;
-import jscover.format.SourceFormatter;
 import org.mozilla.javascript.Token;
 import org.mozilla.javascript.ast.*;
 
@@ -353,8 +351,6 @@ import java.util.List;
 import static java.lang.String.format;
 
 public class BranchStatementBuilder {
-    private SourceFormatter formatter = PlainFormatter.getInstance();
-
     public ExpressionStatement buildLineInitialisation(String uri, int lineNo) {
         ElementGet indexLineNumber = buildLineDeclaration(uri, lineNo);
 
@@ -381,7 +377,7 @@ public class BranchStatementBuilder {
         lengthLiteral.setValue(""+length);
         branchDataObject.addArgument(lengthLiteral);
         StringLiteral stringLiteral = new StringLiteral();
-        stringLiteral.setValue(formatter.escapeHtml(source));
+        stringLiteral.setValue(source);
         stringLiteral.setQuoteCharacter('\'');
         branchDataObject.addArgument(stringLiteral);
 
