@@ -431,6 +431,6 @@ public class HtmlServerUnloadedJSTest {
     }
 
     private void verifyCoverage(HtmlPage page, String uri, int percentage) {
-        assertThat(page.getElementById("row-" + uri).getLastChild().getTextContent(), equalTo(percentage + "%"));
+        assertThat(page.getElementById("row-" + uri).getLastChild().getPreviousSibling().getTextContent(), equalTo(percentage + "%"));
     }
 }

@@ -597,6 +597,7 @@ function jscoverage_recalculateSummaryTab(cc) {
     cell.appendChild(pctGraph);
     cell.appendChild(pct);
     row.appendChild(cell);
+    row.appendChild(document.createTextNode('N/A'));
 
     if (showMissingColumn) {
       cell = document.createElement("td");
@@ -732,6 +733,7 @@ function jscoverage_checkbox_click() {
 
 function jscoverage_makeTable() {
   var coverage = _$jscoverage[jscoverage_currentFile];
+  var branchData = _$jscoverage.branchData[jscoverage_currentFile];
   var lines = coverage.source;
 
   // this can happen if there is an error in the original JavaScript file
@@ -752,10 +754,10 @@ function jscoverage_makeTable() {
     This may be a long delay, so set a timeout of 100 ms to make sure the
     display is updated.
     */
-    setTimeout(appendTable, 100);
+    setTimeout(appendTable(jscoverage_currentFile), 100);
   }
 
-  function appendTable() {
+  function appendTable(jscoverage_currentFile) {
     var sourceDiv = document.getElementById('sourceDiv');
     sourceDiv.innerHTML = tableHTML;
     ProgressBar.setPercentage(progressBar, 80);
@@ -791,6 +793,28 @@ function jscoverage_makeTable() {
     else {
       row += '<td></td>';
     }
+
+    if (_$jscoverage.branchData.length !== undefined) {
+        var branchClass = '';
+        var branchText = '&#160;';
+        var branchLink = undefined;
+        if (branchData[lineNumber] !== undefined) {
+            branchClass = 'g';
+            for (var conditionIndex = 0; conditionIndex < branchData[lineNumber].length; conditionIndex++) {
+                if (branchData[lineNumber][conditionIndex] !== undefined && !branchData[lineNumber][conditionIndex].covered()) {
+                    branchClass = 'r';
+                    if (branchLink === undefined) {
+                        var message = branchData[lineNumber][conditionIndex].message();
+                        branchLink = '<a href="#" onclick="alert(_$jscoverage.branchData[\''+jscoverage_currentFile+'\']['+lineNumber+']['+conditionIndex+'].message());">info</a>';
+                        branchText = branchLink;
+                    }
+                }
+            }
+
+        }
+        row += '<td class="numeric '+branchClass+'"><pre>' + branchText + '</pre></td>';
+    }
+
     row += '<td><pre>' + lines[i] + '</pre></td>';
     row += '</tr>';
     row += '\n';
