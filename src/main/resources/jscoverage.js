@@ -492,7 +492,7 @@ function jscoverage_recalculateSummaryTab(cc) {
 //#JSCOVERAGE_ENDIF
   }
 
-  var totals = { files:0, statements:0, executed:0 };
+  var totals = { files:0, statements:0, executed:0, branches:0, branches_covered:0 };
 
   var file;
   var files = [];
@@ -556,6 +556,33 @@ function jscoverage_recalculateSummaryTab(cc) {
 
     var percentage = ( num_statements === 0 ? 0 : parseInt(100 * num_executed / num_statements) );
 
+    var num_branches = 0;
+    var num_executed_branches = 0;
+    var fileBranchCC = cc.branchData[file];
+    if (fileBranchCC) {
+        var branchLength = fileBranchCC.length;
+        for (lineNumber = 0; lineNumber < branchLength; lineNumber++) {
+          var conditions = fileBranchCC[lineNumber];
+          var covered = undefined;
+          if (conditions !== undefined && conditions.length) {
+              covered = true;
+              for (var conditionIndex = 0; conditionIndex < conditions.length; conditionIndex++) {
+                  var branchData = fileBranchCC[lineNumber][conditionIndex];
+                  if (branchData === undefined)
+                    continue;
+                  num_branches++;
+                  if (!fileBranchCC[lineNumber][conditionIndex].covered()) {
+                      covered = false;
+                  } else {
+                      num_executed_branches++;
+                  }
+              }
+          }
+        }
+        var percentageBranch = ( num_branches === 0 ? 0 : parseInt(100 * num_executed_branches / num_branches));
+    }
+
+
     var row = document.createElement("tr");
     row.className = ( rowCounter++ % 2 == 0 ? "odd" : "even" );
 
@@ -575,6 +602,16 @@ function jscoverage_recalculateSummaryTab(cc) {
     cell = document.createElement("td");
     cell.className = 'numeric';
     cell.appendChild(document.createTextNode(num_executed));
+    row.appendChild(cell);
+
+    cell = document.createElement("td");
+    cell.className = 'numeric';
+    cell.appendChild(document.createTextNode(num_branches));
+    row.appendChild(cell);
+
+    cell = document.createElement("td");
+    cell.className = 'numeric';
+    cell.appendChild(document.createTextNode(num_executed_branches));
     row.appendChild(cell);
 
     // new coverage td containing a bar graph
@@ -597,7 +634,27 @@ function jscoverage_recalculateSummaryTab(cc) {
     cell.appendChild(pctGraph);
     cell.appendChild(pct);
     row.appendChild(cell);
-    row.appendChild(document.createTextNode('N/A'));
+
+    // new coverage td containing a branch bar graph
+    cell = document.createElement("td");
+    cell.className = 'coverage';
+    pctGraph = document.createElement("div"),
+        covered = document.createElement("div"),
+        pct = document.createElement("span");
+    pctGraph.className = "pctGraph";
+    if(fileBranchCC !== undefined || num_branches === 0 ) {
+        covered.className = "skipped";
+        pct.appendChild(document.createTextNode("N/A"));
+    } else {
+        covered.className = "covered";
+        covered.style.width = percentageBranch + "px";
+        pct.appendChild(document.createTextNode(percentageBranch + '%'));
+    }
+    pct.className = "pct";
+    pctGraph.appendChild(covered);
+    cell.appendChild(pctGraph);
+    cell.appendChild(pct);
+    row.appendChild(cell);
 
     if (showMissingColumn) {
       cell = document.createElement("td");
@@ -641,6 +698,8 @@ function jscoverage_recalculateSummaryTab(cc) {
     totals['files'] ++;
     totals['statements'] += num_statements;
     totals['executed'] += num_executed;
+    totals['branches'] += num_branches;
+    totals['branches_covered'] += num_executed_branches;
 
     // write totals data into summaryTotals row
     var tr = document.getElementById("summaryTotals");
@@ -649,13 +708,25 @@ function jscoverage_recalculateSummaryTab(cc) {
         tds[0].getElementsByTagName("span")[1].firstChild.nodeValue = totals['files'];
         tds[1].firstChild.nodeValue = totals['statements'];
         tds[2].firstChild.nodeValue = totals['executed'];
+        tds[3].firstChild.nodeValue = totals['branches'];
+        tds[4].firstChild.nodeValue = totals['branches_covered'];
 
         var coverage = parseInt(100 * totals['executed'] / totals['statements']);
         if( isNaN( coverage ) ) {
             coverage = 0;
         }
-        tds[3].getElementsByTagName("span")[0].firstChild.nodeValue = coverage + '%';
-        tds[3].getElementsByTagName("div")[1].style.width = coverage + 'px';
+        tds[5].getElementsByTagName("span")[0].firstChild.nodeValue = coverage + '%';
+        tds[5].getElementsByTagName("div")[1].style.width = coverage + 'px';
+
+        coverage = 0;
+        if (fileBranchCC !== undefined) {
+            coverage = parseInt(100 * totals['branches_covered'] / totals['branches']);
+            if( isNaN( coverage ) ) {
+                coverage = 0;
+            }
+        }
+        tds[6].getElementsByTagName("span")[0].firstChild.nodeValue = coverage + '%';
+        tds[6].getElementsByTagName("div")[1].style.width = coverage + 'px';
     }
 
   }
@@ -754,7 +825,7 @@ function jscoverage_makeTable() {
     This may be a long delay, so set a timeout of 100 ms to make sure the
     display is updated.
     */
-    setTimeout(appendTable(jscoverage_currentFile), 100);
+    setTimeout(function() {appendTable(jscoverage_currentFile);}, 100);
   }
 
   function appendTable(jscoverage_currentFile) {
@@ -794,7 +865,7 @@ function jscoverage_makeTable() {
       row += '<td></td>';
     }
 
-    if (_$jscoverage.branchData.length !== undefined) {
+    if (_$jscoverage.branchData[jscoverage_currentFile] !== undefined && _$jscoverage.branchData[jscoverage_currentFile].length !== undefined) {
         var branchClass = '';
         var branchText = '&#160;';
         var branchLink = undefined;
