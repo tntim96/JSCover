@@ -398,6 +398,22 @@ public class BranchInstrumentorIntegrationTest {
     }
 
     @Test
+    public void shouldNotDoubleWrapSingleCondition() {
+        StringBuilder script = new StringBuilder("function test(x) {\n");
+        script.append("  if ((x < 0))\n");
+        script.append("    ;\n");
+        script.append("};\n");
+        runScript(script.toString());
+        Scriptable lineData = getLineData(scope, "test.js", 2);
+
+        assertThat((Double) lineData.get("length", lineData), equalTo(2d));
+
+        //NB currently first element in line data is always null
+        assertThat(lineData.get(1, lineData) instanceof Scriptable, equalTo(true));
+        assertThat(lineData.get(0, lineData) instanceof Scriptable, equalTo(false));
+    }
+
+    @Test
     public void shouldHandleTwoSeparateConditions() {
         StringBuilder script = new StringBuilder("function test(x) {\n");
         script.append("  if (x < 0)\n");
@@ -538,10 +554,14 @@ public class BranchInstrumentorIntegrationTest {
     }
 
     private Scriptable getCoverageData(Scriptable scope, String uri, int lineNo, int conditionNo) {
+        Scriptable lineData = getLineData(scope, uri, lineNo);
+        return (Scriptable) lineData.get(conditionNo, lineData);
+    }
+
+    private Scriptable getLineData(Scriptable scope, String uri, int lineNo) {
         Scriptable jscoverage = (Scriptable) scope.get("_$jscoverage", scope);
         Scriptable branchData = (Scriptable) jscoverage.get("branchData", jscoverage);
         Scriptable scriptData = (Scriptable) branchData.get(uri, branchData);
-        Scriptable lineData = (Scriptable) scriptData.get(lineNo, scriptData);
-        return (Scriptable) lineData.get(conditionNo, lineData);
+        return (Scriptable) scriptData.get(lineNo, scriptData);
     }
 }

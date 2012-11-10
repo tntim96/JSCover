@@ -428,7 +428,7 @@ public class BranchInstrumentor implements NodeVisitor {
                 return true;
         }
         if (node.getParent() instanceof IfStatement) {
-            return ((IfStatement)node.getParent()).getCondition() == node;
+            return ((IfStatement)node.getParent()).getCondition() == node && node instanceof Name;
         }
         return false;
     }
