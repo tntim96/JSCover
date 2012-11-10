@@ -53,4 +53,14 @@ $(document).ready(function() {
             expect(branchData.message()).toEqual('Condition covered');
         });
     });
+
+    describe('Branch Data Array', function() {
+        it("should convert multiple conditions to JSON and back", function() {
+            var lineN = new Array();
+            lineN[1] = new BranchData(1,1,'src1');
+            lineN[2] = new BranchData(2,2,'src2');
+
+            expect(convertBranchDataConditionArrayToJSON(lineN)).toEqual('[null,{"position":1,"nodeLength":1,"src":"src1","evalFalse":0,"evalTrue":0},{"position":2,"nodeLength":2,"src":"src2","evalFalse":0,"evalTrue":0}]');
+        });
+    });
 });

@@ -17,11 +17,11 @@ function BranchData(position, nodeLength, src) {
     };
 
     this.toJSON = function() {
-        return '{"position":'+this.position
-            +',"nodeLength":'+this.nodeLength
-            +',"src":'+jscoverage_quote(this.src)
-            +',"evalFalse":'+this.evalFalse
-            +',"evalTrue":'+this.evalTrue+'}';
+        return '{"position":' + this.position
+            + ',"nodeLength":' + this.nodeLength
+            + ',"src":' + jscoverage_quote(this.src)
+            + ',"evalFalse":' + this.evalFalse
+            + ',"evalTrue":' + this.evalTrue + '}';
     };
 
     this.message = function() {
@@ -37,9 +37,24 @@ function BranchData(position, nodeLength, src) {
 }
 
 BranchData.fromJson = function(jsonString) {
-    var json = eval('('+jsonString+')');
+    var json = eval('(' + jsonString + ')');
     var branchData = new BranchData(json.position, json.nodeLength, json.src);
     branchData.evalFalse = json.evalFalse;
     branchData.evalTrue = json.evalTrue;
     return branchData;
 };
+
+function convertBranchDataConditionArrayToJSON(branchDataConditionArray) {
+    var array = [];
+    var length = branchDataConditionArray.length;
+    for (var line = 0; line < length; line++) {
+        var branchDataObject = branchDataConditionArray[line];
+        if (branchDataObject === undefined || branchDataObject === null) {
+            value = 'null';
+        } else {
+            value = branchDataObject.toJSON();
+        }
+        array.push(value);
+    }
+    return '[' + array.join(',') + ']';
+}
