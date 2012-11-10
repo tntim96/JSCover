@@ -375,25 +375,25 @@ public class BranchInstrumentorIntegrationTest {
         Function coveredFn = (Function) ScriptableObject.getProperty(coverageData, "covered");
         Function testFn = (Function) scope.get("test", scope);
 
-        assertThat((Boolean) coverageData.get("evalTrue", coverageData), equalTo(false));
-        assertThat((Boolean) coverageData.get("evalFalse", coverageData), equalTo(false));
+        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(0d));
+        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
         assertThat((Integer) coverageData.get("position", coverageData), equalTo(7));
-        assertThat((Integer) coverageData.get("length", coverageData), equalTo(5));
+        assertThat((Integer) coverageData.get("nodeLength", coverageData), equalTo(5));
         assertThat((String) coverageData.get("src", coverageData), equalTo("x < 0"));
         assertThat((Boolean) coveredFn.call(context, scope, coverageData, new Object[0]), equalTo(false));
 
         testFn.call(context, scope, null, new ArrayList() {{
             add(-1);
         }}.toArray());
-        assertThat((Boolean) coverageData.get("evalTrue", coverageData), equalTo(true));
-        assertThat((Boolean) coverageData.get("evalFalse", coverageData), equalTo(false));
+        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
+        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
         assertThat((Boolean) coveredFn.call(context, scope, coverageData, new Object[0]), equalTo(false));
 
         testFn.call(context, scope, null, new ArrayList() {{
             add(1);
         }}.toArray());
-        assertThat((Boolean) coverageData.get("evalTrue", coverageData), equalTo(true));
-        assertThat((Boolean) coverageData.get("evalFalse", coverageData), equalTo(true));
+        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
+        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(1d));
         assertThat((Boolean) coveredFn.call(context, scope, coverageData, new Object[0]), equalTo(true));
     }
 
@@ -502,24 +502,24 @@ public class BranchInstrumentorIntegrationTest {
         Function coveredFn = (Function) ScriptableObject.getProperty(coverageData, "covered");
         Function testFn = (Function) scope.get("test", scope);
 
-        assertThat((Boolean) coverageData.get("evalTrue", coverageData), equalTo(false));
-        assertThat((Boolean) coverageData.get("evalFalse", coverageData), equalTo(false));
+        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(0d));
+        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
         assertThat((Integer) coverageData.get("position", coverageData), equalTo(7));
-        assertThat((Double) coverageData.get("length", coverageData), equalTo(1d));//Why double?
+        assertThat((Double) coverageData.get("nodeLength", coverageData), equalTo(1d));//Why double?
         assertThat((Boolean) coveredFn.call(context, scope, coverageData, new Object[0]), equalTo(false));
 
         testFn.call(context, scope, null, new ArrayList() {{
             add(true);
         }}.toArray());
-        assertThat((Boolean) coverageData.get("evalTrue", coverageData), equalTo(true));
-        assertThat((Boolean) coverageData.get("evalFalse", coverageData), equalTo(false));
+        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
+        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
         assertThat((Boolean) coveredFn.call(context, scope, coverageData, new Object[0]), equalTo(false));
 
         testFn.call(context, scope, null, new ArrayList() {{
             add(false);
         }}.toArray());
-        assertThat((Boolean) coverageData.get("evalTrue", coverageData), equalTo(true));
-        assertThat((Boolean) coverageData.get("evalFalse", coverageData), equalTo(true));
+        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
+        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(1d));
         assertThat((Boolean) coveredFn.call(context, scope, coverageData, new Object[0]), equalTo(true));
     }
 

@@ -366,6 +366,7 @@ public class HtmlUnitJSTest {
             "--port=8080",
             "--no-instrument=doc",
             "--no-instrument=src/test",
+            "--no-instrument=src/main/resources/jscoverage.js",//Move functions out to testable files
             "--report-dir=target/reports/jscover"
     };
 

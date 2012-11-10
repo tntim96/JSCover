@@ -19,6 +19,7 @@ function BranchData(position, nodeLength, src) {
     this.toJSON = function() {
         return '{"position":'+this.position
             +',"nodeLength":'+this.nodeLength
+            +',"src":'+jscoverage_quote(this.src)
             +',"evalFalse":'+this.evalFalse
             +',"evalTrue":'+this.evalTrue+'}';
     };
