@@ -9,13 +9,19 @@ $(document).ready(function() {
 
         it("should record position and length", function() {
             expect(branchData.position).toEqual(10);
-            expect(branchData.length).toEqual(5);
+            expect(branchData.nodeLength).toEqual(5);
             expect(branchData.src).toEqual('x<y');
         });
 
         it("should not be covered if neither path evaluated", function() {
             expect(branchData.covered()).toBeFalsy();
             expect(branchData.message()).toEqual('Condition never evaluated:\nx<y');
+            var json = BranchData.fromJson(branchData.toJSON());
+            expect(json.position).toEqual(10);
+            expect(json.nodeLength).toEqual(5);
+            expect(json.evalFalse).toEqual(0);
+            expect(json.evalTrue).toEqual(0);
+            expect(json.covered()).toEqual(false);
         });
 
         it("should not be covered if only false path evaluated", function() {

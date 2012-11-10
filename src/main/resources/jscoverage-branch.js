@@ -1,19 +1,26 @@
-function BranchData(position, length, src) {
+function BranchData(position, nodeLength, src) {
     this.position = position;
-    this.length = length;
+    this.nodeLength = nodeLength;
     this.src = src;
-    this.evalFalse = false;
-    this.evalTrue = false;
+    this.evalFalse = 0;
+    this.evalTrue = 0;
 
     this.ranCondition = function(result) {
         if (result)
-            this.evalTrue = true;
+            this.evalTrue++;
         else
-            this.evalFalse = true;
+            this.evalFalse++;
     };
 
     this.covered = function() {
-        return this.evalTrue && this.evalFalse;
+        return this.evalTrue > 0 && this.evalFalse > 0;
+    };
+
+    this.toJSON = function() {
+        return '{"position":'+this.position
+            +',"nodeLength":'+this.nodeLength
+            +',"evalFalse":'+this.evalFalse
+            +',"evalTrue":'+this.evalTrue+'}';
     };
 
     this.message = function() {
@@ -27,3 +34,11 @@ function BranchData(position, length, src) {
             return 'Condition covered';
     };
 }
+
+BranchData.fromJson = function(jsonString) {
+    var json = eval('('+jsonString+')');
+    var branchData = new BranchData(json.position, json.nodeLength, json.src);
+    branchData.evalFalse = json.evalFalse;
+    branchData.evalTrue = json.evalTrue;
+    return branchData;
+};
