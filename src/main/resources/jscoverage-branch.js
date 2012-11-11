@@ -44,11 +44,18 @@ BranchData.fromJson = function(jsonString) {
     return branchData;
 };
 
+BranchData.fromJsonObject = function(json) {
+    var branchData = new BranchData(json.position, json.nodeLength, json.src);
+    branchData.evalFalse = json.evalFalse;
+    branchData.evalTrue = json.evalTrue;
+    return branchData;
+};
+
 function convertBranchDataConditionArrayToJSON(branchDataConditionArray) {
     var array = [];
     var length = branchDataConditionArray.length;
-    for (var line = 0; line < length; line++) {
-        var branchDataObject = branchDataConditionArray[line];
+    for (var condition = 0; condition < length; condition++) {
+        var branchDataObject = branchDataConditionArray[condition];
         if (branchDataObject === undefined || branchDataObject === null) {
             value = 'null';
         } else {
@@ -57,4 +64,57 @@ function convertBranchDataConditionArrayToJSON(branchDataConditionArray) {
         array.push(value);
     }
     return '[' + array.join(',') + ']';
+}
+
+function convertBranchDataConditionArrayFromJSON(jsonString) {
+    var array = [];
+    var json = eval('(' + jsonString + ')');
+    var length = json.length;
+    for (var condition = 0; condition < length; condition++) {
+        var branchDataJSON = json[condition];
+        if (branchDataJSON === null) {
+            value = null;
+        } else {
+            value = BranchData.fromJsonObject(branchDataJSON);
+        }
+        array.push(value);
+    }
+    return array;
+}
+
+function convertBranchDataLinesToJSON(branchData) {
+    var array = [];
+    var length = branchData.length;
+    for (var line = 0; line < length; line++) {
+        var branchDataObject = branchData[line];
+        if (branchDataObject === undefined || branchDataObject === null) {
+            value = 'null';
+        } else {
+            value = convertBranchDataConditionArrayToJSON(branchDataObject);
+        }
+        array.push(value);
+    }
+    return '[' + array.join(',') + ']';
+}
+
+function convertBranchDataLinesFromJSON(jsonString) {
+    var array = [];
+    var json = eval('(' + jsonString + ')');
+    var length = json.length;
+    for (var line = 0; line < length; line++) {
+        var branchDataJSON = json[line];
+        if (branchDataJSON === null) {
+            value = null;
+        } else {
+            value = branchDataJSON;
+            for (var conditionIndex = 0; conditionIndex < branchDataJSON.length; conditionIndex ++) {
+                var condition = branchDataJSON[conditionIndex];
+                if (condition !== null) {
+                    value[conditionIndex] = BranchData.fromJsonObject(condition);
+                }
+            }
+        }
+        array.push(value);
+    }
+    return array;
 }
