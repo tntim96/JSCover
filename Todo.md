@@ -9,7 +9,6 @@ Branch To-do list
 ==================
 JSON
 ------------------
-# Add branch data to JSON serialization/de-serialization in JavaScript
 # Support merge of branch data in Java
 
 Other

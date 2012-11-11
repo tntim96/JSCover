@@ -13,34 +13,6 @@ if (! window.jscoverage_report) {
       return '0000'.substr(s.length) + s;
     };
 
-    var quote = function (s) {
-      return '"' + s.replace(/[\u0000-\u001f"\\\u007f-\uffff]/g, function (c) {
-        switch (c) {
-        case '\b':
-          return '\\b';
-        case '\f':
-          return '\\f';
-        case '\n':
-          return '\\n';
-        case '\r':
-          return '\\r';
-        case '\t':
-          return '\\t';
-        // IE doesn't support this
-        /*
-        case '\v':
-          return '\\v';
-        */
-        case '"':
-          return '\\"';
-        case '\\':
-          return '\\\\';
-        default:
-          return '\\u' + pad(c.charCodeAt(0).toString(16));
-        }
-      }) + '"';
-    };
-
     var json = [];
     for (var file in _$jscoverage) {
       var coverage = _$jscoverage[file];
@@ -61,10 +33,11 @@ if (! window.jscoverage_report) {
       var lines = [];
       length = source.length;
       for (var line = 0; line < length; line++) {
-        lines.push(quote(source[line]));
+        lines.push(jscoverage_quote(source[line]));
       }
 
-      json.push(quote(file) + ':{"coverage":[' + array.join(',') + '],"source":[' + lines.join(',') + ']}');
+      json.push(jscoverage_quote(file) + ':{"coverage":[' + array.join(',') + '],"source":[' + lines.join(',')
+          + '],"branchData":' + convertBranchDataLinesToJSON(_$jscoverage.branchData[file]) + '}');
     }
     json = '{' + json.join(',') + '}';
 

@@ -367,6 +367,7 @@ function jscoverage_body_load() {
               var fileCoverage = json[file];
               _$jscoverage[file] = fileCoverage.coverage;
               _$jscoverage[file].source = fileCoverage.source;
+              _$jscoverage.branchData[file] = convertBranchDataLinesFromJSON(fileCoverage.branchData);
             }
             jscoverage_recalculateSummaryTab();
             summaryThrobber.style.visibility = 'hidden';
@@ -564,11 +565,11 @@ function jscoverage_recalculateSummaryTab(cc) {
         for (lineNumber = 0; lineNumber < branchLength; lineNumber++) {
           var conditions = fileBranchCC[lineNumber];
           var covered = undefined;
-          if (conditions !== undefined && conditions.length) {
+          if (conditions !== undefined && conditions !== null && conditions.length) {
               covered = true;
               for (var conditionIndex = 0; conditionIndex < conditions.length; conditionIndex++) {
                   var branchData = fileBranchCC[lineNumber][conditionIndex];
-                  if (branchData === undefined)
+                  if (branchData === undefined || branchData === null)
                     continue;
                   num_branches++;
                   if (!fileBranchCC[lineNumber][conditionIndex].covered()) {
@@ -642,7 +643,7 @@ function jscoverage_recalculateSummaryTab(cc) {
         covered = document.createElement("div"),
         pct = document.createElement("span");
     pctGraph.className = "pctGraph";
-    if(fileBranchCC !== undefined || num_branches === 0 ) {
+    if(fileBranchCC === undefined || num_branches === 0 ) {
         covered.className = "skipped";
         pct.appendChild(document.createTextNode("N/A"));
     } else {
@@ -1159,34 +1160,6 @@ function jscoverage_pad(s) {
   return '0000'.substr(s.length) + s;
 }
 
-function jscoverage_quote(s) {
-  return '"' + s.replace(/[\u0000-\u001f"\\\u007f-\uffff]/g, function (c) {
-    switch (c) {
-    case '\b':
-      return '\\b';
-    case '\f':
-      return '\\f';
-    case '\n':
-      return '\\n';
-    case '\r':
-      return '\\r';
-    case '\t':
-      return '\\t';
-    // IE doesn't support this
-    /*
-    case '\v':
-      return '\\v';
-    */
-    case '"':
-      return '\\"';
-    case '\\':
-      return '\\\\';
-    default:
-      return '\\u' + jscoverage_pad(c.charCodeAt(0).toString(16));
-    }
-  }) + '"';
-}
-
 function jscoverage_serializeCoverageToJSON() {
   var json = [];
   for (var file in _$jscoverage) {
@@ -1211,7 +1184,8 @@ function jscoverage_serializeCoverageToJSON() {
       lines.push(jscoverage_quote(source[line]));
     }
 
-    json.push(jscoverage_quote(file) + ':{"coverage":[' + array.join(',') + '],"source":[' + lines.join(',') + ']}');
+    json.push(jscoverage_quote(file) + ':{"coverage":[' + array.join(',') + '],"source":[' + lines.join(',')
+        + '],"branchData":' + convertBranchDataLinesToJSON(_$jscoverage.branchData[file]) + '}');
   }
   return '{' + json.join(',') + '}';
 }

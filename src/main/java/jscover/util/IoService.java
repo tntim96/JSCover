@@ -378,11 +378,18 @@ public class IoService {
     }
 
     private String generateJSCoverageReportJS() {
-        return ioUtils.loadFromClassPath("/jscoverage.js") + "\njscoverage_isReport = true;";
+        return generateJSCoverageJs() + "\njscoverage_isReport = true;";
     }
 
     public String generateJSCoverageServerJS() {
-        return ioUtils.loadFromClassPath("/jscoverage.js") + "\njscoverage_isServer = true;";
+        return generateJSCoverageJs() + "\njscoverage_isServer = true;";
+    }
+
+    private String generateJSCoverageJs() {
+        String mainJS = ioUtils.loadFromClassPath("/jscoverage.js");
+        String branchJS = ioUtils.loadFromClassPath("/jscoverage-branch.js");
+        String commonJS = ioUtils.loadFromClassPath("/jscoverage-common.js");
+        return mainJS + commonJS + branchJS;
     }
 
     public String generateJSCoverageHtml(String version) {

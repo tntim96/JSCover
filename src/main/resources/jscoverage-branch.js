@@ -66,23 +66,10 @@ function convertBranchDataConditionArrayToJSON(branchDataConditionArray) {
     return '[' + array.join(',') + ']';
 }
 
-function convertBranchDataConditionArrayFromJSON(jsonString) {
-    var array = [];
-    var json = eval('(' + jsonString + ')');
-    var length = json.length;
-    for (var condition = 0; condition < length; condition++) {
-        var branchDataJSON = json[condition];
-        if (branchDataJSON === null) {
-            value = null;
-        } else {
-            value = BranchData.fromJsonObject(branchDataJSON);
-        }
-        array.push(value);
-    }
-    return array;
-}
-
 function convertBranchDataLinesToJSON(branchData) {
+    if (branchData === undefined) {
+        return '[]'
+    }
     var array = [];
     var length = branchData.length;
     for (var line = 0; line < length; line++) {
@@ -97,24 +84,21 @@ function convertBranchDataLinesToJSON(branchData) {
     return '[' + array.join(',') + ']';
 }
 
-function convertBranchDataLinesFromJSON(jsonString) {
-    var array = [];
-    var json = eval('(' + jsonString + ')');
-    var length = json.length;
+function convertBranchDataLinesFromJSON(jsonObject) {
+    if (jsonObject === undefined) {
+        return [];
+    }
+    var length = jsonObject.length;
     for (var line = 0; line < length; line++) {
-        var branchDataJSON = json[line];
-        if (branchDataJSON === null) {
-            value = null;
-        } else {
-            value = branchDataJSON;
+        var branchDataJSON = jsonObject[line];
+        if (branchDataJSON !== null) {
             for (var conditionIndex = 0; conditionIndex < branchDataJSON.length; conditionIndex ++) {
                 var condition = branchDataJSON[conditionIndex];
                 if (condition !== null) {
-                    value[conditionIndex] = BranchData.fromJsonObject(condition);
+                    branchDataJSON[conditionIndex] = BranchData.fromJsonObject(condition);
                 }
             }
         }
-        array.push(value);
     }
-    return array;
+    return jsonObject;
 }

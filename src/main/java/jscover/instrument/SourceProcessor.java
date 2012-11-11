@@ -377,7 +377,9 @@ class SourceProcessor {
 
     public String processSourceForServer(String source) {
         String report = ioUtils.loadFromClassPath("/report.js");
-        return report + processSource(null, source);
+        String commonJS = ioUtils.loadFromClassPath("/jscoverage-common.js");
+        String branchJS = ioUtils.loadFromClassPath("/jscoverage-branch.js");
+        return report + commonJS + branchJS + processSource(null, source);
     }
 
     public String processSourceForFileSystem(String source) {

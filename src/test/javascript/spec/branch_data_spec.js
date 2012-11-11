@@ -55,6 +55,7 @@ $(document).ready(function() {
     });
 
     describe('Branch Data Array', function() {
+
         it("should convert multiple conditions to JSON", function() {
             var lineN = new Array();
             lineN[1] = new BranchData(1,10,'src1');
@@ -64,16 +65,14 @@ $(document).ready(function() {
 
             var json = convertBranchDataConditionArrayToJSON(lineN);
             expect(json).toEqual('[null,{"position":1,"nodeLength":10,"src":"src1","evalFalse":0,"evalTrue":0},{"position":2,"nodeLength":20,"src":"src2","evalFalse":1,"evalTrue":1}]');
+        });
 
-            var fromJSON = convertBranchDataConditionArrayFromJSON(json);
-            expect(fromJSON[1].position).toEqual(1);
-            expect(fromJSON[1].nodeLength).toEqual(10);
-            expect(fromJSON[1].src).toEqual('src1');
-            expect(fromJSON[1].covered()).toEqual(false);
-            expect(fromJSON[2].position).toEqual(2);
-            expect(fromJSON[2].nodeLength).toEqual(20);
-            expect(fromJSON[2].src).toEqual('src2');
-            expect(fromJSON[2].covered()).toEqual(true);
+        it("should handle undefined branch JSON data object", function() {
+            expect(convertBranchDataLinesToJSON(undefined)).toEqual('[]');
+        });
+
+        it("should handle undefined branch JSON data string", function() {
+            expect(convertBranchDataLinesFromJSON(undefined)).toEqual(new Array());
         });
 
         it("should convert multiple lines to JSON and back", function() {
@@ -88,7 +87,8 @@ $(document).ready(function() {
             lines[2][2].ranCondition(true);
 
             var json = convertBranchDataLinesToJSON(lines);
-            var fromJSON = convertBranchDataLinesFromJSON(json);
+            var jsonObject = eval('(' + json + ')');
+            var fromJSON = convertBranchDataLinesFromJSON(jsonObject);
             expect(fromJSON[0]).toBeNull();
 
             expect(fromJSON[1][0]).toBeNull();
