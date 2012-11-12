@@ -26,11 +26,11 @@ function BranchData(position, nodeLength, src) {
 
     this.message = function() {
         if (!this.evalTrue && !this.evalFalse)
-            return 'Condition never evaluated:\n' + this.src;
+            return 'Condition never evaluated         :\t' + this.src;
         else if (!this.evalTrue)
-            return 'Condition never evaluated to true:\n' + this.src;
+            return 'Condition never evaluated to true :\t' + this.src;
         else if (!this.evalFalse)
-            return 'Condition never evaluated to false:\n' + this.src;
+            return 'Condition never evaluated to false:\t' + this.src;
         else
             return 'Condition covered';
     };
@@ -49,6 +49,15 @@ BranchData.fromJsonObject = function(json) {
     branchData.evalFalse = json.evalFalse;
     branchData.evalTrue = json.evalTrue;
     return branchData;
+};
+
+function buildBranchMessage(conditions) {
+    var message = 'The following was not covered:';
+    for (var i = 0; i < conditions.length; i++) {
+        if (conditions[i] !== undefined && conditions[i] !== null && !conditions[i].covered())
+          message += '\n- '+ conditions[i].message();
+    }
+    return message;
 };
 
 function convertBranchDataConditionArrayToJSON(branchDataConditionArray) {

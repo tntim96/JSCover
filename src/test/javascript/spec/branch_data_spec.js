@@ -15,7 +15,7 @@ $(document).ready(function() {
 
         it("should not be covered if neither path evaluated", function() {
             expect(branchData.covered()).toBeFalsy();
-            expect(branchData.message()).toEqual('Condition never evaluated:\nx<y');
+            expect(branchData.message()).toEqual('Condition never evaluated         :\tx<y');
         });
 
         it("should convert to and from JSON", function() {
@@ -37,13 +37,13 @@ $(document).ready(function() {
         it("should not be covered if only false path evaluated", function() {
             branchData.ranCondition(false);
             expect(branchData.covered()).toBeFalsy();
-            expect(branchData.message()).toEqual('Condition never evaluated to true:\nx<y');
+            expect(branchData.message()).toEqual('Condition never evaluated to true :\tx<y');
         });
 
         it("should not be covered if only true path evaluated", function() {
             branchData.ranCondition(true);
             expect(branchData.covered()).toBeFalsy();
-            expect(branchData.message()).toEqual('Condition never evaluated to false:\nx<y');
+            expect(branchData.message()).toEqual('Condition never evaluated to false:\tx<y');
         });
 
         it("should be covered if both paths evaluated", function() {
@@ -65,6 +65,17 @@ $(document).ready(function() {
 
             var json = convertBranchDataConditionArrayToJSON(lineN);
             expect(json).toEqual('[null,{"position":1,"nodeLength":10,"src":"src1","evalFalse":0,"evalTrue":0},{"position":2,"nodeLength":20,"src":"src2","evalFalse":1,"evalTrue":1}]');
+        });
+
+        it("should build branch message for line", function() {
+            var conditions = new Array();
+            conditions[1] = new BranchData(1,10,'src1');
+            conditions[2] = undefined;
+            conditions[2] = new BranchData(2,20,'src2');
+
+            var message = buildBranchMessage(conditions);
+            var expected = 'The following was not covered:\n- Condition never evaluated         :\tsrc1\n- Condition never evaluated         :\tsrc2';
+            expect(message).toEqual(expected);
         });
 
         it("should handle undefined branch JSON data object", function() {

@@ -875,14 +875,13 @@ function jscoverage_makeTable() {
             for (var conditionIndex = 0; conditionIndex < branchData[lineNumber].length; conditionIndex++) {
                 if (branchData[lineNumber][conditionIndex] !== undefined && branchData[lineNumber][conditionIndex] !== null && !branchData[lineNumber][conditionIndex].covered()) {
                     branchClass = 'r';
-                    if (branchLink === undefined) {
-                        var message = branchData[lineNumber][conditionIndex].message();
-                        branchLink = '<a href="#" onclick="alert(_$jscoverage.branchData[\''+jscoverage_currentFile+'\']['+lineNumber+']['+conditionIndex+'].message());">info</a>';
-                        branchText = branchLink;
-                    }
+                    break;
                 }
             }
 
+        }
+        if (branchClass === 'r') {
+            branchText = '<a href="#" onclick="alert(buildBranchMessage(_$jscoverage.branchData[\''+jscoverage_currentFile+'\']['+lineNumber+']));">info</a>';
         }
         row += '<td class="numeric '+branchClass+'"><pre>' + branchText + '</pre></td>';
     }
