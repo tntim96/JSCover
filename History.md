@@ -1,3 +1,7 @@
+0.1.0-RC1 / 2012-??-??
+==================
+  * Alpha version of branch coverage
+
 0.0.11 / 2012-11-07
 ==================
   * Use platform default encoding. Add documentation on -Dfile.encoding JVM property usage in manual.
