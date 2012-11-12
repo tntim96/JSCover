@@ -395,26 +395,7 @@ class JSONDataMerger {
                     sourceData.add((String) sourceArray.get(i));
                 List<List<BranchData>> branchLineArray = new ArrayList<List<BranchData>>();
                 if (branchJSONArray != null) {
-                    for (int i = 0; i < branchJSONArray.size(); i++) {
-                        List<BranchData> branchConditionArray = new ArrayList<BranchData>();
-                        branchLineArray.add(branchConditionArray);
-                        NativeArray conditionsJSON = (NativeArray) branchJSONArray.get(i);
-                        if (conditionsJSON != null) {
-                            for (int j = 0; j < conditionsJSON.size(); j++) {
-                                NativeObject conditionJSON = (NativeObject) conditionsJSON.get(j);
-                                if (conditionJSON == null) {
-                                    branchConditionArray.add(null);
-                                } else {
-                                    int position = (Integer) conditionJSON.get("position");
-                                    int nodeLength = (Integer) conditionJSON.get("nodeLength");
-                                    String src = (String) conditionJSON.get("src");
-                                    int evalFalse = (Integer) conditionJSON.get("evalFalse");
-                                    int evalTrue = (Integer) conditionJSON.get("evalTrue");
-                                    branchConditionArray.add(new BranchData(position, nodeLength, src, evalFalse, evalTrue));
-                                }
-                            }
-                        }
-                    }
+                    readBranchLines(branchJSONArray, branchLineArray);
                 }
                 map.put((String) scriptURI, new CoverageData(countData, sourceData, branchLineArray));
             }
@@ -422,6 +403,33 @@ class JSONDataMerger {
             throw new RuntimeException(e);
         }
         return map;
+    }
+
+    private void readBranchLines(NativeArray branchJSONArray, List<List<BranchData>> branchLineArray) {
+        for (int i = 0; i < branchJSONArray.size(); i++) {
+            List<BranchData> branchConditionArray = new ArrayList<BranchData>();
+            branchLineArray.add(branchConditionArray);
+            NativeArray conditionsJSON = (NativeArray) branchJSONArray.get(i);
+            if (conditionsJSON != null) {
+                readBranchCondition(branchConditionArray, conditionsJSON);
+            }
+        }
+    }
+
+    private void readBranchCondition(List<BranchData> branchConditionArray, NativeArray conditionsJSON) {
+        for (int j = 0; j < conditionsJSON.size(); j++) {
+            NativeObject conditionJSON = (NativeObject) conditionsJSON.get(j);
+            if (conditionJSON == null) {
+                branchConditionArray.add(null);
+            } else {
+                int position = (Integer) conditionJSON.get("position");
+                int nodeLength = (Integer) conditionJSON.get("nodeLength");
+                String src = (String) conditionJSON.get("src");
+                int evalFalse = (Integer) conditionJSON.get("evalFalse");
+                int evalTrue = (Integer) conditionJSON.get("evalTrue");
+                branchConditionArray.add(new BranchData(position, nodeLength, src, evalFalse, evalTrue));
+            }
+        }
     }
 
     String toJSON(SortedMap<String, CoverageData> map) {
@@ -444,31 +452,7 @@ class JSONDataMerger {
                 source.append(ScriptRuntime.escapeString(coverageData.getSource().get(i)));
                 source.append("\"");
             }
-            for (int i = 0; i < coverageData.getBranchData().size(); i++) {
-                if (i > 0)
-                    branchData.append(",");
-                List<BranchData> conditions = coverageData.getBranchData().get(i);
-                if (conditions.size() > 0) {
-                    branchData.append("[");
-                } else {
-                    branchData.append("null");
-                }
-                for (int j = 0; j < conditions.size();  j++) {
-                    if (j > 0)
-                        branchData.append(",");
-                    BranchData branchObj = conditions.get(j);
-                    if (branchObj == null) {
-                        branchData.append("null");
-                    } else {
-                        String branchJSON = "{\"position\":%d,\"nodeLength\":%d,\"src\":\"%s\",\"evalFalse\":%d,\"evalTrue\":%d}";
-                        String branchSource = ScriptRuntime.escapeString(branchObj.getSource());
-                        branchData.append(format(branchJSON, branchObj.getPosition(), branchObj.getNodeLength(), branchSource, branchObj.getEvalFalse(), branchObj.getEvalTrue()));
-                    }
-                }
-                if (conditions.size() > 0) {
-                    branchData.append("]");
-                }
-            }
+            addBranchData(branchData, coverageData);
             if (scriptCount++ > 0) {
                 json.append(",");
             }
@@ -478,6 +462,38 @@ class JSONDataMerger {
         }
         json.append("}");
         return json.toString();
+    }
+
+    private void addBranchData(StringBuilder branchData, CoverageData coverageData) {
+        for (int i = 0; i < coverageData.getBranchData().size(); i++) {
+            if (i > 0)
+                branchData.append(",");
+            List<BranchData> conditions = coverageData.getBranchData().get(i);
+            if (conditions.size() > 0) {
+                branchData.append("[");
+            } else {
+                branchData.append("null");
+            }
+            addBranchConitions(branchData, conditions);
+            if (conditions.size() > 0) {
+                branchData.append("]");
+            }
+        }
+    }
+
+    private void addBranchConitions(StringBuilder branchData, List<BranchData> conditions) {
+        for (int j = 0; j < conditions.size();  j++) {
+            if (j > 0)
+                branchData.append(",");
+            BranchData branchObj = conditions.get(j);
+            if (branchObj == null) {
+                branchData.append("null");
+            } else {
+                String branchJSON = "{\"position\":%d,\"nodeLength\":%d,\"src\":\"%s\",\"evalFalse\":%d,\"evalTrue\":%d}";
+                String branchSource = ScriptRuntime.escapeString(branchObj.getSource());
+                branchData.append(format(branchJSON, branchObj.getPosition(), branchObj.getNodeLength(), branchSource, branchObj.getEvalFalse(), branchObj.getEvalTrue()));
+            }
+        }
     }
 
     public SortedMap<String, CoverageData> createEmptyJSON(List<ScriptLinesAndSource> scripts) {
