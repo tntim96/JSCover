@@ -364,7 +364,7 @@ class JSONDataMerger {
             if (map2.containsKey(scriptName)) {
                 CoverageData coverageData = map1.get(scriptName);
                 for (int i = 0; i < coverageData.getCoverage().size(); i++) {
-                    if (coverageData.getCoverage().get(i)!=null) {
+                    if (coverageData.getCoverage().get(i) != null) {
                         coverageData.addCoverage(map2.get(scriptName).getCoverage().get(i), i);
                     }
                 }
@@ -384,15 +384,39 @@ class JSONDataMerger {
             NativeObject json = (NativeObject) parser.parseValue(data);
             for (Object scriptURI : json.keySet()) {
                 NativeObject scriptData = (NativeObject) json.get(scriptURI);
-                NativeArray coverage = (NativeArray) scriptData.get("coverage");
-                NativeArray source = (NativeArray) scriptData.get("source");
-                List<Integer> countData = new ArrayList<Integer>(coverage.size());
-                for (int i = 0; i < coverage.size(); i++)
-                    countData.add((Integer) coverage.get(i));
-                List<String> sourceData = new ArrayList<String>(source.size());
-                for (int i = 0; i < source.size(); i++)
-                    sourceData.add((String) source.get(i));
-                map.put((String) scriptURI, new CoverageData(countData, sourceData));
+                NativeArray lineCoverageArray = (NativeArray) scriptData.get("coverage");
+                NativeArray sourceArray = (NativeArray) scriptData.get("source");
+                NativeArray branchJSONArray = (NativeArray) scriptData.get("branchData");
+                List<Integer> countData = new ArrayList<Integer>(lineCoverageArray.size());
+                for (int i = 0; i < lineCoverageArray.size(); i++)
+                    countData.add((Integer) lineCoverageArray.get(i));
+                List<String> sourceData = new ArrayList<String>(sourceArray.size());
+                for (int i = 0; i < sourceArray.size(); i++)
+                    sourceData.add((String) sourceArray.get(i));
+                List<List<BranchData>> branchLineArray = new ArrayList<List<BranchData>>();
+                if (branchJSONArray != null) {
+                    for (int i = 0; i < branchJSONArray.size(); i++) {
+                        List<BranchData> branchConditionArray = new ArrayList<BranchData>();
+                        branchLineArray.add(branchConditionArray);
+                        NativeArray conditionsJSON = (NativeArray) branchJSONArray.get(i);
+                        if (conditionsJSON != null) {
+                            for (int j = 0; j < conditionsJSON.size(); j++) {
+                                NativeObject conditionJSON = (NativeObject) conditionsJSON.get(j);
+                                if (conditionJSON == null) {
+                                    branchConditionArray.add(null);
+                                } else {
+                                    int position = (Integer) conditionJSON.get("position");
+                                    int nodeLength = (Integer) conditionJSON.get("nodeLength");
+                                    String src = (String) conditionJSON.get("src");
+                                    int evalFalse = (Integer) conditionJSON.get("evalFalse");
+                                    int evalTrue = (Integer) conditionJSON.get("evalTrue");
+                                    branchConditionArray.add(new BranchData(position, nodeLength, src, evalFalse, evalTrue));
+                                }
+                            }
+                        }
+                    }
+                }
+                map.put((String) scriptURI, new CoverageData(countData, sourceData, branchLineArray));
             }
         } catch (JsonParser.ParseException e) {
             throw new RuntimeException(e);
@@ -406,25 +430,51 @@ class JSONDataMerger {
         for (String scriptURI : map.keySet()) {
             StringBuilder coverage = new StringBuilder();
             StringBuilder source = new StringBuilder();
+            StringBuilder branchData = new StringBuilder();
             CoverageData coverageData = map.get(scriptURI);
-            for (int i=0; i<coverageData.getCoverage().size(); i++) {
+            for (int i = 0; i < coverageData.getCoverage().size(); i++) {
                 if (i > 0)
                     coverage.append(",");
                 coverage.append(coverageData.getCoverage().get(i));
             }
-            for (int i=0; i<coverageData.getSource().size(); i++) {
+            for (int i = 0; i < coverageData.getSource().size(); i++) {
                 if (i > 0)
                     source.append(",");
                 source.append("\"");
                 source.append(ScriptRuntime.escapeString(coverageData.getSource().get(i)));
                 source.append("\"");
             }
+            for (int i = 0; i < coverageData.getBranchData().size(); i++) {
+                if (i > 0)
+                    branchData.append(",");
+                List<BranchData> conditions = coverageData.getBranchData().get(i);
+                if (conditions.size() > 0) {
+                    branchData.append("[");
+                } else {
+                    branchData.append("null");
+                }
+                for (int j = 0; j < conditions.size();  j++) {
+                    if (j > 0)
+                        branchData.append(",");
+                    BranchData branchObj = conditions.get(j);
+                    if (branchObj == null) {
+                        branchData.append("null");
+                    } else {
+                        String branchJSON = "{\"position\":%d,\"nodeLength\":%d,\"src\":\"%s\",\"evalFalse\":%d,\"evalTrue\":%d}";
+                        String branchSource = ScriptRuntime.escapeString(branchObj.getSource());
+                        branchData.append(format(branchJSON, branchObj.getPosition(), branchObj.getNodeLength(), branchSource, branchObj.getEvalFalse(), branchObj.getEvalTrue()));
+                    }
+                }
+                if (conditions.size() > 0) {
+                    branchData.append("]");
+                }
+            }
             if (scriptCount++ > 0) {
                 json.append(",");
             }
 
-            String scriptJSON = "\"%s\":{\"coverage\":[%s],\"source\":[%s]}";
-            json.append(String.format(scriptJSON, scriptURI, coverage, source));
+            String scriptJSON = "\"%s\":{\"coverage\":[%s],\"source\":[%s],\"branchData\":[%s]}";
+            json.append(String.format(scriptJSON, scriptURI, coverage, source, branchData));
         }
         json.append("}");
         return json.toString();
@@ -433,12 +483,12 @@ class JSONDataMerger {
     public SortedMap<String, CoverageData> createEmptyJSON(List<ScriptLinesAndSource> scripts) {
         SortedMap<String, CoverageData> map = new TreeMap<String, CoverageData>();
         for (ScriptLinesAndSource script : scripts) {
-            Integer[] lines = new Integer[script.getLines().get(script.getLines().size() - 1)+1];
-            for (int i=0; i < script.getLines().size() ; i++) {
+            Integer[] lines = new Integer[script.getLines().get(script.getLines().size() - 1) + 1];
+            for (int i = 0; i < script.getLines().size(); i++) {
                 lines[script.getLines().get(i)] = 0;
             }
-
-            CoverageData coverageData = new CoverageData(Arrays.asList(lines), script.getSource());
+            List<List<BranchData>> branchLineArray = new ArrayList<List<BranchData>>();
+            CoverageData coverageData = new CoverageData(Arrays.asList(lines), script.getSource(), branchLineArray);
             map.put(script.getUri(), coverageData);
         }
         return map;
@@ -447,9 +497,9 @@ class JSONDataMerger {
     String toLCOV(File rootDir, SortedMap<String, CoverageData> map) {
         StringBuilder lcov = new StringBuilder();
         for (String scriptURI : map.keySet()) {
-            lcov.append(format("SF:%s\n", rootDir.getAbsolutePath().replaceAll("\\\\","/") + scriptURI));
+            lcov.append(format("SF:%s\n", rootDir.getAbsolutePath().replaceAll("\\\\", "/") + scriptURI));
             CoverageData coverageData = map.get(scriptURI);
-            for (int lineNumber=0; lineNumber<coverageData.getCoverage().size(); lineNumber++) {
+            for (int lineNumber = 0; lineNumber < coverageData.getCoverage().size(); lineNumber++) {
                 Integer count = coverageData.getCoverage().get(lineNumber);
                 if (count != null) {
                     lcov.append(format("DA:%d,%d\n", lineNumber, count));

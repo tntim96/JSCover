@@ -342,32 +342,38 @@ Public License instead of this License.
 
 package jscover.json;
 
-import java.util.List;
+public class BranchData {
+    private int position;
+    private int nodeLength;
+    private String source;
+    private int evalFalse;
+    private int evalTrue;
 
-public class CoverageData {
-    private List<Integer> coverage;
-    private List<String> source;
-    private List<List<BranchData>> branchData;
-
-    public CoverageData(List<Integer> coverage, List<String> source, List<List<BranchData>> branchData) {
-        this.coverage = coverage;
+    public BranchData(int position, int nodeLength, String source, int evalFalse, int evalTrue) {
+        this.position = position;
+        this.nodeLength = nodeLength;
         this.source = source;
-        this.branchData = branchData;
+        this.evalFalse = evalFalse;
+        this.evalTrue = evalTrue;
     }
 
-    public List<Integer> getCoverage() {
-        return coverage;
+    public int getPosition() {
+        return position;
     }
 
-    public void addCoverage(Integer coverage, int index) {
-        this.coverage.set(index, this.coverage.get(index) + coverage);
+    public int getNodeLength() {
+        return nodeLength;
     }
 
-    public List<String> getSource() {
+    public String getSource() {
         return source;
     }
 
-    public List<List<BranchData>> getBranchData() {
-        return branchData;
+    public int getEvalFalse() {
+        return evalFalse;
+    }
+
+    public int getEvalTrue() {
+        return evalTrue;
     }
 }

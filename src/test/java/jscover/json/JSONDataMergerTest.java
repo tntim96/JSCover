@@ -343,6 +343,7 @@ Public License instead of this License.
 package jscover.json;
 
 import jscover.util.IoUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -370,10 +371,22 @@ public class JSONDataMergerTest {
     }
 
     @Test
+    @Ignore
+    public void shouldMergeBranchData() {
+        String data1 = ioUtils.loadFromClassPath("/jscover/json/jscoverage-select-2-branch.json");
+        String data2 = ioUtils.loadFromClassPath("/jscover/json/jscoverage-select-4-branch.json");
+        String expected = ioUtils.loadFromClassPath("/jscover/json/jscoverage-select-2-4-branch.json");
+
+        String merged = jsonMerger.toJSON(jsonMerger.mergeJSONCoverageData(data1, data2));
+
+        assertThat(merged, equalTo(expected));
+    }
+
+    @Test
     public void shouldMergeDataWithDifferentFiles() {
-        String data1 = "{\"/test1.js\":{\"coverage\":[null,0,1],\"source\":[\"x++;\",\"y++;\",\"z++;\"]}}";
-        String data2 = "{\"/test2.js\":{\"coverage\":[null,0,1],\"source\":[\"x++;\",\"y++;\",\"z++;\"]}}";
-        String expected = "{\"/test1.js\":{\"coverage\":[null,0,1],\"source\":[\"x++;\",\"y++;\",\"z++;\"]},\"/test2.js\":{\"coverage\":[null,0,1],\"source\":[\"x++;\",\"y++;\",\"z++;\"]}}";
+        String data1 = "{\"/test1.js\":{\"coverage\":[null,0,1],\"source\":[\"x++;\",\"y++;\",\"z++;\"],\"branchData\":[]}}";
+        String data2 = "{\"/test2.js\":{\"coverage\":[null,0,1],\"source\":[\"x++;\",\"y++;\",\"z++;\"],\"branchData\":[]}}";
+        String expected = "{\"/test1.js\":{\"coverage\":[null,0,1],\"source\":[\"x++;\",\"y++;\",\"z++;\"],\"branchData\":[]},\"/test2.js\":{\"coverage\":[null,0,1],\"source\":[\"x++;\",\"y++;\",\"z++;\"],\"branchData\":[]}}";
 
         String merged = jsonMerger.toJSON(jsonMerger.mergeJSONCoverageData(data1, data2));
 
@@ -395,14 +408,53 @@ public class JSONDataMergerTest {
         assertThat(map.values().iterator().next().getSource().get(2), equalTo("z++;"));
     }
 
+    @Test
+    public void shouldParseBranchData() {
+        String data = "{\"/test.js\":{\"coverage\":[null,1,2],\"source\":[\"function square(x) {\",\"    return (x==0) ? 0: x*x;\",\"}\"],\"branchData\":[null,null,[null,{\"position\":13,\"nodeLength\":4,\"src\":\"x == 0\",\"evalFalse\":1,\"evalTrue\":2}]]}}";
+
+        SortedMap<String, CoverageData> map = jsonMerger.jsonToMap(data);
+
+        assertThat(map.keySet().size(), equalTo(1));
+        assertThat(map.keySet().iterator().next(), equalTo("/test.js"));
+
+        CoverageData coverageData = map.values().iterator().next();
+        assertThat(coverageData.getCoverage().get(0), nullValue());
+        assertThat(coverageData.getSource().get(0), equalTo("function square(x) {"));
+        assertThat(coverageData.getBranchData().get(0).size(), equalTo(0));
+
+        assertThat(coverageData.getCoverage().get(1), equalTo(1));
+        assertThat(coverageData.getSource().get(1), equalTo("    return (x==0) ? 0: x*x;"));
+        assertThat(coverageData.getBranchData().get(1).size(), equalTo(0));
+
+        assertThat(coverageData.getCoverage().get(2), equalTo(2));
+        assertThat(coverageData.getSource().get(2), equalTo("}"));
+        assertThat(coverageData.getBranchData().get(2).size(), equalTo(2));
+        assertThat(coverageData.getBranchData().get(2).get(0), nullValue());
+        assertThat(coverageData.getBranchData().get(2).get(1).getPosition(), equalTo(13));
+        assertThat(coverageData.getBranchData().get(2).get(1).getNodeLength(), equalTo(4));
+        assertThat(coverageData.getBranchData().get(2).get(1).getSource(), equalTo("x == 0"));
+        assertThat(coverageData.getBranchData().get(2).get(1).getEvalFalse(), equalTo(1));
+        assertThat(coverageData.getBranchData().get(2).get(1).getEvalTrue(), equalTo(2));
+    }
+
     @Test(expected = RuntimeException.class)
     public void shouldReThrowException() {
         jsonMerger.jsonToMap("{\"/test.js\":{\"coverage\":\"}}");
     }
 
     @Test
+    public void shouldConvertBranchMapToJSONString() {
+        String data = "{\"/test.js\":{\"coverage\":[null,1,2],\"source\":[\"function square(x) {\",\"    return (x==0) ? 0: x*x;\",\"}\"],\"branchData\":[null,null,[null,{\"position\":13,\"nodeLength\":4,\"src\":\"x == 0\",\"evalFalse\":1,\"evalTrue\":2}]]}}";
+        SortedMap<String, CoverageData> map = jsonMerger.jsonToMap(data);
+
+        String jsonString = jsonMerger.toJSON(map);
+
+        assertThat(jsonString, equalTo(data));
+    }
+
+    @Test
     public void shouldConvertMapToJSONString() {
-        String data = "{\"/test.js\":{\"coverage\":[null,0,1],\"source\":[\"x++;\",\"y++;\",\"z++;\"]}}";
+        String data = "{\"/test.js\":{\"coverage\":[null,0,1],\"source\":[\"x++;\",\"y++;\",\"z++;\"],\"branchData\":[]}}";
         SortedMap<String, CoverageData> map = jsonMerger.jsonToMap(data);
 
         String jsonString = jsonMerger.toJSON(map);
