@@ -369,7 +369,8 @@ public class IoService {
             String reportJS = generateJSCoverageReportJS();
             ioUtils.copy(reportJS, new File(destDir, "jscoverage.js"));
         } else {
-            copyResourceToDir("jscoverage.js", destDir);
+            String jsCoverageJS = generateJSCoverageJs();
+            ioUtils.copy(jsCoverageJS, new File(destDir, "jscoverage.js"));
         }
 
         copyResourceToDir("jscoverage-highlight.css", destDir);
