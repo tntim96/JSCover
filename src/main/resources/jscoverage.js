@@ -870,10 +870,10 @@ function jscoverage_makeTable() {
         var branchClass = '';
         var branchText = '&#160;';
         var branchLink = undefined;
-        if (branchData[lineNumber] !== undefined) {
+        if (branchData[lineNumber] !== undefined && branchData[lineNumber] !== null) {
             branchClass = 'g';
             for (var conditionIndex = 0; conditionIndex < branchData[lineNumber].length; conditionIndex++) {
-                if (branchData[lineNumber][conditionIndex] !== undefined && !branchData[lineNumber][conditionIndex].covered()) {
+                if (branchData[lineNumber][conditionIndex] !== undefined && branchData[lineNumber][conditionIndex] !== null && !branchData[lineNumber][conditionIndex].covered()) {
                     branchClass = 'r';
                     if (branchLink === undefined) {
                         var message = branchData[lineNumber][conditionIndex].message();

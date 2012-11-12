@@ -371,7 +371,6 @@ public class JSONDataMergerTest {
     }
 
     @Test
-    @Ignore
     public void shouldMergeBranchData() {
         String data1 = ioUtils.loadFromClassPath("/jscover/json/jscoverage-select-2-branch.json");
         String data2 = ioUtils.loadFromClassPath("/jscover/json/jscoverage-select-4-branch.json");

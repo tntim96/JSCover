@@ -7,12 +7,6 @@ General To-do list
 
 Branch To-do list
 ==================
-JSON
-------------------
-# Support merge of branch data in Java
-
-Other
-------------------
 # Add (temporary?) command line option to turn branch functionality on while in alpha/beta
 # Combine all line condition failures into one alert message
 # Add acceptance tests for branch logic

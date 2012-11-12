@@ -376,4 +376,11 @@ public class BranchData {
     public int getEvalTrue() {
         return evalTrue;
     }
+
+    public void addCoverage(BranchData branchData) {
+        if (position != branchData.position || nodeLength != branchData.nodeLength)
+            throw new IllegalStateException("Merging non-matching branch data");
+        this.evalFalse += branchData.evalFalse;
+        this.evalTrue += branchData.evalTrue;
+    }
 }

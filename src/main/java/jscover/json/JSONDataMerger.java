@@ -368,6 +368,17 @@ class JSONDataMerger {
                         coverageData.addCoverage(map2.get(scriptName).getCoverage().get(i), i);
                     }
                 }
+                for (int i = 0; i < coverageData.getBranchData().size(); i++) {
+                    List<BranchData> conditions = coverageData.getBranchData().get(i);
+                    if (conditions != null) {
+                        for (int j = 0; j < conditions.size(); j++) {
+                            if (conditions.get(j) != null) {
+                                conditions.get(j).addCoverage(map2.get(scriptName).getBranchData().get(i).get(j));
+                            }
+                        }
+                    }
+                }
+
             }
         }
         for (String scriptName : map2.keySet()) {
