@@ -1,6 +1,7 @@
-0.1.0-RC1 / 2012-??-??
+0.0.12 / 2012-11-13
 ==================
-  * Alpha version of branch coverage
+  * Fix error message re: destination as sub-directory of source https://github.com/tntim96/JSCover/issues/18
+  * Fix detection of destination as sub-directory of source https://github.com/tntim96/JSCover/issues/16
 
 0.0.11 / 2012-11-07
 ==================

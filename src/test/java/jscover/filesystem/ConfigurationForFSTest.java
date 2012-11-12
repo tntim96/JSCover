@@ -374,6 +374,12 @@ public class ConfigurationForFSTest {
     }
 
     @Test
+    public void shouldNotAllowDestinationDirectoryToBeSubDirectoryOfSourceDirectorySpecifiedAsCurrentDirectory() {
+        ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs",".","src/java"});
+        assertThat(configuration.showHelp(), equalTo(true));
+    }
+
+    @Test
     public void shouldShowHelpOnError() {
         assertThat(ConfigurationForFS.parse(new String[]{"-fs"}).showHelp(), equalTo(true));
     }

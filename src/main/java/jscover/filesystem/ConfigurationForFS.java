@@ -349,6 +349,7 @@ import org.mozilla.javascript.CompilerEnvirons;
 import org.mozilla.javascript.Context;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -437,7 +438,7 @@ public class ConfigurationForFS extends Configuration {
             System.err.println(format("Source directory '%s' is invalid", configuration.srcDir));
             configuration.showHelp = true;
         } else if (!configuration.validDestinationDirectory()) {
-            System.err.println(format("Destination directory '%s' must be in the source directory", configuration.destDir));
+            System.err.println(format("Destination directory '%s' must not be in the source directory", configuration.destDir));
             configuration.showHelp = true;
         }
         configuration.compilerEnvirons.setLanguageVersion(configuration.JSVersion);
@@ -449,7 +450,12 @@ public class ConfigurationForFS extends Configuration {
     }
 
     boolean validDestinationDirectory() {
-        return !destDir.getAbsolutePath().startsWith(srcDir.getAbsolutePath());
+        try {
+            return !destDir.getCanonicalPath().startsWith(srcDir.getCanonicalPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public String getHelpText() {
