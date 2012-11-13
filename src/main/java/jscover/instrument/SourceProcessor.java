@@ -376,10 +376,9 @@ class SourceProcessor {
     }
 
     public String processSourceForServer(String source) {
-        String report = ioUtils.loadFromClassPath("/report.js");
+        String reportJS = ioUtils.loadFromClassPath("/report.js");
         String commonJS = ioUtils.loadFromClassPath("/jscoverage-common.js");
-        String branchJS = ioUtils.loadFromClassPath("/jscoverage-branch.js");
-        return report + commonJS + branchJS + processSource(null, source);
+        return reportJS + commonJS + processSource(null, source);
     }
 
     public String processSourceForFileSystem(String source) {
@@ -387,11 +386,9 @@ class SourceProcessor {
     }
 
     protected String processSource(String sourceURI, String source) {
-        String header = ioUtils.loadFromClassPath("/header.js");
-        if (includeBranchCoverage) {
-            header = ioUtils.loadFromClassPath("/jscoverage-branch.js") + header;
-        }
-        return header + processSourceWithoutHeader(sourceURI, source);
+        String headerJS = ioUtils.loadFromClassPath("/header.js");
+        String branchJS = ioUtils.loadFromClassPath("/jscoverage-branch.js");
+        return branchJS + headerJS + processSourceWithoutHeader(sourceURI, source);
     }
 
     protected String processSourceWithoutHeader(String source) {

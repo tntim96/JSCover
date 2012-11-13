@@ -398,6 +398,19 @@ public class BranchInstrumentorIntegrationTest {
     }
 
     @Test
+    public void shouldWrapReturnCondition() {
+        StringBuilder script = new StringBuilder("(function($) {\n");
+        script.append("  $test = function(x) {\n");
+        script.append("    return x > 0\n");
+        script.append("  }\n");
+        script.append("}());");
+        runScript(script.toString());
+        Scriptable coverageData = getCoverageData(scope, "test.js", 3, 1);
+        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(0d));
+        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
+    }
+
+    @Test
     public void shouldNotDoubleWrapSingleCondition() {
         StringBuilder script = new StringBuilder("function test(x) {\n");
         script.append("  if ((x < 0))\n");

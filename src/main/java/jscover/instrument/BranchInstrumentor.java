@@ -406,6 +406,8 @@ public class BranchInstrumentor implements NodeVisitor {
                 infixExpression.setLeft(functionCall);
             else
                 infixExpression.setRight(functionCall);
+        } else if (parent instanceof ReturnStatement) {
+            ((ReturnStatement)parent).setReturnValue(functionCall);
         }
     }
 

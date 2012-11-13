@@ -406,12 +406,13 @@ public class SourceProcessorTest {
     }
 
     @Test
-    public void shouldNotIncludeBranchLogicForProcessSource() throws IOException {
+    public void shouldIncludeBranchLogicForProcessSourceEvenIfIncludeBranchCoverageIsFalse() throws IOException {
         given(ioUtils.loadFromClassPath("/header.js")).willReturn("<header>");
+        given(ioUtils.loadFromClassPath("/jscoverage-branch.js")).willReturn("<branch>");
         given(parser.parse(anyString(), anyString(), anyInt())).willReturn(new AstRoot());
 
-        assertThat(sourceProcessor.processSource("test.js", "x;"), startsWith("<header>"));
-        verify(ioUtils, times(0)).loadFromClassPath("/jscoverage-branch.js");
+        assertThat(sourceProcessor.processSource("test.js", "x;"), startsWith("<branch><header>"));
+        verify(ioUtils, times(1)).loadFromClassPath("/jscoverage-branch.js");
     }
 
     @Test
