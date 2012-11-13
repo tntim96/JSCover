@@ -367,6 +367,9 @@ public class BranchInstrumentor implements NodeVisitor {
 
     private void replaceWithFunction(AstNode node) {
         AstRoot astRoot = node.getAstRoot();
+        if (astRoot == null) {
+            return;
+        }
         AstNode parent = node.getParent();
 
         Integer conditionId = lineConditionMap.get(node.getLineno());
