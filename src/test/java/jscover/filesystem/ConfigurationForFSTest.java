@@ -370,7 +370,7 @@ public class ConfigurationForFSTest {
 
     @Test
     public void shouldNotAllowDestinationDirectoryToBeSubDirectoryOfSourceDirectory() {
-        ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs","src","src/java"});
+        ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs","src","src/main/java"});
         assertThat(configuration.showHelp(), equalTo(true));
     }
 
@@ -378,6 +378,12 @@ public class ConfigurationForFSTest {
     public void shouldNotAllowDestinationDirectoryToBeSubDirectoryOfSourceDirectorySpecifiedAsCurrentDirectory() {
         ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs",".","src/java"});
         assertThat(configuration.showHelp(), equalTo(true));
+    }
+
+    @Test
+    public void shouldNotAllowDestinationDirectoryToBeSubDirectoryOfSourceDirectoryStartingWithTheSameName() {
+        ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs","src/main/java","src/main/java-instrumented"});
+        assertThat(configuration.showHelp(), equalTo(false));
     }
 
     @Test

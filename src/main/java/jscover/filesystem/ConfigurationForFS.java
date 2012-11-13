@@ -459,7 +459,7 @@ public class ConfigurationForFS extends Configuration {
 
     boolean validDestinationDirectory() {
         try {
-            return !destDir.getCanonicalPath().startsWith(srcDir.getCanonicalPath());
+            return !(destDir.getCanonicalPath()+File.separator).startsWith(srcDir.getCanonicalPath()+File.separator);
         } catch (IOException e) {
             e.printStackTrace();
             return false;

@@ -1,3 +1,7 @@
+0.0.13 / 2012-11-14
+==================
+  * Fix detection of destination as sub-directory of source https://github.com/tntim96/JSCover/issues/19
+
 0.0.12 / 2012-11-13
 ==================
   * Fix error message re: destination as sub-directory of source https://github.com/tntim96/JSCover/issues/18
