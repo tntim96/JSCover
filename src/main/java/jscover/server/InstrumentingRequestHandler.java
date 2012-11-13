@@ -420,11 +420,11 @@ public class InstrumentingRequestHandler extends HttpServer {
                 String jsInstrumented;
                 if (configuration.isProxy()) {
                     String originalJS = proxyService.getUrl(request.getUrl());
-                    jsInstrumented = instrumenterService.instrumentJSForWebServer(configuration.getCompilerEnvirons(), originalJS, uri, log);
+                    jsInstrumented = instrumenterService.instrumentJSForWebServer(configuration.getCompilerEnvirons(), originalJS, uri, log, configuration.isIncludeBranch());
                 } else {
                     if (configuration.isIncludeUnloadedJS())
                         uris.add(uri.substring(1));
-                    jsInstrumented = instrumenterService.instrumentJSForWebServer(configuration.getCompilerEnvirons(), new File(wwwRoot, uri), uri, log);
+                    jsInstrumented = instrumenterService.instrumentJSForWebServer(configuration.getCompilerEnvirons(), new File(wwwRoot, uri), uri, log, configuration.isIncludeBranch());
                 }
                 sendResponse(HTTP_STATUS.HTTP_OK, MIME.JS, jsInstrumented);
             } else {

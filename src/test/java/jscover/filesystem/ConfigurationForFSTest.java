@@ -356,6 +356,7 @@ public class ConfigurationForFSTest {
     public void shouldHaveDefaults() {
         ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs","src","doc"});
         assertThat(configuration.showHelp(), equalTo(false));
+        assertThat(configuration.isIncludeBranch(), equalTo(false));
         assertThat(configuration.getJSVersion(), equalTo(150));
         assertThat(configuration.skipInstrumentation("/"), equalTo(false));
         assertThat(configuration.getCompilerEnvirons().getLanguageVersion(), equalTo(150));
@@ -388,6 +389,11 @@ public class ConfigurationForFSTest {
     public void shouldParseHelp() {
         assertThat(ConfigurationForFS.parse(new String[]{"-fs","-h"}).showHelp(), equalTo(true));
         assertThat(ConfigurationForFS.parse(new String[]{"-fs","--help"}).showHelp(), equalTo(true));
+    }
+
+    @Test
+    public void shouldParseNoBranch() {
+        assertThat(ConfigurationForFS.parse(new String[]{"-fs","--branch","src","doc"}).isIncludeBranch(), equalTo(true));
     }
 
     @Test

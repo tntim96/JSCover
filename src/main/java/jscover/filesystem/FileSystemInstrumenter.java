@@ -384,7 +384,7 @@ public class FileSystemInstrumenter {
             }
         } else {
             if (src.isFile() && src.toString().endsWith(".js") && !configuration.skipInstrumentation(path)) {
-                instrumenterService.instrumentJSForFileSystem(configuration.getCompilerEnvirons(), src, dest, path, log);
+                instrumenterService.instrumentJSForFileSystem(configuration.getCompilerEnvirons(), src, dest, path, log, configuration.isIncludeBranch());
             } else {
                 ioUtils.copy(src, dest);
             }

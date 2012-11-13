@@ -355,8 +355,8 @@ public class InstrumenterService {
     private SourceFormatter sourceFormatter = PlainFormatter.getInstance();
     private IoUtils ioUtils = IoUtils.getInstance();
 
-    public String instrumentJSForWebServer(CompilerEnvirons compilerEnvirons, File srcFile, String uri, File log) {
-        SourceProcessor sourceProcessor = new SourceProcessor(compilerEnvirons, uri, sourceFormatter, log);
+    public String instrumentJSForWebServer(CompilerEnvirons compilerEnvirons, File srcFile, String uri, File log, boolean includeBranch) {
+        SourceProcessor sourceProcessor = new SourceProcessor(compilerEnvirons, uri, sourceFormatter, log, includeBranch);
         try {
             String source = ioUtils.toString(new FileInputStream(srcFile));
             return sourceProcessor.processSourceForServer(source);
@@ -365,13 +365,13 @@ public class InstrumenterService {
         }
     }
 
-    public String instrumentJSForWebServer(CompilerEnvirons compilerEnvirons, String source, String uri, File log) {
-        SourceProcessor sourceProcessor = new SourceProcessor(compilerEnvirons, uri, sourceFormatter, log);
+    public String instrumentJSForWebServer(CompilerEnvirons compilerEnvirons, String source, String uri, File log, boolean includeBranch) {
+        SourceProcessor sourceProcessor = new SourceProcessor(compilerEnvirons, uri, sourceFormatter, log, includeBranch);
         return sourceProcessor.processSourceForServer(source);
     }
 
-    public void instrumentJSForFileSystem(CompilerEnvirons compilerEnvirons, File srcFile, File dest, String uri, File log) {
-        SourceProcessor sourceProcessor = new SourceProcessor(compilerEnvirons, uri, sourceFormatter, log);
+    public void instrumentJSForFileSystem(CompilerEnvirons compilerEnvirons, File srcFile, File dest, String uri, File log, boolean includeBranch) {
+        SourceProcessor sourceProcessor = new SourceProcessor(compilerEnvirons, uri, sourceFormatter, log, includeBranch);
         String source = ioUtils.loadFromFileSystem(srcFile);
         String jsInstrumented = sourceProcessor.processSourceForFileSystem(source);
         ioUtils.copy(jsInstrumented, dest);

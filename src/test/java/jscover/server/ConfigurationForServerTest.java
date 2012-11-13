@@ -364,6 +364,7 @@ public class ConfigurationForServerTest {
         assertThat(configuration.getCompilerEnvirons().getLanguageVersion(), equalTo(150));
         assertThat(configuration.isProxy(), is(false));
         assertThat(configuration.isIncludeUnloadedJS(), is(false));
+        assertThat(configuration.isIncludeBranch(), is(false));
     }
 
     @Test
@@ -375,6 +376,7 @@ public class ConfigurationForServerTest {
         assertThat(configuration.isProxy(), is(false));
         assertThat(configuration.getJSVersion(), equalTo(150));
         assertThat(configuration.skipInstrumentation("/"), equalTo(false));
+        assertThat(configuration.isIncludeBranch(), equalTo(false));
     }
 
     @Test
@@ -387,6 +389,11 @@ public class ConfigurationForServerTest {
         assertThat(ConfigurationForServer.parse(new String[]{}).showHelp(), equalTo(false));
         assertThat(ConfigurationForServer.parse(new String[]{"-h"}).showHelp(), equalTo(true));
         assertThat(ConfigurationForServer.parse(new String[]{"--help"}).showHelp(), equalTo(true));
+    }
+
+    @Test
+    public void shouldParseNoBranch() {
+        assertThat(ConfigurationForServer.parse(new String[]{"-ws", "--branch"}).isIncludeBranch(), equalTo(true));
     }
 
     @Test

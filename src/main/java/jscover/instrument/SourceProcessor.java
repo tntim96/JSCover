@@ -364,15 +364,15 @@ class SourceProcessor {
     private BranchInstrumentor branchInstrumentor;
     private Parser parser;
     private IoUtils ioUtils = IoUtils.getInstance();
-    private boolean includeBranchCoverage = false;
+    private boolean includeBranchCoverage;
 
-    public SourceProcessor(CompilerEnvirons compilerEnv, String uri, SourceFormatter sourceFormatter, File log) {
+    public SourceProcessor(CompilerEnvirons compilerEnv, String uri, SourceFormatter sourceFormatter, File log, boolean includeBranchCoverage) {
         this.uri = uri;
         this.instrumenter = new ParseTreeInstrumenter(uri, log);
         this.branchInstrumentor = new BranchInstrumentor(uri);
         this.sourceFormatter = sourceFormatter;
         parser = new Parser(compilerEnv);
-
+        this.includeBranchCoverage = includeBranchCoverage;
     }
 
     public String processSourceForServer(String source) {

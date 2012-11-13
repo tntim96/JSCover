@@ -368,7 +368,7 @@ public class InstrumenterServiceTest {
     public void shouldInstrumentForFileSystem() {
         File dest = new File("target/dest.js");
         dest.deleteOnExit();
-        service.instrumentJSForFileSystem(compilerEnvirons, src, dest, "/src.js", null);
+        service.instrumentJSForFileSystem(compilerEnvirons, src, dest, "/src.js", null, false);
         String jsInstrumented = ioUtils.loadFromFileSystem(dest);
 
         assertThat(jsInstrumented, containsString("x++;"));
@@ -379,7 +379,7 @@ public class InstrumenterServiceTest {
     public void shouldInstrumentForWebServer() {
         File dest = new File("target/dest.js");
         dest.deleteOnExit();
-        String jsInstrumented = service.instrumentJSForWebServer(compilerEnvirons, src, "/src.js", null);
+        String jsInstrumented = service.instrumentJSForWebServer(compilerEnvirons, src, "/src.js", null, false);
 
         assertThat(jsInstrumented, containsString("x++;"));
         assertThat(jsInstrumented, containsString("_$jscoverage['/src.js'][1]++;"));

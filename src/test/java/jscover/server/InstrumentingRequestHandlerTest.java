@@ -550,7 +550,7 @@ public class InstrumentingRequestHandlerTest {
 
         webServer.handleGet(new HttpRequest("/js/production.js"));
 
-        verify(instrumenterService).instrumentJSForWebServer(compilerEnvirons, new File("wwwRoot/js/production.js"), "/js/production.js", null);
+        verify(instrumenterService).instrumentJSForWebServer(compilerEnvirons, new File("wwwRoot/js/production.js"), "/js/production.js", null, false);
         verifyZeroInteractions(ioService);
         verifyZeroInteractions(jsonDataSaver);
         verifyZeroInteractions(proxyService);
@@ -568,7 +568,7 @@ public class InstrumentingRequestHandlerTest {
 
         webServer.handleGet(new HttpRequest("/js/production.js"));
 
-        verify(instrumenterService).instrumentJSForWebServer(compilerEnvirons, new File("wwwRoot/js/production.js"), "/js/production.js", null);
+        verify(instrumenterService).instrumentJSForWebServer(compilerEnvirons, new File("wwwRoot/js/production.js"), "/js/production.js", null, false);
         verifyZeroInteractions(ioService);
         verifyZeroInteractions(jsonDataSaver);
         verifyZeroInteractions(proxyService);
@@ -589,7 +589,7 @@ public class InstrumentingRequestHandlerTest {
 
         webServer.handleGet(new HttpRequest(uri));
 
-        verify(instrumenterService).instrumentJSForWebServer(compilerEnvirons, "someJavaScript;", "/js/production.js", null);
+        verify(instrumenterService).instrumentJSForWebServer(compilerEnvirons, "someJavaScript;", "/js/production.js", null, false);
         verifyZeroInteractions(ioService);
         verifyZeroInteractions(jsonDataSaver);
         assertThat(InstrumentingRequestHandler.uris.size(), equalTo(0));

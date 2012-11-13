@@ -362,8 +362,10 @@ public class ConfigurationForServer extends Configuration {
     public static final String JS_VERSION_PREFIX = "--js-version=";
     public static final String PROXY_PREFIX = "--proxy";
     public static final String INCLUDE_UNLOADED_JS_PREFIX = "--include-unloaded-js";
+    public static final String BRANCH_PREFIX = "--branch";
 
     private boolean showHelp;
+    private boolean includeBranch = false;
     private File documentRoot = new File(System.getProperty("user.dir"));
     private Integer port = 8080;
     private final Set<String> noInstruments = new HashSet<String>();
@@ -376,6 +378,10 @@ public class ConfigurationForServer extends Configuration {
 
     public Boolean showHelp() {
         return showHelp;
+    }
+
+    public boolean isIncludeBranch() {
+        return includeBranch;
     }
 
     public File getDocumentRoot() {
@@ -427,6 +433,8 @@ public class ConfigurationForServer extends Configuration {
                 configuration.noInstruments.add(uri);
             } else if (arg.startsWith(JS_VERSION_PREFIX)) {
                 configuration.JSVersion = (int)(Float.valueOf(arg.substring(JS_VERSION_PREFIX.length()))*100);
+            } else if (arg.equals(BRANCH_PREFIX)) {
+                configuration.includeBranch = true;
             } else {
                 configuration.showHelp = true;
             }

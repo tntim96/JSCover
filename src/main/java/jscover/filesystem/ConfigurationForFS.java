@@ -360,9 +360,11 @@ public class ConfigurationForFS extends Configuration {
     public static final String HELP_PREFIX2 = Main.HELP_PREFIX2;
     public static final String EXLCUDE_PREFIX = "--exclude=";
     public static final String NO_INSTRUMENT_PREFIX = "--no-instrument=";
+    public static final String BRANCH_PREFIX = "--branch";
     public static final String JS_VERSION_PREFIX = "--js-version=";
 
     private boolean showHelp;
+    private boolean includeBranch = false;
     private final Set<String> noInstruments = new HashSet<String>();
     private final Set<String> excludes = new HashSet<String>();
     private File srcDir = new File(System.getProperty("user.dir"));
@@ -373,6 +375,10 @@ public class ConfigurationForFS extends Configuration {
 
     public Boolean showHelp() {
         return showHelp;
+    }
+
+    public boolean isIncludeBranch() {
+        return includeBranch;
     }
 
     public File getSrcDir() {
@@ -413,6 +419,8 @@ public class ConfigurationForFS extends Configuration {
             } else if (arg.equals(HELP_PREFIX1) || arg.equals(HELP_PREFIX2)) {
                 configuration.showHelp = true;
                 return configuration;
+            } else if (arg.equals(BRANCH_PREFIX)) {
+                configuration.includeBranch = true;
             } else if (arg.startsWith(NO_INSTRUMENT_PREFIX)) {
                 String uri = arg.substring(NO_INSTRUMENT_PREFIX.length());
                 if (uri.startsWith("/"))

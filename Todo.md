@@ -7,7 +7,6 @@ General To-do list
 
 Branch To-do list
 ==================
-# Add (temporary?) command line option to turn branch functionality on while in alpha/beta
 # Add acceptance tests for branch logic
 # Add branch logic to ternary/hook operator
 # Add branch logic to loops

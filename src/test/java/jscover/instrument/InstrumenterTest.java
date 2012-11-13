@@ -344,7 +344,6 @@ package jscover.instrument;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -365,7 +364,7 @@ public class InstrumenterTest {
         compilerEnv.setLanguageVersion(Context.VERSION_1_8);
         compilerEnv.setStrictMode(false);
     }
-    private SourceProcessor instrumenter = new SourceProcessor(compilerEnv, "test.js", null, null);
+    private SourceProcessor instrumenter = new SourceProcessor(compilerEnv, "test.js", null, null, false);
 
     @Test
     public void shouldPatchRhinoBug684131() {
