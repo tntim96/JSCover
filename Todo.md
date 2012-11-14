@@ -7,6 +7,7 @@ General To-do list
 
 Branch To-do list
 ==================
-# Add acceptance tests for branch logic
+# Add source view verification to acceptance tests for branch logic
+# Add sorting by branch
 # Add branch logic to ternary/hook operator
 # Add branch logic to loops

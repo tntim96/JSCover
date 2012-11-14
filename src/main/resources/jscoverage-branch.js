@@ -25,11 +25,11 @@ function BranchData(position, nodeLength, src) {
     };
 
     this.message = function() {
-        if (!this.evalTrue && !this.evalFalse)
+        if (this.evalTrue === 0 && this.evalFalse === 0)
             return 'Condition never evaluated         :\t' + this.src;
-        else if (!this.evalTrue)
+        else if (this.evalTrue === 0)
             return 'Condition never evaluated to true :\t' + this.src;
-        else if (!this.evalFalse)
+        else if (this.evalFalse === 0)
             return 'Condition never evaluated to false:\t' + this.src;
         else
             return 'Condition covered';

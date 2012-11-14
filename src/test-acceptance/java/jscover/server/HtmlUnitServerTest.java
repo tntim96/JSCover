@@ -366,8 +366,8 @@ public class HtmlUnitServerTest {
     private static Thread server;
 
     protected WebClient webClient = new WebClient();
-    private IoUtils ioUtils = IoUtils.getInstance();
-    private String reportDir = "target/ws-report";
+    protected IoUtils ioUtils = IoUtils.getInstance();
+    protected String reportDir = "target/ws-report";
     private String[] args = new String[]{
             "-ws",
             "--document-root=src/test-acceptance/resources",
@@ -382,7 +382,7 @@ public class HtmlUnitServerTest {
             server = new Thread(new Runnable() {
                 public void run() {
                     try {
-                        Main.main(args);
+                        Main.main(getArgs());
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -390,6 +390,10 @@ public class HtmlUnitServerTest {
             });
             server.start();
         }
+    }
+
+    protected String[] getArgs() {
+        return args;
     }
 
     protected String getTestUrl() {
@@ -539,16 +543,16 @@ public class HtmlUnitServerTest {
         HtmlPage frame = (HtmlPage)page.getFrameByName("browserIframe").getEnclosedPage();
         frame.getElementById("radio1").click();
         page.executeJavaScript("jscoverage_recalculateSummaryTab();");
-        assertEquals("60%", page.getElementById("summaryTotal").getTextContent());
+        verifyTotals(page, 60, 0);
         frame.getElementById("radio2").click();
         page.executeJavaScript("jscoverage_recalculateSummaryTab();");
-        assertEquals("73%", page.getElementById("summaryTotal").getTextContent());
+        verifyTotals(page, 73, 0);
         frame.getElementById("radio3").click();
         page.executeJavaScript("jscoverage_recalculateSummaryTab();");
-        assertEquals("86%", page.getElementById("summaryTotal").getTextContent());
+        verifyTotals(page, 86, 0);
         frame.getElementById("radio4").click();
         page.executeJavaScript("jscoverage_recalculateSummaryTab();");
-        assertEquals("100%", page.getElementById("summaryTotal").getTextContent());
+        verifyTotals(page, 100, 0);
     }
 
     @Test
@@ -562,8 +566,17 @@ public class HtmlUnitServerTest {
     }
 
     protected void verifyTotal(WebClient webClient, HtmlPage page, int percentage) throws IOException {
+        verifyTotal(webClient, page, percentage, 0);
+    }
+
+    protected void verifyTotal(WebClient webClient, HtmlPage page, int percentage, int branchPercentage) throws IOException {
         page.getHtmlElementById("summaryTab").click();
         webClient.waitForBackgroundJavaScript(2000);
-        assertEquals(percentage+"%", page.getElementById("summaryTotal").getTextContent());
+        verifyTotals(page, percentage, branchPercentage);
+    }
+
+    protected void verifyTotals(HtmlPage page, int percentage, int branchPercentage) {
+        assertEquals(percentage + "%", page.getElementById("summaryTotal").getTextContent());
+        assertEquals(branchPercentage + "%", page.getElementById("branchSummaryTotal").getTextContent());
     }
 }
