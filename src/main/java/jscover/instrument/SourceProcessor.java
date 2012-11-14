@@ -413,8 +413,9 @@ class SourceProcessor {
         AstRoot astRoot = parser.parse(source , sourceURI, 1);
         astRoot.visitAll(instrumenter);
         if (includeBranchCoverage) {
+            branchInstrumentor.setAstRoot(astRoot);
             astRoot.visitAll(branchInstrumentor);
-            branchInstrumentor.postProcess(astRoot);
+            branchInstrumentor.postProcess();
         }
         return astRoot.toSource();
     }

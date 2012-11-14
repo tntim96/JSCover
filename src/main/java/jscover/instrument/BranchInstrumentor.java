@@ -353,23 +353,23 @@ public class BranchInstrumentor implements NodeVisitor {
     private BranchStatementBuilder branchStatementBuilder = new BranchStatementBuilder();
     private Set<ExpressionStatement> lineArrayDeclarations = new HashSet<ExpressionStatement>();
     private String uri;
+    private AstRoot astRoot;
 
     public BranchInstrumentor(String uri) {
         this.uri = uri;
     }
 
+    public void setAstRoot(AstRoot astRoot) {
+        this.astRoot = astRoot;
+    }
 
-    public void postProcess(AstRoot node) {
+    public void postProcess() {
         for (ExpressionStatement lineArrayDeclaration : lineArrayDeclarations) {
-            node.addChildToFront(lineArrayDeclaration);
+            astRoot.addChildToFront(lineArrayDeclaration);
         }
     }
 
     private void replaceWithFunction(AstNode node) {
-        AstRoot astRoot = node.getAstRoot();
-        if (astRoot == null) {
-            return;
-        }
         AstNode parent = node.getParent();
 
         Integer conditionId = lineConditionMap.get(node.getLineno());
@@ -408,6 +408,12 @@ public class BranchInstrumentor implements NodeVisitor {
                 infixExpression.setRight(functionCall);
         } else if (parent instanceof ReturnStatement) {
             ((ReturnStatement)parent).setReturnValue(functionCall);
+        } else if (parent instanceof VariableInitializer) {
+            ((VariableInitializer)parent).setInitializer(functionCall);
+//        } else if (parent instanceof Assignment) {
+//            ((Assignment)parent).setRight(functionCall);
+//        } else if (parent instanceof ExpressionStatement) {
+//            ((ExpressionStatement)parent).setExpression(functionCall);
         }
     }
 

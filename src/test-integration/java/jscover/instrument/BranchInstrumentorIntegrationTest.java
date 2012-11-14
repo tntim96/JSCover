@@ -552,10 +552,43 @@ public class BranchInstrumentorIntegrationTest {
         assertThat((Boolean) coveredFn.call(context, scope, coverageData, new Object[0]), equalTo(true));
     }
 
+    @Test
+    public void shouldHandleVariableInitializer() {
+        StringBuilder script = new StringBuilder("function test(x) {\n");
+        script.append("  var y = x < 0;\n");
+        script.append("  return y;\n");
+        script.append("};\n");
+        runScript(script.toString());
+        Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
+        Function coveredFn = (Function) ScriptableObject.getProperty(coverageData, "covered");
+        Function testFn = (Function) scope.get("test", scope);
+
+        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(0d));
+        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
+        assertThat((Integer) coverageData.get("position", coverageData), equalTo(11));
+        assertThat((Integer) coverageData.get("nodeLength", coverageData), equalTo(5));
+        assertThat((Boolean) coveredFn.call(context, scope, coverageData, new Object[0]), equalTo(false));
+
+        testFn.call(context, scope, null, new ArrayList() {{
+            add(-1);
+        }}.toArray());
+        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
+        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
+        assertThat((Boolean) coveredFn.call(context, scope, coverageData, new Object[0]), equalTo(false));
+
+        testFn.call(context, scope, null, new ArrayList() {{
+            add(1);
+        }}.toArray());
+        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
+        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(1d));
+        assertThat((Boolean) coveredFn.call(context, scope, coverageData, new Object[0]), equalTo(true));
+    }
+
     private Object runScript(String script) {
         AstRoot astRoot = parser.parse(script, null, 1);
+        branchInstrumentor.setAstRoot(astRoot);
         astRoot.visitAll(branchInstrumentor);
-        branchInstrumentor.postProcess(astRoot);
+        branchInstrumentor.postProcess();
 
         context = Context.enter();
         scope = context.initStandardObjects();
