@@ -479,6 +479,14 @@ function jscoverage_createLink(file, line) {
 }
 
 var sortOrder = 0;
+var sortColumn = 'Coverage';
+
+function jscoverage_recalculateSummaryTabBy(type) {
+  if (sortColumn !== type)
+    sortOrder = 1;
+  sortColumn = type;
+  jscoverage_recalculateSummaryTab(null);
+}
 
 function jscoverage_recalculateSummaryTab(cc) {
   var checkbox = document.getElementById('checkbox');
@@ -744,13 +752,22 @@ function getFilesSortedByCoverage(filesIn) {
   for (var i=0;i<tbody.children.length;i++) {
     files[i] = {};
   	files[i].file = tbody.children[i].children[0].children[0].innerHTML;
-  	files[i].perc = parseInt(tbody.children[i].children[3].children[1].innerHTML, 10);
+  	files[i].perc = parseInt(tbody.children[i].children[5].children[1].innerHTML, 10);
+  	files[i].brPerc = parseInt(tbody.children[i].children[6].children[1].innerHTML, 10);
+    if (isNaN(files[i].brPerc))
+      files[i].brPerc = -1;
   }
 
   if (sortOrder%3===1) {
-    files.sort(function(file1,file2) {return file1.perc-file2.perc});
+    if (sortColumn == 'Coverage')
+      files.sort(function(file1,file2) {return file1.perc-file2.perc});
+    else
+      files.sort(function(file1,file2) {return file1.brPerc-file2.brPerc});
   } else if (sortOrder%3===2) {
-    files.sort(function(file1,file2) {return file2.perc-file1.perc});
+     if (sortColumn == 'Coverage')
+      files.sort(function(file1,file2) {return file2.perc-file1.perc});
+     else
+       files.sort(function(file1,file2) {return file2.brPerc-file1.brPerc});
   } else {
       return filesIn.sort();
   }
