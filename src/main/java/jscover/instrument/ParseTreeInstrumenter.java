@@ -342,23 +342,19 @@ Public License instead of this License.
 
 package jscover.instrument;
 
+import jscover.util.Logger;
 import org.mozilla.javascript.ast.AstNode;
 import org.mozilla.javascript.ast.NodeVisitor;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
 import java.util.SortedSet;
 
 class ParseTreeInstrumenter implements NodeVisitor {
-    private final File log;
     private String fileName;
     private NodeProcessor nodeProcessor;
+    private Logger logger = Logger.getInstance();
 
-    public ParseTreeInstrumenter(String uri, File log) {
+    public ParseTreeInstrumenter(String uri) {
         this.fileName = uri;
-        this.log = log;
         this.nodeProcessor = new NodeProcessor(uri);
     }
 
@@ -370,19 +366,7 @@ class ParseTreeInstrumenter implements NodeVisitor {
         try {
             return nodeProcessor.processNode(node);
         } catch (RuntimeException t) {
-            if (log == null) {
-                throw t;
-            }
-            synchronized (log) {
-                try {
-                    PrintStream ps = new PrintStream(new FileOutputStream(log, true));
-                    ps.println("-------------------------------------------------------------------------------");
-                    ps.println(String.format("Error on line %s of %s", node.getLineno(), fileName));
-                    t.printStackTrace(ps);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            }
+            logger.log(String.format("Error on line %s of %s", node.getLineno(), fileName), t);
             return true;
         }
     }

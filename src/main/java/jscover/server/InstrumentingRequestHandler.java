@@ -368,13 +368,11 @@ public class InstrumentingRequestHandler extends HttpServer {
     private InstrumenterService instrumenterService = new InstrumenterService();
     private ProxyService proxyService = new ProxyService();
     private UnloadedSourceProcessor unloadedSourceProcessor;
-    private File log;
 
-    public InstrumentingRequestHandler(Socket socket, ConfigurationForServer configuration, File log) {
+    public InstrumentingRequestHandler(Socket socket, ConfigurationForServer configuration) {
         super(socket, configuration.getDocumentRoot(), configuration.getVersion());
         this.configuration = configuration;
         this.unloadedSourceProcessor = new UnloadedSourceProcessor(configuration);
-        this.log = log;
     }
 
     @Override
@@ -420,11 +418,11 @@ public class InstrumentingRequestHandler extends HttpServer {
                 String jsInstrumented;
                 if (configuration.isProxy()) {
                     String originalJS = proxyService.getUrl(request.getUrl());
-                    jsInstrumented = instrumenterService.instrumentJSForWebServer(configuration.getCompilerEnvirons(), originalJS, uri, log, configuration.isIncludeBranch());
+                    jsInstrumented = instrumenterService.instrumentJSForWebServer(configuration.getCompilerEnvirons(), originalJS, uri, configuration.isIncludeBranch());
                 } else {
                     if (configuration.isIncludeUnloadedJS())
                         uris.add(uri.substring(1));
-                    jsInstrumented = instrumenterService.instrumentJSForWebServer(configuration.getCompilerEnvirons(), new File(wwwRoot, uri), uri, log, configuration.isIncludeBranch());
+                    jsInstrumented = instrumenterService.instrumentJSForWebServer(configuration.getCompilerEnvirons(), new File(wwwRoot, uri), uri, configuration.isIncludeBranch());
                 }
                 sendResponse(HTTP_STATUS.HTTP_OK, MIME.JS, jsInstrumented);
             } else {

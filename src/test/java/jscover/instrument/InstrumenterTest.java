@@ -364,7 +364,7 @@ public class InstrumenterTest {
         compilerEnv.setLanguageVersion(Context.VERSION_1_8);
         compilerEnv.setStrictMode(false);
     }
-    private SourceProcessor instrumenter = new SourceProcessor(compilerEnv, "test.js", null, null, false);
+    private SourceProcessor instrumenter = new SourceProcessor(compilerEnv, "test.js", null, false);
 
     @Test
     public void shouldPatchRhinoBug684131() {

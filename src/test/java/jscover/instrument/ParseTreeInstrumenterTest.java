@@ -340,287 +340,60 @@ library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
  */
 
-package jscover.server;
+package jscover.instrument;
 
-import jscover.instrument.InstrumenterService;
-import jscover.instrument.UnloadedSourceProcessor;
-import jscover.json.JSONDataSaver;
-import jscover.json.ScriptLinesAndSource;
-import jscover.util.IoService;
+import jscover.util.Logger;
 import jscover.util.ReflectionUtils;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeMatcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.mozilla.javascript.CompilerEnvirons;
+import org.mozilla.javascript.ast.AstNode;
 
-import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.io.IOException;
 
-import static java.lang.String.format;
-import static jscover.server.InstrumentingRequestHandler.JSCOVERAGE_STORE;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public class InstrumentingRequestHandlerTest {
-    private InstrumentingRequestHandler webServer;
-    private @Mock IoService ioService;
-    private @Mock JSONDataSaver jsonDataSaver;
-    private @Mock InstrumenterService instrumenterService;
-    private @Mock UnloadedSourceProcessor unloadedSourceProcessor;
-    private @Mock ProxyService proxyService;
-    private @Mock ConfigurationForServer configuration;
-    private final StringWriter stringWriter = new StringWriter();
-    private PrintWriter pw = new PrintWriter(stringWriter);
+public class ParseTreeInstrumenterTest {
+    private ParseTreeInstrumenter instrumenter;
+    @Mock NodeProcessor nodeProcessor;
+    @Mock AstNode astNode;
+    @Mock Logger logger;
 
     @Before
     public void setUp() throws IOException {
-        InstrumentingRequestHandler.uris = new HashSet<String>();
-        webServer = new InstrumentingRequestHandler(null, configuration);
-        ReflectionUtils.setField(webServer, "ioService", ioService);
-        ReflectionUtils.setField(webServer, "jsonDataSaver", jsonDataSaver);
-        ReflectionUtils.setField(webServer, "instrumenterService", instrumenterService);
-        ReflectionUtils.setField(webServer, "unloadedSourceProcessor", unloadedSourceProcessor);
-        ReflectionUtils.setField(webServer, "proxyService", proxyService);
-        ReflectionUtils.setField(webServer, "configuration", configuration);
-        ReflectionUtils.setField(webServer, HttpServer.class, "pw", pw);
-        ReflectionUtils.setField(webServer, HttpServer.class, "version", "testVersion");
+        instrumenter = new ParseTreeInstrumenter("/dir/file.js");
+        ReflectionUtils.setField(instrumenter, "nodeProcessor", nodeProcessor);
+        ReflectionUtils.setField(instrumenter, "logger", logger);
     }
 
     @Test
-    public void shouldServeJSCoverageJS() throws IOException {
-        webServer.handleGet(new HttpRequest("/jscoverage.js"));
-        verify(ioService).generateJSCoverageServerJS();
-        verifyZeroInteractions(jsonDataSaver);
-        verifyZeroInteractions(instrumenterService);
+    public void shouldLogException() {
+        RuntimeException exception = new RuntimeException("Ouch!");
+        given(nodeProcessor.processNode(astNode)).willThrow(exception);
+        given(astNode.getLineno()).willReturn(7);
+
+        instrumenter.visit(astNode);
+
+        verify(logger).log("Error on line 7 of /dir/file.js", exception);
     }
 
-    @Test
-    public void shouldStoreJSCoverageJSON() {
-        File reportDir = new File("target/temp");
-        reportDir.deleteOnExit();
-        given(configuration.getReportDir()).willReturn(reportDir);
-        given(configuration.getVersion()).willReturn("theVersion");
+    @Test(expected = RuntimeException.class)
+    public void shouldRethrowExceptionIfNoLog() {
+        ReflectionUtils.setField(instrumenter, "log", null);
+        given(nodeProcessor.processNode(astNode)).willThrow(new RuntimeException("Ouch!"));
 
-        webServer.handlePost(new HttpRequest(JSCOVERAGE_STORE), "data");
-
-        verify(jsonDataSaver).saveJSONData(reportDir, "data", null);
-        verify(ioService).generateJSCoverFilesForWebServer(reportDir, "theVersion");
-        verifyZeroInteractions(instrumenterService);
-        assertThat(stringWriter.toString(), containsString(format("Coverage data stored at %s", reportDir)));
+        instrumenter.visit(astNode);
     }
 
-    @Test
-    public void shouldDirectPOSTToHttpServer() {
-        given(configuration.isProxy()).willReturn(false);
+    @Test(expected = RuntimeException.class)
+    public void shouldRethrowExceptionWhileLoggin() {
+        given(nodeProcessor.processNode(astNode)).willThrow(new RuntimeException("Ouch!"));
+        given(astNode.getLineno()).willThrow(new IllegalArgumentException("Ouchy!"));
 
-        HttpRequest request = new HttpRequest("somePostUrl");
-        webServer.handlePost(request, "thePostData");
-
-        verifyZeroInteractions(ioService);
-        verifyZeroInteractions(jsonDataSaver);
-        verifyZeroInteractions(instrumenterService);
-        assertThat(stringWriter.toString(), containsString("thePostData"));
-    }
-
-    @Test
-    public void shouldDirectGETToProxy() throws IOException {
-        given(configuration.isProxy()).willReturn(true);
-
-        HttpRequest request = new HttpRequest("somePostUrl");
-        webServer.handleGet(request);
-
-        verify(proxyService).handleProxyGet(request, null);
-        verifyZeroInteractions(ioService);
-        verifyZeroInteractions(jsonDataSaver);
-        verifyZeroInteractions(instrumenterService);
-    }
-
-    @Test
-    public void shouldDirectPOSTToProxy() {
-        given(configuration.isProxy()).willReturn(true);
-
-        HttpRequest request = new HttpRequest("somePostUrl");
-        webServer.handlePost(request, "data");
-
-        verify(proxyService).handleProxyPost(request, "data", null);
-        verifyZeroInteractions(ioService);
-        verifyZeroInteractions(jsonDataSaver);
-        verifyZeroInteractions(instrumenterService);
-    }
-
-    @Test
-    public void shouldHandleErrorOnStoreJSCoverageJSON() {
-        File reportDir = new File("target/temp");
-        reportDir.deleteOnExit();
-        given(configuration.getReportDir()).willReturn(reportDir);
-        RuntimeException toBeThrown = new RuntimeException("Ouch!");
-        doThrow(toBeThrown).when(jsonDataSaver).saveJSONData(reportDir, "data", null);
-
-        webServer.handlePost(new HttpRequest(JSCOVERAGE_STORE), "data");
-
-        verify(jsonDataSaver).saveJSONData(reportDir, "data", null);
-        verifyZeroInteractions(ioService);
-        verifyZeroInteractions(instrumenterService);
-        assertThat(stringWriter.toString(), containsString(format("Error saving coverage data. Try deleting JSON file at %s", reportDir)));
-    }
-
-    @Test
-    public void shouldStoreJSCoverageJSONInSpecifiedSubDirectory() {
-        File file = new File("target/temp");
-        file.deleteOnExit();
-        given(configuration.getReportDir()).willReturn(file);
-        given(configuration.getVersion()).willReturn("theVersion");
-
-        webServer.handlePost(new HttpRequest(JSCOVERAGE_STORE + "subdirectory"), "data");
-
-        File subdirectory = new File(file, "subdirectory");
-        verify(jsonDataSaver).saveJSONData(subdirectory, "data", null);
-        verify(ioService).generateJSCoverFilesForWebServer(subdirectory, "theVersion");
-        verifyZeroInteractions(instrumenterService);
-        assertThat(stringWriter.toString(), containsString(format("Coverage data stored at %s", subdirectory)));
-    }
-
-    @Test
-    public void shouldStoreJSCoverageJSONWithUnloadedJS() {
-        File reportDir = new File("target/temp");
-        reportDir.deleteOnExit();
-        given(configuration.isIncludeUnloadedJS()).willReturn(true);
-        given(configuration.getReportDir()).willReturn(reportDir);
-        given(configuration.getVersion()).willReturn("theVersion");
-        List<ScriptLinesAndSource> emptyCoverage = new ArrayList<ScriptLinesAndSource>();
-        given(unloadedSourceProcessor.getEmptyCoverageData(anySet())).willReturn(emptyCoverage);
-
-        webServer.handlePost(new HttpRequest(JSCOVERAGE_STORE), "data");
-
-        verify(jsonDataSaver).saveJSONData(reportDir, "data", emptyCoverage);
-        verify(ioService).generateJSCoverFilesForWebServer(reportDir, "theVersion");
-        verifyZeroInteractions(instrumenterService);
-        assertThat(stringWriter.toString(), containsString(format("Coverage data stored at %s", reportDir)));
-    }
-
-    @Test
-    public void shouldServeJSCoverageHTML() throws IOException {
-        given(configuration.getVersion()).willReturn("123");
-        given(ioService.generateJSCoverageHtml("123")).willReturn("theHtml");
-
-        webServer.handleGet(new HttpRequest("/jscoverage.html"));
-
-        verify(ioService).generateJSCoverageHtml("123");
-        verifyZeroInteractions(jsonDataSaver);
-        verifyZeroInteractions(instrumenterService);
-        assertThat(stringWriter.toString(), equalTo("HTTP/1.0 200 OK\n" +
-                "Server: JSCover/testVersion\n" +
-                "Content-Type: text/html\n" +
-                "Content-Length: 7\n" +
-                "\n" +
-                "theHtml"));
-    }
-
-    @Test
-    public void shouldServeJSCoverageHighlightCSS() throws IOException {
-        webServer.handleGet(new HttpRequest("/jscoverage-highlight.css"));
-
-        verify(ioService).getResourceAsStream("/jscoverage-highlight.css");
-        verifyZeroInteractions(jsonDataSaver);
-        verifyZeroInteractions(instrumenterService);
-    }
-
-    @Test
-    public void shouldServeInstrumentedJSForWebServer() throws IOException {
-        File wwwRoot = new File("wwwRoot");
-        ReflectionUtils.setField(webServer, HttpServer.class, "wwwRoot", wwwRoot);
-        CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
-        given(configuration.getCompilerEnvirons()).willReturn(compilerEnvirons);
-        given(configuration.skipInstrumentation("/js/production.js")).willReturn(false);
-
-        webServer.handleGet(new HttpRequest("/js/production.js"));
-
-        verify(instrumenterService).instrumentJSForWebServer(compilerEnvirons, new File("wwwRoot/js/production.js"), "/js/production.js", false);
-        verifyZeroInteractions(ioService);
-        verifyZeroInteractions(jsonDataSaver);
-        verifyZeroInteractions(proxyService);
-        assertThat(InstrumentingRequestHandler.uris.size(), equalTo(0));
-    }
-
-    @Test
-    public void shouldRecordInstrumentedURIsForWebServer() throws IOException {
-        given(configuration.isIncludeUnloadedJS()).willReturn(true);
-        File wwwRoot = new File("wwwRoot");
-        ReflectionUtils.setField(webServer, HttpServer.class, "wwwRoot", wwwRoot);
-        CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
-        given(configuration.getCompilerEnvirons()).willReturn(compilerEnvirons);
-        given(configuration.skipInstrumentation("/js/production.js")).willReturn(false);
-
-        webServer.handleGet(new HttpRequest("/js/production.js"));
-
-        verify(instrumenterService).instrumentJSForWebServer(compilerEnvirons, new File("wwwRoot/js/production.js"), "/js/production.js", false);
-        verifyZeroInteractions(ioService);
-        verifyZeroInteractions(jsonDataSaver);
-        verifyZeroInteractions(proxyService);
-        assertThat(InstrumentingRequestHandler.uris.size(), equalTo(1));
-        assertThat(InstrumentingRequestHandler.uris.iterator().next(), equalTo("js/production.js"));
-    }
-
-    @Test
-    public void shouldServeInstrumentedJSForProxyServer() throws IOException {
-        given(configuration.isProxy()).willReturn(true);
-        File wwwRoot = new File("wwwRoot");
-        ReflectionUtils.setField(webServer, HttpServer.class, "wwwRoot", wwwRoot);
-        CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
-        given(configuration.getCompilerEnvirons()).willReturn(compilerEnvirons);
-        given(configuration.skipInstrumentation("/js/production.js")).willReturn(false);
-        String uri = "http://someserver.org/js/production.js";
-        given(proxyService.getUrl(argThat(matchesUrl(uri)))).willReturn("someJavaScript;");
-
-        webServer.handleGet(new HttpRequest(uri));
-
-        verify(instrumenterService).instrumentJSForWebServer(compilerEnvirons, "someJavaScript;", "/js/production.js", false);
-        verifyZeroInteractions(ioService);
-        verifyZeroInteractions(jsonDataSaver);
-        assertThat(InstrumentingRequestHandler.uris.size(), equalTo(0));
-    }
-
-    private Matcher<URL> matchesUrl(final String uri) {
-        return new TypeSafeMatcher<URL>() {
-            @Override
-            protected boolean matchesSafely(URL url) {
-                try {
-                    return new URL(uri).equals(url);
-                } catch (MalformedURLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-
-            public void describeTo(Description description) {
-            }
-        };
-    }
-
-    @Test
-    public void shouldServeNonInstrumentedJS() throws IOException {
-        File wwwRoot = new File("wwwRoot");
-        ReflectionUtils.setField(webServer, HttpServer.class, "wwwRoot", wwwRoot);
-        CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
-        given(configuration.getCompilerEnvirons()).willReturn(compilerEnvirons);
-        given(configuration.skipInstrumentation("test/production.js")).willReturn(true);
-
-        webServer.handleGet(new HttpRequest("/test/production.js"));
-
-        verifyZeroInteractions(instrumenterService);
-        verifyZeroInteractions(ioService);
-        verifyZeroInteractions(jsonDataSaver);
+        instrumenter.visit(astNode);
     }
 }

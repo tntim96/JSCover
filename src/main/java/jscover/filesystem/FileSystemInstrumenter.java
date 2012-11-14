@@ -347,6 +347,7 @@ import jscover.format.SourceFormatter;
 import jscover.instrument.InstrumenterService;
 import jscover.util.IoService;
 import jscover.util.IoUtils;
+import jscover.util.Logger;
 
 import java.io.File;
 
@@ -361,9 +362,7 @@ public class FileSystemInstrumenter {
     public void run(ConfigurationForFS configuration) {
         this.configuration = configuration;
         this.log = new File(configuration.getDestDir(), "errors.log");
-        if (this.log.exists()) {
-            this.log.delete();
-        }
+        Logger.setLogFile(log);
         ioService.generateJSCoverFilesForFileSystem(configuration.getDestDir(), configuration.getVersion());
         copyFolder(configuration.getSrcDir(), configuration.getDestDir());
     }
@@ -384,7 +383,7 @@ public class FileSystemInstrumenter {
             }
         } else {
             if (src.isFile() && src.toString().endsWith(".js") && !configuration.skipInstrumentation(path)) {
-                instrumenterService.instrumentJSForFileSystem(configuration.getCompilerEnvirons(), src, dest, path, log, configuration.isIncludeBranch());
+                instrumenterService.instrumentJSForFileSystem(configuration.getCompilerEnvirons(), src, dest, path, configuration.isIncludeBranch());
             } else {
                 ioUtils.copy(src, dest);
             }

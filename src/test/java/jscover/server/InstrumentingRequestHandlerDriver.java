@@ -363,7 +363,7 @@ public class InstrumentingRequestHandlerDriver {
         ServerSocket Server = new ServerSocket(configuration.getPort());
         while (running) {
             Socket socket = Server.accept();
-            (new InstrumentingRequestHandler(socket, configuration, null)).start();
+            (new InstrumentingRequestHandler(socket, configuration)).start();
         }
     }
 

@@ -338,72 +338,46 @@ proprietary programs.  If your program is a subroutine library, you may
 consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
- */
+*/
 
-package jscover.instrument;
-
-import jscover.util.IoUtils;
-import jscover.util.ReflectionUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.mozilla.javascript.ast.AstNode;
+package jscover.util;
 
 import java.io.File;
-import java.io.IOException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.StringContains.containsString;
-import static org.mockito.BDDMockito.given;
+public class Logger {
+    private static Logger instance = new Logger();
+    private static File log;
 
-@RunWith(MockitoJUnitRunner.class)
-public class ParseTreeInstrumenterIntegrationTest {
-    private File log;
-    private ParseTreeInstrumenter instrumenter;
-    private IoUtils ioUtils = IoUtils.getInstance();
-    @Mock NodeProcessor nodeProcessor;
-    @Mock AstNode astNode;
-
-    @Before
-    public void setUp() throws IOException {
-        log = File.createTempFile("test","log");
-        log.deleteOnExit();
-        instrumenter = new ParseTreeInstrumenter("/dir/file.js", log);
-        ReflectionUtils.setField(instrumenter, "nodeProcessor", nodeProcessor);
+    public static Logger getInstance() {
+        return instance;
     }
 
-    @After
-    public void tearDown() {
-        log.delete();
+    public static void setLogFile(File file) {
+        if (file.exists())
+            file.delete();
+        log = file;
     }
 
-    @Test
-    public void shouldLogException() {
-        given(nodeProcessor.processNode(astNode)).willThrow(new RuntimeException("Ouch!"));
-        given(astNode.getLineno()).willReturn(7);
-
-        instrumenter.visit(astNode);
-
-        String message = ioUtils.loadFromFileSystem(log);
-        assertThat(message, containsString("Error on line 7 of /dir/file.js"));
+    public void log(String message) {
+        log(message, null);
     }
 
-    @Test(expected = RuntimeException.class)
-    public void shouldRethrowExceptionIfNoLog() {
-        ReflectionUtils.setField(instrumenter, "log", null);
-        given(nodeProcessor.processNode(astNode)).willThrow(new RuntimeException("Ouch!"));
-
-        instrumenter.visit(astNode);
-    }
-
-    @Test(expected = RuntimeException.class)
-    public void shouldRethrowExceptionWhileLoggin() {
-        given(nodeProcessor.processNode(astNode)).willThrow(new RuntimeException("Ouch!"));
-        given(astNode.getLineno()).willThrow(new IllegalArgumentException("Ouchy!"));
-
-        instrumenter.visit(astNode);
+    public void log(String message, RuntimeException t) {
+        if (log == null) {
+            throw t;
+        }
+        synchronized (log) {
+            try {
+                PrintStream ps = new PrintStream(new FileOutputStream(log, true));
+                ps.println("-------------------------------------------------------------------------------");
+                ps.println(message);
+                if (t != null)
+                    t.printStackTrace(ps);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }

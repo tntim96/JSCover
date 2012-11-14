@@ -342,6 +342,8 @@ Public License instead of this License.
 
 package jscover.server;
 
+import jscover.util.Logger;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -350,13 +352,11 @@ import java.net.Socket;
 public class WebDaemon {
     public void start(ConfigurationForServer configuration) throws IOException, InterruptedException {
         File log = new File(configuration.getReportDir(), "errors.log");
-        if (log.exists()) {
-            log.delete();
-        }
+        Logger.setLogFile(log);
         ServerSocket Server = new ServerSocket(configuration.getPort());
         while (true) {
             Socket socket = Server.accept();
-            (new InstrumentingRequestHandler(socket, configuration, log)).start();
+            (new InstrumentingRequestHandler(socket, configuration)).start();
         }
     }
 }

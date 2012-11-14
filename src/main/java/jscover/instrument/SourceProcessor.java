@@ -348,7 +348,6 @@ import org.mozilla.javascript.CompilerEnvirons;
 import org.mozilla.javascript.Parser;
 import org.mozilla.javascript.ast.AstRoot;
 
-import java.io.File;
 import java.util.SortedSet;
 
 import static java.lang.String.format;
@@ -366,9 +365,9 @@ class SourceProcessor {
     private IoUtils ioUtils = IoUtils.getInstance();
     private boolean includeBranchCoverage;
 
-    public SourceProcessor(CompilerEnvirons compilerEnv, String uri, SourceFormatter sourceFormatter, File log, boolean includeBranchCoverage) {
+    public SourceProcessor(CompilerEnvirons compilerEnv, String uri, SourceFormatter sourceFormatter, boolean includeBranchCoverage) {
         this.uri = uri;
-        this.instrumenter = new ParseTreeInstrumenter(uri, log);
+        this.instrumenter = new ParseTreeInstrumenter(uri);
         this.branchInstrumentor = new BranchInstrumentor(uri);
         this.sourceFormatter = sourceFormatter;
         parser = new Parser(compilerEnv);

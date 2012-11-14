@@ -342,6 +342,7 @@ Public License instead of this License.
 
 package jscover.instrument;
 
+import jscover.util.Logger;
 import org.mozilla.javascript.Token;
 import org.mozilla.javascript.ast.*;
 
@@ -354,6 +355,7 @@ public class BranchInstrumentor implements NodeVisitor {
     private Set<ExpressionStatement> lineArrayDeclarations = new HashSet<ExpressionStatement>();
     private String uri;
     private AstRoot astRoot;
+    private Logger logger = Logger.getInstance();
 
     public BranchInstrumentor(String uri) {
         this.uri = uri;
@@ -419,7 +421,7 @@ public class BranchInstrumentor implements NodeVisitor {
         } else if (parent instanceof ConditionalExpression) {
             ((ConditionalExpression)parent).setTestExpression(functionCall);
         } else {
-            System.err.println("Couldn't insert wrapper for parent " + parent.getClass().getName());
+            logger.log("Couldn't insert wrapper for parent " + parent.getClass().getName());
         }
     }
 

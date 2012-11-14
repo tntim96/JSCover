@@ -623,7 +623,7 @@ public class InstrumentAndHighlightRegressionTest {
 
     private void testFile(String fileName) {
         tested.add(fileName);
-        SourceProcessor instrumenter = new SourceProcessor(compilerEnv, fileName, sourceFormatter, null, false);
+        SourceProcessor instrumenter = new SourceProcessor(compilerEnv, fileName, sourceFormatter, false);
 
         String source = ioUtils.loadFromClassPath("/data/javascript/" + fileName);
         String instrumentedSource = instrumenter.processSourceWithoutHeader(source);
