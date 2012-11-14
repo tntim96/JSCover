@@ -9,5 +9,4 @@ General To-do list
 Branch To-do list
 ==================
 # Add source view verification to acceptance tests for branch logic
-# Add branch logic to ternary/hook operator
-# Add branch logic to loops
+# Update documentation

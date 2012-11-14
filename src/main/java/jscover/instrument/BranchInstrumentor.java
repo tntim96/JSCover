@@ -400,7 +400,7 @@ public class BranchInstrumentor implements NodeVisitor {
             ((IfStatement) parent).setCondition(functionCall);
         } else if (parent instanceof ParenthesizedExpression) {
             ((ParenthesizedExpression)parent).setExpression(functionCall);
-        } else if (parent instanceof InfixExpression) {
+        } else if (parent instanceof InfixExpression) {//This covers Assignment
             InfixExpression infixExpression = (InfixExpression) parent;
             if (infixExpression.getLeft() == node)
                 infixExpression.setLeft(functionCall);
@@ -410,10 +410,16 @@ public class BranchInstrumentor implements NodeVisitor {
             ((ReturnStatement)parent).setReturnValue(functionCall);
         } else if (parent instanceof VariableInitializer) {
             ((VariableInitializer)parent).setInitializer(functionCall);
-//        } else if (parent instanceof Assignment) {
-//            ((Assignment)parent).setRight(functionCall);
-//        } else if (parent instanceof ExpressionStatement) {
-//            ((ExpressionStatement)parent).setExpression(functionCall);
+        } else if (parent instanceof WhileLoop) {
+            ((WhileLoop)parent).setCondition(functionCall);
+        } else if (parent instanceof DoLoop) {
+            ((DoLoop)parent).setCondition(functionCall);
+        } else if (parent instanceof ForLoop) {
+            ((ForLoop)parent).setCondition(functionCall);
+        } else if (parent instanceof ConditionalExpression) {
+            ((ConditionalExpression)parent).setTestExpression(functionCall);
+        } else {
+            System.err.println("Couldn't insert wrapper for parent " + parent.getClass().getName());
         }
     }
 
