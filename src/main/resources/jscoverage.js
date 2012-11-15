@@ -580,8 +580,8 @@ function jscoverage_recalculateSummaryTab(cc) {
                   if (branchData === undefined || branchData === null)
                     continue;
                   num_branches += 2;
-                  num_executed_branches += fileBranchCC[lineNumber][conditionIndex].pathsCovered();
-                  if (!fileBranchCC[lineNumber][conditionIndex].covered()) {
+                  num_executed_branches += branchData.pathsCovered();
+                  if (!branchData.covered()) {
                       covered = false;
                   }
               }
