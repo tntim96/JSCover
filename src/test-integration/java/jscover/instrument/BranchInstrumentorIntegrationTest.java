@@ -612,7 +612,19 @@ public class BranchInstrumentorIntegrationTest {
     }
 
     @Test
-    public void shouldHandleVariableAsConditions() {
+    public void shouldHandleFunctionAsIfConditions() {
+        StringBuilder script = new StringBuilder("function fn() { return true;}\n");
+        script.append("  if (fn())\n");
+        script.append("    ;\n");
+        runScript(script.toString());
+        Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
+
+        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
+        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
+    }
+
+    @Test
+    public void shouldHandleVariableAsIfConditions() {
         StringBuilder script = new StringBuilder("function test(x) {\n");
         script.append("  if (x)\n");
         script.append("    ;\n");

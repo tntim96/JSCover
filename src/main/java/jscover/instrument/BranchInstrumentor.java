@@ -472,9 +472,20 @@ public class BranchInstrumentor implements NodeVisitor {
                 return true;
         }
         if (node.getParent() instanceof IfStatement) {
-            return ((IfStatement)node.getParent()).getCondition() == node && node instanceof Name;
+            return wrapNonInfixIfCondition((IfStatement)node.getParent(), node);
         }
         return false;
+    }
+
+    private boolean wrapNonInfixIfCondition(IfStatement parent, AstNode node) {
+        if (parent.getCondition() != node)
+            return false;
+        else if (node instanceof Name)
+            return true;
+        else if (node instanceof FunctionCall)
+            return true;
+        else
+            return false;
     }
 
     public int getLinePosition(AstNode node) {
