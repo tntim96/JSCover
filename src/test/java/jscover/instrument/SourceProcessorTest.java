@@ -399,7 +399,6 @@ public class SourceProcessorTest {
         String actual = sourceProcessor.getJsLineInitialization("test.js", new TreeSet<Integer>(){{add(1);}});
         String expected = "if (! _$jscoverage['test.js']) {\n" +
                 "  _$jscoverage['test.js'] = [];\n" +
-                "  _$jscoverage.branchData['test.js'] = [];\n" +
                 "  _$jscoverage['test.js'][1] = 0;\n" +
                 "}\n";
         assertThat(actual, equalTo(expected));

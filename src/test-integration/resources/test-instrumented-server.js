@@ -85,12 +85,19 @@ function jscoverage_quote(s) {
     }
   }) + '"';
 }
-function BranchData(position, nodeLength, src) {
-    this.position = position;
-    this.nodeLength = nodeLength;
-    this.src = src;
+function BranchData() {
+    this.position = -1;
+    this.nodeLength = -1;
+    this.src = null;
     this.evalFalse = 0;
     this.evalTrue = 0;
+
+    this.init = function(position, nodeLength, src) {
+        this.position = position;
+        this.nodeLength = nodeLength;
+        this.src = src;
+        return this;
+    }
 
     this.ranCondition = function(result) {
         if (result)
@@ -134,14 +141,16 @@ function BranchData(position, nodeLength, src) {
 
 BranchData.fromJson = function(jsonString) {
     var json = eval('(' + jsonString + ')');
-    var branchData = new BranchData(json.position, json.nodeLength, json.src);
+    var branchData = new BranchData();
+    branchData.init(json.position, json.nodeLength, json.src);
     branchData.evalFalse = json.evalFalse;
     branchData.evalTrue = json.evalTrue;
     return branchData;
 };
 
 BranchData.fromJsonObject = function(json) {
-    var branchData = new BranchData(json.position, json.nodeLength, json.src);
+    var branchData = new BranchData();
+    branchData.init(json.position, json.nodeLength, json.src);
     branchData.evalFalse = json.evalFalse;
     branchData.evalTrue = json.evalTrue;
     return branchData;
@@ -206,7 +215,8 @@ function convertBranchDataLinesFromJSON(jsonObject) {
         }
     }
     return jsonObject;
-}try {
+}
+try {
   if (typeof top === 'object' && top !== null && typeof top.opener === 'object' && top.opener !== null) {
     // this is a browser window that was opened from another window
 

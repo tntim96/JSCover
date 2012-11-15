@@ -353,15 +353,9 @@ public class BranchStatementBuilderTest {
     private BranchStatementBuilder builder = new BranchStatementBuilder();
 
     @Test
-    public void shouldBuildLineDeclaration() {
-        ExpressionStatement statement = builder.buildLineInitialisation("test.js", 4);
-        assertThat(statement.toSource(), equalTo("_$jscoverage.branchData['test.js'][4] = [];\n"));
-    }
-
-    @Test
-    public void shouldBuildLineAndConditionDeclaration() {
+    public void shouldBuildLineAndConditionInitialisation() {
         ExpressionStatement statement = builder.buildLineAndConditionInitialisation("test.js", 4, 2, 12, 15, "x < calc('7')");
-        assertThat(statement.toSource(), equalTo("_$jscoverage.branchData['test.js'][4][2] = new BranchData(12, 15, 'x < calc(\\'7\\')');\n"));
+        assertThat(statement.toSource(), equalTo("_$jscoverage.branchData['test.js'][4][2].init(12, 15, 'x < calc(\\'7\\')');\n"));
     }
 
     @Test

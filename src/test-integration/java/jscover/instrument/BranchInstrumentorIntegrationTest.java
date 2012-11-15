@@ -357,8 +357,7 @@ public class BranchInstrumentorIntegrationTest {
     private static IoUtils ioUtils = IoUtils.getInstance();
     private static String branchObjectHeader = ioUtils.loadFromClassPath("/jscoverage-branch.js");
     private static String header = "var _$jscoverage = {};\n" +
-            "_$jscoverage.branchData = {};\n" +
-            "_$jscoverage.branchData['test.js'] = {};\n";
+            "_$jscoverage.branchData = {};\n";
 
     private BranchInstrumentor branchInstrumentor = new BranchInstrumentor("test.js");
     private Parser parser = new Parser();
@@ -684,7 +683,7 @@ public class BranchInstrumentorIntegrationTest {
 
         context = Context.enter();
         scope = context.initStandardObjects();
-        String source = branchObjectHeader + header + astRoot.toSource();
+        String source = branchObjectHeader + header + branchInstrumentor.getJsLineInitialization() + astRoot.toSource();
         System.out.println("--------------------------------------");
         System.out.println("source = " + source);
 

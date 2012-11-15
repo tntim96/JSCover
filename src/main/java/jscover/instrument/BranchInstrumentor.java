@@ -351,14 +351,16 @@ import java.util.*;
 import static java.lang.String.format;
 
 public class BranchInstrumentor implements NodeVisitor {
-    private Map<Integer, Integer> lineConditionMap = new HashMap<Integer, Integer>();
-    private int functionId = 1;
+    private static final String initBranchLine = "  _$jscoverage.branchData['%s'][%d] = [];\n";
+    private static final String initBranchCondition = "  _$jscoverage.branchData['%s'][%d][%d] = new BranchData();\n";
+
+    private static int functionId = 1;
     private BranchStatementBuilder branchStatementBuilder = new BranchStatementBuilder();
-    private Set<ExpressionStatement> lineArrayDeclarations = new HashSet<ExpressionStatement>();
     private Set<PostProcess> postProcesses = new HashSet<PostProcess>();
     private String uri;
     private AstRoot astRoot;
     private Logger logger = Logger.getInstance();
+    private SortedMap<Integer, SortedSet<Integer>> lineConditionMap = new TreeMap<Integer, SortedSet<Integer>>();
 
     public BranchInstrumentor(String uri) {
         this.uri = uri;
@@ -369,8 +371,6 @@ public class BranchInstrumentor implements NodeVisitor {
     }
 
     public void postProcess() {
-        for (ExpressionStatement lineArrayDeclaration : lineArrayDeclarations)
-            astRoot.addChildToFront(lineArrayDeclaration);
         for (PostProcess postProcess : postProcesses)
             postProcess.process();
     }
@@ -378,23 +378,22 @@ public class BranchInstrumentor implements NodeVisitor {
     private void replaceWithFunction(AstNode node) {
         AstNode parent = node.getParent();
 
-        Integer conditionId = lineConditionMap.get(node.getLineno());
-        if (conditionId == null) {
-            conditionId = 1;
+        Integer conditionId = 1;
+        SortedSet<Integer> conditions = lineConditionMap.get(node.getLineno());
+        if (conditions == null) {
+            conditions = new TreeSet<Integer>();
+            lineConditionMap.put(node.getLineno(), conditions);
         } else {
-            conditionId++;
+            conditionId = conditions.last() + 1;
         }
-        lineConditionMap.put(node.getLineno(), conditionId);
+        conditions.add(conditionId);
+
         FunctionNode functionNode = branchStatementBuilder.buildBranchRecordingFunction(uri, functionId++, node.getLineno(), conditionId);
 
         astRoot.addChildrenToFront(functionNode);
         ExpressionStatement conditionArrayDeclaration = branchStatementBuilder.buildLineAndConditionInitialisation(uri
                 , node.getLineno(), conditionId, getLinePosition(node), node.getLength(), node.toSource());
         astRoot.addChildrenToFront(conditionArrayDeclaration);
-        if (conditionId == 1) {
-            ExpressionStatement lineArrayDeclaration = branchStatementBuilder.buildLineInitialisation(uri, node.getLineno());
-            lineArrayDeclarations.add(lineArrayDeclaration);
-        }
 
         FunctionCall functionCall = new FunctionCall();
         List<AstNode> arguments = new ArrayList<AstNode>();
@@ -486,5 +485,17 @@ public class BranchInstrumentor implements NodeVisitor {
             parent = parent.getParent();
         }
         return pos-1;
+    }
+
+    protected String getJsLineInitialization() {
+        StringBuilder sb = new StringBuilder(format("if (! _$jscoverage.branchData['%s']) {\n", uri));
+        sb.append(format("  _$jscoverage.branchData['%s'] = [];\n", uri));
+        for (Integer line : lineConditionMap.keySet()) {
+            sb.append(format(initBranchLine, uri, line));
+            for (Integer condition: lineConditionMap.get(line))
+                sb.append(format(initBranchCondition, uri, line, condition));
+        }
+        sb.append("}\n");
+        return sb.toString();
     }
 }

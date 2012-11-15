@@ -351,13 +351,6 @@ import java.util.List;
 import static java.lang.String.format;
 
 public class BranchStatementBuilder {
-    public ExpressionStatement buildLineInitialisation(String uri, int lineNo) {
-        ElementGet indexLineNumber = buildLineDeclaration(uri, lineNo);
-
-        Assignment assignment = new Assignment(indexLineNumber, new ArrayLiteral());
-        assignment.setOperator(Token.ASSIGN);
-        return new ExpressionStatement(assignment);
-    }
 
     public ExpressionStatement buildLineAndConditionInitialisation(String uri, int lineNo, int conditionNo, int position, int length, String source) {
         ElementGet indexLineNumber = buildLineDeclaration(uri, lineNo);
@@ -366,24 +359,23 @@ public class BranchStatementBuilder {
         conditionNumberLiteral.setValue("" + conditionNo);
         ElementGet indexConditionNumber = new ElementGet(indexLineNumber, conditionNumberLiteral);
 
-        Name branchDataName = new Name();
-        branchDataName.setIdentifier("BranchData");
-        NewExpression branchDataObject = new NewExpression();
-        branchDataObject.setTarget(branchDataName);
+        FunctionCall fnCall = new FunctionCall();
+        Name propertyName = new Name();
+        propertyName.setIdentifier("init");
+        PropertyGet propertyGet = new PropertyGet(indexConditionNumber, propertyName);
+        fnCall.setTarget(propertyGet);
         NumberLiteral positionLiteral = new NumberLiteral();
         positionLiteral.setValue(""+position);
-        branchDataObject.addArgument(positionLiteral);
+        fnCall.addArgument(positionLiteral);
         NumberLiteral lengthLiteral = new NumberLiteral();
         lengthLiteral.setValue(""+length);
-        branchDataObject.addArgument(lengthLiteral);
+        fnCall.addArgument(lengthLiteral);
         StringLiteral stringLiteral = new StringLiteral();
         stringLiteral.setValue(source);
         stringLiteral.setQuoteCharacter('\'');
-        branchDataObject.addArgument(stringLiteral);
+        fnCall.addArgument(stringLiteral);
 
-        Assignment assignment = new Assignment(indexConditionNumber, branchDataObject);
-        assignment.setOperator(Token.ASSIGN);
-        return new ExpressionStatement(assignment);
+        return new ExpressionStatement(fnCall);
     }
 
     public ExpressionStatement buildLineAndConditionCall(String uri, int lineNo, int conditionNo) {

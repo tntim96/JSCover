@@ -398,6 +398,8 @@ class SourceProcessor {
         String instrumentedSource = instrumentSource(sourceURI, source);
 
         String jsLineInitialization = getJsLineInitialization(uri, instrumenter.getValidLines());
+        if (includeBranchCoverage)
+            jsLineInitialization += branchInstrumentor.getJsLineInitialization();
 
         String jsArrayOfHtml = sourceFormatter.toJsArrayOfHtml(source);
         String jsSourceLine = format(sourceInOneLine, uri, jsArrayOfHtml);
@@ -419,12 +421,10 @@ class SourceProcessor {
         return astRoot.toSource();
     }
 
-    protected String getJsLineInitialization(String fileName, SortedSet<Integer> validlines) {
+    protected String getJsLineInitialization(String fileName, SortedSet<Integer> validLines) {
         StringBuilder sb = new StringBuilder(format("if (! _$jscoverage['%s']) {\n", fileName));
         sb.append(format("  _$jscoverage['%s'] = [];\n", fileName));
-        if (includeBranchCoverage)
-            sb.append(format("  _$jscoverage.branchData['%s'] = [];\n", fileName));
-        for (Integer line : validlines) {
+        for (Integer line : validLines) {
             sb.append(format(initLine, fileName, line));
         }
         sb.append("}\n");

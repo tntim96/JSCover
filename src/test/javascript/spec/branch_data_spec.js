@@ -4,7 +4,8 @@ $(document).ready(function() {
         var branchData;
 
         beforeEach(function() {
-            branchData = new BranchData(10,5,'x<y');
+            branchData = new BranchData();
+            branchData.init(10,5,'x<y');
         });
 
         it("should record position and length", function() {
@@ -74,8 +75,8 @@ $(document).ready(function() {
 
         it("should convert multiple conditions to JSON", function() {
             var lineN = new Array();
-            lineN[1] = new BranchData(1,10,'src1');
-            lineN[2] = new BranchData(2,20,'src2');
+            lineN[1] = new BranchData().init(1,10,'src1');
+            lineN[2] = new BranchData().init(2,20,'src2');
             lineN[2].ranCondition(false);
             lineN[2].ranCondition(true);
 
@@ -85,9 +86,9 @@ $(document).ready(function() {
 
         it("should build branch message for line", function() {
             var conditions = new Array();
-            conditions[1] = new BranchData(1,10,'src1');
+            conditions[1] = new BranchData().init(1,10,'src1');
             conditions[2] = undefined;
-            conditions[2] = new BranchData(2,20,'src2');
+            conditions[2] = new BranchData().init(2,20,'src2');
 
             var message = buildBranchMessage(conditions);
             var expected = 'The following was not covered:\n- Condition never evaluated         :\tsrc1\n- Condition never evaluated         :\tsrc2';
@@ -105,11 +106,11 @@ $(document).ready(function() {
         it("should convert multiple lines to JSON and back", function() {
             var lines = new Array();
             lines[1] = new Array();
-            lines[1][1] = new BranchData(1,10,'src1');
-            lines[1][2] = new BranchData(2,20,'src2');
+            lines[1][1] = new BranchData().init(1,10,'src1');
+            lines[1][2] = new BranchData().init(2,20,'src2');
             lines[2] = new Array();
-            lines[2][1] = new BranchData(3,30,'src3');
-            lines[2][2] = new BranchData(4,40,'src4');
+            lines[2][1] = new BranchData().init(3,30,'src3');
+            lines[2][2] = new BranchData().init(4,40,'src4');
             lines[2][2].ranCondition(false);
             lines[2][2].ranCondition(true);
 
