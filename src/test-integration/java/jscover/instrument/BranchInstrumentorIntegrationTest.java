@@ -464,6 +464,25 @@ public class BranchInstrumentorIntegrationTest {
     }
 
     @Test
+    public void shouldWrapTernaryConditionArgument() {
+        StringBuilder script = new StringBuilder("var x = 10;\n");
+        script.append("var y = x > 0 ? x > 100 : x < 100;\n");
+        runScript(script.toString());
+        Scriptable coverageData1 = getCoverageData(scope, "test.js", 2, 1);
+        assertThat((Double) coverageData1.get("evalTrue", coverageData1), equalTo(1d));
+        assertThat((Double) coverageData1.get("evalFalse", coverageData1), equalTo(0d));
+        assertThat((String) coverageData1.get("src", coverageData1), equalTo("x > 0"));
+        Scriptable coverageData2 = getCoverageData(scope, "test.js", 2, 2);
+        assertThat((Double) coverageData2.get("evalTrue", coverageData2), equalTo(0d));
+        assertThat((Double) coverageData2.get("evalFalse", coverageData2), equalTo(1d));
+        assertThat((String) coverageData2.get("src", coverageData2), equalTo("x > 100"));
+        Scriptable coverageData3 = getCoverageData(scope, "test.js", 2, 3);
+        assertThat((Double) coverageData3.get("evalTrue", coverageData3), equalTo(0d));
+        assertThat((Double) coverageData3.get("evalFalse", coverageData3), equalTo(0d));
+        assertThat((String) coverageData3.get("src", coverageData3), equalTo("x < 100"));
+    }
+
+    @Test
     public void shouldWrapFunctionCallCondition() {
         StringBuilder script = new StringBuilder("function test(x, y) {};\n");
         script.append("test(0, 1 > 0);\n");

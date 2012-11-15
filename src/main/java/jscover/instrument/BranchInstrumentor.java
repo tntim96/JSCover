@@ -423,7 +423,13 @@ public class BranchInstrumentor implements NodeVisitor {
         } else if (parent instanceof ForLoop) {
             ((ForLoop)parent).setCondition(functionCall);
         } else if (parent instanceof ConditionalExpression) {
-            ((ConditionalExpression)parent).setTestExpression(functionCall);
+            ConditionalExpression ternary = (ConditionalExpression) parent;
+            if (ternary.getTestExpression() == node)
+                ternary.setTestExpression(functionCall);
+            else if (ternary.getTrueExpression() == node)
+                ternary.setTrueExpression(functionCall);
+            else
+                ternary.setFalseExpression(functionCall);
         } else if (parent instanceof FunctionCall) {
             postProcesses.add(new PostProcess(parent, node, functionCall) {
                 @Override
