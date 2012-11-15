@@ -355,6 +355,7 @@ public class BranchInstrumentor implements NodeVisitor {
     private int functionId = 1;
     private BranchStatementBuilder branchStatementBuilder = new BranchStatementBuilder();
     private Set<ExpressionStatement> lineArrayDeclarations = new HashSet<ExpressionStatement>();
+    private Set<PostProcess> postProcesses = new HashSet<PostProcess>();
     private String uri;
     private AstRoot astRoot;
     private Logger logger = Logger.getInstance();
@@ -368,9 +369,10 @@ public class BranchInstrumentor implements NodeVisitor {
     }
 
     public void postProcess() {
-        for (ExpressionStatement lineArrayDeclaration : lineArrayDeclarations) {
+        for (ExpressionStatement lineArrayDeclaration : lineArrayDeclarations)
             astRoot.addChildToFront(lineArrayDeclaration);
-        }
+        for (PostProcess postProcess : postProcesses)
+            postProcess.process();
     }
 
     private void replaceWithFunction(AstNode node) {
@@ -423,16 +425,21 @@ public class BranchInstrumentor implements NodeVisitor {
         } else if (parent instanceof ConditionalExpression) {
             ((ConditionalExpression)parent).setTestExpression(functionCall);
         } else if (parent instanceof FunctionCall) {
-            FunctionCall fnParent = (FunctionCall) parent;
-            List<AstNode> fnParentArguments = fnParent.getArguments();
-            List<AstNode> newFnParentArguments = new ArrayList<AstNode>();
-            for (AstNode arg : fnParentArguments) {
-                if (arg == node)
-                    newFnParentArguments.add(functionCall);
-                else
-                    newFnParentArguments.add(arg);
-            }
-            fnParent.setArguments(newFnParentArguments);
+            postProcesses.add(new PostProcess(parent, node, functionCall) {
+                @Override
+                void run(AstNode parent, AstNode node, AstNode functionCall) {
+                    FunctionCall fnParent = (FunctionCall) parent;
+                    List<AstNode> fnParentArguments = fnParent.getArguments();
+                    List<AstNode> newFnParentArguments = new ArrayList<AstNode>();
+                    for (AstNode arg : fnParentArguments) {
+                        if (arg == node)
+                            newFnParentArguments.add(functionCall);
+                        else
+                            newFnParentArguments.add(arg);
+                    }
+                    fnParent.setArguments(newFnParentArguments);
+                }
+            });
         } else {
             logger.log(format("Couldn't insert wrapper for parent %s, file: %s, line: %d, position: %d, source: %s", parent.getClass().getName(), uri, node.getLineno(), node.getPosition(), node.toSource()));
         }
