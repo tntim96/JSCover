@@ -348,6 +348,8 @@ import org.mozilla.javascript.ast.*;
 
 import java.util.*;
 
+import static java.lang.String.format;
+
 public class BranchInstrumentor implements NodeVisitor {
     private Map<Integer, Integer> lineConditionMap = new HashMap<Integer, Integer>();
     private int functionId = 1;
@@ -420,8 +422,19 @@ public class BranchInstrumentor implements NodeVisitor {
             ((ForLoop)parent).setCondition(functionCall);
         } else if (parent instanceof ConditionalExpression) {
             ((ConditionalExpression)parent).setTestExpression(functionCall);
+        } else if (parent instanceof FunctionCall) {
+            FunctionCall fnParent = (FunctionCall) parent;
+            List<AstNode> fnParentArguments = fnParent.getArguments();
+            List<AstNode> newFnParentArguments = new ArrayList<AstNode>();
+            for (AstNode arg : fnParentArguments) {
+                if (arg == node)
+                    newFnParentArguments.add(functionCall);
+                else
+                    newFnParentArguments.add(arg);
+            }
+            fnParent.setArguments(newFnParentArguments);
         } else {
-            logger.log("Couldn't insert wrapper for parent " + parent.getClass().getName());
+            logger.log(format("Couldn't insert wrapper for parent %s, file: %s, line: %d, position: %d, source: %s", parent.getClass().getName(), uri, node.getLineno(), node.getPosition(), node.toSource()));
         }
     }
 

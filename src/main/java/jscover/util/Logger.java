@@ -366,7 +366,11 @@ public class Logger {
 
     public void log(String message, RuntimeException t) {
         if (log == null) {
-            throw t;
+            if (t == null) {
+                System.out.println(message);
+                return;
+            } else
+                throw t;
         }
         synchronized (log) {
             try {

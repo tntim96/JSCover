@@ -342,18 +342,17 @@ Public License instead of this License.
 
 package jscover.instrument;
 
-import static org.junit.Assert.assertEquals;
-
-import java.net.URISyntaxException;
-
 import jscover.format.PlainFormatter;
+import jscover.util.IoUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-import jscover.util.IoUtils;
 import org.mozilla.javascript.CompilerEnvirons;
 import org.mozilla.javascript.Context;
+
+import java.net.URISyntaxException;
+
+import static org.junit.Assert.assertEquals;
 
 @RunWith(JUnit4.class)
 public class InstrumenterIntegrationTest {

@@ -438,20 +438,31 @@ public class HtmlUnitServerTest {
 
     @Test
     public void shouldWorkWithServerIFrameByURLWithDOMInteraction() throws Exception {
+        testWorkWithServerIFrameByURLWithDOMInteraction(0);
+    }
+
+    protected void testWorkWithServerIFrameByURLWithDOMInteraction(int branchPercentage) throws IOException {
         HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?" + getTestUrl());
         HtmlPage frame = (HtmlPage)page.getFrameByName("browserIframe").getEnclosedPage();
         frame.getElementById("radio2").click();
         webClient.waitForBackgroundJavaScript(500);
-        verifyTotal(webClient, page, 66);
+        verifyTotal(webClient, page, 66, branchPercentage);
     }
 
     @Test
     public void shouldStoreAndLoadResult() throws Exception {
+        testStoreAndLoadResult(0);
+    }
+
+    protected void testStoreAndLoadResult(int branchPercentage) throws IOException {
         File jsonFile = new File(reportDir+"/jscoverage.json");
         if (jsonFile.exists())
             jsonFile.delete();
 
         HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?" + getTestUrl());
+        HtmlPage frame = (HtmlPage)page.getFrameByName("browserIframe").getEnclosedPage();
+        frame.getElementById("radio2").click();
+        frame.getElementById("radio4").click();
 
         page.getHtmlElementById("storeTab").click();
         webClient.waitForBackgroundJavaScript(500);
@@ -466,7 +477,7 @@ public class HtmlUnitServerTest {
         assertThat(json, containsString("/script.js"));
 
         page = webClient.getPage("file:///"+ new File(reportDir+"/jscoverage.html").getAbsolutePath());
-        verifyTotal(webClient, page, 6);
+        verifyTotal(webClient, page, 86, branchPercentage);
     }
 
     @Test
@@ -516,6 +527,10 @@ public class HtmlUnitServerTest {
 
     @Test
     public void shouldWorkInInvertedMode() throws Exception {
+        testWorkInInvertedMode(0, 0);
+    }
+
+    protected void testWorkInInvertedMode(int branchPercentage1, int branchPercentage2) throws IOException {
         HtmlPage page = webClient.getPage("http://localhost:9001/example/index.html");
         page.getElementById("launchJSCover").click();
         webClient.waitForBackgroundJavaScript(100);
@@ -523,18 +538,22 @@ public class HtmlUnitServerTest {
         WebWindow webWindow = webClient.getWebWindowByName("jsCoverWindow");
         HtmlPage jsCoverPage = (HtmlPage)webWindow.getEnclosedPage();
 
-        verifyTotal(webClient, jsCoverPage, 6);
+        verifyTotal(webClient, jsCoverPage, 6, branchPercentage1);
 
         page.getElementById("radio3").click();
         webClient.waitForBackgroundJavaScript(100);
 
         jsCoverPage.executeJavaScript("jscoverage_recalculateSummaryTab();");
         webClient.waitForBackgroundJavaScript(500);
-        verifyTotal(webClient, jsCoverPage, 73);
+        verifyTotal(webClient, jsCoverPage, 73, branchPercentage2);
     }
 
     @Test
     public void shouldIncreaseCoverage() throws Exception {
+        testIncreaseCoverage(0, 0, 0, 0);
+    }
+
+    protected void testIncreaseCoverage(int branchPercentage1, int branchPercentage2, int branchPercentage3, int branchPercentage4) throws IOException {
         HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?" + getTestUrl());
 
         verifyTotal(webClient, page, 6);
@@ -543,16 +562,16 @@ public class HtmlUnitServerTest {
         HtmlPage frame = (HtmlPage)page.getFrameByName("browserIframe").getEnclosedPage();
         frame.getElementById("radio1").click();
         page.executeJavaScript("jscoverage_recalculateSummaryTab();");
-        verifyTotals(page, 60, 0);
+        verifyTotals(page, 60, branchPercentage1);
         frame.getElementById("radio2").click();
         page.executeJavaScript("jscoverage_recalculateSummaryTab();");
-        verifyTotals(page, 73, 0);
+        verifyTotals(page, 73, branchPercentage2);
         frame.getElementById("radio3").click();
         page.executeJavaScript("jscoverage_recalculateSummaryTab();");
-        verifyTotals(page, 86, 0);
+        verifyTotals(page, 86, branchPercentage3);
         frame.getElementById("radio4").click();
         page.executeJavaScript("jscoverage_recalculateSummaryTab();");
-        verifyTotals(page, 100, 0);
+        verifyTotals(page, 100, branchPercentage4);
     }
 
     @Test

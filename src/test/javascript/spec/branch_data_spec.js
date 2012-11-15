@@ -15,6 +15,7 @@ $(document).ready(function() {
 
         it("should not be covered if neither path evaluated", function() {
             expect(branchData.covered()).toBeFalsy();
+            expect(branchData.pathsCovered()).toEqual(0);
             expect(branchData.message()).toEqual('Condition never evaluated         :\tx<y');
         });
 
@@ -37,12 +38,14 @@ $(document).ready(function() {
         it("should not be covered if only false path evaluated", function() {
             branchData.ranCondition(false);
             expect(branchData.covered()).toBeFalsy();
+            expect(branchData.pathsCovered()).toEqual(1);
             expect(branchData.message()).toEqual('Condition never evaluated to true :\tx<y');
         });
 
         it("should not be covered if only true path evaluated", function() {
             branchData.ranCondition(true);
             expect(branchData.covered()).toBeFalsy();
+            expect(branchData.pathsCovered()).toEqual(1);
             expect(branchData.message()).toEqual('Condition never evaluated to false:\tx<y');
         });
 
@@ -50,6 +53,19 @@ $(document).ready(function() {
             branchData.ranCondition(false);
             branchData.ranCondition(true);
             expect(branchData.covered()).toBeTruthy();
+            expect(branchData.pathsCovered()).toEqual(2);
+            expect(branchData.message()).toEqual('Condition covered');
+        });
+
+        it("should be covered if both paths evaluated multiple times", function() {
+            branchData.ranCondition(false);
+            branchData.ranCondition(false);
+            branchData.ranCondition(true);
+            branchData.ranCondition(true);
+            expect(branchData.covered()).toBeTruthy();
+            expect(branchData.evalFalse).toEqual(2);
+            expect(branchData.evalTrue).toEqual(2);
+            expect(branchData.pathsCovered()).toEqual(2);
             expect(branchData.message()).toEqual('Condition covered');
         });
     });

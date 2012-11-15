@@ -579,11 +579,10 @@ function jscoverage_recalculateSummaryTab(cc) {
                   var branchData = fileBranchCC[lineNumber][conditionIndex];
                   if (branchData === undefined || branchData === null)
                     continue;
-                  num_branches++;
+                  num_branches += 2;
+                  num_executed_branches += fileBranchCC[lineNumber][conditionIndex].pathsCovered();
                   if (!fileBranchCC[lineNumber][conditionIndex].covered()) {
                       covered = false;
-                  } else {
-                      num_executed_branches++;
                   }
               }
           }

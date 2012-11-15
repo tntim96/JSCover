@@ -24,55 +24,27 @@ public class HtmlUnitServerBranchTest extends HtmlUnitServerTest {
         return args;
     }
 
+    @Test
+    @Override
+    public void shouldWorkWithServerIFrameByURLWithDOMInteraction() throws Exception {
+        testWorkWithServerIFrameByURLWithDOMInteraction(25);
+    }
 
     @Test
     @Override
-    public void shouldStoreAndLoadResult() throws Exception {
-        File jsonFile = new File(reportDir+"/jscoverage.json");
-        if (jsonFile.exists())
-            jsonFile.delete();
-
-        HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?" + getTestUrl());
-        HtmlPage frame = (HtmlPage)page.getFrameByName("browserIframe").getEnclosedPage();
-        frame.getElementById("radio2").click();
-        frame.getElementById("radio4").click();
-
-        page.getHtmlElementById("storeTab").click();
-        webClient.waitForBackgroundJavaScript(500);
-        HtmlElement storeButton = page.getHtmlElementById("storeButton");
-        storeButton.click();
-        webClient.waitForBackgroundJavaScript(2000);
-        String result = page.getElementById("storeDiv").getTextContent();
-
-        assertThat(result, containsString("Coverage data stored at target"));
-
-        String json = ioUtils.toString(jsonFile);
-        assertThat(json, containsString("/script.js"));
-
-        page = webClient.getPage("file:///"+ new File(reportDir+"/jscoverage.html").getAbsolutePath());
-        verifyTotal(webClient, page, 86, 25);
+    public void shouldWorkInInvertedMode() throws Exception {
+        testWorkInInvertedMode(0, 37);
     }
 
     @Test
     @Override
     public void shouldIncreaseCoverage() throws Exception {
-        HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?" + getTestUrl());
+        testIncreaseCoverage(12, 37, 62, 87);
+    }
 
-        verifyTotal(webClient, page, 6, 0);
-
-        page.getHtmlElementById("browserTab").click();
-        HtmlPage frame = (HtmlPage)page.getFrameByName("browserIframe").getEnclosedPage();
-        frame.getElementById("radio1").click();
-        page.executeJavaScript("jscoverage_recalculateSummaryTab();");
-        verifyTotals(page, 60, 0);
-        frame.getElementById("radio2").click();
-        page.executeJavaScript("jscoverage_recalculateSummaryTab();");
-        verifyTotals(page, 73, 25);
-        frame.getElementById("radio3").click();
-        page.executeJavaScript("jscoverage_recalculateSummaryTab();");
-        verifyTotals(page, 86, 50);
-        frame.getElementById("radio4").click();
-        page.executeJavaScript("jscoverage_recalculateSummaryTab();");
-        verifyTotals(page, 100, 75);
+    @Test
+    @Override
+    public void shouldStoreAndLoadResult() throws Exception {
+        testStoreAndLoadResult(62);
     }
 }

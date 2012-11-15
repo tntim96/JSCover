@@ -99,6 +99,15 @@ function BranchData(position, nodeLength, src) {
             this.evalFalse++;
     };
 
+    this.pathsCovered = function() {
+        var paths = 0;
+        if (this.evalTrue > 0)
+          paths++;
+        if (this.evalFalse > 0)
+          paths++;
+        return paths;
+    };
+
     this.covered = function() {
         return this.evalTrue > 0 && this.evalFalse > 0;
     };

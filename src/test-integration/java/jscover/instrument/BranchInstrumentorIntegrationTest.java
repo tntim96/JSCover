@@ -343,6 +343,7 @@ Public License instead of this License.
 package jscover.instrument;
 
 import jscover.util.IoUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mozilla.javascript.*;
 import org.mozilla.javascript.ast.AstRoot;
@@ -453,9 +454,30 @@ public class BranchInstrumentorIntegrationTest {
     }
 
     @Test
-    public void shouldWrapTernayCondition() {
+    public void shouldWrapTernaryCondition() {
         StringBuilder script = new StringBuilder("var x = 10;\n");
         script.append("var y = x > 0 ? 1 : 0;\n");
+        runScript(script.toString());
+        Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
+        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
+        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
+    }
+
+    @Test
+    public void shouldWrapFunctionCallCondition() {
+        StringBuilder script = new StringBuilder("function test(x, y) {};\n");
+        script.append("test(0, 1 > 0);\n");
+        runScript(script.toString());
+        Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
+        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
+        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
+    }
+
+    @Test
+    @Ignore
+    public void shouldWrapFunctionCallConditionAsFirstArgument() {
+        StringBuilder script = new StringBuilder("function test(x, y) {};\n");
+        script.append("test(1 > 0, 0);\n");
         runScript(script.toString());
         Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
         assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
