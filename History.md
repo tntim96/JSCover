@@ -1,3 +1,8 @@
+0.1.0-RC1 / 2012-11-18
+==================
+  * Add branch coverage
+  * Improve style of web-site
+
 0.0.13 / 2012-11-14
 ==================
   * Fix detection of destination as sub-directory of source https://github.com/tntim96/JSCover/issues/19
