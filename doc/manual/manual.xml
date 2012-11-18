@@ -86,7 +86,7 @@
                 <text>
                     Run
                     <var>example-server.bat</var> or <var>example-server.sh</var>. The contents are:
-                    <code>java -jar target/dist/JSCover-all.jar -ws --document-root=doc/example --report-dir=target</code>
+                    <code>java -jar target/dist/JSCover-all.jar -ws --branch --document-root=doc/example --report-dir=target</code>
                     This will start a web server, and the JSCover interface can be loaded by going to
                     <a href="http://localhost:8080/jscoverage.html">http://localhost:8080/jscoverage.html</a>.
                     <br/><img src="images/ws-1-browser.png"/><br/>
@@ -163,7 +163,7 @@
                 <heading id="gettingStartedServerAbout">About Page</heading>
                 <text>
                     Version and other information can be viewed by clicking on the <var>About</var> tab:
-                    <br/><img src="images/ws-8-about.png"/>
+                    <br/><img src="images/ws-10-about.png"/>
                 </text>
             </item>
         </item>
@@ -172,7 +172,7 @@
             <text>
                 Run
                 <var>example-filesystem.bat</var> or <var>example-filesystem.sh</var>. The contents are:
-                <code>java -jar target/dist/JSCover-all.jar -fs doc/example target/example</code>
+                <code>java -jar target/dist/JSCover-all.jar -fs --branch doc/example target/example</code>
                 This will recursively copy all the resources from <var>doc/example</var> to <var>target/example</var>,
                 and create the JSCover files (e.g. jscoverage.html) at <var>target/example</var>.
             </text>

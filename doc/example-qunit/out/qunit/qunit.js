@@ -1,9 +1,141 @@
+function BranchData() {
+    this.position = -1;
+    this.nodeLength = -1;
+    this.src = null;
+    this.evalFalse = 0;
+    this.evalTrue = 0;
+
+    this.init = function(position, nodeLength, src) {
+        this.position = position;
+        this.nodeLength = nodeLength;
+        this.src = src;
+        return this;
+    }
+
+    this.ranCondition = function(result) {
+        if (result)
+            this.evalTrue++;
+        else
+            this.evalFalse++;
+    };
+
+    this.pathsCovered = function() {
+        var paths = 0;
+        if (this.evalTrue > 0)
+          paths++;
+        if (this.evalFalse > 0)
+          paths++;
+        return paths;
+    };
+
+    this.covered = function() {
+        return this.evalTrue > 0 && this.evalFalse > 0;
+    };
+
+    this.toJSON = function() {
+        return '{"position":' + this.position
+            + ',"nodeLength":' + this.nodeLength
+            + ',"src":' + jscoverage_quote(this.src)
+            + ',"evalFalse":' + this.evalFalse
+            + ',"evalTrue":' + this.evalTrue + '}';
+    };
+
+    this.message = function() {
+        if (this.evalTrue === 0 && this.evalFalse === 0)
+            return 'Condition never evaluated         :\t' + this.src;
+        else if (this.evalTrue === 0)
+            return 'Condition never evaluated to true :\t' + this.src;
+        else if (this.evalFalse === 0)
+            return 'Condition never evaluated to false:\t' + this.src;
+        else
+            return 'Condition covered';
+    };
+}
+
+BranchData.fromJson = function(jsonString) {
+    var json = eval('(' + jsonString + ')');
+    var branchData = new BranchData();
+    branchData.init(json.position, json.nodeLength, json.src);
+    branchData.evalFalse = json.evalFalse;
+    branchData.evalTrue = json.evalTrue;
+    return branchData;
+};
+
+BranchData.fromJsonObject = function(json) {
+    var branchData = new BranchData();
+    branchData.init(json.position, json.nodeLength, json.src);
+    branchData.evalFalse = json.evalFalse;
+    branchData.evalTrue = json.evalTrue;
+    return branchData;
+};
+
+function buildBranchMessage(conditions) {
+    var message = 'The following was not covered:';
+    for (var i = 0; i < conditions.length; i++) {
+        if (conditions[i] !== undefined && conditions[i] !== null && !conditions[i].covered())
+          message += '\n- '+ conditions[i].message();
+    }
+    return message;
+};
+
+function convertBranchDataConditionArrayToJSON(branchDataConditionArray) {
+    var array = [];
+    var length = branchDataConditionArray.length;
+    for (var condition = 0; condition < length; condition++) {
+        var branchDataObject = branchDataConditionArray[condition];
+        if (branchDataObject === undefined || branchDataObject === null) {
+            value = 'null';
+        } else {
+            value = branchDataObject.toJSON();
+        }
+        array.push(value);
+    }
+    return '[' + array.join(',') + ']';
+}
+
+function convertBranchDataLinesToJSON(branchData) {
+    if (branchData === undefined) {
+        return '[]'
+    }
+    var array = [];
+    var length = branchData.length;
+    for (var line = 0; line < length; line++) {
+        var branchDataObject = branchData[line];
+        if (branchDataObject === undefined || branchDataObject === null) {
+            value = 'null';
+        } else {
+            value = convertBranchDataConditionArrayToJSON(branchDataObject);
+        }
+        array.push(value);
+    }
+    return '[' + array.join(',') + ']';
+}
+
+function convertBranchDataLinesFromJSON(jsonObject) {
+    if (jsonObject === undefined) {
+        return [];
+    }
+    var length = jsonObject.length;
+    for (var line = 0; line < length; line++) {
+        var branchDataJSON = jsonObject[line];
+        if (branchDataJSON !== null) {
+            for (var conditionIndex = 0; conditionIndex < branchDataJSON.length; conditionIndex ++) {
+                var condition = branchDataJSON[conditionIndex];
+                if (condition !== null) {
+                    branchDataJSON[conditionIndex] = BranchData.fromJsonObject(condition);
+                }
+            }
+        }
+    }
+    return jsonObject;
+}
 try {
   if (typeof top === 'object' && top !== null && typeof top.opener === 'object' && top.opener !== null) {
     // this is a browser window that was opened from another window
 
     if (! top.opener._$jscoverage) {
       top.opener._$jscoverage = {};
+      top.opener._$jscoverage.branchData = {};
     }
   }
 }
@@ -22,6 +154,7 @@ try {
 
     if (! top._$jscoverage) {
       top._$jscoverage = {};
+      top._$jscoverage.branchData = {};
     }
   }
 }
@@ -35,6 +168,7 @@ try {
 catch (e) {}
 if (! this._$jscoverage) {
   this._$jscoverage = {};
+  this._$jscoverage.branchData = {};
 }
 if (! _$jscoverage['qunit/qunit.js']) {
   _$jscoverage['qunit/qunit.js'] = [];
@@ -854,11 +988,1631 @@ if (! _$jscoverage['qunit/qunit.js']) {
   _$jscoverage['qunit/qunit.js'][2009] = 0;
   _$jscoverage['qunit/qunit.js'][2013] = 0;
 }
-_$jscoverage['qunit/qunit.js'].source = ["/**"," * QUnit v1.11.0pre - A JavaScript Unit Testing Framework"," *"," * http://qunitjs.com"," *"," * Copyright 2012 jQuery Foundation and other contributors"," * Released under the MIT license."," * http://jquery.org/license"," */","","(function( window ) {","","var QUnit,","\tconfig,","\tonErrorFnPrev,","\ttestId = 0,","\tfileName = (sourceFromStacktrace( 0 ) || \"\" ).replace(/(:\\d+)+\\)?/, \"\").replace(/.+\\//, \"\"),","\ttoString = Object.prototype.toString,","\thasOwn = Object.prototype.hasOwnProperty,","\t// Keep a local reference to Date (GH-283)","\tDate = window.Date,","\tdefined = {","\tsetTimeout: typeof window.setTimeout !== \"undefined\",","\tsessionStorage: (function() {","\t\tvar x = \"qunit-test-string\";","\t\ttry {","\t\t\tsessionStorage.setItem( x, x );","\t\t\tsessionStorage.removeItem( x );","\t\t\treturn true;","\t\t} catch( e ) {","\t\t\treturn false;","\t\t}","\t}())","};","","function Test( settings ) {","\textend( this, settings );","\tthis.assertions = [];","\tthis.testNumber = ++Test.count;","}","","Test.count = 0;","","Test.prototype = {","\tinit: function() {","\t\tvar a, b, li,","        tests = id( \"qunit-tests\" );","","\t\tif ( tests ) {","\t\t\tb = document.createElement( \"strong\" );","\t\t\tb.innerHTML = this.name;","","\t\t\t// `a` initialized at top of scope","\t\t\ta = document.createElement( \"a\" );","\t\t\ta.innerHTML = \"Rerun\";","\t\t\ta.href = QUnit.url({ testNumber: this.testNumber });","","\t\t\tli = document.createElement( \"li\" );","\t\t\tli.appendChild( b );","\t\t\tli.appendChild( a );","\t\t\tli.className = \"running\";","\t\t\tli.id = this.id = \"qunit-test-output\" + testId++;","","\t\t\ttests.appendChild( li );","\t\t}","\t},","\tsetup: function() {","\t\tif ( this.module !== config.previousModule ) {","\t\t\tif ( config.previousModule ) {","\t\t\t\trunLoggingCallbacks( \"moduleDone\", QUnit, {","\t\t\t\t\tname: config.previousModule,","\t\t\t\t\tfailed: config.moduleStats.bad,","\t\t\t\t\tpassed: config.moduleStats.all - config.moduleStats.bad,","\t\t\t\t\ttotal: config.moduleStats.all","\t\t\t\t});","\t\t\t}","\t\t\tconfig.previousModule = this.module;","\t\t\tconfig.moduleStats = { all: 0, bad: 0 };","\t\t\trunLoggingCallbacks( \"moduleStart\", QUnit, {","\t\t\t\tname: this.module","\t\t\t});","\t\t} else if ( config.autorun ) {","\t\t\trunLoggingCallbacks( \"moduleStart\", QUnit, {","\t\t\t\tname: this.module","\t\t\t});","\t\t}","","\t\tconfig.current = this;","","\t\tthis.testEnvironment = extend({","\t\t\tsetup: function() {},","\t\t\tteardown: function() {}","\t\t}, this.moduleTestEnvironment );","","\t\trunLoggingCallbacks( \"testStart\", QUnit, {","\t\t\tname: this.testName,","\t\t\tmodule: this.module","\t\t});","","\t\t// allow utility functions to access the current test environment","\t\t// TODO why??","\t\tQUnit.current_testEnvironment = this.testEnvironment;","","\t\tif ( !config.pollution ) {","\t\t\tsaveGlobal();","\t\t}","\t\tif ( config.notrycatch ) {","\t\t\tthis.testEnvironment.setup.call( this.testEnvironment );","\t\t\treturn;","\t\t}","\t\ttry {","\t\t\tthis.testEnvironment.setup.call( this.testEnvironment );","\t\t} catch( e ) {","\t\t\tQUnit.pushFailure( \"Setup failed on \" + this.testName + \": \" + ( e.message || e ), extractStacktrace( e, 1 ) );","\t\t}","\t},","\trun: function() {","\t\tconfig.current = this;","","\t\tvar running = id( \"qunit-testresult\" );","","\t\tif ( running ) {","\t\t\trunning.innerHTML = \"Running: &lt;br/&gt;\" + this.name;","\t\t}","","\t\tif ( this.async ) {","\t\t\tQUnit.stop();","\t\t}","","\t\tif ( config.notrycatch ) {","\t\t\tthis.callback.call( this.testEnvironment, QUnit.assert );","\t\t\treturn;","\t\t}","","\t\ttry {","\t\t\tthis.callback.call( this.testEnvironment, QUnit.assert );","\t\t} catch( e ) {","\t\t\tQUnit.pushFailure( \"Died on test #\" + (this.assertions.length + 1) + \" \" + this.stack + \": \" + ( e.message || e ), extractStacktrace( e, 0 ) );","\t\t\t// else next test will carry the responsibility","\t\t\tsaveGlobal();","","\t\t\t// Restart the tests if they're blocking","\t\t\tif ( config.blocking ) {","\t\t\t\tQUnit.start();","\t\t\t}","\t\t}","\t},","\tteardown: function() {","\t\tconfig.current = this;","\t\tif ( config.notrycatch ) {","\t\t\tthis.testEnvironment.teardown.call( this.testEnvironment );","\t\t\treturn;","\t\t} else {","\t\t\ttry {","\t\t\t\tthis.testEnvironment.teardown.call( this.testEnvironment );","\t\t\t} catch( e ) {","\t\t\t\tQUnit.pushFailure( \"Teardown failed on \" + this.testName + \": \" + ( e.message || e ), extractStacktrace( e, 1 ) );","\t\t\t}","\t\t}","\t\tcheckPollution();","\t},","\tfinish: function() {","\t\tconfig.current = this;","\t\tif ( config.requireExpects &amp;&amp; this.expected == null ) {","\t\t\tQUnit.pushFailure( \"Expected number of assertions to be defined, but expect() was not called.\", this.stack );","\t\t} else if ( this.expected != null &amp;&amp; this.expected != this.assertions.length ) {","\t\t\tQUnit.pushFailure( \"Expected \" + this.expected + \" assertions, but \" + this.assertions.length + \" were run\", this.stack );","\t\t} else if ( this.expected == null &amp;&amp; !this.assertions.length ) {","\t\t\tQUnit.pushFailure( \"Expected at least one assertion, but none were run - call expect(0) to accept zero assertions.\", this.stack );","\t\t}","","\t\tvar assertion, a, b, i, li, ol,","\t\t\ttest = this,","\t\t\tgood = 0,","\t\t\tbad = 0,","\t\t\ttests = id( \"qunit-tests\" );","","\t\tconfig.stats.all += this.assertions.length;","\t\tconfig.moduleStats.all += this.assertions.length;","","\t\tif ( tests ) {","\t\t\tol = document.createElement( \"ol\" );","\t\t\tol.className = \"qunit-assert-list\";","","\t\t\tfor ( i = 0; i &lt; this.assertions.length; i++ ) {","\t\t\t\tassertion = this.assertions[i];","","\t\t\t\tli = document.createElement( \"li\" );","\t\t\t\tli.className = assertion.result ? \"pass\" : \"fail\";","\t\t\t\tli.innerHTML = assertion.message || ( assertion.result ? \"okay\" : \"failed\" );","\t\t\t\tol.appendChild( li );","","\t\t\t\tif ( assertion.result ) {","\t\t\t\t\tgood++;","\t\t\t\t} else {","\t\t\t\t\tbad++;","\t\t\t\t\tconfig.stats.bad++;","\t\t\t\t\tconfig.moduleStats.bad++;","\t\t\t\t}","\t\t\t}","","\t\t\t// store result when possible","\t\t\tif ( QUnit.config.reorder &amp;&amp; defined.sessionStorage ) {","\t\t\t\tif ( bad ) {","\t\t\t\t\tsessionStorage.setItem( \"qunit-test-\" + this.module + \"-\" + this.testName, bad );","\t\t\t\t} else {","\t\t\t\t\tsessionStorage.removeItem( \"qunit-test-\" + this.module + \"-\" + this.testName );","\t\t\t\t}","\t\t\t}","","\t\t\tif ( bad === 0 ) {","\t\t\t\taddClass( ol, \"qunit-collapsed\" );","\t\t\t}","","\t\t\t// `b` initialized at top of scope","\t\t\tb = document.createElement( \"strong\" );","\t\t\tb.innerHTML = this.name + \" &lt;b class='counts'&gt;(&lt;b class='failed'&gt;\" + bad + \"&lt;/b&gt;, &lt;b class='passed'&gt;\" + good + \"&lt;/b&gt;, \" + this.assertions.length + \")&lt;/b&gt;\";","","\t\t\taddEvent(b, \"click\", function() {","\t\t\t\tvar next = b.nextSibling.nextSibling,","\t\t\t\t\tcollapsed = hasClass( next, \"qunit-collapsed\" );","\t\t\t\t( collapsed ? removeClass : addClass )( next, \"qunit-collapsed\" );","\t\t\t});","","\t\t\taddEvent(b, \"dblclick\", function( e ) {","\t\t\t\tvar target = e &amp;&amp; e.target ? e.target : window.event.srcElement;","\t\t\t\tif ( target.nodeName.toLowerCase() == \"span\" || target.nodeName.toLowerCase() == \"b\" ) {","\t\t\t\t\ttarget = target.parentNode;","\t\t\t\t}","\t\t\t\tif ( window.location &amp;&amp; target.nodeName.toLowerCase() === \"strong\" ) {","\t\t\t\t\twindow.location = QUnit.url({ testNumber: test.testNumber });","\t\t\t\t}","\t\t\t});","","\t\t\t// `li` initialized at top of scope","\t\t\tli = id( this.id );","\t\t\tli.className = bad ? \"fail\" : \"pass\";","\t\t\tli.removeChild( li.firstChild );","\t\t\ta = li.firstChild;","\t\t\tli.appendChild( b );","\t\t\tli.appendChild ( a );","\t\t\tli.appendChild( ol );","","\t\t} else {","\t\t\tfor ( i = 0; i &lt; this.assertions.length; i++ ) {","\t\t\t\tif ( !this.assertions[i].result ) {","\t\t\t\t\tbad++;","\t\t\t\t\tconfig.stats.bad++;","\t\t\t\t\tconfig.moduleStats.bad++;","\t\t\t\t}","\t\t\t}","\t\t}","","\t\trunLoggingCallbacks( \"testDone\", QUnit, {","\t\t\tname: this.testName,","\t\t\tmodule: this.module,","\t\t\tfailed: bad,","\t\t\tpassed: this.assertions.length - bad,","\t\t\ttotal: this.assertions.length","\t\t});","","\t\tQUnit.reset();","","\t\tconfig.current = undefined;","\t},","","\tqueue: function() {","\t\tvar bad,","\t\t\ttest = this;","","\t\tsynchronize(function() {","\t\t\ttest.init();","\t\t});","\t\tfunction run() {","\t\t\t// each of these can by async","\t\t\tsynchronize(function() {","\t\t\t\ttest.setup();","\t\t\t});","\t\t\tsynchronize(function() {","\t\t\t\ttest.run();","\t\t\t});","\t\t\tsynchronize(function() {","\t\t\t\ttest.teardown();","\t\t\t});","\t\t\tsynchronize(function() {","\t\t\t\ttest.finish();","\t\t\t});","\t\t}","","\t\t// `bad` initialized at top of scope","\t\t// defer when previous test run passed, if storage is available","\t\tbad = QUnit.config.reorder &amp;&amp; defined.sessionStorage &amp;&amp;","\t\t\t\t\t\t+sessionStorage.getItem( \"qunit-test-\" + this.module + \"-\" + this.testName );","","\t\tif ( bad ) {","\t\t\trun();","\t\t} else {","\t\t\tsynchronize( run, true );","\t\t}","\t}","};","","// Root QUnit object.","// `QUnit` initialized at top of scope","QUnit = {","","\t// call on start of module test to prepend name to all tests","\tmodule: function( name, testEnvironment ) {","\t\tconfig.currentModule = name;","\t\tconfig.currentModuleTestEnvironment = testEnvironment;","\t\tconfig.modules[name] = true;","\t},","","\tasyncTest: function( testName, expected, callback ) {","\t\tif ( arguments.length === 2 ) {","\t\t\tcallback = expected;","\t\t\texpected = null;","\t\t}","","\t\tQUnit.test( testName, expected, callback, true );","\t},","","\ttest: function( testName, expected, callback, async ) {","\t\tvar test,","\t\t\tname = \"&lt;span class='test-name'&gt;\" + escapeInnerText( testName ) + \"&lt;/span&gt;\";","","\t\tif ( arguments.length === 2 ) {","\t\t\tcallback = expected;","\t\t\texpected = null;","\t\t}","","\t\tif ( config.currentModule ) {","\t\t\tname = \"&lt;span class='module-name'&gt;\" + config.currentModule + \"&lt;/span&gt;: \" + name;","\t\t}","","\t\ttest = new Test({","\t\t\tname: name,","\t\t\ttestName: testName,","\t\t\texpected: expected,","\t\t\tasync: async,","\t\t\tcallback: callback,","\t\t\tmodule: config.currentModule,","\t\t\tmoduleTestEnvironment: config.currentModuleTestEnvironment,","\t\t\tstack: sourceFromStacktrace( 2 )","\t\t});","","\t\tif ( !validTest( test ) ) {","\t\t\treturn;","\t\t}","","\t\ttest.queue();","\t},","","\t// Specify the number of expected assertions to gurantee that failed test (no assertions are run at all) don't slip through.","\texpect: function( asserts ) {","\t\tif (arguments.length === 1) {","\t\t\tconfig.current.expected = asserts;","\t\t} else {","\t\t\treturn config.current.expected;","\t\t}","\t},","","\tstart: function( count ) {","\t\tconfig.semaphore -= count || 1;","\t\t// don't start until equal number of stop-calls","\t\tif ( config.semaphore &gt; 0 ) {","\t\t\treturn;","\t\t}","\t\t// ignore if start is called more often then stop","\t\tif ( config.semaphore &lt; 0 ) {","\t\t\tconfig.semaphore = 0;","\t\t\tQUnit.pushFailure( \"Called start() while already started (QUnit.config.semaphore was 0 already)\", null, sourceFromStacktrace(2) );","\t\t\treturn;","\t\t}","\t\t// A slight delay, to avoid any current callbacks","\t\tif ( defined.setTimeout ) {","\t\t\twindow.setTimeout(function() {","\t\t\t\tif ( config.semaphore &gt; 0 ) {","\t\t\t\t\treturn;","\t\t\t\t}","\t\t\t\tif ( config.timeout ) {","\t\t\t\t\tclearTimeout( config.timeout );","\t\t\t\t}","","\t\t\t\tconfig.blocking = false;","\t\t\t\tprocess( true );","\t\t\t}, 13);","\t\t} else {","\t\t\tconfig.blocking = false;","\t\t\tprocess( true );","\t\t}","\t},","","\tstop: function( count ) {","\t\tconfig.semaphore += count || 1;","\t\tconfig.blocking = true;","","\t\tif ( config.testTimeout &amp;&amp; defined.setTimeout ) {","\t\t\tclearTimeout( config.timeout );","\t\t\tconfig.timeout = window.setTimeout(function() {","\t\t\t\tQUnit.ok( false, \"Test timed out\" );","\t\t\t\tconfig.semaphore = 1;","\t\t\t\tQUnit.start();","\t\t\t}, config.testTimeout );","\t\t}","\t}","};","","// Asssert helpers","// All of these must call either QUnit.push() or manually do:","// - runLoggingCallbacks( \"log\", .. );","// - config.current.assertions.push({ .. });","QUnit.assert = {","\t/**","\t * Asserts rough true-ish result.","\t * @name ok","\t * @function","\t * @example ok( \"asdfasdf\".length &gt; 5, \"There must be at least 5 chars\" );","\t */","\tok: function( result, msg ) {","\t\tif ( !config.current ) {","\t\t\tthrow new Error( \"ok() assertion outside test context, was \" + sourceFromStacktrace(2) );","\t\t}","\t\tresult = !!result;","","\t\tvar source,","\t\t\tdetails = {","\t\t\t\tmodule: config.current.module,","\t\t\t\tname: config.current.testName,","\t\t\t\tresult: result,","\t\t\t\tmessage: msg","\t\t\t};","","\t\tmsg = escapeInnerText( msg || (result ? \"okay\" : \"failed\" ) );","\t\tmsg = \"&lt;span class='test-message'&gt;\" + msg + \"&lt;/span&gt;\";","","\t\tif ( !result ) {","\t\t\tsource = sourceFromStacktrace( 2 );","\t\t\tif ( source ) {","\t\t\t\tdetails.source = source;","\t\t\t\tmsg += \"&lt;table&gt;&lt;tr class='test-source'&gt;&lt;th&gt;Source: &lt;/th&gt;&lt;td&gt;&lt;pre&gt;\" + escapeInnerText( source ) + \"&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;\";","\t\t\t}","\t\t}","\t\trunLoggingCallbacks( \"log\", QUnit, details );","\t\tconfig.current.assertions.push({","\t\t\tresult: result,","\t\t\tmessage: msg","\t\t});","\t},","","\t/**","\t * Assert that the first two arguments are equal, with an optional message.","\t * Prints out both actual and expected values.","\t * @name equal","\t * @function","\t * @example equal( format( \"Received {0} bytes.\", 2), \"Received 2 bytes.\", \"format() replaces {0} with next argument\" );","\t */","\tequal: function( actual, expected, message ) {","\t\tQUnit.push( expected == actual, actual, expected, message );","\t},","","\t/**","\t * @name notEqual","\t * @function","\t */","\tnotEqual: function( actual, expected, message ) {","\t\tQUnit.push( expected != actual, actual, expected, message );","\t},","","\t/**","\t * @name deepEqual","\t * @function","\t */","\tdeepEqual: function( actual, expected, message ) {","\t\tQUnit.push( QUnit.equiv(actual, expected), actual, expected, message );","\t},","","\t/**","\t * @name notDeepEqual","\t * @function","\t */","\tnotDeepEqual: function( actual, expected, message ) {","\t\tQUnit.push( !QUnit.equiv(actual, expected), actual, expected, message );","\t},","","\t/**","\t * @name strictEqual","\t * @function","\t */","\tstrictEqual: function( actual, expected, message ) {","\t\tQUnit.push( expected === actual, actual, expected, message );","\t},","","\t/**","\t * @name notStrictEqual","\t * @function","\t */","\tnotStrictEqual: function( actual, expected, message ) {","\t\tQUnit.push( expected !== actual, actual, expected, message );","\t},","","\t\"throws\": function( block, expected, message ) {","\t\tvar actual,","\t\t\texpectedOutput = expected,","\t\t\tok = false;","","\t\t// 'expected' is optional","\t\tif ( typeof expected === \"string\" ) {","\t\t\tmessage = expected;","\t\t\texpected = null;","\t\t}","","\t\tconfig.current.ignoreGlobalErrors = true;","\t\ttry {","\t\t\tblock.call( config.current.testEnvironment );","\t\t} catch (e) {","\t\t\tactual = e;","\t\t}","\t\tconfig.current.ignoreGlobalErrors = false;","","\t\tif ( actual ) {","\t\t\t// we don't want to validate thrown error","\t\t\tif ( !expected ) {","\t\t\t\tok = true;","\t\t\t\texpectedOutput = null;","\t\t\t// expected is a regexp","\t\t\t} else if ( QUnit.objectType( expected ) === \"regexp\" ) {","\t\t\t\tok = expected.test( actual );","\t\t\t// expected is a constructor","\t\t\t} else if ( actual instanceof expected ) {","\t\t\t\tok = true;","\t\t\t// expected is a validation function which returns true is validation passed","\t\t\t} else if ( expected.call( {}, actual ) === true ) {","\t\t\t\texpectedOutput = null;","\t\t\t\tok = true;","\t\t\t}","","\t\t\tQUnit.push( ok, actual, expectedOutput, message );","\t\t} else {","\t\t\tQUnit.pushFailure( message, null, 'No exception was thrown.' );","\t\t}","\t}","};","","/**"," * @deprecate since 1.8.0"," * Kept assertion helpers in root for backwards compatibility"," */","extend( QUnit, QUnit.assert );","","/**"," * @deprecated since 1.9.0"," * Kept global \"raises()\" for backwards compatibility"," */","QUnit.raises = QUnit.assert[ \"throws\" ];","","/**"," * @deprecated since 1.0.0, replaced with error pushes since 1.3.0"," * Kept to avoid TypeErrors for undefined methods."," */","QUnit.equals = function() {","\tQUnit.push( false, false, false, \"QUnit.equals has been deprecated since 2009 (e88049a0), use QUnit.equal instead\" );","};","QUnit.same = function() {","\tQUnit.push( false, false, false, \"QUnit.same has been deprecated since 2009 (e88049a0), use QUnit.deepEqual instead\" );","};","","// We want access to the constructor's prototype","(function() {","\tfunction F() {}","\tF.prototype = QUnit;","\tQUnit = new F();","\t// Make F QUnit's constructor so that we can add to the prototype later","\tQUnit.constructor = F;","}());","","/**"," * Config object: Maintain internal state"," * Later exposed as QUnit.config"," * `config` initialized at top of scope"," */","config = {","\t// The queue of tests to run","\tqueue: [],","","\t// block until document ready","\tblocking: true,","","\t// when enabled, show only failing tests","\t// gets persisted through sessionStorage and can be changed in UI via checkbox","\thidepassed: false,","","\t// by default, run previously failed tests first","\t// very useful in combination with \"Hide passed tests\" checked","\treorder: true,","","\t// by default, modify document.title when suite is done","\taltertitle: true,","","\t// when enabled, all tests must call expect()","\trequireExpects: false,","","\t// add checkboxes that are persisted in the query-string","\t// when enabled, the id is set to `true` as a `QUnit.config` property","\turlConfig: [","\t\t{","\t\t\tid: \"noglobals\",","\t\t\tlabel: \"Check for Globals\",","\t\t\ttooltip: \"Enabling this will test if any test introduces new properties on the `window` object. Stored as query-strings.\"","\t\t},","\t\t{","\t\t\tid: \"notrycatch\",","\t\t\tlabel: \"No try-catch\",","\t\t\ttooltip: \"Enabling this will run tests outside of a try-catch block. Makes debugging exceptions in IE reasonable. Stored as query-strings.\"","\t\t}","\t],","","\t// Set of all modules.","\tmodules: {},","","\t// logging callback queues","\tbegin: [],","\tdone: [],","\tlog: [],","\ttestStart: [],","\ttestDone: [],","\tmoduleStart: [],","\tmoduleDone: []","};","","// Initialize more QUnit.config and QUnit.urlParams","(function() {","\tvar i,","\t\tlocation = window.location || { search: \"\", protocol: \"file:\" },","\t\tparams = location.search.slice( 1 ).split( \"&amp;\" ),","\t\tlength = params.length,","\t\turlParams = {},","\t\tcurrent;","","\tif ( params[ 0 ] ) {","\t\tfor ( i = 0; i &lt; length; i++ ) {","\t\t\tcurrent = params[ i ].split( \"=\" );","\t\t\tcurrent[ 0 ] = decodeURIComponent( current[ 0 ] );","\t\t\t// allow just a key to turn on a flag, e.g., test.html?noglobals","\t\t\tcurrent[ 1 ] = current[ 1 ] ? decodeURIComponent( current[ 1 ] ) : true;","\t\t\turlParams[ current[ 0 ] ] = current[ 1 ];","\t\t}","\t}","","\tQUnit.urlParams = urlParams;","","\t// String search anywhere in moduleName+testName","\tconfig.filter = urlParams.filter;","","\t// Exact match of the module name","\tconfig.module = urlParams.module;","","\tconfig.testNumber = parseInt( urlParams.testNumber, 10 ) || null;","","\t// Figure out if we're running the tests from a server or not","\tQUnit.isLocal = location.protocol === \"file:\";","}());","","// Export global variables, unless an 'exports' object exists,","// in that case we assume we're in CommonJS (dealt with on the bottom of the script)","if ( typeof exports === \"undefined\" ) {","\textend( window, QUnit );","","\t// Expose QUnit object","\twindow.QUnit = QUnit;","}","","// Extend QUnit object,","// these after set here because they should not be exposed as global functions","extend( QUnit, {","\tconfig: config,","","\t// Initialize the configuration options","\tinit: function() {","\t\textend( config, {","\t\t\tstats: { all: 0, bad: 0 },","\t\t\tmoduleStats: { all: 0, bad: 0 },","\t\t\tstarted: +new Date(),","\t\t\tupdateRate: 1000,","\t\t\tblocking: false,","\t\t\tautostart: true,","\t\t\tautorun: false,","\t\t\tfilter: \"\",","\t\t\tqueue: [],","\t\t\tsemaphore: 1","\t\t});","","\t\tvar tests, banner, result,","\t\t\tqunit = id( \"qunit\" );","","\t\tif ( qunit ) {","\t\t\tqunit.innerHTML =","\t\t\t\t\"&lt;h1 id='qunit-header'&gt;\" + escapeInnerText( document.title ) + \"&lt;/h1&gt;\" +","\t\t\t\t\"&lt;h2 id='qunit-banner'&gt;&lt;/h2&gt;\" +","\t\t\t\t\"&lt;div id='qunit-testrunner-toolbar'&gt;&lt;/div&gt;\" +","\t\t\t\t\"&lt;h2 id='qunit-userAgent'&gt;&lt;/h2&gt;\" +","\t\t\t\t\"&lt;ol id='qunit-tests'&gt;&lt;/ol&gt;\";","\t\t}","","\t\ttests = id( \"qunit-tests\" );","\t\tbanner = id( \"qunit-banner\" );","\t\tresult = id( \"qunit-testresult\" );","","\t\tif ( tests ) {","\t\t\ttests.innerHTML = \"\";","\t\t}","","\t\tif ( banner ) {","\t\t\tbanner.className = \"\";","\t\t}","","\t\tif ( result ) {","\t\t\tresult.parentNode.removeChild( result );","\t\t}","","\t\tif ( tests ) {","\t\t\tresult = document.createElement( \"p\" );","\t\t\tresult.id = \"qunit-testresult\";","\t\t\tresult.className = \"result\";","\t\t\ttests.parentNode.insertBefore( result, tests );","\t\t\tresult.innerHTML = \"Running...&lt;br/&gt;&amp;nbsp;\";","\t\t}","\t},","","\t// Resets the test setup. Useful for tests that modify the DOM.","\treset: function() {","\t\tvar fixture = id( \"qunit-fixture\" );","\t\tif ( fixture ) {","\t\t\tfixture.innerHTML = config.fixture;","\t\t}","\t},","","\t// Trigger an event on an element.","\t// @example triggerEvent( document.body, \"click\" );","\ttriggerEvent: function( elem, type, event ) {","\t\tif ( document.createEvent ) {","\t\t\tevent = document.createEvent( \"MouseEvents\" );","\t\t\tevent.initMouseEvent(type, true, true, elem.ownerDocument.defaultView,","\t\t\t\t0, 0, 0, 0, 0, false, false, false, false, 0, null);","","\t\t\telem.dispatchEvent( event );","\t\t} else if ( elem.fireEvent ) {","\t\t\telem.fireEvent( \"on\" + type );","\t\t}","\t},","","\t// Safe object type checking","\tis: function( type, obj ) {","\t\treturn QUnit.objectType( obj ) == type;","\t},","","\tobjectType: function( obj ) {","\t\tif ( typeof obj === \"undefined\" ) {","\t\t\t\treturn \"undefined\";","\t\t// consider: typeof null === object","\t\t}","\t\tif ( obj === null ) {","\t\t\t\treturn \"null\";","\t\t}","","\t\tvar match = toString.call( obj ).match(/^\\[object\\s(.*)\\]$/),","\t\t\ttype = match &amp;&amp; match[1] || \"\";","","\t\tswitch ( type ) {","\t\t\tcase \"Number\":","\t\t\t\tif ( isNaN(obj) ) {","\t\t\t\t\treturn \"nan\";","\t\t\t\t}","\t\t\t\treturn \"number\";","\t\t\tcase \"String\":","\t\t\tcase \"Boolean\":","\t\t\tcase \"Array\":","\t\t\tcase \"Date\":","\t\t\tcase \"RegExp\":","\t\t\tcase \"Function\":","\t\t\t\treturn type.toLowerCase();","\t\t}","\t\tif ( typeof obj === \"object\" ) {","\t\t\treturn \"object\";","\t\t}","\t\treturn undefined;","\t},","","\tpush: function( result, actual, expected, message ) {","\t\tif ( !config.current ) {","\t\t\tthrow new Error( \"assertion outside test context, was \" + sourceFromStacktrace() );","\t\t}","","\t\tvar output, source,","\t\t\tdetails = {","\t\t\t\tmodule: config.current.module,","\t\t\t\tname: config.current.testName,","\t\t\t\tresult: result,","\t\t\t\tmessage: message,","\t\t\t\tactual: actual,","\t\t\t\texpected: expected","\t\t\t};","","\t\tmessage = escapeInnerText( message ) || ( result ? \"okay\" : \"failed\" );","\t\tmessage = \"&lt;span class='test-message'&gt;\" + message + \"&lt;/span&gt;\";","\t\toutput = message;","","\t\tif ( !result ) {","\t\t\texpected = escapeInnerText( QUnit.jsDump.parse(expected) );","\t\t\tactual = escapeInnerText( QUnit.jsDump.parse(actual) );","\t\t\toutput += \"&lt;table&gt;&lt;tr class='test-expected'&gt;&lt;th&gt;Expected: &lt;/th&gt;&lt;td&gt;&lt;pre&gt;\" + expected + \"&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;\";","","\t\t\tif ( actual != expected ) {","\t\t\t\toutput += \"&lt;tr class='test-actual'&gt;&lt;th&gt;Result: &lt;/th&gt;&lt;td&gt;&lt;pre&gt;\" + actual + \"&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;\";","\t\t\t\toutput += \"&lt;tr class='test-diff'&gt;&lt;th&gt;Diff: &lt;/th&gt;&lt;td&gt;&lt;pre&gt;\" + QUnit.diff( expected, actual ) + \"&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;\";","\t\t\t}","","\t\t\tsource = sourceFromStacktrace();","","\t\t\tif ( source ) {","\t\t\t\tdetails.source = source;","\t\t\t\toutput += \"&lt;tr class='test-source'&gt;&lt;th&gt;Source: &lt;/th&gt;&lt;td&gt;&lt;pre&gt;\" + escapeInnerText( source ) + \"&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;\";","\t\t\t}","","\t\t\toutput += \"&lt;/table&gt;\";","\t\t}","","\t\trunLoggingCallbacks( \"log\", QUnit, details );","","\t\tconfig.current.assertions.push({","\t\t\tresult: !!result,","\t\t\tmessage: output","\t\t});","\t},","","\tpushFailure: function( message, source, actual ) {","\t\tif ( !config.current ) {","\t\t\tthrow new Error( \"pushFailure() assertion outside test context, was \" + sourceFromStacktrace(2) );","\t\t}","","\t\tvar output,","\t\t\tdetails = {","\t\t\t\tmodule: config.current.module,","\t\t\t\tname: config.current.testName,","\t\t\t\tresult: false,","\t\t\t\tmessage: message","\t\t\t};","","\t\tmessage = escapeInnerText( message ) || \"error\";","\t\tmessage = \"&lt;span class='test-message'&gt;\" + message + \"&lt;/span&gt;\";","\t\toutput = message;","","\t\toutput += \"&lt;table&gt;\";","","\t\tif ( actual ) {","\t\t\toutput += \"&lt;tr class='test-actual'&gt;&lt;th&gt;Result: &lt;/th&gt;&lt;td&gt;&lt;pre&gt;\" + escapeInnerText( actual ) + \"&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;\";","\t\t}","","\t\tif ( source ) {","\t\t\tdetails.source = source;","\t\t\toutput += \"&lt;tr class='test-source'&gt;&lt;th&gt;Source: &lt;/th&gt;&lt;td&gt;&lt;pre&gt;\" + escapeInnerText( source ) + \"&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;\";","\t\t}","","\t\toutput += \"&lt;/table&gt;\";","","\t\trunLoggingCallbacks( \"log\", QUnit, details );","","\t\tconfig.current.assertions.push({","\t\t\tresult: false,","\t\t\tmessage: output","\t\t});","\t},","","\turl: function( params ) {","\t\tparams = extend( extend( {}, QUnit.urlParams ), params );","\t\tvar key,","\t\t\tquerystring = \"?\";","","\t\tfor ( key in params ) {","\t\t\tif ( !hasOwn.call( params, key ) ) {","\t\t\t\tcontinue;","\t\t\t}","\t\t\tquerystring += encodeURIComponent( key ) + \"=\" +","\t\t\t\tencodeURIComponent( params[ key ] ) + \"&amp;\";","\t\t}","\t\treturn window.location.pathname + querystring.slice( 0, -1 );","\t},","","\textend: extend,","\tid: id,","\taddEvent: addEvent","\t// load, equiv, jsDump, diff: Attached later","});","","/**"," * @deprecated: Created for backwards compatibility with test runner that set the hook function"," * into QUnit.{hook}, instead of invoking it and passing the hook function."," * QUnit.constructor is set to the empty F() above so that we can add to it's prototype here."," * Doing this allows us to tell if the following methods have been overwritten on the actual"," * QUnit object."," */","extend( QUnit.constructor.prototype, {","","\t// Logging callbacks; all receive a single argument with the listed properties","\t// run test/logs.html for any related changes","\tbegin: registerLoggingCallback( \"begin\" ),","","\t// done: { failed, passed, total, runtime }","\tdone: registerLoggingCallback( \"done\" ),","","\t// log: { result, actual, expected, message }","\tlog: registerLoggingCallback( \"log\" ),","","\t// testStart: { name }","\ttestStart: registerLoggingCallback( \"testStart\" ),","","\t// testDone: { name, failed, passed, total }","\ttestDone: registerLoggingCallback( \"testDone\" ),","","\t// moduleStart: { name }","\tmoduleStart: registerLoggingCallback( \"moduleStart\" ),","","\t// moduleDone: { name, failed, passed, total }","\tmoduleDone: registerLoggingCallback( \"moduleDone\" )","});","","if ( typeof document === \"undefined\" || document.readyState === \"complete\" ) {","\tconfig.autorun = true;","}","","QUnit.load = function() {","\trunLoggingCallbacks( \"begin\", QUnit, {} );","","\t// Initialize the config, saving the execution queue","\tvar banner, filter, i, label, len, main, ol, toolbar, userAgent, val, urlConfigCheckboxes, moduleFilter,","\t    numModules = 0,","\t    moduleFilterHtml = \"\",","\t\turlConfigHtml = \"\",","\t\toldconfig = extend( {}, config );","","\tQUnit.init();","\textend(config, oldconfig);","","\tconfig.blocking = false;","","\tlen = config.urlConfig.length;","","\tfor ( i = 0; i &lt; len; i++ ) {","\t\tval = config.urlConfig[i];","\t\tif ( typeof val === \"string\" ) {","\t\t\tval = {","\t\t\t\tid: val,","\t\t\t\tlabel: val,","\t\t\t\ttooltip: \"[no tooltip available]\"","\t\t\t};","\t\t}","\t\tconfig[ val.id ] = QUnit.urlParams[ val.id ];","\t\turlConfigHtml += \"&lt;input id='qunit-urlconfig-\" + val.id + \"' name='\" + val.id + \"' type='checkbox'\" + ( config[ val.id ] ? \" checked='checked'\" : \"\" ) + \" title='\" + val.tooltip + \"'&gt;&lt;label for='qunit-urlconfig-\" + val.id + \"' title='\" + val.tooltip + \"'&gt;\" + val.label + \"&lt;/label&gt;\";","\t}","","\tmoduleFilterHtml += \"&lt;label for='qunit-modulefilter'&gt;Module: &lt;/label&gt;&lt;select id='qunit-modulefilter' name='modulefilter'&gt;&lt;option value='' \" + ( config.module === undefined  ? \"selected\" : \"\" ) + \"&gt;&lt; All Modules &gt;&lt;/option&gt;\";","\tfor ( i in config.modules ) {","\t\tif ( config.modules.hasOwnProperty( i ) ) {","\t\t\tnumModules += 1;","\t\t\tmoduleFilterHtml += \"&lt;option value='\" + encodeURIComponent(i) + \"' \" + ( config.module === i ? \"selected\" : \"\" ) + \"&gt;\" + i + \"&lt;/option&gt;\";","\t\t}","\t}","\tmoduleFilterHtml += \"&lt;/select&gt;\";","","\t// `userAgent` initialized at top of scope","\tuserAgent = id( \"qunit-userAgent\" );","\tif ( userAgent ) {","\t\tuserAgent.innerHTML = navigator.userAgent;","\t}","","\t// `banner` initialized at top of scope","\tbanner = id( \"qunit-header\" );","\tif ( banner ) {","\t\tbanner.innerHTML = \"&lt;a href='\" + QUnit.url({ filter: undefined, module: undefined, testNumber: undefined }) + \"'&gt;\" + banner.innerHTML + \"&lt;/a&gt; \";","\t}","","\t// `toolbar` initialized at top of scope","\ttoolbar = id( \"qunit-testrunner-toolbar\" );","\tif ( toolbar ) {","\t\t// `filter` initialized at top of scope","\t\tfilter = document.createElement( \"input\" );","\t\tfilter.type = \"checkbox\";","\t\tfilter.id = \"qunit-filter-pass\";","","\t\taddEvent( filter, \"click\", function() {","\t\t\tvar tmp,","\t\t\t\tol = document.getElementById( \"qunit-tests\" );","","\t\t\tif ( filter.checked ) {","\t\t\t\tol.className = ol.className + \" hidepass\";","\t\t\t} else {","\t\t\t\ttmp = \" \" + ol.className.replace( /[\\n\\t\\r]/g, \" \" ) + \" \";","\t\t\t\tol.className = tmp.replace( / hidepass /, \" \" );","\t\t\t}","\t\t\tif ( defined.sessionStorage ) {","\t\t\t\tif (filter.checked) {","\t\t\t\t\tsessionStorage.setItem( \"qunit-filter-passed-tests\", \"true\" );","\t\t\t\t} else {","\t\t\t\t\tsessionStorage.removeItem( \"qunit-filter-passed-tests\" );","\t\t\t\t}","\t\t\t}","\t\t});","","\t\tif ( config.hidepassed || defined.sessionStorage &amp;&amp; sessionStorage.getItem( \"qunit-filter-passed-tests\" ) ) {","\t\t\tfilter.checked = true;","\t\t\t// `ol` initialized at top of scope","\t\t\tol = document.getElementById( \"qunit-tests\" );","\t\t\tol.className = ol.className + \" hidepass\";","\t\t}","\t\ttoolbar.appendChild( filter );","","\t\t// `label` initialized at top of scope","\t\tlabel = document.createElement( \"label\" );","\t\tlabel.setAttribute( \"for\", \"qunit-filter-pass\" );","\t\tlabel.setAttribute( \"title\", \"Only show tests and assertons that fail. Stored in sessionStorage.\" );","\t\tlabel.innerHTML = \"Hide passed tests\";","\t\ttoolbar.appendChild( label );","","\t\turlConfigCheckboxes = document.createElement( 'span' );","\t\turlConfigCheckboxes.innerHTML = urlConfigHtml;","\t\taddEvent( urlConfigCheckboxes, \"change\", function( event ) {","\t\t\tvar params = {};","\t\t\tparams[ event.target.name ] = event.target.checked ? true : undefined;","\t\t\twindow.location = QUnit.url( params );","\t\t});","\t\ttoolbar.appendChild( urlConfigCheckboxes );","","\t\tif (numModules &gt; 1) {","\t\t\tmoduleFilter = document.createElement( 'span' );","\t\t\tmoduleFilter.setAttribute( 'id', 'qunit-modulefilter-container' );","\t\t\tmoduleFilter.innerHTML = moduleFilterHtml;","\t\t\taddEvent( moduleFilter, \"change\", function() {","\t\t\t\tvar selectBox = moduleFilter.getElementsByTagName(\"select\")[0],","\t\t\t\t    selectedModule = decodeURIComponent(selectBox.options[selectBox.selectedIndex].value);","","\t\t\t\twindow.location = QUnit.url( { module: ( selectedModule === \"\" ) ? undefined : selectedModule } );","\t\t\t});","\t\t\ttoolbar.appendChild(moduleFilter);","\t\t}","\t}","","\t// `main` initialized at top of scope","\tmain = id( \"qunit-fixture\" );","\tif ( main ) {","\t\tconfig.fixture = main.innerHTML;","\t}","","\tif ( config.autostart ) {","\t\tQUnit.start();","\t}","};","","addEvent( window, \"load\", QUnit.load );","","// `onErrorFnPrev` initialized at top of scope","// Preserve other handlers","onErrorFnPrev = window.onerror;","","// Cover uncaught exceptions","// Returning true will surpress the default browser handler,","// returning false will let it run.","window.onerror = function ( error, filePath, linerNr ) {","\tvar ret = false;","\tif ( onErrorFnPrev ) {","\t\tret = onErrorFnPrev( error, filePath, linerNr );","\t}","","\t// Treat return value as window.onerror itself does,","\t// Only do our handling if not surpressed.","\tif ( ret !== true ) {","\t\tif ( QUnit.config.current ) {","\t\t\tif ( QUnit.config.current.ignoreGlobalErrors ) {","\t\t\t\treturn true;","\t\t\t}","\t\t\tQUnit.pushFailure( error, filePath + \":\" + linerNr );","\t\t} else {","\t\t\tQUnit.test( \"global failure\", extend( function() {","\t\t\t\tQUnit.pushFailure( error, filePath + \":\" + linerNr );","\t\t\t}, { validTest: validTest } ) );","\t\t}","\t\treturn false;","\t}","","\treturn ret;","};","","function done() {","\tconfig.autorun = true;","","\t// Log the last module results","\tif ( config.currentModule ) {","\t\trunLoggingCallbacks( \"moduleDone\", QUnit, {","\t\t\tname: config.currentModule,","\t\t\tfailed: config.moduleStats.bad,","\t\t\tpassed: config.moduleStats.all - config.moduleStats.bad,","\t\t\ttotal: config.moduleStats.all","\t\t});","\t}","","\tvar i, key,","\t\tbanner = id( \"qunit-banner\" ),","\t\ttests = id( \"qunit-tests\" ),","\t\truntime = +new Date() - config.started,","\t\tpassed = config.stats.all - config.stats.bad,","\t\thtml = [","\t\t\t\"Tests completed in \",","\t\t\truntime,","\t\t\t\" milliseconds.&lt;br/&gt;\",","\t\t\t\"&lt;span class='passed'&gt;\",","\t\t\tpassed,","\t\t\t\"&lt;/span&gt; tests of &lt;span class='total'&gt;\",","\t\t\tconfig.stats.all,","\t\t\t\"&lt;/span&gt; passed, &lt;span class='failed'&gt;\",","\t\t\tconfig.stats.bad,","\t\t\t\"&lt;/span&gt; failed.\"","\t\t].join( \"\" );","","\tif ( banner ) {","\t\tbanner.className = ( config.stats.bad ? \"qunit-fail\" : \"qunit-pass\" );","\t}","","\tif ( tests ) {","\t\tid( \"qunit-testresult\" ).innerHTML = html;","\t}","","\tif ( config.altertitle &amp;&amp; typeof document !== \"undefined\" &amp;&amp; document.title ) {","\t\t// show &#10006; for good, &#10004; for bad suite result in title","\t\t// use escape sequences in case file gets loaded with non-utf-8-charset","\t\tdocument.title = [","\t\t\t( config.stats.bad ? \"\\u2716\" : \"\\u2714\" ),","\t\t\tdocument.title.replace( /^[\\u2714\\u2716] /i, \"\" )","\t\t].join( \" \" );","\t}","","\t// clear own sessionStorage items if all tests passed","\tif ( config.reorder &amp;&amp; defined.sessionStorage &amp;&amp; config.stats.bad === 0 ) {","\t\t// `key` &amp; `i` initialized at top of scope","\t\tfor ( i = 0; i &lt; sessionStorage.length; i++ ) {","\t\t\tkey = sessionStorage.key( i++ );","\t\t\tif ( key.indexOf( \"qunit-test-\" ) === 0 ) {","\t\t\t\tsessionStorage.removeItem( key );","\t\t\t}","\t\t}","\t}","","\t// scroll back to top to show results","\tif ( window.scrollTo ) {","\t\twindow.scrollTo(0, 0);","\t}","","\trunLoggingCallbacks( \"done\", QUnit, {","\t\tfailed: config.stats.bad,","\t\tpassed: passed,","\t\ttotal: config.stats.all,","\t\truntime: runtime","\t});","}","","/** @return Boolean: true if this test should be ran */","function validTest( test ) {","\tvar include,","\t\tfilter = config.filter &amp;&amp; config.filter.toLowerCase(),","\t\tmodule = config.module &amp;&amp; config.module.toLowerCase(),","\t\tfullName = (test.module + \": \" + test.testName).toLowerCase();","","\t// Internally-generated tests are always valid","\tif ( test.callback &amp;&amp; test.callback.validTest === validTest ) {","\t\tdelete test.callback.validTest;","\t\treturn true;","\t}","","\tif ( config.testNumber ) {","\t\treturn test.testNumber === config.testNumber;","\t}","","\tif ( module &amp;&amp; ( !test.module || test.module.toLowerCase() !== module ) ) {","\t\treturn false;","\t}","","\tif ( !filter ) {","\t\treturn true;","\t}","","\tinclude = filter.charAt( 0 ) !== \"!\";","\tif ( !include ) {","\t\tfilter = filter.slice( 1 );","\t}","","\t// If the filter matches, we need to honour include","\tif ( fullName.indexOf( filter ) !== -1 ) {","\t\treturn include;","\t}","","\t// Otherwise, do the opposite","\treturn !include;","}","","// so far supports only Firefox, Chrome and Opera (buggy), Safari (for real exceptions)","// Later Safari and IE10 are supposed to support error.stack as well","// See also https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error/Stack","function extractStacktrace( e, offset ) {","\toffset = offset === undefined ? 3 : offset;","","\tvar stack, include, i, regex;","","\tif ( e.stacktrace ) {","\t\t// Opera","\t\treturn e.stacktrace.split( \"\\n\" )[ offset + 3 ];","\t} else if ( e.stack ) {","\t\t// Firefox, Chrome","\t\tstack = e.stack.split( \"\\n\" );","\t\tif (/^error$/i.test( stack[0] ) ) {","\t\t\tstack.shift();","\t\t}","\t\tif ( fileName ) {","\t\t\tinclude = [];","\t\t\tfor ( i = offset; i &lt; stack.length; i++ ) {","\t\t\t\tif ( stack[ i ].indexOf( fileName ) != -1 ) {","\t\t\t\t\tbreak;","\t\t\t\t}","\t\t\t\tinclude.push( stack[ i ] );","\t\t\t}","\t\t\tif ( include.length ) {","\t\t\t\treturn include.join( \"\\n\" );","\t\t\t}","\t\t}","\t\treturn stack[ offset ];","\t} else if ( e.sourceURL ) {","\t\t// Safari, PhantomJS","\t\t// hopefully one day Safari provides actual stacktraces","\t\t// exclude useless self-reference for generated Error objects","\t\tif ( /qunit.js$/.test( e.sourceURL ) ) {","\t\t\treturn;","\t\t}","\t\t// for actual exceptions, this is useful","\t\treturn e.sourceURL + \":\" + e.line;","\t}","}","function sourceFromStacktrace( offset ) {","\ttry {","\t\tthrow new Error();","\t} catch ( e ) {","\t\treturn extractStacktrace( e, offset );","\t}","}","","function escapeInnerText( s ) {","\tif ( !s ) {","\t\treturn \"\";","\t}","\ts = s + \"\";","\treturn s.replace( /[\\&amp;&lt;&gt;]/g, function( s ) {","\t\tswitch( s ) {","\t\t\tcase \"&amp;\": return \"&amp;amp;\";","\t\t\tcase \"&lt;\": return \"&amp;lt;\";","\t\t\tcase \"&gt;\": return \"&amp;gt;\";","\t\t\tdefault: return s;","\t\t}","\t});","}","","function synchronize( callback, last ) {","\tconfig.queue.push( callback );","","\tif ( config.autorun &amp;&amp; !config.blocking ) {","\t\tprocess( last );","\t}","}","","function process( last ) {","\tfunction next() {","\t\tprocess( last );","\t}","\tvar start = new Date().getTime();","\tconfig.depth = config.depth ? config.depth + 1 : 1;","","\twhile ( config.queue.length &amp;&amp; !config.blocking ) {","\t\tif ( !defined.setTimeout || config.updateRate &lt;= 0 || ( ( new Date().getTime() - start ) &lt; config.updateRate ) ) {","\t\t\tconfig.queue.shift()();","\t\t} else {","\t\t\twindow.setTimeout( next, 13 );","\t\t\tbreak;","\t\t}","\t}","\tconfig.depth--;","\tif ( last &amp;&amp; !config.blocking &amp;&amp; !config.queue.length &amp;&amp; config.depth === 0 ) {","\t\tdone();","\t}","}","","function saveGlobal() {","\tconfig.pollution = [];","","\tif ( config.noglobals ) {","\t\tfor ( var key in window ) {","\t\t\t// in Opera sometimes DOM element ids show up here, ignore them","\t\t\tif ( !hasOwn.call( window, key ) || /^qunit-test-output/.test( key ) ) {","\t\t\t\tcontinue;","\t\t\t}","\t\t\tconfig.pollution.push( key );","\t\t}","\t}","}","","function checkPollution( name ) {","\tvar newGlobals,","\t\tdeletedGlobals,","\t\told = config.pollution;","","\tsaveGlobal();","","\tnewGlobals = diff( config.pollution, old );","\tif ( newGlobals.length &gt; 0 ) {","\t\tQUnit.pushFailure( \"Introduced global variable(s): \" + newGlobals.join(\", \") );","\t}","","\tdeletedGlobals = diff( old, config.pollution );","\tif ( deletedGlobals.length &gt; 0 ) {","\t\tQUnit.pushFailure( \"Deleted global variable(s): \" + deletedGlobals.join(\", \") );","\t}","}","","// returns a new Array with the elements that are in a but not in b","function diff( a, b ) {","\tvar i, j,","\t\tresult = a.slice();","","\tfor ( i = 0; i &lt; result.length; i++ ) {","\t\tfor ( j = 0; j &lt; b.length; j++ ) {","\t\t\tif ( result[i] === b[j] ) {","\t\t\t\tresult.splice( i, 1 );","\t\t\t\ti--;","\t\t\t\tbreak;","\t\t\t}","\t\t}","\t}","\treturn result;","}","","function extend( a, b ) {","\tfor ( var prop in b ) {","\t\tif ( b[ prop ] === undefined ) {","\t\t\tdelete a[ prop ];","","\t\t// Avoid \"Member not found\" error in IE8 caused by setting window.constructor","\t\t} else if ( prop !== \"constructor\" || a !== window ) {","\t\t\ta[ prop ] = b[ prop ];","\t\t}","\t}","","\treturn a;","}","","function addEvent( elem, type, fn ) {","\tif ( elem.addEventListener ) {","\t\telem.addEventListener( type, fn, false );","\t} else if ( elem.attachEvent ) {","\t\telem.attachEvent( \"on\" + type, fn );","\t} else {","\t\tfn();","\t}","}","","function hasClass( elem, name ) {","\treturn (\" \" + elem.className + \" \").indexOf(\" \" + name + \" \") &gt; -1;","}","","function addClass( elem, name ) {","\tif ( !hasClass( elem, name ) ) {","\t\telem.className += (elem.className ? \" \" : \"\") + name;","\t}","}","","function removeClass( elem, name ) {","\tvar set = \" \" + elem.className + \" \";","\t// Class name may appear multiple times","\twhile ( set.indexOf(\" \" + name + \" \") &gt; -1 ) {","\t\tset = set.replace(\" \" + name + \" \" , \" \");","\t}","\t// If possible, trim it for prettiness, but not neccecarily","\telem.className = window.jQuery ? jQuery.trim( set ) : ( set.trim ? set.trim() : set );","}","","function id( name ) {","\treturn !!( typeof document !== \"undefined\" &amp;&amp; document &amp;&amp; document.getElementById ) &amp;&amp;","\t\tdocument.getElementById( name );","}","","function registerLoggingCallback( key ) {","\treturn function( callback ) {","\t\tconfig[key].push( callback );","\t};","}","","// Supports deprecated method of completely overwriting logging callbacks","function runLoggingCallbacks( key, scope, args ) {","\t//debugger;","\tvar i, callbacks;","\tif ( QUnit.hasOwnProperty( key ) ) {","\t\tQUnit[ key ].call(scope, args );","\t} else {","\t\tcallbacks = config[ key ];","\t\tfor ( i = 0; i &lt; callbacks.length; i++ ) {","\t\t\tcallbacks[ i ].call( scope, args );","\t\t}","\t}","}","","// Test for equality any JavaScript type.","// Author: Philippe Rath&#233; &lt;prathe@gmail.com&gt;","QUnit.equiv = (function() {","","\t// Call the o related callback with the given arguments.","\tfunction bindCallbacks( o, callbacks, args ) {","\t\tvar prop = QUnit.objectType( o );","\t\tif ( prop ) {","\t\t\tif ( QUnit.objectType( callbacks[ prop ] ) === \"function\" ) {","\t\t\t\treturn callbacks[ prop ].apply( callbacks, args );","\t\t\t} else {","\t\t\t\treturn callbacks[ prop ]; // or undefined","\t\t\t}","\t\t}","\t}","","\t// the real equiv function","\tvar innerEquiv,","\t\t// stack to decide between skip/abort functions","\t\tcallers = [],","\t\t// stack to avoiding loops from circular referencing","\t\tparents = [],","","\t\tgetProto = Object.getPrototypeOf || function ( obj ) {","\t\t\treturn obj.__proto__;","\t\t},","\t\tcallbacks = (function () {","","\t\t\t// for string, boolean, number and null","\t\t\tfunction useStrictEquality( b, a ) {","\t\t\t\tif ( b instanceof a.constructor || a instanceof b.constructor ) {","\t\t\t\t\t// to catch short annotaion VS 'new' annotation of a","\t\t\t\t\t// declaration","\t\t\t\t\t// e.g. var i = 1;","\t\t\t\t\t// var j = new Number(1);","\t\t\t\t\treturn a == b;","\t\t\t\t} else {","\t\t\t\t\treturn a === b;","\t\t\t\t}","\t\t\t}","","\t\t\treturn {","\t\t\t\t\"string\": useStrictEquality,","\t\t\t\t\"boolean\": useStrictEquality,","\t\t\t\t\"number\": useStrictEquality,","\t\t\t\t\"null\": useStrictEquality,","\t\t\t\t\"undefined\": useStrictEquality,","","\t\t\t\t\"nan\": function( b ) {","\t\t\t\t\treturn isNaN( b );","\t\t\t\t},","","\t\t\t\t\"date\": function( b, a ) {","\t\t\t\t\treturn QUnit.objectType( b ) === \"date\" &amp;&amp; a.valueOf() === b.valueOf();","\t\t\t\t},","","\t\t\t\t\"regexp\": function( b, a ) {","\t\t\t\t\treturn QUnit.objectType( b ) === \"regexp\" &amp;&amp;","\t\t\t\t\t\t// the regex itself","\t\t\t\t\t\ta.source === b.source &amp;&amp;","\t\t\t\t\t\t// and its modifers","\t\t\t\t\t\ta.global === b.global &amp;&amp;","\t\t\t\t\t\t// (gmi) ...","\t\t\t\t\t\ta.ignoreCase === b.ignoreCase &amp;&amp;","\t\t\t\t\t\ta.multiline === b.multiline &amp;&amp;","\t\t\t\t\t\ta.sticky === b.sticky;","\t\t\t\t},","","\t\t\t\t// - skip when the property is a method of an instance (OOP)","\t\t\t\t// - abort otherwise,","\t\t\t\t// initial === would have catch identical references anyway","\t\t\t\t\"function\": function() {","\t\t\t\t\tvar caller = callers[callers.length - 1];","\t\t\t\t\treturn caller !== Object &amp;&amp; typeof caller !== \"undefined\";","\t\t\t\t},","","\t\t\t\t\"array\": function( b, a ) {","\t\t\t\t\tvar i, j, len, loop;","","\t\t\t\t\t// b could be an object literal here","\t\t\t\t\tif ( QUnit.objectType( b ) !== \"array\" ) {","\t\t\t\t\t\treturn false;","\t\t\t\t\t}","","\t\t\t\t\tlen = a.length;","\t\t\t\t\tif ( len !== b.length ) {","\t\t\t\t\t\t// safe and faster","\t\t\t\t\t\treturn false;","\t\t\t\t\t}","","\t\t\t\t\t// track reference to avoid circular references","\t\t\t\t\tparents.push( a );","\t\t\t\t\tfor ( i = 0; i &lt; len; i++ ) {","\t\t\t\t\t\tloop = false;","\t\t\t\t\t\tfor ( j = 0; j &lt; parents.length; j++ ) {","\t\t\t\t\t\t\tif ( parents[j] === a[i] ) {","\t\t\t\t\t\t\t\tloop = true;// dont rewalk array","\t\t\t\t\t\t\t}","\t\t\t\t\t\t}","\t\t\t\t\t\tif ( !loop &amp;&amp; !innerEquiv(a[i], b[i]) ) {","\t\t\t\t\t\t\tparents.pop();","\t\t\t\t\t\t\treturn false;","\t\t\t\t\t\t}","\t\t\t\t\t}","\t\t\t\t\tparents.pop();","\t\t\t\t\treturn true;","\t\t\t\t},","","\t\t\t\t\"object\": function( b, a ) {","\t\t\t\t\tvar i, j, loop,","\t\t\t\t\t\t// Default to true","\t\t\t\t\t\teq = true,","\t\t\t\t\t\taProperties = [],","\t\t\t\t\t\tbProperties = [];","","\t\t\t\t\t// comparing constructors is more strict than using","\t\t\t\t\t// instanceof","\t\t\t\t\tif ( a.constructor !== b.constructor ) {","\t\t\t\t\t\t// Allow objects with no prototype to be equivalent to","\t\t\t\t\t\t// objects with Object as their constructor.","\t\t\t\t\t\tif ( !(( getProto(a) === null &amp;&amp; getProto(b) === Object.prototype ) ||","\t\t\t\t\t\t\t( getProto(b) === null &amp;&amp; getProto(a) === Object.prototype ) ) ) {","\t\t\t\t\t\t\t\treturn false;","\t\t\t\t\t\t}","\t\t\t\t\t}","","\t\t\t\t\t// stack constructor before traversing properties","\t\t\t\t\tcallers.push( a.constructor );","\t\t\t\t\t// track reference to avoid circular references","\t\t\t\t\tparents.push( a );","","\t\t\t\t\tfor ( i in a ) { // be strict: don't ensures hasOwnProperty","\t\t\t\t\t\t\t\t\t// and go deep","\t\t\t\t\t\tloop = false;","\t\t\t\t\t\tfor ( j = 0; j &lt; parents.length; j++ ) {","\t\t\t\t\t\t\tif ( parents[j] === a[i] ) {","\t\t\t\t\t\t\t\t// don't go down the same path twice","\t\t\t\t\t\t\t\tloop = true;","\t\t\t\t\t\t\t}","\t\t\t\t\t\t}","\t\t\t\t\t\taProperties.push(i); // collect a's properties","","\t\t\t\t\t\tif (!loop &amp;&amp; !innerEquiv( a[i], b[i] ) ) {","\t\t\t\t\t\t\teq = false;","\t\t\t\t\t\t\tbreak;","\t\t\t\t\t\t}","\t\t\t\t\t}","","\t\t\t\t\tcallers.pop(); // unstack, we are done","\t\t\t\t\tparents.pop();","","\t\t\t\t\tfor ( i in b ) {","\t\t\t\t\t\tbProperties.push( i ); // collect b's properties","\t\t\t\t\t}","","\t\t\t\t\t// Ensures identical properties name","\t\t\t\t\treturn eq &amp;&amp; innerEquiv( aProperties.sort(), bProperties.sort() );","\t\t\t\t}","\t\t\t};","\t\t}());","","\tinnerEquiv = function() { // can take multiple arguments","\t\tvar args = [].slice.apply( arguments );","\t\tif ( args.length &lt; 2 ) {","\t\t\treturn true; // end transition","\t\t}","","\t\treturn (function( a, b ) {","\t\t\tif ( a === b ) {","\t\t\t\treturn true; // catch the most you can","\t\t\t} else if ( a === null || b === null || typeof a === \"undefined\" ||","\t\t\t\t\ttypeof b === \"undefined\" ||","\t\t\t\t\tQUnit.objectType(a) !== QUnit.objectType(b) ) {","\t\t\t\treturn false; // don't lose time with error prone cases","\t\t\t} else {","\t\t\t\treturn bindCallbacks(a, callbacks, [ b, a ]);","\t\t\t}","","\t\t\t// apply transition with (1..n) arguments","\t\t}( args[0], args[1] ) &amp;&amp; arguments.callee.apply( this, args.splice(1, args.length - 1 )) );","\t};","","\treturn innerEquiv;","}());","","/**"," * jsDump Copyright (c) 2008 Ariel Flesler - aflesler(at)gmail(dot)com |"," * http://flesler.blogspot.com Licensed under BSD"," * (http://www.opensource.org/licenses/bsd-license.php) Date: 5/15/2008"," *"," * @projectDescription Advanced and extensible data dumping for Javascript."," * @version 1.0.0"," * @author Ariel Flesler"," * @link {http://flesler.blogspot.com/2008/05/jsdump-pretty-dump-of-any-javascript.html}"," */","QUnit.jsDump = (function() {","\tfunction quote( str ) {","\t\treturn '\"' + str.toString().replace( /\"/g, '\\\\\"' ) + '\"';","\t}","\tfunction literal( o ) {","\t\treturn o + \"\";","\t}","\tfunction join( pre, arr, post ) {","\t\tvar s = jsDump.separator(),","\t\t\tbase = jsDump.indent(),","\t\t\tinner = jsDump.indent(1);","\t\tif ( arr.join ) {","\t\t\tarr = arr.join( \",\" + s + inner );","\t\t}","\t\tif ( !arr ) {","\t\t\treturn pre + post;","\t\t}","\t\treturn [ pre, inner + arr, base + post ].join(s);","\t}","\tfunction array( arr, stack ) {","\t\tvar i = arr.length, ret = new Array(i);","\t\tthis.up();","\t\twhile ( i-- ) {","\t\t\tret[i] = this.parse( arr[i] , undefined , stack);","\t\t}","\t\tthis.down();","\t\treturn join( \"[\", ret, \"]\" );","\t}","","\tvar reName = /^function (\\w+)/,","\t\tjsDump = {","\t\t\t// type is used mostly internally, you can fix a (custom)type in advance","\t\t\tparse: function( obj, type, stack ) {","\t\t\t\tstack = stack || [ ];","\t\t\t\tvar inStack, res,","\t\t\t\t\tparser = this.parsers[ type || this.typeOf(obj) ];","","\t\t\t\ttype = typeof parser;","\t\t\t\tinStack = inArray( obj, stack );","","\t\t\t\tif ( inStack != -1 ) {","\t\t\t\t\treturn \"recursion(\" + (inStack - stack.length) + \")\";","\t\t\t\t}","\t\t\t\tif ( type == \"function\" )  {","\t\t\t\t\tstack.push( obj );","\t\t\t\t\tres = parser.call( this, obj, stack );","\t\t\t\t\tstack.pop();","\t\t\t\t\treturn res;","\t\t\t\t}","\t\t\t\treturn ( type == \"string\" ) ? parser : this.parsers.error;","\t\t\t},","\t\t\ttypeOf: function( obj ) {","\t\t\t\tvar type;","\t\t\t\tif ( obj === null ) {","\t\t\t\t\ttype = \"null\";","\t\t\t\t} else if ( typeof obj === \"undefined\" ) {","\t\t\t\t\ttype = \"undefined\";","\t\t\t\t} else if ( QUnit.is( \"regexp\", obj) ) {","\t\t\t\t\ttype = \"regexp\";","\t\t\t\t} else if ( QUnit.is( \"date\", obj) ) {","\t\t\t\t\ttype = \"date\";","\t\t\t\t} else if ( QUnit.is( \"function\", obj) ) {","\t\t\t\t\ttype = \"function\";","\t\t\t\t} else if ( typeof obj.setInterval !== undefined &amp;&amp; typeof obj.document !== \"undefined\" &amp;&amp; typeof obj.nodeType === \"undefined\" ) {","\t\t\t\t\ttype = \"window\";","\t\t\t\t} else if ( obj.nodeType === 9 ) {","\t\t\t\t\ttype = \"document\";","\t\t\t\t} else if ( obj.nodeType ) {","\t\t\t\t\ttype = \"node\";","\t\t\t\t} else if (","\t\t\t\t\t// native arrays","\t\t\t\t\ttoString.call( obj ) === \"[object Array]\" ||","\t\t\t\t\t// NodeList objects","\t\t\t\t\t( typeof obj.length === \"number\" &amp;&amp; typeof obj.item !== \"undefined\" &amp;&amp; ( obj.length ? obj.item(0) === obj[0] : ( obj.item( 0 ) === null &amp;&amp; typeof obj[0] === \"undefined\" ) ) )","\t\t\t\t) {","\t\t\t\t\ttype = \"array\";","\t\t\t\t} else if ( obj.constructor === Error.prototype.constructor ) {","\t\t\t\t\ttype = \"error\";","\t\t\t\t} else {","\t\t\t\t\ttype = typeof obj;","\t\t\t\t}","\t\t\t\treturn type;","\t\t\t},","\t\t\tseparator: function() {","\t\t\t\treturn this.multiline ?\tthis.HTML ? \"&lt;br /&gt;\" : \"\\n\" : this.HTML ? \"&amp;nbsp;\" : \" \";","\t\t\t},","\t\t\t// extra can be a number, shortcut for increasing-calling-decreasing","\t\t\tindent: function( extra ) {","\t\t\t\tif ( !this.multiline ) {","\t\t\t\t\treturn \"\";","\t\t\t\t}","\t\t\t\tvar chr = this.indentChar;","\t\t\t\tif ( this.HTML ) {","\t\t\t\t\tchr = chr.replace( /\\t/g, \"   \" ).replace( / /g, \"&amp;nbsp;\" );","\t\t\t\t}","\t\t\t\treturn new Array( this._depth_ + (extra||0) ).join(chr);","\t\t\t},","\t\t\tup: function( a ) {","\t\t\t\tthis._depth_ += a || 1;","\t\t\t},","\t\t\tdown: function( a ) {","\t\t\t\tthis._depth_ -= a || 1;","\t\t\t},","\t\t\tsetParser: function( name, parser ) {","\t\t\t\tthis.parsers[name] = parser;","\t\t\t},","\t\t\t// The next 3 are exposed so you can use them","\t\t\tquote: quote,","\t\t\tliteral: literal,","\t\t\tjoin: join,","\t\t\t//","\t\t\t_depth_: 1,","\t\t\t// This is the list of parsers, to modify them, use jsDump.setParser","\t\t\tparsers: {","\t\t\t\twindow: \"[Window]\",","\t\t\t\tdocument: \"[Document]\",","\t\t\t\terror: function(error) {","\t\t\t\t\treturn \"Error(\\\"\" + error.message + \"\\\")\";","\t\t\t\t},","\t\t\t\tunknown: \"[Unknown]\",","\t\t\t\t\"null\": \"null\",","\t\t\t\t\"undefined\": \"undefined\",","\t\t\t\t\"function\": function( fn ) {","\t\t\t\t\tvar ret = \"function\",","\t\t\t\t\t\t// functions never have name in IE","\t\t\t\t\t\tname = \"name\" in fn ? fn.name : (reName.exec(fn) || [])[1];","","\t\t\t\t\tif ( name ) {","\t\t\t\t\t\tret += \" \" + name;","\t\t\t\t\t}","\t\t\t\t\tret += \"( \";","","\t\t\t\t\tret = [ ret, QUnit.jsDump.parse( fn, \"functionArgs\" ), \"){\" ].join( \"\" );","\t\t\t\t\treturn join( ret, QUnit.jsDump.parse(fn,\"functionCode\" ), \"}\" );","\t\t\t\t},","\t\t\t\tarray: array,","\t\t\t\tnodelist: array,","\t\t\t\t\"arguments\": array,","\t\t\t\tobject: function( map, stack ) {","\t\t\t\t\tvar ret = [ ], keys, key, val, i;","\t\t\t\t\tQUnit.jsDump.up();","\t\t\t\t\tkeys = [];","\t\t\t\t\tfor ( key in map ) {","\t\t\t\t\t\tkeys.push( key );","\t\t\t\t\t}","\t\t\t\t\tkeys.sort();","\t\t\t\t\tfor ( i = 0; i &lt; keys.length; i++ ) {","\t\t\t\t\t\tkey = keys[ i ];","\t\t\t\t\t\tval = map[ key ];","\t\t\t\t\t\tret.push( QUnit.jsDump.parse( key, \"key\" ) + \": \" + QUnit.jsDump.parse( val, undefined, stack ) );","\t\t\t\t\t}","\t\t\t\t\tQUnit.jsDump.down();","\t\t\t\t\treturn join( \"{\", ret, \"}\" );","\t\t\t\t},","\t\t\t\tnode: function( node ) {","\t\t\t\t\tvar a, val,","\t\t\t\t\t\topen = QUnit.jsDump.HTML ? \"&amp;lt;\" : \"&lt;\",","\t\t\t\t\t\tclose = QUnit.jsDump.HTML ? \"&amp;gt;\" : \"&gt;\",","\t\t\t\t\t\ttag = node.nodeName.toLowerCase(),","\t\t\t\t\t\tret = open + tag;","","\t\t\t\t\tfor ( a in QUnit.jsDump.DOMAttrs ) {","\t\t\t\t\t\tval = node[ QUnit.jsDump.DOMAttrs[a] ];","\t\t\t\t\t\tif ( val ) {","\t\t\t\t\t\t\tret += \" \" + a + \"=\" + QUnit.jsDump.parse( val, \"attribute\" );","\t\t\t\t\t\t}","\t\t\t\t\t}","\t\t\t\t\treturn ret + close + open + \"/\" + tag + close;","\t\t\t\t},","\t\t\t\t// function calls it internally, it's the arguments part of the function","\t\t\t\tfunctionArgs: function( fn ) {","\t\t\t\t\tvar args,","\t\t\t\t\t\tl = fn.length;","","\t\t\t\t\tif ( !l ) {","\t\t\t\t\t\treturn \"\";","\t\t\t\t\t}","","\t\t\t\t\targs = new Array(l);","\t\t\t\t\twhile ( l-- ) {","\t\t\t\t\t\t// 97 is 'a'","\t\t\t\t\t\targs[l] = String.fromCharCode(97+l);","\t\t\t\t\t}","\t\t\t\t\treturn \" \" + args.join( \", \" ) + \" \";","\t\t\t\t},","\t\t\t\t// object calls it internally, the key part of an item in a map","\t\t\t\tkey: quote,","\t\t\t\t// function calls it internally, it's the content of the function","\t\t\t\tfunctionCode: \"[code]\",","\t\t\t\t// node calls it internally, it's an html attribute value","\t\t\t\tattribute: quote,","\t\t\t\tstring: quote,","\t\t\t\tdate: quote,","\t\t\t\tregexp: literal,","\t\t\t\tnumber: literal,","\t\t\t\t\"boolean\": literal","\t\t\t},","\t\t\tDOMAttrs: {","\t\t\t\t//attributes to dump from nodes, name=&gt;realName","\t\t\t\tid: \"id\",","\t\t\t\tname: \"name\",","\t\t\t\t\"class\": \"className\"","\t\t\t},","\t\t\t// if true, entities are escaped ( &lt;, &gt;, \\t, space and \\n )","\t\t\tHTML: false,","\t\t\t// indentation unit","\t\t\tindentChar: \"  \",","\t\t\t// if true, items in a collection, are separated by a \\n, else just a space.","\t\t\tmultiline: true","\t\t};","","\treturn jsDump;","}());","","// from Sizzle.js","function getText( elems ) {","\tvar i, elem,","\t\tret = \"\";","","\tfor ( i = 0; elems[i]; i++ ) {","\t\telem = elems[i];","","\t\t// Get the text from text nodes and CDATA nodes","\t\tif ( elem.nodeType === 3 || elem.nodeType === 4 ) {","\t\t\tret += elem.nodeValue;","","\t\t// Traverse everything else, except comment nodes","\t\t} else if ( elem.nodeType !== 8 ) {","\t\t\tret += getText( elem.childNodes );","\t\t}","\t}","","\treturn ret;","}","","// from jquery.js","function inArray( elem, array ) {","\tif ( array.indexOf ) {","\t\treturn array.indexOf( elem );","\t}","","\tfor ( var i = 0, length = array.length; i &lt; length; i++ ) {","\t\tif ( array[ i ] === elem ) {","\t\t\treturn i;","\t\t}","\t}","","\treturn -1;","}","","/*"," * Javascript Diff Algorithm"," *  By John Resig (http://ejohn.org/)"," *  Modified by Chu Alan \"sprite\""," *"," * Released under the MIT license."," *"," * More Info:"," *  http://ejohn.org/projects/javascript-diff-algorithm/"," *"," * Usage: QUnit.diff(expected, actual)"," *"," * QUnit.diff( \"the quick brown fox jumped over\", \"the quick fox jumps over\" ) == \"the  quick &lt;del&gt;brown &lt;/del&gt; fox &lt;del&gt;jumped &lt;/del&gt;&lt;ins&gt;jumps &lt;/ins&gt; over\""," */","QUnit.diff = (function() {","\tfunction diff( o, n ) {","\t\tvar i,","\t\t\tns = {},","\t\t\tos = {};","","\t\tfor ( i = 0; i &lt; n.length; i++ ) {","\t\t\tif ( ns[ n[i] ] == null ) {","\t\t\t\tns[ n[i] ] = {","\t\t\t\t\trows: [],","\t\t\t\t\to: null","\t\t\t\t};","\t\t\t}","\t\t\tns[ n[i] ].rows.push( i );","\t\t}","","\t\tfor ( i = 0; i &lt; o.length; i++ ) {","\t\t\tif ( os[ o[i] ] == null ) {","\t\t\t\tos[ o[i] ] = {","\t\t\t\t\trows: [],","\t\t\t\t\tn: null","\t\t\t\t};","\t\t\t}","\t\t\tos[ o[i] ].rows.push( i );","\t\t}","","\t\tfor ( i in ns ) {","\t\t\tif ( !hasOwn.call( ns, i ) ) {","\t\t\t\tcontinue;","\t\t\t}","\t\t\tif ( ns[i].rows.length == 1 &amp;&amp; typeof os[i] != \"undefined\" &amp;&amp; os[i].rows.length == 1 ) {","\t\t\t\tn[ ns[i].rows[0] ] = {","\t\t\t\t\ttext: n[ ns[i].rows[0] ],","\t\t\t\t\trow: os[i].rows[0]","\t\t\t\t};","\t\t\t\to[ os[i].rows[0] ] = {","\t\t\t\t\ttext: o[ os[i].rows[0] ],","\t\t\t\t\trow: ns[i].rows[0]","\t\t\t\t};","\t\t\t}","\t\t}","","\t\tfor ( i = 0; i &lt; n.length - 1; i++ ) {","\t\t\tif ( n[i].text != null &amp;&amp; n[ i + 1 ].text == null &amp;&amp; n[i].row + 1 &lt; o.length &amp;&amp; o[ n[i].row + 1 ].text == null &amp;&amp;","\t\t\t\t\t\tn[ i + 1 ] == o[ n[i].row + 1 ] ) {","","\t\t\t\tn[ i + 1 ] = {","\t\t\t\t\ttext: n[ i + 1 ],","\t\t\t\t\trow: n[i].row + 1","\t\t\t\t};","\t\t\t\to[ n[i].row + 1 ] = {","\t\t\t\t\ttext: o[ n[i].row + 1 ],","\t\t\t\t\trow: i + 1","\t\t\t\t};","\t\t\t}","\t\t}","","\t\tfor ( i = n.length - 1; i &gt; 0; i-- ) {","\t\t\tif ( n[i].text != null &amp;&amp; n[ i - 1 ].text == null &amp;&amp; n[i].row &gt; 0 &amp;&amp; o[ n[i].row - 1 ].text == null &amp;&amp;","\t\t\t\t\t\tn[ i - 1 ] == o[ n[i].row - 1 ]) {","","\t\t\t\tn[ i - 1 ] = {","\t\t\t\t\ttext: n[ i - 1 ],","\t\t\t\t\trow: n[i].row - 1","\t\t\t\t};","\t\t\t\to[ n[i].row - 1 ] = {","\t\t\t\t\ttext: o[ n[i].row - 1 ],","\t\t\t\t\trow: i - 1","\t\t\t\t};","\t\t\t}","\t\t}","","\t\treturn {","\t\t\to: o,","\t\t\tn: n","\t\t};","\t}","","\treturn function( o, n ) {","\t\to = o.replace( /\\s+$/, \"\" );","\t\tn = n.replace( /\\s+$/, \"\" );","","\t\tvar i, pre,","\t\t\tstr = \"\",","\t\t\tout = diff( o === \"\" ? [] : o.split(/\\s+/), n === \"\" ? [] : n.split(/\\s+/) ),","\t\t\toSpace = o.match(/\\s+/g),","\t\t\tnSpace = n.match(/\\s+/g);","","\t\tif ( oSpace == null ) {","\t\t\toSpace = [ \" \" ];","\t\t}","\t\telse {","\t\t\toSpace.push( \" \" );","\t\t}","","\t\tif ( nSpace == null ) {","\t\t\tnSpace = [ \" \" ];","\t\t}","\t\telse {","\t\t\tnSpace.push( \" \" );","\t\t}","","\t\tif ( out.n.length === 0 ) {","\t\t\tfor ( i = 0; i &lt; out.o.length; i++ ) {","\t\t\t\tstr += \"&lt;del&gt;\" + out.o[i] + oSpace[i] + \"&lt;/del&gt;\";","\t\t\t}","\t\t}","\t\telse {","\t\t\tif ( out.n[0].text == null ) {","\t\t\t\tfor ( n = 0; n &lt; out.o.length &amp;&amp; out.o[n].text == null; n++ ) {","\t\t\t\t\tstr += \"&lt;del&gt;\" + out.o[n] + oSpace[n] + \"&lt;/del&gt;\";","\t\t\t\t}","\t\t\t}","","\t\t\tfor ( i = 0; i &lt; out.n.length; i++ ) {","\t\t\t\tif (out.n[i].text == null) {","\t\t\t\t\tstr += \"&lt;ins&gt;\" + out.n[i] + nSpace[i] + \"&lt;/ins&gt;\";","\t\t\t\t}","\t\t\t\telse {","\t\t\t\t\t// `pre` initialized at top of scope","\t\t\t\t\tpre = \"\";","","\t\t\t\t\tfor ( n = out.n[i].row + 1; n &lt; out.o.length &amp;&amp; out.o[n].text == null; n++ ) {","\t\t\t\t\t\tpre += \"&lt;del&gt;\" + out.o[n] + oSpace[n] + \"&lt;/del&gt;\";","\t\t\t\t\t}","\t\t\t\t\tstr += \" \" + out.n[i].text + nSpace[i] + pre;","\t\t\t\t}","\t\t\t}","\t\t}","","\t\treturn str;","\t};","}());","","// for CommonJS enviroments, export everything","if ( typeof exports !== \"undefined\" ) {","\textend(exports, QUnit);","}","","// get at whatever the global object is, like window in browsers","}( (function() {return this;}.call()) ));"];
-_$jscoverage['qunit/qunit.js'][11]++;
+if (! _$jscoverage.branchData['qunit/qunit.js']) {
+  _$jscoverage.branchData['qunit/qunit.js'] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][17] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][17][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][23] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][23][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][49] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][49][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][68] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][68][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][114] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][114][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][122] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][122][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][138] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][138][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][157] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][157][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][164] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][164][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][164][2] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][166] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][166][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][166][2] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][166][3] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][168] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][168][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][168][2] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][181] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][181][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][185] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][185][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][190] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][190][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][203] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][203][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][204] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][204][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][211] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][211][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][226] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][226][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][227] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][227][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][227][2] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][227][3] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][230] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][230][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][230][2] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][245] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][245][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][292] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][292][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][292][2] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][295] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][295][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][315] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][315][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][327] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][327][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][356] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][356][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][364] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][364][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][366] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][366][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][370] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][370][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][378] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][378][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][395] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][395][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][398] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][398][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][434] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][434][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][439] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][439][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][459] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][459][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][467] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][467][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][491] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][491][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][499] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][499][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][508] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][508][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][521] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][521][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][527] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][527][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][533] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][533][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][634] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][634][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][641] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][641][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][658] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][658][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][661] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][661][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][666] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][666][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][696] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][696][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][709] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][709][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][713] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][713][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][717] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][717][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][721] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][721][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][733] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][733][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][754] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][754][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][758] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][758][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][762] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][762][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][767] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][767][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][767][2] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][771] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][771][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][783] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][783][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][804] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][804][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][813] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][813][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][820] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][820][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][849] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][849][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][855] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][855][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][859] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][859][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][927] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][927][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][927][2] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][927][3] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][948] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][948][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][950] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][950][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][961] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][961][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][963] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][963][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][965] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][965][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][972] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][972][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][978] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][978][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][984] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][984][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1009] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1009][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1009][2] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1033] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1033][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1041] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1041][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1049] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1049][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1069] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1069][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1075] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1075][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1123] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1123][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1127] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1127][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1131] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1131][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1131][2] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1131][3] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1141] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1141][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1141][2] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1141][3] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1143] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1143][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1145] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1145][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1167] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1167][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1168] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1168][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1172] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1172][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1172][2] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1178] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1178][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1181] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1181][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1181][2] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1181][3] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1189] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1189][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1195] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1195][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1207] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1207][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1217] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1217][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1220] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1220][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1222] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1222][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1223] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1223][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1237] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1237][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1270] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1270][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1282] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1282][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1283] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1283][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1283][2] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1283][3] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1283][4] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1291] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1291][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1291][2] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1291][3] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1291][4] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1302] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1302][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1318] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1318][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1323] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1323][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1333] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1333][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1334] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1334][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1335] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1335][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1347] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1347][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1351] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1351][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1351][2] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1351][3] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1370] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1370][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1382] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1382][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1390] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1390][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1390][2] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1390][3] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1390][4] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1404] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1404][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1408] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1408][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1421] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1421][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1422] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1422][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1437] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1437][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1444] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1444][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1449] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1449][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1451] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1451][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1467] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1467][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1467][2] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1467][3] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1471] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1471][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1471][2] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1473] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1473][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1473][2] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1475] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1475][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1475][2] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1477] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1477][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1477][2] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1478] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1478][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1478][2] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1479] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1479][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1487] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1487][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1487][2] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1487][3] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1494] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1494][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1499] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1499][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1506] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1506][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1508] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1508][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1509] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1509][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1513] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1513][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1531] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1531][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1534] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1534][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1534][2] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1534][3] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1534][4] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1535] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1535][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1535][2] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1535][3] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1548] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1548][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1549] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1549][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1556] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1556][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1570] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1570][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1577] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1577][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1582] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1582][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1584] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1584][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1584][2] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1584][3] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1584][4] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1584][5] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1584][6] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1585] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1585][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1585][2] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1586] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1586][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1593] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1593][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1642] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1642][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1644] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1644][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1649] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1649][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1652] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1652][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1658] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1658][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1662] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1662][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1664] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1664][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1666] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1666][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1668] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1668][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1670] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1670][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1672] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1672][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1672][2] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1672][3] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1672][4] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1672][5] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1674] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1674][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1680] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1680][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1680][2] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1682] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1682][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1682][2] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1682][3] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1682][4] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1682][5] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1682][6] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1682][7] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1682][8] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1685] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1685][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1704] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1704][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1707] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1707][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1710] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1710][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1734] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1734][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1736] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1736][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1755] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1755][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1772] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1772][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1832] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1832][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1832][2] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1832][3] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1836] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1836][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1850] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1850][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1851] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1851][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1879] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1879][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1880] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1880][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1889] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1889][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1890] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1890][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1903] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1903][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1903][2] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1903][3] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1903][4] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1903][5] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1915] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1915][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1916] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1916][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1916][2] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1916][3] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1916][4] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1916][5] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1916][6] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1916][7] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1916][8] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1917] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1917][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1930] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1930][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1931] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1931][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1931][2] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1931][3] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1931][4] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1931][5] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1931][6] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1931][7] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1931][8] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1932] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1932][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1957] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1957][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1957][2] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1961] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1961][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1968] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1968][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1975] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1975][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1976] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1976][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1981] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1981][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1982] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1982][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1982][2] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1982][3] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1987] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1987][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1988] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1988][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1995] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][1995][1] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1995][2] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][1995][3] = new BranchData();
+  _$jscoverage.branchData['qunit/qunit.js'][2008] = [];
+  _$jscoverage.branchData['qunit/qunit.js'][2008][1] = new BranchData();
+}
+_$jscoverage['qunit/qunit.js'].source = ["/**"," * QUnit v1.11.0pre - A JavaScript Unit Testing Framework"," *"," * http://qunitjs.com"," *"," * Copyright 2012 jQuery Foundation and other contributors"," * Released under the MIT license."," * http://jquery.org/license"," */","","(function( window ) {","","var QUnit,","\tconfig,","\tonErrorFnPrev,","\ttestId = 0,","\tfileName = (sourceFromStacktrace( 0 ) || \"\" ).replace(/(:\\d+)+\\)?/, \"\").replace(/.+\\//, \"\"),","\ttoString = Object.prototype.toString,","\thasOwn = Object.prototype.hasOwnProperty,","\t// Keep a local reference to Date (GH-283)","\tDate = window.Date,","\tdefined = {","\tsetTimeout: typeof window.setTimeout !== \"undefined\",","\tsessionStorage: (function() {","\t\tvar x = \"qunit-test-string\";","\t\ttry {","\t\t\tsessionStorage.setItem( x, x );","\t\t\tsessionStorage.removeItem( x );","\t\t\treturn true;","\t\t} catch( e ) {","\t\t\treturn false;","\t\t}","\t}())","};","","function Test( settings ) {","\textend( this, settings );","\tthis.assertions = [];","\tthis.testNumber = ++Test.count;","}","","Test.count = 0;","","Test.prototype = {","\tinit: function() {","\t\tvar a, b, li,","        tests = id( \"qunit-tests\" );","","\t\tif ( tests ) {","\t\t\tb = document.createElement( \"strong\" );","\t\t\tb.innerHTML = this.name;","","\t\t\t// `a` initialized at top of scope","\t\t\ta = document.createElement( \"a\" );","\t\t\ta.innerHTML = \"Rerun\";","\t\t\ta.href = QUnit.url({ testNumber: this.testNumber });","","\t\t\tli = document.createElement( \"li\" );","\t\t\tli.appendChild( b );","\t\t\tli.appendChild( a );","\t\t\tli.className = \"running\";","\t\t\tli.id = this.id = \"qunit-test-output\" + testId++;","","\t\t\ttests.appendChild( li );","\t\t}","\t},","\tsetup: function() {","\t\tif ( this.module !== config.previousModule ) {","\t\t\tif ( config.previousModule ) {","\t\t\t\trunLoggingCallbacks( \"moduleDone\", QUnit, {","\t\t\t\t\tname: config.previousModule,","\t\t\t\t\tfailed: config.moduleStats.bad,","\t\t\t\t\tpassed: config.moduleStats.all - config.moduleStats.bad,","\t\t\t\t\ttotal: config.moduleStats.all","\t\t\t\t});","\t\t\t}","\t\t\tconfig.previousModule = this.module;","\t\t\tconfig.moduleStats = { all: 0, bad: 0 };","\t\t\trunLoggingCallbacks( \"moduleStart\", QUnit, {","\t\t\t\tname: this.module","\t\t\t});","\t\t} else if ( config.autorun ) {","\t\t\trunLoggingCallbacks( \"moduleStart\", QUnit, {","\t\t\t\tname: this.module","\t\t\t});","\t\t}","","\t\tconfig.current = this;","","\t\tthis.testEnvironment = extend({","\t\t\tsetup: function() {},","\t\t\tteardown: function() {}","\t\t}, this.moduleTestEnvironment );","","\t\trunLoggingCallbacks( \"testStart\", QUnit, {","\t\t\tname: this.testName,","\t\t\tmodule: this.module","\t\t});","","\t\t// allow utility functions to access the current test environment","\t\t// TODO why??","\t\tQUnit.current_testEnvironment = this.testEnvironment;","","\t\tif ( !config.pollution ) {","\t\t\tsaveGlobal();","\t\t}","\t\tif ( config.notrycatch ) {","\t\t\tthis.testEnvironment.setup.call( this.testEnvironment );","\t\t\treturn;","\t\t}","\t\ttry {","\t\t\tthis.testEnvironment.setup.call( this.testEnvironment );","\t\t} catch( e ) {","\t\t\tQUnit.pushFailure( \"Setup failed on \" + this.testName + \": \" + ( e.message || e ), extractStacktrace( e, 1 ) );","\t\t}","\t},","\trun: function() {","\t\tconfig.current = this;","","\t\tvar running = id( \"qunit-testresult\" );","","\t\tif ( running ) {","\t\t\trunning.innerHTML = \"Running: &lt;br/&gt;\" + this.name;","\t\t}","","\t\tif ( this.async ) {","\t\t\tQUnit.stop();","\t\t}","","\t\tif ( config.notrycatch ) {","\t\t\tthis.callback.call( this.testEnvironment, QUnit.assert );","\t\t\treturn;","\t\t}","","\t\ttry {","\t\t\tthis.callback.call( this.testEnvironment, QUnit.assert );","\t\t} catch( e ) {","\t\t\tQUnit.pushFailure( \"Died on test #\" + (this.assertions.length + 1) + \" \" + this.stack + \": \" + ( e.message || e ), extractStacktrace( e, 0 ) );","\t\t\t// else next test will carry the responsibility","\t\t\tsaveGlobal();","","\t\t\t// Restart the tests if they're blocking","\t\t\tif ( config.blocking ) {","\t\t\t\tQUnit.start();","\t\t\t}","\t\t}","\t},","\tteardown: function() {","\t\tconfig.current = this;","\t\tif ( config.notrycatch ) {","\t\t\tthis.testEnvironment.teardown.call( this.testEnvironment );","\t\t\treturn;","\t\t} else {","\t\t\ttry {","\t\t\t\tthis.testEnvironment.teardown.call( this.testEnvironment );","\t\t\t} catch( e ) {","\t\t\t\tQUnit.pushFailure( \"Teardown failed on \" + this.testName + \": \" + ( e.message || e ), extractStacktrace( e, 1 ) );","\t\t\t}","\t\t}","\t\tcheckPollution();","\t},","\tfinish: function() {","\t\tconfig.current = this;","\t\tif ( config.requireExpects &amp;&amp; this.expected == null ) {","\t\t\tQUnit.pushFailure( \"Expected number of assertions to be defined, but expect() was not called.\", this.stack );","\t\t} else if ( this.expected != null &amp;&amp; this.expected != this.assertions.length ) {","\t\t\tQUnit.pushFailure( \"Expected \" + this.expected + \" assertions, but \" + this.assertions.length + \" were run\", this.stack );","\t\t} else if ( this.expected == null &amp;&amp; !this.assertions.length ) {","\t\t\tQUnit.pushFailure( \"Expected at least one assertion, but none were run - call expect(0) to accept zero assertions.\", this.stack );","\t\t}","","\t\tvar assertion, a, b, i, li, ol,","\t\t\ttest = this,","\t\t\tgood = 0,","\t\t\tbad = 0,","\t\t\ttests = id( \"qunit-tests\" );","","\t\tconfig.stats.all += this.assertions.length;","\t\tconfig.moduleStats.all += this.assertions.length;","","\t\tif ( tests ) {","\t\t\tol = document.createElement( \"ol\" );","\t\t\tol.className = \"qunit-assert-list\";","","\t\t\tfor ( i = 0; i &lt; this.assertions.length; i++ ) {","\t\t\t\tassertion = this.assertions[i];","","\t\t\t\tli = document.createElement( \"li\" );","\t\t\t\tli.className = assertion.result ? \"pass\" : \"fail\";","\t\t\t\tli.innerHTML = assertion.message || ( assertion.result ? \"okay\" : \"failed\" );","\t\t\t\tol.appendChild( li );","","\t\t\t\tif ( assertion.result ) {","\t\t\t\t\tgood++;","\t\t\t\t} else {","\t\t\t\t\tbad++;","\t\t\t\t\tconfig.stats.bad++;","\t\t\t\t\tconfig.moduleStats.bad++;","\t\t\t\t}","\t\t\t}","","\t\t\t// store result when possible","\t\t\tif ( QUnit.config.reorder &amp;&amp; defined.sessionStorage ) {","\t\t\t\tif ( bad ) {","\t\t\t\t\tsessionStorage.setItem( \"qunit-test-\" + this.module + \"-\" + this.testName, bad );","\t\t\t\t} else {","\t\t\t\t\tsessionStorage.removeItem( \"qunit-test-\" + this.module + \"-\" + this.testName );","\t\t\t\t}","\t\t\t}","","\t\t\tif ( bad === 0 ) {","\t\t\t\taddClass( ol, \"qunit-collapsed\" );","\t\t\t}","","\t\t\t// `b` initialized at top of scope","\t\t\tb = document.createElement( \"strong\" );","\t\t\tb.innerHTML = this.name + \" &lt;b class='counts'&gt;(&lt;b class='failed'&gt;\" + bad + \"&lt;/b&gt;, &lt;b class='passed'&gt;\" + good + \"&lt;/b&gt;, \" + this.assertions.length + \")&lt;/b&gt;\";","","\t\t\taddEvent(b, \"click\", function() {","\t\t\t\tvar next = b.nextSibling.nextSibling,","\t\t\t\t\tcollapsed = hasClass( next, \"qunit-collapsed\" );","\t\t\t\t( collapsed ? removeClass : addClass )( next, \"qunit-collapsed\" );","\t\t\t});","","\t\t\taddEvent(b, \"dblclick\", function( e ) {","\t\t\t\tvar target = e &amp;&amp; e.target ? e.target : window.event.srcElement;","\t\t\t\tif ( target.nodeName.toLowerCase() == \"span\" || target.nodeName.toLowerCase() == \"b\" ) {","\t\t\t\t\ttarget = target.parentNode;","\t\t\t\t}","\t\t\t\tif ( window.location &amp;&amp; target.nodeName.toLowerCase() === \"strong\" ) {","\t\t\t\t\twindow.location = QUnit.url({ testNumber: test.testNumber });","\t\t\t\t}","\t\t\t});","","\t\t\t// `li` initialized at top of scope","\t\t\tli = id( this.id );","\t\t\tli.className = bad ? \"fail\" : \"pass\";","\t\t\tli.removeChild( li.firstChild );","\t\t\ta = li.firstChild;","\t\t\tli.appendChild( b );","\t\t\tli.appendChild ( a );","\t\t\tli.appendChild( ol );","","\t\t} else {","\t\t\tfor ( i = 0; i &lt; this.assertions.length; i++ ) {","\t\t\t\tif ( !this.assertions[i].result ) {","\t\t\t\t\tbad++;","\t\t\t\t\tconfig.stats.bad++;","\t\t\t\t\tconfig.moduleStats.bad++;","\t\t\t\t}","\t\t\t}","\t\t}","","\t\trunLoggingCallbacks( \"testDone\", QUnit, {","\t\t\tname: this.testName,","\t\t\tmodule: this.module,","\t\t\tfailed: bad,","\t\t\tpassed: this.assertions.length - bad,","\t\t\ttotal: this.assertions.length","\t\t});","","\t\tQUnit.reset();","","\t\tconfig.current = undefined;","\t},","","\tqueue: function() {","\t\tvar bad,","\t\t\ttest = this;","","\t\tsynchronize(function() {","\t\t\ttest.init();","\t\t});","\t\tfunction run() {","\t\t\t// each of these can by async","\t\t\tsynchronize(function() {","\t\t\t\ttest.setup();","\t\t\t});","\t\t\tsynchronize(function() {","\t\t\t\ttest.run();","\t\t\t});","\t\t\tsynchronize(function() {","\t\t\t\ttest.teardown();","\t\t\t});","\t\t\tsynchronize(function() {","\t\t\t\ttest.finish();","\t\t\t});","\t\t}","","\t\t// `bad` initialized at top of scope","\t\t// defer when previous test run passed, if storage is available","\t\tbad = QUnit.config.reorder &amp;&amp; defined.sessionStorage &amp;&amp;","\t\t\t\t\t\t+sessionStorage.getItem( \"qunit-test-\" + this.module + \"-\" + this.testName );","","\t\tif ( bad ) {","\t\t\trun();","\t\t} else {","\t\t\tsynchronize( run, true );","\t\t}","\t}","};","","// Root QUnit object.","// `QUnit` initialized at top of scope","QUnit = {","","\t// call on start of module test to prepend name to all tests","\tmodule: function( name, testEnvironment ) {","\t\tconfig.currentModule = name;","\t\tconfig.currentModuleTestEnvironment = testEnvironment;","\t\tconfig.modules[name] = true;","\t},","","\tasyncTest: function( testName, expected, callback ) {","\t\tif ( arguments.length === 2 ) {","\t\t\tcallback = expected;","\t\t\texpected = null;","\t\t}","","\t\tQUnit.test( testName, expected, callback, true );","\t},","","\ttest: function( testName, expected, callback, async ) {","\t\tvar test,","\t\t\tname = \"&lt;span class='test-name'&gt;\" + escapeInnerText( testName ) + \"&lt;/span&gt;\";","","\t\tif ( arguments.length === 2 ) {","\t\t\tcallback = expected;","\t\t\texpected = null;","\t\t}","","\t\tif ( config.currentModule ) {","\t\t\tname = \"&lt;span class='module-name'&gt;\" + config.currentModule + \"&lt;/span&gt;: \" + name;","\t\t}","","\t\ttest = new Test({","\t\t\tname: name,","\t\t\ttestName: testName,","\t\t\texpected: expected,","\t\t\tasync: async,","\t\t\tcallback: callback,","\t\t\tmodule: config.currentModule,","\t\t\tmoduleTestEnvironment: config.currentModuleTestEnvironment,","\t\t\tstack: sourceFromStacktrace( 2 )","\t\t});","","\t\tif ( !validTest( test ) ) {","\t\t\treturn;","\t\t}","","\t\ttest.queue();","\t},","","\t// Specify the number of expected assertions to gurantee that failed test (no assertions are run at all) don't slip through.","\texpect: function( asserts ) {","\t\tif (arguments.length === 1) {","\t\t\tconfig.current.expected = asserts;","\t\t} else {","\t\t\treturn config.current.expected;","\t\t}","\t},","","\tstart: function( count ) {","\t\tconfig.semaphore -= count || 1;","\t\t// don't start until equal number of stop-calls","\t\tif ( config.semaphore &gt; 0 ) {","\t\t\treturn;","\t\t}","\t\t// ignore if start is called more often then stop","\t\tif ( config.semaphore &lt; 0 ) {","\t\t\tconfig.semaphore = 0;","\t\t\tQUnit.pushFailure( \"Called start() while already started (QUnit.config.semaphore was 0 already)\", null, sourceFromStacktrace(2) );","\t\t\treturn;","\t\t}","\t\t// A slight delay, to avoid any current callbacks","\t\tif ( defined.setTimeout ) {","\t\t\twindow.setTimeout(function() {","\t\t\t\tif ( config.semaphore &gt; 0 ) {","\t\t\t\t\treturn;","\t\t\t\t}","\t\t\t\tif ( config.timeout ) {","\t\t\t\t\tclearTimeout( config.timeout );","\t\t\t\t}","","\t\t\t\tconfig.blocking = false;","\t\t\t\tprocess( true );","\t\t\t}, 13);","\t\t} else {","\t\t\tconfig.blocking = false;","\t\t\tprocess( true );","\t\t}","\t},","","\tstop: function( count ) {","\t\tconfig.semaphore += count || 1;","\t\tconfig.blocking = true;","","\t\tif ( config.testTimeout &amp;&amp; defined.setTimeout ) {","\t\t\tclearTimeout( config.timeout );","\t\t\tconfig.timeout = window.setTimeout(function() {","\t\t\t\tQUnit.ok( false, \"Test timed out\" );","\t\t\t\tconfig.semaphore = 1;","\t\t\t\tQUnit.start();","\t\t\t}, config.testTimeout );","\t\t}","\t}","};","","// Asssert helpers","// All of these must call either QUnit.push() or manually do:","// - runLoggingCallbacks( \"log\", .. );","// - config.current.assertions.push({ .. });","QUnit.assert = {","\t/**","\t * Asserts rough true-ish result.","\t * @name ok","\t * @function","\t * @example ok( \"asdfasdf\".length &gt; 5, \"There must be at least 5 chars\" );","\t */","\tok: function( result, msg ) {","\t\tif ( !config.current ) {","\t\t\tthrow new Error( \"ok() assertion outside test context, was \" + sourceFromStacktrace(2) );","\t\t}","\t\tresult = !!result;","","\t\tvar source,","\t\t\tdetails = {","\t\t\t\tmodule: config.current.module,","\t\t\t\tname: config.current.testName,","\t\t\t\tresult: result,","\t\t\t\tmessage: msg","\t\t\t};","","\t\tmsg = escapeInnerText( msg || (result ? \"okay\" : \"failed\" ) );","\t\tmsg = \"&lt;span class='test-message'&gt;\" + msg + \"&lt;/span&gt;\";","","\t\tif ( !result ) {","\t\t\tsource = sourceFromStacktrace( 2 );","\t\t\tif ( source ) {","\t\t\t\tdetails.source = source;","\t\t\t\tmsg += \"&lt;table&gt;&lt;tr class='test-source'&gt;&lt;th&gt;Source: &lt;/th&gt;&lt;td&gt;&lt;pre&gt;\" + escapeInnerText( source ) + \"&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;\";","\t\t\t}","\t\t}","\t\trunLoggingCallbacks( \"log\", QUnit, details );","\t\tconfig.current.assertions.push({","\t\t\tresult: result,","\t\t\tmessage: msg","\t\t});","\t},","","\t/**","\t * Assert that the first two arguments are equal, with an optional message.","\t * Prints out both actual and expected values.","\t * @name equal","\t * @function","\t * @example equal( format( \"Received {0} bytes.\", 2), \"Received 2 bytes.\", \"format() replaces {0} with next argument\" );","\t */","\tequal: function( actual, expected, message ) {","\t\tQUnit.push( expected == actual, actual, expected, message );","\t},","","\t/**","\t * @name notEqual","\t * @function","\t */","\tnotEqual: function( actual, expected, message ) {","\t\tQUnit.push( expected != actual, actual, expected, message );","\t},","","\t/**","\t * @name deepEqual","\t * @function","\t */","\tdeepEqual: function( actual, expected, message ) {","\t\tQUnit.push( QUnit.equiv(actual, expected), actual, expected, message );","\t},","","\t/**","\t * @name notDeepEqual","\t * @function","\t */","\tnotDeepEqual: function( actual, expected, message ) {","\t\tQUnit.push( !QUnit.equiv(actual, expected), actual, expected, message );","\t},","","\t/**","\t * @name strictEqual","\t * @function","\t */","\tstrictEqual: function( actual, expected, message ) {","\t\tQUnit.push( expected === actual, actual, expected, message );","\t},","","\t/**","\t * @name notStrictEqual","\t * @function","\t */","\tnotStrictEqual: function( actual, expected, message ) {","\t\tQUnit.push( expected !== actual, actual, expected, message );","\t},","","\t\"throws\": function( block, expected, message ) {","\t\tvar actual,","\t\t\texpectedOutput = expected,","\t\t\tok = false;","","\t\t// 'expected' is optional","\t\tif ( typeof expected === \"string\" ) {","\t\t\tmessage = expected;","\t\t\texpected = null;","\t\t}","","\t\tconfig.current.ignoreGlobalErrors = true;","\t\ttry {","\t\t\tblock.call( config.current.testEnvironment );","\t\t} catch (e) {","\t\t\tactual = e;","\t\t}","\t\tconfig.current.ignoreGlobalErrors = false;","","\t\tif ( actual ) {","\t\t\t// we don't want to validate thrown error","\t\t\tif ( !expected ) {","\t\t\t\tok = true;","\t\t\t\texpectedOutput = null;","\t\t\t// expected is a regexp","\t\t\t} else if ( QUnit.objectType( expected ) === \"regexp\" ) {","\t\t\t\tok = expected.test( actual );","\t\t\t// expected is a constructor","\t\t\t} else if ( actual instanceof expected ) {","\t\t\t\tok = true;","\t\t\t// expected is a validation function which returns true is validation passed","\t\t\t} else if ( expected.call( {}, actual ) === true ) {","\t\t\t\texpectedOutput = null;","\t\t\t\tok = true;","\t\t\t}","","\t\t\tQUnit.push( ok, actual, expectedOutput, message );","\t\t} else {","\t\t\tQUnit.pushFailure( message, null, 'No exception was thrown.' );","\t\t}","\t}","};","","/**"," * @deprecate since 1.8.0"," * Kept assertion helpers in root for backwards compatibility"," */","extend( QUnit, QUnit.assert );","","/**"," * @deprecated since 1.9.0"," * Kept global \"raises()\" for backwards compatibility"," */","QUnit.raises = QUnit.assert[ \"throws\" ];","","/**"," * @deprecated since 1.0.0, replaced with error pushes since 1.3.0"," * Kept to avoid TypeErrors for undefined methods."," */","QUnit.equals = function() {","\tQUnit.push( false, false, false, \"QUnit.equals has been deprecated since 2009 (e88049a0), use QUnit.equal instead\" );","};","QUnit.same = function() {","\tQUnit.push( false, false, false, \"QUnit.same has been deprecated since 2009 (e88049a0), use QUnit.deepEqual instead\" );","};","","// We want access to the constructor's prototype","(function() {","\tfunction F() {}","\tF.prototype = QUnit;","\tQUnit = new F();","\t// Make F QUnit's constructor so that we can add to the prototype later","\tQUnit.constructor = F;","}());","","/**"," * Config object: Maintain internal state"," * Later exposed as QUnit.config"," * `config` initialized at top of scope"," */","config = {","\t// The queue of tests to run","\tqueue: [],","","\t// block until document ready","\tblocking: true,","","\t// when enabled, show only failing tests","\t// gets persisted through sessionStorage and can be changed in UI via checkbox","\thidepassed: false,","","\t// by default, run previously failed tests first","\t// very useful in combination with \"Hide passed tests\" checked","\treorder: true,","","\t// by default, modify document.title when suite is done","\taltertitle: true,","","\t// when enabled, all tests must call expect()","\trequireExpects: false,","","\t// add checkboxes that are persisted in the query-string","\t// when enabled, the id is set to `true` as a `QUnit.config` property","\turlConfig: [","\t\t{","\t\t\tid: \"noglobals\",","\t\t\tlabel: \"Check for Globals\",","\t\t\ttooltip: \"Enabling this will test if any test introduces new properties on the `window` object. Stored as query-strings.\"","\t\t},","\t\t{","\t\t\tid: \"notrycatch\",","\t\t\tlabel: \"No try-catch\",","\t\t\ttooltip: \"Enabling this will run tests outside of a try-catch block. Makes debugging exceptions in IE reasonable. Stored as query-strings.\"","\t\t}","\t],","","\t// Set of all modules.","\tmodules: {},","","\t// logging callback queues","\tbegin: [],","\tdone: [],","\tlog: [],","\ttestStart: [],","\ttestDone: [],","\tmoduleStart: [],","\tmoduleDone: []","};","","// Initialize more QUnit.config and QUnit.urlParams","(function() {","\tvar i,","\t\tlocation = window.location || { search: \"\", protocol: \"file:\" },","\t\tparams = location.search.slice( 1 ).split( \"&amp;\" ),","\t\tlength = params.length,","\t\turlParams = {},","\t\tcurrent;","","\tif ( params[ 0 ] ) {","\t\tfor ( i = 0; i &lt; length; i++ ) {","\t\t\tcurrent = params[ i ].split( \"=\" );","\t\t\tcurrent[ 0 ] = decodeURIComponent( current[ 0 ] );","\t\t\t// allow just a key to turn on a flag, e.g., test.html?noglobals","\t\t\tcurrent[ 1 ] = current[ 1 ] ? decodeURIComponent( current[ 1 ] ) : true;","\t\t\turlParams[ current[ 0 ] ] = current[ 1 ];","\t\t}","\t}","","\tQUnit.urlParams = urlParams;","","\t// String search anywhere in moduleName+testName","\tconfig.filter = urlParams.filter;","","\t// Exact match of the module name","\tconfig.module = urlParams.module;","","\tconfig.testNumber = parseInt( urlParams.testNumber, 10 ) || null;","","\t// Figure out if we're running the tests from a server or not","\tQUnit.isLocal = location.protocol === \"file:\";","}());","","// Export global variables, unless an 'exports' object exists,","// in that case we assume we're in CommonJS (dealt with on the bottom of the script)","if ( typeof exports === \"undefined\" ) {","\textend( window, QUnit );","","\t// Expose QUnit object","\twindow.QUnit = QUnit;","}","","// Extend QUnit object,","// these after set here because they should not be exposed as global functions","extend( QUnit, {","\tconfig: config,","","\t// Initialize the configuration options","\tinit: function() {","\t\textend( config, {","\t\t\tstats: { all: 0, bad: 0 },","\t\t\tmoduleStats: { all: 0, bad: 0 },","\t\t\tstarted: +new Date(),","\t\t\tupdateRate: 1000,","\t\t\tblocking: false,","\t\t\tautostart: true,","\t\t\tautorun: false,","\t\t\tfilter: \"\",","\t\t\tqueue: [],","\t\t\tsemaphore: 1","\t\t});","","\t\tvar tests, banner, result,","\t\t\tqunit = id( \"qunit\" );","","\t\tif ( qunit ) {","\t\t\tqunit.innerHTML =","\t\t\t\t\"&lt;h1 id='qunit-header'&gt;\" + escapeInnerText( document.title ) + \"&lt;/h1&gt;\" +","\t\t\t\t\"&lt;h2 id='qunit-banner'&gt;&lt;/h2&gt;\" +","\t\t\t\t\"&lt;div id='qunit-testrunner-toolbar'&gt;&lt;/div&gt;\" +","\t\t\t\t\"&lt;h2 id='qunit-userAgent'&gt;&lt;/h2&gt;\" +","\t\t\t\t\"&lt;ol id='qunit-tests'&gt;&lt;/ol&gt;\";","\t\t}","","\t\ttests = id( \"qunit-tests\" );","\t\tbanner = id( \"qunit-banner\" );","\t\tresult = id( \"qunit-testresult\" );","","\t\tif ( tests ) {","\t\t\ttests.innerHTML = \"\";","\t\t}","","\t\tif ( banner ) {","\t\t\tbanner.className = \"\";","\t\t}","","\t\tif ( result ) {","\t\t\tresult.parentNode.removeChild( result );","\t\t}","","\t\tif ( tests ) {","\t\t\tresult = document.createElement( \"p\" );","\t\t\tresult.id = \"qunit-testresult\";","\t\t\tresult.className = \"result\";","\t\t\ttests.parentNode.insertBefore( result, tests );","\t\t\tresult.innerHTML = \"Running...&lt;br/&gt;&amp;nbsp;\";","\t\t}","\t},","","\t// Resets the test setup. Useful for tests that modify the DOM.","\treset: function() {","\t\tvar fixture = id( \"qunit-fixture\" );","\t\tif ( fixture ) {","\t\t\tfixture.innerHTML = config.fixture;","\t\t}","\t},","","\t// Trigger an event on an element.","\t// @example triggerEvent( document.body, \"click\" );","\ttriggerEvent: function( elem, type, event ) {","\t\tif ( document.createEvent ) {","\t\t\tevent = document.createEvent( \"MouseEvents\" );","\t\t\tevent.initMouseEvent(type, true, true, elem.ownerDocument.defaultView,","\t\t\t\t0, 0, 0, 0, 0, false, false, false, false, 0, null);","","\t\t\telem.dispatchEvent( event );","\t\t} else if ( elem.fireEvent ) {","\t\t\telem.fireEvent( \"on\" + type );","\t\t}","\t},","","\t// Safe object type checking","\tis: function( type, obj ) {","\t\treturn QUnit.objectType( obj ) == type;","\t},","","\tobjectType: function( obj ) {","\t\tif ( typeof obj === \"undefined\" ) {","\t\t\t\treturn \"undefined\";","\t\t// consider: typeof null === object","\t\t}","\t\tif ( obj === null ) {","\t\t\t\treturn \"null\";","\t\t}","","\t\tvar match = toString.call( obj ).match(/^\\[object\\s(.*)\\]$/),","\t\t\ttype = match &amp;&amp; match[1] || \"\";","","\t\tswitch ( type ) {","\t\t\tcase \"Number\":","\t\t\t\tif ( isNaN(obj) ) {","\t\t\t\t\treturn \"nan\";","\t\t\t\t}","\t\t\t\treturn \"number\";","\t\t\tcase \"String\":","\t\t\tcase \"Boolean\":","\t\t\tcase \"Array\":","\t\t\tcase \"Date\":","\t\t\tcase \"RegExp\":","\t\t\tcase \"Function\":","\t\t\t\treturn type.toLowerCase();","\t\t}","\t\tif ( typeof obj === \"object\" ) {","\t\t\treturn \"object\";","\t\t}","\t\treturn undefined;","\t},","","\tpush: function( result, actual, expected, message ) {","\t\tif ( !config.current ) {","\t\t\tthrow new Error( \"assertion outside test context, was \" + sourceFromStacktrace() );","\t\t}","","\t\tvar output, source,","\t\t\tdetails = {","\t\t\t\tmodule: config.current.module,","\t\t\t\tname: config.current.testName,","\t\t\t\tresult: result,","\t\t\t\tmessage: message,","\t\t\t\tactual: actual,","\t\t\t\texpected: expected","\t\t\t};","","\t\tmessage = escapeInnerText( message ) || ( result ? \"okay\" : \"failed\" );","\t\tmessage = \"&lt;span class='test-message'&gt;\" + message + \"&lt;/span&gt;\";","\t\toutput = message;","","\t\tif ( !result ) {","\t\t\texpected = escapeInnerText( QUnit.jsDump.parse(expected) );","\t\t\tactual = escapeInnerText( QUnit.jsDump.parse(actual) );","\t\t\toutput += \"&lt;table&gt;&lt;tr class='test-expected'&gt;&lt;th&gt;Expected: &lt;/th&gt;&lt;td&gt;&lt;pre&gt;\" + expected + \"&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;\";","","\t\t\tif ( actual != expected ) {","\t\t\t\toutput += \"&lt;tr class='test-actual'&gt;&lt;th&gt;Result: &lt;/th&gt;&lt;td&gt;&lt;pre&gt;\" + actual + \"&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;\";","\t\t\t\toutput += \"&lt;tr class='test-diff'&gt;&lt;th&gt;Diff: &lt;/th&gt;&lt;td&gt;&lt;pre&gt;\" + QUnit.diff( expected, actual ) + \"&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;\";","\t\t\t}","","\t\t\tsource = sourceFromStacktrace();","","\t\t\tif ( source ) {","\t\t\t\tdetails.source = source;","\t\t\t\toutput += \"&lt;tr class='test-source'&gt;&lt;th&gt;Source: &lt;/th&gt;&lt;td&gt;&lt;pre&gt;\" + escapeInnerText( source ) + \"&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;\";","\t\t\t}","","\t\t\toutput += \"&lt;/table&gt;\";","\t\t}","","\t\trunLoggingCallbacks( \"log\", QUnit, details );","","\t\tconfig.current.assertions.push({","\t\t\tresult: !!result,","\t\t\tmessage: output","\t\t});","\t},","","\tpushFailure: function( message, source, actual ) {","\t\tif ( !config.current ) {","\t\t\tthrow new Error( \"pushFailure() assertion outside test context, was \" + sourceFromStacktrace(2) );","\t\t}","","\t\tvar output,","\t\t\tdetails = {","\t\t\t\tmodule: config.current.module,","\t\t\t\tname: config.current.testName,","\t\t\t\tresult: false,","\t\t\t\tmessage: message","\t\t\t};","","\t\tmessage = escapeInnerText( message ) || \"error\";","\t\tmessage = \"&lt;span class='test-message'&gt;\" + message + \"&lt;/span&gt;\";","\t\toutput = message;","","\t\toutput += \"&lt;table&gt;\";","","\t\tif ( actual ) {","\t\t\toutput += \"&lt;tr class='test-actual'&gt;&lt;th&gt;Result: &lt;/th&gt;&lt;td&gt;&lt;pre&gt;\" + escapeInnerText( actual ) + \"&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;\";","\t\t}","","\t\tif ( source ) {","\t\t\tdetails.source = source;","\t\t\toutput += \"&lt;tr class='test-source'&gt;&lt;th&gt;Source: &lt;/th&gt;&lt;td&gt;&lt;pre&gt;\" + escapeInnerText( source ) + \"&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;\";","\t\t}","","\t\toutput += \"&lt;/table&gt;\";","","\t\trunLoggingCallbacks( \"log\", QUnit, details );","","\t\tconfig.current.assertions.push({","\t\t\tresult: false,","\t\t\tmessage: output","\t\t});","\t},","","\turl: function( params ) {","\t\tparams = extend( extend( {}, QUnit.urlParams ), params );","\t\tvar key,","\t\t\tquerystring = \"?\";","","\t\tfor ( key in params ) {","\t\t\tif ( !hasOwn.call( params, key ) ) {","\t\t\t\tcontinue;","\t\t\t}","\t\t\tquerystring += encodeURIComponent( key ) + \"=\" +","\t\t\t\tencodeURIComponent( params[ key ] ) + \"&amp;\";","\t\t}","\t\treturn window.location.pathname + querystring.slice( 0, -1 );","\t},","","\textend: extend,","\tid: id,","\taddEvent: addEvent","\t// load, equiv, jsDump, diff: Attached later","});","","/**"," * @deprecated: Created for backwards compatibility with test runner that set the hook function"," * into QUnit.{hook}, instead of invoking it and passing the hook function."," * QUnit.constructor is set to the empty F() above so that we can add to it's prototype here."," * Doing this allows us to tell if the following methods have been overwritten on the actual"," * QUnit object."," */","extend( QUnit.constructor.prototype, {","","\t// Logging callbacks; all receive a single argument with the listed properties","\t// run test/logs.html for any related changes","\tbegin: registerLoggingCallback( \"begin\" ),","","\t// done: { failed, passed, total, runtime }","\tdone: registerLoggingCallback( \"done\" ),","","\t// log: { result, actual, expected, message }","\tlog: registerLoggingCallback( \"log\" ),","","\t// testStart: { name }","\ttestStart: registerLoggingCallback( \"testStart\" ),","","\t// testDone: { name, failed, passed, total }","\ttestDone: registerLoggingCallback( \"testDone\" ),","","\t// moduleStart: { name }","\tmoduleStart: registerLoggingCallback( \"moduleStart\" ),","","\t// moduleDone: { name, failed, passed, total }","\tmoduleDone: registerLoggingCallback( \"moduleDone\" )","});","","if ( typeof document === \"undefined\" || document.readyState === \"complete\" ) {","\tconfig.autorun = true;","}","","QUnit.load = function() {","\trunLoggingCallbacks( \"begin\", QUnit, {} );","","\t// Initialize the config, saving the execution queue","\tvar banner, filter, i, label, len, main, ol, toolbar, userAgent, val, urlConfigCheckboxes, moduleFilter,","\t    numModules = 0,","\t    moduleFilterHtml = \"\",","\t\turlConfigHtml = \"\",","\t\toldconfig = extend( {}, config );","","\tQUnit.init();","\textend(config, oldconfig);","","\tconfig.blocking = false;","","\tlen = config.urlConfig.length;","","\tfor ( i = 0; i &lt; len; i++ ) {","\t\tval = config.urlConfig[i];","\t\tif ( typeof val === \"string\" ) {","\t\t\tval = {","\t\t\t\tid: val,","\t\t\t\tlabel: val,","\t\t\t\ttooltip: \"[no tooltip available]\"","\t\t\t};","\t\t}","\t\tconfig[ val.id ] = QUnit.urlParams[ val.id ];","\t\turlConfigHtml += \"&lt;input id='qunit-urlconfig-\" + val.id + \"' name='\" + val.id + \"' type='checkbox'\" + ( config[ val.id ] ? \" checked='checked'\" : \"\" ) + \" title='\" + val.tooltip + \"'&gt;&lt;label for='qunit-urlconfig-\" + val.id + \"' title='\" + val.tooltip + \"'&gt;\" + val.label + \"&lt;/label&gt;\";","\t}","","\tmoduleFilterHtml += \"&lt;label for='qunit-modulefilter'&gt;Module: &lt;/label&gt;&lt;select id='qunit-modulefilter' name='modulefilter'&gt;&lt;option value='' \" + ( config.module === undefined  ? \"selected\" : \"\" ) + \"&gt;&lt; All Modules &gt;&lt;/option&gt;\";","\tfor ( i in config.modules ) {","\t\tif ( config.modules.hasOwnProperty( i ) ) {","\t\t\tnumModules += 1;","\t\t\tmoduleFilterHtml += \"&lt;option value='\" + encodeURIComponent(i) + \"' \" + ( config.module === i ? \"selected\" : \"\" ) + \"&gt;\" + i + \"&lt;/option&gt;\";","\t\t}","\t}","\tmoduleFilterHtml += \"&lt;/select&gt;\";","","\t// `userAgent` initialized at top of scope","\tuserAgent = id( \"qunit-userAgent\" );","\tif ( userAgent ) {","\t\tuserAgent.innerHTML = navigator.userAgent;","\t}","","\t// `banner` initialized at top of scope","\tbanner = id( \"qunit-header\" );","\tif ( banner ) {","\t\tbanner.innerHTML = \"&lt;a href='\" + QUnit.url({ filter: undefined, module: undefined, testNumber: undefined }) + \"'&gt;\" + banner.innerHTML + \"&lt;/a&gt; \";","\t}","","\t// `toolbar` initialized at top of scope","\ttoolbar = id( \"qunit-testrunner-toolbar\" );","\tif ( toolbar ) {","\t\t// `filter` initialized at top of scope","\t\tfilter = document.createElement( \"input\" );","\t\tfilter.type = \"checkbox\";","\t\tfilter.id = \"qunit-filter-pass\";","","\t\taddEvent( filter, \"click\", function() {","\t\t\tvar tmp,","\t\t\t\tol = document.getElementById( \"qunit-tests\" );","","\t\t\tif ( filter.checked ) {","\t\t\t\tol.className = ol.className + \" hidepass\";","\t\t\t} else {","\t\t\t\ttmp = \" \" + ol.className.replace( /[\\n\\t\\r]/g, \" \" ) + \" \";","\t\t\t\tol.className = tmp.replace( / hidepass /, \" \" );","\t\t\t}","\t\t\tif ( defined.sessionStorage ) {","\t\t\t\tif (filter.checked) {","\t\t\t\t\tsessionStorage.setItem( \"qunit-filter-passed-tests\", \"true\" );","\t\t\t\t} else {","\t\t\t\t\tsessionStorage.removeItem( \"qunit-filter-passed-tests\" );","\t\t\t\t}","\t\t\t}","\t\t});","","\t\tif ( config.hidepassed || defined.sessionStorage &amp;&amp; sessionStorage.getItem( \"qunit-filter-passed-tests\" ) ) {","\t\t\tfilter.checked = true;","\t\t\t// `ol` initialized at top of scope","\t\t\tol = document.getElementById( \"qunit-tests\" );","\t\t\tol.className = ol.className + \" hidepass\";","\t\t}","\t\ttoolbar.appendChild( filter );","","\t\t// `label` initialized at top of scope","\t\tlabel = document.createElement( \"label\" );","\t\tlabel.setAttribute( \"for\", \"qunit-filter-pass\" );","\t\tlabel.setAttribute( \"title\", \"Only show tests and assertons that fail. Stored in sessionStorage.\" );","\t\tlabel.innerHTML = \"Hide passed tests\";","\t\ttoolbar.appendChild( label );","","\t\turlConfigCheckboxes = document.createElement( 'span' );","\t\turlConfigCheckboxes.innerHTML = urlConfigHtml;","\t\taddEvent( urlConfigCheckboxes, \"change\", function( event ) {","\t\t\tvar params = {};","\t\t\tparams[ event.target.name ] = event.target.checked ? true : undefined;","\t\t\twindow.location = QUnit.url( params );","\t\t});","\t\ttoolbar.appendChild( urlConfigCheckboxes );","","\t\tif (numModules &gt; 1) {","\t\t\tmoduleFilter = document.createElement( 'span' );","\t\t\tmoduleFilter.setAttribute( 'id', 'qunit-modulefilter-container' );","\t\t\tmoduleFilter.innerHTML = moduleFilterHtml;","\t\t\taddEvent( moduleFilter, \"change\", function() {","\t\t\t\tvar selectBox = moduleFilter.getElementsByTagName(\"select\")[0],","\t\t\t\t    selectedModule = decodeURIComponent(selectBox.options[selectBox.selectedIndex].value);","","\t\t\t\twindow.location = QUnit.url( { module: ( selectedModule === \"\" ) ? undefined : selectedModule } );","\t\t\t});","\t\t\ttoolbar.appendChild(moduleFilter);","\t\t}","\t}","","\t// `main` initialized at top of scope","\tmain = id( \"qunit-fixture\" );","\tif ( main ) {","\t\tconfig.fixture = main.innerHTML;","\t}","","\tif ( config.autostart ) {","\t\tQUnit.start();","\t}","};","","addEvent( window, \"load\", QUnit.load );","","// `onErrorFnPrev` initialized at top of scope","// Preserve other handlers","onErrorFnPrev = window.onerror;","","// Cover uncaught exceptions","// Returning true will surpress the default browser handler,","// returning false will let it run.","window.onerror = function ( error, filePath, linerNr ) {","\tvar ret = false;","\tif ( onErrorFnPrev ) {","\t\tret = onErrorFnPrev( error, filePath, linerNr );","\t}","","\t// Treat return value as window.onerror itself does,","\t// Only do our handling if not surpressed.","\tif ( ret !== true ) {","\t\tif ( QUnit.config.current ) {","\t\t\tif ( QUnit.config.current.ignoreGlobalErrors ) {","\t\t\t\treturn true;","\t\t\t}","\t\t\tQUnit.pushFailure( error, filePath + \":\" + linerNr );","\t\t} else {","\t\t\tQUnit.test( \"global failure\", extend( function() {","\t\t\t\tQUnit.pushFailure( error, filePath + \":\" + linerNr );","\t\t\t}, { validTest: validTest } ) );","\t\t}","\t\treturn false;","\t}","","\treturn ret;","};","","function done() {","\tconfig.autorun = true;","","\t// Log the last module results","\tif ( config.currentModule ) {","\t\trunLoggingCallbacks( \"moduleDone\", QUnit, {","\t\t\tname: config.currentModule,","\t\t\tfailed: config.moduleStats.bad,","\t\t\tpassed: config.moduleStats.all - config.moduleStats.bad,","\t\t\ttotal: config.moduleStats.all","\t\t});","\t}","","\tvar i, key,","\t\tbanner = id( \"qunit-banner\" ),","\t\ttests = id( \"qunit-tests\" ),","\t\truntime = +new Date() - config.started,","\t\tpassed = config.stats.all - config.stats.bad,","\t\thtml = [","\t\t\t\"Tests completed in \",","\t\t\truntime,","\t\t\t\" milliseconds.&lt;br/&gt;\",","\t\t\t\"&lt;span class='passed'&gt;\",","\t\t\tpassed,","\t\t\t\"&lt;/span&gt; tests of &lt;span class='total'&gt;\",","\t\t\tconfig.stats.all,","\t\t\t\"&lt;/span&gt; passed, &lt;span class='failed'&gt;\",","\t\t\tconfig.stats.bad,","\t\t\t\"&lt;/span&gt; failed.\"","\t\t].join( \"\" );","","\tif ( banner ) {","\t\tbanner.className = ( config.stats.bad ? \"qunit-fail\" : \"qunit-pass\" );","\t}","","\tif ( tests ) {","\t\tid( \"qunit-testresult\" ).innerHTML = html;","\t}","","\tif ( config.altertitle &amp;&amp; typeof document !== \"undefined\" &amp;&amp; document.title ) {","\t\t// show &#226;&#339;&#8211; for good, &#226;&#339;&#8221; for bad suite result in title","\t\t// use escape sequences in case file gets loaded with non-utf-8-charset","\t\tdocument.title = [","\t\t\t( config.stats.bad ? \"\\u2716\" : \"\\u2714\" ),","\t\t\tdocument.title.replace( /^[\\u2714\\u2716] /i, \"\" )","\t\t].join( \" \" );","\t}","","\t// clear own sessionStorage items if all tests passed","\tif ( config.reorder &amp;&amp; defined.sessionStorage &amp;&amp; config.stats.bad === 0 ) {","\t\t// `key` &amp; `i` initialized at top of scope","\t\tfor ( i = 0; i &lt; sessionStorage.length; i++ ) {","\t\t\tkey = sessionStorage.key( i++ );","\t\t\tif ( key.indexOf( \"qunit-test-\" ) === 0 ) {","\t\t\t\tsessionStorage.removeItem( key );","\t\t\t}","\t\t}","\t}","","\t// scroll back to top to show results","\tif ( window.scrollTo ) {","\t\twindow.scrollTo(0, 0);","\t}","","\trunLoggingCallbacks( \"done\", QUnit, {","\t\tfailed: config.stats.bad,","\t\tpassed: passed,","\t\ttotal: config.stats.all,","\t\truntime: runtime","\t});","}","","/** @return Boolean: true if this test should be ran */","function validTest( test ) {","\tvar include,","\t\tfilter = config.filter &amp;&amp; config.filter.toLowerCase(),","\t\tmodule = config.module &amp;&amp; config.module.toLowerCase(),","\t\tfullName = (test.module + \": \" + test.testName).toLowerCase();","","\t// Internally-generated tests are always valid","\tif ( test.callback &amp;&amp; test.callback.validTest === validTest ) {","\t\tdelete test.callback.validTest;","\t\treturn true;","\t}","","\tif ( config.testNumber ) {","\t\treturn test.testNumber === config.testNumber;","\t}","","\tif ( module &amp;&amp; ( !test.module || test.module.toLowerCase() !== module ) ) {","\t\treturn false;","\t}","","\tif ( !filter ) {","\t\treturn true;","\t}","","\tinclude = filter.charAt( 0 ) !== \"!\";","\tif ( !include ) {","\t\tfilter = filter.slice( 1 );","\t}","","\t// If the filter matches, we need to honour include","\tif ( fullName.indexOf( filter ) !== -1 ) {","\t\treturn include;","\t}","","\t// Otherwise, do the opposite","\treturn !include;","}","","// so far supports only Firefox, Chrome and Opera (buggy), Safari (for real exceptions)","// Later Safari and IE10 are supposed to support error.stack as well","// See also https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error/Stack","function extractStacktrace( e, offset ) {","\toffset = offset === undefined ? 3 : offset;","","\tvar stack, include, i, regex;","","\tif ( e.stacktrace ) {","\t\t// Opera","\t\treturn e.stacktrace.split( \"\\n\" )[ offset + 3 ];","\t} else if ( e.stack ) {","\t\t// Firefox, Chrome","\t\tstack = e.stack.split( \"\\n\" );","\t\tif (/^error$/i.test( stack[0] ) ) {","\t\t\tstack.shift();","\t\t}","\t\tif ( fileName ) {","\t\t\tinclude = [];","\t\t\tfor ( i = offset; i &lt; stack.length; i++ ) {","\t\t\t\tif ( stack[ i ].indexOf( fileName ) != -1 ) {","\t\t\t\t\tbreak;","\t\t\t\t}","\t\t\t\tinclude.push( stack[ i ] );","\t\t\t}","\t\t\tif ( include.length ) {","\t\t\t\treturn include.join( \"\\n\" );","\t\t\t}","\t\t}","\t\treturn stack[ offset ];","\t} else if ( e.sourceURL ) {","\t\t// Safari, PhantomJS","\t\t// hopefully one day Safari provides actual stacktraces","\t\t// exclude useless self-reference for generated Error objects","\t\tif ( /qunit.js$/.test( e.sourceURL ) ) {","\t\t\treturn;","\t\t}","\t\t// for actual exceptions, this is useful","\t\treturn e.sourceURL + \":\" + e.line;","\t}","}","function sourceFromStacktrace( offset ) {","\ttry {","\t\tthrow new Error();","\t} catch ( e ) {","\t\treturn extractStacktrace( e, offset );","\t}","}","","function escapeInnerText( s ) {","\tif ( !s ) {","\t\treturn \"\";","\t}","\ts = s + \"\";","\treturn s.replace( /[\\&amp;&lt;&gt;]/g, function( s ) {","\t\tswitch( s ) {","\t\t\tcase \"&amp;\": return \"&amp;amp;\";","\t\t\tcase \"&lt;\": return \"&amp;lt;\";","\t\t\tcase \"&gt;\": return \"&amp;gt;\";","\t\t\tdefault: return s;","\t\t}","\t});","}","","function synchronize( callback, last ) {","\tconfig.queue.push( callback );","","\tif ( config.autorun &amp;&amp; !config.blocking ) {","\t\tprocess( last );","\t}","}","","function process( last ) {","\tfunction next() {","\t\tprocess( last );","\t}","\tvar start = new Date().getTime();","\tconfig.depth = config.depth ? config.depth + 1 : 1;","","\twhile ( config.queue.length &amp;&amp; !config.blocking ) {","\t\tif ( !defined.setTimeout || config.updateRate &lt;= 0 || ( ( new Date().getTime() - start ) &lt; config.updateRate ) ) {","\t\t\tconfig.queue.shift()();","\t\t} else {","\t\t\twindow.setTimeout( next, 13 );","\t\t\tbreak;","\t\t}","\t}","\tconfig.depth--;","\tif ( last &amp;&amp; !config.blocking &amp;&amp; !config.queue.length &amp;&amp; config.depth === 0 ) {","\t\tdone();","\t}","}","","function saveGlobal() {","\tconfig.pollution = [];","","\tif ( config.noglobals ) {","\t\tfor ( var key in window ) {","\t\t\t// in Opera sometimes DOM element ids show up here, ignore them","\t\t\tif ( !hasOwn.call( window, key ) || /^qunit-test-output/.test( key ) ) {","\t\t\t\tcontinue;","\t\t\t}","\t\t\tconfig.pollution.push( key );","\t\t}","\t}","}","","function checkPollution( name ) {","\tvar newGlobals,","\t\tdeletedGlobals,","\t\told = config.pollution;","","\tsaveGlobal();","","\tnewGlobals = diff( config.pollution, old );","\tif ( newGlobals.length &gt; 0 ) {","\t\tQUnit.pushFailure( \"Introduced global variable(s): \" + newGlobals.join(\", \") );","\t}","","\tdeletedGlobals = diff( old, config.pollution );","\tif ( deletedGlobals.length &gt; 0 ) {","\t\tQUnit.pushFailure( \"Deleted global variable(s): \" + deletedGlobals.join(\", \") );","\t}","}","","// returns a new Array with the elements that are in a but not in b","function diff( a, b ) {","\tvar i, j,","\t\tresult = a.slice();","","\tfor ( i = 0; i &lt; result.length; i++ ) {","\t\tfor ( j = 0; j &lt; b.length; j++ ) {","\t\t\tif ( result[i] === b[j] ) {","\t\t\t\tresult.splice( i, 1 );","\t\t\t\ti--;","\t\t\t\tbreak;","\t\t\t}","\t\t}","\t}","\treturn result;","}","","function extend( a, b ) {","\tfor ( var prop in b ) {","\t\tif ( b[ prop ] === undefined ) {","\t\t\tdelete a[ prop ];","","\t\t// Avoid \"Member not found\" error in IE8 caused by setting window.constructor","\t\t} else if ( prop !== \"constructor\" || a !== window ) {","\t\t\ta[ prop ] = b[ prop ];","\t\t}","\t}","","\treturn a;","}","","function addEvent( elem, type, fn ) {","\tif ( elem.addEventListener ) {","\t\telem.addEventListener( type, fn, false );","\t} else if ( elem.attachEvent ) {","\t\telem.attachEvent( \"on\" + type, fn );","\t} else {","\t\tfn();","\t}","}","","function hasClass( elem, name ) {","\treturn (\" \" + elem.className + \" \").indexOf(\" \" + name + \" \") &gt; -1;","}","","function addClass( elem, name ) {","\tif ( !hasClass( elem, name ) ) {","\t\telem.className += (elem.className ? \" \" : \"\") + name;","\t}","}","","function removeClass( elem, name ) {","\tvar set = \" \" + elem.className + \" \";","\t// Class name may appear multiple times","\twhile ( set.indexOf(\" \" + name + \" \") &gt; -1 ) {","\t\tset = set.replace(\" \" + name + \" \" , \" \");","\t}","\t// If possible, trim it for prettiness, but not neccecarily","\telem.className = window.jQuery ? jQuery.trim( set ) : ( set.trim ? set.trim() : set );","}","","function id( name ) {","\treturn !!( typeof document !== \"undefined\" &amp;&amp; document &amp;&amp; document.getElementById ) &amp;&amp;","\t\tdocument.getElementById( name );","}","","function registerLoggingCallback( key ) {","\treturn function( callback ) {","\t\tconfig[key].push( callback );","\t};","}","","// Supports deprecated method of completely overwriting logging callbacks","function runLoggingCallbacks( key, scope, args ) {","\t//debugger;","\tvar i, callbacks;","\tif ( QUnit.hasOwnProperty( key ) ) {","\t\tQUnit[ key ].call(scope, args );","\t} else {","\t\tcallbacks = config[ key ];","\t\tfor ( i = 0; i &lt; callbacks.length; i++ ) {","\t\t\tcallbacks[ i ].call( scope, args );","\t\t}","\t}","}","","// Test for equality any JavaScript type.","// Author: Philippe Rath&#195;&#169; &lt;prathe@gmail.com&gt;","QUnit.equiv = (function() {","","\t// Call the o related callback with the given arguments.","\tfunction bindCallbacks( o, callbacks, args ) {","\t\tvar prop = QUnit.objectType( o );","\t\tif ( prop ) {","\t\t\tif ( QUnit.objectType( callbacks[ prop ] ) === \"function\" ) {","\t\t\t\treturn callbacks[ prop ].apply( callbacks, args );","\t\t\t} else {","\t\t\t\treturn callbacks[ prop ]; // or undefined","\t\t\t}","\t\t}","\t}","","\t// the real equiv function","\tvar innerEquiv,","\t\t// stack to decide between skip/abort functions","\t\tcallers = [],","\t\t// stack to avoiding loops from circular referencing","\t\tparents = [],","","\t\tgetProto = Object.getPrototypeOf || function ( obj ) {","\t\t\treturn obj.__proto__;","\t\t},","\t\tcallbacks = (function () {","","\t\t\t// for string, boolean, number and null","\t\t\tfunction useStrictEquality( b, a ) {","\t\t\t\tif ( b instanceof a.constructor || a instanceof b.constructor ) {","\t\t\t\t\t// to catch short annotaion VS 'new' annotation of a","\t\t\t\t\t// declaration","\t\t\t\t\t// e.g. var i = 1;","\t\t\t\t\t// var j = new Number(1);","\t\t\t\t\treturn a == b;","\t\t\t\t} else {","\t\t\t\t\treturn a === b;","\t\t\t\t}","\t\t\t}","","\t\t\treturn {","\t\t\t\t\"string\": useStrictEquality,","\t\t\t\t\"boolean\": useStrictEquality,","\t\t\t\t\"number\": useStrictEquality,","\t\t\t\t\"null\": useStrictEquality,","\t\t\t\t\"undefined\": useStrictEquality,","","\t\t\t\t\"nan\": function( b ) {","\t\t\t\t\treturn isNaN( b );","\t\t\t\t},","","\t\t\t\t\"date\": function( b, a ) {","\t\t\t\t\treturn QUnit.objectType( b ) === \"date\" &amp;&amp; a.valueOf() === b.valueOf();","\t\t\t\t},","","\t\t\t\t\"regexp\": function( b, a ) {","\t\t\t\t\treturn QUnit.objectType( b ) === \"regexp\" &amp;&amp;","\t\t\t\t\t\t// the regex itself","\t\t\t\t\t\ta.source === b.source &amp;&amp;","\t\t\t\t\t\t// and its modifers","\t\t\t\t\t\ta.global === b.global &amp;&amp;","\t\t\t\t\t\t// (gmi) ...","\t\t\t\t\t\ta.ignoreCase === b.ignoreCase &amp;&amp;","\t\t\t\t\t\ta.multiline === b.multiline &amp;&amp;","\t\t\t\t\t\ta.sticky === b.sticky;","\t\t\t\t},","","\t\t\t\t// - skip when the property is a method of an instance (OOP)","\t\t\t\t// - abort otherwise,","\t\t\t\t// initial === would have catch identical references anyway","\t\t\t\t\"function\": function() {","\t\t\t\t\tvar caller = callers[callers.length - 1];","\t\t\t\t\treturn caller !== Object &amp;&amp; typeof caller !== \"undefined\";","\t\t\t\t},","","\t\t\t\t\"array\": function( b, a ) {","\t\t\t\t\tvar i, j, len, loop;","","\t\t\t\t\t// b could be an object literal here","\t\t\t\t\tif ( QUnit.objectType( b ) !== \"array\" ) {","\t\t\t\t\t\treturn false;","\t\t\t\t\t}","","\t\t\t\t\tlen = a.length;","\t\t\t\t\tif ( len !== b.length ) {","\t\t\t\t\t\t// safe and faster","\t\t\t\t\t\treturn false;","\t\t\t\t\t}","","\t\t\t\t\t// track reference to avoid circular references","\t\t\t\t\tparents.push( a );","\t\t\t\t\tfor ( i = 0; i &lt; len; i++ ) {","\t\t\t\t\t\tloop = false;","\t\t\t\t\t\tfor ( j = 0; j &lt; parents.length; j++ ) {","\t\t\t\t\t\t\tif ( parents[j] === a[i] ) {","\t\t\t\t\t\t\t\tloop = true;// dont rewalk array","\t\t\t\t\t\t\t}","\t\t\t\t\t\t}","\t\t\t\t\t\tif ( !loop &amp;&amp; !innerEquiv(a[i], b[i]) ) {","\t\t\t\t\t\t\tparents.pop();","\t\t\t\t\t\t\treturn false;","\t\t\t\t\t\t}","\t\t\t\t\t}","\t\t\t\t\tparents.pop();","\t\t\t\t\treturn true;","\t\t\t\t},","","\t\t\t\t\"object\": function( b, a ) {","\t\t\t\t\tvar i, j, loop,","\t\t\t\t\t\t// Default to true","\t\t\t\t\t\teq = true,","\t\t\t\t\t\taProperties = [],","\t\t\t\t\t\tbProperties = [];","","\t\t\t\t\t// comparing constructors is more strict than using","\t\t\t\t\t// instanceof","\t\t\t\t\tif ( a.constructor !== b.constructor ) {","\t\t\t\t\t\t// Allow objects with no prototype to be equivalent to","\t\t\t\t\t\t// objects with Object as their constructor.","\t\t\t\t\t\tif ( !(( getProto(a) === null &amp;&amp; getProto(b) === Object.prototype ) ||","\t\t\t\t\t\t\t( getProto(b) === null &amp;&amp; getProto(a) === Object.prototype ) ) ) {","\t\t\t\t\t\t\t\treturn false;","\t\t\t\t\t\t}","\t\t\t\t\t}","","\t\t\t\t\t// stack constructor before traversing properties","\t\t\t\t\tcallers.push( a.constructor );","\t\t\t\t\t// track reference to avoid circular references","\t\t\t\t\tparents.push( a );","","\t\t\t\t\tfor ( i in a ) { // be strict: don't ensures hasOwnProperty","\t\t\t\t\t\t\t\t\t// and go deep","\t\t\t\t\t\tloop = false;","\t\t\t\t\t\tfor ( j = 0; j &lt; parents.length; j++ ) {","\t\t\t\t\t\t\tif ( parents[j] === a[i] ) {","\t\t\t\t\t\t\t\t// don't go down the same path twice","\t\t\t\t\t\t\t\tloop = true;","\t\t\t\t\t\t\t}","\t\t\t\t\t\t}","\t\t\t\t\t\taProperties.push(i); // collect a's properties","","\t\t\t\t\t\tif (!loop &amp;&amp; !innerEquiv( a[i], b[i] ) ) {","\t\t\t\t\t\t\teq = false;","\t\t\t\t\t\t\tbreak;","\t\t\t\t\t\t}","\t\t\t\t\t}","","\t\t\t\t\tcallers.pop(); // unstack, we are done","\t\t\t\t\tparents.pop();","","\t\t\t\t\tfor ( i in b ) {","\t\t\t\t\t\tbProperties.push( i ); // collect b's properties","\t\t\t\t\t}","","\t\t\t\t\t// Ensures identical properties name","\t\t\t\t\treturn eq &amp;&amp; innerEquiv( aProperties.sort(), bProperties.sort() );","\t\t\t\t}","\t\t\t};","\t\t}());","","\tinnerEquiv = function() { // can take multiple arguments","\t\tvar args = [].slice.apply( arguments );","\t\tif ( args.length &lt; 2 ) {","\t\t\treturn true; // end transition","\t\t}","","\t\treturn (function( a, b ) {","\t\t\tif ( a === b ) {","\t\t\t\treturn true; // catch the most you can","\t\t\t} else if ( a === null || b === null || typeof a === \"undefined\" ||","\t\t\t\t\ttypeof b === \"undefined\" ||","\t\t\t\t\tQUnit.objectType(a) !== QUnit.objectType(b) ) {","\t\t\t\treturn false; // don't lose time with error prone cases","\t\t\t} else {","\t\t\t\treturn bindCallbacks(a, callbacks, [ b, a ]);","\t\t\t}","","\t\t\t// apply transition with (1..n) arguments","\t\t}( args[0], args[1] ) &amp;&amp; arguments.callee.apply( this, args.splice(1, args.length - 1 )) );","\t};","","\treturn innerEquiv;","}());","","/**"," * jsDump Copyright (c) 2008 Ariel Flesler - aflesler(at)gmail(dot)com |"," * http://flesler.blogspot.com Licensed under BSD"," * (http://www.opensource.org/licenses/bsd-license.php) Date: 5/15/2008"," *"," * @projectDescription Advanced and extensible data dumping for Javascript."," * @version 1.0.0"," * @author Ariel Flesler"," * @link {http://flesler.blogspot.com/2008/05/jsdump-pretty-dump-of-any-javascript.html}"," */","QUnit.jsDump = (function() {","\tfunction quote( str ) {","\t\treturn '\"' + str.toString().replace( /\"/g, '\\\\\"' ) + '\"';","\t}","\tfunction literal( o ) {","\t\treturn o + \"\";","\t}","\tfunction join( pre, arr, post ) {","\t\tvar s = jsDump.separator(),","\t\t\tbase = jsDump.indent(),","\t\t\tinner = jsDump.indent(1);","\t\tif ( arr.join ) {","\t\t\tarr = arr.join( \",\" + s + inner );","\t\t}","\t\tif ( !arr ) {","\t\t\treturn pre + post;","\t\t}","\t\treturn [ pre, inner + arr, base + post ].join(s);","\t}","\tfunction array( arr, stack ) {","\t\tvar i = arr.length, ret = new Array(i);","\t\tthis.up();","\t\twhile ( i-- ) {","\t\t\tret[i] = this.parse( arr[i] , undefined , stack);","\t\t}","\t\tthis.down();","\t\treturn join( \"[\", ret, \"]\" );","\t}","","\tvar reName = /^function (\\w+)/,","\t\tjsDump = {","\t\t\t// type is used mostly internally, you can fix a (custom)type in advance","\t\t\tparse: function( obj, type, stack ) {","\t\t\t\tstack = stack || [ ];","\t\t\t\tvar inStack, res,","\t\t\t\t\tparser = this.parsers[ type || this.typeOf(obj) ];","","\t\t\t\ttype = typeof parser;","\t\t\t\tinStack = inArray( obj, stack );","","\t\t\t\tif ( inStack != -1 ) {","\t\t\t\t\treturn \"recursion(\" + (inStack - stack.length) + \")\";","\t\t\t\t}","\t\t\t\tif ( type == \"function\" )  {","\t\t\t\t\tstack.push( obj );","\t\t\t\t\tres = parser.call( this, obj, stack );","\t\t\t\t\tstack.pop();","\t\t\t\t\treturn res;","\t\t\t\t}","\t\t\t\treturn ( type == \"string\" ) ? parser : this.parsers.error;","\t\t\t},","\t\t\ttypeOf: function( obj ) {","\t\t\t\tvar type;","\t\t\t\tif ( obj === null ) {","\t\t\t\t\ttype = \"null\";","\t\t\t\t} else if ( typeof obj === \"undefined\" ) {","\t\t\t\t\ttype = \"undefined\";","\t\t\t\t} else if ( QUnit.is( \"regexp\", obj) ) {","\t\t\t\t\ttype = \"regexp\";","\t\t\t\t} else if ( QUnit.is( \"date\", obj) ) {","\t\t\t\t\ttype = \"date\";","\t\t\t\t} else if ( QUnit.is( \"function\", obj) ) {","\t\t\t\t\ttype = \"function\";","\t\t\t\t} else if ( typeof obj.setInterval !== undefined &amp;&amp; typeof obj.document !== \"undefined\" &amp;&amp; typeof obj.nodeType === \"undefined\" ) {","\t\t\t\t\ttype = \"window\";","\t\t\t\t} else if ( obj.nodeType === 9 ) {","\t\t\t\t\ttype = \"document\";","\t\t\t\t} else if ( obj.nodeType ) {","\t\t\t\t\ttype = \"node\";","\t\t\t\t} else if (","\t\t\t\t\t// native arrays","\t\t\t\t\ttoString.call( obj ) === \"[object Array]\" ||","\t\t\t\t\t// NodeList objects","\t\t\t\t\t( typeof obj.length === \"number\" &amp;&amp; typeof obj.item !== \"undefined\" &amp;&amp; ( obj.length ? obj.item(0) === obj[0] : ( obj.item( 0 ) === null &amp;&amp; typeof obj[0] === \"undefined\" ) ) )","\t\t\t\t) {","\t\t\t\t\ttype = \"array\";","\t\t\t\t} else if ( obj.constructor === Error.prototype.constructor ) {","\t\t\t\t\ttype = \"error\";","\t\t\t\t} else {","\t\t\t\t\ttype = typeof obj;","\t\t\t\t}","\t\t\t\treturn type;","\t\t\t},","\t\t\tseparator: function() {","\t\t\t\treturn this.multiline ?\tthis.HTML ? \"&lt;br /&gt;\" : \"\\n\" : this.HTML ? \"&amp;nbsp;\" : \" \";","\t\t\t},","\t\t\t// extra can be a number, shortcut for increasing-calling-decreasing","\t\t\tindent: function( extra ) {","\t\t\t\tif ( !this.multiline ) {","\t\t\t\t\treturn \"\";","\t\t\t\t}","\t\t\t\tvar chr = this.indentChar;","\t\t\t\tif ( this.HTML ) {","\t\t\t\t\tchr = chr.replace( /\\t/g, \"   \" ).replace( / /g, \"&amp;nbsp;\" );","\t\t\t\t}","\t\t\t\treturn new Array( this._depth_ + (extra||0) ).join(chr);","\t\t\t},","\t\t\tup: function( a ) {","\t\t\t\tthis._depth_ += a || 1;","\t\t\t},","\t\t\tdown: function( a ) {","\t\t\t\tthis._depth_ -= a || 1;","\t\t\t},","\t\t\tsetParser: function( name, parser ) {","\t\t\t\tthis.parsers[name] = parser;","\t\t\t},","\t\t\t// The next 3 are exposed so you can use them","\t\t\tquote: quote,","\t\t\tliteral: literal,","\t\t\tjoin: join,","\t\t\t//","\t\t\t_depth_: 1,","\t\t\t// This is the list of parsers, to modify them, use jsDump.setParser","\t\t\tparsers: {","\t\t\t\twindow: \"[Window]\",","\t\t\t\tdocument: \"[Document]\",","\t\t\t\terror: function(error) {","\t\t\t\t\treturn \"Error(\\\"\" + error.message + \"\\\")\";","\t\t\t\t},","\t\t\t\tunknown: \"[Unknown]\",","\t\t\t\t\"null\": \"null\",","\t\t\t\t\"undefined\": \"undefined\",","\t\t\t\t\"function\": function( fn ) {","\t\t\t\t\tvar ret = \"function\",","\t\t\t\t\t\t// functions never have name in IE","\t\t\t\t\t\tname = \"name\" in fn ? fn.name : (reName.exec(fn) || [])[1];","","\t\t\t\t\tif ( name ) {","\t\t\t\t\t\tret += \" \" + name;","\t\t\t\t\t}","\t\t\t\t\tret += \"( \";","","\t\t\t\t\tret = [ ret, QUnit.jsDump.parse( fn, \"functionArgs\" ), \"){\" ].join( \"\" );","\t\t\t\t\treturn join( ret, QUnit.jsDump.parse(fn,\"functionCode\" ), \"}\" );","\t\t\t\t},","\t\t\t\tarray: array,","\t\t\t\tnodelist: array,","\t\t\t\t\"arguments\": array,","\t\t\t\tobject: function( map, stack ) {","\t\t\t\t\tvar ret = [ ], keys, key, val, i;","\t\t\t\t\tQUnit.jsDump.up();","\t\t\t\t\tkeys = [];","\t\t\t\t\tfor ( key in map ) {","\t\t\t\t\t\tkeys.push( key );","\t\t\t\t\t}","\t\t\t\t\tkeys.sort();","\t\t\t\t\tfor ( i = 0; i &lt; keys.length; i++ ) {","\t\t\t\t\t\tkey = keys[ i ];","\t\t\t\t\t\tval = map[ key ];","\t\t\t\t\t\tret.push( QUnit.jsDump.parse( key, \"key\" ) + \": \" + QUnit.jsDump.parse( val, undefined, stack ) );","\t\t\t\t\t}","\t\t\t\t\tQUnit.jsDump.down();","\t\t\t\t\treturn join( \"{\", ret, \"}\" );","\t\t\t\t},","\t\t\t\tnode: function( node ) {","\t\t\t\t\tvar a, val,","\t\t\t\t\t\topen = QUnit.jsDump.HTML ? \"&amp;lt;\" : \"&lt;\",","\t\t\t\t\t\tclose = QUnit.jsDump.HTML ? \"&amp;gt;\" : \"&gt;\",","\t\t\t\t\t\ttag = node.nodeName.toLowerCase(),","\t\t\t\t\t\tret = open + tag;","","\t\t\t\t\tfor ( a in QUnit.jsDump.DOMAttrs ) {","\t\t\t\t\t\tval = node[ QUnit.jsDump.DOMAttrs[a] ];","\t\t\t\t\t\tif ( val ) {","\t\t\t\t\t\t\tret += \" \" + a + \"=\" + QUnit.jsDump.parse( val, \"attribute\" );","\t\t\t\t\t\t}","\t\t\t\t\t}","\t\t\t\t\treturn ret + close + open + \"/\" + tag + close;","\t\t\t\t},","\t\t\t\t// function calls it internally, it's the arguments part of the function","\t\t\t\tfunctionArgs: function( fn ) {","\t\t\t\t\tvar args,","\t\t\t\t\t\tl = fn.length;","","\t\t\t\t\tif ( !l ) {","\t\t\t\t\t\treturn \"\";","\t\t\t\t\t}","","\t\t\t\t\targs = new Array(l);","\t\t\t\t\twhile ( l-- ) {","\t\t\t\t\t\t// 97 is 'a'","\t\t\t\t\t\targs[l] = String.fromCharCode(97+l);","\t\t\t\t\t}","\t\t\t\t\treturn \" \" + args.join( \", \" ) + \" \";","\t\t\t\t},","\t\t\t\t// object calls it internally, the key part of an item in a map","\t\t\t\tkey: quote,","\t\t\t\t// function calls it internally, it's the content of the function","\t\t\t\tfunctionCode: \"[code]\",","\t\t\t\t// node calls it internally, it's an html attribute value","\t\t\t\tattribute: quote,","\t\t\t\tstring: quote,","\t\t\t\tdate: quote,","\t\t\t\tregexp: literal,","\t\t\t\tnumber: literal,","\t\t\t\t\"boolean\": literal","\t\t\t},","\t\t\tDOMAttrs: {","\t\t\t\t//attributes to dump from nodes, name=&gt;realName","\t\t\t\tid: \"id\",","\t\t\t\tname: \"name\",","\t\t\t\t\"class\": \"className\"","\t\t\t},","\t\t\t// if true, entities are escaped ( &lt;, &gt;, \\t, space and \\n )","\t\t\tHTML: false,","\t\t\t// indentation unit","\t\t\tindentChar: \"  \",","\t\t\t// if true, items in a collection, are separated by a \\n, else just a space.","\t\t\tmultiline: true","\t\t};","","\treturn jsDump;","}());","","// from Sizzle.js","function getText( elems ) {","\tvar i, elem,","\t\tret = \"\";","","\tfor ( i = 0; elems[i]; i++ ) {","\t\telem = elems[i];","","\t\t// Get the text from text nodes and CDATA nodes","\t\tif ( elem.nodeType === 3 || elem.nodeType === 4 ) {","\t\t\tret += elem.nodeValue;","","\t\t// Traverse everything else, except comment nodes","\t\t} else if ( elem.nodeType !== 8 ) {","\t\t\tret += getText( elem.childNodes );","\t\t}","\t}","","\treturn ret;","}","","// from jquery.js","function inArray( elem, array ) {","\tif ( array.indexOf ) {","\t\treturn array.indexOf( elem );","\t}","","\tfor ( var i = 0, length = array.length; i &lt; length; i++ ) {","\t\tif ( array[ i ] === elem ) {","\t\t\treturn i;","\t\t}","\t}","","\treturn -1;","}","","/*"," * Javascript Diff Algorithm"," *  By John Resig (http://ejohn.org/)"," *  Modified by Chu Alan \"sprite\""," *"," * Released under the MIT license."," *"," * More Info:"," *  http://ejohn.org/projects/javascript-diff-algorithm/"," *"," * Usage: QUnit.diff(expected, actual)"," *"," * QUnit.diff( \"the quick brown fox jumped over\", \"the quick fox jumps over\" ) == \"the  quick &lt;del&gt;brown &lt;/del&gt; fox &lt;del&gt;jumped &lt;/del&gt;&lt;ins&gt;jumps &lt;/ins&gt; over\""," */","QUnit.diff = (function() {","\tfunction diff( o, n ) {","\t\tvar i,","\t\t\tns = {},","\t\t\tos = {};","","\t\tfor ( i = 0; i &lt; n.length; i++ ) {","\t\t\tif ( ns[ n[i] ] == null ) {","\t\t\t\tns[ n[i] ] = {","\t\t\t\t\trows: [],","\t\t\t\t\to: null","\t\t\t\t};","\t\t\t}","\t\t\tns[ n[i] ].rows.push( i );","\t\t}","","\t\tfor ( i = 0; i &lt; o.length; i++ ) {","\t\t\tif ( os[ o[i] ] == null ) {","\t\t\t\tos[ o[i] ] = {","\t\t\t\t\trows: [],","\t\t\t\t\tn: null","\t\t\t\t};","\t\t\t}","\t\t\tos[ o[i] ].rows.push( i );","\t\t}","","\t\tfor ( i in ns ) {","\t\t\tif ( !hasOwn.call( ns, i ) ) {","\t\t\t\tcontinue;","\t\t\t}","\t\t\tif ( ns[i].rows.length == 1 &amp;&amp; typeof os[i] != \"undefined\" &amp;&amp; os[i].rows.length == 1 ) {","\t\t\t\tn[ ns[i].rows[0] ] = {","\t\t\t\t\ttext: n[ ns[i].rows[0] ],","\t\t\t\t\trow: os[i].rows[0]","\t\t\t\t};","\t\t\t\to[ os[i].rows[0] ] = {","\t\t\t\t\ttext: o[ os[i].rows[0] ],","\t\t\t\t\trow: ns[i].rows[0]","\t\t\t\t};","\t\t\t}","\t\t}","","\t\tfor ( i = 0; i &lt; n.length - 1; i++ ) {","\t\t\tif ( n[i].text != null &amp;&amp; n[ i + 1 ].text == null &amp;&amp; n[i].row + 1 &lt; o.length &amp;&amp; o[ n[i].row + 1 ].text == null &amp;&amp;","\t\t\t\t\t\tn[ i + 1 ] == o[ n[i].row + 1 ] ) {","","\t\t\t\tn[ i + 1 ] = {","\t\t\t\t\ttext: n[ i + 1 ],","\t\t\t\t\trow: n[i].row + 1","\t\t\t\t};","\t\t\t\to[ n[i].row + 1 ] = {","\t\t\t\t\ttext: o[ n[i].row + 1 ],","\t\t\t\t\trow: i + 1","\t\t\t\t};","\t\t\t}","\t\t}","","\t\tfor ( i = n.length - 1; i &gt; 0; i-- ) {","\t\t\tif ( n[i].text != null &amp;&amp; n[ i - 1 ].text == null &amp;&amp; n[i].row &gt; 0 &amp;&amp; o[ n[i].row - 1 ].text == null &amp;&amp;","\t\t\t\t\t\tn[ i - 1 ] == o[ n[i].row - 1 ]) {","","\t\t\t\tn[ i - 1 ] = {","\t\t\t\t\ttext: n[ i - 1 ],","\t\t\t\t\trow: n[i].row - 1","\t\t\t\t};","\t\t\t\to[ n[i].row - 1 ] = {","\t\t\t\t\ttext: o[ n[i].row - 1 ],","\t\t\t\t\trow: i - 1","\t\t\t\t};","\t\t\t}","\t\t}","","\t\treturn {","\t\t\to: o,","\t\t\tn: n","\t\t};","\t}","","\treturn function( o, n ) {","\t\to = o.replace( /\\s+$/, \"\" );","\t\tn = n.replace( /\\s+$/, \"\" );","","\t\tvar i, pre,","\t\t\tstr = \"\",","\t\t\tout = diff( o === \"\" ? [] : o.split(/\\s+/), n === \"\" ? [] : n.split(/\\s+/) ),","\t\t\toSpace = o.match(/\\s+/g),","\t\t\tnSpace = n.match(/\\s+/g);","","\t\tif ( oSpace == null ) {","\t\t\toSpace = [ \" \" ];","\t\t}","\t\telse {","\t\t\toSpace.push( \" \" );","\t\t}","","\t\tif ( nSpace == null ) {","\t\t\tnSpace = [ \" \" ];","\t\t}","\t\telse {","\t\t\tnSpace.push( \" \" );","\t\t}","","\t\tif ( out.n.length === 0 ) {","\t\t\tfor ( i = 0; i &lt; out.o.length; i++ ) {","\t\t\t\tstr += \"&lt;del&gt;\" + out.o[i] + oSpace[i] + \"&lt;/del&gt;\";","\t\t\t}","\t\t}","\t\telse {","\t\t\tif ( out.n[0].text == null ) {","\t\t\t\tfor ( n = 0; n &lt; out.o.length &amp;&amp; out.o[n].text == null; n++ ) {","\t\t\t\t\tstr += \"&lt;del&gt;\" + out.o[n] + oSpace[n] + \"&lt;/del&gt;\";","\t\t\t\t}","\t\t\t}","","\t\t\tfor ( i = 0; i &lt; out.n.length; i++ ) {","\t\t\t\tif (out.n[i].text == null) {","\t\t\t\t\tstr += \"&lt;ins&gt;\" + out.n[i] + nSpace[i] + \"&lt;/ins&gt;\";","\t\t\t\t}","\t\t\t\telse {","\t\t\t\t\t// `pre` initialized at top of scope","\t\t\t\t\tpre = \"\";","","\t\t\t\t\tfor ( n = out.n[i].row + 1; n &lt; out.o.length &amp;&amp; out.o[n].text == null; n++ ) {","\t\t\t\t\t\tpre += \"&lt;del&gt;\" + out.o[n] + oSpace[n] + \"&lt;/del&gt;\";","\t\t\t\t\t}","\t\t\t\t\tstr += \" \" + out.n[i].text + nSpace[i] + pre;","\t\t\t\t}","\t\t\t}","\t\t}","","\t\treturn str;","\t};","}());","","// for CommonJS enviroments, export everything","if ( typeof exports !== \"undefined\" ) {","\textend(exports, QUnit);","}","","// get at whatever the global object is, like window in browsers","}( (function() {return this;}.call()) ));"];
+_$jscoverage.branchData['qunit/qunit.js'][2008][1].init(52328, 30, 'typeof exports !== "undefined"');
+function visit284_2008_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][2008][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1995][3].init(112, 21, 'out.o[n].text == null');
+function visit283_1995_3(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1995][3].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1995][2].init(92, 16, 'n < out.o.length');
+function visit282_1995_2(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1995][2].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1995][1].init(92, 41, 'n < out.o.length && out.o[n].text == null');
+function visit281_1995_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1995][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1988][1].init(9, 21, 'out.n[i].text == null');
+function visit280_1988_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1988][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1987][1].init(186, 16, 'i < out.n.length');
+function visit279_1987_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1987][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1982][3].init(38, 21, 'out.o[n].text == null');
+function visit278_1982_3(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1982][3].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1982][2].init(18, 16, 'n < out.o.length');
+function visit277_1982_2(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1982][2].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1982][1].init(18, 41, 'n < out.o.length && out.o[n].text == null');
+function visit276_1982_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1982][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1981][1].init(9, 21, 'out.n[0].text == null');
+function visit275_1981_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1981][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1976][1].init(17, 16, 'i < out.o.length');
+function visit274_1976_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1976][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1975][1].init(414, 18, 'out.n.length === 0');
+function visit273_1975_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1975][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1968][1].init(326, 14, 'nSpace == null');
+function visit272_1968_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1968][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1961][1].init(238, 14, 'oSpace == null');
+function visit271_1961_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1961][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1957][2].init(71, 8, 'n === ""');
+function visit270_1957_2(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1957][2].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1957][1].init(39, 8, 'o === ""');
+function visit269_1957_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1957][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1932][1].init(39, 31, 'n[i - 1] == o[n[i].row - 1]');
+function visit268_1932_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1932][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1931][8].init(73, 30, 'o[n[i].row - 1].text == null');
+function visit267_1931_8(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1931][8].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1931][7].init(73, 71, 'o[n[i].row - 1].text == null && n[i - 1] == o[n[i].row - 1]');
+function visit266_1931_7(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1931][7].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1931][6].init(57, 12, 'n[i].row > 0');
+function visit265_1931_6(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1931][6].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1931][5].init(57, 87, 'n[i].row > 0 && o[n[i].row - 1].text == null && n[i - 1] == o[n[i].row - 1]');
+function visit264_1931_5(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1931][5].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1931][4].init(30, 23, 'n[i - 1].text == null');
+function visit263_1931_4(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1931][4].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1931][3].init(30, 114, 'n[i - 1].text == null && n[i].row > 0 && o[n[i].row - 1].text == null && n[i - 1] == o[n[i].row - 1]');
+function visit262_1931_3(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1931][3].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1931][2].init(9, 17, 'n[i].text != null');
+function visit261_1931_2(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1931][2].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1931][1].init(9, 135, 'n[i].text != null && n[i - 1].text == null && n[i].row > 0 && o[n[i].row - 1].text == null && n[i - 1] == o[n[i].row - 1]');
+function visit260_1931_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1931][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1930][1].init(1100, 5, 'i > 0');
+function visit259_1930_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1930][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1917][1].init(39, 31, 'n[i + 1] == o[n[i].row + 1]');
+function visit258_1917_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1917][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1916][8].init(84, 30, 'o[n[i].row + 1].text == null');
+function visit257_1916_8(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1916][8].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1916][7].init(84, 71, 'o[n[i].row + 1].text == null && n[i + 1] == o[n[i].row + 1]');
+function visit256_1916_7(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1916][7].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1916][6].init(57, 23, 'n[i].row + 1 < o.length');
+function visit255_1916_6(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1916][6].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1916][5].init(57, 98, 'n[i].row + 1 < o.length && o[n[i].row + 1].text == null && n[i + 1] == o[n[i].row + 1]');
+function visit254_1916_5(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1916][5].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1916][4].init(30, 23, 'n[i + 1].text == null');
+function visit253_1916_4(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1916][4].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1916][3].init(30, 125, 'n[i + 1].text == null && n[i].row + 1 < o.length && o[n[i].row + 1].text == null && n[i + 1] == o[n[i].row + 1]');
+function visit252_1916_3(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1916][3].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1916][2].init(9, 17, 'n[i].text != null');
+function visit251_1916_2(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1916][2].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1916][1].init(9, 146, 'n[i].text != null && n[i + 1].text == null && n[i].row + 1 < o.length && o[n[i].row + 1].text == null && n[i + 1] == o[n[i].row + 1]');
+function visit250_1916_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1916][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1915][1].init(727, 16, 'i < n.length - 1');
+function visit249_1915_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1915][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1903][5].init(119, 22, 'os[i].rows.length == 1');
+function visit248_1903_5(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1903][5].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1903][4].init(88, 27, 'typeof os[i] != "undefined"');
+function visit247_1903_4(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1903][4].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1903][3].init(88, 53, 'typeof os[i] != "undefined" && os[i].rows.length == 1');
+function visit246_1903_3(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1903][3].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1903][2].init(62, 22, 'ns[i].rows.length == 1');
+function visit245_1903_2(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1903][2].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1903][1].init(62, 79, 'ns[i].rows.length == 1 && typeof os[i] != "undefined" && os[i].rows.length == 1');
+function visit244_1903_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1903][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1890][1].init(9, 18, 'os[o[i]] == null');
+function visit243_1890_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1890][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1889][1].init(212, 12, 'i < o.length');
+function visit242_1889_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1889][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1880][1].init(9, 18, 'ns[n[i]] == null');
+function visit241_1880_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1880][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1879][1].init(50, 12, 'i < n.length');
+function visit240_1879_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1879][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1851][1].init(8, 19, 'array[i] === elem');
+function visit239_1851_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1851][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1850][1].init(102, 10, 'i < length');
+function visit238_1850_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1850][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1836][1].init(219, 19, 'elem.nodeType !== 8');
+function visit237_1836_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1836][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1832][3].init(101, 19, 'elem.nodeType === 4');
+function visit236_1832_3(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1832][3].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1832][2].init(78, 19, 'elem.nodeType === 3');
+function visit235_1832_2(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1832][2].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1832][1].init(78, 42, 'elem.nodeType === 3 || elem.nodeType === 4');
+function visit234_1832_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1832][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1772][1].init(58, 3, 'val');
+function visit233_1772_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1772][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1755][1].init(173, 15, 'i < keys.length');
+function visit232_1755_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1755][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1736][1].init(146, 4, 'name');
+function visit231_1736_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1736][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1734][1].init(101, 21, 'reName.exec(fn) || []');
+function visit230_1734_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1734][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1710][1].init(21, 6, 'a || 1');
+function visit229_1710_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1710][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1707][1].init(21, 6, 'a || 1');
+function visit228_1707_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1707][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1704][1].init(216, 8, 'extra || 0');
+function visit227_1704_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1704][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1685][1].init(954, 47, 'obj.constructor === Error.prototype.constructor');
+function visit226_1685_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1685][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1682][8].init(213, 29, 'typeof obj[0] === "undefined"');
+function visit225_1682_8(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1682][8].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1682][7].init(187, 22, 'obj.item(0) === null');
+function visit224_1682_7(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1682][7].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1682][6].init(187, 55, 'obj.item(0) === null && typeof obj[0] === "undefined"');
+function visit223_1682_6(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1682][6].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1682][5].init(160, 22, 'obj.item(0) === obj[0]');
+function visit222_1682_5(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1682][5].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1682][4].init(110, 31, 'typeof obj.item !== "undefined"');
+function visit221_1682_4(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1682][4].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1682][3].init(110, 136, 'typeof obj.item !== "undefined" && (obj.length ? obj.item(0) === obj[0] : (obj.item(0) === null && typeof obj[0] === "undefined"))');
+function visit220_1682_3(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1682][3].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1682][2].init(76, 30, 'typeof obj.length === "number"');
+function visit219_1682_2(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1682][2].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1682][1].init(76, 170, 'typeof obj.length === "number" && typeof obj.item !== "undefined" && (obj.length ? obj.item(0) === obj[0] : (obj.item(0) === null && typeof obj[0] === "undefined"))');
+function visit218_1682_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1682][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1680][2].init(659, 41, 'toString.call(obj) === "[object Array]"');
+function visit217_1680_2(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1680][2].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1680][1].init(31, 249, 'toString.call(obj) === "[object Array]" || (typeof obj.length === "number" && typeof obj.item !== "undefined" && (obj.length ? obj.item(0) === obj[0] : (obj.item(0) === null && typeof obj[0] === "undefined")))');
+function visit216_1680_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1680][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1674][1].init(513, 18, 'obj.nodeType === 9');
+function visit215_1674_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1674][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1672][5].init(434, 35, 'typeof obj.nodeType === "undefined"');
+function visit214_1672_5(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1672][5].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1672][4].init(395, 35, 'typeof obj.document !== "undefined"');
+function visit213_1672_4(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1672][4].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1672][3].init(395, 74, 'typeof obj.document !== "undefined" && typeof obj.nodeType === "undefined"');
+function visit212_1672_3(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1672][3].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1672][2].init(355, 36, 'typeof obj.setInterval !== undefined');
+function visit211_1672_2(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1672][2].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1672][1].init(355, 114, 'typeof obj.setInterval !== undefined && typeof obj.document !== "undefined" && typeof obj.nodeType === "undefined"');
+function visit210_1672_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1672][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1670][1].init(283, 26, 'QUnit.is("function", obj)');
+function visit209_1670_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1670][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1668][1].init(219, 22, 'QUnit.is("date", obj)');
+function visit208_1668_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1668][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1666][1].init(151, 24, 'QUnit.is("regexp", obj)');
+function visit207_1666_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1666][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1664][1].init(78, 26, 'typeof obj === "undefined"');
+function visit206_1664_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1664][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1662][1].init(24, 12, 'obj === null');
+function visit205_1662_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1662][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1658][1].init(417, 16, 'type == "string"');
+function visit204_1658_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1658][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1652][1].init(271, 18, 'type == "function"');
+function visit203_1652_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1652][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1649][1].init(179, 13, 'inStack != -1');
+function visit202_1649_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1649][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1644][1].init(45, 24, 'type || this.typeOf(obj)');
+function visit201_1644_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1644][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1642][1].init(13, 12, 'stack || []');
+function visit200_1642_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1642][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1586][1].init(32, 43, 'QUnit.objectType(a) !== QUnit.objectType(b)');
+function visit199_1586_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1586][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1585][2].init(145, 24, 'typeof b === "undefined"');
+function visit198_1585_2(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1585][2].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1585][1].init(32, 76, 'typeof b === "undefined" || QUnit.objectType(a) !== QUnit.objectType(b)');
+function visit197_1585_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1585][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1584][6].init(108, 24, 'typeof a === "undefined"');
+function visit196_1584_6(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1584][6].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1584][5].init(108, 109, 'typeof a === "undefined" || typeof b === "undefined" || QUnit.objectType(a) !== QUnit.objectType(b)');
+function visit195_1584_5(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1584][5].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1584][4].init(94, 10, 'b === null');
+function visit194_1584_4(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1584][4].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1584][3].init(94, 123, 'b === null || typeof a === "undefined" || typeof b === "undefined" || QUnit.objectType(a) !== QUnit.objectType(b)');
+function visit193_1584_3(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1584][3].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1584][2].init(80, 10, 'a === null');
+function visit192_1584_2(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1584][2].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1584][1].init(80, 137, 'a === null || b === null || typeof a === "undefined" || typeof b === "undefined" || QUnit.objectType(a) !== QUnit.objectType(b)');
+function visit191_1584_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1584][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1582][1].init(9, 7, 'a === b');
+function visit190_1582_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1582][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1593][1].init(-1, 502, 'function(a, b) {\n  _$jscoverage[\'qunit/qunit.js\'][1582]++;\n  if (a === b) {\n    _$jscoverage[\'qunit/qunit.js\'][1583]++;\n    return true;\n  } else {\n    _$jscoverage[\'qunit/qunit.js\'][1584]++;\n    if (a === null || b === null || typeof a === "undefined" || typeof b === "undefined" || QUnit.objectType(a) !== QUnit.objectType(b)) {\n      _$jscoverage[\'qunit/qunit.js\'][1587]++;\n      return false;\n    } else {\n      _$jscoverage[\'qunit/qunit.js\'][1589]++;\n      return bindCallbacks(a, callbacks, [b, a]);\n    }\n  }\n}(args[0], args[1]) && arguments.callee.apply(this, args.splice(1, args.length - 1))');
+function visit189_1593_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1593][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1577][1].init(81, 15, 'args.length < 2');
+function visit188_1577_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1577][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1570][1].init(1336, 58, 'eq && innerEquiv(aProperties.sort(), bProperties.sort())');
+function visit187_1570_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1570][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1556][1].init(318, 34, '!loop && !innerEquiv(a[i], b[i])');
+function visit186_1556_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1556][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1549][1].init(13, 19, 'parents[j] === a[i]');
+function visit185_1549_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1549][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1548][1].init(107, 18, 'j < parents.length');
+function visit184_1548_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1548][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1535][3].init(94, 32, 'getProto(a) === Object.prototype');
+function visit183_1535_3(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1535][3].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1535][2].init(70, 20, 'getProto(b) === null');
+function visit182_1535_2(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1535][2].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1535][1].init(70, 56, 'getProto(b) === null && getProto(a) === Object.prototype');
+function visit181_1535_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1535][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1534][4].init(152, 32, 'getProto(b) === Object.prototype');
+function visit180_1534_4(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1534][4].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1534][3].init(128, 20, 'getProto(a) === null');
+function visit179_1534_3(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1534][3].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1534][2].init(128, 56, 'getProto(a) === null && getProto(b) === Object.prototype');
+function visit178_1534_2(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1534][2].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1534][1].init(128, 129, '(getProto(a) === null && getProto(b) === Object.prototype) || (getProto(b) === null && getProto(a) === Object.prototype)');
+function visit177_1534_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1534][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1531][1].init(199, 31, 'a.constructor !== b.constructor');
+function visit176_1531_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1531][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1513][1].init(173, 32, '!loop && !innerEquiv(a[i], b[i])');
+function visit175_1513_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1513][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1509][1].init(13, 19, 'parents[j] === a[i]');
+function visit174_1509_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1509][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1508][1].init(40, 18, 'j < parents.length');
+function visit173_1508_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1508][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1506][1].init(346, 7, 'i < len');
+function visit172_1506_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1506][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1499][1].init(177, 16, 'len !== b.length');
+function visit171_1499_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1499][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1494][1].init(80, 33, 'QUnit.objectType(b) !== "array"');
+function visit170_1494_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1494][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1487][3].init(81, 29, 'typeof caller !== "undefined"');
+function visit169_1487_3(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1487][3].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1487][2].init(60, 17, 'caller !== Object');
+function visit168_1487_2(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1487][2].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1487][1].init(60, 50, 'caller !== Object && typeof caller !== "undefined"');
+function visit167_1487_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1487][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1479][1].init(36, 21, 'a.sticky === b.sticky');
+function visit166_1479_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1479][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1478][2].init(234, 27, 'a.multiline === b.multiline');
+function visit165_1478_2(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1478][2].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1478][1].init(38, 58, 'a.multiline === b.multiline && a.sticky === b.sticky');
+function visit164_1478_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1478][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1477][2].init(194, 29, 'a.ignoreCase === b.ignoreCase');
+function visit163_1477_2(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1477][2].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1477][1].init(49, 97, 'a.ignoreCase === b.ignoreCase && a.multiline === b.multiline && a.sticky === b.sticky');
+function visit162_1477_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1477][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1475][2].init(143, 21, 'a.global === b.global');
+function visit161_1475_2(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1475][2].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1475][1].init(56, 147, 'a.global === b.global && a.ignoreCase === b.ignoreCase && a.multiline === b.multiline && a.sticky === b.sticky');
+function visit160_1475_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1475][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1473][2].init(85, 21, 'a.source === b.source');
+function visit159_1473_2(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1473][2].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1473][1].init(69, 204, 'a.source === b.source && a.global === b.global && a.ignoreCase === b.ignoreCase && a.multiline === b.multiline && a.sticky === b.sticky');
+function visit158_1473_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1473][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1471][2].init(13, 34, 'QUnit.objectType(b) === "regexp"');
+function visit157_1471_2(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1471][2].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1471][1].init(13, 274, 'QUnit.objectType(b) === "regexp" && a.source === b.source && a.global === b.global && a.ignoreCase === b.ignoreCase && a.multiline === b.multiline && a.sticky === b.sticky');
+function visit156_1471_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1471][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1467][3].init(49, 27, 'a.valueOf() === b.valueOf()');
+function visit155_1467_3(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1467][3].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1467][2].init(13, 32, 'QUnit.objectType(b) === "date"');
+function visit154_1467_2(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1467][2].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1467][1].init(13, 63, 'QUnit.objectType(b) === "date" && a.valueOf() === b.valueOf()');
+function visit153_1467_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1467][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1451][1].init(13, 7, 'a === b');
+function visit152_1451_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1451][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1449][1].init(146, 6, 'a == b');
+function visit151_1449_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1449][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1444][1].init(10, 56, 'b instanceof a.constructor || a instanceof b.constructor');
+function visit150_1444_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1444][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1437][1].init(166, 72, 'Object.getPrototypeOf || function(obj) {\n  _$jscoverage[\'qunit/qunit.js\'][1438]++;\n  return obj.__proto__;\n}');
+function visit149_1437_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1437][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1422][1].init(9, 52, 'QUnit.objectType(callbacks[prop]) === "function"');
+function visit148_1422_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1422][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1421][1].init(44, 4, 'prop');
+function visit147_1421_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1421][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1408][1].init(45, 20, 'i < callbacks.length');
+function visit146_1408_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1408][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1404][1].init(39, 27, 'QUnit.hasOwnProperty(key)');
+function visit145_1404_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1404][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1390][4].init(48, 35, 'document && document.getElementById');
+function visit144_1390_4(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1390][4].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1390][3].init(13, 31, 'typeof document !== "undefined"');
+function visit143_1390_3(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1390][3].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1390][2].init(13, 70, 'typeof document !== "undefined" && document && document.getElementById');
+function visit142_1390_2(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1390][2].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1390][1].init(9, 113, '!!(typeof document !== "undefined" && document && document.getElementById) && document.getElementById(name)');
+function visit141_1390_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1390][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1382][1].init(90, 34, 'set.indexOf(" " + name + " ") > -1');
+function visit140_1382_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1382][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1370][1].init(10, 58, '(" " + elem.className + " ").indexOf(" " + name + " ") > -1');
+function visit139_1370_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1370][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1351][3].init(179, 12, 'a !== window');
+function visit138_1351_3(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1351][3].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1351][2].init(153, 22, 'prop !== "constructor"');
+function visit137_1351_2(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1351][2].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1351][1].init(153, 38, 'prop !== "constructor" || a !== window');
+function visit136_1351_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1351][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1347][1].init(8, 23, 'b[prop] === undefined');
+function visit135_1347_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1347][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1335][1].init(9, 18, 'result[i] === b[j]');
+function visit134_1335_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1335][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1334][1].init(16, 12, 'j < b.length');
+function visit133_1334_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1334][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1333][1].init(49, 17, 'i < result.length');
+function visit132_1333_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1333][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1323][1].init(297, 25, 'deletedGlobals.length > 0');
+function visit131_1323_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1323][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1318][1].init(130, 21, 'newGlobals.length > 0');
+function visit130_1318_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1318][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1302][1].init(76, 63, '!hasOwn.call(window, key) || /^qunit-test-output/.test(key)');
+function visit129_1302_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1302][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1291][4].init(465, 18, 'config.depth === 0');
+function visit128_1291_4(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1291][4].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1291][3].init(441, 42, '!config.queue.length && config.depth === 0');
+function visit127_1291_3(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1291][3].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1291][2].init(421, 62, '!config.blocking && !config.queue.length && config.depth === 0');
+function visit126_1291_2(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1291][2].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1291][1].init(413, 70, 'last && !config.blocking && !config.queue.length && config.depth === 0');
+function visit125_1291_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1291][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1283][4].init(61, 50, '(new Date().getTime() - start) < config.updateRate');
+function visit124_1283_4(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1283][4].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1283][3].init(31, 22, 'config.updateRate <= 0');
+function visit123_1283_3(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1283][3].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1283][2].init(31, 82, 'config.updateRate <= 0 || ((new Date().getTime() - start) < config.updateRate)');
+function visit122_1283_2(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1283][2].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1283][1].init(8, 105, '!defined.setTimeout || config.updateRate <= 0 || ((new Date().getTime() - start) < config.updateRate)');
+function visit121_1283_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1283][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1282][1].init(140, 39, 'config.queue.length && !config.blocking');
+function visit120_1282_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1282][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1270][1].init(40, 34, 'config.autorun && !config.blocking');
+function visit119_1270_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1270][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1237][1].init(153, 31, '/qunit.js$/.test(e.sourceURL)');
+function visit118_1237_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1237][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1223][1].init(10, 36, 'stack[i].indexOf(fileName) != -1');
+function visit117_1223_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1223][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1222][1].init(39, 16, 'i < stack.length');
+function visit116_1222_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1222][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1220][1].init(122, 8, 'fileName');
+function visit115_1220_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1220][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1217][1].init(61, 27, '/^error$/i.test(stack[0])');
+function visit114_1217_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1217][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1207][1].init(11, 20, 'offset === undefined');
+function visit113_1207_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1207][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1195][1].init(726, 33, 'fullName.indexOf(filter) !== -1');
+function visit112_1195_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1195][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1189][1].init(586, 26, 'filter.charAt(0) !== "!"');
+function visit111_1189_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1189][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1181][3].init(475, 36, 'test.module.toLowerCase() !== module');
+function visit110_1181_3(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1181][3].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1181][2].init(459, 52, '!test.module || test.module.toLowerCase() !== module');
+function visit109_1181_2(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1181][2].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1181][1].init(447, 66, 'module && (!test.module || test.module.toLowerCase() !== module)');
+function visit108_1181_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1181][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1178][1].init(10, 37, 'test.testNumber === config.testNumber');
+function visit107_1178_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1178][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1172][2].init(266, 37, 'test.callback.validTest === validTest');
+function visit106_1172_2(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1172][2].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1172][1].init(249, 54, 'test.callback && test.callback.validTest === validTest');
+function visit105_1172_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1172][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1168][1].init(80, 44, 'config.module && config.module.toLowerCase()');
+function visit104_1168_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1168][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1167][1].init(23, 44, 'config.filter && config.filter.toLowerCase()');
+function visit103_1167_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1167][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1145][1].init(45, 34, 'key.indexOf("qunit-test-") === 0');
+function visit102_1145_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1145][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1143][1].init(61, 25, 'i < sessionStorage.length');
+function visit101_1143_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1143][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1141][3].init(1372, 22, 'config.stats.bad === 0');
+function visit100_1141_3(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1141][3].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1141][2].init(1346, 48, 'defined.sessionStorage && config.stats.bad === 0');
+function visit99_1141_2(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1141][2].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1141][1].init(1328, 66, 'config.reorder && defined.sessionStorage && config.stats.bad === 0');
+function visit98_1141_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1141][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1131][3].init(939, 31, 'typeof document !== "undefined"');
+function visit97_1131_3(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1131][3].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1131][2].init(939, 49, 'typeof document !== "undefined" && document.title');
+function visit96_1131_2(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1131][2].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1131][1].init(918, 70, 'config.altertitle && typeof document !== "undefined" && document.title');
+function visit95_1131_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1131][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1127][1].init(853, 5, 'tests');
+function visit94_1127_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1127][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1123][1].init(759, 6, 'banner');
+function visit93_1123_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1123][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1075][1].init(202, 12, 'ret !== true');
+function visit92_1075_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1075][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1069][1].init(25, 13, 'onErrorFnPrev');
+function visit91_1069_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1069][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1049][1].init(4252, 4, 'main');
+function visit90_1049_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1049][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1041][1].init(210, 21, 'selectedModule === ""');
+function visit89_1041_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1041][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1033][1].init(1681, 14, 'numModules > 1');
+function visit88_1033_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1033][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1009][2].init(718, 79, 'defined.sessionStorage && sessionStorage.getItem("qunit-filter-passed-tests")');
+function visit87_1009_2(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1009][2].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][1009][1].init(697, 100, 'config.hidepassed || defined.sessionStorage && sessionStorage.getItem("qunit-filter-passed-tests")');
+function visit86_1009_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][1009][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][984][1].init(1928, 7, 'toolbar');
+function visit85_984_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][984][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][978][1].init(1673, 6, 'banner');
+function visit84_978_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][978][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][972][1].init(1531, 9, 'userAgent');
+function visit83_972_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][972][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][965][1].init(97, 19, 'config.module === i');
+function visit82_965_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][965][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][963][1].init(8, 34, 'config.modules.hasOwnProperty(i)');
+function visit81_963_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][963][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][961][1].init(1083, 27, 'config.module === undefined');
+function visit80_961_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][961][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][950][1].init(37, 23, 'typeof val === "string"');
+function visit79_950_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][950][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][948][1].init(432, 7, 'i < len');
+function visit78_948_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][948][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][927][3].init(23929, 34, 'document.readyState === "complete"');
+function visit77_927_3(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][927][3].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][927][2].init(23894, 31, 'typeof document === "undefined"');
+function visit76_927_2(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][927][2].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][927][1].init(23894, 69, 'typeof document === "undefined" || document.readyState === "complete"');
+function visit75_927_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][927][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][859][1].init(588, 6, 'source');
+function visit74_859_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][859][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][855][1].init(449, 6, 'actual');
+function visit73_855_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][855][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][849][1].init(293, 37, 'escapeInnerText(message) || "error"');
+function visit72_849_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][849][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][820][1].init(532, 6, 'source');
+function visit71_820_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][820][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][813][1].init(242, 18, 'actual != expected');
+function visit70_813_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][813][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][804][1].init(331, 60, 'escapeInnerText(message) || (result ? "okay" : "failed")');
+function visit69_804_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][804][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][783][1].init(511, 23, 'typeof obj === "object"');
+function visit68_783_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][783][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][771][1].init(23, 10, 'isNaN(obj)');
+function visit67_771_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][771][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][767][2].init(71, 17, 'match && match[1]');
+function visit66_767_2(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][767][2].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][767][1].init(71, 23, 'match && match[1] || ""');
+function visit65_767_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][767][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][762][1].init(112, 12, 'obj === null');
+function visit64_762_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][762][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][758][1].init(8, 26, 'typeof obj === "undefined"');
+function visit63_758_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][758][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][754][1].init(10, 31, 'QUnit.objectType(obj) == type');
+function visit62_754_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][754][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][733][1].init(47, 7, 'fixture');
+function visit61_733_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][733][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][721][1].init(851, 5, 'tests');
+function visit60_721_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][721][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][717][1].init(784, 6, 'result');
+function visit59_717_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][717][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][713][1].init(735, 6, 'banner');
+function visit58_713_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][713][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][709][1].init(688, 5, 'tests');
+function visit57_709_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][709][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][696][1].init(307, 5, 'qunit');
+function visit56_696_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][696][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][666][1].init(17150, 30, 'typeof exports === "undefined"');
+function visit55_666_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][666][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][661][1].init(867, 29, 'location.protocol === "file:"');
+function visit54_661_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][661][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][658][1].init(740, 44, 'parseInt(urlParams.testNumber, 10) || null');
+function visit53_658_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][658][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][641][1].init(16, 10, 'i < length');
+function visit52_641_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][641][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][634][1].init(19, 52, 'window.location || {search: "", protocol: "file:"}');
+function visit51_634_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][634][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][533][1].init(423, 36, 'expected.call({}, actual) === true');
+function visit50_533_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][533][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][527][1].init(153, 41, 'QUnit.objectType(expected) === "regexp"');
+function visit49_527_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][527][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][521][1].init(366, 6, 'actual');
+function visit48_521_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][521][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][508][1].init(96, 28, 'typeof expected === "string"');
+function visit47_508_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][508][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][499][1].init(15, 19, 'expected !== actual');
+function visit46_499_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][499][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][491][1].init(15, 19, 'expected === actual');
+function visit45_491_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][491][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][467][1].init(15, 18, 'expected != actual');
+function visit44_467_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][467][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][459][1].init(15, 18, 'expected == actual');
+function visit43_459_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][459][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][439][1].init(48, 6, 'source');
+function visit42_439_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][439][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][434][1].init(315, 36, 'msg || (result ? "okay" : "failed")');
+function visit41_434_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][434][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][398][1].init(69, 40, 'config.testTimeout && defined.setTimeout');
+function visit40_398_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][398][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][395][1].init(23, 10, 'count || 1');
+function visit39_395_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][395][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][378][1].init(10, 20, 'config.semaphore > 0');
+function visit38_378_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][378][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][370][1].init(191, 20, 'config.semaphore < 0');
+function visit37_370_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][370][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][366][1].init(92, 20, 'config.semaphore > 0');
+function visit36_366_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][366][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][364][1].init(23, 10, 'count || 1');
+function visit35_364_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][364][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][356][1].init(7, 22, 'arguments.length === 1');
+function visit34_356_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][356][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][327][1].init(101, 22, 'arguments.length === 2');
+function visit33_327_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][327][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][315][1].init(8, 22, 'arguments.length === 2');
+function visit32_315_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][315][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][295][1].init(604, 3, 'bad');
+function visit31_295_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][295][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][292][2].init(486, 108, 'defined.sessionStorage && +sessionStorage.getItem("qunit-test-" + this.module + "-" + this.testName)');
+function visit30_292_2(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][292][2].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][292][1].init(462, 132, 'QUnit.config.reorder && defined.sessionStorage && +sessionStorage.getItem("qunit-test-" + this.module + "-" + this.testName)');
+function visit29_292_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][292][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][245][1].init(17, 26, 'i < this.assertions.length');
+function visit28_245_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][245][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][230][2].init(230, 42, 'target.nodeName.toLowerCase() === "strong"');
+function visit27_230_2(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][230][2].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][230][1].init(211, 61, 'window.location && target.nodeName.toLowerCase() === "strong"');
+function visit26_230_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][230][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][227][3].init(122, 36, 'target.nodeName.toLowerCase() == "b"');
+function visit25_227_3(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][227][3].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][227][2].init(79, 39, 'target.nodeName.toLowerCase() == "span"');
+function visit24_227_2(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][227][2].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][227][1].init(79, 79, 'target.nodeName.toLowerCase() == "span" || target.nodeName.toLowerCase() == "b"');
+function visit23_227_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][227][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][226][1].init(18, 13, 'e && e.target');
+function visit22_226_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][226][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][211][1].init(825, 9, 'bad === 0');
+function visit21_211_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][211][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][204][1].init(10, 3, 'bad');
+function visit20_204_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][204][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][203][1].init(552, 46, 'QUnit.config.reorder && defined.sessionStorage');
+function visit19_203_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][203][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][190][1].init(153, 61, 'assertion.message || (assertion.result ? "okay" : "failed")');
+function visit18_190_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][190][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][185][1].init(97, 26, 'i < this.assertions.length');
+function visit17_185_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][185][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][181][1].init(826, 5, 'tests');
+function visit16_181_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][181][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][168][2].init(422, 21, 'this.expected == null');
+function visit15_168_2(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][168][2].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][168][1].init(422, 48, 'this.expected == null && !this.assertions.length');
+function visit14_168_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][168][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][166][3].init(237, 39, 'this.expected != this.assertions.length');
+function visit13_166_3(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][166][3].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][166][2].init(212, 21, 'this.expected != null');
+function visit12_166_2(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][166][2].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][166][1].init(212, 64, 'this.expected != null && this.expected != this.assertions.length');
+function visit11_166_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][166][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][164][2].init(58, 21, 'this.expected == null');
+function visit10_164_2(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][164][2].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][164][1].init(33, 46, 'config.requireExpects && this.expected == null');
+function visit9_164_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][164][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][157][1].init(73, 14, 'e.message || e');
+function visit8_157_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][157][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][138][1].init(101, 14, 'e.message || e');
+function visit7_138_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][138][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][122][1].init(77, 7, 'running');
+function visit6_122_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][122][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][114][1].init(69, 14, 'e.message || e');
+function visit5_114_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][114][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][68][1].init(8, 37, 'this.module !== config.previousModule');
+function visit4_68_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][68][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][49][1].init(62, 5, 'tests');
+function visit3_49_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][49][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][23][1].init(14, 40, 'typeof window.setTimeout !== "undefined"');
+function visit2_23_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][23][1].ranCondition(result);
+  return result;
+}_$jscoverage.branchData['qunit/qunit.js'][17][1].init(61, 31, 'sourceFromStacktrace(0) || ""');
+function visit1_17_1(result) {
+  _$jscoverage.branchData['qunit/qunit.js'][17][1].ranCondition(result);
+  return result;
+}_$jscoverage['qunit/qunit.js'][11]++;
 (function(window) {
   _$jscoverage['qunit/qunit.js'][13]++;
-  var QUnit, config, onErrorFnPrev, testId = 0, fileName = (sourceFromStacktrace(0) || "").replace(/(:\d+)+\)?/, "").replace(/.+\//, ""), toString = Object.prototype.toString, hasOwn = Object.prototype.hasOwnProperty, Date = window.Date, defined = {setTimeout: typeof window.setTimeout !== "undefined", sessionStorage: (function() {
+  var QUnit, config, onErrorFnPrev, testId = 0, fileName = (visit1_17_1(sourceFromStacktrace(0) || "")).replace(/(:\d+)+\)?/, "").replace(/.+\//, ""), toString = Object.prototype.toString, hasOwn = Object.prototype.hasOwnProperty, Date = window.Date, defined = {setTimeout: visit2_23_1(typeof window.setTimeout !== "undefined"), sessionStorage: (function() {
   _$jscoverage['qunit/qunit.js'][25]++;
   var x = "qunit-test-string";
   _$jscoverage['qunit/qunit.js'][26]++;
@@ -890,7 +2644,7 @@ _$jscoverage['qunit/qunit.js'][11]++;
   _$jscoverage['qunit/qunit.js'][46]++;
   var a, b, li, tests = id("qunit-tests");
   _$jscoverage['qunit/qunit.js'][49]++;
-  if (tests) {
+  if (visit3_49_1(tests)) {
     _$jscoverage['qunit/qunit.js'][50]++;
     b = document.createElement("strong");
     _$jscoverage['qunit/qunit.js'][51]++;
@@ -916,7 +2670,7 @@ _$jscoverage['qunit/qunit.js'][11]++;
   }
 }, setup: function() {
   _$jscoverage['qunit/qunit.js'][68]++;
-  if (this.module !== config.previousModule) {
+  if (visit4_68_1(this.module !== config.previousModule)) {
     _$jscoverage['qunit/qunit.js'][69]++;
     if (config.previousModule) {
       _$jscoverage['qunit/qunit.js'][70]++;
@@ -963,7 +2717,7 @@ _$jscoverage['qunit/qunit.js'][11]++;
     this.testEnvironment.setup.call(this.testEnvironment);
   }  catch (e) {
   _$jscoverage['qunit/qunit.js'][114]++;
-  QUnit.pushFailure("Setup failed on " + this.testName + ": " + (e.message || e), extractStacktrace(e, 1));
+  QUnit.pushFailure("Setup failed on " + this.testName + ": " + (visit5_114_1(e.message || e)), extractStacktrace(e, 1));
 }
 }, run: function() {
   _$jscoverage['qunit/qunit.js'][118]++;
@@ -971,7 +2725,7 @@ _$jscoverage['qunit/qunit.js'][11]++;
   _$jscoverage['qunit/qunit.js'][120]++;
   var running = id("qunit-testresult");
   _$jscoverage['qunit/qunit.js'][122]++;
-  if (running) {
+  if (visit6_122_1(running)) {
     _$jscoverage['qunit/qunit.js'][123]++;
     running.innerHTML = "Running: <br/>" + this.name;
   }
@@ -993,7 +2747,7 @@ _$jscoverage['qunit/qunit.js'][11]++;
     this.callback.call(this.testEnvironment, QUnit.assert);
   }  catch (e) {
   _$jscoverage['qunit/qunit.js'][138]++;
-  QUnit.pushFailure("Died on test #" + (this.assertions.length + 1) + " " + this.stack + ": " + (e.message || e), extractStacktrace(e, 0));
+  QUnit.pushFailure("Died on test #" + (this.assertions.length + 1) + " " + this.stack + ": " + (visit7_138_1(e.message || e)), extractStacktrace(e, 0));
   _$jscoverage['qunit/qunit.js'][140]++;
   saveGlobal();
   _$jscoverage['qunit/qunit.js'][143]++;
@@ -1018,7 +2772,7 @@ _$jscoverage['qunit/qunit.js'][11]++;
       this.testEnvironment.teardown.call(this.testEnvironment);
     }    catch (e) {
   _$jscoverage['qunit/qunit.js'][157]++;
-  QUnit.pushFailure("Teardown failed on " + this.testName + ": " + (e.message || e), extractStacktrace(e, 1));
+  QUnit.pushFailure("Teardown failed on " + this.testName + ": " + (visit8_157_1(e.message || e)), extractStacktrace(e, 1));
 }
   }
   _$jscoverage['qunit/qunit.js'][160]++;
@@ -1027,17 +2781,17 @@ _$jscoverage['qunit/qunit.js'][11]++;
   _$jscoverage['qunit/qunit.js'][163]++;
   config.current = this;
   _$jscoverage['qunit/qunit.js'][164]++;
-  if (config.requireExpects && this.expected == null) {
+  if (visit9_164_1(config.requireExpects && visit10_164_2(this.expected == null))) {
     _$jscoverage['qunit/qunit.js'][165]++;
     QUnit.pushFailure("Expected number of assertions to be defined, but expect() was not called.", this.stack);
   } else {
     _$jscoverage['qunit/qunit.js'][166]++;
-    if (this.expected != null && this.expected != this.assertions.length) {
+    if (visit11_166_1(visit12_166_2(this.expected != null) && visit13_166_3(this.expected != this.assertions.length))) {
       _$jscoverage['qunit/qunit.js'][167]++;
       QUnit.pushFailure("Expected " + this.expected + " assertions, but " + this.assertions.length + " were run", this.stack);
     } else {
       _$jscoverage['qunit/qunit.js'][168]++;
-      if (this.expected == null && !this.assertions.length) {
+      if (visit14_168_1(visit15_168_2(this.expected == null) && !this.assertions.length)) {
         _$jscoverage['qunit/qunit.js'][169]++;
         QUnit.pushFailure("Expected at least one assertion, but none were run - call expect(0) to accept zero assertions.", this.stack);
       }
@@ -1050,13 +2804,13 @@ _$jscoverage['qunit/qunit.js'][11]++;
   _$jscoverage['qunit/qunit.js'][179]++;
   config.moduleStats.all += this.assertions.length;
   _$jscoverage['qunit/qunit.js'][181]++;
-  if (tests) {
+  if (visit16_181_1(tests)) {
     _$jscoverage['qunit/qunit.js'][182]++;
     ol = document.createElement("ol");
     _$jscoverage['qunit/qunit.js'][183]++;
     ol.className = "qunit-assert-list";
     _$jscoverage['qunit/qunit.js'][185]++;
-    for (i = 0; i < this.assertions.length; i++) {
+    for (i = 0; visit17_185_1(i < this.assertions.length); i++) {
       _$jscoverage['qunit/qunit.js'][186]++;
       assertion = this.assertions[i];
       _$jscoverage['qunit/qunit.js'][188]++;
@@ -1064,7 +2818,7 @@ _$jscoverage['qunit/qunit.js'][11]++;
       _$jscoverage['qunit/qunit.js'][189]++;
       li.className = assertion.result ? "pass" : "fail";
       _$jscoverage['qunit/qunit.js'][190]++;
-      li.innerHTML = assertion.message || (assertion.result ? "okay" : "failed");
+      li.innerHTML = visit18_190_1(assertion.message || (assertion.result ? "okay" : "failed"));
       _$jscoverage['qunit/qunit.js'][191]++;
       ol.appendChild(li);
       _$jscoverage['qunit/qunit.js'][193]++;
@@ -1081,9 +2835,9 @@ _$jscoverage['qunit/qunit.js'][11]++;
       }
     }
     _$jscoverage['qunit/qunit.js'][203]++;
-    if (QUnit.config.reorder && defined.sessionStorage) {
+    if (visit19_203_1(QUnit.config.reorder && defined.sessionStorage)) {
       _$jscoverage['qunit/qunit.js'][204]++;
-      if (bad) {
+      if (visit20_204_1(bad)) {
         _$jscoverage['qunit/qunit.js'][205]++;
         sessionStorage.setItem("qunit-test-" + this.module + "-" + this.testName, bad);
       } else {
@@ -1092,7 +2846,7 @@ _$jscoverage['qunit/qunit.js'][11]++;
       }
     }
     _$jscoverage['qunit/qunit.js'][211]++;
-    if (bad === 0) {
+    if (visit21_211_1(bad === 0)) {
       _$jscoverage['qunit/qunit.js'][212]++;
       addClass(ol, "qunit-collapsed");
     }
@@ -1110,14 +2864,14 @@ _$jscoverage['qunit/qunit.js'][11]++;
     _$jscoverage['qunit/qunit.js'][225]++;
     addEvent(b, "dblclick", function(e) {
   _$jscoverage['qunit/qunit.js'][226]++;
-  var target = e && e.target ? e.target : window.event.srcElement;
+  var target = visit22_226_1(e && e.target) ? e.target : window.event.srcElement;
   _$jscoverage['qunit/qunit.js'][227]++;
-  if (target.nodeName.toLowerCase() == "span" || target.nodeName.toLowerCase() == "b") {
+  if (visit23_227_1(visit24_227_2(target.nodeName.toLowerCase() == "span") || visit25_227_3(target.nodeName.toLowerCase() == "b"))) {
     _$jscoverage['qunit/qunit.js'][228]++;
     target = target.parentNode;
   }
   _$jscoverage['qunit/qunit.js'][230]++;
-  if (window.location && target.nodeName.toLowerCase() === "strong") {
+  if (visit26_230_1(window.location && visit27_230_2(target.nodeName.toLowerCase() === "strong"))) {
     _$jscoverage['qunit/qunit.js'][231]++;
     window.location = QUnit.url({testNumber: test.testNumber});
   }
@@ -1138,7 +2892,7 @@ _$jscoverage['qunit/qunit.js'][11]++;
     li.appendChild(ol);
   } else {
     _$jscoverage['qunit/qunit.js'][245]++;
-    for (i = 0; i < this.assertions.length; i++) {
+    for (i = 0; visit28_245_1(i < this.assertions.length); i++) {
       _$jscoverage['qunit/qunit.js'][246]++;
       if (!this.assertions[i].result) {
         _$jscoverage['qunit/qunit.js'][247]++;
@@ -1188,9 +2942,9 @@ _$jscoverage['qunit/qunit.js'][11]++;
 });
   }
   _$jscoverage['qunit/qunit.js'][292]++;
-  bad = QUnit.config.reorder && defined.sessionStorage && +sessionStorage.getItem("qunit-test-" + this.module + "-" + this.testName);
+  bad = visit29_292_1(QUnit.config.reorder && visit30_292_2(defined.sessionStorage && +sessionStorage.getItem("qunit-test-" + this.module + "-" + this.testName)));
   _$jscoverage['qunit/qunit.js'][295]++;
-  if (bad) {
+  if (visit31_295_1(bad)) {
     _$jscoverage['qunit/qunit.js'][296]++;
     run();
   } else {
@@ -1208,7 +2962,7 @@ _$jscoverage['qunit/qunit.js'][11]++;
   config.modules[name] = true;
 }, asyncTest: function(testName, expected, callback) {
   _$jscoverage['qunit/qunit.js'][315]++;
-  if (arguments.length === 2) {
+  if (visit32_315_1(arguments.length === 2)) {
     _$jscoverage['qunit/qunit.js'][316]++;
     callback = expected;
     _$jscoverage['qunit/qunit.js'][317]++;
@@ -1220,7 +2974,7 @@ _$jscoverage['qunit/qunit.js'][11]++;
   _$jscoverage['qunit/qunit.js'][324]++;
   var test, name = "<span class='test-name'>" + escapeInnerText(testName) + "</span>";
   _$jscoverage['qunit/qunit.js'][327]++;
-  if (arguments.length === 2) {
+  if (visit33_327_1(arguments.length === 2)) {
     _$jscoverage['qunit/qunit.js'][328]++;
     callback = expected;
     _$jscoverage['qunit/qunit.js'][329]++;
@@ -1242,7 +2996,7 @@ _$jscoverage['qunit/qunit.js'][11]++;
   test.queue();
 }, expect: function(asserts) {
   _$jscoverage['qunit/qunit.js'][356]++;
-  if (arguments.length === 1) {
+  if (visit34_356_1(arguments.length === 1)) {
     _$jscoverage['qunit/qunit.js'][357]++;
     config.current.expected = asserts;
   } else {
@@ -1251,14 +3005,14 @@ _$jscoverage['qunit/qunit.js'][11]++;
   }
 }, start: function(count) {
   _$jscoverage['qunit/qunit.js'][364]++;
-  config.semaphore -= count || 1;
+  config.semaphore -= visit35_364_1(count || 1);
   _$jscoverage['qunit/qunit.js'][366]++;
-  if (config.semaphore > 0) {
+  if (visit36_366_1(config.semaphore > 0)) {
     _$jscoverage['qunit/qunit.js'][367]++;
     return;
   }
   _$jscoverage['qunit/qunit.js'][370]++;
-  if (config.semaphore < 0) {
+  if (visit37_370_1(config.semaphore < 0)) {
     _$jscoverage['qunit/qunit.js'][371]++;
     config.semaphore = 0;
     _$jscoverage['qunit/qunit.js'][372]++;
@@ -1271,7 +3025,7 @@ _$jscoverage['qunit/qunit.js'][11]++;
     _$jscoverage['qunit/qunit.js'][377]++;
     window.setTimeout(function() {
   _$jscoverage['qunit/qunit.js'][378]++;
-  if (config.semaphore > 0) {
+  if (visit38_378_1(config.semaphore > 0)) {
     _$jscoverage['qunit/qunit.js'][379]++;
     return;
   }
@@ -1293,11 +3047,11 @@ _$jscoverage['qunit/qunit.js'][11]++;
   }
 }, stop: function(count) {
   _$jscoverage['qunit/qunit.js'][395]++;
-  config.semaphore += count || 1;
+  config.semaphore += visit39_395_1(count || 1);
   _$jscoverage['qunit/qunit.js'][396]++;
   config.blocking = true;
   _$jscoverage['qunit/qunit.js'][398]++;
-  if (config.testTimeout && defined.setTimeout) {
+  if (visit40_398_1(config.testTimeout && defined.setTimeout)) {
     _$jscoverage['qunit/qunit.js'][399]++;
     clearTimeout(config.timeout);
     _$jscoverage['qunit/qunit.js'][400]++;
@@ -1323,7 +3077,7 @@ _$jscoverage['qunit/qunit.js'][11]++;
   _$jscoverage['qunit/qunit.js'][426]++;
   var source, details = {module: config.current.module, name: config.current.testName, result: result, message: msg};
   _$jscoverage['qunit/qunit.js'][434]++;
-  msg = escapeInnerText(msg || (result ? "okay" : "failed"));
+  msg = escapeInnerText(visit41_434_1(msg || (result ? "okay" : "failed")));
   _$jscoverage['qunit/qunit.js'][435]++;
   msg = "<span class='test-message'>" + msg + "</span>";
   _$jscoverage['qunit/qunit.js'][437]++;
@@ -1331,7 +3085,7 @@ _$jscoverage['qunit/qunit.js'][11]++;
     _$jscoverage['qunit/qunit.js'][438]++;
     source = sourceFromStacktrace(2);
     _$jscoverage['qunit/qunit.js'][439]++;
-    if (source) {
+    if (visit42_439_1(source)) {
       _$jscoverage['qunit/qunit.js'][440]++;
       details.source = source;
       _$jscoverage['qunit/qunit.js'][441]++;
@@ -1344,10 +3098,10 @@ _$jscoverage['qunit/qunit.js'][11]++;
   config.current.assertions.push({result: result, message: msg});
 }, equal: function(actual, expected, message) {
   _$jscoverage['qunit/qunit.js'][459]++;
-  QUnit.push(expected == actual, actual, expected, message);
+  QUnit.push(visit43_459_1(expected == actual), actual, expected, message);
 }, notEqual: function(actual, expected, message) {
   _$jscoverage['qunit/qunit.js'][467]++;
-  QUnit.push(expected != actual, actual, expected, message);
+  QUnit.push(visit44_467_1(expected != actual), actual, expected, message);
 }, deepEqual: function(actual, expected, message) {
   _$jscoverage['qunit/qunit.js'][475]++;
   QUnit.push(QUnit.equiv(actual, expected), actual, expected, message);
@@ -1356,15 +3110,15 @@ _$jscoverage['qunit/qunit.js'][11]++;
   QUnit.push(!QUnit.equiv(actual, expected), actual, expected, message);
 }, strictEqual: function(actual, expected, message) {
   _$jscoverage['qunit/qunit.js'][491]++;
-  QUnit.push(expected === actual, actual, expected, message);
+  QUnit.push(visit45_491_1(expected === actual), actual, expected, message);
 }, notStrictEqual: function(actual, expected, message) {
   _$jscoverage['qunit/qunit.js'][499]++;
-  QUnit.push(expected !== actual, actual, expected, message);
+  QUnit.push(visit46_499_1(expected !== actual), actual, expected, message);
 }, "throws": function(block, expected, message) {
   _$jscoverage['qunit/qunit.js'][503]++;
   var actual, expectedOutput = expected, ok = false;
   _$jscoverage['qunit/qunit.js'][508]++;
-  if (typeof expected === "string") {
+  if (visit47_508_1(typeof expected === "string")) {
     _$jscoverage['qunit/qunit.js'][509]++;
     message = expected;
     _$jscoverage['qunit/qunit.js'][510]++;
@@ -1383,7 +3137,7 @@ _$jscoverage['qunit/qunit.js'][11]++;
   _$jscoverage['qunit/qunit.js'][519]++;
   config.current.ignoreGlobalErrors = false;
   _$jscoverage['qunit/qunit.js'][521]++;
-  if (actual) {
+  if (visit48_521_1(actual)) {
     _$jscoverage['qunit/qunit.js'][523]++;
     if (!expected) {
       _$jscoverage['qunit/qunit.js'][524]++;
@@ -1392,7 +3146,7 @@ _$jscoverage['qunit/qunit.js'][11]++;
       expectedOutput = null;
     } else {
       _$jscoverage['qunit/qunit.js'][527]++;
-      if (QUnit.objectType(expected) === "regexp") {
+      if (visit49_527_1(QUnit.objectType(expected) === "regexp")) {
         _$jscoverage['qunit/qunit.js'][528]++;
         ok = expected.test(actual);
       } else {
@@ -1402,7 +3156,7 @@ _$jscoverage['qunit/qunit.js'][11]++;
           ok = true;
         } else {
           _$jscoverage['qunit/qunit.js'][533]++;
-          if (expected.call({}, actual) === true) {
+          if (visit50_533_1(expected.call({}, actual) === true)) {
             _$jscoverage['qunit/qunit.js'][534]++;
             expectedOutput = null;
             _$jscoverage['qunit/qunit.js'][535]++;
@@ -1449,11 +3203,11 @@ _$jscoverage['qunit/qunit.js'][11]++;
   _$jscoverage['qunit/qunit.js'][632]++;
   (function() {
   _$jscoverage['qunit/qunit.js'][633]++;
-  var i, location = window.location || {search: "", protocol: "file:"}, params = location.search.slice(1).split("&"), length = params.length, urlParams = {}, current;
+  var i, location = visit51_634_1(window.location || {search: "", protocol: "file:"}), params = location.search.slice(1).split("&"), length = params.length, urlParams = {}, current;
   _$jscoverage['qunit/qunit.js'][640]++;
   if (params[0]) {
     _$jscoverage['qunit/qunit.js'][641]++;
-    for (i = 0; i < length; i++) {
+    for (i = 0; visit52_641_1(i < length); i++) {
       _$jscoverage['qunit/qunit.js'][642]++;
       current = params[i].split("=");
       _$jscoverage['qunit/qunit.js'][643]++;
@@ -1471,12 +3225,12 @@ _$jscoverage['qunit/qunit.js'][11]++;
   _$jscoverage['qunit/qunit.js'][656]++;
   config.module = urlParams.module;
   _$jscoverage['qunit/qunit.js'][658]++;
-  config.testNumber = parseInt(urlParams.testNumber, 10) || null;
+  config.testNumber = visit53_658_1(parseInt(urlParams.testNumber, 10) || null);
   _$jscoverage['qunit/qunit.js'][661]++;
-  QUnit.isLocal = location.protocol === "file:";
+  QUnit.isLocal = visit54_661_1(location.protocol === "file:");
 }());
   _$jscoverage['qunit/qunit.js'][666]++;
-  if (typeof exports === "undefined") {
+  if (visit55_666_1(typeof exports === "undefined")) {
     _$jscoverage['qunit/qunit.js'][667]++;
     extend(window, QUnit);
     _$jscoverage['qunit/qunit.js'][670]++;
@@ -1489,7 +3243,7 @@ _$jscoverage['qunit/qunit.js'][11]++;
   _$jscoverage['qunit/qunit.js'][693]++;
   var tests, banner, result, qunit = id("qunit");
   _$jscoverage['qunit/qunit.js'][696]++;
-  if (qunit) {
+  if (visit56_696_1(qunit)) {
     _$jscoverage['qunit/qunit.js'][697]++;
     qunit.innerHTML = "<h1 id='qunit-header'>" + escapeInnerText(document.title) + "</h1>" + "<h2 id='qunit-banner'></h2>" + "<div id='qunit-testrunner-toolbar'></div>" + "<h2 id='qunit-userAgent'></h2>" + "<ol id='qunit-tests'></ol>";
   }
@@ -1500,22 +3254,22 @@ _$jscoverage['qunit/qunit.js'][11]++;
   _$jscoverage['qunit/qunit.js'][707]++;
   result = id("qunit-testresult");
   _$jscoverage['qunit/qunit.js'][709]++;
-  if (tests) {
+  if (visit57_709_1(tests)) {
     _$jscoverage['qunit/qunit.js'][710]++;
     tests.innerHTML = "";
   }
   _$jscoverage['qunit/qunit.js'][713]++;
-  if (banner) {
+  if (visit58_713_1(banner)) {
     _$jscoverage['qunit/qunit.js'][714]++;
     banner.className = "";
   }
   _$jscoverage['qunit/qunit.js'][717]++;
-  if (result) {
+  if (visit59_717_1(result)) {
     _$jscoverage['qunit/qunit.js'][718]++;
     result.parentNode.removeChild(result);
   }
   _$jscoverage['qunit/qunit.js'][721]++;
-  if (tests) {
+  if (visit60_721_1(tests)) {
     _$jscoverage['qunit/qunit.js'][722]++;
     result = document.createElement("p");
     _$jscoverage['qunit/qunit.js'][723]++;
@@ -1531,7 +3285,7 @@ _$jscoverage['qunit/qunit.js'][11]++;
   _$jscoverage['qunit/qunit.js'][732]++;
   var fixture = id("qunit-fixture");
   _$jscoverage['qunit/qunit.js'][733]++;
-  if (fixture) {
+  if (visit61_733_1(fixture)) {
     _$jscoverage['qunit/qunit.js'][734]++;
     fixture.innerHTML = config.fixture;
   }
@@ -1553,25 +3307,25 @@ _$jscoverage['qunit/qunit.js'][11]++;
   }
 }, is: function(type, obj) {
   _$jscoverage['qunit/qunit.js'][754]++;
-  return QUnit.objectType(obj) == type;
+  return visit62_754_1(QUnit.objectType(obj) == type);
 }, objectType: function(obj) {
   _$jscoverage['qunit/qunit.js'][758]++;
-  if (typeof obj === "undefined") {
+  if (visit63_758_1(typeof obj === "undefined")) {
     _$jscoverage['qunit/qunit.js'][759]++;
     return "undefined";
   }
   _$jscoverage['qunit/qunit.js'][762]++;
-  if (obj === null) {
+  if (visit64_762_1(obj === null)) {
     _$jscoverage['qunit/qunit.js'][763]++;
     return "null";
   }
   _$jscoverage['qunit/qunit.js'][766]++;
-  var match = toString.call(obj).match(/^\[object\s(.*)\]$/), type = match && match[1] || "";
+  var match = toString.call(obj).match(/^\[object\s(.*)\]$/), type = visit65_767_1(visit66_767_2(match && match[1]) || "");
   _$jscoverage['qunit/qunit.js'][769]++;
   switch (type) {
     case "Number":
       _$jscoverage['qunit/qunit.js'][771]++;
-      if (isNaN(obj)) {
+      if (visit67_771_1(isNaN(obj))) {
         _$jscoverage['qunit/qunit.js'][772]++;
         return "nan";
       }
@@ -1587,7 +3341,7 @@ _$jscoverage['qunit/qunit.js'][11]++;
       return type.toLowerCase();
   }
   _$jscoverage['qunit/qunit.js'][783]++;
-  if (typeof obj === "object") {
+  if (visit68_783_1(typeof obj === "object")) {
     _$jscoverage['qunit/qunit.js'][784]++;
     return "object";
   }
@@ -1602,7 +3356,7 @@ _$jscoverage['qunit/qunit.js'][11]++;
   _$jscoverage['qunit/qunit.js'][794]++;
   var output, source, details = {module: config.current.module, name: config.current.testName, result: result, message: message, actual: actual, expected: expected};
   _$jscoverage['qunit/qunit.js'][804]++;
-  message = escapeInnerText(message) || (result ? "okay" : "failed");
+  message = visit69_804_1(escapeInnerText(message) || (result ? "okay" : "failed"));
   _$jscoverage['qunit/qunit.js'][805]++;
   message = "<span class='test-message'>" + message + "</span>";
   _$jscoverage['qunit/qunit.js'][806]++;
@@ -1616,7 +3370,7 @@ _$jscoverage['qunit/qunit.js'][11]++;
     _$jscoverage['qunit/qunit.js'][811]++;
     output += "<table><tr class='test-expected'><th>Expected: </th><td><pre>" + expected + "</pre></td></tr>";
     _$jscoverage['qunit/qunit.js'][813]++;
-    if (actual != expected) {
+    if (visit70_813_1(actual != expected)) {
       _$jscoverage['qunit/qunit.js'][814]++;
       output += "<tr class='test-actual'><th>Result: </th><td><pre>" + actual + "</pre></td></tr>";
       _$jscoverage['qunit/qunit.js'][815]++;
@@ -1625,7 +3379,7 @@ _$jscoverage['qunit/qunit.js'][11]++;
     _$jscoverage['qunit/qunit.js'][818]++;
     source = sourceFromStacktrace();
     _$jscoverage['qunit/qunit.js'][820]++;
-    if (source) {
+    if (visit71_820_1(source)) {
       _$jscoverage['qunit/qunit.js'][821]++;
       details.source = source;
       _$jscoverage['qunit/qunit.js'][822]++;
@@ -1647,7 +3401,7 @@ _$jscoverage['qunit/qunit.js'][11]++;
   _$jscoverage['qunit/qunit.js'][841]++;
   var output, details = {module: config.current.module, name: config.current.testName, result: false, message: message};
   _$jscoverage['qunit/qunit.js'][849]++;
-  message = escapeInnerText(message) || "error";
+  message = visit72_849_1(escapeInnerText(message) || "error");
   _$jscoverage['qunit/qunit.js'][850]++;
   message = "<span class='test-message'>" + message + "</span>";
   _$jscoverage['qunit/qunit.js'][851]++;
@@ -1655,12 +3409,12 @@ _$jscoverage['qunit/qunit.js'][11]++;
   _$jscoverage['qunit/qunit.js'][853]++;
   output += "<table>";
   _$jscoverage['qunit/qunit.js'][855]++;
-  if (actual) {
+  if (visit73_855_1(actual)) {
     _$jscoverage['qunit/qunit.js'][856]++;
     output += "<tr class='test-actual'><th>Result: </th><td><pre>" + escapeInnerText(actual) + "</pre></td></tr>";
   }
   _$jscoverage['qunit/qunit.js'][859]++;
-  if (source) {
+  if (visit74_859_1(source)) {
     _$jscoverage['qunit/qunit.js'][860]++;
     details.source = source;
     _$jscoverage['qunit/qunit.js'][861]++;
@@ -1693,7 +3447,7 @@ _$jscoverage['qunit/qunit.js'][11]++;
   _$jscoverage['qunit/qunit.js'][902]++;
   extend(QUnit.constructor.prototype, {begin: registerLoggingCallback("begin"), done: registerLoggingCallback("done"), log: registerLoggingCallback("log"), testStart: registerLoggingCallback("testStart"), testDone: registerLoggingCallback("testDone"), moduleStart: registerLoggingCallback("moduleStart"), moduleDone: registerLoggingCallback("moduleDone")});
   _$jscoverage['qunit/qunit.js'][927]++;
-  if (typeof document === "undefined" || document.readyState === "complete") {
+  if (visit75_927_1(visit76_927_2(typeof document === "undefined") || visit77_927_3(document.readyState === "complete"))) {
     _$jscoverage['qunit/qunit.js'][928]++;
     config.autorun = true;
   }
@@ -1712,11 +3466,11 @@ _$jscoverage['qunit/qunit.js'][11]++;
   _$jscoverage['qunit/qunit.js'][946]++;
   len = config.urlConfig.length;
   _$jscoverage['qunit/qunit.js'][948]++;
-  for (i = 0; i < len; i++) {
+  for (i = 0; visit78_948_1(i < len); i++) {
     _$jscoverage['qunit/qunit.js'][949]++;
     val = config.urlConfig[i];
     _$jscoverage['qunit/qunit.js'][950]++;
-    if (typeof val === "string") {
+    if (visit79_950_1(typeof val === "string")) {
       _$jscoverage['qunit/qunit.js'][951]++;
       val = {id: val, label: val, tooltip: "[no tooltip available]"};
     }
@@ -1726,15 +3480,15 @@ _$jscoverage['qunit/qunit.js'][11]++;
     urlConfigHtml += "<input id='qunit-urlconfig-" + val.id + "' name='" + val.id + "' type='checkbox'" + (config[val.id] ? " checked='checked'" : "") + " title='" + val.tooltip + "'><label for='qunit-urlconfig-" + val.id + "' title='" + val.tooltip + "'>" + val.label + "</label>";
   }
   _$jscoverage['qunit/qunit.js'][961]++;
-  moduleFilterHtml += "<label for='qunit-modulefilter'>Module: </label><select id='qunit-modulefilter' name='modulefilter'><option value='' " + (config.module === undefined ? "selected" : "") + ">< All Modules ></option>";
+  moduleFilterHtml += "<label for='qunit-modulefilter'>Module: </label><select id='qunit-modulefilter' name='modulefilter'><option value='' " + (visit80_961_1(config.module === undefined) ? "selected" : "") + ">< All Modules ></option>";
   _$jscoverage['qunit/qunit.js'][962]++;
   for (i in config.modules) {
     _$jscoverage['qunit/qunit.js'][963]++;
-    if (config.modules.hasOwnProperty(i)) {
+    if (visit81_963_1(config.modules.hasOwnProperty(i))) {
       _$jscoverage['qunit/qunit.js'][964]++;
       numModules += 1;
       _$jscoverage['qunit/qunit.js'][965]++;
-      moduleFilterHtml += "<option value='" + encodeURIComponent(i) + "' " + (config.module === i ? "selected" : "") + ">" + i + "</option>";
+      moduleFilterHtml += "<option value='" + encodeURIComponent(i) + "' " + (visit82_965_1(config.module === i) ? "selected" : "") + ">" + i + "</option>";
     }
   }
   _$jscoverage['qunit/qunit.js'][968]++;
@@ -1742,21 +3496,21 @@ _$jscoverage['qunit/qunit.js'][11]++;
   _$jscoverage['qunit/qunit.js'][971]++;
   userAgent = id("qunit-userAgent");
   _$jscoverage['qunit/qunit.js'][972]++;
-  if (userAgent) {
+  if (visit83_972_1(userAgent)) {
     _$jscoverage['qunit/qunit.js'][973]++;
     userAgent.innerHTML = navigator.userAgent;
   }
   _$jscoverage['qunit/qunit.js'][977]++;
   banner = id("qunit-header");
   _$jscoverage['qunit/qunit.js'][978]++;
-  if (banner) {
+  if (visit84_978_1(banner)) {
     _$jscoverage['qunit/qunit.js'][979]++;
     banner.innerHTML = "<a href='" + QUnit.url({filter: undefined, module: undefined, testNumber: undefined}) + "'>" + banner.innerHTML + "</a> ";
   }
   _$jscoverage['qunit/qunit.js'][983]++;
   toolbar = id("qunit-testrunner-toolbar");
   _$jscoverage['qunit/qunit.js'][984]++;
-  if (toolbar) {
+  if (visit85_984_1(toolbar)) {
     _$jscoverage['qunit/qunit.js'][986]++;
     filter = document.createElement("input");
     _$jscoverage['qunit/qunit.js'][987]++;
@@ -1790,7 +3544,7 @@ _$jscoverage['qunit/qunit.js'][11]++;
   }
 });
     _$jscoverage['qunit/qunit.js'][1009]++;
-    if (config.hidepassed || defined.sessionStorage && sessionStorage.getItem("qunit-filter-passed-tests")) {
+    if (visit86_1009_1(config.hidepassed || visit87_1009_2(defined.sessionStorage && sessionStorage.getItem("qunit-filter-passed-tests")))) {
       _$jscoverage['qunit/qunit.js'][1010]++;
       filter.checked = true;
       _$jscoverage['qunit/qunit.js'][1012]++;
@@ -1826,7 +3580,7 @@ _$jscoverage['qunit/qunit.js'][11]++;
     _$jscoverage['qunit/qunit.js'][1031]++;
     toolbar.appendChild(urlConfigCheckboxes);
     _$jscoverage['qunit/qunit.js'][1033]++;
-    if (numModules > 1) {
+    if (visit88_1033_1(numModules > 1)) {
       _$jscoverage['qunit/qunit.js'][1034]++;
       moduleFilter = document.createElement('span');
       _$jscoverage['qunit/qunit.js'][1035]++;
@@ -1838,7 +3592,7 @@ _$jscoverage['qunit/qunit.js'][11]++;
   _$jscoverage['qunit/qunit.js'][1038]++;
   var selectBox = moduleFilter.getElementsByTagName("select")[0], selectedModule = decodeURIComponent(selectBox.options[selectBox.selectedIndex].value);
   _$jscoverage['qunit/qunit.js'][1041]++;
-  window.location = QUnit.url({module: (selectedModule === "") ? undefined : selectedModule});
+  window.location = QUnit.url({module: (visit89_1041_1(selectedModule === "")) ? undefined : selectedModule});
 });
       _$jscoverage['qunit/qunit.js'][1043]++;
       toolbar.appendChild(moduleFilter);
@@ -1847,7 +3601,7 @@ _$jscoverage['qunit/qunit.js'][11]++;
   _$jscoverage['qunit/qunit.js'][1048]++;
   main = id("qunit-fixture");
   _$jscoverage['qunit/qunit.js'][1049]++;
-  if (main) {
+  if (visit90_1049_1(main)) {
     _$jscoverage['qunit/qunit.js'][1050]++;
     config.fixture = main.innerHTML;
   }
@@ -1866,12 +3620,12 @@ _$jscoverage['qunit/qunit.js'][11]++;
   _$jscoverage['qunit/qunit.js'][1068]++;
   var ret = false;
   _$jscoverage['qunit/qunit.js'][1069]++;
-  if (onErrorFnPrev) {
+  if (visit91_1069_1(onErrorFnPrev)) {
     _$jscoverage['qunit/qunit.js'][1070]++;
     ret = onErrorFnPrev(error, filePath, linerNr);
   }
   _$jscoverage['qunit/qunit.js'][1075]++;
-  if (ret !== true) {
+  if (visit92_1075_1(ret !== true)) {
     _$jscoverage['qunit/qunit.js'][1076]++;
     if (QUnit.config.current) {
       _$jscoverage['qunit/qunit.js'][1077]++;
@@ -1906,28 +3660,28 @@ _$jscoverage['qunit/qunit.js'][11]++;
     _$jscoverage['qunit/qunit.js'][1105]++;
     var i, key, banner = id("qunit-banner"), tests = id("qunit-tests"), runtime = +new Date() - config.started, passed = config.stats.all - config.stats.bad, html = ["Tests completed in ", runtime, " milliseconds.<br/>", "<span class='passed'>", passed, "</span> tests of <span class='total'>", config.stats.all, "</span> passed, <span class='failed'>", config.stats.bad, "</span> failed."].join("");
     _$jscoverage['qunit/qunit.js'][1123]++;
-    if (banner) {
+    if (visit93_1123_1(banner)) {
       _$jscoverage['qunit/qunit.js'][1124]++;
       banner.className = (config.stats.bad ? "qunit-fail" : "qunit-pass");
     }
     _$jscoverage['qunit/qunit.js'][1127]++;
-    if (tests) {
+    if (visit94_1127_1(tests)) {
       _$jscoverage['qunit/qunit.js'][1128]++;
       id("qunit-testresult").innerHTML = html;
     }
     _$jscoverage['qunit/qunit.js'][1131]++;
-    if (config.altertitle && typeof document !== "undefined" && document.title) {
+    if (visit95_1131_1(config.altertitle && visit96_1131_2(visit97_1131_3(typeof document !== "undefined") && document.title))) {
       _$jscoverage['qunit/qunit.js'][1134]++;
       document.title = [(config.stats.bad ? "\u2716" : "\u2714"), document.title.replace(/^[\u2714\u2716] /i, "")].join(" ");
     }
     _$jscoverage['qunit/qunit.js'][1141]++;
-    if (config.reorder && defined.sessionStorage && config.stats.bad === 0) {
+    if (visit98_1141_1(config.reorder && visit99_1141_2(defined.sessionStorage && visit100_1141_3(config.stats.bad === 0)))) {
       _$jscoverage['qunit/qunit.js'][1143]++;
-      for (i = 0; i < sessionStorage.length; i++) {
+      for (i = 0; visit101_1143_1(i < sessionStorage.length); i++) {
         _$jscoverage['qunit/qunit.js'][1144]++;
         key = sessionStorage.key(i++);
         _$jscoverage['qunit/qunit.js'][1145]++;
-        if (key.indexOf("qunit-test-") === 0) {
+        if (visit102_1145_1(key.indexOf("qunit-test-") === 0)) {
           _$jscoverage['qunit/qunit.js'][1146]++;
           sessionStorage.removeItem(key);
         }
@@ -1944,9 +3698,9 @@ _$jscoverage['qunit/qunit.js'][11]++;
   _$jscoverage['qunit/qunit.js'][1165]++;
   function validTest(test) {
     _$jscoverage['qunit/qunit.js'][1166]++;
-    var include, filter = config.filter && config.filter.toLowerCase(), module = config.module && config.module.toLowerCase(), fullName = (test.module + ": " + test.testName).toLowerCase();
+    var include, filter = visit103_1167_1(config.filter && config.filter.toLowerCase()), module = visit104_1168_1(config.module && config.module.toLowerCase()), fullName = (test.module + ": " + test.testName).toLowerCase();
     _$jscoverage['qunit/qunit.js'][1172]++;
-    if (test.callback && test.callback.validTest === validTest) {
+    if (visit105_1172_1(test.callback && visit106_1172_2(test.callback.validTest === validTest))) {
       _$jscoverage['qunit/qunit.js'][1173]++;
       delete test.callback.validTest;
       _$jscoverage['qunit/qunit.js'][1174]++;
@@ -1955,10 +3709,10 @@ _$jscoverage['qunit/qunit.js'][11]++;
     _$jscoverage['qunit/qunit.js'][1177]++;
     if (config.testNumber) {
       _$jscoverage['qunit/qunit.js'][1178]++;
-      return test.testNumber === config.testNumber;
+      return visit107_1178_1(test.testNumber === config.testNumber);
     }
     _$jscoverage['qunit/qunit.js'][1181]++;
-    if (module && (!test.module || test.module.toLowerCase() !== module)) {
+    if (visit108_1181_1(module && (visit109_1181_2(!test.module || visit110_1181_3(test.module.toLowerCase() !== module))))) {
       _$jscoverage['qunit/qunit.js'][1182]++;
       return false;
     }
@@ -1968,14 +3722,14 @@ _$jscoverage['qunit/qunit.js'][11]++;
       return true;
     }
     _$jscoverage['qunit/qunit.js'][1189]++;
-    include = filter.charAt(0) !== "!";
+    include = visit111_1189_1(filter.charAt(0) !== "!");
     _$jscoverage['qunit/qunit.js'][1190]++;
     if (!include) {
       _$jscoverage['qunit/qunit.js'][1191]++;
       filter = filter.slice(1);
     }
     _$jscoverage['qunit/qunit.js'][1195]++;
-    if (fullName.indexOf(filter) !== -1) {
+    if (visit112_1195_1(fullName.indexOf(filter) !== -1)) {
       _$jscoverage['qunit/qunit.js'][1196]++;
       return include;
     }
@@ -1985,7 +3739,7 @@ _$jscoverage['qunit/qunit.js'][11]++;
   _$jscoverage['qunit/qunit.js'][1206]++;
   function extractStacktrace(e, offset) {
     _$jscoverage['qunit/qunit.js'][1207]++;
-    offset = offset === undefined ? 3 : offset;
+    offset = visit113_1207_1(offset === undefined) ? 3 : offset;
     _$jscoverage['qunit/qunit.js'][1209]++;
     var stack, include, i, regex;
     _$jscoverage['qunit/qunit.js'][1211]++;
@@ -1998,18 +3752,18 @@ _$jscoverage['qunit/qunit.js'][11]++;
         _$jscoverage['qunit/qunit.js'][1216]++;
         stack = e.stack.split("\n");
         _$jscoverage['qunit/qunit.js'][1217]++;
-        if (/^error$/i.test(stack[0])) {
+        if (visit114_1217_1(/^error$/i.test(stack[0]))) {
           _$jscoverage['qunit/qunit.js'][1218]++;
           stack.shift();
         }
         _$jscoverage['qunit/qunit.js'][1220]++;
-        if (fileName) {
+        if (visit115_1220_1(fileName)) {
           _$jscoverage['qunit/qunit.js'][1221]++;
           include = [];
           _$jscoverage['qunit/qunit.js'][1222]++;
-          for (i = offset; i < stack.length; i++) {
+          for (i = offset; visit116_1222_1(i < stack.length); i++) {
             _$jscoverage['qunit/qunit.js'][1223]++;
-            if (stack[i].indexOf(fileName) != -1) {
+            if (visit117_1223_1(stack[i].indexOf(fileName) != -1)) {
               _$jscoverage['qunit/qunit.js'][1224]++;
               break;
             }
@@ -2028,7 +3782,7 @@ _$jscoverage['qunit/qunit.js'][11]++;
         _$jscoverage['qunit/qunit.js'][1233]++;
         if (e.sourceURL) {
           _$jscoverage['qunit/qunit.js'][1237]++;
-          if (/qunit.js$/.test(e.sourceURL)) {
+          if (visit118_1237_1(/qunit.js$/.test(e.sourceURL))) {
             _$jscoverage['qunit/qunit.js'][1238]++;
             return;
           }
@@ -2082,7 +3836,7 @@ _$jscoverage['qunit/qunit.js'][11]++;
     _$jscoverage['qunit/qunit.js'][1268]++;
     config.queue.push(callback);
     _$jscoverage['qunit/qunit.js'][1270]++;
-    if (config.autorun && !config.blocking) {
+    if (visit119_1270_1(config.autorun && !config.blocking)) {
       _$jscoverage['qunit/qunit.js'][1271]++;
       process(last);
     }
@@ -2099,9 +3853,9 @@ _$jscoverage['qunit/qunit.js'][11]++;
     _$jscoverage['qunit/qunit.js'][1280]++;
     config.depth = config.depth ? config.depth + 1 : 1;
     _$jscoverage['qunit/qunit.js'][1282]++;
-    while (config.queue.length && !config.blocking) {
+    while (visit120_1282_1(config.queue.length && !config.blocking)) {
       _$jscoverage['qunit/qunit.js'][1283]++;
-      if (!defined.setTimeout || config.updateRate <= 0 || ((new Date().getTime() - start) < config.updateRate)) {
+      if (visit121_1283_1(!defined.setTimeout || visit122_1283_2(visit123_1283_3(config.updateRate <= 0) || (visit124_1283_4((new Date().getTime() - start) < config.updateRate))))) {
         _$jscoverage['qunit/qunit.js'][1284]++;
         config.queue.shift()();
       } else {
@@ -2114,7 +3868,7 @@ _$jscoverage['qunit/qunit.js'][11]++;
     _$jscoverage['qunit/qunit.js'][1290]++;
     config.depth--;
     _$jscoverage['qunit/qunit.js'][1291]++;
-    if (last && !config.blocking && !config.queue.length && config.depth === 0) {
+    if (visit125_1291_1(last && visit126_1291_2(!config.blocking && visit127_1291_3(!config.queue.length && visit128_1291_4(config.depth === 0))))) {
       _$jscoverage['qunit/qunit.js'][1292]++;
       done();
     }
@@ -2128,7 +3882,7 @@ _$jscoverage['qunit/qunit.js'][11]++;
       _$jscoverage['qunit/qunit.js'][1300]++;
       for (var key in window) {
         _$jscoverage['qunit/qunit.js'][1302]++;
-        if (!hasOwn.call(window, key) || /^qunit-test-output/.test(key)) {
+        if (visit129_1302_1(!hasOwn.call(window, key) || /^qunit-test-output/.test(key))) {
           _$jscoverage['qunit/qunit.js'][1303]++;
           continue;
         }
@@ -2146,14 +3900,14 @@ _$jscoverage['qunit/qunit.js'][11]++;
     _$jscoverage['qunit/qunit.js'][1317]++;
     newGlobals = diff(config.pollution, old);
     _$jscoverage['qunit/qunit.js'][1318]++;
-    if (newGlobals.length > 0) {
+    if (visit130_1318_1(newGlobals.length > 0)) {
       _$jscoverage['qunit/qunit.js'][1319]++;
       QUnit.pushFailure("Introduced global variable(s): " + newGlobals.join(", "));
     }
     _$jscoverage['qunit/qunit.js'][1322]++;
     deletedGlobals = diff(old, config.pollution);
     _$jscoverage['qunit/qunit.js'][1323]++;
-    if (deletedGlobals.length > 0) {
+    if (visit131_1323_1(deletedGlobals.length > 0)) {
       _$jscoverage['qunit/qunit.js'][1324]++;
       QUnit.pushFailure("Deleted global variable(s): " + deletedGlobals.join(", "));
     }
@@ -2163,11 +3917,11 @@ _$jscoverage['qunit/qunit.js'][11]++;
     _$jscoverage['qunit/qunit.js'][1330]++;
     var i, j, result = a.slice();
     _$jscoverage['qunit/qunit.js'][1333]++;
-    for (i = 0; i < result.length; i++) {
+    for (i = 0; visit132_1333_1(i < result.length); i++) {
       _$jscoverage['qunit/qunit.js'][1334]++;
-      for (j = 0; j < b.length; j++) {
+      for (j = 0; visit133_1334_1(j < b.length); j++) {
         _$jscoverage['qunit/qunit.js'][1335]++;
-        if (result[i] === b[j]) {
+        if (visit134_1335_1(result[i] === b[j])) {
           _$jscoverage['qunit/qunit.js'][1336]++;
           result.splice(i, 1);
           _$jscoverage['qunit/qunit.js'][1337]++;
@@ -2185,12 +3939,12 @@ _$jscoverage['qunit/qunit.js'][11]++;
     _$jscoverage['qunit/qunit.js'][1346]++;
     for (var prop in b) {
       _$jscoverage['qunit/qunit.js'][1347]++;
-      if (b[prop] === undefined) {
+      if (visit135_1347_1(b[prop] === undefined)) {
         _$jscoverage['qunit/qunit.js'][1348]++;
         delete a[prop];
       } else {
         _$jscoverage['qunit/qunit.js'][1351]++;
-        if (prop !== "constructor" || a !== window) {
+        if (visit136_1351_1(visit137_1351_2(prop !== "constructor") || visit138_1351_3(a !== window))) {
           _$jscoverage['qunit/qunit.js'][1352]++;
           a[prop] = b[prop];
         }
@@ -2219,7 +3973,7 @@ _$jscoverage['qunit/qunit.js'][11]++;
   _$jscoverage['qunit/qunit.js'][1369]++;
   function hasClass(elem, name) {
     _$jscoverage['qunit/qunit.js'][1370]++;
-    return (" " + elem.className + " ").indexOf(" " + name + " ") > -1;
+    return visit139_1370_1((" " + elem.className + " ").indexOf(" " + name + " ") > -1);
   }
   _$jscoverage['qunit/qunit.js'][1373]++;
   function addClass(elem, name) {
@@ -2234,7 +3988,7 @@ _$jscoverage['qunit/qunit.js'][11]++;
     _$jscoverage['qunit/qunit.js'][1380]++;
     var set = " " + elem.className + " ";
     _$jscoverage['qunit/qunit.js'][1382]++;
-    while (set.indexOf(" " + name + " ") > -1) {
+    while (visit140_1382_1(set.indexOf(" " + name + " ") > -1)) {
       _$jscoverage['qunit/qunit.js'][1383]++;
       set = set.replace(" " + name + " ", " ");
     }
@@ -2244,7 +3998,7 @@ _$jscoverage['qunit/qunit.js'][11]++;
   _$jscoverage['qunit/qunit.js'][1389]++;
   function id(name) {
     _$jscoverage['qunit/qunit.js'][1390]++;
-    return !!(typeof document !== "undefined" && document && document.getElementById) && document.getElementById(name);
+    return visit141_1390_1(!!(visit142_1390_2(visit143_1390_3(typeof document !== "undefined") && visit144_1390_4(document && document.getElementById))) && document.getElementById(name));
   }
   _$jscoverage['qunit/qunit.js'][1394]++;
   function registerLoggingCallback(key) {
@@ -2259,14 +4013,14 @@ _$jscoverage['qunit/qunit.js'][11]++;
     _$jscoverage['qunit/qunit.js'][1403]++;
     var i, callbacks;
     _$jscoverage['qunit/qunit.js'][1404]++;
-    if (QUnit.hasOwnProperty(key)) {
+    if (visit145_1404_1(QUnit.hasOwnProperty(key))) {
       _$jscoverage['qunit/qunit.js'][1405]++;
       QUnit[key].call(scope, args);
     } else {
       _$jscoverage['qunit/qunit.js'][1407]++;
       callbacks = config[key];
       _$jscoverage['qunit/qunit.js'][1408]++;
-      for (i = 0; i < callbacks.length; i++) {
+      for (i = 0; visit146_1408_1(i < callbacks.length); i++) {
         _$jscoverage['qunit/qunit.js'][1409]++;
         callbacks[i].call(scope, args);
       }
@@ -2279,9 +4033,9 @@ _$jscoverage['qunit/qunit.js'][11]++;
     _$jscoverage['qunit/qunit.js'][1420]++;
     var prop = QUnit.objectType(o);
     _$jscoverage['qunit/qunit.js'][1421]++;
-    if (prop) {
+    if (visit147_1421_1(prop)) {
       _$jscoverage['qunit/qunit.js'][1422]++;
-      if (QUnit.objectType(callbacks[prop]) === "function") {
+      if (visit148_1422_1(QUnit.objectType(callbacks[prop]) === "function")) {
         _$jscoverage['qunit/qunit.js'][1423]++;
         return callbacks[prop].apply(callbacks, args);
       } else {
@@ -2291,19 +4045,19 @@ _$jscoverage['qunit/qunit.js'][11]++;
     }
   }
   _$jscoverage['qunit/qunit.js'][1431]++;
-  var innerEquiv, callers = [], parents = [], getProto = Object.getPrototypeOf || function(obj) {
+  var innerEquiv, callers = [], parents = [], getProto = visit149_1437_1(Object.getPrototypeOf || function(obj) {
   _$jscoverage['qunit/qunit.js'][1438]++;
   return obj.__proto__;
-}, callbacks = (function() {
+}), callbacks = (function() {
   _$jscoverage['qunit/qunit.js'][1443]++;
   function useStrictEquality(b, a) {
     _$jscoverage['qunit/qunit.js'][1444]++;
-    if (b instanceof a.constructor || a instanceof b.constructor) {
+    if (visit150_1444_1(b instanceof a.constructor || a instanceof b.constructor)) {
       _$jscoverage['qunit/qunit.js'][1449]++;
-      return a == b;
+      return visit151_1449_1(a == b);
     } else {
       _$jscoverage['qunit/qunit.js'][1451]++;
-      return a === b;
+      return visit152_1451_1(a === b);
     }
   }
   _$jscoverage['qunit/qunit.js'][1455]++;
@@ -2312,46 +4066,46 @@ _$jscoverage['qunit/qunit.js'][11]++;
   return isNaN(b);
 }, "date": function(b, a) {
   _$jscoverage['qunit/qunit.js'][1467]++;
-  return QUnit.objectType(b) === "date" && a.valueOf() === b.valueOf();
+  return visit153_1467_1(visit154_1467_2(QUnit.objectType(b) === "date") && visit155_1467_3(a.valueOf() === b.valueOf()));
 }, "regexp": function(b, a) {
   _$jscoverage['qunit/qunit.js'][1471]++;
-  return QUnit.objectType(b) === "regexp" && a.source === b.source && a.global === b.global && a.ignoreCase === b.ignoreCase && a.multiline === b.multiline && a.sticky === b.sticky;
+  return visit156_1471_1(visit157_1471_2(QUnit.objectType(b) === "regexp") && visit158_1473_1(visit159_1473_2(a.source === b.source) && visit160_1475_1(visit161_1475_2(a.global === b.global) && visit162_1477_1(visit163_1477_2(a.ignoreCase === b.ignoreCase) && visit164_1478_1(visit165_1478_2(a.multiline === b.multiline) && visit166_1479_1(a.sticky === b.sticky))))));
 }, "function": function() {
   _$jscoverage['qunit/qunit.js'][1486]++;
   var caller = callers[callers.length - 1];
   _$jscoverage['qunit/qunit.js'][1487]++;
-  return caller !== Object && typeof caller !== "undefined";
+  return visit167_1487_1(visit168_1487_2(caller !== Object) && visit169_1487_3(typeof caller !== "undefined"));
 }, "array": function(b, a) {
   _$jscoverage['qunit/qunit.js'][1491]++;
   var i, j, len, loop;
   _$jscoverage['qunit/qunit.js'][1494]++;
-  if (QUnit.objectType(b) !== "array") {
+  if (visit170_1494_1(QUnit.objectType(b) !== "array")) {
     _$jscoverage['qunit/qunit.js'][1495]++;
     return false;
   }
   _$jscoverage['qunit/qunit.js'][1498]++;
   len = a.length;
   _$jscoverage['qunit/qunit.js'][1499]++;
-  if (len !== b.length) {
+  if (visit171_1499_1(len !== b.length)) {
     _$jscoverage['qunit/qunit.js'][1501]++;
     return false;
   }
   _$jscoverage['qunit/qunit.js'][1505]++;
   parents.push(a);
   _$jscoverage['qunit/qunit.js'][1506]++;
-  for (i = 0; i < len; i++) {
+  for (i = 0; visit172_1506_1(i < len); i++) {
     _$jscoverage['qunit/qunit.js'][1507]++;
     loop = false;
     _$jscoverage['qunit/qunit.js'][1508]++;
-    for (j = 0; j < parents.length; j++) {
+    for (j = 0; visit173_1508_1(j < parents.length); j++) {
       _$jscoverage['qunit/qunit.js'][1509]++;
-      if (parents[j] === a[i]) {
+      if (visit174_1509_1(parents[j] === a[i])) {
         _$jscoverage['qunit/qunit.js'][1510]++;
         loop = true;
       }
     }
     _$jscoverage['qunit/qunit.js'][1513]++;
-    if (!loop && !innerEquiv(a[i], b[i])) {
+    if (visit175_1513_1(!loop && !innerEquiv(a[i], b[i]))) {
       _$jscoverage['qunit/qunit.js'][1514]++;
       parents.pop();
       _$jscoverage['qunit/qunit.js'][1515]++;
@@ -2366,9 +4120,9 @@ _$jscoverage['qunit/qunit.js'][11]++;
   _$jscoverage['qunit/qunit.js'][1523]++;
   var i, j, loop, eq = true, aProperties = [], bProperties = [];
   _$jscoverage['qunit/qunit.js'][1531]++;
-  if (a.constructor !== b.constructor) {
+  if (visit176_1531_1(a.constructor !== b.constructor)) {
     _$jscoverage['qunit/qunit.js'][1534]++;
-    if (!((getProto(a) === null && getProto(b) === Object.prototype) || (getProto(b) === null && getProto(a) === Object.prototype))) {
+    if (!(visit177_1534_1((visit178_1534_2(visit179_1534_3(getProto(a) === null) && visit180_1534_4(getProto(b) === Object.prototype))) || (visit181_1535_1(visit182_1535_2(getProto(b) === null) && visit183_1535_3(getProto(a) === Object.prototype)))))) {
       _$jscoverage['qunit/qunit.js'][1536]++;
       return false;
     }
@@ -2382,9 +4136,9 @@ _$jscoverage['qunit/qunit.js'][11]++;
     _$jscoverage['qunit/qunit.js'][1547]++;
     loop = false;
     _$jscoverage['qunit/qunit.js'][1548]++;
-    for (j = 0; j < parents.length; j++) {
+    for (j = 0; visit184_1548_1(j < parents.length); j++) {
       _$jscoverage['qunit/qunit.js'][1549]++;
-      if (parents[j] === a[i]) {
+      if (visit185_1549_1(parents[j] === a[i])) {
         _$jscoverage['qunit/qunit.js'][1551]++;
         loop = true;
       }
@@ -2392,7 +4146,7 @@ _$jscoverage['qunit/qunit.js'][11]++;
     _$jscoverage['qunit/qunit.js'][1554]++;
     aProperties.push(i);
     _$jscoverage['qunit/qunit.js'][1556]++;
-    if (!loop && !innerEquiv(a[i], b[i])) {
+    if (visit186_1556_1(!loop && !innerEquiv(a[i], b[i]))) {
       _$jscoverage['qunit/qunit.js'][1557]++;
       eq = false;
       _$jscoverage['qunit/qunit.js'][1558]++;
@@ -2409,7 +4163,7 @@ _$jscoverage['qunit/qunit.js'][11]++;
     bProperties.push(i);
   }
   _$jscoverage['qunit/qunit.js'][1570]++;
-  return eq && innerEquiv(aProperties.sort(), bProperties.sort());
+  return visit187_1570_1(eq && innerEquiv(aProperties.sort(), bProperties.sort()));
 }};
 }());
   _$jscoverage['qunit/qunit.js'][1575]++;
@@ -2417,19 +4171,19 @@ _$jscoverage['qunit/qunit.js'][11]++;
   _$jscoverage['qunit/qunit.js'][1576]++;
   var args = [].slice.apply(arguments);
   _$jscoverage['qunit/qunit.js'][1577]++;
-  if (args.length < 2) {
+  if (visit188_1577_1(args.length < 2)) {
     _$jscoverage['qunit/qunit.js'][1578]++;
     return true;
   }
   _$jscoverage['qunit/qunit.js'][1581]++;
-  return (function(a, b) {
+  return (visit189_1593_1(function(a, b) {
   _$jscoverage['qunit/qunit.js'][1582]++;
-  if (a === b) {
+  if (visit190_1582_1(a === b)) {
     _$jscoverage['qunit/qunit.js'][1583]++;
     return true;
   } else {
     _$jscoverage['qunit/qunit.js'][1584]++;
-    if (a === null || b === null || typeof a === "undefined" || typeof b === "undefined" || QUnit.objectType(a) !== QUnit.objectType(b)) {
+    if (visit191_1584_1(visit192_1584_2(a === null) || visit193_1584_3(visit194_1584_4(b === null) || visit195_1584_5(visit196_1584_6(typeof a === "undefined") || visit197_1585_1(visit198_1585_2(typeof b === "undefined") || visit199_1586_1(QUnit.objectType(a) !== QUnit.objectType(b))))))) {
       _$jscoverage['qunit/qunit.js'][1587]++;
       return false;
     } else {
@@ -2437,7 +4191,7 @@ _$jscoverage['qunit/qunit.js'][11]++;
       return bindCallbacks(a, callbacks, [b, a]);
     }
   }
-}(args[0], args[1]) && arguments.callee.apply(this, args.splice(1, args.length - 1)));
+}(args[0], args[1]) && arguments.callee.apply(this, args.splice(1, args.length - 1))));
 };
   _$jscoverage['qunit/qunit.js'][1596]++;
   return innerEquiv;
@@ -2490,7 +4244,7 @@ _$jscoverage['qunit/qunit.js'][11]++;
   _$jscoverage['qunit/qunit.js'][1638]++;
   var reName = /^function (\w+)/, jsDump = {parse: function(obj, type, stack) {
   _$jscoverage['qunit/qunit.js'][1642]++;
-  stack = stack || [];
+  stack = visit200_1642_1(stack || []);
   _$jscoverage['qunit/qunit.js'][1643]++;
   var inStack, res, parser = this.parsers[type || this.typeOf(obj)];
   _$jscoverage['qunit/qunit.js'][1646]++;
@@ -2498,12 +4252,12 @@ _$jscoverage['qunit/qunit.js'][11]++;
   _$jscoverage['qunit/qunit.js'][1647]++;
   inStack = inArray(obj, stack);
   _$jscoverage['qunit/qunit.js'][1649]++;
-  if (inStack != -1) {
+  if (visit202_1649_1(inStack != -1)) {
     _$jscoverage['qunit/qunit.js'][1650]++;
     return "recursion(" + (inStack - stack.length) + ")";
   }
   _$jscoverage['qunit/qunit.js'][1652]++;
-  if (type == "function") {
+  if (visit203_1652_1(type == "function")) {
     _$jscoverage['qunit/qunit.js'][1653]++;
     stack.push(obj);
     _$jscoverage['qunit/qunit.js'][1654]++;
@@ -2514,42 +4268,42 @@ _$jscoverage['qunit/qunit.js'][11]++;
     return res;
   }
   _$jscoverage['qunit/qunit.js'][1658]++;
-  return (type == "string") ? parser : this.parsers.error;
+  return (visit204_1658_1(type == "string")) ? parser : this.parsers.error;
 }, typeOf: function(obj) {
   _$jscoverage['qunit/qunit.js'][1661]++;
   var type;
   _$jscoverage['qunit/qunit.js'][1662]++;
-  if (obj === null) {
+  if (visit205_1662_1(obj === null)) {
     _$jscoverage['qunit/qunit.js'][1663]++;
     type = "null";
   } else {
     _$jscoverage['qunit/qunit.js'][1664]++;
-    if (typeof obj === "undefined") {
+    if (visit206_1664_1(typeof obj === "undefined")) {
       _$jscoverage['qunit/qunit.js'][1665]++;
       type = "undefined";
     } else {
       _$jscoverage['qunit/qunit.js'][1666]++;
-      if (QUnit.is("regexp", obj)) {
+      if (visit207_1666_1(QUnit.is("regexp", obj))) {
         _$jscoverage['qunit/qunit.js'][1667]++;
         type = "regexp";
       } else {
         _$jscoverage['qunit/qunit.js'][1668]++;
-        if (QUnit.is("date", obj)) {
+        if (visit208_1668_1(QUnit.is("date", obj))) {
           _$jscoverage['qunit/qunit.js'][1669]++;
           type = "date";
         } else {
           _$jscoverage['qunit/qunit.js'][1670]++;
-          if (QUnit.is("function", obj)) {
+          if (visit209_1670_1(QUnit.is("function", obj))) {
             _$jscoverage['qunit/qunit.js'][1671]++;
             type = "function";
           } else {
             _$jscoverage['qunit/qunit.js'][1672]++;
-            if (typeof obj.setInterval !== undefined && typeof obj.document !== "undefined" && typeof obj.nodeType === "undefined") {
+            if (visit210_1672_1(visit211_1672_2(typeof obj.setInterval !== undefined) && visit212_1672_3(visit213_1672_4(typeof obj.document !== "undefined") && visit214_1672_5(typeof obj.nodeType === "undefined")))) {
               _$jscoverage['qunit/qunit.js'][1673]++;
               type = "window";
             } else {
               _$jscoverage['qunit/qunit.js'][1674]++;
-              if (obj.nodeType === 9) {
+              if (visit215_1674_1(obj.nodeType === 9)) {
                 _$jscoverage['qunit/qunit.js'][1675]++;
                 type = "document";
               } else {
@@ -2559,12 +4313,12 @@ _$jscoverage['qunit/qunit.js'][11]++;
                   type = "node";
                 } else {
                   _$jscoverage['qunit/qunit.js'][1678]++;
-                  if (toString.call(obj) === "[object Array]" || (typeof obj.length === "number" && typeof obj.item !== "undefined" && (obj.length ? obj.item(0) === obj[0] : (obj.item(0) === null && typeof obj[0] === "undefined")))) {
+                  if (visit216_1680_1(visit217_1680_2(toString.call(obj) === "[object Array]") || (visit218_1682_1(visit219_1682_2(typeof obj.length === "number") && visit220_1682_3(visit221_1682_4(typeof obj.item !== "undefined") && (obj.length ? visit222_1682_5(obj.item(0) === obj[0]) : (visit223_1682_6(visit224_1682_7(obj.item(0) === null) && visit225_1682_8(typeof obj[0] === "undefined"))))))))) {
                     _$jscoverage['qunit/qunit.js'][1684]++;
                     type = "array";
                   } else {
                     _$jscoverage['qunit/qunit.js'][1685]++;
-                    if (obj.constructor === Error.prototype.constructor) {
+                    if (visit226_1685_1(obj.constructor === Error.prototype.constructor)) {
                       _$jscoverage['qunit/qunit.js'][1686]++;
                       type = "error";
                     } else {
@@ -2599,13 +4353,13 @@ _$jscoverage['qunit/qunit.js'][11]++;
     chr = chr.replace(/\t/g, "   ").replace(/ /g, "&nbsp;");
   }
   _$jscoverage['qunit/qunit.js'][1704]++;
-  return new Array(this._depth_ + (extra || 0)).join(chr);
+  return new Array(this._depth_ + (visit227_1704_1(extra || 0))).join(chr);
 }, up: function(a) {
   _$jscoverage['qunit/qunit.js'][1707]++;
-  this._depth_ += a || 1;
+  this._depth_ += visit228_1707_1(a || 1);
 }, down: function(a) {
   _$jscoverage['qunit/qunit.js'][1710]++;
-  this._depth_ -= a || 1;
+  this._depth_ -= visit229_1710_1(a || 1);
 }, setParser: function(name, parser) {
   _$jscoverage['qunit/qunit.js'][1713]++;
   this.parsers[name] = parser;
@@ -2614,9 +4368,9 @@ _$jscoverage['qunit/qunit.js'][11]++;
   return "Error(\"" + error.message + "\")";
 }, unknown: "[Unknown]", "null": "null", "undefined": "undefined", "function": function(fn) {
   _$jscoverage['qunit/qunit.js'][1732]++;
-  var ret = "function", name = "name" in fn ? fn.name : (reName.exec(fn) || [])[1];
+  var ret = "function", name = "name" in fn ? fn.name : (visit230_1734_1(reName.exec(fn) || []))[1];
   _$jscoverage['qunit/qunit.js'][1736]++;
-  if (name) {
+  if (visit231_1736_1(name)) {
     _$jscoverage['qunit/qunit.js'][1737]++;
     ret += " " + name;
   }
@@ -2641,7 +4395,7 @@ _$jscoverage['qunit/qunit.js'][11]++;
   _$jscoverage['qunit/qunit.js'][1754]++;
   keys.sort();
   _$jscoverage['qunit/qunit.js'][1755]++;
-  for (i = 0; i < keys.length; i++) {
+  for (i = 0; visit232_1755_1(i < keys.length); i++) {
     _$jscoverage['qunit/qunit.js'][1756]++;
     key = keys[i];
     _$jscoverage['qunit/qunit.js'][1757]++;
@@ -2661,7 +4415,7 @@ _$jscoverage['qunit/qunit.js'][11]++;
     _$jscoverage['qunit/qunit.js'][1771]++;
     val = node[QUnit.jsDump.DOMAttrs[a]];
     _$jscoverage['qunit/qunit.js'][1772]++;
-    if (val) {
+    if (visit233_1772_1(val)) {
       _$jscoverage['qunit/qunit.js'][1773]++;
       ret += " " + a + "=" + QUnit.jsDump.parse(val, "attribute");
     }
@@ -2698,12 +4452,12 @@ _$jscoverage['qunit/qunit.js'][11]++;
       _$jscoverage['qunit/qunit.js'][1829]++;
       elem = elems[i];
       _$jscoverage['qunit/qunit.js'][1832]++;
-      if (elem.nodeType === 3 || elem.nodeType === 4) {
+      if (visit234_1832_1(visit235_1832_2(elem.nodeType === 3) || visit236_1832_3(elem.nodeType === 4))) {
         _$jscoverage['qunit/qunit.js'][1833]++;
         ret += elem.nodeValue;
       } else {
         _$jscoverage['qunit/qunit.js'][1836]++;
-        if (elem.nodeType !== 8) {
+        if (visit237_1836_1(elem.nodeType !== 8)) {
           _$jscoverage['qunit/qunit.js'][1837]++;
           ret += getText(elem.childNodes);
         }
@@ -2720,9 +4474,9 @@ _$jscoverage['qunit/qunit.js'][11]++;
       return array.indexOf(elem);
     }
     _$jscoverage['qunit/qunit.js'][1850]++;
-    for (var i = 0, length = array.length; i < length; i++) {
+    for (var i = 0, length = array.length; visit238_1850_1(i < length); i++) {
       _$jscoverage['qunit/qunit.js'][1851]++;
-      if (array[i] === elem) {
+      if (visit239_1851_1(array[i] === elem)) {
         _$jscoverage['qunit/qunit.js'][1852]++;
         return i;
       }
@@ -2737,9 +4491,9 @@ _$jscoverage['qunit/qunit.js'][11]++;
     _$jscoverage['qunit/qunit.js'][1875]++;
     var i, ns = {}, os = {};
     _$jscoverage['qunit/qunit.js'][1879]++;
-    for (i = 0; i < n.length; i++) {
+    for (i = 0; visit240_1879_1(i < n.length); i++) {
       _$jscoverage['qunit/qunit.js'][1880]++;
-      if (ns[n[i]] == null) {
+      if (visit241_1880_1(ns[n[i]] == null)) {
         _$jscoverage['qunit/qunit.js'][1881]++;
         ns[n[i]] = {rows: [], o: null};
       }
@@ -2747,9 +4501,9 @@ _$jscoverage['qunit/qunit.js'][11]++;
       ns[n[i]].rows.push(i);
     }
     _$jscoverage['qunit/qunit.js'][1889]++;
-    for (i = 0; i < o.length; i++) {
+    for (i = 0; visit242_1889_1(i < o.length); i++) {
       _$jscoverage['qunit/qunit.js'][1890]++;
-      if (os[o[i]] == null) {
+      if (visit243_1890_1(os[o[i]] == null)) {
         _$jscoverage['qunit/qunit.js'][1891]++;
         os[o[i]] = {rows: [], n: null};
       }
@@ -2764,7 +4518,7 @@ _$jscoverage['qunit/qunit.js'][11]++;
         continue;
       }
       _$jscoverage['qunit/qunit.js'][1903]++;
-      if (ns[i].rows.length == 1 && typeof os[i] != "undefined" && os[i].rows.length == 1) {
+      if (visit244_1903_1(visit245_1903_2(ns[i].rows.length == 1) && visit246_1903_3(visit247_1903_4(typeof os[i] != "undefined") && visit248_1903_5(os[i].rows.length == 1)))) {
         _$jscoverage['qunit/qunit.js'][1904]++;
         n[ns[i].rows[0]] = {text: n[ns[i].rows[0]], row: os[i].rows[0]};
         _$jscoverage['qunit/qunit.js'][1908]++;
@@ -2772,9 +4526,9 @@ _$jscoverage['qunit/qunit.js'][11]++;
       }
     }
     _$jscoverage['qunit/qunit.js'][1915]++;
-    for (i = 0; i < n.length - 1; i++) {
+    for (i = 0; visit249_1915_1(i < n.length - 1); i++) {
       _$jscoverage['qunit/qunit.js'][1916]++;
-      if (n[i].text != null && n[i + 1].text == null && n[i].row + 1 < o.length && o[n[i].row + 1].text == null && n[i + 1] == o[n[i].row + 1]) {
+      if (visit250_1916_1(visit251_1916_2(n[i].text != null) && visit252_1916_3(visit253_1916_4(n[i + 1].text == null) && visit254_1916_5(visit255_1916_6(n[i].row + 1 < o.length) && visit256_1916_7(visit257_1916_8(o[n[i].row + 1].text == null) && visit258_1917_1(n[i + 1] == o[n[i].row + 1])))))) {
         _$jscoverage['qunit/qunit.js'][1919]++;
         n[i + 1] = {text: n[i + 1], row: n[i].row + 1};
         _$jscoverage['qunit/qunit.js'][1923]++;
@@ -2782,9 +4536,9 @@ _$jscoverage['qunit/qunit.js'][11]++;
       }
     }
     _$jscoverage['qunit/qunit.js'][1930]++;
-    for (i = n.length - 1; i > 0; i--) {
+    for (i = n.length - 1; visit259_1930_1(i > 0); i--) {
       _$jscoverage['qunit/qunit.js'][1931]++;
-      if (n[i].text != null && n[i - 1].text == null && n[i].row > 0 && o[n[i].row - 1].text == null && n[i - 1] == o[n[i].row - 1]) {
+      if (visit260_1931_1(visit261_1931_2(n[i].text != null) && visit262_1931_3(visit263_1931_4(n[i - 1].text == null) && visit264_1931_5(visit265_1931_6(n[i].row > 0) && visit266_1931_7(visit267_1931_8(o[n[i].row - 1].text == null) && visit268_1932_1(n[i - 1] == o[n[i].row - 1])))))) {
         _$jscoverage['qunit/qunit.js'][1934]++;
         n[i - 1] = {text: n[i - 1], row: n[i].row - 1};
         _$jscoverage['qunit/qunit.js'][1938]++;
@@ -2801,9 +4555,9 @@ _$jscoverage['qunit/qunit.js'][11]++;
   _$jscoverage['qunit/qunit.js'][1953]++;
   n = n.replace(/\s+$/, "");
   _$jscoverage['qunit/qunit.js'][1955]++;
-  var i, pre, str = "", out = diff(o === "" ? [] : o.split(/\s+/), n === "" ? [] : n.split(/\s+/)), oSpace = o.match(/\s+/g), nSpace = n.match(/\s+/g);
+  var i, pre, str = "", out = diff(visit269_1957_1(o === "") ? [] : o.split(/\s+/), visit270_1957_2(n === "") ? [] : n.split(/\s+/)), oSpace = o.match(/\s+/g), nSpace = n.match(/\s+/g);
   _$jscoverage['qunit/qunit.js'][1961]++;
-  if (oSpace == null) {
+  if (visit271_1961_1(oSpace == null)) {
     _$jscoverage['qunit/qunit.js'][1962]++;
     oSpace = [" "];
   } else {
@@ -2811,7 +4565,7 @@ _$jscoverage['qunit/qunit.js'][11]++;
     oSpace.push(" ");
   }
   _$jscoverage['qunit/qunit.js'][1968]++;
-  if (nSpace == null) {
+  if (visit272_1968_1(nSpace == null)) {
     _$jscoverage['qunit/qunit.js'][1969]++;
     nSpace = [" "];
   } else {
@@ -2819,32 +4573,32 @@ _$jscoverage['qunit/qunit.js'][11]++;
     nSpace.push(" ");
   }
   _$jscoverage['qunit/qunit.js'][1975]++;
-  if (out.n.length === 0) {
+  if (visit273_1975_1(out.n.length === 0)) {
     _$jscoverage['qunit/qunit.js'][1976]++;
-    for (i = 0; i < out.o.length; i++) {
+    for (i = 0; visit274_1976_1(i < out.o.length); i++) {
       _$jscoverage['qunit/qunit.js'][1977]++;
       str += "<del>" + out.o[i] + oSpace[i] + "</del>";
     }
   } else {
     _$jscoverage['qunit/qunit.js'][1981]++;
-    if (out.n[0].text == null) {
+    if (visit275_1981_1(out.n[0].text == null)) {
       _$jscoverage['qunit/qunit.js'][1982]++;
-      for (n = 0; n < out.o.length && out.o[n].text == null; n++) {
+      for (n = 0; visit276_1982_1(visit277_1982_2(n < out.o.length) && visit278_1982_3(out.o[n].text == null)); n++) {
         _$jscoverage['qunit/qunit.js'][1983]++;
         str += "<del>" + out.o[n] + oSpace[n] + "</del>";
       }
     }
     _$jscoverage['qunit/qunit.js'][1987]++;
-    for (i = 0; i < out.n.length; i++) {
+    for (i = 0; visit279_1987_1(i < out.n.length); i++) {
       _$jscoverage['qunit/qunit.js'][1988]++;
-      if (out.n[i].text == null) {
+      if (visit280_1988_1(out.n[i].text == null)) {
         _$jscoverage['qunit/qunit.js'][1989]++;
         str += "<ins>" + out.n[i] + nSpace[i] + "</ins>";
       } else {
         _$jscoverage['qunit/qunit.js'][1993]++;
         pre = "";
         _$jscoverage['qunit/qunit.js'][1995]++;
-        for (n = out.n[i].row + 1; n < out.o.length && out.o[n].text == null; n++) {
+        for (n = out.n[i].row + 1; visit281_1995_1(visit282_1995_2(n < out.o.length) && visit283_1995_3(out.o[n].text == null)); n++) {
           _$jscoverage['qunit/qunit.js'][1996]++;
           pre += "<del>" + out.o[n] + oSpace[n] + "</del>";
         }
@@ -2858,7 +4612,7 @@ _$jscoverage['qunit/qunit.js'][11]++;
 };
 }());
   _$jscoverage['qunit/qunit.js'][2008]++;
-  if (typeof exports !== "undefined") {
+  if (visit284_2008_1(typeof exports !== "undefined")) {
     _$jscoverage['qunit/qunit.js'][2009]++;
     extend(exports, QUnit);
   }

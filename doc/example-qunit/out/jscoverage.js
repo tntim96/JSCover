@@ -68,6 +68,7 @@ function jscoverage_init(w) {
   if (! jscoverage_isInvertedMode) {
     if (! w._$jscoverage) {
       w._$jscoverage = {};
+      w._$jscoverage.branchData = {};
     }
   }
 }
@@ -366,6 +367,7 @@ function jscoverage_body_load() {
               var fileCoverage = json[file];
               _$jscoverage[file] = fileCoverage.coverage;
               _$jscoverage[file].source = fileCoverage.source;
+              _$jscoverage.branchData[file] = convertBranchDataLinesFromJSON(fileCoverage.branchData);
             }
             jscoverage_recalculateSummaryTab();
             summaryThrobber.style.visibility = 'hidden';
@@ -416,7 +418,7 @@ function jscoverage_updateBrowser() {
 function jscoverage_openWindow() {
   var input = document.getElementById("location");
   var url = input.value;
-  window.open(url);
+  window.open(url,'jscoverage_window');
 }
 
 function jscoverage_input_keypress(e) {
@@ -477,6 +479,14 @@ function jscoverage_createLink(file, line) {
 }
 
 var sortOrder = 0;
+var sortColumn = 'Coverage';
+
+function jscoverage_recalculateSummaryTabBy(type) {
+  if (sortColumn !== type)
+    sortOrder = 1;
+  sortColumn = type;
+  jscoverage_recalculateSummaryTab(null);
+}
 
 function jscoverage_recalculateSummaryTab(cc) {
   var checkbox = document.getElementById('checkbox');
@@ -491,11 +501,13 @@ function jscoverage_recalculateSummaryTab(cc) {
 //#JSCOVERAGE_ENDIF
   }
 
-  var totals = { files:0, statements:0, executed:0 };
+  var totals = { files:0, statements:0, executed:0, branches:0, branches_covered:0 };
 
   var file;
   var files = [];
   for (file in cc) {
+    if (file === 'branchData')
+        continue;
     files.push(file);
   }
   if (files.length === 0)
@@ -553,10 +565,37 @@ function jscoverage_recalculateSummaryTab(cc) {
 
     var percentage = ( num_statements === 0 ? 0 : parseInt(100 * num_executed / num_statements) );
 
+    var num_branches = 0;
+    var num_executed_branches = 0;
+    var fileBranchCC = cc.branchData[file];
+    if (fileBranchCC) {
+        var branchLength = fileBranchCC.length;
+        for (lineNumber = 0; lineNumber < branchLength; lineNumber++) {
+          var conditions = fileBranchCC[lineNumber];
+          var covered = undefined;
+          if (conditions !== undefined && conditions !== null && conditions.length) {
+              covered = true;
+              for (var conditionIndex = 0; conditionIndex < conditions.length; conditionIndex++) {
+                  var branchData = fileBranchCC[lineNumber][conditionIndex];
+                  if (branchData === undefined || branchData === null)
+                    continue;
+                  num_branches += 2;
+                  num_executed_branches += branchData.pathsCovered();
+                  if (!branchData.covered()) {
+                      covered = false;
+                  }
+              }
+          }
+        }
+        var percentageBranch = ( num_branches === 0 ? 0 : parseInt(100 * num_executed_branches / num_branches));
+    }
+
+
     var row = document.createElement("tr");
     row.className = ( rowCounter++ % 2 == 0 ? "odd" : "even" );
 
     var cell = document.createElement("td");
+    row.id = "row-"+file;
     cell.className = 'leftColumn';
     var link = jscoverage_createLink(file);
     cell.appendChild(link);
@@ -573,6 +612,16 @@ function jscoverage_recalculateSummaryTab(cc) {
     cell.appendChild(document.createTextNode(num_executed));
     row.appendChild(cell);
 
+    cell = document.createElement("td");
+    cell.className = 'numeric';
+    cell.appendChild(document.createTextNode(num_branches));
+    row.appendChild(cell);
+
+    cell = document.createElement("td");
+    cell.className = 'numeric';
+    cell.appendChild(document.createTextNode(num_executed_branches));
+    row.appendChild(cell);
+
     // new coverage td containing a bar graph
     cell = document.createElement("td");
     cell.className = 'coverage';
@@ -587,6 +636,27 @@ function jscoverage_recalculateSummaryTab(cc) {
         covered.className = "covered";
         covered.style.width = percentage + "px";
         pct.appendChild(document.createTextNode(percentage + '%'));
+    }
+    pct.className = "pct";
+    pctGraph.appendChild(covered);
+    cell.appendChild(pctGraph);
+    cell.appendChild(pct);
+    row.appendChild(cell);
+
+    // new coverage td containing a branch bar graph
+    cell = document.createElement("td");
+    cell.className = 'coverage';
+    pctGraph = document.createElement("div"),
+        covered = document.createElement("div"),
+        pct = document.createElement("span");
+    pctGraph.className = "pctGraph";
+    if(fileBranchCC === undefined || num_branches === 0 ) {
+        covered.className = "skipped";
+        pct.appendChild(document.createTextNode("N/A"));
+    } else {
+        covered.className = "covered";
+        covered.style.width = percentageBranch + "px";
+        pct.appendChild(document.createTextNode(percentageBranch + '%'));
     }
     pct.className = "pct";
     pctGraph.appendChild(covered);
@@ -636,6 +706,8 @@ function jscoverage_recalculateSummaryTab(cc) {
     totals['files'] ++;
     totals['statements'] += num_statements;
     totals['executed'] += num_executed;
+    totals['branches'] += num_branches;
+    totals['branches_covered'] += num_executed_branches;
 
     // write totals data into summaryTotals row
     var tr = document.getElementById("summaryTotals");
@@ -644,13 +716,25 @@ function jscoverage_recalculateSummaryTab(cc) {
         tds[0].getElementsByTagName("span")[1].firstChild.nodeValue = totals['files'];
         tds[1].firstChild.nodeValue = totals['statements'];
         tds[2].firstChild.nodeValue = totals['executed'];
+        tds[3].firstChild.nodeValue = totals['branches'];
+        tds[4].firstChild.nodeValue = totals['branches_covered'];
 
         var coverage = parseInt(100 * totals['executed'] / totals['statements']);
         if( isNaN( coverage ) ) {
             coverage = 0;
         }
-        tds[3].getElementsByTagName("span")[0].firstChild.nodeValue = coverage + '%';
-        tds[3].getElementsByTagName("div")[1].style.width = coverage + 'px';
+        tds[5].getElementsByTagName("span")[0].firstChild.nodeValue = coverage + '%';
+        tds[5].getElementsByTagName("div")[1].style.width = coverage + 'px';
+
+        coverage = 0;
+        if (fileBranchCC !== undefined) {
+            coverage = parseInt(100 * totals['branches_covered'] / totals['branches']);
+            if( isNaN( coverage ) ) {
+                coverage = 0;
+            }
+        }
+        tds[6].getElementsByTagName("span")[0].firstChild.nodeValue = coverage + '%';
+        tds[6].getElementsByTagName("div")[1].style.width = coverage + 'px';
     }
 
   }
@@ -667,13 +751,22 @@ function getFilesSortedByCoverage(filesIn) {
   for (var i=0;i<tbody.children.length;i++) {
     files[i] = {};
   	files[i].file = tbody.children[i].children[0].children[0].innerHTML;
-  	files[i].perc = parseInt(tbody.children[i].children[3].children[1].innerHTML, 10);
+  	files[i].perc = parseInt(tbody.children[i].children[5].children[1].innerHTML, 10);
+  	files[i].brPerc = parseInt(tbody.children[i].children[6].children[1].innerHTML, 10);
+    if (isNaN(files[i].brPerc))
+      files[i].brPerc = -1;
   }
 
   if (sortOrder%3===1) {
-    files.sort(function(file1,file2) {return file1.perc-file2.perc});
+    if (sortColumn == 'Coverage')
+      files.sort(function(file1,file2) {return file1.perc-file2.perc});
+    else
+      files.sort(function(file1,file2) {return file1.brPerc-file2.brPerc});
   } else if (sortOrder%3===2) {
-    files.sort(function(file1,file2) {return file2.perc-file1.perc});
+     if (sortColumn == 'Coverage')
+      files.sort(function(file1,file2) {return file2.perc-file1.perc});
+     else
+       files.sort(function(file1,file2) {return file2.brPerc-file1.brPerc});
   } else {
       return filesIn.sort();
   }
@@ -728,6 +821,7 @@ function jscoverage_checkbox_click() {
 
 function jscoverage_makeTable() {
   var coverage = _$jscoverage[jscoverage_currentFile];
+  var branchData = _$jscoverage.branchData[jscoverage_currentFile];
   var lines = coverage.source;
 
   // this can happen if there is an error in the original JavaScript file
@@ -748,10 +842,10 @@ function jscoverage_makeTable() {
     This may be a long delay, so set a timeout of 100 ms to make sure the
     display is updated.
     */
-    setTimeout(appendTable, 100);
+    setTimeout(function() {appendTable(jscoverage_currentFile);}, 100);
   }
 
-  function appendTable() {
+  function appendTable(jscoverage_currentFile) {
     var sourceDiv = document.getElementById('sourceDiv');
     sourceDiv.innerHTML = tableHTML;
     ProgressBar.setPercentage(progressBar, 80);
@@ -787,6 +881,27 @@ function jscoverage_makeTable() {
     else {
       row += '<td></td>';
     }
+
+    if (_$jscoverage.branchData[jscoverage_currentFile] !== undefined && _$jscoverage.branchData[jscoverage_currentFile].length !== undefined) {
+        var branchClass = '';
+        var branchText = '&#160;';
+        var branchLink = undefined;
+        if (branchData[lineNumber] !== undefined && branchData[lineNumber] !== null) {
+            branchClass = 'g';
+            for (var conditionIndex = 0; conditionIndex < branchData[lineNumber].length; conditionIndex++) {
+                if (branchData[lineNumber][conditionIndex] !== undefined && branchData[lineNumber][conditionIndex] !== null && !branchData[lineNumber][conditionIndex].covered()) {
+                    branchClass = 'r';
+                    break;
+                }
+            }
+
+        }
+        if (branchClass === 'r') {
+            branchText = '<a href="#" onclick="alert(buildBranchMessage(_$jscoverage.branchData[\''+jscoverage_currentFile+'\']['+lineNumber+']));">info</a>';
+        }
+        row += '<td class="numeric '+branchClass+'"><pre>' + branchText + '</pre></td>';
+    }
+
     row += '<td><pre>' + lines[i] + '</pre></td>';
     row += '</tr>';
     row += '\n';
@@ -1060,37 +1175,11 @@ function jscoverage_pad(s) {
   return '0000'.substr(s.length) + s;
 }
 
-function jscoverage_quote(s) {
-  return '"' + s.replace(/[\u0000-\u001f"\\\u007f-\uffff]/g, function (c) {
-    switch (c) {
-    case '\b':
-      return '\\b';
-    case '\f':
-      return '\\f';
-    case '\n':
-      return '\\n';
-    case '\r':
-      return '\\r';
-    case '\t':
-      return '\\t';
-    // IE doesn't support this
-    /*
-    case '\v':
-      return '\\v';
-    */
-    case '"':
-      return '\\"';
-    case '\\':
-      return '\\\\';
-    default:
-      return '\\u' + jscoverage_pad(c.charCodeAt(0).toString(16));
-    }
-  }) + '"';
-}
-
 function jscoverage_serializeCoverageToJSON() {
   var json = [];
   for (var file in _$jscoverage) {
+    if (file === 'branchData')
+        continue;
     var coverage = _$jscoverage[file];
 
     var array = [];
@@ -1110,7 +1199,8 @@ function jscoverage_serializeCoverageToJSON() {
       lines.push(jscoverage_quote(source[line]));
     }
 
-    json.push(jscoverage_quote(file) + ':{"coverage":[' + array.join(',') + '],"source":[' + lines.join(',') + ']}');
+    json.push(jscoverage_quote(file) + ':{"coverage":[' + array.join(',') + '],"source":[' + lines.join(',')
+        + '],"branchData":' + convertBranchDataLinesToJSON(_$jscoverage.branchData[file]) + '}');
   }
   return '{' + json.join(',') + '}';
 }
@@ -1157,4 +1247,162 @@ function jscoverage_storeButton_click() {
   var json = jscoverage_serializeCoverageToJSON();
   request.setRequestHeader('Content-Length', json.length.toString());
   request.send(json);
+}
+function jscoverage_quote(s) {
+  return '"' + s.replace(/[\u0000-\u001f"\\\u007f-\uffff]/g, function (c) {
+    switch (c) {
+    case '\b':
+      return '\\b';
+    case '\f':
+      return '\\f';
+    case '\n':
+      return '\\n';
+    case '\r':
+      return '\\r';
+    case '\t':
+      return '\\t';
+    // IE doesn't support this
+    /*
+    case '\v':
+      return '\\v';
+    */
+    case '"':
+      return '\\"';
+    case '\\':
+      return '\\\\';
+    default:
+      return '\\u' + jscoverage_pad(c.charCodeAt(0).toString(16));
+    }
+  }) + '"';
+}
+function BranchData() {
+    this.position = -1;
+    this.nodeLength = -1;
+    this.src = null;
+    this.evalFalse = 0;
+    this.evalTrue = 0;
+
+    this.init = function(position, nodeLength, src) {
+        this.position = position;
+        this.nodeLength = nodeLength;
+        this.src = src;
+        return this;
+    }
+
+    this.ranCondition = function(result) {
+        if (result)
+            this.evalTrue++;
+        else
+            this.evalFalse++;
+    };
+
+    this.pathsCovered = function() {
+        var paths = 0;
+        if (this.evalTrue > 0)
+          paths++;
+        if (this.evalFalse > 0)
+          paths++;
+        return paths;
+    };
+
+    this.covered = function() {
+        return this.evalTrue > 0 && this.evalFalse > 0;
+    };
+
+    this.toJSON = function() {
+        return '{"position":' + this.position
+            + ',"nodeLength":' + this.nodeLength
+            + ',"src":' + jscoverage_quote(this.src)
+            + ',"evalFalse":' + this.evalFalse
+            + ',"evalTrue":' + this.evalTrue + '}';
+    };
+
+    this.message = function() {
+        if (this.evalTrue === 0 && this.evalFalse === 0)
+            return 'Condition never evaluated         :\t' + this.src;
+        else if (this.evalTrue === 0)
+            return 'Condition never evaluated to true :\t' + this.src;
+        else if (this.evalFalse === 0)
+            return 'Condition never evaluated to false:\t' + this.src;
+        else
+            return 'Condition covered';
+    };
+}
+
+BranchData.fromJson = function(jsonString) {
+    var json = eval('(' + jsonString + ')');
+    var branchData = new BranchData();
+    branchData.init(json.position, json.nodeLength, json.src);
+    branchData.evalFalse = json.evalFalse;
+    branchData.evalTrue = json.evalTrue;
+    return branchData;
+};
+
+BranchData.fromJsonObject = function(json) {
+    var branchData = new BranchData();
+    branchData.init(json.position, json.nodeLength, json.src);
+    branchData.evalFalse = json.evalFalse;
+    branchData.evalTrue = json.evalTrue;
+    return branchData;
+};
+
+function buildBranchMessage(conditions) {
+    var message = 'The following was not covered:';
+    for (var i = 0; i < conditions.length; i++) {
+        if (conditions[i] !== undefined && conditions[i] !== null && !conditions[i].covered())
+          message += '\n- '+ conditions[i].message();
+    }
+    return message;
+};
+
+function convertBranchDataConditionArrayToJSON(branchDataConditionArray) {
+    var array = [];
+    var length = branchDataConditionArray.length;
+    for (var condition = 0; condition < length; condition++) {
+        var branchDataObject = branchDataConditionArray[condition];
+        if (branchDataObject === undefined || branchDataObject === null) {
+            value = 'null';
+        } else {
+            value = branchDataObject.toJSON();
+        }
+        array.push(value);
+    }
+    return '[' + array.join(',') + ']';
+}
+
+function convertBranchDataLinesToJSON(branchData) {
+    if (branchData === undefined) {
+        return '[]'
+    }
+    var array = [];
+    var length = branchData.length;
+    for (var line = 0; line < length; line++) {
+        var branchDataObject = branchData[line];
+        if (branchDataObject === undefined || branchDataObject === null) {
+            value = 'null';
+        } else {
+            value = convertBranchDataConditionArrayToJSON(branchDataObject);
+        }
+        array.push(value);
+    }
+    return '[' + array.join(',') + ']';
+}
+
+function convertBranchDataLinesFromJSON(jsonObject) {
+    if (jsonObject === undefined) {
+        return [];
+    }
+    var length = jsonObject.length;
+    for (var line = 0; line < length; line++) {
+        var branchDataJSON = jsonObject[line];
+        if (branchDataJSON !== null) {
+            for (var conditionIndex = 0; conditionIndex < branchDataJSON.length; conditionIndex ++) {
+                var condition = branchDataJSON[conditionIndex];
+                if (condition !== null) {
+                    branchDataJSON[conditionIndex] = BranchData.fromJsonObject(condition);
+                }
+            }
+        }
+    }
+    return jsonObject;
 }
