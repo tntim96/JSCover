@@ -367,7 +367,7 @@ public class Logger {
     public void log(String message, RuntimeException t) {
         if (log == null) {
             if (t == null) {
-                System.out.println(message);
+                System.err.println(message);
                 return;
             } else
                 throw t;

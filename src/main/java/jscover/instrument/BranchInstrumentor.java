@@ -421,6 +421,8 @@ public class BranchInstrumentor implements NodeVisitor {
             ((DoLoop)parent).setCondition(functionCall);
         } else if (parent instanceof ForLoop) {
             ((ForLoop)parent).setCondition(functionCall);
+        } else if (parent instanceof ElementGet) {
+            ((ElementGet)parent).setElement(functionCall);
         } else if (parent instanceof ConditionalExpression) {
             ConditionalExpression ternary = (ConditionalExpression) parent;
             if (ternary.getTestExpression() == node)
@@ -429,6 +431,22 @@ public class BranchInstrumentor implements NodeVisitor {
                 ternary.setTrueExpression(functionCall);
             else
                 ternary.setFalseExpression(functionCall);
+        } else if (parent instanceof ArrayLiteral) {
+            postProcesses.add(new PostProcess(parent, node, functionCall) {
+                @Override
+                void run(AstNode parent, AstNode node, AstNode functionCall) {
+                    final ArrayLiteral arrayParent = (ArrayLiteral) parent;
+                    List<AstNode> elements = arrayParent.getElements();
+                    List<AstNode> newElements = new ArrayList<AstNode>();
+                    for (AstNode element : elements) {
+                        if (element == node)
+                            newElements.add(functionCall);
+                        else
+                            newElements.add(element);
+                    }
+                    arrayParent.setElements(newElements);
+                }
+            });
         } else if (parent instanceof FunctionCall) {
             postProcesses.add(new PostProcess(parent, node, functionCall) {
                 @Override

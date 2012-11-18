@@ -410,6 +410,26 @@ public class BranchInstrumentorIntegrationTest {
     }
 
     @Test
+    public void shouldWrapArrayLiteralCondition() {
+        StringBuilder script = new StringBuilder("var x = [ 1 || 0];\n");
+        runScript(script.toString());
+        Scriptable coverageData = getCoverageData(scope, "test.js", 1, 1);
+        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
+        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
+    }
+
+    @Test
+    public void shouldWrapGetterCondition() {
+        StringBuilder script = new StringBuilder("var y = { 'a':1, 'b':2};\n");
+        script.append("var prop = null;\n");
+        script.append("var x = y[prop || 'a'];");
+        runScript(script.toString());
+        Scriptable coverageData = getCoverageData(scope, "test.js", 3, 1);
+        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
+        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
+    }
+
+    @Test
     public void shouldWrapAssignmentCondition() {
         StringBuilder script = new StringBuilder("var x = true;\n");
         script.append("x = x === undefined;\n");

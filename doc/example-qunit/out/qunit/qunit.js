@@ -4246,7 +4246,7 @@ function visit1_17_1(result) {
   _$jscoverage['qunit/qunit.js'][1642]++;
   stack = visit200_1642_1(stack || []);
   _$jscoverage['qunit/qunit.js'][1643]++;
-  var inStack, res, parser = this.parsers[type || this.typeOf(obj)];
+  var inStack, res, parser = this.parsers[visit201_1644_1(type || this.typeOf(obj))];
   _$jscoverage['qunit/qunit.js'][1646]++;
   type = typeof parser;
   _$jscoverage['qunit/qunit.js'][1647]++;
