@@ -824,7 +824,7 @@ alert('Hello World!');</code>
                     <li>JSCover adds instrumentation to JavaScript code, which will slow down execution speed. Expect instrumented code to take at least twice as much time to run.</li>
                     <li>JSCover currently instruments only .js files; it does not instrument code in &lt;script&gt; elements in HTML files.</li>
                     <li>HTML files must use relative URLs to reference scripts. If you use an absolute URL, your page will reference the original uninstrumented script rather than the instrumented one, and no code coverage data will be collected.</li>
-                    <li>JSCover instruments physical lines of code rather than logical JavaScript statements; it works bests with code that has exactly one statement per line. If you put multiple statements on a line, or split a line across two or more statements, you may get strange results.</li>
+                    <li>JSCover line coverage instruments physical lines of code rather than logical JavaScript statements; it works bests with code that has exactly one statement per line. If you put multiple statements on a line, or split a line across two or more statements, you may get strange results.</li>
                     <li>JSCover uses frames. Some web pages that use frames may not function properly when run with JSCover, especially those which try to access the top-level frame (window.top, target="_top", etc.).</li>
                     <li>JSCover proxy currently only supports HTTP, not HTTPS</li>
                     <li>JSCover is distributed without any warranty. See the license for more details.</li>
