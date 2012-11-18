@@ -86,7 +86,7 @@
                 <text>
                     Run
                     <var>example-server.bat</var> or <var>example-server.sh</var>. The contents are:
-                    <code>java -jar target/dist/JSCover-all.jar -ws --document-root=doc/example --report-dir=target</code>
+                    <code>java -jar target/dist/JSCover-all.jar -ws --branch --document-root=doc/example --report-dir=target</code>
                     This will start a web server, and the JSCover interface can be loaded by going to
                     <a href="http://localhost:8080/jscoverage.html">http://localhost:8080/jscoverage.html</a>.
                     <br/><img src="images/ws-1-browser.png"/><br/>
@@ -115,7 +115,7 @@
                 <heading id="gettingStartedServerCoverageSummary">View The Coverage Summary</heading>
                 <text>
                     To see a summary of the coverage, click the <var>Summary</var> tab. Note, you can change the sorting
-                    order by clicking on the <var>Coverage</var> link:
+                    order by clicking on the <var>Coverage</var> link or the <var>Branch</var> link:
                     <br/><img src="images/ws-4-summary.png"/>
                 </text>
             </item>
@@ -135,6 +135,19 @@
                 </text>
             </item>
             <item>
+                <heading id="gettingStartedServerViewUncoveredBranch">View Uncovered Branches</heading>
+                <text>
+                    To determine which branch path was not covered click on the <var>info</var> link.
+                    <br/><img src="images/ws-7-source.png"/>
+                </text>
+                <text>
+                    If there are multiple paths, for example:
+                    <code>if (code !== undefined &amp;&amp; code !== null &amp;&amp; code !== '') {</code>
+                    The uncovered information may be:
+                    <br/><img src="images/ws-8-source.png"/>
+                </text>
+            </item>
+            <item>
                 <heading id="gettingStartedServerReportStorage">Store The Report</heading>
                 <text>
                     To store the report, click on the <var>Store</var> tab and then the <var>Store Report</var> button.
@@ -150,7 +163,7 @@
                 <heading id="gettingStartedServerAbout">About Page</heading>
                 <text>
                     Version and other information can be viewed by clicking on the <var>About</var> tab:
-                    <br/><img src="images/ws-8-about.png"/>
+                    <br/><img src="images/ws-10-about.png"/>
                 </text>
             </item>
         </item>
@@ -159,7 +172,7 @@
             <text>
                 Run
                 <var>example-filesystem.bat</var> or <var>example-filesystem.sh</var>. The contents are:
-                <code>java -jar target/dist/JSCover-all.jar -fs doc/example target/example</code>
+                <code>java -jar target/dist/JSCover-all.jar -fs --branch doc/example target/example</code>
                 This will recursively copy all the resources from <var>doc/example</var> to <var>target/example</var>,
                 and create the JSCover files (e.g. jscoverage.html) at <var>target/example</var>.
             </text>
@@ -286,6 +299,11 @@
                         <td>--proxy</td>
                         <td>N/A</td>
                         <td>Run in proxy mode</td>
+                    </tr>
+                    <tr>
+                        <td>--branch</td>
+                        <td>N/A</td>
+                        <td>Collect branch coverage data</td>
                     </tr>
                     <tr>
                         <td>--include-unloaded-js</td>
@@ -602,6 +620,11 @@
                         <td>N/A</td>
                     </tr>
                     <tr>
+                        <td>Branch Coverage Total</td>
+                        <td>branchSummaryTotal</td>
+                        <td>N/A</td>
+                    </tr>
+                    <tr>
                         <td>Storage tab</td>
                         <td>storeTab</td>
                         <td>N/A</td>
@@ -734,22 +757,58 @@ alert('Hello World!');</code>
                 <heading id="jsCoverageVJSCoverFeatures">Features</heading>
                 <text>
                     <table>
-                        <tr><th>Feature</th><th>JSCoverage (0.5.1)</th><th>JSCover (0.0.11)</th></tr>
-                        <tr><td>File Instrumentation</td><td class="tick"></td><td class="tick"></td></tr>
-                        <tr><td>Web Server Instrumentation</td><td class="tick"></td><td class="tick"></td></tr>
-                        <tr><td>Proxy Server Instrumentation</td><td class="tick"></td><td class="tick"></td></tr>
-                        <tr><td>Specify Encoding</td><td class="tick"></td><td class="tick"></td></tr>
-                        <tr><td>Inclusion of Uncovered/Unloaded JavaScript</td><td class="cross"></td><td class="tick"></td></tr>
-                        <tr><td>JavaScript Syntax Highlighting</td><td class="tick"></td><td class="cross"></td></tr>
-                        <tr><td>Ignoring certain lines of code</td><td class="tick"></td><td class="cross"></td></tr>
-                        <tr><td>Branch Coverage</td><td class="cross"></td><td class="cross">Coming Soon!</td></tr>
+                        <tr>
+                            <th>Feature</th>
+                            <th>JSCover (0.1.0-RC1)</th>
+                            <th>JSCoverage (0.5.1)</th>
+                        </tr>
+                        <tr>
+                            <td>Branch Coverage</td>
+                            <td class="tick"></td>
+                            <td class="cross"></td>
+                        </tr>
+                        <tr>
+                            <td>File Instrumentation</td>
+                            <td class="tick"></td>
+                            <td class="tick"></td>
+                        </tr>
+                        <tr>
+                            <td>Web Server Instrumentation</td>
+                            <td class="tick"></td>
+                            <td class="tick"></td>
+                        </tr>
+                        <tr>
+                            <td>Proxy Server Instrumentation</td>
+                            <td class="tick"></td>
+                            <td class="tick"></td>
+                        </tr>
+                        <tr>
+                            <td>Specify Encoding</td>
+                            <td class="tick"></td>
+                            <td class="tick"></td>
+                        </tr>
+                        <tr>
+                            <td>Inclusion of Uncovered/Unloaded JavaScript</td>
+                            <td class="tick"></td>
+                            <td class="cross"></td>
+                        </tr>
+                        <tr>
+                            <td>JavaScript Syntax Highlighting</td>
+                            <td class="cross"></td>
+                            <td class="tick"></td>
+                        </tr>
+                        <tr>
+                            <td>Ignoring certain lines of code</td>
+                            <td class="cross"></td>
+                            <td class="tick"></td>
+                        </tr>
                     </table>
                 </text>
                 <text>
                     Other differences include:
                     <ul>
                         <li>JSCover's server mode works on Windows 7 (this was part of the incentive to write JSCover)</li>
-                        <li>JSCover allows sorting of files by coverage</li>
+                        <li>JSCover allows sorting of files by coverage and branch coverage</li>
                         <li>JSCover <a href="#automating">has added hooks</a> to assist with automated testing</li>
                         <li>JSCover's encoding default's to that of the platform, while JSCoverage's is ISO-8859-1</li>
                         <li>JSCoverage has an option for code coverage for Mozilla platform applications</li>
@@ -765,7 +824,7 @@ alert('Hello World!');</code>
                     <li>JSCover adds instrumentation to JavaScript code, which will slow down execution speed. Expect instrumented code to take at least twice as much time to run.</li>
                     <li>JSCover currently instruments only .js files; it does not instrument code in &lt;script&gt; elements in HTML files.</li>
                     <li>HTML files must use relative URLs to reference scripts. If you use an absolute URL, your page will reference the original uninstrumented script rather than the instrumented one, and no code coverage data will be collected.</li>
-                    <li>JSCover instruments physical lines of code rather than logical JavaScript statements; it works bests with code that has exactly one statement per line. If you put multiple statements on a line, or split a line across two or more statements, you may get strange results.</li>
+                    <li>JSCover line coverage instruments physical lines of code rather than logical JavaScript statements; it works bests with code that has exactly one statement per line. If you put multiple statements on a line, or split a line across two or more statements, you may get strange results.</li>
                     <li>JSCover uses frames. Some web pages that use frames may not function properly when run with JSCover, especially those which try to access the top-level frame (window.top, target="_top", etc.).</li>
                     <li>JSCover proxy currently only supports HTTP, not HTTPS</li>
                     <li>JSCover is distributed without any warranty. See the license for more details.</li>

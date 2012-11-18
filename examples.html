@@ -7,19 +7,19 @@
 
     <p>
         Run example-server.sh (see below) and then go to
-        <a href="http://localhost:8080/jscoverage.html?/">http://localhost:8080/jscoverage.html?/</a>.
+        <a href="http://localhost:8080/jscoverage.html?/index.html">http://localhost:8080/jscoverage.html?/index.html</a>.
     </p>
 
     <div class="shell">
-        java -jar target/dist/JSCover.jar -ws --document-root=doc/example --report-dir=target
+        java -jar target/dist/JSCover.jar -ws --branch --document-root=doc/example --report-dir=target
     </div>
     <p>
         Manually run the command below the go to:
-        <a href="http://localhost:8080/jscoverage.html?/test">http://localhost:8080/jscoverage.html?/test</a>.
+        <a href="http://localhost:8080/jscoverage.html?/test/index.html">http://localhost:8080/jscoverage.html?/test/index.html</a>.
     </p>
 
     <div class="shell">
-        java -jar target/dist/JSCover.jar -ws --document-root=doc/example-qunit/src --report-dir=target
+        java -jar target/dist/JSCover.jar -ws --branch --document-root=doc/example-qunit/src --report-dir=target
     </div>
 
     <p>
@@ -27,7 +27,7 @@
     </p>
 
     <div class="shell">
-        java -jar target/dist/JSCover.jar -ws --document-root=doc/example-qunit/src --report-dir=target --no-instrument=/test
+        java -jar target/dist/JSCover.jar -ws --branch --document-root=doc/example-qunit/src --report-dir=target --no-instrument=/test
     </div>
 
     <h2>JSCover File Instrumentation</h2>
@@ -38,5 +38,5 @@
     </p>
 
     <div class="shell">
-        java -jar target/dist/JSCover.jar -fs --no-instrument=test doc/example-qunit/src doc/example-qunit/out
+        java -jar target/dist/JSCover.jar -fs --branch --no-instrument=test doc/example-qunit/src doc/example-qunit/out
     </div>
