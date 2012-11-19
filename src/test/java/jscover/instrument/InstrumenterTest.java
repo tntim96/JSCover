@@ -406,20 +406,16 @@ public class InstrumenterTest {
     }
 
     @Test
-    @Ignore
     public void shouldInstrumentFunctionDeclarationAndAssignment() {
-        String source = "var x,\n" +
-                "  fn = function() {\n" +
+        String source = "var x, fn = function() {\n" +
                 "    ;\n" +
                 "  };";
         String instrumentedSource = instrumenter.instrumentSource(source);
         String expectedSource = "_$jscoverage['test.js'][1]++;\n" +
-                "var x,\n" +
-                "_$jscoverage['test.js'][2]++;\n" +
-                "  fn = function() {\n" +
-                "    _$jscoverage['test.js'][3]++;\n" +
-                "    ;\n" +
-                "  };";
+                "var x, fn = function() {\n" +
+                "  _$jscoverage['test.js'][2]++;\n" +
+                "  ;\n" +
+                "};\n";
         assertEquals(expectedSource, instrumentedSource);
     }
 
