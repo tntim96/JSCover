@@ -344,6 +344,7 @@ package jscover.instrument;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -401,6 +402,24 @@ public class InstrumenterTest {
         String source = "this.someFn()\n    ._renderItem = function() {};";
         String instrumentedSource = instrumenter.instrumentSource(source);
         String expectedSource = "_$jscoverage['test.js'][1]++;\nthis.someFn()._renderItem = function() {\n};\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+    @Test
+    @Ignore
+    public void shouldInstrumentFunctionDeclarationAndAssignment() {
+        String source = "var x,\n" +
+                "  fn = function() {\n" +
+                "    ;\n" +
+                "  };";
+        String instrumentedSource = instrumenter.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'][1]++;\n" +
+                "var x,\n" +
+                "_$jscoverage['test.js'][2]++;\n" +
+                "  fn = function() {\n" +
+                "    _$jscoverage['test.js'][3]++;\n" +
+                "    ;\n" +
+                "  };";
         assertEquals(expectedSource, instrumentedSource);
     }
 
