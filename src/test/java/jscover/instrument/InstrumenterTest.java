@@ -459,6 +459,21 @@ public class InstrumenterTest {
     }
 
     @Test
+    public void shouldInstrumentFunctionInArray() {
+        String source = "var x = [\n" +
+                "  function() {\n" +
+                "    return true;\n" +
+                "  }]\n";
+        String instrumentedSource = instrumenter.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'][1]++;\n" +
+                "var x = [function() {\n" +
+                "  _$jscoverage['test.js'][3]++;\n" +
+                "  return true;\n" +
+                "}];\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+    @Test
     public void shouldInstrumentIfWithBraces() {
         String source = "if (x > 10)\n{\n  x++;\n}";
         String instrumentedSource = instrumenter.instrumentSource(source);

@@ -432,7 +432,7 @@ class NodeProcessor {
         } else if (node instanceof FunctionNode || node instanceof TryStatement || isDebugStatement(node)) {
             ExpressionStatement newChild = buildInstrumentationStatement(node.getLineno());
             if (!(parent instanceof InfixExpression) && !(parent instanceof VariableInitializer)
-                    && !(parent instanceof ConditionalExpression)) {
+                    && !(parent instanceof ConditionalExpression)&& !(parent instanceof ArrayLiteral)) {
                 parent.addChildBefore(newChild, node);
             }
         } else if (node instanceof ReturnStatement) {
