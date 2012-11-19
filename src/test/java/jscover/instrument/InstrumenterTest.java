@@ -421,6 +421,44 @@ public class InstrumenterTest {
     }
 
     @Test
+    public void shouldInstrumentFunctionDeclarationInInfix() {
+        String source = "var x = {" +
+                "  'y': 0,\n" +
+                "  fn: 0 || function() {\n" +
+                "    return 1;\n" +
+                "  }" +
+                "}";
+        String instrumentedSource = instrumenter.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'][1]++;\n" +
+                "var x = {'y': 0, fn: 0 || function() {\n" +
+                "  _$jscoverage['test.js'][3]++;\n" +
+                "  return 1;\n" +
+                "}};\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+    @Test
+    public void shouldInstrumentFunctionInTernary() {
+        String source = "var x = a > b ? \n" +
+                "  function() {\n" +
+                "    return true;" +
+                "  } :\n" +
+                "  function() {\n" +
+                "    return false;\n" +
+                "  }";
+        String instrumentedSource = instrumenter.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'][1]++;\n" +
+                "var x = a > b ? function() {\n" +
+                "  _$jscoverage['test.js'][3]++;\n" +
+                "  return true;\n" +
+                "} : function() {\n" +
+                "  _$jscoverage['test.js'][5]++;\n" +
+                "  return false;\n" +
+                "};\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+    @Test
     public void shouldInstrumentIfWithBraces() {
         String source = "if (x > 10)\n{\n  x++;\n}";
         String instrumentedSource = instrumenter.instrumentSource(source);
