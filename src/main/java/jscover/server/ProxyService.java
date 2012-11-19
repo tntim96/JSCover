@@ -357,6 +357,14 @@ public class ProxyService {
     private IoUtils ioUtils = IoUtils.getInstance();
 
     protected void handleProxyGet(HttpRequest request, OutputStream os) {
+        handleProxyRequest(request, os, "GET");
+    }
+
+    protected void handleProxyHead(HttpRequest request, OutputStream os) {
+        handleProxyRequest(request, os, "HEAD");
+    }
+
+    private void handleProxyRequest(HttpRequest request, OutputStream os, String method) {
         URL url = request.getUrl();
         Socket socket = null;
         InputStream remoteInputStream = null;
@@ -369,7 +377,7 @@ public class ProxyService {
             PrintWriter remotePrintWriter = new PrintWriter(remoteOutputStream);
 
             String uri = getRawURI(url);
-            remotePrintWriter.print("GET "+uri+" HTTP/1.0\n");
+            remotePrintWriter.print(method + " " +uri+" HTTP/1.0\n");
             sendHeaders(request, remotePrintWriter);
             ioUtils.copyNoClose(remoteInputStream, os);
         } catch (IOException e) {

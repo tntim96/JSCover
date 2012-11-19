@@ -1,3 +1,7 @@
+0.1.0-RC2 / 2012-??-??
+==================
+  * Add proxy support for HEAD requests
+
 0.1.0-RC1 / 2012-11-18
 ==================
   * Add branch coverage

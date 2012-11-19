@@ -422,6 +422,14 @@ public class InstrumentingRequestHandlerTest {
         assertThat(stringWriter.toString(), containsString(format("Coverage data stored at %s", reportDir)));
     }
 
+    @Test(expected = UnsupportedOperationException.class)
+    public void shouldDirectHEADToHttpServer() {
+        given(configuration.isProxy()).willReturn(false);
+
+        HttpRequest request = new HttpRequest("somePostUrl");
+        webServer.handleHead(request);
+    }
+
     @Test
     public void shouldDirectPOSTToHttpServer() {
         given(configuration.isProxy()).willReturn(false);
@@ -443,6 +451,19 @@ public class InstrumentingRequestHandlerTest {
         webServer.handleGet(request);
 
         verify(proxyService).handleProxyGet(request, null);
+        verifyZeroInteractions(ioService);
+        verifyZeroInteractions(jsonDataSaver);
+        verifyZeroInteractions(instrumenterService);
+    }
+
+    @Test
+    public void shouldDirectHEADToProxy() throws IOException {
+        given(configuration.isProxy()).willReturn(true);
+
+        HttpRequest request = new HttpRequest("somePostUrl");
+        webServer.handleHead(request);
+
+        verify(proxyService).handleProxyHead(request, null);
         verifyZeroInteractions(ioService);
         verifyZeroInteractions(jsonDataSaver);
         verifyZeroInteractions(instrumenterService);

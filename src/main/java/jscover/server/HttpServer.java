@@ -403,6 +403,8 @@ public class HttpServer extends Thread {
                     System.exit(0);
                 }
                 handleGet(httpRequest);
+            } else if (httpMethod.equals("HEAD")) {
+                handleHead(httpRequest);
             } else if (httpMethod.equals("POST")) {
                 int length = Integer.valueOf(headers.get("Content-Length").get(0));
                 handlePost(httpRequest, ioUtils.toStringNoClose(br, length));
@@ -414,6 +416,10 @@ public class HttpServer extends Thread {
             ioUtils.closeQuietly(br);
             ioUtils.closeQuietly(os);
         }
+    }
+
+    protected void handleHead(HttpRequest httpRequest) {
+        throw new UnsupportedOperationException("No support for HEAD");
     }
 
     protected void handlePost(HttpRequest request, String data) {

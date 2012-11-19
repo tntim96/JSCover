@@ -437,4 +437,12 @@ public class InstrumentingRequestHandler extends HttpServer {
             sendResponse(HTTP_STATUS.HTTP_INTERNAL_SERVER_ERROR, MIME.TEXT_PLAIN, stringWriter.toString());
         }
     }
+
+    @Override
+    protected void handleHead(HttpRequest request) {
+        if (configuration.isProxy())
+            proxyService.handleProxyHead(request, os);
+        else
+            super.handleHead(request);
+    }
 }
