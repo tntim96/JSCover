@@ -365,6 +365,7 @@ public class ConfigurationForServer extends Configuration {
     public static final String BRANCH_PREFIX = "--branch";
 
     private boolean showHelp;
+    private boolean invalid;
     private boolean includeBranch = false;
     private File documentRoot = new File(System.getProperty("user.dir"));
     private Integer port = 8080;
@@ -378,6 +379,10 @@ public class ConfigurationForServer extends Configuration {
 
     public Boolean showHelp() {
         return showHelp;
+    }
+
+    public boolean isInvalid() {
+        return invalid;
     }
 
     public boolean isIncludeBranch() {
@@ -437,6 +442,7 @@ public class ConfigurationForServer extends Configuration {
                 configuration.includeBranch = true;
             } else {
                 configuration.showHelp = true;
+                configuration.invalid = true;
             }
         }
         configuration.compilerEnvirons.setLanguageVersion(configuration.JSVersion);

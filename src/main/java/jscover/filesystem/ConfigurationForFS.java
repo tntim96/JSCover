@@ -364,6 +364,7 @@ public class ConfigurationForFS extends Configuration {
     public static final String JS_VERSION_PREFIX = "--js-version=";
 
     private boolean showHelp;
+    private boolean invalid;
     private boolean includeBranch = false;
     private final Set<String> noInstruments = new HashSet<String>();
     private final Set<String> excludes = new HashSet<String>();
@@ -375,6 +376,10 @@ public class ConfigurationForFS extends Configuration {
 
     public Boolean showHelp() {
         return showHelp;
+    }
+
+    public boolean isInvalid() {
+        return invalid;
     }
 
     public boolean isIncludeBranch() {
@@ -437,6 +442,7 @@ public class ConfigurationForFS extends Configuration {
         }
 
         if (args.length < 3) {
+            configuration.invalid = true;
             configuration.showHelp = true;
             return configuration;
         }
@@ -444,9 +450,11 @@ public class ConfigurationForFS extends Configuration {
         configuration.destDir = new File(args[args.length - 1]);
         if (!configuration.validSourceDirectory()) {
             System.err.println(format("Source directory '%s' is invalid", configuration.srcDir));
+            configuration.invalid = true;
             configuration.showHelp = true;
         } else if (!configuration.validDestinationDirectory()) {
             System.err.println(format("Destination directory '%s' must not be in the source directory", configuration.destDir));
+            configuration.invalid = true;
             configuration.showHelp = true;
         }
         configuration.compilerEnvirons.setLanguageVersion(configuration.JSVersion);

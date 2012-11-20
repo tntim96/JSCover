@@ -359,6 +359,7 @@ public class MainParsingTest {
 
     @Test
     public void shouldHaveDefaults() {
+        assertThat(main.getExitStatus(), equalTo(0));
         main.parse(new String[]{});
         assertThat(main.showHelp(), equalTo(true));
         assertThat(main.printVersion(), equalTo(false));
@@ -403,9 +404,15 @@ public class MainParsingTest {
 
     @Test
     public void shouldParseHelp() {
-        assertThat(main.parse(new String[]{}).showHelp(), equalTo(true));
         assertThat(main.parse(new String[]{"-h"}).showHelp(), equalTo(true));
         assertThat(main.parse(new String[]{"--help"}).showHelp(), equalTo(true));
+        assertThat(main.getExitStatus(), equalTo(0));
+    }
+
+    @Test
+    public void shouldShowHelpIfNoArgymentsProvided() {
+        assertThat(main.parse(new String[]{}).showHelp(), equalTo(true));
+        assertThat(main.getExitStatus(), equalTo(1));
     }
 
     @Test
@@ -417,16 +424,25 @@ public class MainParsingTest {
     @Test
     public void shouldDetectValidOptionsForWebServer() {
         assertThat(main.parse(new String[]{"-ws"}).showHelp(), equalTo(false));
+        assertThat(main.getExitStatus(), equalTo(0));
     }
 
     @Test
     public void shouldDetectValidOptionsForFileSystem() {
         assertThat(main.parse(new String[]{"-fs"}).showHelp(), equalTo(false));
+        assertThat(main.getExitStatus(), equalTo(0));
     }
 
     @Test
-    public void shouldDetectInvalidOptions() {
+    public void shouldDetectInvalidOptions1() {
         assertThat(main.parse(new String[]{"-ws", "-fs"}).showHelp(), equalTo(true));
+        assertThat(main.getExitStatus(), equalTo(1));
+    }
+
+    @Test
+    public void shouldDetectInvalidOptions2() {
+        assertThat(main.parse(new String[]{}).showHelp(), equalTo(true));
+        assertThat(main.getExitStatus(), equalTo(1));
     }
 
     @Test

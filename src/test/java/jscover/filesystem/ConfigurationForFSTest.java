@@ -356,6 +356,7 @@ public class ConfigurationForFSTest {
     public void shouldHaveDefaults() {
         ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs","src","doc"});
         assertThat(configuration.showHelp(), equalTo(false));
+        assertThat(configuration.isInvalid(), equalTo(false));
         assertThat(configuration.isIncludeBranch(), equalTo(false));
         assertThat(configuration.getJSVersion(), equalTo(150));
         assertThat(configuration.skipInstrumentation("/"), equalTo(false));
@@ -366,29 +367,35 @@ public class ConfigurationForFSTest {
     public void shouldNotAllowDestinationDirectoryToEqualSourceDirectory() {
         ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs","src","src"});
         assertThat(configuration.showHelp(), equalTo(true));
+        assertThat(configuration.isInvalid(), equalTo(true));
     }
 
     @Test
     public void shouldNotAllowDestinationDirectoryToBeSubDirectoryOfSourceDirectory() {
         ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs","src","src/main/java"});
         assertThat(configuration.showHelp(), equalTo(true));
+        assertThat(configuration.isInvalid(), equalTo(true));
     }
 
     @Test
     public void shouldNotAllowDestinationDirectoryToBeSubDirectoryOfSourceDirectorySpecifiedAsCurrentDirectory() {
         ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs",".","src/java"});
         assertThat(configuration.showHelp(), equalTo(true));
+        assertThat(configuration.isInvalid(), equalTo(true));
     }
 
     @Test
-    public void shouldNotAllowDestinationDirectoryToBeSubDirectoryOfSourceDirectoryStartingWithTheSameName() {
+    public void shouldAllowDestinationDirectoryToBeDifferentDirectoryOfSourceDirectoryButStartingWithTheSameName() {
         ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs","src/main/java","src/main/java-instrumented"});
         assertThat(configuration.showHelp(), equalTo(false));
+        assertThat(configuration.isInvalid(), equalTo(false));
     }
 
     @Test
     public void shouldShowHelpOnError() {
-        assertThat(ConfigurationForFS.parse(new String[]{"-fs"}).showHelp(), equalTo(true));
+        ConfigurationForFS configurationForFS = ConfigurationForFS.parse(new String[]{"-fs"});
+        assertThat(configurationForFS.showHelp(), equalTo(true));
+        assertThat(configurationForFS.isInvalid(), equalTo(true));
     }
 
     @Test
@@ -398,7 +405,7 @@ public class ConfigurationForFSTest {
     }
 
     @Test
-    public void shouldParseNoBranch() {
+    public void shouldParseBranch() {
         assertThat(ConfigurationForFS.parse(new String[]{"-fs","--branch","src","doc"}).isIncludeBranch(), equalTo(true));
     }
 

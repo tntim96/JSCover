@@ -357,6 +357,7 @@ public class ConfigurationForServerTest {
     public void shouldHaveDefaults() {
         ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{});
         assertThat(configuration.showHelp(), equalTo(false));
+        assertThat(configuration.isInvalid(), equalTo(false));
         assertThat(configuration.getDocumentRoot().toString(), equalTo(System.getProperty("user.dir")));
         assertThat(configuration.getPort(), equalTo(8080));
         assertThat(configuration.getJSVersion(), equalTo(150));
@@ -381,18 +382,21 @@ public class ConfigurationForServerTest {
 
     @Test
     public void shouldShowHelpOnError() {
-        assertThat(ConfigurationForServer.parse(new String[]{"unknown"}).showHelp(), equalTo(true));
+        ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"unknown"});
+        assertThat(configuration.showHelp(), equalTo(true));
+        assertThat(configuration.isInvalid(), equalTo(true));
     }
 
     @Test
     public void shouldParseHelp() {
-        assertThat(ConfigurationForServer.parse(new String[]{}).showHelp(), equalTo(false));
         assertThat(ConfigurationForServer.parse(new String[]{"-h"}).showHelp(), equalTo(true));
         assertThat(ConfigurationForServer.parse(new String[]{"--help"}).showHelp(), equalTo(true));
+        assertThat(ConfigurationForServer.parse(new String[]{"-h"}).isInvalid(), equalTo(false));
+        assertThat(ConfigurationForServer.parse(new String[]{"--help"}).isInvalid(), equalTo(false));
     }
 
     @Test
-    public void shouldParseNoBranch() {
+    public void shouldParseBranch() {
         assertThat(ConfigurationForServer.parse(new String[]{"-ws", "--branch"}).isIncludeBranch(), equalTo(true));
     }
 

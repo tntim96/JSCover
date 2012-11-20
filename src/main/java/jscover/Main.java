@@ -403,9 +403,13 @@ public class Main {
     private boolean printVersion;
     private boolean isServer;
     private boolean isFileSystem;
+    private int exitStatus;
 
     public static void main(String[] args) throws IOException {
-        new Main().runMain(args);
+        Main main = new Main();
+        main.runMain(args);
+        if (main.exitStatus != 0)
+            System.exit(main.exitStatus);
     }
 
     public void runMain(String[] args) throws IOException {
@@ -428,7 +432,7 @@ public class Main {
             System.out.println(getHelpText());
         }
         if (Logger.getInstance().isLoggedException())
-            System.exit(1);
+            exitStatus = 1;
     }
 
     public String getHelpText() {
@@ -442,6 +446,8 @@ public class Main {
     private void runFileSystem(String[] args) {
         ConfigurationForFS configuration = ConfigurationForFS.parse(args);
         configuration.setProperties(properties);
+        if (configuration.isInvalid())
+            exitStatus = 1;
         if (configuration.showHelp()) {
             System.out.println(configuration.getHelpText());
         } else {
@@ -452,6 +458,8 @@ public class Main {
     private void runServer(String[] args) {
         ConfigurationForServer configuration = ConfigurationForServer.parse(args);
         configuration.setProperties(properties);
+        if (configuration.isInvalid())
+            exitStatus = 1;
         if (configuration.showHelp()) {
             System.out.println(configuration.getHelpText());
         } else {
@@ -475,11 +483,10 @@ public class Main {
                 isFileSystem = true;
             } else if (arg.equals(CHARSET_PREFIX)) {
                 showCharsets = true;
-            } else {
-                showHelp = true;
             }
         }
         if (!validOptions()) {
+            exitStatus = 1;
             showHelp = true;
         }
         return this;
@@ -489,7 +496,7 @@ public class Main {
         if (isServer && isFileSystem) {
             return false;
         }
-        return isServer || isFileSystem;
+        return isServer || isFileSystem || showHelp;
     }
 
     public Boolean printVersion() {
@@ -511,5 +518,9 @@ public class Main {
 
     public boolean isFileSystem() {
         return isFileSystem;
+    }
+
+    public int getExitStatus() {
+        return exitStatus;
     }
 }
