@@ -342,12 +342,14 @@ Public License instead of this License.
 
 package jscover.util;
 
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.StringContains.containsString;
 
@@ -361,6 +363,12 @@ public class LoggerIntegrationTest {
         file = File.createTempFile("file","log");
         file.deleteOnExit();
         Logger.setLogFile(file);
+        ReflectionUtils.setField(logger, "loggedException", false);
+    }
+
+    @Test
+    public void shouldNotHaveLoggedException() {
+        assertThat(logger.isLoggedException(), Matchers.equalTo(false));
     }
 
     @Test
@@ -375,6 +383,7 @@ public class LoggerIntegrationTest {
         String actual = ioUtils.loadFromFileSystem(file);
         assertThat(actual, containsString("Test message"));
         assertThat(actual, containsString("Ouch!"));
+        assertThat(logger.isLoggedException(), equalTo(true));
     }
 
     @Test(expected = RuntimeException.class)

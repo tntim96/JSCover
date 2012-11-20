@@ -347,6 +347,7 @@ import jscover.filesystem.FileSystemInstrumenter;
 import jscover.server.ConfigurationForServer;
 import jscover.server.WebDaemon;
 import jscover.util.IoUtils;
+import jscover.util.Logger;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -426,6 +427,8 @@ public class Main {
         } else {
             System.out.println(getHelpText());
         }
+        if (Logger.getInstance().isLoggedException())
+            System.exit(1);
     }
 
     public String getHelpText() {
