@@ -68,10 +68,6 @@
                     </li>
                 </ul>
             </text>
-            <text>
-                A log file is also produced in the output directory which should be inspected after running.
-                It will contain any errors that occurred during instrumentation.
-            </text>
         </item>
         </section>
     </item>
@@ -496,6 +492,30 @@
                         </tr>
                     </tbody>
                 </table>
+            </text>
+        </item>
+        <item>
+            <heading id="errorLog">Error Log</heading>
+            <text>
+                A log file, <var>errors.log</var>, is produced in the output directory
+                if any instrumentation errors occurred. In addition, the program will exit with an exit status of 1.
+            </text>
+            <text>
+                The <var>errors.log</var> file should be inspected, but does not necessarily indicate an instrumentation
+                error.
+                Logged errors are usually the result of trying to insert a statement to an invalid location
+                in the parse tree. Please report the issue so that it can be addressed, but you should check whether the
+                instrumented code is actually missing a valid instrumentation line.
+            </text>
+            <text>
+                For example, if the log contains <var>Error on line 200 of test.js</var>, that line should be inspected.
+                If the code is a multi-line declaration, it may not make sense to add further instrumentation on top of
+                the first line of the declaration.
+            </text>
+            <text>
+                To speed up the resolution of the issue, try to write a failing test in <var>InstrumenterTest</var> for
+                line coverage and in <var>BranchInstrumentorIntegrationTest</var> for branch coverage. You may even find
+                that you can fix the issue and create patch for the project.
             </text>
         </item>
         </section>

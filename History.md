@@ -2,6 +2,8 @@
 ==================
   * Add proxy support for HEAD requests
   * Fix multiple NPE errors
+  * Add FAQ on error log, and the manual on the error log and exit status
+  * Set exit status code to 1 if any exceptions were logged
 
 0.1.0-RC1 / 2012-11-18
 ==================
