@@ -381,8 +381,7 @@ class NodeProcessor {
             return true;
         }
         if (node instanceof SwitchStatement || node instanceof WithStatement) {
-            ExpressionStatement newChild = buildInstrumentationStatement(node.getLineno());
-            parent.addChildBefore(newChild, node);
+            parent.addChildBefore(buildInstrumentationStatement(node.getLineno()), node);
         } else if (node instanceof SwitchCase) {
             List<AstNode> statements = ((SwitchCase) node).getStatements();
             if (statements == null) {
@@ -390,8 +389,7 @@ class NodeProcessor {
             }
             for (int i = statements.size() - 1; i >= 0; i--) {
                 AstNode statement = statements.get(i);
-                ExpressionStatement newChild = buildInstrumentationStatement(statement.getLineno());
-                statements.add(i, newChild);
+                statements.add(i, buildInstrumentationStatement(statement.getLineno()));
             }
         } else if (node instanceof ExpressionStatement || node instanceof EmptyExpression || node instanceof ContinueStatement
                 || node instanceof BreakStatement || node instanceof EmptyStatement || node instanceof ThrowStatement) {
@@ -400,11 +398,10 @@ class NodeProcessor {
                 //Must be a case expression
                 return true;
             }
-            ExpressionStatement newChild = buildInstrumentationStatement(node.getLineno());
             if (parent instanceof IfStatement) {
                 IfStatement parentIf = (IfStatement) parent;
                 Scope scope = new Scope();
-                scope.addChild(newChild);
+                scope.addChild(buildInstrumentationStatement(node.getLineno()));
                 scope.addChild(node);
                 if (parentIf.getThenPart() == node) {
                     parentIf.setThenPart(scope);
@@ -414,26 +411,25 @@ class NodeProcessor {
             } else if (parent instanceof Loop) {
                 Loop parentLoop = (Loop) parent;
                 Scope scope = new Scope();
-                scope.addChild(newChild);
+                scope.addChild(buildInstrumentationStatement(node.getLineno()));
                 scope.addChild(node);
                 parentLoop.setBody(scope);
             } else if (parent instanceof WithStatement) {
                 Scope scope = new Scope();
-                scope.addChild(newChild);
+                scope.addChild(buildInstrumentationStatement(node.getLineno()));
                 scope.addChild(node);
                 ((WithStatement)parent).setStatement(scope);
             } else if (parent instanceof SwitchCase) {
                 //Don't do anything here. Direct modification of statements will result in concurrent modification exception.
             } else {
                 if (parent != null) {
-                    parent.addChildBefore(newChild, node);
+                    parent.addChildBefore(buildInstrumentationStatement(node.getLineno()), node);
                 }
             }
         } else if (node instanceof FunctionNode || node instanceof TryStatement || isDebugStatement(node)) {
-            ExpressionStatement newChild = buildInstrumentationStatement(node.getLineno());
             if (!(parent instanceof InfixExpression) && !(parent instanceof VariableInitializer)
                     && !(parent instanceof ConditionalExpression)&& !(parent instanceof ArrayLiteral)) {
-                parent.addChildBefore(newChild, node);
+                parent.addChildBefore(buildInstrumentationStatement(node.getLineno()), node);
             }
         } else if (node instanceof ReturnStatement) {
             ExpressionStatement newChild = buildInstrumentationStatement(node.getLineno());
@@ -453,13 +449,11 @@ class NodeProcessor {
                 parent.addChildBefore(newChild, node);
             }
         } else if (node instanceof VariableDeclaration || node instanceof LetNode) {
-            ExpressionStatement newChild = buildInstrumentationStatement(node.getLineno());
             if (!(parent instanceof LetNode)) {// TODO this is a bit specific
-                parent.addChildBefore(newChild, node);
+                parent.addChildBefore(buildInstrumentationStatement(node.getLineno()), node);
             }
         } else if (node instanceof Loop) {
-            ExpressionStatement newChild = buildInstrumentationStatement(node.getLineno());
-            parent.addChildBefore(newChild, node);
+            parent.addChildBefore(buildInstrumentationStatement(node.getLineno()), node);
         } else if (node instanceof Label) {
             ExpressionStatement newChild = buildInstrumentationStatement(node.getLineno());
             if (parent instanceof LabeledStatement) {

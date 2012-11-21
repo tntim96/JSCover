@@ -342,9 +342,13 @@ Public License instead of this License.
 
 package jscover.instrument;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
-import org.junit.Ignore;
+import jscover.util.ReflectionUtils;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -365,7 +369,13 @@ public class InstrumenterTest {
         compilerEnv.setLanguageVersion(Context.VERSION_1_8);
         compilerEnv.setStrictMode(false);
     }
-    private SourceProcessor instrumenter = new SourceProcessor(compilerEnv, "test.js", null, false);
+    private SourceProcessor sourceProcessor = new SourceProcessor(compilerEnv, "test.js", null, false);
+    private ParseTreeInstrumenter instrumenter;
+
+    @Before
+    public void setUp() {
+        instrumenter = (ParseTreeInstrumenter)ReflectionUtils.getField(sourceProcessor, "instrumenter");
+    }
 
     @Test
     public void shouldPatchRhinoBug684131() {
@@ -392,7 +402,7 @@ public class InstrumenterTest {
     @Test
     public void shouldInstrumentStatements() {
         String source = "var x,y;\nx = 1;\ny = x * 1;";
-        String instrumentedSource = instrumenter.instrumentSource(source);
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
         String expectedSource = "_$jscoverage['test.js'][1]++;\nvar x, y;\n_$jscoverage['test.js'][2]++;\nx = 1;\n_$jscoverage['test.js'][3]++;\ny = x * 1;\n";
         assertEquals(expectedSource, instrumentedSource);
     }
@@ -400,7 +410,7 @@ public class InstrumenterTest {
     @Test
     public void shouldInstrumentStatementFunctionAssignment() {
         String source = "this.someFn()\n    ._renderItem = function() {};";
-        String instrumentedSource = instrumenter.instrumentSource(source);
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
         String expectedSource = "_$jscoverage['test.js'][1]++;\nthis.someFn()._renderItem = function() {\n};\n";
         assertEquals(expectedSource, instrumentedSource);
     }
@@ -411,13 +421,16 @@ public class InstrumenterTest {
                 "  fn = function() {\n" +
                 "    ;\n" +
                 "  };";
-        String instrumentedSource = instrumenter.instrumentSource(source);
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
         String expectedSource = "_$jscoverage['test.js'][1]++;\n" +
                 "var x, fn = function() {\n" +
                 "  _$jscoverage['test.js'][3]++;\n" +
                 "  ;\n" +
                 "};\n";
         assertEquals(expectedSource, instrumentedSource);
+        assertThat(instrumenter.getValidLines().size(), equalTo(2));
+        assertThat(instrumenter.getValidLines(), hasItem(1));
+        assertThat(instrumenter.getValidLines(), hasItem(3));
     }
 
     @Test
@@ -428,13 +441,16 @@ public class InstrumenterTest {
                 "    return 1;\n" +
                 "  }" +
                 "}";
-        String instrumentedSource = instrumenter.instrumentSource(source);
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
         String expectedSource = "_$jscoverage['test.js'][1]++;\n" +
                 "var x = {'y': 0, fn: 0 || function() {\n" +
                 "  _$jscoverage['test.js'][3]++;\n" +
                 "  return 1;\n" +
                 "}};\n";
         assertEquals(expectedSource, instrumentedSource);
+        assertThat(instrumenter.getValidLines().size(), equalTo(2));
+        assertThat(instrumenter.getValidLines(), hasItem(1));
+        assertThat(instrumenter.getValidLines(), hasItem(3));
     }
 
     @Test
@@ -446,7 +462,7 @@ public class InstrumenterTest {
                 "  function() {\n" +
                 "    return false;\n" +
                 "  }";
-        String instrumentedSource = instrumenter.instrumentSource(source);
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
         String expectedSource = "_$jscoverage['test.js'][1]++;\n" +
                 "var x = a > b ? function() {\n" +
                 "  _$jscoverage['test.js'][3]++;\n" +
@@ -456,6 +472,10 @@ public class InstrumenterTest {
                 "  return false;\n" +
                 "};\n";
         assertEquals(expectedSource, instrumentedSource);
+        assertThat(instrumenter.getValidLines().size(), equalTo(3));
+        assertThat(instrumenter.getValidLines(), hasItem(1));
+        assertThat(instrumenter.getValidLines(), hasItem(3));
+        assertThat(instrumenter.getValidLines(), hasItem(5));
     }
 
     @Test
@@ -464,19 +484,22 @@ public class InstrumenterTest {
                 "  function() {\n" +
                 "    return true;\n" +
                 "  }]\n";
-        String instrumentedSource = instrumenter.instrumentSource(source);
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
         String expectedSource = "_$jscoverage['test.js'][1]++;\n" +
                 "var x = [function() {\n" +
                 "  _$jscoverage['test.js'][3]++;\n" +
                 "  return true;\n" +
                 "}];\n";
         assertEquals(expectedSource, instrumentedSource);
+        assertThat(instrumenter.getValidLines().size(), equalTo(2));
+        assertThat(instrumenter.getValidLines(), hasItem(1));
+        assertThat(instrumenter.getValidLines(), hasItem(3));
     }
 
     @Test
     public void shouldInstrumentIfWithBraces() {
         String source = "if (x > 10)\n{\n  x++;\n}";
-        String instrumentedSource = instrumenter.instrumentSource(source);
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
         String expectedSource = "_$jscoverage['test.js'][1]++;\nif (x > 10) {\n  _$jscoverage['test.js'][3]++;\n  x++;\n}\n";
         assertEquals(expectedSource, instrumentedSource);
     }
@@ -484,7 +507,7 @@ public class InstrumenterTest {
     @Test
     public void shouldInstrumentIfWithoutBraces() {
         String source = "if (x > 10)\n  x++;";
-        String instrumentedSource = instrumenter.instrumentSource(source);
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
         String expectedSource = "_$jscoverage['test.js'][1]++;\nif (x > 10) {\n  _$jscoverage['test.js'][2]++;\n  x++;\n}\n";
         assertEquals(expectedSource, instrumentedSource);
     }
@@ -492,7 +515,7 @@ public class InstrumenterTest {
     @Test
     public void shouldInstrumentElseWithBraces() {
         String source = "if (x > 10)\n{\n  x++;\n} else {\n  x--;\n}";
-        String instrumentedSource = instrumenter.instrumentSource(source);
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
         String expectedSource = "_$jscoverage['test.js'][1]++;\nif (x > 10) {\n  _$jscoverage['test.js'][3]++;\n  x++;\n} else {\n  _$jscoverage['test.js'][5]++;\n  x--;\n}\n";
         assertEquals(expectedSource, instrumentedSource);
     }
@@ -500,7 +523,7 @@ public class InstrumenterTest {
     @Test
     public void shouldNotInstrumentSameLineTwice() {
         String source = "var x,y;\nx = 1;y = x * 1;";
-        String instrumentedSource = instrumenter.instrumentSource(source);
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
         String expectedSource = "_$jscoverage['test.js'][1]++;\nvar x, y;\n_$jscoverage['test.js'][2]++;\nx = 1;\ny = x * 1;\n";
         assertEquals(expectedSource, instrumentedSource);
     }

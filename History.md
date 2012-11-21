@@ -1,9 +1,10 @@
-0.1.0-RC2 / 2012-??-??
+0.1.0-RC2 / 2012-11-21
 ==================
   * Add proxy support for HEAD requests
   * Fix multiple NPE errors
   * Add FAQ on error log, and the manual on the error log and exit status
-  * Set exit status code to 1 if any exceptions were logged
+  * Set exit status code to 1 if any exceptions were logged in file-system mode or if invalid parameters were supplied
+  * Fix bug where line is recorded as valid for line instrumentation but no instrumentation is added
 
 0.1.0-RC1 / 2012-11-18
 ==================
