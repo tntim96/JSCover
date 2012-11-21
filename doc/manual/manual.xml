@@ -185,7 +185,7 @@
                 JSCover comes with a simple non-instrumenting web server.
                 Run it from the distribution's root directory:
                 <code>java -cp target/dist/JSCover-all.jar jscover.server.SimpleWebServer 8080</code>
-                The point your browser at:
+                Then point your browser at:
                 <a href="http://localhost:8080/target/example/jscoverage.html?index.html"
                         >http://localhost:8080/target/example/jscoverage.html?index.html</a>
                 The UI interaction should now be the same as for the server except for the missing <var>Store</var> tab.
