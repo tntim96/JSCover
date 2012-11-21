@@ -491,7 +491,7 @@ public class InstrumentAndHighlightRegressionTest {
     }
 
     @Test
-    @Ignore
+    @Ignore//This is handled by JVM 'file.encoding' system property
     public void shouldInstrumentISO_8859_1() {
         testFile("javascript-iso-8859-1.js");
     }
