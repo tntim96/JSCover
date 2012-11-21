@@ -498,7 +498,7 @@
             <heading id="errorLog">Error Log</heading>
             <text>
                 A log file, <var>errors.log</var>, is produced in the output directory
-                if any instrumentation errors occurred. In addition, the program will exit with an exit status of 1 (as of v0.1.0-RC2).
+                if any instrumentation errors occurred. In addition, the program will exit with an exit status of 1.
             </text>
             <text>
                 The <var>errors.log</var> file should be inspected, but does not necessarily indicate an instrumentation
