@@ -1,9 +1,7 @@
 <h2>Current State</h2>
 
 <p>
-    JSCover is ready to use and should support most language features, the most notable omission being the
-    <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=798642" target="_blank">getter/setter</a> logic.
-    For differences with JSCoverage, please see the
+    JSCover is ready to use. For differences with JSCoverage, please see the
     <a href="manual/manual.xml#jsCoverageVJSCover" target="_blank">manual</a>.
     Also, check these To-Dos below and
     <a href="manual/manual.xml#caveats" target="_blank">caveats</a>
@@ -17,16 +15,16 @@
 </p>
 <ul>
     <ul>
-        <li>Add caching of instrumented source (switch option?)</li>
         <li>
-            100% ECMAScript support (see @Ignore tests in
-            <a href="https://github.com/tntim96/JSCover/blob/master/src/test-integration/java/jscover/instrument/InstrumentAndHighlightRegressionTest.java" target="_blank">InstrumentAndHighlightRegressionTest</a>)
+            Fix <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=798642" target="_blank">Rhino getter/setter bug</a>
+            (see <a href="https://github.com/tntim96/JSCover/blob/master/src/test-integration/java/jscover/instrument/InstrumentAndHighlightRegressionTest.java" target="_blank">InstrumentAndHighlightRegressionTest</a>)
         </li>
-        <li>Tidy logic in ParseTreeInstrumenter</li>
-        <li>Add API for in memory testing without the need of network</li>
+        <li>Add API for in memory (NodeJS, Rhino) testing without the need of network</li>
+        <li>Sonar integration</li>
         <li>JavaScript syntax highlighting</li>
         <li>LCov report format</li>
         <li>Add in check-style</li>
+        <li>Add caching of instrumented source (switch option?)</li>
         <li>SSL proxy support? Combine with another tool?</li>
     </ul>
 </ul>
