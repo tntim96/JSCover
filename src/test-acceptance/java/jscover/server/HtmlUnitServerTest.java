@@ -349,6 +349,7 @@ import com.gargoylesoftware.htmlunit.WebWindow;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlTable;
 import jscover.Main;
 import jscover.util.IoUtils;
 import org.junit.Before;
@@ -444,9 +445,39 @@ public class HtmlUnitServerTest {
     protected void testWorkWithServerIFrameByURLWithDOMInteraction(int branchPercentage) throws IOException {
         HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?" + getTestUrl());
         HtmlPage frame = (HtmlPage)page.getFrameByName("browserIframe").getEnclosedPage();
+
         frame.getElementById("radio2").click();
         webClient.waitForBackgroundJavaScript(500);
         verifyTotal(webClient, page, 66, branchPercentage);
+    }
+
+    @Test
+    public void shouldDisplayCoverageInformationOnSourcePage() throws IOException {
+        HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?" + getTestUrl());
+        HtmlPage frame = (HtmlPage)page.getFrameByName("browserIframe").getEnclosedPage();
+
+        verifyTotal(webClient, page, 6);
+
+        page.getAnchorByText("/example/script.js").click();
+        webClient.waitForBackgroundJavaScript(2000);
+        HtmlTable sourceTable = (HtmlTable)page.getElementById("sourceTable");
+        verifySource(sourceTable, 5, 0, "else if (element.id === 'radio2') {");
+        verifySource(sourceTable, 6, 0, "message = 'You selected the number 2.';");
+
+        frame.getElementById("radio2").click();
+        webClient.waitForBackgroundJavaScript(500);
+        verifyTotal(webClient, page, 66, 0);
+
+        page.getAnchorByText("/example/script.js").click();
+        webClient.waitForBackgroundJavaScript(2000);
+        sourceTable = (HtmlTable)page.getElementById("sourceTable");
+        verifySource(sourceTable, 5, 1, "else if (element.id === 'radio2') {");
+        verifySource(sourceTable, 6, 1, "message = 'You selected the number 2.';");
+    }
+
+    private void verifySource(HtmlTable sourceTable, int row, int coverageCount, String source) {
+        assertThat(sourceTable.getRow(row).getCell(1).asText(), equalTo(""+coverageCount));
+        assertThat(sourceTable.getRow(row).getCell(2).asText(), equalTo(source));
     }
 
     @Test
