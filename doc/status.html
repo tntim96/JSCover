@@ -1,12 +1,17 @@
 <h2>Current State</h2>
 
 <p>
-    JSCover is ready to use. For differences with JSCoverage, please see the
-    <a href="manual/manual.xml#jsCoverageVJSCover" target="_blank">manual</a>.
-    Also, check these To-Dos below and
-    <a href="manual/manual.xml#caveats" target="_blank">caveats</a>
-    don't affect you.
+    JSCover is based on the mature JSCoverage program (for differences with JSCoverage, please see the
+    <a href="manual/manual.xml#jsCoverageVJSCover" target="_blank">manual</a>).
+    It has re-used JSCoverage regression tests
+    (see <a href="https://github.com/tntim96/JSCover/blob/master/src/test-integration/java/jscover/instrument/InstrumentAndHighlightRegressionTest.java" target="_blank">InstrumentAndHighlightRegressionTest</a>)
+    and is constantly adding more to improve the quality.
+    JSCover has a suite of unit, integration and acceptance tests which give a fairly high degree of coverage
+    (~94% line, ~89% branch).
+    JavaScript tests are also being added (using Jasmine) and JSCover is used to check JavaScript coverage
+    (see <a href="https://github.com/tntim96/JSCover/blob/master/src/test-acceptance/java/jscover/server/HtmlUnitJSTest.java" target="_blank">HtmlUnitJSTest</a>).
 </p>
+
 
 <h2><a name="todo"></a>To-Do</h2>
 
@@ -28,3 +33,8 @@
         <li>SSL proxy support? Combine with another tool?</li>
     </ul>
 </ul>
+<p>
+    Also check that the
+    <a href="manual/manual.xml#caveats" target="_blank">caveats</a>
+    don't affect you.
+</p>

@@ -430,6 +430,18 @@ public class BranchInstrumentorIntegrationTest {
     }
 
     @Test
+    public void shouldWrapExpressionCondition() {
+        StringBuilder script = new StringBuilder("function test(x) {;\n");
+        script.append("  x || (x = 0);\n");
+        script.append("}\n");
+        script.append("test();\n");
+        runScript(script.toString());
+        Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
+        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(0d));
+        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(1d));
+    }
+
+    @Test
     public void shouldWrapAssignmentCondition() {
         StringBuilder script = new StringBuilder("var x = true;\n");
         script.append("x = x === undefined;\n");

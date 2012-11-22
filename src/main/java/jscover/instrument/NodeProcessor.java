@@ -428,7 +428,8 @@ class NodeProcessor {
             }
         } else if (node instanceof FunctionNode || node instanceof TryStatement || isDebugStatement(node)) {
             if (!(parent instanceof InfixExpression) && !(parent instanceof VariableInitializer)
-                    && !(parent instanceof ConditionalExpression)&& !(parent instanceof ArrayLiteral)) {
+                    && !(parent instanceof ConditionalExpression) && !(parent instanceof ArrayLiteral)
+                    && !(parent instanceof ParenthesizedExpression)) {
                 parent.addChildBefore(buildInstrumentationStatement(node.getLineno()), node);
             }
         } else if (node instanceof ReturnStatement) {

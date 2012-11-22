@@ -1,3 +1,10 @@
+0.1.0-RC3 / 2012-??-??
+==================
+  * Add YUI server report (from running yui3/src/test/tests/unit/index.html)
+  * Add branch coverage support for expression statements
+  * Add line coverage handling for function in braces
+  * Fix bug where URI is ignored
+
 0.1.0-RC2 / 2012-11-21
 ==================
   * Add proxy support for HEAD requests

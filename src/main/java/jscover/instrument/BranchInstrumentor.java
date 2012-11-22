@@ -423,6 +423,8 @@ public class BranchInstrumentor implements NodeVisitor {
             ((ForLoop)parent).setCondition(functionCall);
         } else if (parent instanceof ElementGet) {
             ((ElementGet)parent).setElement(functionCall);
+        } else if (parent instanceof ExpressionStatement) {
+            ((ExpressionStatement)parent).setExpression(functionCall);
         } else if (parent instanceof ConditionalExpression) {
             ConditionalExpression ternary = (ConditionalExpression) parent;
             if (ternary.getTestExpression() == node)
