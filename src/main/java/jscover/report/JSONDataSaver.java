@@ -340,53 +340,33 @@ library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
  */
 
-package jscover.json;
+package jscover.report;
 
 import jscover.util.IoUtils;
-import jscover.util.ReflectionUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.File;
+import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
-
-@RunWith(MockitoJUnitRunner.class)
-public class JSONDataSaverTest {
-    private JSONDataSaver jsonDataSaver = new JSONDataSaver();
-    private @Mock JSONDataMerger jsonDataMerger;
+public class JSONDataSaver {
+    private JSONDataMerger jsonDataMerger = new JSONDataMerger();
     private IoUtils ioUtils = IoUtils.getInstance();
-    private File destDir = new File("target");
 
-    @Before
-    public void setUp() {
-        ReflectionUtils.setField(jsonDataSaver, "jsonDataMerger", jsonDataMerger);
-        File file = new File(destDir,"jscoverage.json");
-        if (file.exists())
-            file.delete();
+    public void saveJSONData(File reportDir, String data, List<ScriptLinesAndSource> unloadJSData) {
+        reportDir.mkdirs();
+        File jsonFile = new File(reportDir, "jscoverage.json");
+        SortedMap<String, CoverageData> extraData = new TreeMap<String, CoverageData>();
+        if (jsonFile.exists()) {
+            String existingJSON = ioUtils.toString(jsonFile);
+            extraData.putAll(jsonDataMerger.mergeJSONCoverageData(existingJSON, data));
+            ioUtils.copy(jsonDataMerger.toJSON(extraData), jsonFile);
+        } else if (unloadJSData != null) {
+            //Only scan for unloaded JS if JSON not saved before
+            extraData.putAll(jsonDataMerger.createEmptyJSON(unloadJSData));
+            extraData.putAll(jsonDataMerger.jsonToMap(data));
+            ioUtils.copy(jsonDataMerger.toJSON(extraData), jsonFile);
+        } else
+            ioUtils.copy(data, jsonFile);
     }
-
-    @Test
-    public void shouldSaveData() {
-        jsonDataSaver.saveJSONData(destDir, "data", null);
-
-        String json = ioUtils.loadFromFileSystem(new File(destDir, "jscoverage.json"));
-        assertThat(json, equalTo("data"));
-    }
-
-//    @Test
-//    public void shouldSaveAndMergedData() {
-//        SortedMap<String, CoverageData> map = new TreeMap<String, CoverageData>();
-//        given(jsonDataMerger.mergeJSONCoverageData("data1", "data2")).willReturn(map);
-//
-//        jsonDataSaver.saveJSONData(destDir, "data1");
-//        jsonDataSaver.saveJSONData(destDir, "data2");
-//
-//        String json = IoUtils.loadFromFileSystem(new File(destDir,"jscoverage.json"));
-//        assertThat(json, equalTo("dataMerged"));
-//    }
 }

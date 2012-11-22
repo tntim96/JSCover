@@ -340,33 +340,34 @@ library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
  */
 
-package jscover.json;
+package jscover.report;
 
-import jscover.util.IoUtils;
-
-import java.io.File;
 import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
-public class JSONDataSaver {
-    private JSONDataMerger jsonDataMerger = new JSONDataMerger();
-    private IoUtils ioUtils = IoUtils.getInstance();
+public class CoverageData {
+    private List<Integer> coverage;
+    private List<String> source;
+    private List<List<BranchData>> branchData;
 
-    public void saveJSONData(File reportDir, String data, List<ScriptLinesAndSource> unloadJSData) {
-        reportDir.mkdirs();
-        File jsonFile = new File(reportDir, "jscoverage.json");
-        SortedMap<String, CoverageData> extraData = new TreeMap<String, CoverageData>();
-        if (jsonFile.exists()) {
-            String existingJSON = ioUtils.toString(jsonFile);
-            extraData.putAll(jsonDataMerger.mergeJSONCoverageData(existingJSON, data));
-            ioUtils.copy(jsonDataMerger.toJSON(extraData), jsonFile);
-        } else if (unloadJSData != null) {
-            //Only scan for unloaded JS if JSON not saved before
-            extraData.putAll(jsonDataMerger.createEmptyJSON(unloadJSData));
-            extraData.putAll(jsonDataMerger.jsonToMap(data));
-            ioUtils.copy(jsonDataMerger.toJSON(extraData), jsonFile);
-        } else
-            ioUtils.copy(data, jsonFile);
+    public CoverageData(List<Integer> coverage, List<String> source, List<List<BranchData>> branchData) {
+        this.coverage = coverage;
+        this.source = source;
+        this.branchData = branchData;
+    }
+
+    public List<Integer> getCoverage() {
+        return coverage;
+    }
+
+    public void addCoverage(Integer coverage, int index) {
+        this.coverage.set(index, this.coverage.get(index) + coverage);
+    }
+
+    public List<String> getSource() {
+        return source;
+    }
+
+    public List<List<BranchData>> getBranchData() {
+        return branchData;
     }
 }

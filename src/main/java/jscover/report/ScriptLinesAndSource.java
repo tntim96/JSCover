@@ -338,49 +338,32 @@ proprietary programs.  If your program is a subroutine library, you may
 consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
- */
+*/
 
-package jscover.json;
+package jscover.report;
 
-public class BranchData {
-    private int position;
-    private int nodeLength;
-    private String source;
-    private int evalFalse;
-    private int evalTrue;
+import java.util.List;
 
-    public BranchData(int position, int nodeLength, String source, int evalFalse, int evalTrue) {
-        this.position = position;
-        this.nodeLength = nodeLength;
+public class ScriptLinesAndSource {
+    private String uri;
+    private List<Integer> lines;
+    private List<String> source;
+
+    public ScriptLinesAndSource(String uri, List<Integer> lines, List<String> source) {
+        this.uri = uri;
+        this.lines = lines;
         this.source = source;
-        this.evalFalse = evalFalse;
-        this.evalTrue = evalTrue;
     }
 
-    public int getPosition() {
-        return position;
+    public String getUri() {
+        return uri;
     }
 
-    public int getNodeLength() {
-        return nodeLength;
+    public List<Integer> getLines() {
+        return lines;
     }
 
-    public String getSource() {
+    public List<String> getSource() {
         return source;
-    }
-
-    public int getEvalFalse() {
-        return evalFalse;
-    }
-
-    public int getEvalTrue() {
-        return evalTrue;
-    }
-
-    public void addCoverage(BranchData branchData) {
-        if (position != branchData.position || nodeLength != branchData.nodeLength)
-            throw new IllegalStateException("Merging non-matching branch data");
-        this.evalFalse += branchData.evalFalse;
-        this.evalTrue += branchData.evalTrue;
     }
 }

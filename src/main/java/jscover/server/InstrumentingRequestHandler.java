@@ -344,8 +344,8 @@ package jscover.server;
 
 import jscover.instrument.InstrumenterService;
 import jscover.instrument.UnloadedSourceProcessor;
-import jscover.json.JSONDataSaver;
-import jscover.json.ScriptLinesAndSource;
+import jscover.report.JSONDataSaver;
+import jscover.report.ScriptLinesAndSource;
 import jscover.util.IoService;
 
 import java.io.File;
