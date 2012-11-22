@@ -4,6 +4,7 @@
   * Add branch coverage support for expression statements
   * Add line coverage handling for function in braces
   * Fix bug where URI is ignored
+  * Minor - Set title/heading to JSCover. Fix 'Brance' typo in documentation
 
 0.1.0-RC2 / 2012-11-21
 ==================
