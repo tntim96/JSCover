@@ -381,7 +381,7 @@ public class FileData {
         return branchData;
     }
 
-    public int getLineCount() {
+    public int getCodeLineCount() {
         calculateLineStatistics();
         return codeLineCount;
     }

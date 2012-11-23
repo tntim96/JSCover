@@ -342,53 +342,5 @@ Public License instead of this License.
 
 package jscover.report;
 
-import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static java.util.Arrays.asList;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-
-public class FileDataTest {
-    @Test
-    public void shouldReturnUri() {
-        FileData lineData = new FileData("/test/test.js", null, null, null);
-        assertThat(lineData.getUri(), equalTo("/test/test.js"));
-    }
-
-    @Test
-    public void shouldReturnLinesStats() {
-        List<Integer> lines = new ArrayList<Integer>();
-        lines.add(null);
-        lines.add(7);
-        lines.add(2);
-        lines.add(null);
-        lines.add(0);
-        lines.add(5);
-        FileData lineData = new FileData("test.js", lines, null, null);
-        assertThat(lineData.getCodeLineCount(), equalTo(4));
-        assertThat(lineData.getCodeLineCount(), equalTo(4));//Check cache
-        assertThat(lineData.getCodeLinesCoveredCount(), equalTo(3));
-        assertThat(lineData.getCodeLinesCoveredCount(), equalTo(3));//Check cache
-    }
-
-    @Test
-    public void shouldReturnBranchStats() {
-        List<List<BranchData>> lines = new ArrayList<List<BranchData>>();
-        lines.add(null);
-        lines.add(asList(getBranchData(1, 0), getBranchData(0, 1)));
-        lines.add(null);
-        lines.add(asList(getBranchData(1, 1)));
-        FileData lineData = new FileData("test.js", null, null, lines);
-        assertThat(lineData.getBranchCount(), equalTo(6));
-        assertThat(lineData.getBranchCount(), equalTo(6));//Check cache
-        assertThat(lineData.getBranchesCoveredCount(), equalTo(4));
-        assertThat(lineData.getBranchesCoveredCount(), equalTo(4));//Check cache
-    }
-
-    private BranchData getBranchData(int evalFalse, int evalTrue) {
-        return new BranchData(0, 0, null, evalFalse, evalTrue);
-    }
+public class SummaryData {
 }
