@@ -345,6 +345,7 @@ package jscover.report;
 import java.util.List;
 
 public class FileData {
+    private String uri;
     private List<Integer> lines;
     private List<String> source;
     private List<List<BranchData>> branchData;
@@ -353,10 +354,15 @@ public class FileData {
     private int branchCount;
     private int branchesCoveredCount;
 
-    public FileData(List<Integer> lines, List<String> source, List<List<BranchData>> branchData) {
+    public FileData(String uri, List<Integer> lines, List<String> source, List<List<BranchData>> branchData) {
+        this.uri = uri;
         this.lines = lines;
         this.source = source;
         this.branchData = branchData;
+    }
+
+    public String getUri() {
+        return uri;
     }
 
     public List<Integer> getLines() {

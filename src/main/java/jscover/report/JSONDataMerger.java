@@ -408,7 +408,7 @@ class JSONDataMerger {
                 if (branchJSONArray != null) {
                     readBranchLines(branchJSONArray, branchLineArray);
                 }
-                map.put((String) scriptURI, new FileData(countData, sourceData, branchLineArray));
+                map.put((String) scriptURI, new FileData((String) scriptURI, countData, sourceData, branchLineArray));
             }
         } catch (JsonParser.ParseException e) {
             throw new RuntimeException(e);
@@ -515,7 +515,7 @@ class JSONDataMerger {
                 lines[script.getLines().get(i)] = 0;
             }
             List<List<BranchData>> branchLineArray = new ArrayList<List<BranchData>>();
-            FileData coverageData = new FileData(Arrays.asList(lines), script.getSource(), branchLineArray);
+            FileData coverageData = new FileData(script.getUri(), Arrays.asList(lines), script.getSource(), branchLineArray);
             map.put(script.getUri(), coverageData);
         }
         return map;
