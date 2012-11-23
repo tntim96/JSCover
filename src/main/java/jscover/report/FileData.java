@@ -376,40 +376,42 @@ public class FileData {
     }
 
     public int getLineCount() {
-        if (codeLineCount == 0) {
-            for (int i = 1; i < lines.size(); i++)
-                if (lines.get(i) != null)
-                    codeLineCount++;
-        }
+        calculateLineStatistics();
         return codeLineCount;
     }
 
     public int getCodeLinesCoveredCount() {
-        if (codeLinesCoveredCount == 0) {
-            for (int i = 1; i < lines.size(); i++)
-                if (lines.get(i) != null && lines.get(i) > 0)
-                    codeLinesCoveredCount++;
-        }
+        calculateLineStatistics();
         return codeLinesCoveredCount;
     }
 
+    public void calculateLineStatistics() {
+        if (codeLineCount == 0) {
+            for (int i = 1; i < lines.size(); i++)
+                if (lines.get(i) != null) {
+                    codeLineCount++;
+                    if (lines.get(i) > 0)
+                        codeLinesCoveredCount++;
+                }
+        }
+    }
+
     public int getBranchCount() {
+        calculateBranchStatistics();
+        return branchCount;
+    }
+
+    public int getBranchesCoveredCount() {
+        calculateBranchStatistics();
+        return branchesCoveredCount;
+    }
+
+    public void calculateBranchStatistics() {
         if (branchCount == 0) {
             for (int i = 1; i < branchData.size(); i++) {
                 List<BranchData> branchDatas = branchData.get(i);
                 if (branchDatas != null) {
                     branchCount += 2 * branchDatas.size();
-                }
-            }
-        }
-        return branchCount;
-    }
-
-    public int getBranchesCoveredCount() {
-        if (branchesCoveredCount == 0) {
-            for (int i = 1; i < branchData.size(); i++) {
-                List<BranchData> branchDatas = branchData.get(i);
-                if (branchDatas != null) {
                     for (BranchData data : branchDatas) {
                         if (data.getEvalFalse() > 0)
                             branchesCoveredCount++;
@@ -419,6 +421,5 @@ public class FileData {
                 }
             }
         }
-        return branchesCoveredCount;
     }
 }
