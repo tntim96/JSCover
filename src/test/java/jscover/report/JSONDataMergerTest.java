@@ -394,15 +394,15 @@ public class JSONDataMergerTest {
     @Test
     public void shouldParseData() {
         String data = "{\"/test.js\":{\"coverage\":[null,0,1],\"source\":[\"x++;\",\"y++;\",\"z++;\"]}}";
-        SortedMap<String, CoverageData> map = jsonMerger.jsonToMap(data);
+        SortedMap<String, FileData> map = jsonMerger.jsonToMap(data);
 
         assertThat(map.keySet().size(), equalTo(1));
         assertThat(map.keySet().iterator().next(), equalTo("/test.js"));
-        assertThat(map.values().iterator().next().getCoverage().get(0), nullValue());
+        assertThat(map.values().iterator().next().getLines().get(0), nullValue());
         assertThat(map.values().iterator().next().getSource().get(0), equalTo("x++;"));
-        assertThat(map.values().iterator().next().getCoverage().get(1), equalTo(0));
+        assertThat(map.values().iterator().next().getLines().get(1), equalTo(0));
         assertThat(map.values().iterator().next().getSource().get(1), equalTo("y++;"));
-        assertThat(map.values().iterator().next().getCoverage().get(2), equalTo(1));
+        assertThat(map.values().iterator().next().getLines().get(2), equalTo(1));
         assertThat(map.values().iterator().next().getSource().get(2), equalTo("z++;"));
     }
 
@@ -410,21 +410,21 @@ public class JSONDataMergerTest {
     public void shouldParseBranchData() {
         String data = "{\"/test.js\":{\"coverage\":[null,1,2],\"source\":[\"function square(x) {\",\"    return (x==0) ? 0: x*x;\",\"}\"],\"branchData\":[null,null,[null,{\"position\":13,\"nodeLength\":4,\"src\":\"x == 0\",\"evalFalse\":1,\"evalTrue\":2}]]}}";
 
-        SortedMap<String, CoverageData> map = jsonMerger.jsonToMap(data);
+        SortedMap<String, FileData> map = jsonMerger.jsonToMap(data);
 
         assertThat(map.keySet().size(), equalTo(1));
         assertThat(map.keySet().iterator().next(), equalTo("/test.js"));
 
-        CoverageData coverageData = map.values().iterator().next();
-        assertThat(coverageData.getCoverage().get(0), nullValue());
+        FileData coverageData = map.values().iterator().next();
+        assertThat(coverageData.getLines().get(0), nullValue());
         assertThat(coverageData.getSource().get(0), equalTo("function square(x) {"));
         assertThat(coverageData.getBranchData().get(0).size(), equalTo(0));
 
-        assertThat(coverageData.getCoverage().get(1), equalTo(1));
+        assertThat(coverageData.getLines().get(1), equalTo(1));
         assertThat(coverageData.getSource().get(1), equalTo("    return (x==0) ? 0: x*x;"));
         assertThat(coverageData.getBranchData().get(1).size(), equalTo(0));
 
-        assertThat(coverageData.getCoverage().get(2), equalTo(2));
+        assertThat(coverageData.getLines().get(2), equalTo(2));
         assertThat(coverageData.getSource().get(2), equalTo("}"));
         assertThat(coverageData.getBranchData().get(2).size(), equalTo(2));
         assertThat(coverageData.getBranchData().get(2).get(0), nullValue());
@@ -443,7 +443,7 @@ public class JSONDataMergerTest {
     @Test
     public void shouldConvertBranchMapToJSONString() {
         String data = "{\"/test.js\":{\"coverage\":[null,1,2],\"source\":[\"function square(x) {\",\"    return (x==0) ? 0: x*x;\",\"}\"],\"branchData\":[null,null,[null,{\"position\":13,\"nodeLength\":4,\"src\":\"x == 0\",\"evalFalse\":1,\"evalTrue\":2}]]}}";
-        SortedMap<String, CoverageData> map = jsonMerger.jsonToMap(data);
+        SortedMap<String, FileData> map = jsonMerger.jsonToMap(data);
 
         String jsonString = jsonMerger.toJSON(map);
 
@@ -453,7 +453,7 @@ public class JSONDataMergerTest {
     @Test
     public void shouldConvertMapToJSONString() {
         String data = "{\"/test.js\":{\"coverage\":[null,0,1],\"source\":[\"x++;\",\"y++;\",\"z++;\"],\"branchData\":[]}}";
-        SortedMap<String, CoverageData> map = jsonMerger.jsonToMap(data);
+        SortedMap<String, FileData> map = jsonMerger.jsonToMap(data);
 
         String jsonString = jsonMerger.toJSON(map);
 
@@ -465,16 +465,16 @@ public class JSONDataMergerTest {
         List<Integer> lines = new ArrayList<Integer>(){{add(1);add(2);add(3);}};
         List<String> sourceLines = new ArrayList<String>(){{add("x++;");add("y++;");add("z++;");}};
         final ScriptLinesAndSource script = new ScriptLinesAndSource("/test.js", lines, sourceLines);
-        SortedMap<String, CoverageData> map = jsonMerger.createEmptyJSON(new ArrayList<ScriptLinesAndSource>(){{add(script);}});
+        SortedMap<String, FileData> map = jsonMerger.createEmptyJSON(new ArrayList<ScriptLinesAndSource>(){{add(script);}});
 
         assertThat(map.keySet().iterator().next(), equalTo("/test.js"));
-        assertThat(map.values().iterator().next().getCoverage().get(0), nullValue());
+        assertThat(map.values().iterator().next().getLines().get(0), nullValue());
         assertThat(map.values().iterator().next().getSource().get(0), equalTo("x++;"));
-        assertThat(map.values().iterator().next().getCoverage().get(1), equalTo(0));
+        assertThat(map.values().iterator().next().getLines().get(1), equalTo(0));
         assertThat(map.values().iterator().next().getSource().get(1), equalTo("y++;"));
-        assertThat(map.values().iterator().next().getCoverage().get(2), equalTo(0));
+        assertThat(map.values().iterator().next().getLines().get(2), equalTo(0));
         assertThat(map.values().iterator().next().getSource().get(2), equalTo("z++;"));
-        assertThat(map.values().iterator().next().getCoverage().get(3), equalTo(0));
+        assertThat(map.values().iterator().next().getLines().get(3), equalTo(0));
     }
 
     @Test
@@ -482,23 +482,23 @@ public class JSONDataMergerTest {
         List<Integer> lines = new ArrayList<Integer>(){{add(1);add(3);}};
         List<String> sourceLines = new ArrayList<String>(){{add("x++;");add("//Comment");add("z++;");}};
         final ScriptLinesAndSource script = new ScriptLinesAndSource("/test.js", lines, sourceLines);
-        SortedMap<String, CoverageData> map = jsonMerger.createEmptyJSON(new ArrayList<ScriptLinesAndSource>(){{add(script);}});
+        SortedMap<String, FileData> map = jsonMerger.createEmptyJSON(new ArrayList<ScriptLinesAndSource>(){{add(script);}});
 
         assertThat(map.keySet().iterator().next(), equalTo("/test.js"));
-        assertThat(map.values().iterator().next().getCoverage().get(0), nullValue());
+        assertThat(map.values().iterator().next().getLines().get(0), nullValue());
         assertThat(map.values().iterator().next().getSource().get(0), equalTo("x++;"));
-        assertThat(map.values().iterator().next().getCoverage().get(1), equalTo(0));
+        assertThat(map.values().iterator().next().getLines().get(1), equalTo(0));
         assertThat(map.values().iterator().next().getSource().get(1), equalTo("//Comment"));
-        assertThat(map.values().iterator().next().getCoverage().get(2), nullValue());
+        assertThat(map.values().iterator().next().getLines().get(2), nullValue());
         assertThat(map.values().iterator().next().getSource().get(2), equalTo("z++;"));
-        assertThat(map.values().iterator().next().getCoverage().get(3), equalTo(0));
+        assertThat(map.values().iterator().next().getLines().get(3), equalTo(0));
     }
 
     @Test
     public void shouldGenerateLCOVFormat() {
         File rootDir = new File(".");
         String data = ioUtils.loadFromClassPath("/jscover/report/jscoverage-select-3.json");
-        SortedMap<String, CoverageData> map = jsonMerger.jsonToMap(data);
+        SortedMap<String, FileData> map = jsonMerger.jsonToMap(data);
 
         String lcovString = jsonMerger.toLCOV(rootDir, map);
 

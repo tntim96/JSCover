@@ -356,7 +356,7 @@ public class JSONDataSaver {
     public void saveJSONData(File reportDir, String data, List<ScriptLinesAndSource> unloadJSData) {
         reportDir.mkdirs();
         File jsonFile = new File(reportDir, "jscoverage.json");
-        SortedMap<String, CoverageData> extraData = new TreeMap<String, CoverageData>();
+        SortedMap<String, FileData> extraData = new TreeMap<String, FileData>();
         if (jsonFile.exists()) {
             String existingJSON = ioUtils.toString(jsonFile);
             extraData.putAll(jsonDataMerger.mergeJSONCoverageData(existingJSON, data));

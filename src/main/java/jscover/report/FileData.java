@@ -338,23 +338,87 @@ proprietary programs.  If your program is a subroutine library, you may
 consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
-*/
+ */
 
 package jscover.report;
 
-public class CoverageDataWithTotals {
-    private int linesCovered;
-    private int validLines;
+import java.util.List;
 
-    public CoverageDataWithTotals(CoverageData coverageData) {
-        
+public class FileData {
+    private List<Integer> lines;
+    private List<String> source;
+    private List<List<BranchData>> branchData;
+    private int codeLineCount;
+    private int codeLinesCoveredCount;
+    private int branchCount;
+    private int branchesCoveredCount;
+
+    public FileData(List<Integer> lines, List<String> source, List<List<BranchData>> branchData) {
+        this.lines = lines;
+        this.source = source;
+        this.branchData = branchData;
     }
 
-    public int getLinesCovered() {
-        return linesCovered;
+    public List<Integer> getLines() {
+        return lines;
     }
 
-    public int getValidLines() {
-        return validLines;
+    public void addCoverage(Integer coverage, int index) {
+        this.lines.set(index, this.lines.get(index) + coverage);
+    }
+
+    public List<String> getSource() {
+        return source;
+    }
+
+    public List<List<BranchData>> getBranchData() {
+        return branchData;
+    }
+
+    public int getLineCount() {
+        if (codeLineCount == 0) {
+            for (int i = 1; i < lines.size(); i++)
+                if (lines.get(i) != null)
+                    codeLineCount++;
+        }
+        return codeLineCount;
+    }
+
+    public int getCodeLinesCoveredCount() {
+        if (codeLinesCoveredCount == 0) {
+            for (int i = 1; i < lines.size(); i++)
+                if (lines.get(i) != null && lines.get(i) > 0)
+                    codeLinesCoveredCount++;
+        }
+        return codeLinesCoveredCount;
+    }
+
+    public int getBranchCount() {
+        if (branchCount == 0) {
+            for (int i = 1; i < branchData.size(); i++) {
+                List<BranchData> branchDatas = branchData.get(i);
+                if (branchDatas != null) {
+                    branchCount += 2 * branchDatas.size();
+                }
+            }
+        }
+        return branchCount;
+    }
+
+    public int getBranchesCoveredCount() {
+        if (branchesCoveredCount == 0) {
+            for (int i = 1; i < branchData.size(); i++) {
+                List<BranchData> branchDatas = branchData.get(i);
+                if (branchDatas != null) {
+                    for (BranchData data : branchDatas) {
+                        if (data.getEvalFalse() > 0)
+                            branchesCoveredCount++;
+                        if (data.getEvalTrue() > 0)
+                            branchesCoveredCount++;
+                    }
+                }
+            }
+        }
+        return branchesCoveredCount;
     }
 }

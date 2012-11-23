@@ -338,29 +338,52 @@ proprietary programs.  If your program is a subroutine library, you may
 consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
-*/
+ */
 
 package jscover.report;
 
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class CoverageDataWithTotalsTest {
+public class FileDataTest {
     @Test
-    public void shouldWorkWithSingleEntryWithLineDataOnly() {
-        List<Integer> coverage = new ArrayList<Integer>(){};
-        List<String> source = new ArrayList<String>();
-        List<List<BranchData>> branchData = new ArrayList<List<BranchData>>();
-        CoverageData coverageData = new CoverageData(coverage, source, branchData);
+    public void shouldReturnLinesStats() {
+        List<Integer> lines = new ArrayList<Integer>();
+        lines.add(null);
+        lines.add(7);
+        lines.add(2);
+        lines.add(null);
+        lines.add(0);
+        lines.add(5);
+        FileData lineData = new FileData(lines, null, null);
+        assertThat(lineData.getLineCount(), equalTo(4));
+        assertThat(lineData.getLineCount(), equalTo(4));//Check cache
+        assertThat(lineData.getCodeLinesCoveredCount(), equalTo(3));
+        assertThat(lineData.getCodeLinesCoveredCount(), equalTo(3));//Check cache
+    }
 
-        CoverageDataWithTotals totals = new CoverageDataWithTotals(coverageData);
+    @Test
+    public void shouldReturnBranchStats() {
+        List<List<BranchData>> lines = new ArrayList<List<BranchData>>();
+        lines.add(null);
+        lines.add(asList(getBranchData(1, 0), getBranchData(0, 1)));
+        lines.add(null);
+        lines.add(asList(getBranchData(1, 1)));
+        FileData lineData = new FileData(null, null, lines);
+        assertThat(lineData.getBranchCount(), equalTo(6));
+        assertThat(lineData.getBranchCount(), equalTo(6));//Check cache
+        assertThat(lineData.getBranchesCoveredCount(), equalTo(4));
+        assertThat(lineData.getBranchesCoveredCount(), equalTo(4));//Check cache
+    }
 
-        assertThat(totals.getValidLines(), equalTo(0));
-        assertThat(totals.getLinesCovered(), equalTo(0));
+    private BranchData getBranchData(int evalFalse, int evalTrue) {
+        return new BranchData(0, 0, null, evalFalse, evalTrue);
     }
 }

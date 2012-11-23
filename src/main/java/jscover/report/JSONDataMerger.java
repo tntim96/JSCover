@@ -357,15 +357,15 @@ class JSONDataMerger {
     private JsonParser parser = new JsonParser(cx, cx.initStandardObjects());
 
 
-    public SortedMap<String, CoverageData> mergeJSONCoverageData(String data1, String data2) {
-        SortedMap<String, CoverageData> map1 = jsonToMap(data1);
-        SortedMap<String, CoverageData> map2 = jsonToMap(data2);
+    public SortedMap<String, FileData> mergeJSONCoverageData(String data1, String data2) {
+        SortedMap<String, FileData> map1 = jsonToMap(data1);
+        SortedMap<String, FileData> map2 = jsonToMap(data2);
         for (String scriptName : map1.keySet()) {
             if (map2.containsKey(scriptName)) {
-                CoverageData coverageData = map1.get(scriptName);
-                for (int i = 0; i < coverageData.getCoverage().size(); i++) {
-                    if (coverageData.getCoverage().get(i) != null) {
-                        coverageData.addCoverage(map2.get(scriptName).getCoverage().get(i), i);
+                FileData coverageData = map1.get(scriptName);
+                for (int i = 0; i < coverageData.getLines().size(); i++) {
+                    if (coverageData.getLines().get(i) != null) {
+                        coverageData.addCoverage(map2.get(scriptName).getLines().get(i), i);
                     }
                 }
                 for (int i = 0; i < coverageData.getBranchData().size(); i++) {
@@ -389,8 +389,8 @@ class JSONDataMerger {
         return map1;
     }
 
-    SortedMap<String, CoverageData> jsonToMap(String data) {
-        TreeMap<String, CoverageData> map = new TreeMap<String, CoverageData>();
+    SortedMap<String, FileData> jsonToMap(String data) {
+        TreeMap<String, FileData> map = new TreeMap<String, FileData>();
         try {
             NativeObject json = (NativeObject) parser.parseValue(data);
             for (Object scriptURI : json.keySet()) {
@@ -408,7 +408,7 @@ class JSONDataMerger {
                 if (branchJSONArray != null) {
                     readBranchLines(branchJSONArray, branchLineArray);
                 }
-                map.put((String) scriptURI, new CoverageData(countData, sourceData, branchLineArray));
+                map.put((String) scriptURI, new FileData(countData, sourceData, branchLineArray));
             }
         } catch (JsonParser.ParseException e) {
             throw new RuntimeException(e);
@@ -443,18 +443,18 @@ class JSONDataMerger {
         }
     }
 
-    String toJSON(SortedMap<String, CoverageData> map) {
+    String toJSON(SortedMap<String, FileData> map) {
         StringBuilder json = new StringBuilder("{");
         int scriptCount = 0;
         for (String scriptURI : map.keySet()) {
             StringBuilder coverage = new StringBuilder();
             StringBuilder source = new StringBuilder();
             StringBuilder branchData = new StringBuilder();
-            CoverageData coverageData = map.get(scriptURI);
-            for (int i = 0; i < coverageData.getCoverage().size(); i++) {
+            FileData coverageData = map.get(scriptURI);
+            for (int i = 0; i < coverageData.getLines().size(); i++) {
                 if (i > 0)
                     coverage.append(",");
-                coverage.append(coverageData.getCoverage().get(i));
+                coverage.append(coverageData.getLines().get(i));
             }
             for (int i = 0; i < coverageData.getSource().size(); i++) {
                 if (i > 0)
@@ -475,7 +475,7 @@ class JSONDataMerger {
         return json.toString();
     }
 
-    private void addBranchData(StringBuilder branchData, CoverageData coverageData) {
+    private void addBranchData(StringBuilder branchData, FileData coverageData) {
         for (int i = 0; i < coverageData.getBranchData().size(); i++) {
             if (i > 0)
                 branchData.append(",");
@@ -507,27 +507,27 @@ class JSONDataMerger {
         }
     }
 
-    public SortedMap<String, CoverageData> createEmptyJSON(List<ScriptLinesAndSource> scripts) {
-        SortedMap<String, CoverageData> map = new TreeMap<String, CoverageData>();
+    public SortedMap<String, FileData> createEmptyJSON(List<ScriptLinesAndSource> scripts) {
+        SortedMap<String, FileData> map = new TreeMap<String, FileData>();
         for (ScriptLinesAndSource script : scripts) {
             Integer[] lines = new Integer[script.getLines().get(script.getLines().size() - 1) + 1];
             for (int i = 0; i < script.getLines().size(); i++) {
                 lines[script.getLines().get(i)] = 0;
             }
             List<List<BranchData>> branchLineArray = new ArrayList<List<BranchData>>();
-            CoverageData coverageData = new CoverageData(Arrays.asList(lines), script.getSource(), branchLineArray);
+            FileData coverageData = new FileData(Arrays.asList(lines), script.getSource(), branchLineArray);
             map.put(script.getUri(), coverageData);
         }
         return map;
     }
 
-    String toLCOV(File rootDir, SortedMap<String, CoverageData> map) {
+    String toLCOV(File rootDir, SortedMap<String, FileData> map) {
         StringBuilder lcov = new StringBuilder();
         for (String scriptURI : map.keySet()) {
             lcov.append(format("SF:%s\n", rootDir.getAbsolutePath().replaceAll("\\\\", "/") + scriptURI));
-            CoverageData coverageData = map.get(scriptURI);
-            for (int lineNumber = 0; lineNumber < coverageData.getCoverage().size(); lineNumber++) {
-                Integer count = coverageData.getCoverage().get(lineNumber);
+            FileData coverageData = map.get(scriptURI);
+            for (int lineNumber = 0; lineNumber < coverageData.getLines().size(); lineNumber++) {
+                Integer count = coverageData.getLines().get(lineNumber);
                 if (count != null) {
                     lcov.append(format("DA:%d,%d\n", lineNumber, count));
                 }
