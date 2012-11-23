@@ -20,12 +20,14 @@ table {
 }
 
 table th {
+    border: 1px inset #333;
     padding: 2px;
     margin: 0;
 }
 
 table td {
-    padding: 12px;
+    border: 1px inset #333;
+    padding: 4px;
     margin: 0;
 }
 
