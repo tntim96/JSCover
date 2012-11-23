@@ -45,7 +45,10 @@ for (let [name, value] in Iterator(obj)) {
   print(value);
 }
 _$jscoverage['javascript-destructuring.js'][15]++;
-for each (let {name: n, family: {father: f}} in people) {
+for each (let {
+  name: n, 
+  family: {
+  father: f}} in people) {
   _$jscoverage['javascript-destructuring.js'][16]++;
   print(n);
   _$jscoverage['javascript-destructuring.js'][17]++;
@@ -68,7 +71,9 @@ function g() {
   var [, protocol, fullhost, fullpath] = parsedURL;
 }
 _$jscoverage['javascript-destructuring.js'][30]++;
-function h(a, [b, c], {foo: d, 'bar': e}) {
+function h(a, [b, c], {
+  foo: d, 
+  'bar': e}) {
   _$jscoverage['javascript-destructuring.js'][31]++;
   f();
   _$jscoverage['javascript-destructuring.js'][32]++;
@@ -77,11 +82,17 @@ function h(a, [b, c], {foo: d, 'bar': e}) {
 _$jscoverage['javascript-destructuring.js'][35]++;
 x = function([a, b]) a + b;
 _$jscoverage['javascript-destructuring.js'][37]++;
-({x: x0, y: y0}) = point;
+({
+  x: x0, 
+  y: y0}) = point;
 _$jscoverage['javascript-destructuring.js'][38]++;
-var {x: x0, y: y0} = point;
+var {
+  x: x0, 
+  y: y0} = point;
 _$jscoverage['javascript-destructuring.js'][39]++;
-let ({x: x0, y: y0} = point) {
+let ({
+  x: x0, 
+  y: y0} = point) {
   _$jscoverage['javascript-destructuring.js'][40]++;
   print(x0);
   _$jscoverage['javascript-destructuring.js'][41]++;

@@ -10,10 +10,10 @@ var o = {
 
 o = {
   _x: 123,
-  get x get_x() {
+  get get_x() {
     return this._x;
   },
-  set x set_x(value) {
+  set set_x(value) {
     this._x = value;
   }
 };

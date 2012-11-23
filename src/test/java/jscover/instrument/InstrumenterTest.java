@@ -443,7 +443,9 @@ public class InstrumenterTest {
                 "}";
         String instrumentedSource = sourceProcessor.instrumentSource(source);
         String expectedSource = "_$jscoverage['test.js'][1]++;\n" +
-                "var x = {'y': 0, fn: 0 || function() {\n" +
+                "var x = {\n" +
+                "  'y': 0, \n" +
+                "  fn: 0 || function() {\n" +
                 "  _$jscoverage['test.js'][3]++;\n" +
                 "  return 1;\n" +
                 "}};\n";
