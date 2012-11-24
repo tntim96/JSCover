@@ -372,6 +372,7 @@ public class FileDataTest {
         assertThat(lineData.getCodeLineCount(), equalTo(4));//Check cache
         assertThat(lineData.getCodeLinesCoveredCount(), equalTo(3));
         assertThat(lineData.getCodeLinesCoveredCount(), equalTo(3));//Check cache
+        assertThat(lineData.getLineCoverRate(), equalTo((double)3 / 4));
     }
 
     @Test
@@ -386,6 +387,7 @@ public class FileDataTest {
         assertThat(lineData.getBranchCount(), equalTo(6));//Check cache
         assertThat(lineData.getBranchesCoveredCount(), equalTo(4));
         assertThat(lineData.getBranchesCoveredCount(), equalTo(4));//Check cache
+        assertThat(lineData.getBranchRate(), equalTo((double)2 / 3));
     }
 
     private BranchData getBranchData(int evalFalse, int evalTrue) {

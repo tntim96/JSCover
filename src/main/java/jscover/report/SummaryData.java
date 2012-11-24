@@ -352,8 +352,8 @@ public class SummaryData {
     private double lineCoverRate;
     private double branchCoverRate;
 
-    public SummaryData(List<FileData> files) {
-        for (FileData file : files) {
+    public SummaryData(List<Coverable> files) {
+        for (Coverable file : files) {
             codeLineCount += file.getCodeLineCount();
             codeLinesCoveredCount += file.getCodeLinesCoveredCount();
             branchCount += file.getBranchCount();

@@ -342,100 +342,11 @@ Public License instead of this License.
 
 package jscover.report;
 
-import java.util.List;
-
-public class FileData implements Coverable {
-    private String uri;
-    private List<Integer> lines;
-    private List<String> source;
-    private List<List<BranchData>> branchData;
-    private int codeLineCount;
-    private int codeLinesCoveredCount;
-    private int branchCount;
-    private int branchesCoveredCount;
-
-    public FileData(String uri, List<Integer> lines, List<String> source, List<List<BranchData>> branchData) {
-        this.uri = uri;
-        this.lines = lines;
-        this.source = source;
-        this.branchData = branchData;
-    }
-
-    public String getUri() {
-        return uri;
-    }
-
-    public List<Integer> getLines() {
-        return lines;
-    }
-
-    public void addCoverage(Integer coverage, int index) {
-        this.lines.set(index, this.lines.get(index) + coverage);
-    }
-
-    public List<String> getSource() {
-        return source;
-    }
-
-    public List<List<BranchData>> getBranchData() {
-        return branchData;
-    }
-
-    public int getCodeLineCount() {
-        calculateLineStatistics();
-        return codeLineCount;
-    }
-
-    public int getCodeLinesCoveredCount() {
-        calculateLineStatistics();
-        return codeLinesCoveredCount;
-    }
-
-    public void calculateLineStatistics() {
-        if (codeLineCount == 0) {
-            for (int i = 1; i < lines.size(); i++)
-                if (lines.get(i) != null) {
-                    codeLineCount++;
-                    if (lines.get(i) > 0)
-                        codeLinesCoveredCount++;
-                }
-        }
-    }
-
-    public int getBranchCount() {
-        calculateBranchStatistics();
-        return branchCount;
-    }
-
-    public int getBranchesCoveredCount() {
-        calculateBranchStatistics();
-        return branchesCoveredCount;
-    }
-
-    public void calculateBranchStatistics() {
-        if (branchCount == 0) {
-            for (int i = 1; i < branchData.size(); i++) {
-                List<BranchData> branchDatas = branchData.get(i);
-                if (branchDatas != null) {
-                    branchCount += 2 * branchDatas.size();
-                    for (BranchData data : branchDatas) {
-                        if (data.getEvalFalse() > 0)
-                            branchesCoveredCount++;
-                        if (data.getEvalTrue() > 0)
-                            branchesCoveredCount++;
-                    }
-                }
-            }
-        }
-    }
-
-    public double getLineCoverRate() {
-        calculateLineStatistics();
-        return (double)codeLinesCoveredCount / codeLineCount;
-    }
-
-    public double getBranchRate() {
-        calculateBranchStatistics();
-        return (double)branchesCoveredCount / branchCount;
-    }
+public interface Coverable {
+    int getCodeLineCount();
+    int getCodeLinesCoveredCount();
+    int getBranchCount();
+    int getBranchesCoveredCount();
+    double getLineCoverRate();
+    double getBranchRate();
 }
