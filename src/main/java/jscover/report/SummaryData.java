@@ -349,6 +349,8 @@ public class SummaryData {
     private int codeLinesCoveredCount;
     private int branchCount;
     private int branchesCoveredCount;
+    private double lineCoverRate;
+    private double branchCoverRate;
 
     public SummaryData(List<FileData> files) {
         for (FileData file : files) {
@@ -357,6 +359,8 @@ public class SummaryData {
             branchCount += file.getBranchCount();
             branchesCoveredCount += file.getBranchesCoveredCount();
         }
+        lineCoverRate = (double)codeLinesCoveredCount / codeLineCount;
+        branchCoverRate = (double)branchesCoveredCount / branchCount;
     }
 
     public int getCodeLineCount() {
@@ -373,5 +377,13 @@ public class SummaryData {
 
     public int getBranchesCoveredCount() {
         return branchesCoveredCount;
+    }
+
+    public double getLineCoverRate() {
+        return lineCoverRate;
+    }
+
+    public double getBranchCoverRate() {
+        return branchCoverRate;
     }
 }

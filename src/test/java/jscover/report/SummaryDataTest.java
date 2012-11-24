@@ -374,6 +374,7 @@ public class SummaryDataTest {
 
         assertThat(summaryData.getCodeLineCount(), equalTo(10));
         assertThat(summaryData.getCodeLinesCoveredCount(), equalTo(7));
+        assertThat(summaryData.getLineCoverRate(), equalTo((double)7/10));
     }
 
     @Test
@@ -394,5 +395,6 @@ public class SummaryDataTest {
 
         assertThat(summaryData.getBranchCount(), equalTo(10));
         assertThat(summaryData.getBranchesCoveredCount(), equalTo(7));
+        assertThat(summaryData.getBranchCoverRate(), equalTo((double)7/10));
     }
 }
