@@ -346,19 +346,53 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SummaryDataTest {
     @Test
-    public void shouldAddStatistics() {
+    public void shouldAddLineStatistics() {
         FileData fileData1 = mock(FileData.class);
         FileData fileData2 = mock(FileData.class);
 
-        given(fileData1.getCodeLineCount()).willReturn(2);
-        given(fileData1.getCodeLinesCoveredCount()).willReturn(5);
-        given(fileData2.getCodeLineCount()).willReturn(2);
+        given(fileData1.getCodeLineCount()).willReturn(4);
+        given(fileData1.getCodeLinesCoveredCount()).willReturn(2);
+        given(fileData2.getCodeLineCount()).willReturn(6);
         given(fileData2.getCodeLinesCoveredCount()).willReturn(5);
+
+        List<FileData> files = new ArrayList<FileData>();
+        files.add(fileData1);
+        files.add(fileData2);
+
+        SummaryData summaryData = new SummaryData(files);
+
+        assertThat(summaryData.getCodeLineCount(), equalTo(10));
+        assertThat(summaryData.getCodeLinesCoveredCount(), equalTo(7));
+    }
+
+    @Test
+    public void shouldAddBranchStatistics() {
+        FileData fileData1 = mock(FileData.class);
+        FileData fileData2 = mock(FileData.class);
+
+        given(fileData1.getBranchCount()).willReturn(4);
+        given(fileData1.getBranchesCoveredCount()).willReturn(2);
+        given(fileData2.getBranchCount()).willReturn(6);
+        given(fileData2.getBranchesCoveredCount()).willReturn(5);
+
+        List<FileData> files = new ArrayList<FileData>();
+        files.add(fileData1);
+        files.add(fileData2);
+
+        SummaryData summaryData = new SummaryData(files);
+
+        assertThat(summaryData.getBranchCount(), equalTo(10));
+        assertThat(summaryData.getBranchesCoveredCount(), equalTo(7));
     }
 }

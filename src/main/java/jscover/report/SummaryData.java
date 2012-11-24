@@ -342,5 +342,36 @@ Public License instead of this License.
 
 package jscover.report;
 
+import java.util.List;
+
 public class SummaryData {
+    private int codeLineCount;
+    private int codeLinesCoveredCount;
+    private int branchCount;
+    private int branchesCoveredCount;
+
+    public SummaryData(List<FileData> files) {
+        for (FileData file : files) {
+            codeLineCount += file.getCodeLineCount();
+            codeLinesCoveredCount += file.getCodeLinesCoveredCount();
+            branchCount += file.getBranchCount();
+            branchesCoveredCount += file.getBranchesCoveredCount();
+        }
+    }
+
+    public int getCodeLineCount() {
+        return codeLineCount;
+    }
+
+    public int getCodeLinesCoveredCount() {
+        return codeLinesCoveredCount;
+    }
+
+    public int getBranchCount() {
+        return branchCount;
+    }
+
+    public int getBranchesCoveredCount() {
+        return branchesCoveredCount;
+    }
 }
