@@ -345,6 +345,8 @@ package jscover.report.xml;
 import jscover.report.Coverable;
 import jscover.util.IoUtils;
 
+import java.util.Date;
+
 import static java.lang.String.*;
 
 public class XMLSummary {
@@ -354,6 +356,8 @@ public class XMLSummary {
     public String getSummary(Coverable data) {
         return format(xml, data.getLineCoverRate(), data.getBranchRate(),
                 data.getCodeLinesCoveredCount(), data.getCodeLineCount(),
-                data.getBranchesCoveredCount(), data.getBranchCount());
+                data.getBranchesCoveredCount(), data.getBranchCount(),
+                new Date().getTime()
+        );
     }
 }

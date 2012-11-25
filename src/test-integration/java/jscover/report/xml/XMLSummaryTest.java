@@ -19,14 +19,14 @@ public class XMLSummaryTest {
     public void shouldGenerateSummaryXML() {
         given(data.getCodeLineCount()).willReturn(1);
         given(data.getCodeLinesCoveredCount()).willReturn(2);
-        given(data.getLineCoverRate()).willReturn(.3d);
+        given(data.getLineCoverRate()).willReturn(.33333333d);
         given(data.getBranchCount()).willReturn(4);
         given(data.getBranchesCoveredCount()).willReturn(5);
-        given(data.getBranchRate()).willReturn(.6d);
+        given(data.getBranchRate()).willReturn(.66666666d);
 
         String xml = xmlSummary.getSummary(data);
-        assertThat(xml, containsString("line-rate=\"0.3\""));
-        assertThat(xml, containsString("branch-rate=\"0.6\""));
+        assertThat(xml, containsString("line-rate=\"0.333333\""));
+        assertThat(xml, containsString("branch-rate=\"0.666667\""));
         assertThat(xml, containsString("lines-covered=\"2\""));
         assertThat(xml, containsString("lines=\"1\""));
         assertThat(xml, containsString("branches-covered=\"5\""));
