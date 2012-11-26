@@ -344,13 +344,11 @@ package jscover.report;
 
 import java.util.List;
 
-public class SummaryData {
+public class SummaryData extends CoverageAdapter {
     private int codeLineCount;
     private int codeLinesCoveredCount;
     private int branchCount;
     private int branchesCoveredCount;
-    private double lineCoverRate;
-    private double branchCoverRate;
 
     public SummaryData(List<Coverable> files) {
         for (Coverable file : files) {
@@ -359,8 +357,6 @@ public class SummaryData {
             branchCount += file.getBranchCount();
             branchesCoveredCount += file.getBranchesCoveredCount();
         }
-        lineCoverRate = (double)codeLinesCoveredCount / codeLineCount;
-        branchCoverRate = (double)branchesCoveredCount / branchCount;
     }
 
     public int getCodeLineCount() {
@@ -377,13 +373,5 @@ public class SummaryData {
 
     public int getBranchesCoveredCount() {
         return branchesCoveredCount;
-    }
-
-    public double getLineCoverRate() {
-        return lineCoverRate;
-    }
-
-    public double getBranchCoverRate() {
-        return branchCoverRate;
     }
 }

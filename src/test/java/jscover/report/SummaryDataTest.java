@@ -393,6 +393,6 @@ public class SummaryDataTest {
 
         assertThat(summaryData.getBranchCount(), equalTo(10));
         assertThat(summaryData.getBranchesCoveredCount(), equalTo(7));
-        assertThat(summaryData.getBranchCoverRate(), equalTo((double)7/10));
+        assertThat(summaryData.getBranchRate(), equalTo((double)7/10));
     }
 }
