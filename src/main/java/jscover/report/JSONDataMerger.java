@@ -352,7 +352,7 @@ import java.util.*;
 
 import static java.lang.String.format;
 
-class JSONDataMerger {
+public class JSONDataMerger {
     private Context cx = Context.enter();
     private JsonParser parser = new JsonParser(cx, cx.initStandardObjects());
 
@@ -389,7 +389,7 @@ class JSONDataMerger {
         return map1;
     }
 
-    SortedMap<String, FileData> jsonToMap(String data) {
+    public SortedMap<String, FileData> jsonToMap(String data) {
         TreeMap<String, FileData> map = new TreeMap<String, FileData>();
         try {
             NativeObject json = (NativeObject) parser.parseValue(data);

@@ -340,93 +340,61 @@ library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
  */
 
-package jscover.report;
+package jscover.report.xml;
 
-import java.util.List;
+import jscover.report.JSONDataMerger;
+import jscover.report.SummaryData;
+import jscover.util.IoUtils;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.w3c.dom.Document;
 
-public class FileData extends CoverageAdapter {
-    private String uri;
-    private List<Integer> lines;
-    private List<String> source;
-    private List<List<BranchData>> branchData;
-    private int codeLineCount;
-    private int codeLinesCoveredCount;
-    private int branchCount;
-    private int branchesCoveredCount;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
+import java.io.File;
+import java.io.IOException;
 
-    public FileData(String uri, List<Integer> lines, List<String> source, List<List<BranchData>> branchData) {
-        this.uri = uri;
-        this.lines = lines;
-        this.source = source;
-        this.branchData = branchData;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+
+public class XmlSummaryIntegrationTest {
+    private XMLSummary xmlSummary = new XMLSummary();
+    private JSONDataMerger jsonDataMerger = new JSONDataMerger();
+    private File dest;
+
+    @Before
+    public void setUp() throws IOException {
+        dest = File.createTempFile("XmlSummaryIntegrationTest","json");
     }
 
-    public String getUri() {
-        return uri;
+    @After
+    public void tearDown() {
+        dest.delete();
     }
 
-    public List<Integer> getLines() {
-        return lines;
+    @Test
+    public void shouldCalculateXmlSummaryForYUI3() throws Exception {
+        String json = IoUtils.getInstance().loadFromFileSystem(new File("src/test-integration/resources/jscover/report/xml/jscoverage.json"));
+        SummaryData summaryData = new SummaryData(jsonDataMerger.jsonToMap(json).values());
+        xmlSummary.saveSummary(summaryData, dest);
+
+        XPath xpath = XPathFactory.newInstance().newXPath();
+        DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        Document document = builder.parse(dest);
+
+        assertThat(getXPath(xpath, document, "/coverage/@line-rate"), equalTo("0.534072"));
+        assertThat(getXPath(xpath, document, "/coverage/@branch-rate"), equalTo("0.345339"));
+        assertThat(getXPath(xpath, document, "/coverage/@lines-covered"), equalTo("3950"));
+        assertThat(getXPath(xpath, document, "/coverage/@lines"), equalTo("7396"));
+        assertThat(getXPath(xpath, document, "/coverage/@branches-covered"), equalTo("1630"));
+        assertThat(getXPath(xpath, document, "/coverage/@branches"), equalTo("4720"));
     }
 
-    public void addCoverage(Integer coverage, int index) {
-        this.lines.set(index, this.lines.get(index) + coverage);
-    }
-
-    public List<String> getSource() {
-        return source;
-    }
-
-    public List<List<BranchData>> getBranchData() {
-        return branchData;
-    }
-
-    public int getCodeLineCount() {
-        calculateLineStatistics();
-        return codeLineCount;
-    }
-
-    public int getCodeLinesCoveredCount() {
-        calculateLineStatistics();
-        return codeLinesCoveredCount;
-    }
-
-    public void calculateLineStatistics() {
-        if (codeLineCount == 0) {
-            for (int i = 1; i < lines.size(); i++)
-                if (lines.get(i) != null) {
-                    codeLineCount++;
-                    if (lines.get(i) > 0)
-                        codeLinesCoveredCount++;
-                }
-        }
-    }
-
-    public int getBranchCount() {
-        calculateBranchStatistics();
-        return branchCount;
-    }
-
-    public int getBranchesCoveredCount() {
-        calculateBranchStatistics();
-        return branchesCoveredCount;
-    }
-
-    public void calculateBranchStatistics() {
-        if (branchCount == 0) {
-            for (int i = 1; i < branchData.size(); i++) {
-                List<BranchData> branchDatas = branchData.get(i);
-                if (branchDatas != null) {
-                    for (int j = 1; j < branchDatas.size(); j++) {
-                        branchCount += 2;
-                        BranchData data = branchDatas.get(j);
-                        if (data.getEvalFalse() > 0)
-                            branchesCoveredCount++;
-                        if (data.getEvalTrue() > 0)
-                            branchesCoveredCount++;
-                    }
-                }
-            }
-        }
+    private String getXPath(XPath xpath, Document document, String expression) throws Exception {
+        return (String)xpath.evaluate(expression, document, XPathConstants.STRING);
     }
 }

@@ -379,9 +379,9 @@ public class FileDataTest {
     public void shouldReturnBranchStats() {
         List<List<BranchData>> lines = new ArrayList<List<BranchData>>();
         lines.add(null);
-        lines.add(asList(getBranchData(1, 0), getBranchData(0, 1)));
+        lines.add(asList(null, getBranchData(1, 0), getBranchData(0, 1)));
         lines.add(null);
-        lines.add(asList(getBranchData(1, 1)));
+        lines.add(asList(null, getBranchData(1, 1)));
         FileData lineData = new FileData("test.js", null, null, lines);
         assertThat(lineData.getBranchCount(), equalTo(6));
         assertThat(lineData.getBranchCount(), equalTo(6));//Check cache

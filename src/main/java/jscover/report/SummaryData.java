@@ -342,7 +342,7 @@ Public License instead of this License.
 
 package jscover.report;
 
-import java.util.List;
+import java.util.Collection;
 
 public class SummaryData extends CoverageAdapter {
     private int codeLineCount;
@@ -350,7 +350,7 @@ public class SummaryData extends CoverageAdapter {
     private int branchCount;
     private int branchesCoveredCount;
 
-    public SummaryData(List<Coverable> files) {
+    public SummaryData(Collection<? extends Coverable> files) {
         for (Coverable file : files) {
             codeLineCount += file.getCodeLineCount();
             codeLinesCoveredCount += file.getCodeLinesCoveredCount();
