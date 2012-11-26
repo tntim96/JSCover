@@ -485,14 +485,14 @@ class JSONDataMerger {
             } else {
                 branchData.append("null");
             }
-            addBranchConitions(branchData, conditions);
+            addBranchConditions(branchData, conditions);
             if (conditions.size() > 0) {
                 branchData.append("]");
             }
         }
     }
 
-    private void addBranchConitions(StringBuilder branchData, List<BranchData> conditions) {
+    private void addBranchConditions(StringBuilder branchData, List<BranchData> conditions) {
         for (int j = 0; j < conditions.size();  j++) {
             if (j > 0)
                 branchData.append(",");
