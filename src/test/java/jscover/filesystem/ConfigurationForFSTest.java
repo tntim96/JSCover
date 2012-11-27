@@ -462,6 +462,6 @@ public class ConfigurationForFSTest {
     @Test
     public void shouldRetrieveHelpText() {
         String helpText = new ConfigurationForFS().getHelpText();
-        assertThat(helpText, containsString("Usage: java -jar jscover.jar -fs [OPTION]..."));
+        assertThat(helpText, containsString("Usage: java -jar JSCover-all.jar -fs [OPTION]..."));
     }
 }

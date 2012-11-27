@@ -458,6 +458,6 @@ public class ConfigurationForServerTest {
     @Test
     public void shouldRetrieveHelpText() {
         String helpText = new ConfigurationForServer().getHelpText();
-        assertThat(helpText, containsString("Usage: java -jar jscover.jar -ws [OPTION]..."));
+        assertThat(helpText, containsString("Usage: java -jar JSCover-all.jar -ws [OPTION]..."));
     }
 }
