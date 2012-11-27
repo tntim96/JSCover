@@ -500,12 +500,10 @@ public class BranchInstrumentor implements NodeVisitor {
     private boolean wrapNonInfixIfCondition(IfStatement parent, AstNode node) {
         if (parent.getCondition() != node)
             return false;
-        else if (node instanceof Name)
-            return true;
-        else if (node instanceof FunctionCall)
-            return true;
-        else
+        else if (node instanceof ParenthesizedExpression)
             return false;
+        else
+            return true;
     }
 
     public int getLinePosition(AstNode node) {

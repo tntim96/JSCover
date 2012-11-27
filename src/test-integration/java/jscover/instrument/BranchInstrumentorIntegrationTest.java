@@ -524,6 +524,19 @@ public class BranchInstrumentorIntegrationTest {
     }
 
     @Test
+    public void shouldWrapNotOperatorCondition() {
+        StringBuilder script = new StringBuilder("function test(x) {\n");
+        script.append("  if (!x)\n");
+        script.append("    ;\n");
+        script.append("};\n");
+        script.append("test(true);\n");
+        runScript(script.toString());
+        Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
+        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(0d));
+        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(1d));
+    }
+
+    @Test
     public void shouldWrapFunctionCallConditionAsFirstArgument() {
         StringBuilder script = new StringBuilder("function test(x, y) {};\n");
         script.append("test(1 > 0, 0);\n");
