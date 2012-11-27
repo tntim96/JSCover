@@ -1,12 +1,12 @@
 0.1.0 / 2012-??-??
 ==================
   * Add infrastructure to generate other report formats. Add XML Summary prototype (yet to finalize and document).
-  * Minor - Update examples with v0.1.0-RC3
+  * Minor - Update examples with v0.1.0-RC3. Update help text to use 'JSCover-all.jar'. Update YUI3/QUnit examples.
 
 0.1.0-RC3 / 2012-11-23
 ==================
   * Add support for getter/setter
-  * Add YUI server report (from running yui3/src/test/tests/unit/index.html)
+  * Add YUI3 server report (from running yui3/src/test/tests/unit/index.html)
   * Add branch coverage support for expression statements
   * Add line coverage handling for function in braces
   * Fix bug where URI is ignored
