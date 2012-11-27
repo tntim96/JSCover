@@ -1,3 +1,7 @@
+0.1.0 / 2012-??-??
+==================
+  * Add XML Summary
+
 0.1.0-RC3 / 2012-11-23
 ==================
   * Add support for getter/setter

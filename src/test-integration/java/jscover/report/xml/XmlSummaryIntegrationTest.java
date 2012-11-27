@@ -356,7 +356,6 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 import java.io.File;
-import java.io.IOException;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -365,11 +364,6 @@ public class XmlSummaryIntegrationTest {
     private XMLSummary xmlSummary = new XMLSummary();
     private JSONDataMerger jsonDataMerger = new JSONDataMerger();
     private File dest;
-
-    @Before
-    public void setUp() throws IOException {
-        dest = File.createTempFile("XmlSummaryIntegrationTest","json");
-    }
 
     @After
     public void tearDown() {
@@ -380,7 +374,7 @@ public class XmlSummaryIntegrationTest {
     public void shouldCalculateXmlSummaryForYUI3() throws Exception {
         String json = IoUtils.getInstance().loadFromFileSystem(new File("src/test-integration/resources/jscover/report/xml/jscoverage.json"));
         SummaryData summaryData = new SummaryData(jsonDataMerger.jsonToMap(json).values());
-        xmlSummary.saveSummary(summaryData, dest);
+        dest = xmlSummary.saveSummary(summaryData, new File("target"));
 
         XPath xpath = XPathFactory.newInstance().newXPath();
         DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();

@@ -340,32 +340,32 @@ library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
  */
 
-package jscover.report.xml;
+package jscover.report;
 
-import jscover.report.Coverable;
+import jscover.report.xml.XMLSummary;
 import jscover.util.IoUtils;
 
 import java.io.File;
-import java.util.Date;
 
-import static java.lang.String.*;
-
-public class XMLSummary {
-    private IoUtils ioUtils = IoUtils.getInstance();
-    private String xml = ioUtils.loadFromClassPath("/jscover/report/xml/jscover-summary.xml");
-
-    public File saveSummary(Coverable data, File directory) {
-        String xml = getSummary(data);
-        File dest = new File(directory, "jscover-summary.xml");
-        ioUtils.copy(xml, dest);
-        return dest;
+//This entry point is currently in flux until the output format is determined.
+public class Main {
+    public static void main(String[] args) {
+        if (args.length != 1)
+            throw new IllegalArgumentException("Usage: java -cp JSCover-all.jar jscover.report.Main REPORT-DIR");
+        File directory = new File(args[0]);
+        if (!directory.exists())
+            throw new IllegalArgumentException("Couldn't find directory "+args[0]);
+        if (directory.isFile())
+            throw new IllegalArgumentException(args[0] + " is a file. It should be a directory.");
+        new Main().saveXmlSummary(directory);
     }
 
-    String getSummary(Coverable data) {
-        return format(xml, data.getLineCoverRate(), data.getBranchRate(),
-                data.getCodeLinesCoveredCount(), data.getCodeLineCount(),
-                data.getBranchesCoveredCount(), data.getBranchCount(),
-                new Date().getTime()
-        );
+    private XMLSummary xmlSummary = new XMLSummary();
+    private JSONDataMerger jsonDataMerger = new JSONDataMerger();
+
+    private void saveXmlSummary(File directory) {
+        String json = IoUtils.getInstance().loadFromFileSystem(new File(directory, "jscoverage.json"));
+        SummaryData summaryData = new SummaryData(jsonDataMerger.jsonToMap(json).values());
+        xmlSummary.saveSummary(summaryData, directory);
     }
 }
