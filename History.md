@@ -1,6 +1,7 @@
 0.1.0 / 2012-??-??
 ==================
-  * Add XML Summary
+  * Add infrastructure to generate other report formats. Add XML Summary prototype (yet to finalize and document).
+  * Minor - Update examples with v0.1.0-RC3
 
 0.1.0-RC3 / 2012-11-23
 ==================
