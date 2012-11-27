@@ -379,12 +379,12 @@ public class XmlSummaryIntegrationTest {
         DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         Document document = builder.parse(dest);
 
-        assertThat(getXPath(xpath, document, "/coverage/@line-rate"), equalTo("0.577493"));
-        assertThat(getXPath(xpath, document, "/coverage/@branch-rate"), equalTo("0.360862"));
-        assertThat(getXPath(xpath, document, "/coverage/@lines-covered"), equalTo("4557"));
-        assertThat(getXPath(xpath, document, "/coverage/@lines"), equalTo("7891"));
-        assertThat(getXPath(xpath, document, "/coverage/@branches-covered"), equalTo("2093"));
-        assertThat(getXPath(xpath, document, "/coverage/@branches"), equalTo("5800"));
+        assertThat(getXPath(xpath, document, "/coverage/@line-rate"), equalTo("0.534072"));
+        assertThat(getXPath(xpath, document, "/coverage/@branch-rate"), equalTo("0.346167"));
+        assertThat(getXPath(xpath, document, "/coverage/@lines-covered"), equalTo("3950"));
+        assertThat(getXPath(xpath, document, "/coverage/@lines"), equalTo("7396"));
+        assertThat(getXPath(xpath, document, "/coverage/@branches-covered"), equalTo("2005"));
+        assertThat(getXPath(xpath, document, "/coverage/@branches"), equalTo("5792"));
     }
 
     private String getXPath(XPath xpath, Document document, String expression) throws Exception {
