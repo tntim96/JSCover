@@ -374,17 +374,17 @@ public class LCovGenerator {
    // private String linesFound = "LF:%d\n";
     private String endRecord = "end_of_record\n";
 
-    public void saveData(Collection<FileData> files, String directory, File dest) {
+    public void saveData(Collection<FileData> files, String sourceDirectory, File dest) {
         StringBuilder lcov = new StringBuilder();
         for (FileData file : files) {
-            lcov.append(generateRecord(file, directory));
+            lcov.append(generateRecord(file, sourceDirectory));
         }
         ioUtils.copy(lcov.toString(), dest);
     }
 
-    String generateRecord(FileData coverageData, String directory) {
+    String generateRecord(FileData coverageData, String sourceDirectory) {
         StringBuilder lcov = new StringBuilder();
-        lcov.append(format(source, directory + coverageData.getUri()));
+        lcov.append(format(source, sourceDirectory.replaceAll("\\\\","/") + coverageData.getUri()));
         processBranches(coverageData, lcov);
         processLines(coverageData, lcov);
         lcov.append(endRecord);

@@ -352,25 +352,32 @@ import java.io.IOException;
 //This entry point is currently in flux until the output format is determined.
 public class Main {
     public static void main(String[] args) throws IOException {
-        if (args.length != 1)
-            throw new IllegalArgumentException("Usage: java -cp JSCover-all.jar jscover.report.Main REPORT-DIR");
-        File directory = new File(args[0]);
-        if (!directory.exists())
-            throw new IllegalArgumentException("Couldn't find directory "+args[0]);
-        if (directory.isFile())
-            throw new IllegalArgumentException(args[0] + " is a file. It should be a directory.");
-//        new Main().saveXmlSummary(directory);
-        new Main().generateLCovDataFile(directory);
+        if (args.length != 2)
+            throw new IllegalArgumentException("Usage: java -cp JSCover-all.jar jscover.report.Main REPORT-DIR SRC-DIRECTORY");
+        File jsonDirectory = getDirectory(args[0]);
+        File sourceDirectory = getDirectory(args[1]);
+
+//        new Main().saveXmlSummary(jsonDirectory);
+        new Main().generateLCovDataFile(jsonDirectory, sourceDirectory);
+    }
+
+    private static File getDirectory(String arg) {
+        File dir = new File(arg);
+        if (!dir.exists())
+            throw new IllegalArgumentException("Couldn't find dir "+ arg);
+        if (dir.isFile())
+            throw new IllegalArgumentException(arg + " is a file. It should be a dir.");
+        return dir;
     }
 
     private XMLSummary xmlSummary = new XMLSummary();
     private LCovGenerator lCovGenerator = new LCovGenerator();
     private JSONDataMerger jsonDataMerger = new JSONDataMerger();
 
-    private void generateLCovDataFile(File directory) throws IOException {
-        String json = IoUtils.getInstance().loadFromFileSystem(new File(directory, "jscoverage.json"));
-        File lcovFile = new File(directory, "jscover.lcov");
-        lCovGenerator.saveData(jsonDataMerger.jsonToMap(json).values(), directory.getCanonicalPath(), lcovFile);
+    private void generateLCovDataFile(File jsonDirectory, File sourceDirectory) throws IOException {
+        String json = IoUtils.getInstance().loadFromFileSystem(new File(jsonDirectory, "jscoverage.json"));
+        File lcovFile = new File(jsonDirectory, "jscover.lcov");
+        lCovGenerator.saveData(jsonDataMerger.jsonToMap(json).values(), sourceDirectory.getCanonicalPath(), lcovFile);
     }
 
     private void saveXmlSummary(File directory) {
