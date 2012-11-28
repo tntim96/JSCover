@@ -1,6 +1,7 @@
 0.1.0 / 2012-??-??
 ==================
   * Add infrastructure to generate other report formats. Add XML Summary prototype (yet to finalize and document).
+  * Add JSON to LCov coverage data conversion
   * Minor - Update examples with v0.1.0-RC3. Update help text to use 'JSCover-all.jar'. Update YUI3/QUnit examples.
 
 0.1.0-RC3 / 2012-11-23
