@@ -369,7 +369,7 @@ public class Main {
 
     private void generateLCovDataFile(File directory) throws IOException {
         String json = IoUtils.getInstance().loadFromFileSystem(new File(directory, "jscoverage.json"));
-        File lcovFile = new File(directory, "jscoverage.lcov");
+        File lcovFile = new File(directory, "jscover.lcov");
         lCovGenerator.saveData(jsonDataMerger.jsonToMap(json).values(), directory.getCanonicalPath(), lcovFile);
     }
 
