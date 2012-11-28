@@ -359,7 +359,7 @@ import java.io.File;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class XMLSummaryIntegration2Test {
+public class XMLSummaryIntegrationTest {
     private XMLSummary xmlSummary = new XMLSummary();
     private JSONDataMerger jsonDataMerger = new JSONDataMerger();
     private File dest;
