@@ -387,6 +387,20 @@ public class ConfigurationForReportTest {
     }
 
     @Test
+    public void shouldBeInvalidIfLCovWithNonExistentReportDir() {
+        ConfigurationForReport configuration = ConfigurationForReport.parse(new String[]{"--format=LCOV", "invalid", "invalid"});
+        assertThat(configuration.showHelp(), equalTo(true));
+        assertThat(configuration.isInvalid(), equalTo(true));
+    }
+
+    @Test
+    public void shouldBeInvalidIfLCovWithFileAsReportDir() {
+        ConfigurationForReport configuration = ConfigurationForReport.parse(new String[]{"--format=LCOV", "build.xml", "build.xml"});
+        assertThat(configuration.showHelp(), equalTo(true));
+        assertThat(configuration.isInvalid(), equalTo(true));
+    }
+
+    @Test
     public void shouldParseXmlSummary() {
         ConfigurationForReport configuration = ConfigurationForReport.parse(new String[]{"--format=XMLSUMMARY", "target"});
         assertThat(configuration.showHelp(), equalTo(false));
