@@ -342,51 +342,16 @@ Public License instead of this License.
 
 package jscover.report;
 
-import jscover.report.lcov.LCovGenerator;
-import jscover.report.xml.XMLSummary;
-import jscover.util.IoUtils;
+import org.junit.Test;
 
-import java.io.File;
-import java.io.IOException;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
 
-//This entry point is currently in flux until the output format is determined.
-public class Main {
-    public static void main(String[] args) throws IOException {
-        Main main = new Main();
-        main.runMain(args);
-    }
+public class MainTest {
+    private Main main = new Main();
 
-    private XMLSummary xmlSummary = new XMLSummary();
-    private LCovGenerator lCovGenerator = new LCovGenerator();
-    private JSONDataMerger jsonDataMerger = new JSONDataMerger();
-
-    private void runMain(String[] args) throws IOException {
-        ConfigurationForReport config = ConfigurationForReport.parse(args);
-        if (config.isInvalid()) {
-            System.out.println(config.getHelpText());
-            System.exit(1);
-        } else if (config.showHelp()) {
-            System.out.println(config.getHelpText());
-        } else if (config.getReportFormat() == ReportFormat.LCOV) {
-            generateLCovDataFile(config.getJsonDirectory(), config.getSourceDirectory());
-        } else  if (config.getReportFormat() == ReportFormat.LCOV) {
-            saveXmlSummary(config.getJsonDirectory());
-        } else {
-            System.out.println(config.getHelpText());
-            System.exit(1);
-        }
-    }
-
-
-    private void generateLCovDataFile(File jsonDirectory, File sourceDirectory) throws IOException {
-        String json = IoUtils.getInstance().loadFromFileSystem(new File(jsonDirectory, "jscoverage.json"));
-        File lcovFile = new File(jsonDirectory, "jscover.lcov");
-        lCovGenerator.saveData(jsonDataMerger.jsonToMap(json).values(), sourceDirectory.getCanonicalPath(), lcovFile);
-    }
-
-    private void saveXmlSummary(File directory) {
-        String json = IoUtils.getInstance().loadFromFileSystem(new File(directory, "jscoverage.json"));
-        SummaryData summaryData = new SummaryData(jsonDataMerger.jsonToMap(json).values());
-        xmlSummary.saveSummary(summaryData, directory);
+    @Test
+    public void shouldRunLCovReport() {
+        //TODO
     }
 }

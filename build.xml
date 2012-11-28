@@ -123,7 +123,6 @@
 			<fileset dir="${classes.main.dir}">
 				<include name="**/*.class" />
 				<exclude name="**/SimpleWebServer.class" />
-				<exclude name="jscover/report/Main.class" />
 			</fileset>
 			<classpath>
 				<path refid="classpath-cobertura" />
@@ -144,11 +143,11 @@
 	</target>
 
 	<target name="coverage-check">
-		<cobertura-check totallinerate="84" totalbranchrate="83"/>
+		<cobertura-check totallinerate="83" totalbranchrate="82"/>
 	</target>
 
 	<target name="coverage-check-all">
-		<cobertura-check totallinerate="95" totalbranchrate="90"/>
+		<cobertura-check totallinerate="93" totalbranchrate="89"/>
 	</target>
 
 	<target name="compile-tests" depends="compile">

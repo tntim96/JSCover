@@ -1,0 +1,6 @@
+Usage: java -cp JSCover-all.jar jscover.report.Main --format=[ XMLSUMMARY | LCOV ] REPORT-DIR [SRC-DIRECTORY]
+Convert REPORT-DIR/jscoverage.json to specified output format in REPORT-DIR
+
+Options:
+      --format=XMLSUMMARY Output XML summary to REPORT-DIR/jscover-summary.xml
+      --format=LCOV       Output LCOV data to REPORT-DIR/jscover.lcov with source at SRC-DIRECTORY
