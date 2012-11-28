@@ -383,36 +383,34 @@ public class ConfigurationForReport {
         return ioUtils.toString(getClass().getResourceAsStream("help.txt"));
     }
 
-    public static ConfigurationForReport parse(String[] args) {
-        ConfigurationForReport configuration = new ConfigurationForReport();
-
+    public ConfigurationForReport parse(String[] args) {
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];
             if (arg.equals(HELP_PREFIX1) || arg.equals(HELP_PREFIX2)) {
-                configuration.showHelp = true;
-                return configuration;
+                showHelp = true;
+                return this;
             } else if (arg.startsWith(FORMAT_PREFIX)) {
-                configuration.reportFormat = ReportFormat.valueOf(arg.substring(FORMAT_PREFIX.length()));
+                reportFormat = ReportFormat.valueOf(arg.substring(FORMAT_PREFIX.length()));
             }
         }
 
-        if (configuration.reportFormat == ReportFormat.LCOV) {
+        if (reportFormat == ReportFormat.LCOV) {
             if (args.length != 3) {
-                configuration.invalid = true;
-                configuration.showHelp = true;
-                return configuration;
+                invalid = true;
+                showHelp = true;
+                return this;
             }
-            configuration.jsonDirectory = configuration.getDirectory(args[args.length - 2]);
-            configuration.sourceDirectory = configuration.getDirectory(args[args.length - 1]);
+            jsonDirectory = getDirectory(args[args.length - 2]);
+            sourceDirectory = getDirectory(args[args.length - 1]);
         } else {
             if (args.length != 2) {
-                configuration.invalid = true;
-                configuration.showHelp = true;
-                return configuration;
+                invalid = true;
+                showHelp = true;
+                return this;
             }
-            configuration.jsonDirectory = configuration.getDirectory(args[args.length - 1]);
+            jsonDirectory = getDirectory(args[args.length - 1]);
         }
-        return configuration;
+        return this;
     }
 
     private File getDirectory(String arg) {

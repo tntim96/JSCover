@@ -342,100 +342,28 @@ Public License instead of this License.
 
 package jscover.report;
 
-import jscover.util.IoUtils;
-import jscover.util.ReflectionUtils;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.internal.matchers.TypeSafeMatcher;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.argThat;
-import static org.mockito.Mockito.verify;
+import static org.hamcrest.MatcherAssert.assertThat;
 
-@RunWith(MockitoJUnitRunner.class)
-public class JSONDataSaverTest {
-    private JSONDataSaver jsonDataSaver = new JSONDataSaver();
-    private @Mock JSONDataMerger jsonDataMerger;
-    private IoUtils ioUtils = IoUtils.getInstance();
-    private File destDir = new File("target");
-    private File jsonFile = new File(destDir,"jscoverage.json");
+public class BranchDataTest {
+    private BranchData branchData = new BranchData(1, 2, "x > y", 1, 2);
 
-    @Before
-    public void setUp() {
-        ReflectionUtils.setField(jsonDataSaver, "jsonDataMerger", jsonDataMerger);
+    @Test(expected = IllegalStateException.class)
+    public void shouldThrowExceptionIfAddingBranchDataWithMismatchedPosition() {
+        branchData.addCoverage(new BranchData(0, 2, "x > y", 0, 0));
     }
 
-    @After
-    public void tearDown() {
-        jsonFile.delete();
+    @Test(expected = IllegalStateException.class)
+    public void shouldThrowExceptionIfAddingBranchDataWithMismatchedNodeLength() {
+        branchData.addCoverage(new BranchData(1, 0, "x > y", 0, 0));
     }
 
     @Test
-    public void shouldSaveData() {
-        jsonDataSaver.saveJSONData(destDir, "data", null);
-
-        String json = ioUtils.loadFromFileSystem(new File(destDir, "jscoverage.json"));
-        assertThat(json, equalTo("data"));
-    }
-
-    @Test
-    public void shouldSaveAndMergeData() {
-        ioUtils.copy("json1", jsonFile);//Force merge
-        SortedMap<String, FileData> map = new TreeMap<String, FileData>();
-        given(jsonDataMerger.mergeJSONCoverageData("json1", "json2")).willReturn(map);
-        given(jsonDataMerger.toJSON(map)).willReturn("jsonMerged");
-
-        jsonDataSaver.saveJSONData(destDir, "json2", null);
-
-        String json = ioUtils.loadFromFileSystem(jsonFile);
-        assertThat(json, equalTo("jsonMerged"));
-    }
-
-    @Test
-    public void shouldSaveAndIncludeUnloadedJS() {
-        List<ScriptLinesAndSource> unloadJSData = new ArrayList<ScriptLinesAndSource>();
-
-        SortedMap<String, FileData> jsonMap = new TreeMap<String, FileData>();
-        final String loadedKey = "/loaded.js";
-        FileData fileData = new FileData(loadedKey, null, null, null);
-        jsonMap.put(loadedKey, fileData);
-
-        SortedMap<String, FileData> emptyJsonMap = new TreeMap<String, FileData>();
-        final String unloadedKey = "/unloaded.js";
-        FileData emptyFileData = new FileData(unloadedKey, null, null, null);
-        emptyJsonMap.put(unloadedKey, emptyFileData);
-
-        given(jsonDataMerger.createEmptyJSON(unloadJSData)).willReturn(emptyJsonMap);
-        given(jsonDataMerger.jsonToMap("json1")).willReturn(jsonMap);
-        Matcher<SortedMap<String, FileData>> arrayMatcher = new TypeSafeMatcher<SortedMap<String,FileData>>() {
-            @Override
-            public boolean matchesSafely(SortedMap<String, FileData> map) {
-                return map.size() == 2 &&  map.containsKey(loadedKey) && map.containsKey(unloadedKey);
-            }
-
-            public void describeTo(Description description) {
-            }
-        };
-        given(jsonDataMerger.toJSON(argThat(arrayMatcher))).willReturn("jsonMerged");
-
-        jsonDataSaver.saveJSONData(destDir, "json1", unloadJSData);
-
-        String json = ioUtils.loadFromFileSystem(jsonFile);
-        assertThat(json, equalTo("jsonMerged"));
+    public void shouldAddCounts() {
+        branchData.addCoverage(new BranchData(1, 2, "x > y", 3, 5));
+        assertThat(branchData.getEvalFalse(), equalTo(4));
+        assertThat(branchData.getEvalTrue(), equalTo(7));
     }
 }

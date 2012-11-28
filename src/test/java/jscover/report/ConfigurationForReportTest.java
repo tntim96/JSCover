@@ -342,7 +342,6 @@
 
 package jscover.report;
 
-import jscover.filesystem.ConfigurationForFS;
 import org.junit.Test;
 
 import java.io.File;
@@ -352,73 +351,74 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 public class ConfigurationForReportTest {
+    private ConfigurationForReport configuration = new ConfigurationForReport();
 
     @Test
     public void shouldBeInvalidIfNoArgs() {
-        ConfigurationForReport configuration = ConfigurationForReport.parse(new String[]{});
+        configuration.parse(new String[]{});
         assertThat(configuration.showHelp(), equalTo(true));
         assertThat(configuration.isInvalid(), equalTo(true));
     }
 
     @Test
     public void shouldParseHelp1() {
-        ConfigurationForReport config = ConfigurationForReport.parse(new String[]{"-h"});
-        assertThat(config.showHelp(), equalTo(true));
-        assertThat(config.isInvalid(), equalTo(false));
+        configuration.parse(new String[]{"-h"});
+        assertThat(configuration.showHelp(), equalTo(true));
+        assertThat(configuration.isInvalid(), equalTo(false));
     }
 
     @Test
     public void shouldParseHelp2() {
-        ConfigurationForReport config = ConfigurationForReport.parse(new String[]{"--help"});
-        assertThat(config.showHelp(), equalTo(true));
-        assertThat(config.isInvalid(), equalTo(false));
+        configuration.parse(new String[]{"--help"});
+        assertThat(configuration.showHelp(), equalTo(true));
+        assertThat(configuration.isInvalid(), equalTo(false));
     }
 
     @Test
     public void shouldBeInvalidIfXmlSummaryWithTooManyArgs() {
-        ConfigurationForReport configuration = ConfigurationForReport.parse(new String[]{"--format=XMLSUMMARY", "target", "src"});
+        configuration.parse(new String[]{"--format=XMLSUMMARY", "target", "src"});
         assertThat(configuration.showHelp(), equalTo(true));
         assertThat(configuration.isInvalid(), equalTo(true));
     }
 
     @Test
     public void shouldBeInvalidIfXmlSummaryWithTooFewArgs() {
-        ConfigurationForReport configuration = ConfigurationForReport.parse(new String[]{"--format=XMLSUMMARY"});
+        configuration.parse(new String[]{"--format=XMLSUMMARY"});
         assertThat(configuration.showHelp(), equalTo(true));
         assertThat(configuration.isInvalid(), equalTo(true));
     }
 
     @Test
     public void shouldBeInvalidIfLCovWithTooManyArgs() {
-        ConfigurationForReport configuration = ConfigurationForReport.parse(new String[]{"--format=XMLSUMMARY", "target", "src", "extra"});
+        configuration.parse(new String[]{"--format=XMLSUMMARY", "target", "src", "extra"});
         assertThat(configuration.showHelp(), equalTo(true));
         assertThat(configuration.isInvalid(), equalTo(true));
     }
 
     @Test
     public void shouldBeInvalidIfLCovWithTooFewArgs() {
-        ConfigurationForReport configuration = ConfigurationForReport.parse(new String[]{"--format=LCOV", "target"});
+        configuration.parse(new String[]{"--format=LCOV", "target"});
         assertThat(configuration.showHelp(), equalTo(true));
         assertThat(configuration.isInvalid(), equalTo(true));
     }
 
     @Test
     public void shouldBeInvalidIfLCovWithNonExistentReportDir() {
-        ConfigurationForReport configuration = ConfigurationForReport.parse(new String[]{"--format=LCOV", "invalid", "invalid"});
+        configuration.parse(new String[]{"--format=LCOV", "invalid", "invalid"});
         assertThat(configuration.showHelp(), equalTo(true));
         assertThat(configuration.isInvalid(), equalTo(true));
     }
 
     @Test
     public void shouldBeInvalidIfLCovWithFileAsReportDir() {
-        ConfigurationForReport configuration = ConfigurationForReport.parse(new String[]{"--format=LCOV", "build.xml", "build.xml"});
+        configuration.parse(new String[]{"--format=LCOV", "build.xml", "build.xml"});
         assertThat(configuration.showHelp(), equalTo(true));
         assertThat(configuration.isInvalid(), equalTo(true));
     }
 
     @Test
     public void shouldParseXmlSummary() {
-        ConfigurationForReport configuration = ConfigurationForReport.parse(new String[]{"--format=XMLSUMMARY", "target"});
+        configuration.parse(new String[]{"--format=XMLSUMMARY", "target"});
         assertThat(configuration.showHelp(), equalTo(false));
         assertThat(configuration.isInvalid(), equalTo(false));
         assertThat(configuration.getReportFormat(), equalTo(ReportFormat.XMLSUMMARY));
@@ -427,7 +427,7 @@ public class ConfigurationForReportTest {
 
     @Test
     public void shouldParseLCov() {
-        ConfigurationForReport configuration = ConfigurationForReport.parse(new String[]{"--format=LCOV", "target", "src"});
+        configuration.parse(new String[]{"--format=LCOV", "target", "src"});
         assertThat(configuration.showHelp(), equalTo(false));
         assertThat(configuration.isInvalid(), equalTo(false));
         assertThat(configuration.getReportFormat(), equalTo(ReportFormat.LCOV));
@@ -437,7 +437,7 @@ public class ConfigurationForReportTest {
 
     @Test
     public void shouldRetrieveHelpText() {
-        String helpText = new ConfigurationForReport().getHelpText();
+        String helpText = configuration.getHelpText();
         assertThat(helpText, containsString("Usage: java -cp JSCover-all.jar jscover.report.Main --format=[ XMLSUMMARY | LCOV ] REPORT-DIR [SRC-DIRECTORY]"));
     }
 }
