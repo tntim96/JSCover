@@ -342,14 +342,16 @@ Public License instead of this License.
 
 package jscover.report;
 
+import jscover.report.lcov.LCovGenerator;
 import jscover.report.xml.XMLSummary;
 import jscover.util.IoUtils;
 
 import java.io.File;
+import java.io.IOException;
 
 //This entry point is currently in flux until the output format is determined.
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         if (args.length != 1)
             throw new IllegalArgumentException("Usage: java -cp JSCover-all.jar jscover.report.Main REPORT-DIR");
         File directory = new File(args[0]);
@@ -357,11 +359,19 @@ public class Main {
             throw new IllegalArgumentException("Couldn't find directory "+args[0]);
         if (directory.isFile())
             throw new IllegalArgumentException(args[0] + " is a file. It should be a directory.");
-        new Main().saveXmlSummary(directory);
+//        new Main().saveXmlSummary(directory);
+        new Main().generateLCovDataFile(directory);
     }
 
     private XMLSummary xmlSummary = new XMLSummary();
+    private LCovGenerator lCovGenerator = new LCovGenerator();
     private JSONDataMerger jsonDataMerger = new JSONDataMerger();
+
+    private void generateLCovDataFile(File directory) throws IOException {
+        String json = IoUtils.getInstance().loadFromFileSystem(new File(directory, "jscoverage.json"));
+        File lcovFile = new File(directory, "jscoverage.lcov");
+        lCovGenerator.saveData(jsonDataMerger.jsonToMap(json).values(), directory.getCanonicalPath(), lcovFile);
+    }
 
     private void saveXmlSummary(File directory) {
         String json = IoUtils.getInstance().loadFromFileSystem(new File(directory, "jscoverage.json"));
