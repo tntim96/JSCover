@@ -342,10 +342,12 @@
 
 package jscover.report;
 
+import jscover.filesystem.ConfigurationForFS;
 import org.junit.Test;
 
 import java.io.File;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -356,6 +358,20 @@ public class ConfigurationForReportTest {
         ConfigurationForReport configuration = ConfigurationForReport.parse(new String[]{});
         assertThat(configuration.showHelp(), equalTo(true));
         assertThat(configuration.isInvalid(), equalTo(true));
+    }
+
+    @Test
+    public void shouldParseHelp1() {
+        ConfigurationForReport config = ConfigurationForReport.parse(new String[]{"-h"});
+        assertThat(config.showHelp(), equalTo(true));
+        assertThat(config.isInvalid(), equalTo(false));
+    }
+
+    @Test
+    public void shouldParseHelp2() {
+        ConfigurationForReport config = ConfigurationForReport.parse(new String[]{"--help"});
+        assertThat(config.showHelp(), equalTo(true));
+        assertThat(config.isInvalid(), equalTo(false));
     }
 
     @Test
@@ -417,5 +433,11 @@ public class ConfigurationForReportTest {
         assertThat(configuration.getReportFormat(), equalTo(ReportFormat.LCOV));
         assertThat(configuration.getJsonDirectory(), equalTo(new File("target")));
         assertThat(configuration.getSourceDirectory(), equalTo(new File("src")));
+    }
+
+    @Test
+    public void shouldRetrieveHelpText() {
+        String helpText = new ConfigurationForReport().getHelpText();
+        assertThat(helpText, containsString("Usage: java -cp JSCover-all.jar jscover.report.Main --format=[ XMLSUMMARY | LCOV ] REPORT-DIR [SRC-DIRECTORY]"));
     }
 }

@@ -359,9 +359,11 @@ public class Main {
     private XMLSummary xmlSummary = new XMLSummary();
     private LCovGenerator lCovGenerator = new LCovGenerator();
     private JSONDataMerger jsonDataMerger = new JSONDataMerger();
+    private IoUtils ioUtils = IoUtils.getInstance();
+    private ConfigurationForReport config = new ConfigurationForReport();
 
-    private void runMain(String[] args) throws IOException {
-        ConfigurationForReport config = ConfigurationForReport.parse(args);
+    void runMain(String[] args) throws IOException {
+        config.parse(args);
         if (config.isInvalid()) {
             System.out.println(config.getHelpText());
             System.exit(1);
@@ -369,7 +371,7 @@ public class Main {
             System.out.println(config.getHelpText());
         } else if (config.getReportFormat() == ReportFormat.LCOV) {
             generateLCovDataFile(config.getJsonDirectory(), config.getSourceDirectory());
-        } else  if (config.getReportFormat() == ReportFormat.LCOV) {
+        } else  if (config.getReportFormat() == ReportFormat.XMLSUMMARY) {
             saveXmlSummary(config.getJsonDirectory());
         } else {
             System.out.println(config.getHelpText());
@@ -379,13 +381,13 @@ public class Main {
 
 
     private void generateLCovDataFile(File jsonDirectory, File sourceDirectory) throws IOException {
-        String json = IoUtils.getInstance().loadFromFileSystem(new File(jsonDirectory, "jscoverage.json"));
+        String json = ioUtils.loadFromFileSystem(new File(jsonDirectory, "jscoverage.json"));
         File lcovFile = new File(jsonDirectory, "jscover.lcov");
         lCovGenerator.saveData(jsonDataMerger.jsonToMap(json).values(), sourceDirectory.getCanonicalPath(), lcovFile);
     }
 
     private void saveXmlSummary(File directory) {
-        String json = IoUtils.getInstance().loadFromFileSystem(new File(directory, "jscoverage.json"));
+        String json = ioUtils.loadFromFileSystem(new File(directory, "jscoverage.json"));
         SummaryData summaryData = new SummaryData(jsonDataMerger.jsonToMap(json).values());
         xmlSummary.saveSummary(summaryData, directory);
     }

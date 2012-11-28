@@ -342,16 +342,117 @@ Public License instead of this License.
 
 package jscover.report;
 
+import jscover.report.lcov.LCovGenerator;
+import jscover.report.xml.XMLSummary;
+import jscover.server.ConfigurationForServer;
+import jscover.util.IoUtils;
+import jscover.util.ReflectionUtils;
+import org.hamcrest.Description;
+import org.hamcrest.TypeSafeMatcher;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
+import static org.hamcrest.CoreMatchers.any;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Matchers.anyCollection;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.argThat;
+import static org.mockito.Mockito.verify;
 
+@RunWith(MockitoJUnitRunner.class)
 public class MainTest {
     private Main main = new Main();
+    private @Mock XMLSummary xmlSummary;
+    private @Mock LCovGenerator lCovGenerator;
+    private @Mock JSONDataMerger jsonDataMerger;
+    private @Mock IoUtils ioUtils;
+    private @Mock ConfigurationForReport config;
+
+    @Before
+    public void setUp() {
+        ReflectionUtils.setField(main, "xmlSummary", xmlSummary);
+        ReflectionUtils.setField(main, "lCovGenerator", lCovGenerator);
+        ReflectionUtils.setField(main, "jsonDataMerger", jsonDataMerger);
+        ReflectionUtils.setField(main, "ioUtils", ioUtils);
+        ReflectionUtils.setField(main, "config", config);
+    }
 
     @Test
-    public void shouldRunLCovReport() {
-        //TODO
+    public void shouldShowHelp() throws IOException {
+        given(config.showHelp()).willReturn(true);
+        main.runMain(new String[]{});
+        verify(config).getHelpText();
+    }
+
+    @Test
+    public void shouldRunLCovReport() throws IOException {
+        given(config.getReportFormat()).willReturn(ReportFormat.LCOV);
+        File jsonDirectory = new File("jsonDir");
+        File srcDir = new File("src");
+        given(config.getJsonDirectory()).willReturn(jsonDirectory);
+        given(config.getSourceDirectory()).willReturn(srcDir);
+        String json = "json";
+        given(ioUtils.loadFromFileSystem(new File(jsonDirectory, "jscoverage.json"))).willReturn(json);
+        SortedMap<String, FileData> list = new TreeMap<String, FileData>();
+        given(jsonDataMerger.jsonToMap(json)).willReturn(list);
+
+        main.runMain(new String[]{});
+
+        File lcovFile = new File(jsonDirectory, "jscover.lcov");
+        verify(lCovGenerator).saveData(list.values(), srcDir.getCanonicalPath(), lcovFile);
+    }
+
+    @Test
+    public void shouldRunXMLSummaryReport() throws IOException {
+        given(config.getReportFormat()).willReturn(ReportFormat.XMLSUMMARY);
+        final File jsonDirectory = new File("jsonDir");
+        given(config.getJsonDirectory()).willReturn(jsonDirectory);
+        String json = "json";
+        given(ioUtils.loadFromFileSystem(new File(jsonDirectory, "jscoverage.json"))).willReturn(json);
+        SortedMap<String, FileData> list = new TreeMap<String, FileData>();
+        List<Integer> lines = new ArrayList<Integer>();
+        for (int i = 0; i <= 42; i++)
+            lines.add(i);
+        List<List<BranchData>> branches = new ArrayList<List<BranchData>>();
+        list.put("/test.js", new FileData("/test.js", lines, null, branches));
+        given(jsonDataMerger.jsonToMap(json)).willReturn(list);
+
+        main.runMain(new String[]{});
+
+        TypeSafeMatcher<File> fileMatcher = new TypeSafeMatcher<File>() {
+            @Override
+            protected boolean matchesSafely(File file) {
+                return file.equals(jsonDirectory);
+            }
+
+            public void describeTo(Description description) {
+
+            }
+        };
+
+        TypeSafeMatcher<Coverable> coverableMatcher = new TypeSafeMatcher<Coverable>() {
+            @Override
+            protected boolean matchesSafely(Coverable coverable) {
+                return coverable.getCodeLineCount() == 42;
+            }
+
+            public void describeTo(Description description) {
+
+            }
+        };
+
+        verify(xmlSummary).saveSummary(argThat(coverableMatcher), argThat(fileMatcher));
     }
 }

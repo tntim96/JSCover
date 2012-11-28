@@ -342,11 +342,14 @@
 
 package jscover.report;
 
+import jscover.*;
 import jscover.util.IoUtils;
 
 import java.io.File;
 
 public class ConfigurationForReport {
+    public static final String HELP_PREFIX1 = jscover.Main.HELP_PREFIX1;
+    public static final String HELP_PREFIX2 = jscover.Main.HELP_PREFIX2;
     public static final String FORMAT_PREFIX = "--format=";
 
     private ReportFormat reportFormat;
@@ -385,7 +388,10 @@ public class ConfigurationForReport {
 
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];
-            if (arg.startsWith(FORMAT_PREFIX)) {
+            if (arg.equals(HELP_PREFIX1) || arg.equals(HELP_PREFIX2)) {
+                configuration.showHelp = true;
+                return configuration;
+            } else if (arg.startsWith(FORMAT_PREFIX)) {
                 configuration.reportFormat = ReportFormat.valueOf(arg.substring(FORMAT_PREFIX.length()));
             }
         }

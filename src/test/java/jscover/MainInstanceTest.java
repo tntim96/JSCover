@@ -352,6 +352,7 @@ import org.hamcrest.TypeSafeMatcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
@@ -368,8 +369,8 @@ import static org.mockito.Mockito.spy;
 @RunWith(MockitoJUnitRunner.class)
 public class MainInstanceTest {
     private Main main = new Main();
-    private WebDaemon webDaemon = mock(WebDaemon.class);
-    private FileSystemInstrumenter fileSystemInstrumenter = mock(FileSystemInstrumenter.class);
+    private @Mock WebDaemon webDaemon;
+    private @Mock FileSystemInstrumenter fileSystemInstrumenter;
 
     @Before
     public void setUp() {
