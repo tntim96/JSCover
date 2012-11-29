@@ -374,7 +374,7 @@ public class XMLSummaryTest {
         given(data.getBranchesCoveredCount()).willReturn(5);
         given(data.getBranchRate()).willReturn(.66666666d);
 
-        String xml = xmlSummary.getSummary(data);
+        String xml = xmlSummary.getSummary(data, "theVersion");
         XPath xpath = XPathFactory.newInstance().newXPath();
         DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         Document document = builder.parse(new ByteArrayInputStream(xml.getBytes()));
@@ -385,6 +385,7 @@ public class XMLSummaryTest {
         assertThat(getXPath(xpath, document, "/coverage/@lines"), equalTo("1"));
         assertThat(getXPath(xpath, document, "/coverage/@branches-covered"), equalTo("5"));
         assertThat(getXPath(xpath, document, "/coverage/@branches"), equalTo("4"));
+        assertThat(getXPath(xpath, document, "/coverage/@version"), equalTo("theVersion"));
     }
 
     private String getXPath(XPath xpath, Document document, String expression) throws Exception {

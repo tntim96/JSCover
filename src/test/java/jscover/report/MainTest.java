@@ -344,7 +344,6 @@ package jscover.report;
 
 import jscover.report.lcov.LCovGenerator;
 import jscover.report.xml.XMLSummary;
-import jscover.server.ConfigurationForServer;
 import jscover.util.IoUtils;
 import jscover.util.ReflectionUtils;
 import org.hamcrest.Description;
@@ -362,12 +361,9 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import static org.hamcrest.CoreMatchers.any;
-import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.anyCollection;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.verify;
 
@@ -417,6 +413,7 @@ public class MainTest {
     @Test
     public void shouldRunXMLSummaryReport() throws IOException {
         given(config.getReportFormat()).willReturn(ReportFormat.XMLSUMMARY);
+        given(config.getVersion()).willReturn("version");
         final File jsonDirectory = new File("jsonDir");
         given(config.getJsonDirectory()).willReturn(jsonDirectory);
         String json = "json";
@@ -453,6 +450,6 @@ public class MainTest {
             }
         };
 
-        verify(xmlSummary).saveSummary(argThat(coverableMatcher), argThat(fileMatcher));
+        verify(xmlSummary).saveSummary(argThat(coverableMatcher), argThat(fileMatcher), argThat(is("version")));
     }
 }

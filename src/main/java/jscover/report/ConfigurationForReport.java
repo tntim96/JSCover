@@ -347,7 +347,7 @@ import jscover.util.IoUtils;
 
 import java.io.File;
 
-public class ConfigurationForReport {
+public class ConfigurationForReport  extends Configuration {
     public static final String HELP_PREFIX1 = jscover.Main.HELP_PREFIX1;
     public static final String HELP_PREFIX2 = jscover.Main.HELP_PREFIX2;
     public static final String FORMAT_PREFIX = "--format=";

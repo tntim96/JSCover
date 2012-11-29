@@ -354,18 +354,18 @@ public class XMLSummary {
     private IoUtils ioUtils = IoUtils.getInstance();
     private String xml = ioUtils.loadFromClassPath("/jscover/report/xml/jscover-summary.xml");
 
-    public File saveSummary(Coverable data, File directory) {
-        String xml = getSummary(data);
+    public File saveSummary(Coverable data, File directory, String version) {
+        String xml = getSummary(data, version);
         File dest = new File(directory, "jscover-summary.xml");
         ioUtils.copy(xml, dest);
         return dest;
     }
 
-    String getSummary(Coverable data) {
+    String getSummary(Coverable data, String version) {
         return format(xml, data.getLineCoverRate(), data.getBranchRate(),
                 data.getCodeLinesCoveredCount(), data.getCodeLineCount(),
                 data.getBranchesCoveredCount(), data.getBranchCount(),
-                new Date().getTime()
+                new Date().getTime(), version
         );
     }
 }

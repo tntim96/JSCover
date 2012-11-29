@@ -373,7 +373,7 @@ public class XMLSummaryIntegrationTest {
     public void shouldCalculateXmlSummaryForYUI3() throws Exception {
         String json = IoUtils.getInstance().loadFromFileSystem(new File("src/test-integration/resources/jscover/report/xml/jscoverage.json"));
         SummaryData summaryData = new SummaryData(jsonDataMerger.jsonToMap(json).values());
-        dest = xmlSummary.saveSummary(summaryData, new File("target"));
+        dest = xmlSummary.saveSummary(summaryData, new File("target"), "theVersion");
 
         XPath xpath = XPathFactory.newInstance().newXPath();
         DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -385,6 +385,7 @@ public class XMLSummaryIntegrationTest {
         assertThat(getXPath(xpath, document, "/coverage/@lines"), equalTo("7396"));
         assertThat(getXPath(xpath, document, "/coverage/@branches-covered"), equalTo("2005"));
         assertThat(getXPath(xpath, document, "/coverage/@branches"), equalTo("5792"));
+        assertThat(getXPath(xpath, document, "/coverage/@version"), equalTo("theVersion"));
     }
 
     private String getXPath(XPath xpath, Document document, String expression) throws Exception {

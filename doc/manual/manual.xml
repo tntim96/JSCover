@@ -522,7 +522,7 @@
                 <heading id="reportConversion">Report Conversion</heading>
                 <text>
                     JSCover's JSON coverage data can now be converted to other formats.
-                    This is useful to integrate with other tools - let us know what format's are required.
+                    This is useful to integrate with other tools - let us know what formats are required.
                     Currently JSCover supports XML summary and LCOV report formats.
                 </text>
                 <text>
@@ -557,7 +557,18 @@
                 <item>
                     <heading id="xmlSummary">XML Summary</heading>
                     <text>
-                        <code>&lt;coverage line-rate="0.534072" branch-rate="0.346167" lines-covered="3950" lines="7396" branches-covered="2005" branches="5792" timestamp="1354169242239"/&gt;</code>
+                        The XML summary report records the following totals for easy parsing:
+                        <ul>
+                            <li>line-rate</li>
+                            <li>branch-rate</li>
+                            <li>lines-covered</li>
+                            <li>lines</li>
+                            <li>branches-covered</li>
+                            <li>branches</li>
+                            <li>timestamp</li>
+                            <li>version</li>
+                        </ul>
+                        <code>&lt;coverage line-rate="0.534072" branch-rate="0.346167" lines-covered="3950" lines="7396" branches-covered="2005" branches="5792" timestamp="1354169242239" version="0.1.0"/&gt;</code>
                     </text>
                 </item>
                 <item>
@@ -567,15 +578,20 @@
                         statistics.
                     </text>
                     <text>
-                        If using LCOV with genhtml, SRC-DIRECTORY needs to point to the uninstrumented source on the file
-                        system, minus the URI part used with JSCover (i.e. usually the same directory as specified by the
-                        <var>--document-root</var> path).
+                        If using LCOV with genhtml, SRC-DIRECTORY needs to point to the uninstrumented source on the
+                        file system, minus the URI part used with JSCover (i.e. usually the same directory as specified
+                        by the <var>--document-root</var> path).
                         For example if YUI3 exists at <var>c:/js/yui3</var>, you would run JSCover with
                         <var>--document-root=c:/js/yui3</var>. JSCover would access <var>yui.js</var> via the path
-                        <var>/build/yui/yui.js</var>. JSCover will add path to the SRC-DIRECTORY to create the correct path
-                        in the LCOV file (i.e. <var>c:/js/yui3/build/yui/yui.js</var>).
-                        <br/><img src="images/lcov-11-summary.png"/><br/>
-                        <br/><img src="images/lcov-12-file.png"/><br/>
+                        <var>/build/yui/yui.js</var>. JSCover will add the URI path to the SRC-DIRECTORY to create the
+                        correct path in the LCOV file (i.e. <var>c:/js/yui3/build/yui/yui.js</var>).
+                    </text>
+                    <text>
+                        <img src="images/lcov-11-summary.png" alt="LCov Summary Report for YUI3"/>
+                    </text>
+                    <text>
+
+                        <img src="images/lcov-12-file.png" alt="LCov File Report for YUI3"/><br/>
                     </text>
                 </item>
             </item>
