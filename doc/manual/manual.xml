@@ -874,6 +874,11 @@ alert('Hello World!');</code>
                             <td class="cross"></td>
                         </tr>
                         <tr>
+                            <td>Multiple Report Formats</td>
+                            <td class="tick"></td>
+                            <td class="cross"></td>
+                        </tr>
+                        <tr>
                             <td>JavaScript Syntax Highlighting</td>
                             <td class="cross"></td>
                             <td class="tick"></td>
