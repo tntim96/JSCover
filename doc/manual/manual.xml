@@ -765,6 +765,7 @@
 <code>    &lt;target name="JSCover-start"&gt;
         &lt;java jar="JSCover-all.jar" fork="true" spawn="true"&gt;
             &lt;arg value="-ws"/&gt;
+            &lt;arg value="--branch"/&gt;
             &lt;arg value="--report-dir=${jscover.dir}"/&gt;
             &lt;arg value="--no-instrument=src/main/webapp/js/lib"/&gt;
             &lt;arg value="--no-instrument=src/test/"/&gt;
@@ -811,6 +812,34 @@ alert('Hello World!');</code>
                 This illustrates that when the target code is executed, a counter for the file name and line
                 is incremented. The header code manages the declaration of _$jscoverage.
             </text>
+
+            <text>
+                A branch coverage example:
+                <code>var y = x > 0 ? 1 : 0;</code>
+                ...becomes...
+<code>//...header code above
+if (! this._$jscoverage) {
+    this._$jscoverage = {};
+    _$jscoverage.branchData = {};
+}
+if (! _$jscoverage['test.js']) {
+    _$jscoverage['test.js'] = [];
+    _$jscoverage['test.js'][1] = 0;
+}
+if (! _$jscoverage.branchData['test.js']) {
+    _$jscoverage.branchData['test.js'] = [];
+    _$jscoverage.branchData['test.js'][1] = [];
+    _$jscoverage.branchData['test.js'][1][1] = new BranchData();
+}
+_$jscoverage.branchData['test.js'][1][1].init(19, 5, 'x > 0');
+function visit1_2_1(result) {
+  _$jscoverage.branchData['test.js'][1][1].ranCondition(result);
+  return result;
+}
+var y = visit1_2_1(x > 0) ? 1 : 0;</code>
+                This result of the boolean operation is passed to <var>visit1_2_1</var> for recording, which then
+                returns that same result to the main calling code.
+            </text>
         </item>
         </section>
     </item>
@@ -856,7 +885,7 @@ alert('Hello World!');</code>
                     <table>
                         <tr>
                             <th>Feature</th>
-                            <th>JSCover (0.1.0-RC1)</th>
+                            <th>JSCover (0.1.0)</th>
                             <th>JSCoverage (0.5.1)</th>
                         </tr>
                         <tr>
