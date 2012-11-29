@@ -518,6 +518,67 @@
                 that you can fix the issue and create patch for the project.
             </text>
         </item>
+            <item>
+                <heading id="reportConversion">Report Conversion</heading>
+                <text>
+                    JSCover's JSON coverage data can now be converted to other formats.
+                    This is useful to integrate with other tools - let us know what format's are required.
+                    Currently JSCover supports XML summary and LCOV report formats.
+                </text>
+                <text>
+                    <code>java -cp JSCover-all.jar jscover.report.Main --format=[ XMLSUMMARY | LCOV ] REPORT-DIR [SRC-DIRECTORY]</code>
+                    For example:
+                    <code>java -cp JSCover-all.jar jscover.report.Main --format=LCOV REPORT-DIR SRC-DIRECTORY</code>
+                </text>
+                <text>
+                    <table>
+                        <tr>
+                            <th>Option</th>
+                            <th>Default</th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td>-h,--help</td>
+                            <td>N/A</td>
+                            <td>Display command line help</td>
+                        </tr>
+                        <tr>
+                            <td>--format=XMLSUMMARY</td>
+                            <td>None</td>
+                            <td>Output XML summary to REPORT-DIR/jscover-summary.xml</td>
+                        </tr>
+                        <tr>
+                            <td>--format=LCOV</td>
+                            <td>None</td>
+                            <td>Output LCOV data to REPORT-DIR/jscover.lcov with source at SRC-DIRECTORY</td>
+                        </tr>
+                    </table>
+                </text>
+                <item>
+                    <heading id="xmlSummary">XML Summary</heading>
+                    <text>
+                        <code>&lt;coverage line-rate="0.534072" branch-rate="0.346167" lines-covered="3950" lines="7396" branches-covered="2005" branches="5792" timestamp="1354169242239"/&gt;</code>
+                    </text>
+                </item>
+                <item>
+                    <heading id="lcov">LCOV</heading>
+                    <text>
+                        LCOV can be used to generate a HTML coverage report that includes both lines and branch
+                        statistics.
+                    </text>
+                    <text>
+                        If using LCOV with genhtml, SRC-DIRECTORY needs to point to the uninstrumented source on the file
+                        system, minus the URI part used with JSCover (i.e. usually the same directory as specified by the
+                        <var>--document-root</var> path).
+                        For example if YUI3 exists at <var>c:/js/yui3</var>, you would run JSCover with
+                        <var>--document-root=c:/js/yui3</var>. JSCover would access <var>yui.js</var> via the path
+                        <var>/build/yui/yui.js</var>. JSCover will add path to the SRC-DIRECTORY to create the correct path
+                        in the LCOV file (i.e. <var>c:/js/yui3/build/yui/yui.js</var>).
+                        <br/><img src="images/lcov-11-summary.png"/><br/>
+                        <br/><img src="images/lcov-12-file.png"/><br/>
+                    </text>
+                </item>
+            </item>
         </section>
     </item>
     <item>
