@@ -565,7 +565,7 @@
                             <li>lines</li>
                             <li>branches-covered</li>
                             <li>branches</li>
-                            <li>timestamp</li>
+                            <li>timestamp (milliseconds since January 1, 1970, 00:00:00 GMT)</li>
                             <li>version</li>
                         </ul>
                         <code>&lt;coverage line-rate="0.534072" branch-rate="0.346167" lines-covered="3950" lines="7396" branches-covered="2005" branches="5792" timestamp="1354169242239" version="0.1.0"/&gt;</code>

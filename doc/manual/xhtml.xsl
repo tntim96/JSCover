@@ -15,10 +15,34 @@
 </xsl:template>
 
 <xsl:template match="img">
-  <img>
-    <xsl:attribute name="src"><xsl:value-of select="@src"/></xsl:attribute>
-    <xsl:attribute name="border">0</xsl:attribute>
-  </img>
+    <xsl:choose>
+        <xsl:when test="@alt!=''">
+            <table>
+                <tr>
+                    <th><xsl:value-of select="@alt"/></th>
+                </tr>
+                <tr>
+                    <td>
+                        <img>
+                            <xsl:attribute name="src"><xsl:value-of select="@src"/></xsl:attribute>
+                            <xsl:attribute name="alt"><xsl:value-of select="@alt"/></xsl:attribute>
+                            <xsl:attribute name="title"><xsl:value-of select="@alt"/></xsl:attribute>
+                            <xsl:attribute name="border">0</xsl:attribute>
+                        </img>
+                    </td>
+                </tr>
+            </table>
+        </xsl:when>
+        <xsl:otherwise>
+            <img>
+                <xsl:attribute name="src"><xsl:value-of select="@src"/></xsl:attribute>
+                <xsl:attribute name="alt"><xsl:value-of select="@alt"/></xsl:attribute>
+                <xsl:attribute name="title"><xsl:value-of select="@alt"/></xsl:attribute>
+                <xsl:attribute name="border">0</xsl:attribute>
+            </img>
+        </xsl:otherwise>
+    </xsl:choose>
+
 </xsl:template>
 
 <xsl:template match="b">
