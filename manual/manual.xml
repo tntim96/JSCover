@@ -518,6 +518,83 @@
                 that you can fix the issue and create patch for the project.
             </text>
         </item>
+            <item>
+                <heading id="reportConversion">Report Conversion</heading>
+                <text>
+                    JSCover's JSON coverage data can now be converted to other formats.
+                    This is useful to integrate with other tools - let us know what formats are required.
+                    Currently JSCover supports XML summary and LCOV report formats.
+                </text>
+                <text>
+                    <code>java -cp JSCover-all.jar jscover.report.Main --format=[ XMLSUMMARY | LCOV ] REPORT-DIR [SRC-DIRECTORY]</code>
+                    For example:
+                    <code>java -cp JSCover-all.jar jscover.report.Main --format=LCOV REPORT-DIR SRC-DIRECTORY</code>
+                </text>
+                <text>
+                    <table>
+                        <tr>
+                            <th>Option</th>
+                            <th>Default</th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td>-h,--help</td>
+                            <td>N/A</td>
+                            <td>Display command line help</td>
+                        </tr>
+                        <tr>
+                            <td>--format=XMLSUMMARY</td>
+                            <td>None</td>
+                            <td>Output XML summary to REPORT-DIR/jscover-summary.xml</td>
+                        </tr>
+                        <tr>
+                            <td>--format=LCOV</td>
+                            <td>None</td>
+                            <td>Output LCOV data to REPORT-DIR/jscover.lcov with source at SRC-DIRECTORY</td>
+                        </tr>
+                    </table>
+                </text>
+                <item>
+                    <heading id="xmlSummary">XML Summary</heading>
+                    <text>
+                        The XML summary report records the following totals for easy parsing:
+                        <ul>
+                            <li>line-rate</li>
+                            <li>branch-rate</li>
+                            <li>lines-covered</li>
+                            <li>lines</li>
+                            <li>branches-covered</li>
+                            <li>branches</li>
+                            <li>timestamp (milliseconds since January 1, 1970, 00:00:00 GMT)</li>
+                            <li>version</li>
+                        </ul>
+                        <code>&lt;coverage line-rate="0.534072" branch-rate="0.346167" lines-covered="3950" lines="7396" branches-covered="2005" branches="5792" timestamp="1354169242239" version="0.1.0"/&gt;</code>
+                    </text>
+                </item>
+                <item>
+                    <heading id="lcov">LCOV</heading>
+                    <text>
+                        LCOV can be used to generate a HTML coverage report that includes both lines and branch
+                        statistics.
+                    </text>
+                    <text>
+                        If using LCOV with genhtml, SRC-DIRECTORY needs to point to the uninstrumented source on the
+                        file system, minus the URI part used with JSCover (i.e. usually the same directory as specified
+                        by the <var>--document-root</var> path).
+                        For example if YUI3 exists at <var>c:/js/yui3</var>, you would run JSCover with
+                        <var>--document-root=c:/js/yui3</var>. JSCover would access <var>yui.js</var> via the path
+                        <var>/build/yui/yui.js</var>. JSCover will add the URI path to the SRC-DIRECTORY to create the
+                        correct path in the LCOV file (i.e. <var>c:/js/yui3/build/yui/yui.js</var>).
+                    </text>
+                    <text>
+                        <img src="images/lcov-11-summary.png" alt="LCov Summary Report for YUI3"/>
+                    </text>
+                    <text>
+
+                        <img src="images/lcov-12-file.png" alt="LCov File Report for YUI3"/><br/>
+                    </text>
+                </item>
+            </item>
         </section>
     </item>
     <item>
@@ -688,6 +765,7 @@
 <code>    &lt;target name="JSCover-start"&gt;
         &lt;java jar="JSCover-all.jar" fork="true" spawn="true"&gt;
             &lt;arg value="-ws"/&gt;
+            &lt;arg value="--branch"/&gt;
             &lt;arg value="--report-dir=${jscover.dir}"/&gt;
             &lt;arg value="--no-instrument=src/main/webapp/js/lib"/&gt;
             &lt;arg value="--no-instrument=src/test/"/&gt;
@@ -716,10 +794,12 @@
         <section>
         <item>
             <heading id="implementationInstrumentation">Instrumentation</heading>
-            <text>
-                JSCover works by instrumenting the specified JavaScript. A simple example is shown below:
-                <code>alert('Hello World!');</code>
-                ...becomes...
+            <item>
+                <heading id="lineInstrumentation">Line</heading>
+                <text>
+                    JSCover works by instrumenting the specified JavaScript. A simple example is shown below:
+                    <code>alert('Hello World!');</code>
+                    ...becomes...
 <code>//...header code above
 if (! this._$jscoverage) {
     this._$jscoverage = {};
@@ -731,9 +811,40 @@ if (! _$jscoverage['test.js']) {
 _$jscoverage['test.js'].source = ["alert('Hello World!');"];
 _$jscoverage['test.js'][1]++;
 alert('Hello World!');</code>
-                This illustrates that when the target code is executed, a counter for the file name and line
-                is incremented. The header code manages the declaration of _$jscoverage.
-            </text>
+                    This illustrates that when the target code is executed, a counter for the file name and line
+                    is incremented. The header code manages the declaration of _$jscoverage.
+                </text>
+            </item>
+            <item>
+                <heading id="branchInstrumentation">Branch</heading>
+                <text>
+                    A branch coverage example:
+                    <code>var y = x > 0 ? 1 : 0;</code>
+                    ...becomes...
+<code>//...header code above
+if (! this._$jscoverage) {
+    this._$jscoverage = {};
+    _$jscoverage.branchData = {};
+}
+if (! _$jscoverage['test.js']) {
+    _$jscoverage['test.js'] = [];
+    _$jscoverage['test.js'][1] = 0;
+}
+if (! _$jscoverage.branchData['test.js']) {
+    _$jscoverage.branchData['test.js'] = [];
+    _$jscoverage.branchData['test.js'][1] = [];
+    _$jscoverage.branchData['test.js'][1][1] = new BranchData();
+}
+_$jscoverage.branchData['test.js'][1][1].init(19, 5, 'x > 0');
+function visit1_2_1(result) {
+  _$jscoverage.branchData['test.js'][1][1].ranCondition(result);
+  return result;
+}
+var y = visit1_2_1(x > 0) ? 1 : 0;</code>
+                    This result of the boolean operation is passed to <var>visit1_2_1</var> for recording, which then
+                    returns that same result to the main calling code.
+                </text>
+            </item>
         </item>
         </section>
     </item>
@@ -779,7 +890,7 @@ alert('Hello World!');</code>
                     <table>
                         <tr>
                             <th>Feature</th>
-                            <th>JSCover (0.1.0-RC1)</th>
+                            <th>JSCover (0.1.0)</th>
                             <th>JSCoverage (0.5.1)</th>
                         </tr>
                         <tr>
@@ -809,6 +920,11 @@ alert('Hello World!');</code>
                         </tr>
                         <tr>
                             <td>Inclusion of Uncovered/Unloaded JavaScript</td>
+                            <td class="tick"></td>
+                            <td class="cross"></td>
+                        </tr>
+                        <tr>
+                            <td>Multiple Report Formats</td>
                             <td class="tick"></td>
                             <td class="cross"></td>
                         </tr>
