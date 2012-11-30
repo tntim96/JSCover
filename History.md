@@ -1,4 +1,4 @@
-0.1.0 / 2012-??-??
+0.1.0 / 2012-11-30
 ==================
   * Add infrastructure to generate other report formats with XML Summary
   * Add JSON to LCov coverage data conversion
