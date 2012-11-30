@@ -68,7 +68,7 @@ public class HtmlUnitServerBranchTest extends HtmlUnitServerTest {
         verifySource(sourceTable, 5, 0, "else if (element.id === 'radio2') {", "Condition never evaluated         :\telement.id === 'radio2'", "r");
         verifySource(sourceTable, 6, 0, "message = 'You selected the number 2.';", null, "");
 
-        frame.getElementById("radio2").click();
+        frame.getHtmlElementById("radio2").click();
         webClient.waitForBackgroundJavaScript(500);
         verifyTotal(webClient, page, 66, 25);
 
@@ -78,7 +78,7 @@ public class HtmlUnitServerBranchTest extends HtmlUnitServerTest {
         verifySource(sourceTable, 5, 1, "else if (element.id === 'radio2') {", "Condition never evaluated to false:\telement.id === 'radio2'", "r");
         verifySource(sourceTable, 6, 1, "message = 'You selected the number 2.';", null, "");
 
-        frame.getElementById("radio4").click();
+        frame.getHtmlElementById("radio4").click();
         webClient.waitForBackgroundJavaScript(500);
         verifyTotal(webClient, page, 86, 62);
 

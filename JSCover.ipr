@@ -499,12 +499,12 @@
   <component name="libraryTable">
     <library name="HtmlUnit">
       <CLASSES>
-        <root url="file://$PROJECT_DIR$/../htmlunit-2.10/lib" />
-        <root url="file://$PROJECT_DIR$/../htmlunit-2.10/lib" />
+        <root url="file://$PROJECT_DIR$/../htmlunit-2.11/lib" />
+        <root url="file://$PROJECT_DIR$/../htmlunit-2.11/lib" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
-      <jarDirectory url="file://$PROJECT_DIR$/../htmlunit-2.10/lib" recursive="false" />
+      <jarDirectory url="file://$PROJECT_DIR$/../htmlunit-2.11/lib" recursive="false" />
     </library>
   </component>
 </project>

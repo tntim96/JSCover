@@ -446,7 +446,7 @@ public class HtmlUnitServerTest {
         HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?" + getTestUrl());
         HtmlPage frame = (HtmlPage)page.getFrameByName("browserIframe").getEnclosedPage();
 
-        frame.getElementById("radio2").click();
+        frame.getHtmlElementById("radio2").click();
         webClient.waitForBackgroundJavaScript(500);
         verifyTotal(webClient, page, 66, branchPercentage);
     }
@@ -464,7 +464,7 @@ public class HtmlUnitServerTest {
         verifySource(sourceTable, 5, 0, "else if (element.id === 'radio2') {");
         verifySource(sourceTable, 6, 0, "message = 'You selected the number 2.';");
 
-        frame.getElementById("radio2").click();
+        frame.getHtmlElementById("radio2").click();
         webClient.waitForBackgroundJavaScript(500);
         verifyTotal(webClient, page, 66, 0);
 
@@ -492,8 +492,8 @@ public class HtmlUnitServerTest {
 
         HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?" + getTestUrl());
         HtmlPage frame = (HtmlPage)page.getFrameByName("browserIframe").getEnclosedPage();
-        frame.getElementById("radio2").click();
-        frame.getElementById("radio4").click();
+        frame.getHtmlElementById("radio2").click();
+        frame.getHtmlElementById("radio4").click();
 
         page.getHtmlElementById("storeTab").click();
         webClient.waitForBackgroundJavaScript(500);
@@ -563,7 +563,7 @@ public class HtmlUnitServerTest {
 
     protected void testWorkInInvertedMode(int branchPercentage1, int branchPercentage2) throws IOException {
         HtmlPage page = webClient.getPage("http://localhost:9001/example/index.html");
-        page.getElementById("launchJSCover").click();
+        page.getHtmlElementById("launchJSCover").click();
         webClient.waitForBackgroundJavaScript(100);
 
         WebWindow webWindow = webClient.getWebWindowByName("jsCoverWindow");
@@ -571,7 +571,7 @@ public class HtmlUnitServerTest {
 
         verifyTotal(webClient, jsCoverPage, 6, branchPercentage1);
 
-        page.getElementById("radio3").click();
+        page.getHtmlElementById("radio3").click();
         webClient.waitForBackgroundJavaScript(100);
 
         jsCoverPage.executeJavaScript("jscoverage_recalculateSummaryTab();");
@@ -591,16 +591,16 @@ public class HtmlUnitServerTest {
 
         page.getHtmlElementById("browserTab").click();
         HtmlPage frame = (HtmlPage)page.getFrameByName("browserIframe").getEnclosedPage();
-        frame.getElementById("radio1").click();
+        frame.getHtmlElementById("radio1").click();
         page.executeJavaScript("jscoverage_recalculateSummaryTab();");
         verifyTotals(page, 60, branchPercentage1);
-        frame.getElementById("radio2").click();
+        frame.getHtmlElementById("radio2").click();
         page.executeJavaScript("jscoverage_recalculateSummaryTab();");
         verifyTotals(page, 73, branchPercentage2);
-        frame.getElementById("radio3").click();
+        frame.getHtmlElementById("radio3").click();
         page.executeJavaScript("jscoverage_recalculateSummaryTab();");
         verifyTotals(page, 86, branchPercentage3);
-        frame.getElementById("radio4").click();
+        frame.getHtmlElementById("radio4").click();
         page.executeJavaScript("jscoverage_recalculateSummaryTab();");
         verifyTotals(page, 100, branchPercentage4);
     }

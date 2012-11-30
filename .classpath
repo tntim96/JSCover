@@ -13,22 +13,22 @@
 	<classpathentry kind="lib" path="lib/runtime/js.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="../htmlunit-2.10/lib/xml-apis-1.3.04.jar"/>
-	<classpathentry kind="lib" path="../htmlunit-2.10/lib/commons-codec-1.6.jar"/>
-	<classpathentry kind="lib" path="../htmlunit-2.10/lib/commons-collections-3.2.1.jar"/>
-	<classpathentry kind="lib" path="../htmlunit-2.10/lib/commons-io-2.2.jar"/>
-	<classpathentry kind="lib" path="../htmlunit-2.10/lib/commons-lang3-3.1.jar"/>
-	<classpathentry kind="lib" path="../htmlunit-2.10/lib/commons-logging-1.1.1.jar"/>
-	<classpathentry kind="lib" path="../htmlunit-2.10/lib/cssparser-0.9.7.jar"/>
-	<classpathentry kind="lib" path="../htmlunit-2.10/lib/htmlunit-2.10.jar"/>
-	<classpathentry kind="lib" path="../htmlunit-2.10/lib/htmlunit-core-js-2.10.jar"/>
-	<classpathentry kind="lib" path="../htmlunit-2.10/lib/httpclient-4.2.1.jar"/>
-	<classpathentry kind="lib" path="../htmlunit-2.10/lib/httpcore-4.2.1.jar"/>
-	<classpathentry kind="lib" path="../htmlunit-2.10/lib/httpmime-4.2.1.jar"/>
-	<classpathentry kind="lib" path="../htmlunit-2.10/lib/nekohtml-1.9.16.jar"/>
-	<classpathentry kind="lib" path="../htmlunit-2.10/lib/sac-1.3.jar"/>
-	<classpathentry kind="lib" path="../htmlunit-2.10/lib/serializer-2.7.1.jar"/>
-	<classpathentry kind="lib" path="../htmlunit-2.10/lib/xalan-2.7.1.jar"/>
-	<classpathentry kind="lib" path="../htmlunit-2.10/lib/xercesImpl-2.9.1.jar"/>
+	<classpathentry kind="lib" path="../htmlunit-2.11/lib/commons-codec-1.7.jar"/>
+	<classpathentry kind="lib" path="../htmlunit-2.11/lib/commons-collections-3.2.1.jar"/>
+	<classpathentry kind="lib" path="../htmlunit-2.11/lib/commons-io-2.4.jar"/>
+	<classpathentry kind="lib" path="../htmlunit-2.11/lib/commons-lang3-3.1.jar"/>
+	<classpathentry kind="lib" path="../htmlunit-2.11/lib/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="../htmlunit-2.11/lib/cssparser-0.9.8.jar"/>
+	<classpathentry kind="lib" path="../htmlunit-2.11/lib/htmlunit-2.11.jar"/>
+	<classpathentry kind="lib" path="../htmlunit-2.11/lib/htmlunit-core-js-2.11.jar"/>
+	<classpathentry kind="lib" path="../htmlunit-2.11/lib/httpclient-4.2.2.jar"/>
+	<classpathentry kind="lib" path="../htmlunit-2.11/lib/httpcore-4.2.2.jar"/>
+	<classpathentry kind="lib" path="../htmlunit-2.11/lib/httpmime-4.2.2.jar"/>
+	<classpathentry kind="lib" path="../htmlunit-2.11/lib/nekohtml-1.9.17.jar"/>
+	<classpathentry kind="lib" path="../htmlunit-2.11/lib/sac-1.3.jar"/>
+	<classpathentry kind="lib" path="../htmlunit-2.11/lib/serializer-2.7.1.jar"/>
+	<classpathentry kind="lib" path="../htmlunit-2.11/lib/xalan-2.7.1.jar"/>
+	<classpathentry kind="lib" path="../htmlunit-2.11/lib/xercesImpl-2.10.0.jar"/>
+	<classpathentry kind="lib" path="../htmlunit-2.11/lib/xml-apis-1.4.01.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

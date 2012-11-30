@@ -28,5 +28,5 @@ target manually after `pre-commit`.
 
 To save repository space, the acceptance test framework HTMLUnit is not checked in.
 Download HTML Unit (2.10) and unzip it to the same parent directory as JSCover to match
-the build property `html.unit.dir=${basedir}/../htmlunit-2.10`.
+the build property `html.unit.dir=${basedir}/../htmlunit-2.11`.
 If this property needs changing, the IntelliJ and Eclipse project files will also need altering.

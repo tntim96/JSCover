@@ -1,3 +1,7 @@
+0.1.1 / 2012-??-??
+==================
+  * Upgrade to HTMLUnit 2.11
+
 0.1.0 / 2012-11-30
 ==================
   * Add infrastructure to generate other report formats with XML Summary
