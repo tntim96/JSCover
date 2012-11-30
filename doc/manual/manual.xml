@@ -794,10 +794,12 @@
         <section>
         <item>
             <heading id="implementationInstrumentation">Instrumentation</heading>
-            <text>
-                JSCover works by instrumenting the specified JavaScript. A simple example is shown below:
-                <code>alert('Hello World!');</code>
-                ...becomes...
+            <item>
+                <heading id="lineInstrumentation">Line</heading>
+                <text>
+                    JSCover works by instrumenting the specified JavaScript. A simple example is shown below:
+                    <code>alert('Hello World!');</code>
+                    ...becomes...
 <code>//...header code above
 if (! this._$jscoverage) {
     this._$jscoverage = {};
@@ -809,14 +811,16 @@ if (! _$jscoverage['test.js']) {
 _$jscoverage['test.js'].source = ["alert('Hello World!');"];
 _$jscoverage['test.js'][1]++;
 alert('Hello World!');</code>
-                This illustrates that when the target code is executed, a counter for the file name and line
-                is incremented. The header code manages the declaration of _$jscoverage.
-            </text>
-
-            <text>
-                A branch coverage example:
-                <code>var y = x > 0 ? 1 : 0;</code>
-                ...becomes...
+                    This illustrates that when the target code is executed, a counter for the file name and line
+                    is incremented. The header code manages the declaration of _$jscoverage.
+                </text>
+            </item>
+            <item>
+                <heading id="branchInstrumentation">Branch</heading>
+                <text>
+                    A branch coverage example:
+                    <code>var y = x > 0 ? 1 : 0;</code>
+                    ...becomes...
 <code>//...header code above
 if (! this._$jscoverage) {
     this._$jscoverage = {};
@@ -837,9 +841,10 @@ function visit1_2_1(result) {
   return result;
 }
 var y = visit1_2_1(x > 0) ? 1 : 0;</code>
-                This result of the boolean operation is passed to <var>visit1_2_1</var> for recording, which then
-                returns that same result to the main calling code.
-            </text>
+                    This result of the boolean operation is passed to <var>visit1_2_1</var> for recording, which then
+                    returns that same result to the main calling code.
+                </text>
+            </item>
         </item>
         </section>
     </item>
