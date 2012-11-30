@@ -858,7 +858,7 @@ var y = visit1_2_1(x > 0) ? 1 : 0;</code>
                 <heading id="jsCoverageVJSCoverImplementation">Implementation</heading>
                 <text>
                     The main difference in the implementation is the tools used for parsing.
-                    All JavaScript code is the same, and so the UI interaction is the same.
+                    Most JavaScript code is the same, and so the UI interaction is the same.
                 </text>
                 <text>
                     <table>
@@ -871,8 +871,8 @@ var y = visit1_2_1(x > 0) ? 1 : 0;</code>
                             <td>JSCover</td>
                             <td>Java</td>
                             <td>
-                                <a href="http://www.mozilla.org/rhino/">Rhino</a>
-                                1.7R5pre
+                                <a href="https://github.com/tntim96/rhino">Rhino</a>
+                                1.7R5pre (forked)
                             </td>
                         </tr>
                         <tr>
