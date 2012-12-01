@@ -343,6 +343,7 @@ Public License instead of this License.
 package jscover.util;
 
 import java.io.*;
+import java.net.Socket;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -363,6 +364,14 @@ public class IoUtils {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    public void closeQuietly(Socket socket) {
+        try {
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

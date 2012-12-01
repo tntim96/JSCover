@@ -413,6 +413,7 @@ public class HttpServer extends Thread {
         } finally {
             ioUtils.closeQuietly(br);
             ioUtils.closeQuietly(os);
+            ioUtils.closeQuietly(socket);
         }
     }
 

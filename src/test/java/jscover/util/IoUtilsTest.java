@@ -349,6 +349,7 @@ import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.*;
+import java.net.Socket;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.*;
@@ -360,6 +361,7 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class IoUtilsTest {
     private IoUtils ioUtils = IoUtils.getInstance();
+    private @Mock Socket socket;
     private @Mock InputStream is;
     private @Spy OutputStream os = new MyOutputStream();
     private @Mock Reader reader;
@@ -369,6 +371,12 @@ public class IoUtilsTest {
     public void shouldCloseStreamQuietly() throws IOException {
         doThrow(new IOException("Ouch!")).when(os).close();
         ioUtils.closeQuietly(os);
+    }
+
+    @Test
+    public void shouldCloseSocketQuietly() throws IOException {
+        doThrow(new IOException("Ouch!")).when(socket).close();
+        ioUtils.closeQuietly(socket);
     }
 
     @Test(expected = RuntimeException.class)
