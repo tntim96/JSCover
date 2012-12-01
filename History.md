@@ -1,6 +1,7 @@
-0.1.1 / 2012-??-??
+0.1.1 / 2012-12-02
 ==================
   * Upgrade to HTMLUnit 2.11
+  * Fix web-server looping issue https://github.com/tntim96/JSCover/issues/26
 
 0.1.0 / 2012-11-30
 ==================

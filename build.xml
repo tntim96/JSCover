@@ -36,8 +36,8 @@
 	</target>
 
 	<target name="init">
-        <available file="../htmlunit-2.10" type="dir" property="htmlUnitPresent"/>
-        <fail unless="htmlUnitPresent" message="Please download HTMLUnit 2.10 and extract to '../htmlunit-2.10'"/>
+        <available file="${html.unit.dir}" type="dir" property="htmlUnitPresent"/>
+        <fail unless="htmlUnitPresent" message="Please download HTMLUnit and extract to '${html.unit.dir}'"/>
 	</target>
 
 	<target name="dirsetup">

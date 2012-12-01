@@ -374,9 +374,7 @@ public class HttpServer extends Thread {
             br = new BufferedReader(new InputStreamReader(is));
             pw = new PrintWriter(os);
 
-            String requestString = null;
-            while (requestString == null)
-                requestString = br.readLine();
+            String requestString = br.readLine();
 
             StringTokenizer tokenizer = new StringTokenizer(requestString);
             String httpMethod = tokenizer.nextToken();
