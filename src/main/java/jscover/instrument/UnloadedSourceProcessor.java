@@ -348,6 +348,7 @@ import jscover.report.ScriptLinesAndSource;
 import jscover.server.ConfigurationForServer;
 import jscover.util.FileScanner;
 import jscover.util.IoUtils;
+import jscover.util.Logger;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -360,6 +361,7 @@ public class UnloadedSourceProcessor {
     private SourceFormatter sourceFormatter = PlainFormatter.getInstance();
     private IoUtils ioUtils = IoUtils.getInstance();
     private FileScanner fileScanner;
+    private Logger logger = Logger.getInstance();
 
     public UnloadedSourceProcessor(ConfigurationForServer config) {
         fileScanner = new FileScanner(config);
@@ -369,13 +371,17 @@ public class UnloadedSourceProcessor {
     public List<ScriptLinesAndSource> getEmptyCoverageData(Set<String> urisAlreadyProcessed) {
         List<ScriptLinesAndSource> scripts = new ArrayList<ScriptLinesAndSource>();
         for (File file: fileScanner.getFiles(urisAlreadyProcessed)) {
-            LineCountNodeVisitor visitor = new LineCountNodeVisitor(config.getCompilerEnvirons());
-            String uri = ioUtils.getRelativePath(file, config.getDocumentRoot());
-            String source = ioUtils.loadFromFileSystem(file);
-            List<String> htmlLines = sourceFormatter.toHtmlLines(source);
-            SortedSet<Integer> codeLines = visitor.getCodeLines(source);
-            ScriptLinesAndSource script = new ScriptLinesAndSource("/"+uri, new ArrayList<Integer>(codeLines), htmlLines);
-            scripts.add(script);
+                LineCountNodeVisitor visitor = new LineCountNodeVisitor(config.getCompilerEnvirons());
+                String uri = ioUtils.getRelativePath(file, config.getDocumentRoot());
+                String source = ioUtils.loadFromFileSystem(file);
+            try {
+                List<String> htmlLines = sourceFormatter.toHtmlLines(source);
+                SortedSet<Integer> codeLines = visitor.getCodeLines(source);
+                ScriptLinesAndSource script = new ScriptLinesAndSource("/"+uri, new ArrayList<Integer>(codeLines), htmlLines);
+                scripts.add(script);
+            } catch (RuntimeException t) {
+                logger.log(String.format("Problem parsing %s", uri), t);
+            }
         }
         return scripts;
     }

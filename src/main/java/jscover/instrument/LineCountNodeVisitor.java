@@ -365,12 +365,7 @@ public class LineCountNodeVisitor implements NodeVisitor {
     }
 
     public boolean visit(AstNode node) {
-        try {
-            validLines.add(node.getLineno());
-            return true;
-        } catch(Throwable t) {
-            t.printStackTrace(System.err);
-        }
+        validLines.add(node.getLineno());
         return true;
     }
 }

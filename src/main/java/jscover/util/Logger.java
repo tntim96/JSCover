@@ -349,6 +349,7 @@ import java.io.PrintStream;
 public class Logger {
     private static Logger instance = new Logger();
     private static File log;
+    private IoUtils ioUtils = IoUtils.getInstance();
     private boolean loggedException;
 
     public static Logger getInstance() {
@@ -378,8 +379,9 @@ public class Logger {
                 throw t;
         }
         synchronized (log) {
+            PrintStream ps = null;
             try {
-                PrintStream ps = new PrintStream(new FileOutputStream(log, true));
+                ps = new PrintStream(new FileOutputStream(log, true));
                 ps.println("-------------------------------------------------------------------------------");
                 ps.println(message);
                 if (t != null) {
@@ -388,6 +390,8 @@ public class Logger {
                 }
             } catch (Exception e) {
                 throw new RuntimeException(e);
+            } finally {
+                ioUtils.closeQuietly(ps);
             }
         }
     }
