@@ -28,6 +28,6 @@ Acceptance test coverage is collected and can be viewed by running the `cobertur
 target manually after `pre-commit`.
 
 To save repository space, the acceptance test framework HTMLUnit is not checked in.
-Download HTML Unit (2.10) and unzip it to the same parent directory as JSCover to match
+Download HTML Unit (2.11) and unzip it to the same parent directory as JSCover to match
 the build property `html.unit.dir=${basedir}/../htmlunit-2.11`.
 If this property needs changing, the IntelliJ and Eclipse project files will also need altering.
