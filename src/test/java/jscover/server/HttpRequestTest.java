@@ -344,6 +344,11 @@ package jscover.server;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -388,5 +393,27 @@ public class HttpRequestTest {
         HttpRequest httpRequest = new HttpRequest("/test.html?a=b");
         assertThat(httpRequest.getPath(), equalTo("/test.html"));
         assertThat(httpRequest.getMime().getContentType(), equalTo("text/html"));
+    }
+
+    @Test
+    public void shouldNotSkipInstrumentationIfNoHeaders() {
+        HttpRequest httpRequest = new HttpRequest("/test.js");
+        assertThat(httpRequest.skipInstrumentation(), equalTo(false));
+    }
+
+    @Test
+    public void shouldNotSkipInstrumentationIfNoInstrumentHeaderNotPresent() {
+        HttpRequest httpRequest = new HttpRequest("/test.js");
+        httpRequest.setHeaders(new HashMap<String, List<String>>());
+        assertThat(httpRequest.skipInstrumentation(), equalTo(false));
+    }
+
+    @Test
+    public void shouldSkipInstrumentationIfNoInstrumentHeaderPresent() {
+        HttpRequest httpRequest = new HttpRequest("/test.js");
+        Map<String, List<String>> headers = new HashMap<String, List<String>>();
+        headers.put("NoInstrument", new ArrayList<String>());
+        httpRequest.setHeaders(headers);
+        assertThat(httpRequest.skipInstrumentation(), equalTo(true));
     }
 }

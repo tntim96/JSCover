@@ -391,4 +391,8 @@ public class HttpRequest {
     public Map<String, List<String>> getHeaders() {
         return headers;
     }
+
+    public boolean skipInstrumentation() {
+        return headers!=null && headers.containsKey("NoInstrument");
+    }
 }

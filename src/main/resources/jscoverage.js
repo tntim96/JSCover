@@ -819,10 +819,9 @@ function jscoverage_checkbox_click() {
 // -----------------------------------------------------------------------------
 // tab 3
 
-function jscoverage_makeTable() {
+function jscoverage_makeTable(lines) {
   var coverage = _$jscoverage[jscoverage_currentFile];
   var branchData = _$jscoverage.branchData[jscoverage_currentFile];
-  var lines = coverage.source;
 
   // this can happen if there is an error in the original JavaScript file
   if (! lines) {
@@ -981,7 +980,49 @@ function jscoverage_recalculateSourceTab() {
   progressLabel.innerHTML = 'Calculating coverage ...';
   var progressBar = document.getElementById('progressBar');
   ProgressBar.setPercentage(progressBar, 20);
-  setTimeout(jscoverage_makeTable, 0);
+  var useSourceFromJSON = true;//FIXME toggle to be removed
+
+  if (useSourceFromJSON) {
+      var displaySource = function() {
+        jscoverage_makeTable(_$jscoverage[jscoverage_currentFile].source);
+      }
+    setTimeout(displaySource, 0);
+  } else {
+      var request = jscoverage_createRequest();
+      try {
+        var relativeUrl = jscoverage_currentFile.substring(1);
+        request.open('GET', relativeUrl, true);
+        request.setRequestHeader("NoInstrument", "true");
+        request.onreadystatechange = function (event) {
+          if (request.readyState === 4) {
+            try {
+              if (request.status !== 0 && request.status !== 200) {
+                throw request.status;
+              }
+              var response = request.responseText;
+              if (response === '') {
+                throw 404;
+              }
+              var displaySource = function() {
+                  var lines = response.split(/\n/);
+                  for (var i = 0; i < lines.length; i++)
+                      lines[i] = jscoverage_html_escape(lines[i]);
+                  jscoverage_makeTable(lines);
+              }
+              setTimeout(displaySource, 0);
+              summaryThrobber.style.visibility = 'hidden';
+            }
+            catch (e) {
+              reportError(e);
+            }
+          }
+        };
+        request.send(null);
+      }
+      catch (e) {
+        reportError(e);
+      }
+  }
 }
 
 // -----------------------------------------------------------------------------

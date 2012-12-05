@@ -361,9 +361,7 @@ import org.mozilla.javascript.CompilerEnvirons;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 import static java.lang.String.format;
 import static jscover.server.InstrumentingRequestHandler.JSCOVERAGE_STORE;
@@ -639,6 +637,25 @@ public class InstrumentingRequestHandlerTest {
         given(configuration.skipInstrumentation("test/production.js")).willReturn(true);
 
         webServer.handleGet(new HttpRequest("/test/production.js"));
+
+        verifyZeroInteractions(instrumenterService);
+        verifyZeroInteractions(ioService);
+        verifyZeroInteractions(jsonDataSaver);
+    }
+
+    @Test
+    public void shouldServeNonInstrumentedJSWhenViewingSource() throws IOException {
+        File wwwRoot = new File("wwwRoot");
+        ReflectionUtils.setField(webServer, HttpServer.class, "wwwRoot", wwwRoot);
+        CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
+        given(configuration.getCompilerEnvirons()).willReturn(compilerEnvirons);
+        given(configuration.skipInstrumentation("test/production.js")).willReturn(false);
+
+        Map<String, List<String>> headers = new HashMap<String, List<String>>();
+        headers.put("NoInstrument", new ArrayList<String>(){{add("true");}});
+        HttpRequest request = new HttpRequest("/test/production.js");
+        request.setHeaders(headers);
+        webServer.handleGet(request);
 
         verifyZeroInteractions(instrumenterService);
         verifyZeroInteractions(ioService);

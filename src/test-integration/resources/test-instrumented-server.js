@@ -85,6 +85,12 @@ function jscoverage_quote(s) {
     }
   }) + '"';
 }
+
+function jscoverage_html_escape(s) {
+    return s.replace(/[<>\&\"\']/g, function(c) {
+    return '&#' + c.charCodeAt(0) + ';';
+  });
+}
 function BranchData() {
     this.position = -1;
     this.nodeLength = -1;

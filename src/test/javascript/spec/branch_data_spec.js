@@ -1,4 +1,26 @@
 $(document).ready(function() {
+    describe('Common Utils', function() {
+        it("should convert JavaScript Source To Html", function() {
+            expect(jscoverage_html_escape("x > y")).toEqual("x &#62; y");
+            expect(jscoverage_html_escape("x < y")).toEqual("x &#60; y");
+            expect(jscoverage_html_escape("x && y")).toEqual("x &#38;&#38; y");
+            expect(jscoverage_html_escape("'s'")).toEqual("&#39;s&#39;");
+            expect(jscoverage_html_escape('"s"')).toEqual("&#34;s&#34;");
+        });
+
+        it("should escape quotes for JavaScript", function() {
+            expect(jscoverage_quote("'s'")).toEqual("\"'s'\"");
+            expect(jscoverage_quote('\b')).toEqual('\"\\b\"');
+            expect(jscoverage_quote('\f')).toEqual('\"\\f\"');
+            expect(jscoverage_quote('\n')).toEqual('\"\\n\"');
+            expect(jscoverage_quote('\r')).toEqual('\"\\r\"');
+            expect(jscoverage_quote('\t')).toEqual('\"\\t\"');
+            expect(jscoverage_quote('"s"')).toEqual('"\\"s\\""');
+            expect(jscoverage_quote('\\')).toEqual('\"\\\\"');
+            expect(jscoverage_quote('\u0020')).toEqual('" "');
+        });
+
+    });
     describe('Branch Data', function() {
 
         var branchData;
