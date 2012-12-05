@@ -347,6 +347,7 @@ import jscover.instrument.UnloadedSourceProcessor;
 import jscover.report.JSONDataSaver;
 import jscover.report.ScriptLinesAndSource;
 import jscover.util.IoService;
+import jscover.util.IoUtils;
 import jscover.util.ReflectionUtils;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -375,6 +376,7 @@ import static org.mockito.Mockito.*;
 public class InstrumentingRequestHandlerTest {
     private InstrumentingRequestHandler webServer;
     private @Mock IoService ioService;
+    private @Mock IoUtils ioUtils;
     private @Mock JSONDataSaver jsonDataSaver;
     private @Mock InstrumenterService instrumenterService;
     private @Mock UnloadedSourceProcessor unloadedSourceProcessor;
@@ -395,6 +397,7 @@ public class InstrumentingRequestHandlerTest {
         ReflectionUtils.setField(webServer, "configuration", configuration);
         ReflectionUtils.setField(webServer, HttpServer.class, "pw", pw);
         ReflectionUtils.setField(webServer, HttpServer.class, "version", "testVersion");
+        ReflectionUtils.setField(webServer, HttpServer.class, "ioUtils", ioUtils);
     }
 
     @Test
@@ -571,7 +574,7 @@ public class InstrumentingRequestHandlerTest {
         verifyZeroInteractions(ioService);
         verifyZeroInteractions(jsonDataSaver);
         verifyZeroInteractions(proxyService);
-        assertThat(InstrumentingRequestHandler.uris.size(), equalTo(0));
+        assertThat(InstrumentingRequestHandler.uris.size(), equalTo(1));
     }
 
     @Test

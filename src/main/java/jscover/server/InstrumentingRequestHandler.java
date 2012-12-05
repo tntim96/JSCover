@@ -342,6 +342,7 @@ Public License instead of this License.
 
 package jscover.server;
 
+import jscover.Main;
 import jscover.instrument.InstrumenterService;
 import jscover.instrument.UnloadedSourceProcessor;
 import jscover.report.JSONDataSaver;
@@ -385,9 +386,19 @@ public class InstrumentingRequestHandler extends HttpServer {
             }
             try {
                 List<ScriptLinesAndSource> unloadJSData = null;
-                if (configuration.isIncludeUnloadedJS())
+                if (configuration.isIncludeUnloadedJS()) {
                     unloadJSData = unloadedSourceProcessor.getEmptyCoverageData(uris);
+                    for (ScriptLinesAndSource scriptLinesAndSource : unloadJSData) {
+                        File src = new File(configuration.getDocumentRoot(), scriptLinesAndSource.getUri());
+                        ioUtils.copy(src, new File(reportDir, Main.originalSrc + src.getName()));
+                    }
+                }
                 jsonDataSaver.saveJSONData(reportDir, data, unloadJSData);
+                for (String jsURI : uris) {
+                    File src = new File(configuration.getDocumentRoot(), jsURI);
+                    File dest = new File(reportDir, Main.originalSrc + jsURI);
+                    ioUtils.copy(src, dest);
+                }
                 ioService.generateJSCoverFilesForWebServer(reportDir, configuration.getVersion());
                 sendResponse(HTTP_STATUS.HTTP_OK, MIME.TEXT_PLAIN, "Coverage data stored at " + reportDir);
             } catch(Throwable t) {
@@ -420,8 +431,7 @@ public class InstrumentingRequestHandler extends HttpServer {
                     String originalJS = proxyService.getUrl(request.getUrl());
                     jsInstrumented = instrumenterService.instrumentJSForWebServer(configuration.getCompilerEnvirons(), originalJS, uri, configuration.isIncludeBranch());
                 } else {
-                    if (configuration.isIncludeUnloadedJS())
-                        uris.add(uri.substring(1));
+                    uris.add(uri.substring(1));
                     jsInstrumented = instrumenterService.instrumentJSForWebServer(configuration.getCompilerEnvirons(), new File(wwwRoot, uri), uri, configuration.isIncludeBranch());
                 }
                 sendResponse(HTTP_STATUS.HTTP_OK, MIME.JS, jsInstrumented);

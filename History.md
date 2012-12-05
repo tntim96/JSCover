@@ -1,10 +1,7 @@
 0.2.0-RC1 / 2012-??-??
 ==================
- * Remove source from JSON
-
-0.1.2 / 2012-??-??
-==================
   * Improve unloaded JavaScript parsing error logging issue https://github.com/tntim96/JSCover/issues/27
+  * Internal - Remove source from JSON
 
 0.1.1 / 2012-12-02
 ==================

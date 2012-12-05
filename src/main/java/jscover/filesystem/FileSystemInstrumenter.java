@@ -350,6 +350,7 @@ import jscover.util.IoUtils;
 import jscover.util.Logger;
 
 import java.io.File;
+import java.io.FilenameFilter;
 
 public class FileSystemInstrumenter {
     private SourceFormatter sourceFormatter = PlainFormatter.getInstance();
@@ -365,24 +366,42 @@ public class FileSystemInstrumenter {
         Logger.setLogFile(log);
         ioService.generateJSCoverFilesForFileSystem(configuration.getDestDir(), configuration.getVersion());
         copyFolder(configuration.getSrcDir(), configuration.getDestDir());
+        copyFolder(configuration.getSrcDir(), new File(configuration.getDestDir(), "original-src"), getJavaScriptFilter(), false);
+    }
+
+    private FilenameFilter getJavaScriptFilter() {
+        return new FilenameFilter() {
+            public boolean accept(File dir, String name) {
+                File file = new File(dir, name);
+                return file.isDirectory() || name.endsWith(".js");
+            }
+        };
     }
 
     private void copyFolder(File src, File dest) {
+        FilenameFilter acceptAll = new FilenameFilter() {
+            public boolean accept(File dir, String name) {
+                return true;
+            }
+        };
+        copyFolder(src, dest, acceptAll, true);
+    }
+
+    private void copyFolder(File src, File dest, FilenameFilter filter, boolean instrument) {
         String path = ioUtils.getRelativePath(src, configuration.getSrcDir());
         if (configuration.exclude(path))
             return;
         if (src.isDirectory()) {
-            if (!dest.exists())
-                dest.mkdirs();
-
-            String files[] = src.list();
+            String files[] = src.list(filter);
             for (String file : files) {
                 File srcFile = new File(src, file);
                 File destFile = new File(dest, file);
-                copyFolder(srcFile, destFile);
+                copyFolder(srcFile, destFile, filter, instrument);
             }
         } else {
-            if (src.isFile() && src.toString().endsWith(".js") && !configuration.skipInstrumentation(path)) {
+            if (instrument && src.isFile() && src.toString().endsWith(".js") && !configuration.skipInstrumentation(path)) {
+                if (!dest.getParentFile().exists())
+                    dest.getParentFile().mkdirs();
                 instrumenterService.instrumentJSForFileSystem(configuration.getCompilerEnvirons(), src, dest, path, configuration.isIncludeBranch());
             } else {
                 ioUtils.copy(src, dest);

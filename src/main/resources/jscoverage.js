@@ -980,7 +980,7 @@ function jscoverage_recalculateSourceTab() {
   progressLabel.innerHTML = 'Calculating coverage ...';
   var progressBar = document.getElementById('progressBar');
   ProgressBar.setPercentage(progressBar, 20);
-  var useSourceFromJSON = true;//FIXME toggle to be removed
+  var useSourceFromJSON = false;//FIXME toggle to be removed
 
   if (useSourceFromJSON) {
       var displaySource = function() {
@@ -990,7 +990,11 @@ function jscoverage_recalculateSourceTab() {
   } else {
       var request = jscoverage_createRequest();
       try {
-        var relativeUrl = jscoverage_currentFile.substring(1);
+        var relativeUrl = jscoverage_currentFile;
+        if (relativeUrl.charAt(0) !== '/')
+          relativeUrl = '/' + relativeUrl;
+        if (!jscoverage_isServer)
+          relativeUrl = 'original-src' + relativeUrl;
         request.open('GET', relativeUrl, true);
         request.setRequestHeader("NoInstrument", "true");
         request.onreadystatechange = function (event) {

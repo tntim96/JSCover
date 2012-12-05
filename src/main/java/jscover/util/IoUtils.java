@@ -548,6 +548,7 @@ public class IoUtils {
     }
 
     public void copy(File src, File dest) {
+        dest.getParentFile().mkdirs();
         FileInputStream is = null;
         FileOutputStream os = null;
         try {
