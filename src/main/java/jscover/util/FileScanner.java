@@ -342,6 +342,7 @@ Public License instead of this License.
 
 package jscover.util;
 
+import jscover.Main;
 import jscover.server.ConfigurationForServer;
 
 import java.io.File;
@@ -351,9 +352,11 @@ import java.util.Set;
 public class FileScanner {
     private ConfigurationForServer configuration;
     private IoUtils ioUtils = IoUtils.getInstance();
+    private File reportSrc;
 
     public FileScanner(ConfigurationForServer configuration) {
         this.configuration = configuration;
+        reportSrc = new File(configuration.getReportDir(), Main.reportSrcSubDir);
     }
 
     public Set<File> getFiles(Set<String> urisAlreadyProcessed) {
@@ -363,6 +366,8 @@ public class FileScanner {
     }
 
     private void searchFolder(File src, Set<File> list, Set<String> urisAlreadyProcessed) {
+        if (inReportSrc(src))
+            return;
         if (src.isDirectory()) {
             String files[] = src.list();
             for (String file : files) {
@@ -380,5 +385,9 @@ public class FileScanner {
                 list.add(src);
             }
         }
+    }
+
+    private boolean inReportSrc(File src) {
+        return ioUtils.isSubDirectory(src, reportSrc);
     }
 }

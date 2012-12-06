@@ -342,14 +342,13 @@ Public License instead of this License.
 
 package jscover.util;
 
+import jscover.Main;
 import jscover.server.ConfigurationForServer;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -358,6 +357,7 @@ import static org.hamcrest.core.IsCollectionContaining.hasItem;
 
 public class FileScannerTest {
     private ConfigurationForServer configuration;
+    private IoUtils ioUtils = IoUtils.getInstance();
 
     private FileScanner fileScanner;
     private Set<String> urisAlreadyProcessed = new HashSet<String>();
@@ -411,5 +411,23 @@ public class FileScannerTest {
         assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/root.js")));
         assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/level1/level1.js")));
         assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/level1/level2/level2.js")));
+    }
+
+    @Test
+    public void shouldExcludeSrcCopiedForReportWhenReportDirIsInDocumentRoot() {
+        configuration = ConfigurationForServer.parse(new String[]{
+                "--document-root=target/ExcludeSrcCopiedForReport",
+                "--report-dir=target/ExcludeSrcCopiedForReport/report"
+        });
+        fileScanner = new FileScanner(configuration);
+        File rootJS = new File("src/test-integration/resources/jsSearch/root.js");
+        File rootJSSourceCopy = new File("target/ExcludeSrcCopiedForReport/src/jsSearch/root.js");
+        ioUtils.copy(rootJS, rootJSSourceCopy);
+        File rootJSReportCopy = new File("target/ExcludeSrcCopiedForReport/report/"+ Main.reportSrcSubDir +"/jsSearch/root.js");
+        ioUtils.copy(rootJS, rootJSReportCopy);
+
+        Set<File> files = fileScanner.getFiles(urisAlreadyProcessed);
+        assertThat(files.size(), equalTo(1));
+        assertThat(files, hasItem(rootJSSourceCopy));
     }
 }

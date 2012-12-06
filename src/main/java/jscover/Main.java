@@ -369,7 +369,7 @@ public class Main {
     public static final String SERVER_PREFIX = "-ws";
     public static final String FILESYSTEM_PREFIX = "-fs";
     public static final Properties properties = new Properties();
-    public static String originalSrc = "original-src";
+    public static String reportSrcSubDir = "original-src";
 
     private String manifestName = "MANIFEST.MF";
     private List<String> dependantClasses = new ArrayList<String>() {{

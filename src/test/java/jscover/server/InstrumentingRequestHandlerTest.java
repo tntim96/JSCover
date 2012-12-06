@@ -532,7 +532,7 @@ public class InstrumentingRequestHandlerTest {
         File subdirectory = new File(file, "subdirectory");
         verify(jsonDataSaver).saveJSONData(subdirectory, "data", null);
         verify(ioService).generateJSCoverFilesForWebServer(subdirectory, "theVersion");
-        verify(ioUtils).copy(new File("js/util.js"), new File(configuration.getReportDir(), "subdirectory/" + Main.originalSrc + "/js/util.js"));
+        verify(ioUtils).copy(new File("js/util.js"), new File(configuration.getReportDir(), "subdirectory/" + Main.reportSrcSubDir + "/js/util.js"));
         verifyZeroInteractions(instrumenterService);
         assertThat(stringWriter.toString(), containsString(format("Coverage data stored at %s", subdirectory)));
     }
@@ -552,7 +552,7 @@ public class InstrumentingRequestHandlerTest {
 
         verify(jsonDataSaver).saveJSONData(reportDir, "data", unloadedJS);
         verify(ioService).generateJSCoverFilesForWebServer(reportDir, "theVersion");
-        verify(ioUtils).copy(new File("/js/unloaded.js"), new File(configuration.getReportDir(), Main.originalSrc + "/js/unloaded.js"));
+        verify(ioUtils).copy(new File("/js/unloaded.js"), new File(configuration.getReportDir(), Main.reportSrcSubDir + "/js/unloaded.js"));
         verifyZeroInteractions(instrumenterService);
         assertThat(stringWriter.toString(), containsString(format("Coverage data stored at %s", reportDir)));
     }

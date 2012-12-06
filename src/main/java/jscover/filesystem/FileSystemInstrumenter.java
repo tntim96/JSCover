@@ -364,7 +364,7 @@ public class FileSystemInstrumenter {
         Logger.setLogFile(log);
         ioService.generateJSCoverFilesForFileSystem(configuration.getDestDir(), configuration.getVersion());
         copyFolder(configuration.getSrcDir(), configuration.getDestDir());
-        copyFolder(configuration.getSrcDir(), new File(configuration.getDestDir(), Main.originalSrc), getJavaScriptFilter(), false);
+        copyFolder(configuration.getSrcDir(), new File(configuration.getDestDir(), Main.reportSrcSubDir), getJavaScriptFilter(), false);
     }
 
     private FilenameFilter getJavaScriptFilter() {

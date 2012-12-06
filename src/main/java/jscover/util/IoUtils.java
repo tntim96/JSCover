@@ -579,7 +579,7 @@ public class IoUtils {
 
     public boolean isSubDirectory(File file1, File file2) {
         try {
-            return !(file1.getCanonicalPath()+File.separator).startsWith(file2.getCanonicalPath()+File.separator);
+            return (file1.getCanonicalPath()+File.separator).startsWith(file2.getCanonicalPath()+File.separator);
         } catch (IOException e) {
             e.printStackTrace();
             return false;

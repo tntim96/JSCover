@@ -466,7 +466,7 @@ public class ConfigurationForFS extends Configuration {
     }
 
     boolean validDestinationDirectory() {
-        return ioUtils.isSubDirectory(destDir, srcDir);
+        return !ioUtils.isSubDirectory(destDir, srcDir);
     }
 
     public String getHelpText() {

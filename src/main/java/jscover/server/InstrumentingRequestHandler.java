@@ -389,13 +389,13 @@ public class InstrumentingRequestHandler extends HttpServer {
                     unloadJSData = unloadedSourceProcessor.getEmptyCoverageData(uris);
                     for (ScriptLinesAndSource scriptLinesAndSource : unloadJSData) {
                         File src = new File(configuration.getDocumentRoot(), scriptLinesAndSource.getUri());
-                        ioUtils.copy(src, new File(reportDir, Main.originalSrc + scriptLinesAndSource.getUri()));
+                        ioUtils.copy(src, new File(reportDir, Main.reportSrcSubDir + scriptLinesAndSource.getUri()));
                     }
                 }
                 jsonDataSaver.saveJSONData(reportDir, data, unloadJSData);
                 for (String jsURI : uris) {
                     File src = new File(configuration.getDocumentRoot(), jsURI);
-                    File dest = new File(reportDir, Main.originalSrc + "/" + jsURI);
+                    File dest = new File(reportDir, Main.reportSrcSubDir + "/" + jsURI);
                     ioUtils.copy(src, dest);
                 }
                 ioService.generateJSCoverFilesForWebServer(reportDir, configuration.getVersion());
