@@ -466,12 +466,7 @@ public class ConfigurationForFS extends Configuration {
     }
 
     boolean validDestinationDirectory() {
-        try {
-            return !(destDir.getCanonicalPath()+File.separator).startsWith(srcDir.getCanonicalPath()+File.separator);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
+        return ioUtils.isSubDirectory(destDir, srcDir);
     }
 
     public String getHelpText() {

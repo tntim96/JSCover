@@ -348,11 +348,9 @@ import jscover.instrument.UnloadedSourceProcessor;
 import jscover.report.JSONDataSaver;
 import jscover.report.ScriptLinesAndSource;
 import jscover.util.IoService;
+import jscover.util.Logger;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.io.*;
 import java.net.Socket;
 import java.util.HashSet;
 import java.util.List;
@@ -369,6 +367,7 @@ public class InstrumentingRequestHandler extends HttpServer {
     private InstrumenterService instrumenterService = new InstrumenterService();
     private ProxyService proxyService = new ProxyService();
     private UnloadedSourceProcessor unloadedSourceProcessor;
+    private Logger logger;
 
     public InstrumentingRequestHandler(Socket socket, ConfigurationForServer configuration) {
         super(socket, configuration.getDocumentRoot(), configuration.getVersion());
@@ -390,19 +389,19 @@ public class InstrumentingRequestHandler extends HttpServer {
                     unloadJSData = unloadedSourceProcessor.getEmptyCoverageData(uris);
                     for (ScriptLinesAndSource scriptLinesAndSource : unloadJSData) {
                         File src = new File(configuration.getDocumentRoot(), scriptLinesAndSource.getUri());
-                        ioUtils.copy(src, new File(reportDir, Main.originalSrc + src.getName()));
+                        ioUtils.copy(src, new File(reportDir, Main.originalSrc + scriptLinesAndSource.getUri()));
                     }
                 }
                 jsonDataSaver.saveJSONData(reportDir, data, unloadJSData);
                 for (String jsURI : uris) {
                     File src = new File(configuration.getDocumentRoot(), jsURI);
-                    File dest = new File(reportDir, Main.originalSrc + jsURI);
+                    File dest = new File(reportDir, Main.originalSrc + "/" + jsURI);
                     ioUtils.copy(src, dest);
                 }
                 ioService.generateJSCoverFilesForWebServer(reportDir, configuration.getVersion());
                 sendResponse(HTTP_STATUS.HTTP_OK, MIME.TEXT_PLAIN, "Coverage data stored at " + reportDir);
             } catch(Throwable t) {
-                t.printStackTrace();
+                logger.log("Error saving coverage data", t);
                 String message = format("Error saving coverage data. Try deleting JSON file at %s\n",reportDir);
                 sendResponse(HTTP_STATUS.HTTP_OK, MIME.TEXT_PLAIN, message);
             }
@@ -431,8 +430,8 @@ public class InstrumentingRequestHandler extends HttpServer {
                     String originalJS = proxyService.getUrl(request.getUrl());
                     jsInstrumented = instrumenterService.instrumentJSForWebServer(configuration.getCompilerEnvirons(), originalJS, uri, configuration.isIncludeBranch());
                 } else {
-                    uris.add(uri.substring(1));
                     jsInstrumented = instrumenterService.instrumentJSForWebServer(configuration.getCompilerEnvirons(), new File(wwwRoot, uri), uri, configuration.isIncludeBranch());
+                    uris.add(uri.substring(1));
                 }
                 sendResponse(HTTP_STATUS.HTTP_OK, MIME.JS, jsInstrumented);
             } else {
@@ -441,6 +440,8 @@ public class InstrumentingRequestHandler extends HttpServer {
                 else
                     super.handleGet(request);
             }
+        } catch (UriNotFound e) {
+            sendResponse(HTTP_STATUS.HTTP_FILE_NOT_FOUND,  MIME.TEXT_PLAIN, e.getMessage());
         } catch (Throwable e) {
             StringWriter stringWriter = new StringWriter();
             e.printStackTrace(new PrintWriter(stringWriter));

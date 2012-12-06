@@ -359,7 +359,7 @@ public class JSONDataSaver {
         SortedMap<String, FileData> extraData = new TreeMap<String, FileData>();
         if (jsonFile.exists()) {
             String existingJSON = ioUtils.toString(jsonFile);
-            extraData.putAll(jsonDataMerger.mergeJSONCoverageData(existingJSON, data));
+            extraData.putAll(jsonDataMerger.mergeJSONCoverageStrings(existingJSON, data));
             ioUtils.copy(jsonDataMerger.toJSON(extraData), jsonFile);
         } else if (unloadJSData != null) {
             //Only scan for unloaded JS if JSON not saved before

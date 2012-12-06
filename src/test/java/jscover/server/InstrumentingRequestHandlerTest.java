@@ -342,12 +342,14 @@ Public License instead of this License.
 
 package jscover.server;
 
+import jscover.Main;
 import jscover.instrument.InstrumenterService;
 import jscover.instrument.UnloadedSourceProcessor;
 import jscover.report.JSONDataSaver;
 import jscover.report.ScriptLinesAndSource;
 import jscover.util.IoService;
 import jscover.util.IoUtils;
+import jscover.util.Logger;
 import jscover.util.ReflectionUtils;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -382,6 +384,7 @@ public class InstrumentingRequestHandlerTest {
     private @Mock UnloadedSourceProcessor unloadedSourceProcessor;
     private @Mock ProxyService proxyService;
     private @Mock ConfigurationForServer configuration;
+    private @Mock Logger logger;
     private final StringWriter stringWriter = new StringWriter();
     private PrintWriter pw = new PrintWriter(stringWriter);
 
@@ -395,6 +398,7 @@ public class InstrumentingRequestHandlerTest {
         ReflectionUtils.setField(webServer, "unloadedSourceProcessor", unloadedSourceProcessor);
         ReflectionUtils.setField(webServer, "proxyService", proxyService);
         ReflectionUtils.setField(webServer, "configuration", configuration);
+        ReflectionUtils.setField(webServer, "logger", logger);
         ReflectionUtils.setField(webServer, HttpServer.class, "pw", pw);
         ReflectionUtils.setField(webServer, HttpServer.class, "version", "testVersion");
         ReflectionUtils.setField(webServer, HttpServer.class, "ioUtils", ioUtils);
@@ -516,19 +520,39 @@ public class InstrumentingRequestHandlerTest {
     }
 
     @Test
-    public void shouldStoreJSCoverageJSONWithUnloadedJS() {
+    public void shouldStoreJSCoverageJSONInSpecifiedSubDirectoryAndCopySourceForReport() {
+        InstrumentingRequestHandler.uris = new HashSet<String>(){{add("js/util.js");}};
+        File file = new File("target/temp");
+        file.deleteOnExit();
+        given(configuration.getReportDir()).willReturn(file);
+        given(configuration.getVersion()).willReturn("theVersion");
+
+        webServer.handlePost(new HttpRequest(JSCOVERAGE_STORE + "subdirectory"), "data");
+
+        File subdirectory = new File(file, "subdirectory");
+        verify(jsonDataSaver).saveJSONData(subdirectory, "data", null);
+        verify(ioService).generateJSCoverFilesForWebServer(subdirectory, "theVersion");
+        verify(ioUtils).copy(new File("js/util.js"), new File(configuration.getReportDir(), "subdirectory/" + Main.originalSrc + "/js/util.js"));
+        verifyZeroInteractions(instrumenterService);
+        assertThat(stringWriter.toString(), containsString(format("Coverage data stored at %s", subdirectory)));
+    }
+
+    @Test
+    public void shouldStoreJSCoverageJSONWithUnloadedJSAndCopySourceForReport() {
         File reportDir = new File("target/temp");
         reportDir.deleteOnExit();
         given(configuration.isIncludeUnloadedJS()).willReturn(true);
         given(configuration.getReportDir()).willReturn(reportDir);
         given(configuration.getVersion()).willReturn("theVersion");
-        List<ScriptLinesAndSource> emptyCoverage = new ArrayList<ScriptLinesAndSource>();
-        given(unloadedSourceProcessor.getEmptyCoverageData(anySet())).willReturn(emptyCoverage);
+        List<ScriptLinesAndSource> unloadedJS = new ArrayList<ScriptLinesAndSource>();
+        unloadedJS.add(new ScriptLinesAndSource("/js/unloaded.js", null, null));
+        given(unloadedSourceProcessor.getEmptyCoverageData(anySet())).willReturn(unloadedJS);
 
         webServer.handlePost(new HttpRequest(JSCOVERAGE_STORE), "data");
 
-        verify(jsonDataSaver).saveJSONData(reportDir, "data", emptyCoverage);
+        verify(jsonDataSaver).saveJSONData(reportDir, "data", unloadedJS);
         verify(ioService).generateJSCoverFilesForWebServer(reportDir, "theVersion");
+        verify(ioUtils).copy(new File("/js/unloaded.js"), new File(configuration.getReportDir(), Main.originalSrc + "/js/unloaded.js"));
         verifyZeroInteractions(instrumenterService);
         assertThat(stringWriter.toString(), containsString(format("Coverage data stored at %s", reportDir)));
     }
@@ -594,6 +618,30 @@ public class InstrumentingRequestHandlerTest {
         verifyZeroInteractions(proxyService);
         assertThat(InstrumentingRequestHandler.uris.size(), equalTo(1));
         assertThat(InstrumentingRequestHandler.uris.iterator().next(), equalTo("js/production.js"));
+    }
+
+    @Test
+    public void shouldNotRecordInstrumentedURIsForWebServerIfNotFound() throws IOException {
+        given(configuration.isIncludeUnloadedJS()).willReturn(true);
+        File wwwRoot = new File("wwwRoot");
+        ReflectionUtils.setField(webServer, HttpServer.class, "wwwRoot", wwwRoot);
+        CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
+        given(configuration.getCompilerEnvirons()).willReturn(compilerEnvirons);
+        given(configuration.skipInstrumentation("/js/production.js")).willReturn(false);
+        given(instrumenterService.instrumentJSForWebServer(compilerEnvirons, new File("wwwRoot/js/production.js"), "/js/production.js", false)).willThrow(new UriNotFound("Ouch!", null));
+
+        webServer.handleGet(new HttpRequest("/js/production.js"));
+
+        verifyZeroInteractions(ioService);
+        verifyZeroInteractions(jsonDataSaver);
+        verifyZeroInteractions(proxyService);
+        assertThat(InstrumentingRequestHandler.uris.size(), equalTo(0));
+        assertThat(stringWriter.toString(), equalTo("HTTP/1.0 404 File Not Found\n" +
+                "Server: JSCover/testVersion\n" +
+                "Content-Type: text/plain\n" +
+                "Content-Length: 5\n" +
+                "\n" +
+                "Ouch!"));
     }
 
     @Test

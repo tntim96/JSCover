@@ -348,7 +348,6 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.internal.matchers.TypeSafeMatcher;
 import org.junit.runner.RunWith;
@@ -397,7 +396,7 @@ public class JSONDataSaverTest {
     public void shouldSaveAndMergeData() {
         ioUtils.copy("json1", jsonFile);//Force merge
         SortedMap<String, FileData> map = new TreeMap<String, FileData>();
-        given(jsonDataMerger.mergeJSONCoverageData("json1", "json2")).willReturn(map);
+        given(jsonDataMerger.mergeJSONCoverageStrings("json1", "json2")).willReturn(map);
         given(jsonDataMerger.toJSON(map)).willReturn("jsonMerged");
 
         jsonDataSaver.saveJSONData(destDir, "json2", null);

@@ -344,6 +344,7 @@ package jscover.instrument;
 
 import jscover.format.PlainFormatter;
 import jscover.format.SourceFormatter;
+import jscover.server.UriNotFound;
 import jscover.util.IoUtils;
 import org.mozilla.javascript.CompilerEnvirons;
 
@@ -361,7 +362,7 @@ public class InstrumenterService {
             String source = ioUtils.toString(new FileInputStream(srcFile));
             return sourceProcessor.processSourceForServer(source);
         } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+            throw new UriNotFound("Couldn't find "+uri, e);
         }
     }
 

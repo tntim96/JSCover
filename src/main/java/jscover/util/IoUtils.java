@@ -569,9 +569,20 @@ public class IoUtils {
         return file1.getAbsolutePath().substring(file2.getAbsolutePath().length()+File.separator.length()).replaceAll("\\\\","/");
     }
 
+    /*
     public Reader getReader(String source) {
         ByteArrayInputStream bais = new ByteArrayInputStream(source.getBytes(charSet));
         BufferedReader reader = new BufferedReader(new InputStreamReader(bais, charSet));
         return reader;
+    }
+    */
+
+    public boolean isSubDirectory(File file1, File file2) {
+        try {
+            return !(file1.getCanonicalPath()+File.separator).startsWith(file2.getCanonicalPath()+File.separator);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

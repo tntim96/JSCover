@@ -342,6 +342,7 @@ Public License instead of this License.
 
 package jscover.filesystem;
 
+import jscover.Main;
 import jscover.format.PlainFormatter;
 import jscover.format.SourceFormatter;
 import jscover.instrument.InstrumenterService;
@@ -366,7 +367,7 @@ public class FileSystemInstrumenter {
         Logger.setLogFile(log);
         ioService.generateJSCoverFilesForFileSystem(configuration.getDestDir(), configuration.getVersion());
         copyFolder(configuration.getSrcDir(), configuration.getDestDir());
-        copyFolder(configuration.getSrcDir(), new File(configuration.getDestDir(), "original-src"), getJavaScriptFilter(), false);
+        copyFolder(configuration.getSrcDir(), new File(configuration.getDestDir(), Main.originalSrc), getJavaScriptFilter(), false);
     }
 
     private FilenameFilter getJavaScriptFilter() {

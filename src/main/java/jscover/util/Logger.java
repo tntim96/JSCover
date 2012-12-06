@@ -370,13 +370,13 @@ public class Logger {
         log(message, null);
     }
 
-    public void log(String message, RuntimeException t) {
+    public void log(String message, Throwable t) {
         if (log == null) {
             if (t == null) {
                 System.err.println(message);
                 return;
             } else
-                throw t;
+                throw new RuntimeException(t);
         }
         synchronized (log) {
             PrintStream ps = null;

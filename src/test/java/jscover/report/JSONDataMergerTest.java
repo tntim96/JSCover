@@ -364,7 +364,7 @@ public class JSONDataMergerTest {
         String data2 = ioUtils.loadFromClassPath("/jscover/report/jscoverage-select-3.json");
         String expected = ioUtils.loadFromClassPath("/jscover/report/jscoverage-select-1-3.json");
 
-        String merged = jsonMerger.toJSON(jsonMerger.mergeJSONCoverageData(data1, data2));
+        String merged = jsonMerger.toJSON(jsonMerger.mergeJSONCoverageStrings(data1, data2));
 
         assertThat(merged, equalTo(expected));
     }
@@ -375,7 +375,7 @@ public class JSONDataMergerTest {
         String data2 = ioUtils.loadFromClassPath("/jscover/report/jscoverage-select-4-branch.json");
         String expected = ioUtils.loadFromClassPath("/jscover/report/jscoverage-select-2-4-branch.json");
 
-        String merged = jsonMerger.toJSON(jsonMerger.mergeJSONCoverageData(data1, data2));
+        String merged = jsonMerger.toJSON(jsonMerger.mergeJSONCoverageStrings(data1, data2));
 
         assertThat(merged, equalTo(expected));
     }
@@ -386,7 +386,7 @@ public class JSONDataMergerTest {
         String data2 = "{\"/test2.js\":{\"coverage\":[null,0,1],\"source\":[\"x++;\",\"y++;\",\"z++;\"],\"branchData\":[]}}";
         String expected = "{\"/test1.js\":{\"coverage\":[null,0,1],\"source\":[\"x++;\",\"y++;\",\"z++;\"],\"branchData\":[]},\"/test2.js\":{\"coverage\":[null,0,1],\"source\":[\"x++;\",\"y++;\",\"z++;\"],\"branchData\":[]}}";
 
-        String merged = jsonMerger.toJSON(jsonMerger.mergeJSONCoverageData(data1, data2));
+        String merged = jsonMerger.toJSON(jsonMerger.mergeJSONCoverageStrings(data1, data2));
 
         assertThat(merged, equalTo(expected));
     }

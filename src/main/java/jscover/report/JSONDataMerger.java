@@ -357,9 +357,15 @@ public class JSONDataMerger {
     private JsonParser parser = new JsonParser(cx, cx.initStandardObjects());
 
 
-    public SortedMap<String, FileData> mergeJSONCoverageData(String data1, String data2) {
-        SortedMap<String, FileData> map1 = jsonToMap(data1);
-        SortedMap<String, FileData> map2 = jsonToMap(data2);
+    public SortedMap<String, FileData> mergeJSONCoverageStrings(String... data) {
+        SortedMap<String, FileData> total = new TreeMap<String, FileData>();
+        for (String json : data) {
+            mergeJSONCoverageMaps(total, jsonToMap(json));
+        }
+        return total;
+    }
+
+    private SortedMap<String, FileData> mergeJSONCoverageMaps(SortedMap<String, FileData> map1, SortedMap<String, FileData> map2) {
         for (String scriptName : map1.keySet()) {
             if (map2.containsKey(scriptName)) {
                 FileData coverageData = map1.get(scriptName);
