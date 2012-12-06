@@ -11,7 +11,6 @@ if (! _$jscoverage['javascript-generator-expression.js']) {
   _$jscoverage['javascript-generator-expression.js'][16] = 0;
   _$jscoverage['javascript-generator-expression.js'][18] = 0;
 }
-_$jscoverage['javascript-generator-expression.js'].source = ["// https://developer.mozilla.org/en/New_in_JavaScript_1.8","","let it = (i + 3 for (i in someObj));","try {","  while (true) {","    document.write(it.next() + \"&lt;br&gt;\\n\");","  }","} catch (err if err instanceof StopIteration) {","  document.write(\"End of record.&lt;br&gt;\\n\");","}","","function handleResults( results ) {","  for ( let i in results )","    ;","}","handleResults( i for ( i in obj ) if ( i &gt; 3 ) );","","it = (1 for(a in x) for(b in y));"];
 _$jscoverage['javascript-generator-expression.js'][3]++;
 let it = (i + 3 for (i in someObj));
 _$jscoverage['javascript-generator-expression.js'][4]++;

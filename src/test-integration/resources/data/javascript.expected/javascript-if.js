@@ -17,7 +17,6 @@ if (! _$jscoverage['javascript-if.js']) {
   _$jscoverage['javascript-if.js'][26] = 0;
   _$jscoverage['javascript-if.js'][29] = 0;
 }
-_$jscoverage['javascript-if.js'].source = ["var x = 0;","","if (x)","  x = 0;","","if (x) {","  x = 0;","}","","if (x)","  x = 0;","else","  x = 0;","","if (x) {","  x = 0;","}","else {","  x = 0;","}","","if (x) {","  x = 0;","}","else if (x) {","  x = 0;","}","else {","  x = 0;","}"];
 _$jscoverage['javascript-if.js'][1]++;
 var x = 0;
 _$jscoverage['javascript-if.js'][3]++;

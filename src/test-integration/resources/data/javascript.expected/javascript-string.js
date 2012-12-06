@@ -10,7 +10,6 @@ if (! _$jscoverage['javascript-string.js']) {
   _$jscoverage['javascript-string.js'][8] = 0;
   _$jscoverage['javascript-string.js'][10] = 0;
 }
-_$jscoverage['javascript-string.js'].source = ["x = \"\";","x = '';","x = \"x\";","x = 'x';","x = \"\\\"\";","x = '\\'';","x = \"\\b\\t\\n\\v\\f\\r\\\"\\'\\\\\";","x = new RegExp('x\\\\(\\\\)\\\\\\\\\\\\/');","","x = 'foo\\","bar';"];
 _$jscoverage['javascript-string.js'][1]++;
 x = "";
 _$jscoverage['javascript-string.js'][2]++;

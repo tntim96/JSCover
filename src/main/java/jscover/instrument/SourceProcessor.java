@@ -342,7 +342,6 @@ Public License instead of this License.
 
 package jscover.instrument;
 
-import jscover.format.SourceFormatter;
 import jscover.util.IoUtils;
 import org.mozilla.javascript.CompilerEnvirons;
 import org.mozilla.javascript.Parser;
@@ -355,21 +354,18 @@ import static java.lang.String.format;
 class SourceProcessor {
 
     private static final String initLine = "  _$jscoverage['%s'][%d] = 0;\n";
-    private static final String sourceInOneLine = "_$jscoverage['%s'].source = [%s];\n";
 
     private String uri;
-    private SourceFormatter sourceFormatter;
     private ParseTreeInstrumenter instrumenter;
     private BranchInstrumentor branchInstrumentor;
     private Parser parser;
     private IoUtils ioUtils = IoUtils.getInstance();
     private boolean includeBranchCoverage;
 
-    public SourceProcessor(CompilerEnvirons compilerEnv, String uri, SourceFormatter sourceFormatter, boolean includeBranchCoverage) {
+    public SourceProcessor(CompilerEnvirons compilerEnv, String uri, boolean includeBranchCoverage) {
         this.uri = uri;
         this.instrumenter = new ParseTreeInstrumenter(uri);
         this.branchInstrumentor = new BranchInstrumentor(uri);
-        this.sourceFormatter = sourceFormatter;
         parser = new Parser(compilerEnv);
         this.includeBranchCoverage = includeBranchCoverage;
     }
@@ -401,9 +397,7 @@ class SourceProcessor {
         if (includeBranchCoverage)
             jsLineInitialization += branchInstrumentor.getJsLineInitialization();
 
-        String jsArrayOfHtml = sourceFormatter.toJsArrayOfHtml(source);
-        String jsSourceLine = format(sourceInOneLine, uri, jsArrayOfHtml);
-        return jsLineInitialization + jsSourceLine + instrumentedSource;
+        return jsLineInitialization + instrumentedSource;
     }
 
     protected String instrumentSource(String source) {

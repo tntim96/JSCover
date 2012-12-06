@@ -13,7 +13,6 @@ if (! _$jscoverage['script.js']) {
   _$jscoverage['script.js'][4] = 0;
   _$jscoverage['script.js'][5] = 0;
 }
-_$jscoverage['script.js'].source = ["dump<span class=\"k\">(</span><span class=\"s\">\"hello\"</span><span class=\"k\">);</span>","","<span class=\"c\">// test formatting &amp;lt; &amp;gt; &amp;amp;</span>","<span class=\"k\">if</span> <span class=\"k\">(</span><span class=\"s\">'a'</span> <span class=\"k\">&lt;</span> <span class=\"s\">'b'</span> <span class=\"k\">&amp;&amp;</span> <span class=\"s\">'a'</span> <span class=\"k\">&gt;</span> <span class=\"s\">'b'</span><span class=\"k\">)</span> <span class=\"k\">{</span>","  dump<span class=\"k\">(</span><span class=\"s\">\"?\"</span><span class=\"k\">);</span>","<span class=\"k\">}</span>"];
 _$jscoverage['script.js'][1]++;
 dump("hello");
 _$jscoverage['script.js'][4]++;

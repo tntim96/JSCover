@@ -29,15 +29,7 @@ if (! window.jscoverage_report) {
         array.push(value);
       }
 
-      var source = coverage.source;
-      var lines = [];
-      length = source.length;
-      for (var line = 0; line < length; line++) {
-        lines.push(jscoverage_quote(source[line]));
-      }
-
-      json.push(jscoverage_quote(file) + ':{"coverage":[' + array.join(',') + '],"source":[' + lines.join(',')
-          + '],"branchData":' + convertBranchDataLinesToJSON(_$jscoverage.branchData[file]) + '}');
+      json.push(jscoverage_quote(file) + ':{"coverage":[' + array.join(',') + '],"branchData":' + convertBranchDataLinesToJSON(_$jscoverage.branchData[file]) + '}');
     }
     json = '{' + json.join(',') + '}';
 
@@ -269,7 +261,6 @@ if (! _$jscoverage['test-simple.js']) {
   _$jscoverage['test-simple.js'][2] = 0;
   _$jscoverage['test-simple.js'][3] = 0;
 }
-_$jscoverage['test-simple.js'].source = ["var x, y;","x = 1;","y = x * 2;"];
 _$jscoverage['test-simple.js'][1]++;
 var x, y;
 _$jscoverage['test-simple.js'][2]++;

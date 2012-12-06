@@ -21,7 +21,6 @@ if (! _$jscoverage['javascript-while.js']) {
   _$jscoverage['javascript-while.js'][31] = 0;
   _$jscoverage['javascript-while.js'][32] = 0;
 }
-_$jscoverage['javascript-while.js'].source = ["while (x) {","  x();","}","","while (x) {","  ;","}","","while (x)","  x();","","while (x)","  ;","","while (x) {","  if (x) {","    continue;","  }","}","","label:","while (x) {","  if (x) {","    continue label;","  }","}","","label2: {","  f();","  while (x) {","    if (x) {","      break label2;","    }","  }","}"];
 _$jscoverage['javascript-while.js'][1]++;
 while (x) {
   _$jscoverage['javascript-while.js'][2]++;

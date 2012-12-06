@@ -342,8 +342,6 @@ Public License instead of this License.
 
 package jscover.instrument;
 
-import jscover.format.PlainFormatter;
-import jscover.format.SourceFormatter;
 import jscover.server.UriNotFound;
 import jscover.util.IoUtils;
 import org.mozilla.javascript.CompilerEnvirons;
@@ -353,11 +351,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 public class InstrumenterService {
-    private SourceFormatter sourceFormatter = PlainFormatter.getInstance();
     private IoUtils ioUtils = IoUtils.getInstance();
 
     public String instrumentJSForWebServer(CompilerEnvirons compilerEnvirons, File srcFile, String uri, boolean includeBranch) {
-        SourceProcessor sourceProcessor = new SourceProcessor(compilerEnvirons, uri, sourceFormatter, includeBranch);
+        SourceProcessor sourceProcessor = new SourceProcessor(compilerEnvirons, uri, includeBranch);
         try {
             String source = ioUtils.toString(new FileInputStream(srcFile));
             return sourceProcessor.processSourceForServer(source);
@@ -367,12 +364,12 @@ public class InstrumenterService {
     }
 
     public String instrumentJSForWebServer(CompilerEnvirons compilerEnvirons, String source, String uri, boolean includeBranch) {
-        SourceProcessor sourceProcessor = new SourceProcessor(compilerEnvirons, uri, sourceFormatter, includeBranch);
+        SourceProcessor sourceProcessor = new SourceProcessor(compilerEnvirons, uri, includeBranch);
         return sourceProcessor.processSourceForServer(source);
     }
 
     public void instrumentJSForFileSystem(CompilerEnvirons compilerEnvirons, File srcFile, File dest, String uri, boolean includeBranch) {
-        SourceProcessor sourceProcessor = new SourceProcessor(compilerEnvirons, uri, sourceFormatter, includeBranch);
+        SourceProcessor sourceProcessor = new SourceProcessor(compilerEnvirons, uri, includeBranch);
         String source = ioUtils.loadFromFileSystem(srcFile);
         String jsInstrumented = sourceProcessor.processSourceForFileSystem(source);
         ioUtils.copy(jsInstrumented, dest);

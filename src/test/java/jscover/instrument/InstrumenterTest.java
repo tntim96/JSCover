@@ -369,7 +369,7 @@ public class InstrumenterTest {
         compilerEnv.setLanguageVersion(Context.VERSION_1_8);
         compilerEnv.setStrictMode(false);
     }
-    private SourceProcessor sourceProcessor = new SourceProcessor(compilerEnv, "test.js", null, false);
+    private SourceProcessor sourceProcessor = new SourceProcessor(compilerEnv, "test.js", false);
     private ParseTreeInstrumenter instrumenter;
 
     @Before

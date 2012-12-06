@@ -6,7 +6,6 @@ if (! _$jscoverage['javascript-do.js']) {
   _$jscoverage['javascript-do.js'][8] = 0;
   _$jscoverage['javascript-do.js'][9] = 0;
 }
-_$jscoverage['javascript-do.js'].source = ["var x;","","do {","  x = false;","}","while (x);","","do","  x = false;","while (x);"];
 _$jscoverage['javascript-do.js'][1]++;
 var x;
 _$jscoverage['javascript-do.js'][3]++;

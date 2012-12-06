@@ -349,7 +349,6 @@ import java.io.FilenameFilter;
 import java.util.HashSet;
 import java.util.Set;
 
-import jscover.format.PlainFormatter;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -359,8 +358,6 @@ import org.mozilla.javascript.Context;
 
 public class InstrumentAndHighlightRegressionTest {
     private static Set<String> tested = new HashSet<String>();
-
-    private PlainFormatter sourceFormatter = PlainFormatter.getInstance();
     private IoUtils ioUtils = IoUtils.getInstance();
 
     @Test
@@ -623,7 +620,7 @@ public class InstrumentAndHighlightRegressionTest {
 
     private void testFile(String fileName) {
         tested.add(fileName);
-        SourceProcessor instrumenter = new SourceProcessor(compilerEnv, fileName, sourceFormatter, false);
+        SourceProcessor instrumenter = new SourceProcessor(compilerEnv, fileName, false);
 
         String source = ioUtils.loadFromClassPath("/data/javascript/" + fileName);
         String instrumentedSource = instrumenter.processSourceWithoutHeader(source);

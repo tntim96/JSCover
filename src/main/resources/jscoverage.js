@@ -366,7 +366,6 @@ function jscoverage_body_load() {
             for (file in json) {
               var fileCoverage = json[file];
               _$jscoverage[file] = fileCoverage.coverage;
-              _$jscoverage[file].source = fileCoverage.source;
               _$jscoverage.branchData[file] = convertBranchDataLinesFromJSON(fileCoverage.branchData);
             }
             jscoverage_recalculateSummaryTab();
@@ -980,52 +979,43 @@ function jscoverage_recalculateSourceTab() {
   progressLabel.innerHTML = 'Calculating coverage ...';
   var progressBar = document.getElementById('progressBar');
   ProgressBar.setPercentage(progressBar, 20);
-  var useSourceFromJSON = false;//FIXME toggle to be removed
-
-  if (useSourceFromJSON) {
-      var displaySource = function() {
-        jscoverage_makeTable(_$jscoverage[jscoverage_currentFile].source);
-      }
-    setTimeout(displaySource, 0);
-  } else {
-      var request = jscoverage_createRequest();
-      try {
-        var relativeUrl = jscoverage_currentFile;
-        if (relativeUrl.charAt(0) !== '/')
-          relativeUrl = '/' + relativeUrl;
-        if (!jscoverage_isServer)
-          relativeUrl = 'original-src' + relativeUrl;
-        request.open('GET', relativeUrl, true);
-        request.setRequestHeader("NoInstrument", "true");
-        request.onreadystatechange = function (event) {
-          if (request.readyState === 4) {
-            try {
-              if (request.status !== 0 && request.status !== 200) {
-                throw request.status;
-              }
-              var response = request.responseText;
-              if (response === '') {
-                throw 404;
-              }
-              var displaySource = function() {
-                  var lines = response.split(/\n/);
-                  for (var i = 0; i < lines.length; i++)
-                      lines[i] = jscoverage_html_escape(lines[i]);
-                  jscoverage_makeTable(lines);
-              }
-              setTimeout(displaySource, 0);
-              summaryThrobber.style.visibility = 'hidden';
-            }
-            catch (e) {
-              reportError(e);
-            }
+  var request = jscoverage_createRequest();
+  try {
+    var relativeUrl = jscoverage_currentFile;
+    if (relativeUrl.charAt(0) !== '/')
+      relativeUrl = '/' + relativeUrl;
+    if (!jscoverage_isServer)
+      relativeUrl = 'original-src' + relativeUrl;
+    request.open('GET', relativeUrl, true);
+    request.setRequestHeader("NoInstrument", "true");
+    request.onreadystatechange = function (event) {
+      if (request.readyState === 4) {
+        try {
+          if (request.status !== 0 && request.status !== 200) {
+            throw request.status;
           }
-        };
-        request.send(null);
+          var response = request.responseText;
+          if (response === '') {
+            throw 404;
+          }
+          var displaySource = function() {
+              var lines = response.split(/\n/);
+              for (var i = 0; i < lines.length; i++)
+                  lines[i] = jscoverage_html_escape(lines[i]);
+              jscoverage_makeTable(lines);
+          }
+          setTimeout(displaySource, 0);
+          summaryThrobber.style.visibility = 'hidden';
+        }
+        catch (e) {
+          reportError(e);
+        }
       }
-      catch (e) {
-        reportError(e);
-      }
+    };
+    request.send(null);
+  }
+  catch (e) {
+    reportError(e);
   }
 }
 
@@ -1237,15 +1227,7 @@ function jscoverage_serializeCoverageToJSON() {
       array.push(value);
     }
 
-    var source = coverage.source;
-    var lines = [];
-    length = source.length;
-    for (var line = 0; line < length; line++) {
-      lines.push(jscoverage_quote(source[line]));
-    }
-
-    json.push(jscoverage_quote(file) + ':{"coverage":[' + array.join(',') + '],"source":[' + lines.join(',')
-        + '],"branchData":' + convertBranchDataLinesToJSON(_$jscoverage.branchData[file]) + '}');
+    json.push(jscoverage_quote(file) + ':{"coverage":[' + array.join(',') + '],"branchData":' + convertBranchDataLinesToJSON(_$jscoverage.branchData[file]) + '}');
   }
   return '{' + json.join(',') + '}';
 }

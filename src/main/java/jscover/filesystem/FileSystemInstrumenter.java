@@ -343,8 +343,6 @@ Public License instead of this License.
 package jscover.filesystem;
 
 import jscover.Main;
-import jscover.format.PlainFormatter;
-import jscover.format.SourceFormatter;
 import jscover.instrument.InstrumenterService;
 import jscover.util.IoService;
 import jscover.util.IoUtils;
@@ -354,7 +352,6 @@ import java.io.File;
 import java.io.FilenameFilter;
 
 public class FileSystemInstrumenter {
-    private SourceFormatter sourceFormatter = PlainFormatter.getInstance();
     private IoService ioService = new IoService();
     private InstrumenterService instrumenterService = new InstrumenterService();
     private IoUtils ioUtils = IoUtils.getInstance();

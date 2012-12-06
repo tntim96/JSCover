@@ -17,7 +17,6 @@ if (! _$jscoverage['javascript-number.js']) {
   _$jscoverage['javascript-number.js'][18] = 0;
   _$jscoverage['javascript-number.js'][19] = 0;
 }
-_$jscoverage['javascript-number.js'].source = ["x = 1;","y = 2;","z = 10.5;","","a = 1 / 0;","a = -1 / 0;","","a = 0;","a = -0;","","a = 0 / 0;","a = 0 / -0;","a = 0 / (-0);","a = -0 / 0;","a = (-0) / 0;","a = -0 / -0;","a = -0 / (-0);","a = (-0) / -0;","a = (-0) / (-0);"];
 _$jscoverage['javascript-number.js'][1]++;
 x = 1;
 _$jscoverage['javascript-number.js'][2]++;

@@ -343,7 +343,6 @@ Public License instead of this License.
 package jscover.instrument;
 
 
-import jscover.format.PlainFormatter;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mozilla.javascript.*;
@@ -377,7 +376,7 @@ public class InMemoryCoverageTest extends ScriptableObject {
         Scriptable scope = cx.initStandardObjects();
         String source = "function isNegative(x) {\n  if (x>=0)\n    return false;\n  else\n    return true;\n}; isNegative(12);";
 
-        processor = new SourceProcessor(compilerEnv, "inMemory.js", PlainFormatter.getInstance(), true);
+        processor = new SourceProcessor(compilerEnv, "inMemory.js", true);
         String instrumentedJS = processor.processSource("inMemory.js", source);
 
         Object expected = cx.evaluateString(scope, source, "inMemory.js", 1, null);
@@ -399,7 +398,7 @@ public class InMemoryCoverageTest extends ScriptableObject {
                 "};\n" +
                 "isNegative(12);";
 
-        processor = new SourceProcessor(compilerEnv, "inMemory.js", PlainFormatter.getInstance(), true);
+        processor = new SourceProcessor(compilerEnv, "inMemory.js", true);
         String instrumentedJS = processor.processSource("inMemory.js", source);
         instrumentedJS += "_$jscoverage;";
 

@@ -6,7 +6,6 @@ if (! _$jscoverage['javascript-colon.js']) {
   _$jscoverage['javascript-colon.js'][5] = 0;
   _$jscoverage['javascript-colon.js'][6] = 0;
 }
-_$jscoverage['javascript-colon.js'].source = ["x:","  y = 0;","","y: {","  let y = 1;","  print(y);","}"];
 x:
   {
     _$jscoverage['javascript-colon.js'][1]++;

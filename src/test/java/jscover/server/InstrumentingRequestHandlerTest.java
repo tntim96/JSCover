@@ -545,7 +545,7 @@ public class InstrumentingRequestHandlerTest {
         given(configuration.getReportDir()).willReturn(reportDir);
         given(configuration.getVersion()).willReturn("theVersion");
         List<ScriptLinesAndSource> unloadedJS = new ArrayList<ScriptLinesAndSource>();
-        unloadedJS.add(new ScriptLinesAndSource("/js/unloaded.js", null, null));
+        unloadedJS.add(new ScriptLinesAndSource("/js/unloaded.js", null));
         given(unloadedSourceProcessor.getEmptyCoverageData(anySet())).willReturn(unloadedJS);
 
         webServer.handlePost(new HttpRequest(JSCOVERAGE_STORE), "data");

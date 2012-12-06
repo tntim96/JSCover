@@ -14,7 +14,6 @@ if (! _$jscoverage['javascript-new.js']) {
   _$jscoverage['javascript-new.js'][12] = 0;
   _$jscoverage['javascript-new.js'][13] = 0;
 }
-_$jscoverage['javascript-new.js'].source = ["function X() {}","x = new X();","x = new X(1);","x = new X(1, 2);","x = new X;","x = new (X)();","x = new (X)(1);","x = new (X)(1, 2);","x = new (X);","x = new (f())();","x = new (f())(1);","x = new (f())(1, 2);","x = new (f());"];
 _$jscoverage['javascript-new.js'][1]++;
 function X() {
 }

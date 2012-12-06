@@ -15,7 +15,6 @@ if (! _$jscoverage['javascript-assign.js']) {
   _$jscoverage['javascript-assign.js'][13] = 0;
   _$jscoverage['javascript-assign.js'][14] = 0;
 }
-_$jscoverage['javascript-assign.js'].source = ["var x = 1;","var y = 1;","x = y;","x += y;","x -= y;","x *= y;","x %= y;","x &lt;&lt;= y;","x &gt;&gt;= y;","x &gt;&gt;&gt;= y;","x &amp;= y;","x |= y;","x ^= y;","x /= y;"];
 _$jscoverage['javascript-assign.js'][1]++;
 var x = 1;
 _$jscoverage['javascript-assign.js'][2]++;

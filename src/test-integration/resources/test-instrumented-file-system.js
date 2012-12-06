@@ -176,7 +176,6 @@ if (! _$jscoverage['test-simple.js']) {
   _$jscoverage['test-simple.js'][2] = 0;
   _$jscoverage['test-simple.js'][3] = 0;
 }
-_$jscoverage['test-simple.js'].source = ["var x, y;","x = 1;","y = x * 2;"];
 _$jscoverage['test-simple.js'][1]++;
 var x, y;
 _$jscoverage['test-simple.js'][2]++;

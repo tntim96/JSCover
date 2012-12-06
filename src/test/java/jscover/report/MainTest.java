@@ -423,7 +423,7 @@ public class MainTest {
         for (int i = 0; i <= 42; i++)
             lines.add(i);
         List<List<BranchData>> branches = new ArrayList<List<BranchData>>();
-        list.put("/test.js", new FileData("/test.js", lines, null, branches));
+        list.put("/test.js", new FileData("/test.js", lines, branches));
         given(jsonDataMerger.jsonToMap(json)).willReturn(list);
 
         main.runMain(new String[]{});

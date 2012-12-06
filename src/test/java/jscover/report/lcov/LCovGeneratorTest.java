@@ -373,7 +373,7 @@ public class LCovGeneratorTest {
         branches.add(asList(null, getBranchData(1, 1)));
 
 
-        FileData coverageData = new FileData("/test.js", lines, null, branches);
+        FileData coverageData = new FileData("/test.js", lines, branches);
 
         String result = lCovGenerator.generateRecord(coverageData, "dest");
         String expected = "SF:dest/test.js\n" +

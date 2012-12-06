@@ -7,7 +7,6 @@ if (! _$jscoverage['javascript-rb.js']) {
   _$jscoverage['javascript-rb.js'][5] = 0;
   _$jscoverage['javascript-rb.js'][6] = 0;
 }
-_$jscoverage['javascript-rb.js'].source = ["x = [];","x = [x];","x = [x, y];","x = [x, y,];","x = [x,, y];","x = [(a, b), c];"];
 _$jscoverage['javascript-rb.js'][1]++;
 x = [];
 _$jscoverage['javascript-rb.js'][2]++;

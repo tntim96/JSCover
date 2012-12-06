@@ -402,19 +402,15 @@ public class JSONDataMerger {
             for (Object scriptURI : json.keySet()) {
                 NativeObject scriptData = (NativeObject) json.get(scriptURI);
                 NativeArray lineCoverageArray = (NativeArray) scriptData.get("coverage");
-                NativeArray sourceArray = (NativeArray) scriptData.get("source");
                 NativeArray branchJSONArray = (NativeArray) scriptData.get("branchData");
                 List<Integer> countData = new ArrayList<Integer>(lineCoverageArray.size());
                 for (int i = 0; i < lineCoverageArray.size(); i++)
                     countData.add((Integer) lineCoverageArray.get(i));
-                List<String> sourceData = new ArrayList<String>(sourceArray.size());
-                for (int i = 0; i < sourceArray.size(); i++)
-                    sourceData.add((String) sourceArray.get(i));
                 List<List<BranchData>> branchLineArray = new ArrayList<List<BranchData>>();
                 if (branchJSONArray != null) {
                     readBranchLines(branchJSONArray, branchLineArray);
                 }
-                map.put((String) scriptURI, new FileData((String) scriptURI, countData, sourceData, branchLineArray));
+                map.put((String) scriptURI, new FileData((String) scriptURI, countData, branchLineArray));
             }
         } catch (JsonParser.ParseException e) {
             throw new RuntimeException(e);
@@ -454,7 +450,6 @@ public class JSONDataMerger {
         int scriptCount = 0;
         for (String scriptURI : map.keySet()) {
             StringBuilder coverage = new StringBuilder();
-            StringBuilder source = new StringBuilder();
             StringBuilder branchData = new StringBuilder();
             FileData coverageData = map.get(scriptURI);
             for (int i = 0; i < coverageData.getLines().size(); i++) {
@@ -462,20 +457,13 @@ public class JSONDataMerger {
                     coverage.append(",");
                 coverage.append(coverageData.getLines().get(i));
             }
-            for (int i = 0; i < coverageData.getSource().size(); i++) {
-                if (i > 0)
-                    source.append(",");
-                source.append("\"");
-                source.append(ScriptRuntime.escapeString(coverageData.getSource().get(i)));
-                source.append("\"");
-            }
             addBranchData(branchData, coverageData);
             if (scriptCount++ > 0) {
                 json.append(",");
             }
 
-            String scriptJSON = "\"%s\":{\"coverage\":[%s],\"source\":[%s],\"branchData\":[%s]}";
-            json.append(String.format(scriptJSON, scriptURI, coverage, source, branchData));
+            String scriptJSON = "\"%s\":{\"coverage\":[%s],\"branchData\":[%s]}";
+            json.append(String.format(scriptJSON, scriptURI, coverage, branchData));
         }
         json.append("}");
         return json.toString();
@@ -521,7 +509,7 @@ public class JSONDataMerger {
                 lines[script.getLines().get(i)] = 0;
             }
             List<List<BranchData>> branchLineArray = new ArrayList<List<BranchData>>();
-            FileData coverageData = new FileData(script.getUri(), Arrays.asList(lines), script.getSource(), branchLineArray);
+            FileData coverageData = new FileData(script.getUri(), Arrays.asList(lines), branchLineArray);
             map.put(script.getUri(), coverageData);
         }
         return map;

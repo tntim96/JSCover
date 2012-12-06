@@ -8,7 +8,6 @@ if (! _$jscoverage['javascript-dot.js']) {
   _$jscoverage['javascript-dot.js'][7] = 0;
   _$jscoverage['javascript-dot.js'][8] = 0;
 }
-_$jscoverage['javascript-dot.js'].source = ["x.y = y.x;","x[\"y\"] = y[\"x\"];","x[y] = y[x];","x['2y'] = y['var'];","x[''] = y[\"\"];","","print(123.0.toString());","({}.toString());"];
 _$jscoverage['javascript-dot.js'][1]++;
 x.y = y.x;
 _$jscoverage['javascript-dot.js'][2]++;

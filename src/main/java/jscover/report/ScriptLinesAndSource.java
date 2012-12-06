@@ -347,12 +347,10 @@ import java.util.List;
 public class ScriptLinesAndSource {
     private String uri;
     private List<Integer> lines;
-    private List<String> source;
 
-    public ScriptLinesAndSource(String uri, List<Integer> lines, List<String> source) {
+    public ScriptLinesAndSource(String uri, List<Integer> lines) {
         this.uri = uri;
         this.lines = lines;
-        this.source = source;
     }
 
     public String getUri() {
@@ -361,9 +359,5 @@ public class ScriptLinesAndSource {
 
     public List<Integer> getLines() {
         return lines;
-    }
-
-    public List<String> getSource() {
-        return source;
     }
 }

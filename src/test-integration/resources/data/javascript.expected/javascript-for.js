@@ -13,7 +13,6 @@ if (! _$jscoverage['javascript-for.js']) {
   _$jscoverage['javascript-for.js'][20] = 0;
   _$jscoverage['javascript-for.js'][21] = 0;
 }
-_$jscoverage['javascript-for.js'].source = ["for (i in x) {","  x();","}","","for (var i in x) {","  x();","}","","for (i = 0; i &lt; x; i++) {","  x();","}","","for (var j = 0; j &lt; x; j++) {","  x();","}","","for (i in x)","  x();","","for (i.value in x) {","  x();","}"];
 _$jscoverage['javascript-for.js'][1]++;
 for (i in x) {
   _$jscoverage['javascript-for.js'][2]++;

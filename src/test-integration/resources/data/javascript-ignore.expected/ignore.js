@@ -21,7 +21,6 @@ if (! _$jscoverage['ignore.js']) {
   _$jscoverage['ignore.js'][43] = 0;
   _$jscoverage['ignore.js'][44] = 0;
 }
-_$jscoverage['ignore.js'].source = ["function createRequest() {","//#JSCOVERAGE_IF","  if (window.XMLHttpRequest) {","    return new XMLHttpRequest();","  }","  else if (window.ActiveXObject) {","    return new ActiveXObject('Msxml2.XMLHTTP');","  }","  else {","    throw 'no XMLHttpRequest implementation available';","  }","}","","function createRequest2() {","//#JSCOVERAGE_IF","  if (window.XMLHttpRequest) {","    return new XMLHttpRequest();","  }","","//#JSCOVERAGE_IF ! window.XMLHttpRequest","//#JSCOVERAGE_IF","  if (window.ActiveXObject) {","    return new ActiveXObject('Msxml2.XMLHTTP');","  }","","//#JSCOVERAGE_IF 0","  throw 'no XMLHttpRequest implementation available';","//#JSCOVERAGE_ENDIF","//#JSCOVERAGE_ENDIF","}","","function log(s) {","//#JSCOVERAGE_IF","  if (window.console &amp;&amp; window.console.log) {","    console.log(s);","  }","  else if (window.opera &amp;&amp; window.opera.postError) {","    opera.postError(s);","  }","}","","var request = createRequest();","var request2 = createRequest2();","log('created requests');"];
 _$jscoverage['ignore.js'].conditionals = [];
 _$jscoverage['ignore.js'][1]++;
 function createRequest() {

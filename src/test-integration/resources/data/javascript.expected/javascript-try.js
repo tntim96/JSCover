@@ -15,7 +15,6 @@ if (! _$jscoverage['javascript-try.js']) {
   _$jscoverage['javascript-try.js'][28] = 0;
   _$jscoverage['javascript-try.js'][31] = 0;
 }
-_$jscoverage['javascript-try.js'].source = ["function f() {}","","try {","  f();","}","catch (e) {","  f();","}","","try {","  f();","}","catch (e if e instanceof E) {","  f();","}","","try {","  f();","}","finally {","  f();","}","","try {","  f();","}","catch (e) {","  f();","}","finally {","  f();","}"];
 _$jscoverage['javascript-try.js'][1]++;
 function f() {
 }

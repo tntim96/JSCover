@@ -342,8 +342,6 @@ Public License instead of this License.
 
 package jscover.instrument;
 
-import jscover.format.PlainFormatter;
-import jscover.format.SourceFormatter;
 import jscover.report.ScriptLinesAndSource;
 import jscover.server.ConfigurationForServer;
 import jscover.util.FileScanner;
@@ -358,7 +356,6 @@ import java.util.SortedSet;
 
 public class UnloadedSourceProcessor {
     private ConfigurationForServer config;
-    private SourceFormatter sourceFormatter = PlainFormatter.getInstance();
     private IoUtils ioUtils = IoUtils.getInstance();
     private FileScanner fileScanner;
     private Logger logger = Logger.getInstance();
@@ -375,9 +372,8 @@ public class UnloadedSourceProcessor {
                 String uri = ioUtils.getRelativePath(file, config.getDocumentRoot());
                 String source = ioUtils.loadFromFileSystem(file);
             try {
-                List<String> htmlLines = sourceFormatter.toHtmlLines(source);
                 SortedSet<Integer> codeLines = visitor.getCodeLines(source);
-                ScriptLinesAndSource script = new ScriptLinesAndSource("/"+uri, new ArrayList<Integer>(codeLines), htmlLines);
+                ScriptLinesAndSource script = new ScriptLinesAndSource("/"+uri, new ArrayList<Integer>(codeLines));
                 scripts.add(script);
             } catch (RuntimeException t) {
                 logger.log(String.format("Problem parsing %s", uri), t);

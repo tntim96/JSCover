@@ -342,7 +342,6 @@ Public License instead of this License.
 
 package jscover.instrument;
 
-import jscover.format.PlainFormatter;
 import jscover.util.IoUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -369,7 +368,7 @@ public class InstrumenterIntegrationTest {
     public void shouldInstrumentForFileSystem() throws URISyntaxException {
         String fileName = "test-simple.js";
         String source = ioUtils.loadFromClassPath("/" + fileName);
-        instrumenter = new SourceProcessor(compilerEnv, fileName, PlainFormatter.getInstance(), false);
+        instrumenter = new SourceProcessor(compilerEnv, fileName, false);
 
         String instrumentedSource = instrumenter.processSourceForFileSystem(source);
 
@@ -383,7 +382,7 @@ public class InstrumenterIntegrationTest {
     public void shouldInstrumentForServer() throws URISyntaxException {
         String fileName = "test-simple.js";
         String source = ioUtils.loadFromClassPath("/" + fileName);
-        instrumenter = new SourceProcessor(compilerEnv, fileName, PlainFormatter.getInstance(), false);
+        instrumenter = new SourceProcessor(compilerEnv, fileName, false);
 
         String instrumentedSource = instrumenter.processSourceForServer(source);
 

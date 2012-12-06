@@ -34,7 +34,6 @@ if (! _$jscoverage['javascript-op.js']) {
   _$jscoverage['javascript-op.js'][54] = 0;
   _$jscoverage['javascript-op.js'][55] = 0;
 }
-_$jscoverage['javascript-op.js'].source = ["var a = 1, b = 1, c = 1, d = 1;","","/* TOK_OR */","x = a || b || c;","x = a || b || c || d;","","/* TOK_AND */","x = a &amp;&amp; b &amp;&amp; c;","x = a &amp;&amp; b &amp;&amp; c &amp;&amp; d;","","x = a &amp;&amp; b || c;","","x = a || b &amp;&amp; c;","","// TOK_BITOR","x = a | b | c;","x = a | b | c | d;","","// TOK_BITXOR","x = a ^ b ^ c;","x = a ^ b ^ c ^ d;","","// TOK_BITAND","x = a &amp; b &amp; c;","x = a &amp; b &amp; c &amp; d;","","// TOK_EQUOP","x = a == b;","x = a != b;","x = a === b;","x = a !== b;","","// TOK_RELOP","x = a &lt; b;","x = a &lt;= b;","x = a &gt; b;","x = a &gt;= b;","","// TOK_SHOP","x = a &lt;&lt; b;","x = a &gt;&gt; b;","x = a &gt;&gt;&gt; b;","","/* TOK_PLUS, TOK_MINUS */","x = a + b;","x = a + b + c;","x = a + b + c + d;","x = a - b;","","// TOK_STAR, TOK_DIVOP","x = a * b;","x = a * b * c;","x = a * b * c * d;","x = a / b;","x = a % b;"];
 _$jscoverage['javascript-op.js'][1]++;
 var a = 1, b = 1, c = 1, d = 1;
 _$jscoverage['javascript-op.js'][4]++;
