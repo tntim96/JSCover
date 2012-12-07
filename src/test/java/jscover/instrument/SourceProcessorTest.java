@@ -385,8 +385,9 @@ public class SourceProcessorTest {
     public void shouldNotIncludeBranchLogicForJsLineInitialization() {
         String actual = sourceProcessor.getJsLineInitialization("test.js", new TreeSet<Integer>(){{add(1);}});
         String expected = "if (! _$jscoverage['test.js']) {\n" +
-                "  _$jscoverage['test.js'] = [];\n" +
-                "  _$jscoverage['test.js'][1] = 0;\n" +
+                "  _$jscoverage['test.js'] = {};\n" +
+                "  _$jscoverage['test.js'].lineData = [];\n" +
+                "  _$jscoverage['test.js'].lineData[1] = 0;\n" +
                 "}\n";
         assertThat(actual, equalTo(expected));
     }
@@ -396,8 +397,9 @@ public class SourceProcessorTest {
         ReflectionUtils.setField(sourceProcessor, "includeBranchCoverage", true);
         String actual = sourceProcessor.getJsLineInitialization("test.js", new TreeSet<Integer>(){{add(1);}});
         String expected = "if (! _$jscoverage['test.js']) {\n" +
-                "  _$jscoverage['test.js'] = [];\n" +
-                "  _$jscoverage['test.js'][1] = 0;\n" +
+                "  _$jscoverage['test.js'] = {};\n" +
+                "  _$jscoverage['test.js'].lineData = [];\n" +
+                "  _$jscoverage['test.js'].lineData[1] = 0;\n" +
                 "}\n";
         assertThat(actual, equalTo(expected));
     }

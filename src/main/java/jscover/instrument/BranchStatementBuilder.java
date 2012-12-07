@@ -404,18 +404,18 @@ public class BranchStatementBuilder {
         Name jscoverageVar = new Name();
         jscoverageVar.setIdentifier("_$jscoverage");
 
-        Name branchPropertyName = new Name();
-        branchPropertyName.setIdentifier("branchData");
-        PropertyGet branchProperty = new PropertyGet(jscoverageVar, branchPropertyName);
-
         StringLiteral fileNameLiteral = new StringLiteral();
         fileNameLiteral.setValue(uri);
         fileNameLiteral.setQuoteCharacter('\'');
-        ElementGet indexJSFile = new ElementGet(branchProperty, fileNameLiteral);
+        ElementGet indexJSFile = new ElementGet(jscoverageVar, fileNameLiteral);
+
+        Name branchPropertyName = new Name();
+        branchPropertyName.setIdentifier("branchData");
+        PropertyGet branchProperty = new PropertyGet(indexJSFile, branchPropertyName);
 
         NumberLiteral lineNumberLiteral = new NumberLiteral();
         lineNumberLiteral.setValue("" + lineNo);
-        return new ElementGet(indexJSFile, lineNumberLiteral);
+        return new ElementGet(branchProperty, lineNumberLiteral);
     }
 
     public FunctionNode buildBranchRecordingFunction(String uri, int id, int lineNo, int conditionNo) {

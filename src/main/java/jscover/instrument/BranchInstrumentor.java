@@ -351,8 +351,8 @@ import java.util.*;
 import static java.lang.String.format;
 
 public class BranchInstrumentor implements NodeVisitor {
-    private static final String initBranchLine = "  _$jscoverage.branchData['%s'][%d] = [];\n";
-    private static final String initBranchCondition = "  _$jscoverage.branchData['%s'][%d][%d] = new BranchData();\n";
+    private static final String initBranchLine = "  _$jscoverage['%s'].branchData[%d] = [];\n";
+    private static final String initBranchCondition = "  _$jscoverage['%s'].branchData[%d][%d] = new BranchData();\n";
 
     private static int functionId = 1;
     private BranchStatementBuilder branchStatementBuilder = new BranchStatementBuilder();
@@ -517,8 +517,8 @@ public class BranchInstrumentor implements NodeVisitor {
     }
 
     protected String getJsLineInitialization() {
-        StringBuilder sb = new StringBuilder(format("if (! _$jscoverage.branchData['%s']) {\n", uri));
-        sb.append(format("  _$jscoverage.branchData['%s'] = [];\n", uri));
+        StringBuilder sb = new StringBuilder(format("if (! _$jscoverage['%s'].branchData) {\n", uri));
+        sb.append(format("  _$jscoverage['%s'].branchData = [];\n", uri));
         for (Integer line : lineConditionMap.keySet()) {
             sb.append(format(initBranchLine, uri, line));
             for (Integer condition: lineConditionMap.get(line))

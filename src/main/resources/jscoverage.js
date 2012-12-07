@@ -68,7 +68,6 @@ function jscoverage_init(w) {
   if (! jscoverage_isInvertedMode) {
     if (! w._$jscoverage) {
       w._$jscoverage = {};
-      w._$jscoverage.branchData = {};
     }
   }
 }
@@ -365,8 +364,9 @@ function jscoverage_body_load() {
             var file;
             for (file in json) {
               var fileCoverage = json[file];
-              _$jscoverage[file] = fileCoverage.coverage;
-              _$jscoverage.branchData[file] = convertBranchDataLinesFromJSON(fileCoverage.branchData);
+              _$jscoverage[file] = {};
+              _$jscoverage[file].lineData = fileCoverage.coverage;
+              _$jscoverage[file].branchData = convertBranchDataLinesFromJSON(fileCoverage.branchData);
             }
             jscoverage_recalculateSummaryTab();
             summaryThrobber.style.visibility = 'hidden';
@@ -505,8 +505,6 @@ function jscoverage_recalculateSummaryTab(cc) {
   var file;
   var files = [];
   for (file in cc) {
-    if (file === 'branchData')
-        continue;
     files.push(file);
   }
   if (files.length === 0)
@@ -528,7 +526,7 @@ function jscoverage_recalculateSummaryTab(cc) {
     var num_statements = 0;
     var num_executed = 0;
     var missing = [];
-    var fileCC = cc[file];
+    var fileCC = cc[file].lineData;
     var length = fileCC.length;
     var currentConditionalEnd = 0;
     var conditionals = null;
@@ -566,7 +564,7 @@ function jscoverage_recalculateSummaryTab(cc) {
 
     var num_branches = 0;
     var num_executed_branches = 0;
-    var fileBranchCC = cc.branchData[file];
+    var fileBranchCC = cc[file].branchData;
     if (fileBranchCC) {
         var branchLength = fileBranchCC.length;
         for (lineNumber = 0; lineNumber < branchLength; lineNumber++) {
@@ -819,8 +817,8 @@ function jscoverage_checkbox_click() {
 // tab 3
 
 function jscoverage_makeTable(lines) {
-  var coverage = _$jscoverage[jscoverage_currentFile];
-  var branchData = _$jscoverage.branchData[jscoverage_currentFile];
+  var coverage = _$jscoverage[jscoverage_currentFile].lineData;
+  var branchData = _$jscoverage[jscoverage_currentFile].branchData;
 
   // this can happen if there is an error in the original JavaScript file
   if (! lines) {
@@ -880,10 +878,9 @@ function jscoverage_makeTable(lines) {
       row += '<td></td>';
     }
 
-    if (_$jscoverage.branchData[jscoverage_currentFile] !== undefined && _$jscoverage.branchData[jscoverage_currentFile].length !== undefined) {
+    if (_$jscoverage[jscoverage_currentFile].branchData !== undefined && _$jscoverage[jscoverage_currentFile].branchData.length !== undefined) {
         var branchClass = '';
         var branchText = '&#160;';
-        var branchLink = undefined;
         if (branchData[lineNumber] !== undefined && branchData[lineNumber] !== null) {
             branchClass = 'g';
             for (var conditionIndex = 0; conditionIndex < branchData[lineNumber].length; conditionIndex++) {
@@ -895,7 +892,7 @@ function jscoverage_makeTable(lines) {
 
         }
         if (branchClass === 'r') {
-            branchText = '<a href="#" onclick="alert(buildBranchMessage(_$jscoverage.branchData[\''+jscoverage_currentFile+'\']['+lineNumber+']));">info</a>';
+            branchText = '<a href="#" onclick="alert(buildBranchMessage(_$jscoverage[\''+jscoverage_currentFile+'\'].branchData['+lineNumber+']));">info</a>';
         }
         row += '<td class="numeric '+branchClass+'"><pre>' + branchText + '</pre></td>';
     }
@@ -1213,9 +1210,7 @@ function jscoverage_pad(s) {
 function jscoverage_serializeCoverageToJSON() {
   var json = [];
   for (var file in _$jscoverage) {
-    if (file === 'branchData')
-        continue;
-    var coverage = _$jscoverage[file];
+    var coverage = _$jscoverage[file].lineData;
 
     var array = [];
     var length = coverage.length;
@@ -1227,7 +1222,7 @@ function jscoverage_serializeCoverageToJSON() {
       array.push(value);
     }
 
-    json.push(jscoverage_quote(file) + ':{"coverage":[' + array.join(',') + '],"branchData":' + convertBranchDataLinesToJSON(_$jscoverage.branchData[file]) + '}');
+    json.push(jscoverage_quote(file) + ':{"coverage":[' + array.join(',') + '],"branchData":' + convertBranchDataLinesToJSON(_$jscoverage[file].branchData) + '}');
   }
   return '{' + json.join(',') + '}';
 }

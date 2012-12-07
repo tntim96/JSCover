@@ -1,45 +1,46 @@
 if (! _$jscoverage['javascript-for.js']) {
-  _$jscoverage['javascript-for.js'] = [];
-  _$jscoverage['javascript-for.js'][1] = 0;
-  _$jscoverage['javascript-for.js'][2] = 0;
-  _$jscoverage['javascript-for.js'][5] = 0;
-  _$jscoverage['javascript-for.js'][6] = 0;
-  _$jscoverage['javascript-for.js'][9] = 0;
-  _$jscoverage['javascript-for.js'][10] = 0;
-  _$jscoverage['javascript-for.js'][13] = 0;
-  _$jscoverage['javascript-for.js'][14] = 0;
-  _$jscoverage['javascript-for.js'][17] = 0;
-  _$jscoverage['javascript-for.js'][18] = 0;
-  _$jscoverage['javascript-for.js'][20] = 0;
-  _$jscoverage['javascript-for.js'][21] = 0;
+  _$jscoverage['javascript-for.js'] = {};
+  _$jscoverage['javascript-for.js'].lineData = [];
+  _$jscoverage['javascript-for.js'].lineData[1] = 0;
+  _$jscoverage['javascript-for.js'].lineData[2] = 0;
+  _$jscoverage['javascript-for.js'].lineData[5] = 0;
+  _$jscoverage['javascript-for.js'].lineData[6] = 0;
+  _$jscoverage['javascript-for.js'].lineData[9] = 0;
+  _$jscoverage['javascript-for.js'].lineData[10] = 0;
+  _$jscoverage['javascript-for.js'].lineData[13] = 0;
+  _$jscoverage['javascript-for.js'].lineData[14] = 0;
+  _$jscoverage['javascript-for.js'].lineData[17] = 0;
+  _$jscoverage['javascript-for.js'].lineData[18] = 0;
+  _$jscoverage['javascript-for.js'].lineData[20] = 0;
+  _$jscoverage['javascript-for.js'].lineData[21] = 0;
 }
-_$jscoverage['javascript-for.js'][1]++;
+_$jscoverage['javascript-for.js'].lineData[1]++;
 for (i in x) {
-  _$jscoverage['javascript-for.js'][2]++;
+  _$jscoverage['javascript-for.js'].lineData[2]++;
   x();
 }
-_$jscoverage['javascript-for.js'][5]++;
+_$jscoverage['javascript-for.js'].lineData[5]++;
 for (var i in x) {
-  _$jscoverage['javascript-for.js'][6]++;
+  _$jscoverage['javascript-for.js'].lineData[6]++;
   x();
 }
-_$jscoverage['javascript-for.js'][9]++;
+_$jscoverage['javascript-for.js'].lineData[9]++;
 for (i = 0; i < x; i++) {
-  _$jscoverage['javascript-for.js'][10]++;
+  _$jscoverage['javascript-for.js'].lineData[10]++;
   x();
 }
-_$jscoverage['javascript-for.js'][13]++;
+_$jscoverage['javascript-for.js'].lineData[13]++;
 for (var j = 0; j < x; j++) {
-  _$jscoverage['javascript-for.js'][14]++;
+  _$jscoverage['javascript-for.js'].lineData[14]++;
   x();
 }
-_$jscoverage['javascript-for.js'][17]++;
+_$jscoverage['javascript-for.js'].lineData[17]++;
 for (i in x) {
-  _$jscoverage['javascript-for.js'][18]++;
+  _$jscoverage['javascript-for.js'].lineData[18]++;
   x();
 }
-_$jscoverage['javascript-for.js'][20]++;
+_$jscoverage['javascript-for.js'].lineData[20]++;
 for (i.value in x) {
-  _$jscoverage['javascript-for.js'][21]++;
+  _$jscoverage['javascript-for.js'].lineData[21]++;
   x();
 }

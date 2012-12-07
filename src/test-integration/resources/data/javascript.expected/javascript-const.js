@@ -1,9 +1,10 @@
 if (! _$jscoverage['javascript-const.js']) {
-  _$jscoverage['javascript-const.js'] = [];
-  _$jscoverage['javascript-const.js'][1] = 0;
-  _$jscoverage['javascript-const.js'][2] = 0;
+  _$jscoverage['javascript-const.js'] = {};
+  _$jscoverage['javascript-const.js'].lineData = [];
+  _$jscoverage['javascript-const.js'].lineData[1] = 0;
+  _$jscoverage['javascript-const.js'].lineData[2] = 0;
 }
-_$jscoverage['javascript-const.js'][1]++;
+_$jscoverage['javascript-const.js'].lineData[1]++;
 const x;
-_$jscoverage['javascript-const.js'][2]++;
+_$jscoverage['javascript-const.js'].lineData[2]++;
 const y = x, z = x;

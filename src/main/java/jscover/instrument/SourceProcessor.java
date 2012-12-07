@@ -353,7 +353,7 @@ import static java.lang.String.format;
 
 class SourceProcessor {
 
-    private static final String initLine = "  _$jscoverage['%s'][%d] = 0;\n";
+    private static final String initLine = "  _$jscoverage['%s'].lineData[%d] = 0;\n";
 
     private String uri;
     private ParseTreeInstrumenter instrumenter;
@@ -417,7 +417,8 @@ class SourceProcessor {
 
     protected String getJsLineInitialization(String fileName, SortedSet<Integer> validLines) {
         StringBuilder sb = new StringBuilder(format("if (! _$jscoverage['%s']) {\n", fileName));
-        sb.append(format("  _$jscoverage['%s'] = [];\n", fileName));
+        sb.append(format("  _$jscoverage['%s'] = {};\n", fileName));
+        sb.append(format("  _$jscoverage['%s'].lineData = [];\n", fileName));
         for (Integer line : validLines) {
             sb.append(format(initLine, fileName, line));
         }

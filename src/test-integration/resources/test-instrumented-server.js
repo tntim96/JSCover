@@ -15,9 +15,7 @@ if (! window.jscoverage_report) {
 
     var json = [];
     for (var file in _$jscoverage) {
-      var coverage = _$jscoverage[file];
-      if (file === 'branchData')
-          continue;
+      var coverage = _$jscoverage[file].lineData;
 
       var array = [];
       var length = coverage.length;
@@ -29,7 +27,7 @@ if (! window.jscoverage_report) {
         array.push(value);
       }
 
-      json.push(jscoverage_quote(file) + ':{"coverage":[' + array.join(',') + '],"branchData":' + convertBranchDataLinesToJSON(_$jscoverage.branchData[file]) + '}');
+      json.push(jscoverage_quote(file) + ':{"coverage":[' + array.join(',') + '],"branchData":' + convertBranchDataLinesToJSON(_$jscoverage[file].branchData) + '}');
     }
     json = '{' + json.join(',') + '}';
 
@@ -220,7 +218,6 @@ try {
 
     if (! top.opener._$jscoverage) {
       top.opener._$jscoverage = {};
-      top.opener._$jscoverage.branchData = {};
     }
   }
 }
@@ -239,7 +236,6 @@ try {
 
     if (! top._$jscoverage) {
       top._$jscoverage = {};
-      top._$jscoverage.branchData = {};
     }
   }
 }
@@ -253,17 +249,17 @@ try {
 catch (e) {}
 if (! this._$jscoverage) {
   this._$jscoverage = {};
-  this._$jscoverage.branchData = {};
 }
 if (! _$jscoverage['test-simple.js']) {
-  _$jscoverage['test-simple.js'] = [];
-  _$jscoverage['test-simple.js'][1] = 0;
-  _$jscoverage['test-simple.js'][2] = 0;
-  _$jscoverage['test-simple.js'][3] = 0;
+  _$jscoverage['test-simple.js'] = {};
+  _$jscoverage['test-simple.js'].lineData = [];
+  _$jscoverage['test-simple.js'].lineData[1] = 0;
+  _$jscoverage['test-simple.js'].lineData[2] = 0;
+  _$jscoverage['test-simple.js'].lineData[3] = 0;
 }
-_$jscoverage['test-simple.js'][1]++;
+_$jscoverage['test-simple.js'].lineData[1]++;
 var x, y;
-_$jscoverage['test-simple.js'][2]++;
+_$jscoverage['test-simple.js'].lineData[2]++;
 x = 1;
-_$jscoverage['test-simple.js'][3]++;
+_$jscoverage['test-simple.js'].lineData[3]++;
 y = x * 2;

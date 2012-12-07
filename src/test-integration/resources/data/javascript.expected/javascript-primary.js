@@ -1,15 +1,16 @@
 if (! _$jscoverage['javascript-primary.js']) {
-  _$jscoverage['javascript-primary.js'] = [];
-  _$jscoverage['javascript-primary.js'][1] = 0;
-  _$jscoverage['javascript-primary.js'][2] = 0;
-  _$jscoverage['javascript-primary.js'][3] = 0;
-  _$jscoverage['javascript-primary.js'][4] = 0;
+  _$jscoverage['javascript-primary.js'] = {};
+  _$jscoverage['javascript-primary.js'].lineData = [];
+  _$jscoverage['javascript-primary.js'].lineData[1] = 0;
+  _$jscoverage['javascript-primary.js'].lineData[2] = 0;
+  _$jscoverage['javascript-primary.js'].lineData[3] = 0;
+  _$jscoverage['javascript-primary.js'].lineData[4] = 0;
 }
-_$jscoverage['javascript-primary.js'][1]++;
+_$jscoverage['javascript-primary.js'].lineData[1]++;
 x = true;
-_$jscoverage['javascript-primary.js'][2]++;
+_$jscoverage['javascript-primary.js'].lineData[2]++;
 x = false;
-_$jscoverage['javascript-primary.js'][3]++;
+_$jscoverage['javascript-primary.js'].lineData[3]++;
 x = null;
-_$jscoverage['javascript-primary.js'][4]++;
+_$jscoverage['javascript-primary.js'].lineData[4]++;
 x = this;

@@ -358,11 +358,17 @@ class StatementBuilder {
         StringLiteral fileNameLiteral = new StringLiteral();
         fileNameLiteral.setValue(fileName);
         fileNameLiteral.setQuoteCharacter('\'');
+
         ElementGet indexJSFile = new ElementGet(var, fileNameLiteral);
+
+        Name branchPropertyName = new Name();
+        branchPropertyName.setIdentifier("lineData");
+        PropertyGet lineProperty = new PropertyGet(indexJSFile, branchPropertyName);
+
 
         NumberLiteral lineNumberLiteral = new NumberLiteral();
         lineNumberLiteral.setValue("" + lineNumber);
-        ElementGet indexLineNumber = new ElementGet(indexJSFile, lineNumberLiteral);
+        ElementGet indexLineNumber = new ElementGet(lineProperty, lineNumberLiteral);
 
         boolean postFix = true;
         UnaryExpression unaryExpression = new UnaryExpression(Token.INC, 0, indexLineNumber, postFix);

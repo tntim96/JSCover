@@ -359,7 +359,7 @@ public class StatementBuilderTest {
     public void shouldCreateInstrumentationStatement() {
         ExpressionStatement statement = builder.buildInstrumentationStatement(7, "/dir/file.js", validLines);
 
-        assertThat("_$jscoverage['/dir/file.js'][7]++;\n", equalTo(statement.toSource()));
+        assertThat("_$jscoverage['/dir/file.js'].lineData[7]++;\n", equalTo(statement.toSource()));
         assertThat(validLines, hasItem(7));
     }
 

@@ -357,7 +357,7 @@ public class BranchInstrumentorIntegrationTest {
     private static IoUtils ioUtils = IoUtils.getInstance();
     private static String branchObjectHeader = ioUtils.loadFromClassPath("/jscoverage-branch.js");
     private static String header = "var _$jscoverage = {};\n" +
-            "_$jscoverage.branchData = {};\n";
+            "_$jscoverage['test.js'] = {};\n";
 
     private BranchInstrumentor branchInstrumentor = new BranchInstrumentor("test.js");
     private Parser parser = new Parser();
@@ -754,8 +754,8 @@ public class BranchInstrumentorIntegrationTest {
 
     private Scriptable getLineData(Scriptable scope, String uri, int lineNo) {
         Scriptable jscoverage = (Scriptable) scope.get("_$jscoverage", scope);
-        Scriptable branchData = (Scriptable) jscoverage.get("branchData", jscoverage);
-        Scriptable scriptData = (Scriptable) branchData.get(uri, branchData);
-        return (Scriptable) scriptData.get(lineNo, scriptData);
+        Scriptable scriptData = (Scriptable) jscoverage.get(uri, jscoverage);
+        Scriptable branchData = (Scriptable) scriptData.get("branchData", scriptData);
+        return (Scriptable) branchData.get(lineNo, branchData);
     }
 }

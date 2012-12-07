@@ -355,20 +355,20 @@ public class BranchStatementBuilderTest {
     @Test
     public void shouldBuildLineAndConditionInitialisation() {
         ExpressionStatement statement = builder.buildLineAndConditionInitialisation("test.js", 4, 2, 12, 15, "x < calc('7')");
-        assertThat(statement.toSource(), equalTo("_$jscoverage.branchData['test.js'][4][2].init(12, 15, 'x < calc(\\'7\\')');\n"));
+        assertThat(statement.toSource(), equalTo("_$jscoverage['test.js'].branchData[4][2].init(12, 15, 'x < calc(\\'7\\')');\n"));
     }
 
     @Test
     public void shouldBuildLineAndConditionCall() {
         ExpressionStatement statement = builder.buildLineAndConditionCall("test.js", 4, 2);
-        assertThat(statement.toSource(), equalTo("_$jscoverage.branchData['test.js'][4][2].ranCondition(result);\n"));
+        assertThat(statement.toSource(), equalTo("_$jscoverage['test.js'].branchData[4][2].ranCondition(result);\n"));
     }
 
     @Test
     public void shouldBuildLineAndConditionRecordingFunction() {
         FunctionNode statement = builder.buildBranchRecordingFunction("test.js", 1, 4, 2);
         assertThat(statement.toSource(), equalTo("function visit1_4_2(result) {\n" +
-                "  _$jscoverage.branchData['test.js'][4][2].ranCondition(result);\n" +
+                "  _$jscoverage['test.js'].branchData[4][2].ranCondition(result);\n" +
                 "  return result;\n" +
                 "}"));
     }

@@ -372,7 +372,7 @@ public class InstrumenterServiceTest {
         String jsInstrumented = ioUtils.loadFromFileSystem(dest);
 
         assertThat(jsInstrumented, containsString("x++;"));
-        assertThat(jsInstrumented, containsString("_$jscoverage['/src.js'][1]++;"));
+        assertThat(jsInstrumented, containsString("_$jscoverage['/src.js'].lineData[1]++;"));
     }
 
     @Test
@@ -382,6 +382,6 @@ public class InstrumenterServiceTest {
         String jsInstrumented = service.instrumentJSForWebServer(compilerEnvirons, src, "/src.js", false);
 
         assertThat(jsInstrumented, containsString("x++;"));
-        assertThat(jsInstrumented, containsString("_$jscoverage['/src.js'][1]++;"));
+        assertThat(jsInstrumented, containsString("_$jscoverage['/src.js'].lineData[1]++;"));
     }
 }

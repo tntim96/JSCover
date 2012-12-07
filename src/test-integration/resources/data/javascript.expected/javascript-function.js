@@ -1,111 +1,112 @@
 if (! _$jscoverage['javascript-function.js']) {
-  _$jscoverage['javascript-function.js'] = [];
-  _$jscoverage['javascript-function.js'][1] = 0;
-  _$jscoverage['javascript-function.js'][3] = 0;
-  _$jscoverage['javascript-function.js'][4] = 0;
-  _$jscoverage['javascript-function.js'][7] = 0;
-  _$jscoverage['javascript-function.js'][8] = 0;
-  _$jscoverage['javascript-function.js'][9] = 0;
-  _$jscoverage['javascript-function.js'][12] = 0;
-  _$jscoverage['javascript-function.js'][13] = 0;
-  _$jscoverage['javascript-function.js'][16] = 0;
-  _$jscoverage['javascript-function.js'][17] = 0;
-  _$jscoverage['javascript-function.js'][20] = 0;
-  _$jscoverage['javascript-function.js'][21] = 0;
-  _$jscoverage['javascript-function.js'][24] = 0;
-  _$jscoverage['javascript-function.js'][25] = 0;
-  _$jscoverage['javascript-function.js'][28] = 0;
-  _$jscoverage['javascript-function.js'][29] = 0;
-  _$jscoverage['javascript-function.js'][32] = 0;
-  _$jscoverage['javascript-function.js'][33] = 0;
-  _$jscoverage['javascript-function.js'][36] = 0;
-  _$jscoverage['javascript-function.js'][37] = 0;
-  _$jscoverage['javascript-function.js'][40] = 0;
-  _$jscoverage['javascript-function.js'][41] = 0;
-  _$jscoverage['javascript-function.js'][44] = 0;
-  _$jscoverage['javascript-function.js'][45] = 0;
-  _$jscoverage['javascript-function.js'][48] = 0;
-  _$jscoverage['javascript-function.js'][49] = 0;
-  _$jscoverage['javascript-function.js'][52] = 0;
-  _$jscoverage['javascript-function.js'][53] = 0;
-  _$jscoverage['javascript-function.js'][56] = 0;
-  _$jscoverage['javascript-function.js'][57] = 0;
-  _$jscoverage['javascript-function.js'][61] = 0;
+  _$jscoverage['javascript-function.js'] = {};
+  _$jscoverage['javascript-function.js'].lineData = [];
+  _$jscoverage['javascript-function.js'].lineData[1] = 0;
+  _$jscoverage['javascript-function.js'].lineData[3] = 0;
+  _$jscoverage['javascript-function.js'].lineData[4] = 0;
+  _$jscoverage['javascript-function.js'].lineData[7] = 0;
+  _$jscoverage['javascript-function.js'].lineData[8] = 0;
+  _$jscoverage['javascript-function.js'].lineData[9] = 0;
+  _$jscoverage['javascript-function.js'].lineData[12] = 0;
+  _$jscoverage['javascript-function.js'].lineData[13] = 0;
+  _$jscoverage['javascript-function.js'].lineData[16] = 0;
+  _$jscoverage['javascript-function.js'].lineData[17] = 0;
+  _$jscoverage['javascript-function.js'].lineData[20] = 0;
+  _$jscoverage['javascript-function.js'].lineData[21] = 0;
+  _$jscoverage['javascript-function.js'].lineData[24] = 0;
+  _$jscoverage['javascript-function.js'].lineData[25] = 0;
+  _$jscoverage['javascript-function.js'].lineData[28] = 0;
+  _$jscoverage['javascript-function.js'].lineData[29] = 0;
+  _$jscoverage['javascript-function.js'].lineData[32] = 0;
+  _$jscoverage['javascript-function.js'].lineData[33] = 0;
+  _$jscoverage['javascript-function.js'].lineData[36] = 0;
+  _$jscoverage['javascript-function.js'].lineData[37] = 0;
+  _$jscoverage['javascript-function.js'].lineData[40] = 0;
+  _$jscoverage['javascript-function.js'].lineData[41] = 0;
+  _$jscoverage['javascript-function.js'].lineData[44] = 0;
+  _$jscoverage['javascript-function.js'].lineData[45] = 0;
+  _$jscoverage['javascript-function.js'].lineData[48] = 0;
+  _$jscoverage['javascript-function.js'].lineData[49] = 0;
+  _$jscoverage['javascript-function.js'].lineData[52] = 0;
+  _$jscoverage['javascript-function.js'].lineData[53] = 0;
+  _$jscoverage['javascript-function.js'].lineData[56] = 0;
+  _$jscoverage['javascript-function.js'].lineData[57] = 0;
+  _$jscoverage['javascript-function.js'].lineData[61] = 0;
 }
-_$jscoverage['javascript-function.js'][1]++;
+_$jscoverage['javascript-function.js'].lineData[1]++;
 function f() {
 }
-_$jscoverage['javascript-function.js'][3]++;
+_$jscoverage['javascript-function.js'].lineData[3]++;
 function g() {
-  _$jscoverage['javascript-function.js'][4]++;
+  _$jscoverage['javascript-function.js'].lineData[4]++;
   ;
 }
-_$jscoverage['javascript-function.js'][7]++;
+_$jscoverage['javascript-function.js'].lineData[7]++;
 function h() {
-  _$jscoverage['javascript-function.js'][8]++;
+  _$jscoverage['javascript-function.js'].lineData[8]++;
   x();
-  _$jscoverage['javascript-function.js'][9]++;
+  _$jscoverage['javascript-function.js'].lineData[9]++;
   return 'x';
 }
-_$jscoverage['javascript-function.js'][12]++;
+_$jscoverage['javascript-function.js'].lineData[12]++;
 function i(a) {
-  _$jscoverage['javascript-function.js'][13]++;
+  _$jscoverage['javascript-function.js'].lineData[13]++;
   x();
 }
-_$jscoverage['javascript-function.js'][16]++;
+_$jscoverage['javascript-function.js'].lineData[16]++;
 function j(a, b) {
-  _$jscoverage['javascript-function.js'][17]++;
+  _$jscoverage['javascript-function.js'].lineData[17]++;
   x();
 }
-_$jscoverage['javascript-function.js'][20]++;
+_$jscoverage['javascript-function.js'].lineData[20]++;
 x = function() {
-  _$jscoverage['javascript-function.js'][21]++;
+  _$jscoverage['javascript-function.js'].lineData[21]++;
   x();
 };
-_$jscoverage['javascript-function.js'][24]++;
+_$jscoverage['javascript-function.js'].lineData[24]++;
 x = function k() {
-  _$jscoverage['javascript-function.js'][25]++;
+  _$jscoverage['javascript-function.js'].lineData[25]++;
   x();
 };
-_$jscoverage['javascript-function.js'][28]++;
+_$jscoverage['javascript-function.js'].lineData[28]++;
 (function() {
-  _$jscoverage['javascript-function.js'][29]++;
+  _$jscoverage['javascript-function.js'].lineData[29]++;
   print('x');
 })();
-_$jscoverage['javascript-function.js'][32]++;
+_$jscoverage['javascript-function.js'].lineData[32]++;
 (function l() {
-  _$jscoverage['javascript-function.js'][33]++;
+  _$jscoverage['javascript-function.js'].lineData[33]++;
   print('x');
 })();
-_$jscoverage['javascript-function.js'][36]++;
+_$jscoverage['javascript-function.js'].lineData[36]++;
 (function(a) {
-  _$jscoverage['javascript-function.js'][37]++;
+  _$jscoverage['javascript-function.js'].lineData[37]++;
   print('x');
 })(1);
-_$jscoverage['javascript-function.js'][40]++;
+_$jscoverage['javascript-function.js'].lineData[40]++;
 (function m(a) {
-  _$jscoverage['javascript-function.js'][41]++;
+  _$jscoverage['javascript-function.js'].lineData[41]++;
   print('x');
 })(1);
-_$jscoverage['javascript-function.js'][44]++;
+_$jscoverage['javascript-function.js'].lineData[44]++;
 (function(a, b) {
-  _$jscoverage['javascript-function.js'][45]++;
+  _$jscoverage['javascript-function.js'].lineData[45]++;
   print('x');
 })(1, 2);
-_$jscoverage['javascript-function.js'][48]++;
+_$jscoverage['javascript-function.js'].lineData[48]++;
 (function n(a, b) {
-  _$jscoverage['javascript-function.js'][49]++;
+  _$jscoverage['javascript-function.js'].lineData[49]++;
   print('x');
 })(1, 2);
-_$jscoverage['javascript-function.js'][52]++;
+_$jscoverage['javascript-function.js'].lineData[52]++;
 (function() {
-  _$jscoverage['javascript-function.js'][53]++;
+  _$jscoverage['javascript-function.js'].lineData[53]++;
   print('x');
 }).call(window);
-_$jscoverage['javascript-function.js'][56]++;
+_$jscoverage['javascript-function.js'].lineData[56]++;
 (function o() {
-  _$jscoverage['javascript-function.js'][57]++;
+  _$jscoverage['javascript-function.js'].lineData[57]++;
   print('x');
 }).call(window);
-_$jscoverage['javascript-function.js'][61]++;
+_$jscoverage['javascript-function.js'].lineData[61]++;
 (b - a)();
