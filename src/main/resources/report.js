@@ -27,7 +27,7 @@ if (! window.jscoverage_report) {
         array.push(value);
       }
 
-      json.push(jscoverage_quote(file) + ':{"coverage":[' + array.join(',') + '],"branchData":' + convertBranchDataLinesToJSON(_$jscoverage[file].branchData) + '}');
+      json.push(jscoverage_quote(file) + ':{"lineData":[' + array.join(',') + '],"branchData":' + convertBranchDataLinesToJSON(_$jscoverage[file].branchData) + '}');
     }
     json = '{' + json.join(',') + '}';
 

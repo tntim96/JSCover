@@ -382,9 +382,9 @@ public class JSONDataMergerTest {
 
     @Test
     public void shouldMergeDataWithDifferentFiles() {
-        String data1 = "{\"/test1.js\":{\"coverage\":[null,0,1],\"branchData\":[]}}";
-        String data2 = "{\"/test2.js\":{\"coverage\":[null,0,1],\"branchData\":[]}}";
-        String expected = "{\"/test1.js\":{\"coverage\":[null,0,1],\"branchData\":[]},\"/test2.js\":{\"coverage\":[null,0,1],\"branchData\":[]}}";
+        String data1 = "{\"/test1.js\":{\"lineData\":[null,0,1],\"branchData\":[]}}";
+        String data2 = "{\"/test2.js\":{\"lineData\":[null,0,1],\"branchData\":[]}}";
+        String expected = "{\"/test1.js\":{\"lineData\":[null,0,1],\"branchData\":[]},\"/test2.js\":{\"lineData\":[null,0,1],\"branchData\":[]}}";
 
         String merged = jsonMerger.toJSON(jsonMerger.mergeJSONCoverageStrings(data1, data2));
 
@@ -393,7 +393,7 @@ public class JSONDataMergerTest {
 
     @Test
     public void shouldParseData() {
-        String data = "{\"/test.js\":{\"coverage\":[null,0,1]}}";
+        String data = "{\"/test.js\":{\"lineData\":[null,0,1]}}";
         SortedMap<String, FileData> map = jsonMerger.jsonToMap(data);
 
         assertThat(map.keySet().size(), equalTo(1));
@@ -405,7 +405,7 @@ public class JSONDataMergerTest {
 
     @Test
     public void shouldParseBranchData() {
-        String data = "{\"/test.js\":{\"coverage\":[null,1,2],\"branchData\":[null,null,[null,{\"position\":13,\"nodeLength\":4,\"src\":\"x == 0\",\"evalFalse\":1,\"evalTrue\":2}]]}}";
+        String data = "{\"/test.js\":{\"lineData\":[null,1,2],\"branchData\":[null,null,[null,{\"position\":13,\"nodeLength\":4,\"src\":\"x == 0\",\"evalFalse\":1,\"evalTrue\":2}]]}}";
 
         SortedMap<String, FileData> map = jsonMerger.jsonToMap(data);
 
@@ -431,12 +431,12 @@ public class JSONDataMergerTest {
 
     @Test(expected = RuntimeException.class)
     public void shouldReThrowException() {
-        jsonMerger.jsonToMap("{\"/test.js\":{\"coverage\":\"}}");
+        jsonMerger.jsonToMap("{\"/test.js\":{\"lineData\":\"}}");
     }
 
     @Test
     public void shouldConvertBranchMapToJSONString() {
-        String data = "{\"/test.js\":{\"coverage\":[null,1,2],\"branchData\":[null,null,[null,{\"position\":13,\"nodeLength\":4,\"src\":\"x == 0\",\"evalFalse\":1,\"evalTrue\":2}]]}}";
+        String data = "{\"/test.js\":{\"lineData\":[null,1,2],\"branchData\":[null,null,[null,{\"position\":13,\"nodeLength\":4,\"src\":\"x == 0\",\"evalFalse\":1,\"evalTrue\":2}]]}}";
         SortedMap<String, FileData> map = jsonMerger.jsonToMap(data);
 
         String jsonString = jsonMerger.toJSON(map);
@@ -446,7 +446,7 @@ public class JSONDataMergerTest {
 
     @Test
     public void shouldConvertMapToJSONString() {
-        String data = "{\"/test.js\":{\"coverage\":[null,0,1],\"branchData\":[]}}";
+        String data = "{\"/test.js\":{\"lineData\":[null,0,1],\"branchData\":[]}}";
         SortedMap<String, FileData> map = jsonMerger.jsonToMap(data);
 
         String jsonString = jsonMerger.toJSON(map);
@@ -478,17 +478,5 @@ public class JSONDataMergerTest {
         assertThat(map.values().iterator().next().getLines().get(1), equalTo(0));
         assertThat(map.values().iterator().next().getLines().get(2), nullValue());
         assertThat(map.values().iterator().next().getLines().get(3), equalTo(0));
-    }
-
-    @Test
-    public void shouldGenerateLCOVFormat() {
-        File rootDir = new File(".");
-        String data = ioUtils.loadFromClassPath("/jscover/report/jscoverage-select-3.json");
-        SortedMap<String, FileData> map = jsonMerger.jsonToMap(data);
-
-        String lcovString = jsonMerger.toLCOV(rootDir, map);
-
-        String expected = ioUtils.loadFromClassPath("/jscover/report/lcov-select-3.dat").replaceAll("@file@", rootDir.getAbsolutePath().replaceAll("\\\\","/")+map.firstKey());
-        assertThat(lcovString, equalTo(expected));
     }
 }

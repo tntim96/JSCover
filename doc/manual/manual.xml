@@ -910,7 +910,7 @@ var y = visit1_2_1(x > 0) ? 1 : 0;</code>
                     source from JSON</note>, improving the performance of loading the summary statistics.
 <code>{"/path/file1.js":
     {
-      "coverage":[null,1,1,1],       //Each element represents a line. Value is number of times executed.
+      "lineData":[null,1,1,1],       //Each element represents a line. Value is number of times executed.
       "branchData":[
             null,                    //Each element represents a line. See below for value.
             null,

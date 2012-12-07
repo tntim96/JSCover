@@ -365,7 +365,7 @@ function jscoverage_body_load() {
             for (file in json) {
               var fileCoverage = json[file];
               _$jscoverage[file] = {};
-              _$jscoverage[file].lineData = fileCoverage.coverage;
+              _$jscoverage[file].lineData = fileCoverage.lineData;
               _$jscoverage[file].branchData = convertBranchDataLinesFromJSON(fileCoverage.branchData);
             }
             jscoverage_recalculateSummaryTab();
@@ -1222,7 +1222,7 @@ function jscoverage_serializeCoverageToJSON() {
       array.push(value);
     }
 
-    json.push(jscoverage_quote(file) + ':{"coverage":[' + array.join(',') + '],"branchData":' + convertBranchDataLinesToJSON(_$jscoverage[file].branchData) + '}');
+    json.push(jscoverage_quote(file) + ':{"lineData":[' + array.join(',') + '],"branchData":' + convertBranchDataLinesToJSON(_$jscoverage[file].branchData) + '}');
   }
   return '{' + json.join(',') + '}';
 }

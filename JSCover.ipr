@@ -33,7 +33,6 @@
       <entry name="?*.txt" />
       <entry name="?*.json" />
       <entry name="?*.MF" />
-      <entry name="?*.dat" />
     </wildcardResourcePatterns>
     <annotationProcessing enabled="false" useClasspath="true" />
   </component>

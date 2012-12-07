@@ -401,7 +401,7 @@ public class JSONDataMerger {
             NativeObject json = (NativeObject) parser.parseValue(data);
             for (Object scriptURI : json.keySet()) {
                 NativeObject scriptData = (NativeObject) json.get(scriptURI);
-                NativeArray lineCoverageArray = (NativeArray) scriptData.get("coverage");
+                NativeArray lineCoverageArray = (NativeArray) scriptData.get("lineData");
                 NativeArray branchJSONArray = (NativeArray) scriptData.get("branchData");
                 List<Integer> countData = new ArrayList<Integer>(lineCoverageArray.size());
                 for (int i = 0; i < lineCoverageArray.size(); i++)
@@ -462,7 +462,7 @@ public class JSONDataMerger {
                 json.append(",");
             }
 
-            String scriptJSON = "\"%s\":{\"coverage\":[%s],\"branchData\":[%s]}";
+            String scriptJSON = "\"%s\":{\"lineData\":[%s],\"branchData\":[%s]}";
             json.append(String.format(scriptJSON, scriptURI, coverage, branchData));
         }
         json.append("}");
@@ -513,21 +513,5 @@ public class JSONDataMerger {
             map.put(script.getUri(), coverageData);
         }
         return map;
-    }
-
-    String toLCOV(File rootDir, SortedMap<String, FileData> map) {
-        StringBuilder lcov = new StringBuilder();
-        for (String scriptURI : map.keySet()) {
-            lcov.append(format("SF:%s\n", rootDir.getAbsolutePath().replaceAll("\\\\", "/") + scriptURI));
-            FileData coverageData = map.get(scriptURI);
-            for (int lineNumber = 0; lineNumber < coverageData.getLines().size(); lineNumber++) {
-                Integer count = coverageData.getLines().get(lineNumber);
-                if (count != null) {
-                    lcov.append(format("DA:%d,%d\n", lineNumber, count));
-                }
-            }
-            lcov.append("end_of_record\n");
-        }
-        return lcov.toString();
     }
 }
