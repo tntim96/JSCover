@@ -3,6 +3,8 @@
   * Alter JSONDataMerger.mergeJSONCoverageStrings to accept and array of coverage strings to merge
   * Improve unloaded JavaScript parsing error logging issue https://github.com/tntim96/JSCover/issues/27
   * Internal: Load original JS source from file-system instead of JSON for report viewing
+              Remove source from JSON
+              Alter _$jscoverage object and JSON to elegantly accommodate branch (and other) properties
 
 0.1.1 / 2012-12-02
 ==================
