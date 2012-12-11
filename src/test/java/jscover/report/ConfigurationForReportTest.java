@@ -342,22 +342,35 @@
 
 package jscover.report;
 
+import jscover.*;
+import jscover.util.IoUtils;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
 import static org.junit.Assert.assertThat;
 
 public class ConfigurationForReportTest {
     private ConfigurationForReport configuration = new ConfigurationForReport();
+    private IoUtils ioUtils = IoUtils.getInstance();
+
+    @Before
+    public void setUp() {
+        new File("target").mkdirs();
+    }
+
 
     @Test
     public void shouldBeInvalidIfNoArgs() {
         configuration.parse(new String[]{});
         assertThat(configuration.showHelp(), equalTo(true));
         assertThat(configuration.isInvalid(), equalTo(true));
+        assertThat(configuration.isFormat(), equalTo(false));
+        assertThat(configuration.isMerge(), equalTo(false));
     }
 
     @Test
@@ -375,10 +388,20 @@ public class ConfigurationForReportTest {
     }
 
     @Test
+    public void shouldBeInvalidIfFormatAndMergePrefixesPResent() {
+        configuration.parse(new String[]{"--format=XMLSUMMARY", "--merge"});
+        assertThat(configuration.showHelp(), equalTo(true));
+        assertThat(configuration.isInvalid(), equalTo(true));
+        assertThat(configuration.isFormat(), equalTo(true));
+        assertThat(configuration.isMerge(), equalTo(true));
+    }
+
+    @Test
     public void shouldBeInvalidIfXmlSummaryWithTooManyArgs() {
         configuration.parse(new String[]{"--format=XMLSUMMARY", "target", "src"});
         assertThat(configuration.showHelp(), equalTo(true));
         assertThat(configuration.isInvalid(), equalTo(true));
+        assertThat(configuration.isFormat(), equalTo(true));
     }
 
     @Test
@@ -436,8 +459,66 @@ public class ConfigurationForReportTest {
     }
 
     @Test
+    public void shouldParseMerge() {
+        String dir1 = "target/report1";
+        File report1 = createValidReportDir(dir1);
+        String dir2 = "target/report2";
+        File report2 = createValidReportDir(dir2);
+        String destDir = "target/merged";
+        File merged = new File(destDir);
+
+        configuration.parse(new String[]{"--merge", dir1, dir2, destDir});
+        assertThat(configuration.showHelp(), equalTo(false));
+        assertThat(configuration.isInvalid(), equalTo(false));
+        assertThat(configuration.getMergeDirs().size(), equalTo(2));
+        assertThat(configuration.getMergeDirs(), hasItem(report1));
+        assertThat(configuration.getMergeDirs(), hasItem(report2));
+        assertThat(configuration.getMergeDestDir(), equalTo(merged));
+    }
+
+    @Test
+    public void shouldDetectInsufficientMergeArguments() {
+        configuration.parse(new String[]{"--merge", "dir1"});
+        assertThat(configuration.showHelp(), equalTo(true));
+        assertThat(configuration.isInvalid(), equalTo(true));
+    }
+
+    @Test
+    public void shouldDetectInvalidFile() {
+        assertThat(configuration.isValidFile(new File("doesntExists")), equalTo(false));
+        assertThat(configuration.isValidFile(new File("src")), equalTo(false));
+    }
+
+    @Test
+    public void shouldDetectInvalidReportDirectory() {
+        assertThat(configuration.isValidReportDirectory(new File("build.xml")), equalTo(false));
+    }
+
+    @Test
+    public void shouldDetectBadDirForMerge() {
+        String dir1 = "target/report3";
+        createValidReportDir(dir1);
+        String dir2 = "target/report4";
+        String destDir = "target/merged";
+
+        configuration.parse(new String[]{"--merge", dir1, dir2, destDir});
+        assertThat(configuration.showHelp(), equalTo(true));
+        assertThat(configuration.isInvalid(), equalTo(true));
+    }
+
+    private File createValidReportDir(String dir) {
+        File reportDir = new File(dir);
+        File srcDir = new File(reportDir, jscover.Main.reportSrcSubDir);
+        srcDir.mkdirs();
+        File jsonFile = new File(reportDir, "jscoverage.json");
+        ioUtils.copy("dummy", jsonFile);
+        return reportDir;
+    }
+
+    @Test
     public void shouldRetrieveHelpText() {
         String helpText = configuration.getHelpText();
         assertThat(helpText, containsString("Usage: java -cp JSCover-all.jar jscover.report.Main --format=[ XMLSUMMARY | LCOV ] REPORT-DIR [SRC-DIRECTORY]"));
+        assertThat(helpText, containsString("or     java -cp JSCover-all.jar jscover.report.Main --merge REPORT-DIR1 REPORT-DIR2... DEST-DIR"));
     }
 }

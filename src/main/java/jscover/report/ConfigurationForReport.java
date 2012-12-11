@@ -343,20 +343,28 @@
 package jscover.report;
 
 import jscover.*;
+import jscover.Main;
 import jscover.util.IoUtils;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ConfigurationForReport  extends Configuration {
     public static final String HELP_PREFIX1 = jscover.Main.HELP_PREFIX1;
     public static final String HELP_PREFIX2 = jscover.Main.HELP_PREFIX2;
     public static final String FORMAT_PREFIX = "--format=";
+    public static final String MERGE_PREFIX = "--merge";
 
     private ReportFormat reportFormat;
     private File jsonDirectory;
     private File sourceDirectory;
     private boolean showHelp;
     private boolean invalid;
+    private boolean format;
+    private boolean merge;
+    private File mergeDestDir;
+    private List<File> mergeDirs = new ArrayList<File>();
     private IoUtils ioUtils = IoUtils.getInstance();
 
     public ReportFormat getReportFormat() {
@@ -379,6 +387,22 @@ public class ConfigurationForReport  extends Configuration {
         return invalid;
     }
 
+    public boolean isFormat() {
+        return format;
+    }
+
+    public boolean isMerge() {
+        return merge;
+    }
+
+    public File getMergeDestDir() {
+        return mergeDestDir;
+    }
+
+    public List<File> getMergeDirs() {
+        return mergeDirs;
+    }
+
     public String getHelpText() {
         return ioUtils.toString(getClass().getResourceAsStream("help.txt"));
     }
@@ -390,27 +414,85 @@ public class ConfigurationForReport  extends Configuration {
                 showHelp = true;
                 return this;
             } else if (arg.startsWith(FORMAT_PREFIX)) {
+                format = true;
                 reportFormat = ReportFormat.valueOf(arg.substring(FORMAT_PREFIX.length()));
+            } else if (arg.startsWith(MERGE_PREFIX)) {
+                merge = true;
+            } else {
+                if (merge) {
+                    mergeDirs.add(new File(arg));
+                }
             }
         }
 
-        if (reportFormat == ReportFormat.LCOV) {
-            if (args.length != 3) {
+        if (format && merge || (!format && !merge)) {
+            invalid = true;
+            showHelp = true;
+            return this;
+        }
+        if (merge) {
+            if (mergeDirs.size() < 3) {
+                System.err.println("Must specify more than one directory to merge");
                 invalid = true;
                 showHelp = true;
                 return this;
             }
-            jsonDirectory = getDirectory(args[args.length - 2]);
-            sourceDirectory = getDirectory(args[args.length - 1]);
-        } else {
-            if (args.length != 2) {
-                invalid = true;
-                showHelp = true;
-                return this;
+            mergeDestDir = mergeDirs.get(mergeDirs.size()-1);
+            mergeDirs.remove(mergeDestDir);
+            for (File mergeDir : mergeDirs) {
+                if (!isValidReportDirectory(mergeDir)) {
+                    invalid = true;
+                    showHelp = true;
+                    return this;
+                }
             }
-            jsonDirectory = getDirectory(args[args.length - 1]);
+        } else {//Must be format
+            if (reportFormat == ReportFormat.LCOV) {
+                if (args.length != 3) {
+                    invalid = true;
+                    showHelp = true;
+                    return this;
+                }
+                jsonDirectory = getDirectory(args[args.length - 2]);
+                sourceDirectory = getDirectory(args[args.length - 1]);
+            } else {
+                if (args.length != 2) {
+                    invalid = true;
+                    showHelp = true;
+                    return this;
+                }
+                jsonDirectory = getDirectory(args[args.length - 1]);
+            }
         }
         return this;
+    }
+
+    boolean isValidReportDirectory(File dir) {
+        File jsonFile = new File(dir, "jscoverage.json");
+        File srcDir = new File(dir, Main.reportSrcSubDir);
+        return isValidDirectory(dir) && isValidFile(jsonFile) && isValidDirectory(srcDir);
+    }
+
+    boolean isValidFile(File file) {
+        if (!file.exists()) {
+            System.err.println("Directory doesn't exist: " + file.getAbsolutePath());
+            return false;
+        } else if (!file.isFile()) {
+            System.err.println(file.getAbsolutePath() + " is not a file");
+            return false;
+        }
+        return true;
+    }
+
+    private boolean isValidDirectory(File dir) {
+        if (!dir.exists()) {
+            System.err.println("Directory doesn't exist: " + dir.getAbsolutePath());
+            return false;
+        } else if (!dir.isDirectory()) {
+            System.err.println(dir.getAbsolutePath() + " is not a directory");
+            return false;
+        }
+        return true;
     }
 
     private File getDirectory(String arg) {
