@@ -585,4 +585,12 @@ public class IoUtils {
             return false;
         }
     }
+
+    public void copyDir(File src, File dest) {
+        //TODO
+    }
+
+    public void mkdirs(File dir) {
+        dir.mkdirs();
+    }
 }

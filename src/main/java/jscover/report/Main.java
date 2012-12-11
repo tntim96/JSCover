@@ -348,6 +348,7 @@ import jscover.util.IoUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.SortedMap;
 
 //This entry point is currently in flux until the output format is determined.
 public class Main {
@@ -373,10 +374,28 @@ public class Main {
             generateLCovDataFile();
         } else  if (config.getReportFormat() == ReportFormat.XMLSUMMARY) {
             saveXmlSummary();
+        } else if (config.isMerge()) {
+            mergeReports();
         } else {
             System.out.println(config.getHelpText());
             System.exit(1);
         }
+    }
+
+    private void mergeReports() {
+        String[] data = new String[config.getMergeDirs().size()];
+        for (int i = 0; i < data.length; i++) {
+            File dataFile = new File(config.getMergeDirs().get(i), "jscoverage.json");
+            data[i] = ioUtils.loadFromFileSystem(dataFile);
+        }
+        SortedMap<String, FileData> mergedMap = jsonDataMerger.mergeJSONCoverageStrings(data);
+        ioUtils.mkdirs(config.getMergeDestDir());
+        File mergedJson = new File(config.getMergeDestDir(), "jscoverage.json");
+        ioUtils.copy(jsonDataMerger.toJSON(mergedMap), mergedJson);
+
+        File srcDir = new File(config.getMergeDestDir(), jscover.Main.reportSrcSubDir);
+        for (File dir : config.getMergeDirs())
+            ioUtils.copyDir(new File(dir,jscover.Main.reportSrcSubDir), srcDir);
     }
 
 

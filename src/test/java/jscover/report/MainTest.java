@@ -452,4 +452,36 @@ public class MainTest {
 
         verify(xmlSummary).saveSummary(argThat(coverableMatcher), argThat(fileMatcher), argThat(is("version")));
     }
+
+    @Test
+    public void shouldMergeReports() throws IOException {
+        List<File> mergeDirs = new ArrayList<File>();
+        File dir1 = new File("target/dir1");
+        mergeDirs.add(dir1);
+        File dir2 = new File("target/dir2");
+        mergeDirs.add(dir2);
+        File destDir = new File("target/dest-dir");
+
+        given(config.isMerge()).willReturn(true);
+        given(config.getMergeDestDir()).willReturn(destDir);
+        given(config.getMergeDirs()).willReturn(mergeDirs);
+        given(ioUtils.loadFromFileSystem(new File(dir1, "jscoverage.json"))).willReturn("json1");
+        given(ioUtils.loadFromFileSystem(new File(dir2,"jscoverage.json"))).willReturn("json2");
+        SortedMap<String, FileData> mergedMap = new TreeMap<String, FileData>();
+        given(jsonDataMerger.mergeJSONCoverageStrings(new String[]{"json1","json2"})).willReturn(mergedMap);
+        given(jsonDataMerger.toJSON(mergedMap)).willReturn("mergedJSON");
+
+        main.runMain(new String[]{});
+
+        //Verify JSON merging
+        File mergedJson = new File(config.getMergeDestDir(), "jscoverage.json");
+        verify(ioUtils).copy("mergedJSON", mergedJson);
+
+        //Verify src copying
+        File src1 = new File(dir1, jscover.Main.reportSrcSubDir);
+        File src2 = new File(dir2, jscover.Main.reportSrcSubDir);
+        File srcDest = new File(destDir, jscover.Main.reportSrcSubDir);
+        verify(ioUtils).copyDir(src1, srcDest);
+        verify(ioUtils).copyDir(src2, srcDest);
+    }
 }
