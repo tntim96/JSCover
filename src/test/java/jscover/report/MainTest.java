@@ -342,6 +342,7 @@ Public License instead of this License.
 
 package jscover.report;
 
+import jscover.MainHelper;
 import jscover.report.lcov.LCovGenerator;
 import jscover.report.xml.XMLSummary;
 import jscover.util.IoUtils;
@@ -366,10 +367,12 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MainTest {
     private Main main = new Main();
+    private @Mock MainHelper mainHelper;
     private @Mock XMLSummary xmlSummary;
     private @Mock LCovGenerator lCovGenerator;
     private @Mock JSONDataMerger jsonDataMerger;
@@ -378,6 +381,7 @@ public class MainTest {
 
     @Before
     public void setUp() {
+        ReflectionUtils.setField(main, "mainHelper", mainHelper);
         ReflectionUtils.setField(main, "xmlSummary", xmlSummary);
         ReflectionUtils.setField(main, "lCovGenerator", lCovGenerator);
         ReflectionUtils.setField(main, "jsonDataMerger", jsonDataMerger);
@@ -386,10 +390,24 @@ public class MainTest {
     }
 
     @Test
+    public void shouldExitIfInvalid() throws IOException {
+        given(config.isInvalid()).willReturn(true);
+        main.runMain(new String[]{});
+        verify(mainHelper).exit(1);
+    }
+
+    @Test
+    public void shouldExitUnknown() throws IOException {
+        main.runMain(new String[]{});
+        verify(mainHelper).exit(1);
+    }
+
+    @Test
     public void shouldShowHelp() throws IOException {
         given(config.showHelp()).willReturn(true);
         main.runMain(new String[]{});
         verify(config).getHelpText();
+        verifyZeroInteractions(mainHelper);
     }
 
     @Test
@@ -408,6 +426,7 @@ public class MainTest {
 
         File lcovFile = new File(jsonDirectory, "jscover.lcov");
         verify(lCovGenerator).saveData(list.values(), srcDir.getCanonicalPath(), lcovFile);
+        verifyZeroInteractions(mainHelper);
     }
 
     @Test
@@ -451,6 +470,7 @@ public class MainTest {
         };
 
         verify(xmlSummary).saveSummary(argThat(coverableMatcher), argThat(fileMatcher), argThat(is("version")));
+        verifyZeroInteractions(mainHelper);
     }
 
     @Test
@@ -482,5 +502,6 @@ public class MainTest {
         File srcDest = new File(destDir, jscover.Main.reportSrcSubDir);
         verify(ioUtils).copyDir(dir1, destDir);
         verify(ioUtils).copyDir(src2, srcDest);
+        verifyZeroInteractions(mainHelper);
     }
 }

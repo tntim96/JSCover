@@ -342,6 +342,7 @@ Public License instead of this License.
 
 package jscover.report;
 
+import jscover.MainHelper;
 import jscover.report.lcov.LCovGenerator;
 import jscover.report.xml.XMLSummary;
 import jscover.util.IoUtils;
@@ -353,10 +354,10 @@ import java.util.SortedMap;
 //This entry point is currently in flux until the output format is determined.
 public class Main {
     public static void main(String[] args) throws IOException {
-        Main main = new Main();
-        main.runMain(args);
+        new Main().runMain(args);
     }
 
+    private MainHelper mainHelper = new MainHelper();
     private XMLSummary xmlSummary = new XMLSummary();
     private LCovGenerator lCovGenerator = new LCovGenerator();
     private JSONDataMerger jsonDataMerger = new JSONDataMerger();
@@ -367,7 +368,7 @@ public class Main {
         config.parse(args);
         if (config.isInvalid()) {
             System.out.println(config.getHelpText());
-            System.exit(1);
+            mainHelper.exit(1);
         } else if (config.showHelp()) {
             System.out.println(config.getHelpText());
         } else if (config.getReportFormat() == ReportFormat.LCOV) {
@@ -378,7 +379,7 @@ public class Main {
             mergeReports();
         } else {
             System.out.println(config.getHelpText());
-            System.exit(1);
+            mainHelper.exit(1);
         }
     }
 
