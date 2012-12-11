@@ -393,9 +393,11 @@ public class Main {
         File mergedJson = new File(config.getMergeDestDir(), "jscoverage.json");
         ioUtils.copy(jsonDataMerger.toJSON(mergedMap), mergedJson);
 
+        File firstReportDir = config.getMergeDirs().get(0);
         File srcDir = new File(config.getMergeDestDir(), jscover.Main.reportSrcSubDir);
-        for (File dir : config.getMergeDirs())
-            ioUtils.copyDir(new File(dir,jscover.Main.reportSrcSubDir), srcDir);
+        ioUtils.copyDir(firstReportDir, config.getMergeDestDir());
+        for (int i = 1; i < config.getMergeDirs().size(); i++)
+            ioUtils.copyDir(new File( config.getMergeDirs().get(i), jscover.Main.reportSrcSubDir), srcDir);
     }
 
 
