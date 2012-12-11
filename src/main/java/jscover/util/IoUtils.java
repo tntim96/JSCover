@@ -417,6 +417,7 @@ public class IoUtils {
         }
     }
 
+    /*
     public List<String> readLines(String source) {
         ByteArrayInputStream bais = new ByteArrayInputStream(source.getBytes(charSet));
         return readLines(new BufferedReader(new InputStreamReader(bais, charSet)));
@@ -435,6 +436,7 @@ public class IoUtils {
             closeQuietly(br);
         }
     }
+    */
 
     public String loadFromClassPath(String dataFile) {
         InputStream is = null;
