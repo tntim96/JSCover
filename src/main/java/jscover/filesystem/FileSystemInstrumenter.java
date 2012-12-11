@@ -390,12 +390,8 @@ public class FileSystemInstrumenter {
         if (configuration.exclude(path))
             return;
         if (src.isDirectory()) {
-            String files[] = src.list(filter);
-            for (String file : files) {
-                File srcFile = new File(src, file);
-                File destFile = new File(dest, file);
-                copyFolder(srcFile, destFile, filter, instrument);
-            }
+            for (String file : src.list(filter))
+                copyFolder(new File(src, file), new File(dest, file), filter, instrument);
         } else {
             if (instrument && src.isFile() && src.toString().endsWith(".js") && !configuration.skipInstrumentation(path)) {
                 if (!dest.getParentFile().exists())

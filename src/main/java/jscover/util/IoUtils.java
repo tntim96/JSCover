@@ -587,7 +587,11 @@ public class IoUtils {
     }
 
     public void copyDir(File src, File dest) {
-        //TODO
+        if (src.isDirectory())
+            for (String file : src.list())
+                copyDir(new File(src, file), new File(dest, file));
+        else
+            ioUtils.copy(src, dest);
     }
 
     public void mkdirs(File dir) {
