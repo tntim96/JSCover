@@ -369,25 +369,37 @@ import static org.mockito.Mockito.spy;
 @RunWith(MockitoJUnitRunner.class)
 public class MainInstanceTest {
     private Main main = new Main();
+    private @Mock MainHelper mainHelper;
     private @Mock WebDaemon webDaemon;
     private @Mock FileSystemInstrumenter fileSystemInstrumenter;
 
     @Before
     public void setUp() {
+        ReflectionUtils.setField(main, "mainHelper", mainHelper);
         ReflectionUtils.setField(main, "webDaemon", webDaemon);
         ReflectionUtils.setField(main, "fileSystemInstrumenter", fileSystemInstrumenter);
+    }
+
+    @Test
+    public void shouldExitWithError() throws IOException, InterruptedException {
+        main.runMain(new String[]{"--unknown"});
+        verifyZeroInteractions(webDaemon);
+        verifyZeroInteractions(fileSystemInstrumenter);
+        verify(mainHelper).exit(1);
     }
 
     @Test
     public void shouldShowWebServerHelp() throws IOException, InterruptedException {
         main.runMain(new String[]{"-ws", "-h"});
         verifyZeroInteractions(webDaemon);
+        verifyZeroInteractions(mainHelper);
     }
 
     @Test
     public void shouldShowFileSystemHelp() throws IOException, InterruptedException {
         main.runMain(new String[]{"-ws", "-h"});
         verifyZeroInteractions(fileSystemInstrumenter);
+        verifyZeroInteractions(mainHelper);
     }
 
     @Test
@@ -405,6 +417,7 @@ public class MainInstanceTest {
             }
         };
         verify(webDaemon, times(1)).start(argThat(matcher));
+        verifyZeroInteractions(mainHelper);
     }
 
     @Test
@@ -422,6 +435,7 @@ public class MainInstanceTest {
             }
         };
         verify(fileSystemInstrumenter, times(1)).run(argThat(matcher));
+        verifyZeroInteractions(mainHelper);
     }
 
     @Test
@@ -438,5 +452,6 @@ public class MainInstanceTest {
         } catch(RuntimeException rte) {
             assertThat((InterruptedException)rte.getCause(), sameInstance(toBeThrown));
         }
+        verifyZeroInteractions(mainHelper);
     }
 }

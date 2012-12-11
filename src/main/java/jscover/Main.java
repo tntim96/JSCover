@@ -375,6 +375,7 @@ public class Main {
     private List<String> dependantClasses = new ArrayList<String>() {{
         add("org.mozilla.javascript.ast.AstNode");
     }};
+    private MainHelper mainHelper = new MainHelper();
     private WebDaemon webDaemon = new WebDaemon();
     private FileSystemInstrumenter fileSystemInstrumenter = new FileSystemInstrumenter();
     private IoUtils ioUtils = IoUtils.getInstance();
@@ -407,10 +408,7 @@ public class Main {
     private int exitStatus;
 
     public static void main(String[] args) throws IOException {
-        Main main = new Main();
-        main.runMain(args);
-        if (main.exitStatus != 0)
-            System.exit(main.exitStatus);
+        new Main().runMain(args);
     }
 
     public void runMain(String[] args) throws IOException {
@@ -434,6 +432,8 @@ public class Main {
         }
         if (Logger.getInstance().isLoggedException())
             exitStatus = 1;
+        if (exitStatus != 0)
+            mainHelper.exit(exitStatus);
     }
 
     public String getHelpText() {
