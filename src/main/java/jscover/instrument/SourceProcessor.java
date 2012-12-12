@@ -372,8 +372,7 @@ class SourceProcessor {
 
     public String processSourceForServer(String source) {
         String reportJS = ioUtils.loadFromClassPath("/report.js");
-        String commonJS = ioUtils.loadFromClassPath("/jscoverage-common.js");
-        return reportJS + commonJS + processSource(uri, source);
+        return reportJS + processSource(uri, source);
     }
 
     public String processSourceForFileSystem(String source) {
@@ -382,8 +381,9 @@ class SourceProcessor {
 
     protected String processSource(String sourceURI, String source) {
         String headerJS = ioUtils.loadFromClassPath("/header.js");
+        String commonJS = ioUtils.loadFromClassPath("/jscoverage-common.js");
         String branchJS = ioUtils.loadFromClassPath("/jscoverage-branch.js");
-        return branchJS + headerJS + processSourceWithoutHeader(sourceURI, source);
+        return branchJS + commonJS + headerJS + processSourceWithoutHeader(sourceURI, source);
     }
 
     protected String processSourceWithoutHeader(String source) {

@@ -407,10 +407,11 @@ public class SourceProcessorTest {
     @Test
     public void shouldIncludeBranchLogicForProcessSourceEvenIfIncludeBranchCoverageIsFalse() throws IOException {
         given(ioUtils.loadFromClassPath("/header.js")).willReturn("<header>");
+        given(ioUtils.loadFromClassPath("/jscoverage-common.js")).willReturn("<common>");
         given(ioUtils.loadFromClassPath("/jscoverage-branch.js")).willReturn("<branch>");
         given(parser.parse(anyString(), anyString(), anyInt())).willReturn(new AstRoot());
 
-        assertThat(sourceProcessor.processSource("test.js", "x;"), startsWith("<branch><header>"));
+        assertThat(sourceProcessor.processSource("test.js", "x;"), startsWith("<branch><common><header>"));
         verify(ioUtils, times(1)).loadFromClassPath("/jscoverage-branch.js");
     }
 
@@ -418,10 +419,11 @@ public class SourceProcessorTest {
     public void shouldIncludeBranchLogicForProcessSource() throws IOException {
         ReflectionUtils.setField(sourceProcessor, "includeBranchCoverage", true);
         given(ioUtils.loadFromClassPath("/header.js")).willReturn("<header>");
+        given(ioUtils.loadFromClassPath("/jscoverage-common.js")).willReturn("<common>");
         given(ioUtils.loadFromClassPath("/jscoverage-branch.js")).willReturn("<branch>");
         given(parser.parse(anyString(), anyString(), anyInt())).willReturn(new AstRoot());
 
-        assertThat(sourceProcessor.processSource("test.js", "x;"), startsWith("<branch><header>"));
+        assertThat(sourceProcessor.processSource("test.js", "x;"), startsWith("<branch><common><header>"));
         verify(ioUtils, times(1)).loadFromClassPath("/jscoverage-branch.js");
     }
 }

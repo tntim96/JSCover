@@ -391,5 +391,4 @@ public class InstrumenterIntegrationTest {
         //ioUtils.copy(instrumentedSource, new File("src/test-integration/resources/test-instrumented-server.js"));
         assertEquals(expectedSource.replaceAll("\r\n","\n"), instrumentedSource.replaceAll("\r\n","\n"));
     }
-
 }
