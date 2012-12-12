@@ -106,6 +106,7 @@
             <fileset dir="${basedir}">
                 <include name="**/*"/>
                 <exclude name=".*/**"/>
+                <exclude name="cobertura.ser"/>
                 <exclude name="bin/**"/>
                 <exclude name="${build.dir}/**"/>
             </fileset>
