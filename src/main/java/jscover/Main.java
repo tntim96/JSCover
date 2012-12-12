@@ -497,7 +497,7 @@ public class Main {
         if (isServer && isFileSystem) {
             return false;
         }
-        return isServer || isFileSystem || showHelp;
+        return isServer || isFileSystem || showHelp || printVersion || showCharsets;
     }
 
     public Boolean printVersion() {

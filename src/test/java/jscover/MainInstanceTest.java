@@ -389,6 +389,20 @@ public class MainInstanceTest {
     }
 
     @Test
+    public void shouldPrintVersion() throws IOException, InterruptedException {
+        main.runMain(new String[]{"-V"});
+        verifyZeroInteractions(webDaemon);
+        verifyZeroInteractions(mainHelper);
+    }
+
+    @Test
+    public void shouldPrintCharSets() throws IOException, InterruptedException {
+        main.runMain(new String[]{"-h","encoding"});
+        verifyZeroInteractions(webDaemon);
+        verifyZeroInteractions(mainHelper);
+    }
+
+    @Test
     public void shouldShowWebServerHelp() throws IOException, InterruptedException {
         main.runMain(new String[]{"-ws", "-h"});
         verifyZeroInteractions(webDaemon);
