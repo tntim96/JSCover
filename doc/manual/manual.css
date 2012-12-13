@@ -139,7 +139,13 @@ A.ExpandCollapseAll {
     color: #ccffff;
     font-size: 15pt;
     font-family: Courier;
+    font-weight: bold;
     text-decoration: none;
+}
+
+A:hover.ExpandCollapseAll {
+    color: #ffcc99;
+    background-color: #336666;
 }
 
 A.ExpandCollapse {
