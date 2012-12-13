@@ -100,6 +100,13 @@ HR {
     background-color : #002244;
 }
 
+.title {
+	font-family: arial;
+	font-size: 20pt;
+	font-weight: bold;
+	color: #ccffff;
+}
+
 .heading0 {
 	font-family: arial;
 	font-size: 18pt;
@@ -126,6 +133,13 @@ HR {
 
 A {
 	color: #99ccff;
+}
+
+A.ExpandCollapseAll {
+    color: #ccffff;
+    font-size: 15pt;
+    font-family: Courier;
+    text-decoration: none;
 }
 
 A.ExpandCollapse {
