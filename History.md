@@ -1,4 +1,4 @@
-0.2.0-RC1 / 2012-??-??
+0.2.0-RC1 / 2012-12-13
 ==================
   * Add report merging command line interface
   * Improve unloaded JavaScript parsing error logging issue https://github.com/tntim96/JSCover/issues/27
