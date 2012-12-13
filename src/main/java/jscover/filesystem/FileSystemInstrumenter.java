@@ -364,7 +364,7 @@ public class FileSystemInstrumenter {
         Logger.setLogFile(log);
         ioService.generateJSCoverFilesForFileSystem(configuration.getDestDir(), configuration.getVersion());
         copyFolder(configuration.getSrcDir(), configuration.getDestDir());
-        copyFolder(configuration.getSrcDir(), new File(configuration.getDestDir(), Main.reportSrcSubDir), getJavaScriptFilter(), false);
+        copyFolder(configuration.getSrcDir(), new File(configuration.getDestDir(), Main.reportSrcSubDir), getJavaScriptFilter(), true);
     }
 
     private FilenameFilter getJavaScriptFilter() {
@@ -382,23 +382,24 @@ public class FileSystemInstrumenter {
                 return true;
             }
         };
-        copyFolder(src, dest, acceptAll, true);
+        copyFolder(src, dest, acceptAll, false);
     }
 
-    private void copyFolder(File src, File dest, FilenameFilter filter, boolean instrument) {
+    private void copyFolder(File src, File dest, FilenameFilter filter, boolean isReportSrc) {
         String path = ioUtils.getRelativePath(src, configuration.getSrcDir());
         if (configuration.exclude(path))
             return;
         if (src.isDirectory()) {
             for (String file : src.list(filter))
-                copyFolder(new File(src, file), new File(dest, file), filter, instrument);
+                copyFolder(new File(src, file), new File(dest, file), filter, isReportSrc);
         } else {
-            if (instrument && src.isFile() && src.toString().endsWith(".js") && !configuration.skipInstrumentation(path)) {
+            if (!isReportSrc && src.isFile() && src.toString().endsWith(".js") && !configuration.skipInstrumentation(path)) {
                 if (!dest.getParentFile().exists())
                     dest.getParentFile().mkdirs();
                 instrumenterService.instrumentJSForFileSystem(configuration.getCompilerEnvirons(), src, dest, path, configuration.isIncludeBranch());
             } else {
-                ioUtils.copy(src, dest);
+                if (!(isReportSrc && configuration.skipInstrumentation(path)))
+                    ioUtils.copy(src, dest);
             }
         }
     }
