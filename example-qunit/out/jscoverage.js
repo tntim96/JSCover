@@ -68,7 +68,6 @@ function jscoverage_init(w) {
   if (! jscoverage_isInvertedMode) {
     if (! w._$jscoverage) {
       w._$jscoverage = {};
-      w._$jscoverage.branchData = {};
     }
   }
 }
@@ -365,9 +364,9 @@ function jscoverage_body_load() {
             var file;
             for (file in json) {
               var fileCoverage = json[file];
-              _$jscoverage[file] = fileCoverage.coverage;
-              _$jscoverage[file].source = fileCoverage.source;
-              _$jscoverage.branchData[file] = convertBranchDataLinesFromJSON(fileCoverage.branchData);
+              _$jscoverage[file] = {};
+              _$jscoverage[file].lineData = fileCoverage.lineData;
+              _$jscoverage[file].branchData = convertBranchDataLinesFromJSON(fileCoverage.branchData);
             }
             jscoverage_recalculateSummaryTab();
             summaryThrobber.style.visibility = 'hidden';
@@ -506,8 +505,6 @@ function jscoverage_recalculateSummaryTab(cc) {
   var file;
   var files = [];
   for (file in cc) {
-    if (file === 'branchData')
-        continue;
     files.push(file);
   }
   if (files.length === 0)
@@ -529,7 +526,7 @@ function jscoverage_recalculateSummaryTab(cc) {
     var num_statements = 0;
     var num_executed = 0;
     var missing = [];
-    var fileCC = cc[file];
+    var fileCC = cc[file].lineData;
     var length = fileCC.length;
     var currentConditionalEnd = 0;
     var conditionals = null;
@@ -567,7 +564,7 @@ function jscoverage_recalculateSummaryTab(cc) {
 
     var num_branches = 0;
     var num_executed_branches = 0;
-    var fileBranchCC = cc.branchData[file];
+    var fileBranchCC = cc[file].branchData;
     if (fileBranchCC) {
         var branchLength = fileBranchCC.length;
         for (lineNumber = 0; lineNumber < branchLength; lineNumber++) {
@@ -819,10 +816,9 @@ function jscoverage_checkbox_click() {
 // -----------------------------------------------------------------------------
 // tab 3
 
-function jscoverage_makeTable() {
-  var coverage = _$jscoverage[jscoverage_currentFile];
-  var branchData = _$jscoverage.branchData[jscoverage_currentFile];
-  var lines = coverage.source;
+function jscoverage_makeTable(lines) {
+  var coverage = _$jscoverage[jscoverage_currentFile].lineData;
+  var branchData = _$jscoverage[jscoverage_currentFile].branchData;
 
   // this can happen if there is an error in the original JavaScript file
   if (! lines) {
@@ -882,10 +878,9 @@ function jscoverage_makeTable() {
       row += '<td></td>';
     }
 
-    if (_$jscoverage.branchData[jscoverage_currentFile] !== undefined && _$jscoverage.branchData[jscoverage_currentFile].length !== undefined) {
+    if (_$jscoverage[jscoverage_currentFile].branchData !== undefined && _$jscoverage[jscoverage_currentFile].branchData.length !== undefined) {
         var branchClass = '';
         var branchText = '&#160;';
-        var branchLink = undefined;
         if (branchData[lineNumber] !== undefined && branchData[lineNumber] !== null) {
             branchClass = 'g';
             for (var conditionIndex = 0; conditionIndex < branchData[lineNumber].length; conditionIndex++) {
@@ -897,7 +892,7 @@ function jscoverage_makeTable() {
 
         }
         if (branchClass === 'r') {
-            branchText = '<a href="#" onclick="alert(buildBranchMessage(_$jscoverage.branchData[\''+jscoverage_currentFile+'\']['+lineNumber+']));">info</a>';
+            branchText = '<a href="#" onclick="alert(buildBranchMessage(_$jscoverage[\''+jscoverage_currentFile+'\'].branchData['+lineNumber+']));">info</a>';
         }
         row += '<td class="numeric '+branchClass+'"><pre>' + branchText + '</pre></td>';
     }
@@ -981,7 +976,44 @@ function jscoverage_recalculateSourceTab() {
   progressLabel.innerHTML = 'Calculating coverage ...';
   var progressBar = document.getElementById('progressBar');
   ProgressBar.setPercentage(progressBar, 20);
-  setTimeout(jscoverage_makeTable, 0);
+  var request = jscoverage_createRequest();
+  try {
+    var relativeUrl = jscoverage_currentFile;
+    if (relativeUrl.charAt(0) !== '/')
+      relativeUrl = '/' + relativeUrl;
+    if (!jscoverage_isServer)
+      relativeUrl = 'original-src' + relativeUrl;
+    request.open('GET', relativeUrl, true);
+    request.setRequestHeader("NoInstrument", "true");
+    request.onreadystatechange = function (event) {
+      if (request.readyState === 4) {
+        try {
+          if (request.status !== 0 && request.status !== 200) {
+            throw request.status;
+          }
+          var response = request.responseText;
+          if (response === '') {
+            throw 404;
+          }
+          var displaySource = function() {
+              var lines = response.split(/\n/);
+              for (var i = 0; i < lines.length; i++)
+                  lines[i] = jscoverage_html_escape(lines[i]);
+              jscoverage_makeTable(lines);
+          }
+          setTimeout(displaySource, 0);
+          summaryThrobber.style.visibility = 'hidden';
+        }
+        catch (e) {
+          reportError(e);
+        }
+      }
+    };
+    request.send(null);
+  }
+  catch (e) {
+    reportError(e);
+  }
 }
 
 // -----------------------------------------------------------------------------
@@ -1178,9 +1210,7 @@ function jscoverage_pad(s) {
 function jscoverage_serializeCoverageToJSON() {
   var json = [];
   for (var file in _$jscoverage) {
-    if (file === 'branchData')
-        continue;
-    var coverage = _$jscoverage[file];
+    var coverage = _$jscoverage[file].lineData;
 
     var array = [];
     var length = coverage.length;
@@ -1192,15 +1222,7 @@ function jscoverage_serializeCoverageToJSON() {
       array.push(value);
     }
 
-    var source = coverage.source;
-    var lines = [];
-    length = source.length;
-    for (var line = 0; line < length; line++) {
-      lines.push(jscoverage_quote(source[line]));
-    }
-
-    json.push(jscoverage_quote(file) + ':{"coverage":[' + array.join(',') + '],"source":[' + lines.join(',')
-        + '],"branchData":' + convertBranchDataLinesToJSON(_$jscoverage.branchData[file]) + '}');
+    json.push(jscoverage_quote(file) + ':{"lineData":[' + array.join(',') + '],"branchData":' + convertBranchDataLinesToJSON(_$jscoverage[file].branchData) + '}');
   }
   return '{' + json.join(',') + '}';
 }
@@ -1274,6 +1296,12 @@ function jscoverage_quote(s) {
       return '\\u' + jscoverage_pad(c.charCodeAt(0).toString(16));
     }
   }) + '"';
+}
+
+function jscoverage_html_escape(s) {
+    return s.replace(/[<>\&\"\']/g, function(c) {
+    return '&#' + c.charCodeAt(0) + ';';
+  });
 }
 function BranchData() {
     this.position = -1;

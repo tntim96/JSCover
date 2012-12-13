@@ -519,16 +519,18 @@
             </text>
         </item>
             <item>
-                <heading id="reportConversion">Report Conversion</heading>
+                <heading id="reportConvertMerge">Report Conversion &amp; Merging</heading>
                 <text>
-                    JSCover's JSON coverage data can now be converted to other formats.
+                    JSCover's JSON coverage data can be merged together and converted to other formats.
                     This is useful to integrate with other tools - let us know what formats are required.
                     Currently JSCover supports XML summary and LCOV report formats.
                 </text>
                 <text>
                     <code>java -cp JSCover-all.jar jscover.report.Main --format=[ XMLSUMMARY | LCOV ] REPORT-DIR [SRC-DIRECTORY]</code>
+                    <code>java -cp JSCover-all.jar jscover.report.Main --merge REPORT-DIR1 REPORT-DIR2 REPORT-DIR3...DEST-DIR</code>
                     For example:
                     <code>java -cp JSCover-all.jar jscover.report.Main --format=LCOV REPORT-DIR SRC-DIRECTORY</code>
+                    <code>java -cp JSCover-all.jar jscover.report.Main --merge target/coverage1 target/coverage2 target/total-coverage</code>
                 </text>
                 <text>
                     <table>
@@ -552,47 +554,67 @@
                             <td>None</td>
                             <td>Output LCOV data to REPORT-DIR/jscover.lcov with source at SRC-DIRECTORY</td>
                         </tr>
+                        <tr>
+                            <td>--merge</td>
+                            <td>N/A</td>
+                            <td>Merge coverage reports from REPORT-DIR1 REPORT-DIR2 REPORT-DIR3... to DEST-DIR</td>
+                        </tr>
                     </table>
                 </text>
                 <item>
-                    <heading id="xmlSummary">XML Summary</heading>
-                    <text>
-                        The XML summary report records the following totals for easy parsing:
-                        <ul>
-                            <li>line-rate</li>
-                            <li>branch-rate</li>
-                            <li>lines-covered</li>
-                            <li>lines</li>
-                            <li>branches-covered</li>
-                            <li>branches</li>
-                            <li>timestamp (milliseconds since January 1, 1970, 00:00:00 GMT)</li>
-                            <li>version</li>
-                        </ul>
-                        <code>&lt;coverage line-rate="0.534072" branch-rate="0.346167" lines-covered="3950" lines="7396"
+                    <heading id="reportConversion">Report Conversion</heading>
+                    <item>
+                        <heading id="xmlSummary">XML Summary</heading>
+                        <text>
+                            <code>java -cp JSCover-all.jar jscover.report.Main --format=[ XMLSUMMARY | LCOV ] REPORT-DIR [SRC-DIRECTORY]</code>
+                            For example:
+                            <code>java -cp JSCover-all.jar jscover.report.Main --format=LCOV REPORT-DIR SRC-DIRECTORY</code>
+                        </text>
+                        <text>
+                            The XML summary report records the following totals for easy parsing:
+                            <ul>
+                                <li>line-rate</li>
+                                <li>branch-rate</li>
+                                <li>lines-covered</li>
+                                <li>lines</li>
+                                <li>branches-covered</li>
+                                <li>branches</li>
+                                <li>timestamp (milliseconds since January 1, 1970, 00:00:00 GMT)</li>
+                                <li>version</li>
+                            </ul>
+                            <code>&lt;coverage line-rate="0.534072" branch-rate="0.346167" lines-covered="3950" lines="7396"
  branches-covered="2005" branches="5792" timestamp="1354169242239" version="0.1.0"/&gt;</code>
-                    </text>
+                        </text>
+                    </item>
+                    <item>
+                        <heading id="lcov">LCOV</heading>
+                        <text>
+                            LCOV can be used to generate a HTML coverage report that includes both lines and branch
+                            statistics.
+                        </text>
+                        <text>
+                            If using LCOV with genhtml, SRC-DIRECTORY needs to point to the uninstrumented source on the
+                            file system, minus the URI part used with JSCover (i.e. usually the same directory as specified
+                            by the <var>--document-root</var> path).
+                            For example if YUI3 exists at <var>c:/js/yui3</var>, you would run JSCover with
+                            <var>--document-root=c:/js/yui3</var>. JSCover would access <var>yui.js</var> via the path
+                            <var>/build/yui/yui.js</var>. JSCover will add the URI path to the SRC-DIRECTORY to create the
+                            correct path in the LCOV file (i.e. <var>c:/js/yui3/build/yui/yui.js</var>).
+                        </text>
+                        <text>
+                            <img src="images/lcov-11-summary.png" alt="LCov Summary Report for YUI3"/>
+                        </text>
+                        <text>
+                            <img src="images/lcov-12-file.png" alt="LCov File Report for YUI3"/><br/>
+                        </text>
+                    </item>
                 </item>
                 <item>
-                    <heading id="lcov">LCOV</heading>
+                    <heading id="reportMerging">Report Merging</heading>
                     <text>
-                        LCOV can be used to generate a HTML coverage report that includes both lines and branch
-                        statistics.
-                    </text>
-                    <text>
-                        If using LCOV with genhtml, SRC-DIRECTORY needs to point to the uninstrumented source on the
-                        file system, minus the URI part used with JSCover (i.e. usually the same directory as specified
-                        by the <var>--document-root</var> path).
-                        For example if YUI3 exists at <var>c:/js/yui3</var>, you would run JSCover with
-                        <var>--document-root=c:/js/yui3</var>. JSCover would access <var>yui.js</var> via the path
-                        <var>/build/yui/yui.js</var>. JSCover will add the URI path to the SRC-DIRECTORY to create the
-                        correct path in the LCOV file (i.e. <var>c:/js/yui3/build/yui/yui.js</var>).
-                    </text>
-                    <text>
-                        <img src="images/lcov-11-summary.png" alt="LCov Summary Report for YUI3"/>
-                    </text>
-                    <text>
-
-                        <img src="images/lcov-12-file.png" alt="LCov File Report for YUI3"/><br/>
+                        <code>java -cp JSCover-all.jar jscover.report.Main --merge REPORT-DIR1 REPORT-DIR2 REPORT-DIR3...DEST-DIR</code>
+                        For example:
+                        <code>java -cp JSCover-all.jar jscover.report.Main --merge target/coverage1 target/coverage2 target/total-coverage</code>
                     </text>
                 </item>
             </item>
@@ -795,6 +817,8 @@
         <section>
         <item>
             <heading id="implementationInstrumentation">Instrumentation</heading>
+            <text>See <a href="#jsCoverageVJSCoverInstrumentation">implementation
+                differences with JSCoverage</a>.</text>
             <item>
                 <heading id="lineInstrumentation">Line</heading>
                 <text>
@@ -806,11 +830,11 @@ if (! this._$jscoverage) {
     this._$jscoverage = {};
 }
 if (! _$jscoverage['test.js']) {
-    _$jscoverage['test.js'] = [];
-    _$jscoverage['test.js'][1] = 0;
+    _$jscoverage['test.js'] = {};
+    _$jscoverage['test.js'].lineData = [];
+    _$jscoverage['test.js'].lineData[1] = 0;
 }
-_$jscoverage['test.js'].source = ["alert('Hello World!');"];
-_$jscoverage['test.js'][1]++;
+_$jscoverage['test.js'].lineData[1]++;
 alert('Hello World!');</code>
                     This illustrates that when the target code is executed, a counter for the file name and line
                     is incremented. The header code manages the declaration of _$jscoverage.
@@ -825,20 +849,20 @@ alert('Hello World!');</code>
 <code>//...header code above
 if (! this._$jscoverage) {
     this._$jscoverage = {};
-    _$jscoverage.branchData = {};
 }
 if (! _$jscoverage['test.js']) {
-    _$jscoverage['test.js'] = [];
-    _$jscoverage['test.js'][1] = 0;
+    _$jscoverage['test.js'] = {};
+    _$jscoverage['test.js'].lineData = [];
+    _$jscoverage['test.js'].lineData[1] = 0;
 }
-if (! _$jscoverage.branchData['test.js']) {
-    _$jscoverage.branchData['test.js'] = [];
-    _$jscoverage.branchData['test.js'][1] = [];
-    _$jscoverage.branchData['test.js'][1][1] = new BranchData();
+if (! _$jscoverage['test.js'].branchData) {
+    _$jscoverage['test.js'].branchData = [];
+    _$jscoverage['test.js'].branchData[1] = [];
+    _$jscoverage['test.js'].branchData[1][1] = new BranchData();
 }
-_$jscoverage.branchData['test.js'][1][1].init(19, 5, 'x > 0');
+_$jscoverage['test.js'].branchData[1][1].init(19, 5, 'x > 0');
 function visit1_2_1(result) {
-  _$jscoverage.branchData['test.js'][1][1].ranCondition(result);
+  _$jscoverage['test.js'].branchData[1][1].ranCondition(result);
   return result;
 }
 var y = visit1_2_1(x > 0) ? 1 : 0;</code>
@@ -883,6 +907,48 @@ var y = visit1_2_1(x > 0) ? 1 : 0;</code>
                             </td>
                         </tr>
                     </table>
+                </text>
+            </item>
+            <item>
+                <heading id="jsCoverageVJSCoverInstrumentation">Instrumentation</heading>
+                <text>
+                    JSCover's instrumentation has changed from JSCoverage's to more elegantly
+                    accommodate other statistics related to a file (including branch coverage).
+                </text>
+                <text>
+                    JSCover
+                    <code>_$jscoverage['test.js'].lineData[1]++;</code>
+                </text>
+                <text>
+                    Compare with JSCoverage
+                    <code>_$jscoverage['test.js'][1]++;</code>
+                </text>
+            </item>
+            <item>
+                <heading id="jsCoverageVJSCoverJSON">JSON</heading>
+                <text>
+                    JSCover's JSON format has also changed from JSCoverage's to more elegantly
+                    accommodate branch data. In addition, a <note>major change was made to remove the
+                    source from JSON</note>, improving the performance of loading the summary statistics.
+<code>{"/path/file1.js":
+    {
+      "lineData":[null,1,1,1],       //Each element represents a line. Value is number of times executed.
+      "branchData":[
+            null,                    //Each element represents a line. See below for value.
+            null,
+            null,
+            [null,                   //Each element represents a branch per line
+                {
+                    "position":n,    //Branch starts n chars in from line (future use)
+                    "nodeLength":n,  //Branch length is n (future use)
+                    "src":"source",  //Branch source to easily identify conditions in report
+                    "evalFalse":1,   //Number of times false path executed
+                    "evalTrue":0     //Number of times true path executed
+                }
+             ]
+       ]
+    }
+}</code>
                 </text>
             </item>
             <item>
