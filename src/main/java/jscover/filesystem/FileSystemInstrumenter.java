@@ -367,7 +367,7 @@ public class FileSystemInstrumenter {
         copyFolder(configuration.getSrcDir(), new File(configuration.getDestDir(), Main.reportSrcSubDir), getJavaScriptFilter(), true);
     }
 
-    private FilenameFilter getJavaScriptFilter() {
+    FilenameFilter getJavaScriptFilter() {
         return new FilenameFilter() {
             public boolean accept(File dir, String name) {
                 File file = new File(dir, name);
@@ -376,7 +376,7 @@ public class FileSystemInstrumenter {
         };
     }
 
-    private void copyFolder(File src, File dest) {
+    void copyFolder(File src, File dest) {
         FilenameFilter acceptAll = new FilenameFilter() {
             public boolean accept(File dir, String name) {
                 return true;
@@ -385,7 +385,7 @@ public class FileSystemInstrumenter {
         copyFolder(src, dest, acceptAll, false);
     }
 
-    private void copyFolder(File src, File dest, FilenameFilter filter, boolean isReportSrc) {
+    void copyFolder(File src, File dest, FilenameFilter filter, boolean isReportSrc) {
         String path = ioUtils.getRelativePath(src, configuration.getSrcDir());
         if (configuration.exclude(path))
             return;
@@ -393,7 +393,7 @@ public class FileSystemInstrumenter {
             for (String file : src.list(filter))
                 copyFolder(new File(src, file), new File(dest, file), filter, isReportSrc);
         } else {
-            if (!isReportSrc && src.isFile() && src.toString().endsWith(".js") && !configuration.skipInstrumentation(path)) {
+            if (!isReportSrc && src.toString().endsWith(".js") && !configuration.skipInstrumentation(path)) {
                 if (!dest.getParentFile().exists())
                     dest.getParentFile().mkdirs();
                 instrumenterService.instrumentJSForFileSystem(configuration.getCompilerEnvirons(), src, dest, path, configuration.isIncludeBranch());
