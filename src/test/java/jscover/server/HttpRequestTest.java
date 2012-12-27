@@ -396,6 +396,11 @@ public class HttpRequestTest {
     }
 
     @Test
+    public void shouldHandleSpecialChars() {
+        assertThat(new HttpRequest("/test%20space.html").getPath(), equalTo("/test space.html"));
+    }
+
+    @Test
     public void shouldNotSkipInstrumentationIfNoHeaders() {
         HttpRequest httpRequest = new HttpRequest("/test.js");
         assertThat(httpRequest.skipInstrumentation(), equalTo(false));

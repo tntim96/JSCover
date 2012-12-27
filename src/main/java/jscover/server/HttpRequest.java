@@ -342,8 +342,9 @@ Public License instead of this License.
 
 package jscover.server;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.io.UnsupportedEncodingException;
+import java.net.*;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 
@@ -357,6 +358,11 @@ public class HttpRequest {
             this.url = new URL(path);
             this.path = url.getPath();
         } catch (MalformedURLException e) {
+            try {
+                path = URLDecoder.decode(path, Charset.defaultCharset().name());
+            } catch (UnsupportedEncodingException e1) {
+                throw new RuntimeException(e1);
+            }
             int index = path.indexOf("?");
             if (index > 0)
                 path = path.substring(0, index);

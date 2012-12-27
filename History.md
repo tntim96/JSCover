@@ -1,6 +1,6 @@
 0.2.0 / 2012-12-??
 ==================
-  *
+  * Fix web-server for URLs with a space in them (https://github.com/tntim96/JSCover/issues/33)
 
 0.2.0-RC1 / 2012-12-13
 ==================
