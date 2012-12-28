@@ -343,7 +343,6 @@ Public License instead of this License.
 package jscover.instrument;
 
 import jscover.util.IoUtils;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mozilla.javascript.*;
 import org.mozilla.javascript.ast.AstRoot;

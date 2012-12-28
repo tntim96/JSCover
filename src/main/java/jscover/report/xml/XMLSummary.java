@@ -348,7 +348,7 @@ import jscover.util.IoUtils;
 import java.io.File;
 import java.util.Date;
 
-import static java.lang.String.*;
+import static java.lang.String.format;
 
 public class XMLSummary {
     private IoUtils ioUtils = IoUtils.getInstance();

@@ -342,19 +342,16 @@ Public License instead of this License.
 
 package jscover.instrument;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mozilla.javascript.CompilerEnvirons;
 import org.mozilla.javascript.Context;
 
-import java.util.List;
 import java.util.SortedSet;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsCollectionContaining.hasItem;
-import static org.junit.Assert.assertEquals;
 
 public class LineCountNodeVisitorTest {
     private static CompilerEnvirons compilerEnv = new CompilerEnvirons();

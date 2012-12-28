@@ -350,7 +350,10 @@ import jscover.report.ScriptLinesAndSource;
 import jscover.util.IoService;
 import jscover.util.Logger;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.Socket;
 import java.util.HashSet;
 import java.util.List;

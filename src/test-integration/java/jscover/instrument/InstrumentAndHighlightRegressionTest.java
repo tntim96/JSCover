@@ -342,19 +342,18 @@ Public License instead of this License.
 
 package jscover.instrument;
 
-import static org.junit.Assert.assertEquals;
+import jscover.util.IoUtils;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.mozilla.javascript.CompilerEnvirons;
+import org.mozilla.javascript.Context;
 
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.Ignore;
-import org.junit.Test;
-
-import jscover.util.IoUtils;
-import org.mozilla.javascript.CompilerEnvirons;
-import org.mozilla.javascript.Context;
+import static org.junit.Assert.assertEquals;
 
 public class InstrumentAndHighlightRegressionTest {
     private static Set<String> tested = new HashSet<String>();

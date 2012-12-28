@@ -342,11 +342,6 @@ Public License instead of this License.
 
 package jscover.instrument;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-
 import jscover.util.ReflectionUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -355,11 +350,12 @@ import org.junit.runners.JUnit4;
 import org.mozilla.javascript.CompilerEnvirons;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Token;
-import org.mozilla.javascript.ast.Assignment;
-import org.mozilla.javascript.ast.AstNode;
-import org.mozilla.javascript.ast.ExpressionStatement;
-import org.mozilla.javascript.ast.Name;
-import org.mozilla.javascript.ast.NumberLiteral;
+import org.mozilla.javascript.ast.*;
+
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 @RunWith(JUnit4.class)
 public class InstrumenterTest {

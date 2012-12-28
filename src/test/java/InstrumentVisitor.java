@@ -1,13 +1,11 @@
-
-import java.io.StringReader;
-
+import jscover.util.IoUtils;
 import org.mozilla.javascript.CompilerEnvirons;
 import org.mozilla.javascript.Parser;
 import org.mozilla.javascript.ast.AstNode;
 import org.mozilla.javascript.ast.AstRoot;
 import org.mozilla.javascript.ast.NodeVisitor;
 
-import jscover.util.IoUtils;
+import java.io.StringReader;
 
 
 public class InstrumentVisitor implements NodeVisitor {

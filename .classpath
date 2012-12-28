@@ -8,7 +8,7 @@
 	<classpathentry kind="src" path="src/test-integration/resources"/>
 	<classpathentry kind="src" path="src/test-acceptance/java"/>
 	<classpathentry kind="src" path="src/test-acceptance/resources"/>
-	<classpathentry kind="lib" path="lib/buildtime/hamcrest-all-1.3.0RC2.jar"/>
+	<classpathentry kind="lib" path="lib/buildtime/hamcrest-all-1.3.jar"/>
 	<classpathentry kind="lib" path="lib/buildtime/mockito-all-1.9.5.jar"/>
 	<classpathentry kind="lib" path="lib/runtime/js.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>

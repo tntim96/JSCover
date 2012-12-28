@@ -342,16 +342,13 @@
 
 package jscover.report;
 
-import jscover.*;
 import jscover.util.IoUtils;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
 public class ConfigurationForReportTest {

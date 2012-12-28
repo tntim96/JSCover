@@ -347,7 +347,7 @@ import org.junit.Test;
 
 import java.util.Properties;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 public class ConfigurationTest {
     private Configuration configuration = new Configuration();

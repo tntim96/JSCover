@@ -347,9 +347,9 @@ import org.mozilla.javascript.ast.ExpressionStatement;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
 
 public class StatementBuilderTest {
     private StatementBuilder builder = new StatementBuilder();

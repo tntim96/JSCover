@@ -1,13 +1,10 @@
-
-
-import java.io.IOException;
-import java.io.StringReader;
-
+import jscover.util.IoUtils;
 import org.mozilla.javascript.CompilerEnvirons;
 import org.mozilla.javascript.Parser;
 import org.mozilla.javascript.ast.AstRoot;
 
-import jscover.util.IoUtils;
+import java.io.IOException;
+import java.io.StringReader;
 
 public class BugsTester {
     private static IoUtils ioUtils = IoUtils.getInstance();

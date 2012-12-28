@@ -349,8 +349,8 @@ import org.mozilla.javascript.CompilerEnvirons;
 
 import java.io.File;
 
-import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 
 public class InstrumenterServiceTest {
     private InstrumenterService service = new InstrumenterService();

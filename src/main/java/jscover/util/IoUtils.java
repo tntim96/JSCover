@@ -345,8 +345,6 @@ package jscover.util;
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
 
 public class IoUtils {
     private static IoUtils ioUtils = new IoUtils();

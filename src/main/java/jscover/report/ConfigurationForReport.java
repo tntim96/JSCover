@@ -342,7 +342,7 @@
 
 package jscover.report;
 
-import jscover.*;
+import jscover.Configuration;
 import jscover.Main;
 import jscover.util.IoUtils;
 

@@ -343,7 +343,9 @@ Public License instead of this License.
 package jscover.server;
 
 import java.io.UnsupportedEncodingException;
-import java.net.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;

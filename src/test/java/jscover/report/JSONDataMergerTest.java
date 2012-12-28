@@ -345,7 +345,6 @@ package jscover.report;
 import jscover.util.IoUtils;
 import org.junit.Test;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedMap;

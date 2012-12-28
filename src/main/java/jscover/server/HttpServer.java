@@ -345,7 +345,7 @@ package jscover.server;
 import jscover.util.IoUtils;
 
 import java.io.*;
-import java.net.*;
+import java.net.Socket;
 import java.util.*;
 
 import static java.lang.String.format;

@@ -347,7 +347,6 @@ import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.ScriptRuntime;
 import org.mozilla.javascript.json.JsonParser;
 
-import java.io.File;
 import java.util.*;
 
 import static java.lang.String.format;
