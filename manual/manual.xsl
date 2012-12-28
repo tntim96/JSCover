@@ -18,7 +18,13 @@
             <body>
                 <a name="top"></a>
                 <div class="floating-menu">
-                    <h1><xsl:value-of select="title"/></h1>
+                    <div class="title"><xsl:value-of select="title"/></div>
+                    <div style="text-align: center;">
+                        <a><xsl:attribute name="class">ExpandCollapseAll</xsl:attribute>
+                            <xsl:attribute name="href">javascript:expandAll();</xsl:attribute>[+]</a>
+                        <a><xsl:attribute name="class">ExpandCollapseAll</xsl:attribute>
+                            <xsl:attribute name="href">javascript:collapseAll();</xsl:attribute>[-]</a>
+                    </div>
                     <xsl:apply-templates select="item">
                         <xsl:with-param name="area">contents</xsl:with-param>
                     </xsl:apply-templates>
@@ -78,6 +84,7 @@
                                 <xsl:attribute name="class">ExpandCollapse</xsl:attribute>
                                 <xsl:attribute name="href">javascript:toggle_visibility('<xsl:value-of select="@id"/>Toggle', '<xsl:value-of select="@id"/>Section');</xsl:attribute>
                                 +</a>
+                            <script>toggleIds.push('<xsl:value-of select="@id"/>');</script>
                         </xsl:when>
                     </xsl:choose>
                     <span>

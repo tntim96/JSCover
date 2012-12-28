@@ -7,10 +7,8 @@ body {
     background-image: url("../images/tactile_noise.png");
     background-color: #222;
     font-family: helvetica, arial, sans-serif;
-
     min-width: 900px;
 }
-
 
 table {
     border-collapse: collapse;
@@ -47,7 +45,6 @@ ul{
     color: #ddd;
 }
 
-
 #container {
     clear: both;
     padding: 20px 80px;
@@ -62,7 +59,6 @@ ul{
     background-image: -webkit-linear-gradient(top, #024366 0%,#023550 100%);
     background-image: -ms-linear-gradient(top, #024366 0%,#023550 100%);
     background-image: linear-gradient(to bottom, #024366 0%,#023550 100%);
-
 
     font-family: "Titillium Web", Arial, serif;
     padding: 10px 50px;
@@ -137,6 +133,6 @@ a{
     color: #04BFBF;
     text-decoration: none;
 }
-a:hover{
+a:hover {
     text-decoration: underline;
 }

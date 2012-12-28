@@ -14,342 +14,396 @@
     <item>
         <heading id="generalInformation">General Information</heading>
         <section>
-        <text>
-            This document should now be complete and accurate, however, please feel free to consult the
-            <a href="http://siliconforks.com/jscoverage/manual.html" target="_blank">JSCoverage documentation</a>.
-        </text>
-        <item>
-            <heading id="introduction">Introduction</heading>
             <text>
-                JSCover is a tool that measures code coverage for JavaScript programs.
-                It is based on the popular JSCoverage, with the C++/SpiderMonkey instrumentation replaced with
-                Java/Rhino.
+                This document should now be complete and accurate, however, please feel free to consult the
+                <a href="http://siliconforks.com/jscoverage/manual.html" target="_blank">JSCoverage documentation</a>.
             </text>
-            <text>
-                JSCover works by adding instrumentation to JavaScript code before it is executed in a web browser.
-                JSCover provides several alternative ways of doing this:
-                <ul>
-                    <li>The simplest method is to use the server mode, a simple web server that instruments JavaScript
-                        code as it is served.
-                    </li>
-                    <li>Alternatively, you can use the file-system mode program to generate instrumented JavaScript
-                        files.
-                    </li>
-                    <li>Finally, the server mode can be run with the --proxy option to act as a proxy server which
-                        instruments any JavaScript code proxied through it.
-                    </li>
-                </ul>
-            </text>
-            <text>
-                The server mode has two advantages:
-                <ol>
-                    <li>can store coverage reports to the filesystem (with/without the proxy option)</li>
-                    <li>can include unloaded/untested JavaScript in the report (only without the proxy option)</li>
-                </ol>
-            </text>
-        </item>
-        <item>
-            <heading id="packaging">Packaging</heading>
-            <text>
-                JSCover comes packaged in two JARs.
-                The first option is preferred to avoid class-path issues, especially as JSCover may be using a
-                non-standard
-                version on Rhino (e.g. built from trunk or patched).
-            </text>
-            <text>
-                <ul>
-                    <li>
-                        JSCover-all.jar
-                        which includes all dependencies
-                    </li>
-                    <li>
-                        JSCover.jar
-                        which must have all dependent JARs available in the same directory
-                    </li>
-                </ul>
-            </text>
-        </item>
+            <item>
+                <heading id="introduction">Introduction</heading>
+                <text>
+                    JSCover is a tool that measures code coverage for JavaScript programs.
+                    It is based on the popular JSCoverage, with the C++/SpiderMonkey instrumentation replaced with
+                    Java/Rhino.
+                </text>
+                <text>
+                    JSCover works by adding instrumentation to JavaScript code before it is executed in a web browser.
+                    JSCover provides several alternative ways of doing this:
+                    <ul>
+                        <li>The simplest method is to use the server mode, a simple web server that instruments
+                            JavaScript code as it is served.
+                        </li>
+                        <li>Alternatively, you can use the file-system mode program to generate instrumented JavaScript
+                            files.
+                        </li>
+                        <li>Finally, the server mode can be run with the --proxy option to act as a proxy server which
+                            instruments any JavaScript code proxied through it.
+                        </li>
+                    </ul>
+                </text>
+                <text>
+                    The server mode has two advantages:
+                    <ol>
+                        <li>can store coverage reports to the filesystem (with/without the proxy option)</li>
+                        <li>can include unloaded/untested JavaScript in the report (only without the proxy option)</li>
+                    </ol>
+                </text>
+            </item>
+            <item>
+                <heading id="packaging">Packaging</heading>
+                <text>
+                    JSCover comes packaged in two JARs.
+                    The first option is preferred to avoid class-path issues, especially as JSCover may be using a
+                    non-standard
+                    version on Rhino (e.g. built from trunk or patched).
+                </text>
+                <text>
+                    <ul>
+                        <li>
+                            JSCover-all.jar
+                            which includes all dependencies
+                        </li>
+                        <li>
+                            JSCover.jar
+                            which must have all dependent JARs available in the same directory
+                        </li>
+                    </ul>
+                </text>
+            </item>
         </section>
     </item>
     <item>
         <heading id="gettingStarted">Getting started</heading>
         <section>
-        <item>
-            <text>The best way to get started is to run the the examples included in the distribution.</text>
-            <heading id="gettingStartedServer">Server</heading>
             <item>
-                <heading id="gettingStartedServerStartServer">Start The Server</heading>
+                <text>The best way to get started is to run the the examples included in the distribution.</text>
+                <heading id="gettingStartedServer">Server</heading>
+                <item>
+                    <heading id="gettingStartedServerStartServer">Start The Server</heading>
+                    <text>
+                        Run&#160;<var>example-server.bat</var>&#160;or&#160;<var>example-server.sh</var>. The contents
+                        are:
+                        <code>java -jar target/dist/JSCover-all.jar -ws --branch --document-root=doc/example --report-dir=target</code>
+                        This will start a web server, and the JSCover interface can be loaded by going to
+                        <a href="http://localhost:8080/jscoverage.html">http://localhost:8080/jscoverage.html</a>.
+                        <br/>
+                        <img src="images/ws-1-browser.png"/>
+                        <br/>
+                        You can then enter the URL
+                        <var>http://localhost:8080/index.html</var>
+                        in the URL input box and click on the
+                        <var>Open in frame</var>
+                        button.
+                    </text>
+                </item>
+                <item>
+                    <heading id="gettingStartedServerLoadURL">Load The Test Page</heading>
+                    <text>
+                        To automatically load the web-page without entering it in the URL section, got to
+                        <a href="http://localhost:8080/jscoverage.html?index.html">http://localhost:8080/jscoverage.html?index.html</a>.
+                        <br/>
+                        <img src="images/ws-2-browser.png"/>
+                    </text>
+                </item>
+                <item>
+                    <heading id="gettingStartedServerRunTests">Run Tests</heading>
+                    <text>
+                        Tests that exercise the JavaScript can now be run.
+                        <note>As long as you do not reload the jscoverage.html page, the coverage report statistics are
+                            cumulative.</note>
+                        <img src="images/ws-3-browser.png"/>
+                    </text>
+                </item>
+                <item>
+                    <heading id="gettingStartedServerCoverageSummary">View The Coverage Summary</heading>
+                    <text>
+                        To see a summary of the coverage, click the
+                        <var>Summary</var>
+                        tab. Note, you can change the sorting
+                        order by clicking on the
+                        <var>Coverage</var>
+                        link or the
+                        <var>Branch</var>
+                        link:
+                        <br/>
+                        <img src="images/ws-4-summary.png"/>
+                    </text>
+                </item>
+                <item>
+                    <heading id="gettingStartedServerUncoveredLines">View Uncovered Lines</heading>
+                    <text>
+                        To see uncovered lines, check the
+                        <var>Show missing statements column</var>
+                        check-box:
+                        <br/>
+                        <img src="images/ws-5-summary.png"/>
+                    </text>
+                </item>
+                <item>
+                    <heading id="gettingStartedServerViewSource">View The Source</heading>
+                    <text>
+                        To view the source, click on the script-name link in the
+                        <var>File</var>
+                        column (shown above) - the
+                        result is shown below.
+                        <br/>
+                        <img src="images/ws-6-source.png"/>
+                    </text>
+                </item>
+                <item>
+                    <heading id="gettingStartedServerViewUncoveredBranch">View Uncovered Branches</heading>
+                    <text>
+                        To determine which branch path was not covered click on the
+                        <var>info</var>
+                        link.
+                        <br/>
+                        <img src="images/ws-7-source.png"/>
+                    </text>
+                    <text>
+                        If there are multiple paths, for example:
+                        <code>if (code !== undefined &amp;&amp; code !== null &amp;&amp; code !== '') {</code>
+                        The uncovered information may be:
+                        <br/>
+                        <img src="images/ws-8-source.png"/>
+                    </text>
+                </item>
+                <item>
+                    <heading id="gettingStartedServerReportStorage">Store The Report</heading>
+                    <text>
+                        To store the report, click on the
+                        <var>Store</var>
+                        tab and then the
+                        <var>Store Report</var>
+                        button.
+                        <br/>
+                        <img src="images/ws-7-store.png"/>
+                        <br/>
+                        <note>The report does not work in Google Chrome when viewed using a file: URL. Either use an
+                            ordinary web server to serve the report (JSCover comes with a
+                            <a href="#simpleWebServer">simple web server</a>) or start Google Chrome with the
+                            <var>--allow-file-access-from-files</var>
+                            command line option.
+                        </note>
+                    </text>
+                </item>
+                <item>
+                    <heading id="gettingStartedServerAbout">About Page</heading>
+                    <text>
+                        Version and other information can be viewed by clicking on the
+                        <var>About</var>
+                        tab:
+                        <br/>
+                        <img src="images/ws-10-about.png"/>
+                    </text>
+                </item>
+            </item>
+            <item>
+                <heading id="gettingStartedFileSystem">File System</heading>
                 <text>
                     Run
-                    <var>example-server.bat</var> or <var>example-server.sh</var>. The contents are:
-                    <code>java -jar target/dist/JSCover-all.jar -ws --branch --document-root=doc/example --report-dir=target</code>
-                    This will start a web server, and the JSCover interface can be loaded by going to
-                    <a href="http://localhost:8080/jscoverage.html">http://localhost:8080/jscoverage.html</a>.
-                    <br/><img src="images/ws-1-browser.png"/><br/>
-                    You can then enter the URL <var>http://localhost:8080/index.html</var> in the URL input box and click
-                    on the <var>Open in frame</var> button.
-                </text>
-            </item>
-            <item>
-                <heading id="gettingStartedServerLoadURL">Load The Test Page</heading>
-                <text>
-                    To automatically load the web-page without entering it in the URL section, got to
-                    <a href="http://localhost:8080/jscoverage.html?index.html">http://localhost:8080/jscoverage.html?index.html</a>.
-                    <br/><img src="images/ws-2-browser.png"/>
-                </text>
-            </item>
-            <item>
-                <heading id="gettingStartedServerRunTests">Run Tests</heading>
-                <text>
-                    Tests that exercise the JavaScript can now be run.
-                    <note>As long as you do not reload the jscoverage.html page, the coverage report statistics are
-                        cumulative.</note>
-                    <img src="images/ws-3-browser.png"/>
-                </text>
-            </item>
-            <item>
-                <heading id="gettingStartedServerCoverageSummary">View The Coverage Summary</heading>
-                <text>
-                    To see a summary of the coverage, click the <var>Summary</var> tab. Note, you can change the sorting
-                    order by clicking on the <var>Coverage</var> link or the <var>Branch</var> link:
-                    <br/><img src="images/ws-4-summary.png"/>
-                </text>
-            </item>
-            <item>
-                <heading id="gettingStartedServerUncoveredLines">View Uncovered Lines</heading>
-                <text>
-                    To see uncovered lines, check the <var>Show missing statements column</var> check-box:
-                    <br/><img src="images/ws-5-summary.png"/>
-                </text>
-            </item>
-            <item>
-                <heading id="gettingStartedServerViewSource">View The Source</heading>
-                <text>
-                    To view the source, click on the script-name link in the <var>File</var> column (shown above) - the
-                    result is shown below.
-                    <br/><img src="images/ws-6-source.png"/>
-                </text>
-            </item>
-            <item>
-                <heading id="gettingStartedServerViewUncoveredBranch">View Uncovered Branches</heading>
-                <text>
-                    To determine which branch path was not covered click on the <var>info</var> link.
-                    <br/><img src="images/ws-7-source.png"/>
+                    <var>example-filesystem.bat</var>
+                    or
+                    <var>example-filesystem.sh</var>. The contents are:
+                    <code>java -jar target/dist/JSCover-all.jar -fs --branch doc/example target/example</code>
+                    This will recursively copy all the resources from
+                    <var>doc/example</var>
+                    to
+                    <var>target/example</var>,
+                    and create the JSCover files (e.g. jscoverage.html) at
+                    <var>target/example</var>.
                 </text>
                 <text>
-                    If there are multiple paths, for example:
-                    <code>if (code !== undefined &amp;&amp; code !== null &amp;&amp; code !== '') {</code>
-                    The uncovered information may be:
-                    <br/><img src="images/ws-8-source.png"/>
-                </text>
-            </item>
-            <item>
-                <heading id="gettingStartedServerReportStorage">Store The Report</heading>
-                <text>
-                    To store the report, click on the <var>Store</var> tab and then the <var>Store Report</var> button.
-                    <br/><img src="images/ws-7-store.png"/><br/>
-                    <note>The report does not work in Google Chrome when viewed using a file: URL. Either use an ordinary
-                        web server to serve the report (JSCover comes with a
-                        <a href="#simpleWebServer">simple web server</a>) or start Google Chrome with the
-                        <var>--allow-file-access-from-files</var> command line option.
+                    This can either be via the file-system,
+                    <note>but is not recommended due to
+                        <a href="http://code.google.com/p/chromium/issues/detail?id=4197">security restrictions</a>
                     </note>
+                    .
+                    You would enter something like the following in your address bar:
+                    <var>file:///C:/Java/JSCover/target/example/jscoverage.html?index.html</var>
+                    <br/>
+                    <img src="images/fs-1-file-system.png"/>
                 </text>
-            </item>
-            <item>
-                <heading id="gettingStartedServerAbout">About Page</heading>
+                <heading id="simpleWebServer">Non-Instrumenting Web Server</heading>
                 <text>
-                    Version and other information can be viewed by clicking on the <var>About</var> tab:
-                    <br/><img src="images/ws-10-about.png"/>
+                    To avoid any file-system issues (described above),
+                    JSCover comes with a simple non-instrumenting web server.
+                    Run it from the distribution's root directory:
+                    <code>java -cp target/dist/JSCover-all.jar jscover.server.SimpleWebServer 8080</code>
+                    Then point your browser at:
+                    <a href="http://localhost:8080/target/example/jscoverage.html?index.html"
+                            >http://localhost:8080/target/example/jscoverage.html?index.html</a>
+                    The UI interaction should now be the same as for the server except for the missing
+                    <var>Store</var>
+                    tab.
                 </text>
             </item>
-        </item>
-        <item>
-            <heading id="gettingStartedFileSystem">File System</heading>
-            <text>
-                Run
-                <var>example-filesystem.bat</var> or <var>example-filesystem.sh</var>. The contents are:
-                <code>java -jar target/dist/JSCover-all.jar -fs --branch doc/example target/example</code>
-                This will recursively copy all the resources from <var>doc/example</var> to <var>target/example</var>,
-                and create the JSCover files (e.g. jscoverage.html) at <var>target/example</var>.
-            </text>
-            <text>
-                This can either be via the file-system, <note>but is not recommended due to
-                <a href="http://code.google.com/p/chromium/issues/detail?id=4197">security restrictions</a></note>.
-                You would enter something like the following in your address bar:
-                <var>file:///C:/Java/JSCover/target/example/jscoverage.html?index.html</var>
-                <br/><img src="images/fs-1-file-system.png"/>
-            </text>
-            <heading id="simpleWebServer">Non-Instrumenting Web Server</heading>
-            <text>
-                To avoid any file-system issues (described above),
-                JSCover comes with a simple non-instrumenting web server.
-                Run it from the distribution's root directory:
-                <code>java -cp target/dist/JSCover-all.jar jscover.server.SimpleWebServer 8080</code>
-                Then point your browser at:
-                <a href="http://localhost:8080/target/example/jscoverage.html?index.html"
-                        >http://localhost:8080/target/example/jscoverage.html?index.html</a>
-                The UI interaction should now be the same as for the server except for the missing <var>Store</var> tab.
-            </text>
-        </item>
         </section>
     </item>
     <item>
         <heading id="usage">Usage</heading>
         <section>
-        <item>
-            <heading id="usage">General</heading>
-            <text>
-                <code>java -jar JSCover-all.jar [OPTIONS]...</code>
-                <code>java -jar JSCover.jar [OPTIONS]...</code>
-            </text>
-            <text>
-                Command line options are:
-            </text>
-            <text>
-                <table>
-                    <tr>
-                        <th>Option</th>
-                        <th>Default</th>
-                        <th>Description</th>
-                    </tr>
-                    <tr>
-                        <td>-ws</td>
-                        <td>N/A</td>
-                        <td>Run in&#160;<b>w</b>eb&#160;<b>s</b>erver mode - see
-                            <a href="#serverMode">below</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>-fs</td>
-                        <td>N/A</td>
-                        <td>Run in&#160;<b>f</b>ile&#160;<b>s</b>ystem mode - see
-                            <a href="#fileMode">below</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>-h,--help</td>
-                        <td>N/A</td>
-                        <td>Display command line help</td>
-                    </tr>
-                    <tr>
-                        <td>-V,--version</td>
-                        <td>N/A</td>
-                        <td>Display version</td>
-                    </tr>
-                </table>
-            </text>
             <item>
-                <heading id="encoding">Encoding</heading>
+                <heading id="usage">General</heading>
                 <text>
-                    The encoding defaults to the platform's default encoding which is usually what you want.
-                    To specify an encoding, add the JVM option <var>-Dfile.encoding=ENCODING</var>. For example:
-                    <code>java -Dfile.encoding=UTF-8 -jar JSCover-all.jar [OPTIONS]...</code>
-                    <note>To see the available encodings (as well as the current default) run <var>JSCover</var>
-                        with options <var>-h encoding</var></note>
-                    <code>java -jar JSCover-all.jar -h encoding</code>
+                    <code>java -jar JSCover-all.jar [OPTIONS]...</code>
+                    <code>java -jar JSCover.jar [OPTIONS]...</code>
                 </text>
-            </item>
-        </item>
-        <item>
-            <heading id="serverMode">Server Mode</heading>
-            <text>
-                <code>java -jar JSCover-all.jar -ws [OPTIONS]</code>
-                For example:
-                <code>java -jar JSCover-all.jar -ws --port=80 --no-instrument=lib --no-instrument=test</code>
-            </text>
-            <text>
-                <table>
-                    <tr>
-                        <th>Option</th>
-                        <th>Default</th>
-                        <th>Description</th>
-                    </tr>
-                    <tr>
-                        <td>-h,--help</td>
-                        <td>N/A</td>
-                        <td>Display command line help</td>
-                    </tr>
-                    <tr>
-                        <td>--document-root=PATH</td>
-                        <td>current directory</td>
-                        <td>Serve web content from the directory given by PATH (can be relative or absolute)</td>
-                    </tr>
-                    <tr>
-                        <td>--no-instrument=URL</td>
-                        <td>None</td>
-                        <td>Specify URLs not to be instrumented. Can be specified multiple times.</td>
-                    </tr>
-                    <tr>
-                        <td>--report-dir=PATH</td>
-                        <td>current directory</td>
-                        <td>Use the directory given by PATH (can be relative or absolute) for storing coverage
-                            reports.
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>--port=PORT</td>
-                        <td>8080</td>
-                        <td>Specify the port to listen on</td>
-                    </tr>
-                    <tr>
-                        <td>--proxy</td>
-                        <td>N/A</td>
-                        <td>Run in proxy mode</td>
-                    </tr>
-                    <tr>
-                        <td>--branch</td>
-                        <td>N/A</td>
-                        <td>Collect branch coverage data</td>
-                    </tr>
-                    <tr>
-                        <td>--include-unloaded-js</td>
-                        <td>false</td>
-                        <td>
-                            When storing report in web-server mode, search beneath the document root<br/>
-                            path for JavaScript file not served and include in the coverage report.<br/>
-                            Not compatible with --proxy. Will respect --no-instrument.
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>--js-version=VERSION</td>
-                        <td>1.5</td>
-                        <td>
-                            Use the specified JavaScript version; valid values for VERSION are
-                            <a href="http://en.wikipedia.org/wiki/JavaScript#Versions" target="_blank">1.0, 1.1, 1.2,
-                                ..., 1.8</a>.
-                        </td>
-                    </tr>
-                </table>
-                See the <a href="#encoding">encoding section</a> above for specifying encoding.
-            </text>
-            <item>
-                <heading id="implementationStoreReport">Storing reports</heading>
                 <text>
-                    The store button triggers the POSTing of the coverage data to the server in JSON format. The
-                    following will then occur:
-                    <ul>
-                        <li>If a JSON file, jscoverage.json, already exists, the coverage data will be merged</li>
-                        <li>
-                            If no JSON file exists, but --include-unloaded-js is present, all un-loaded JavaScript
-                            files will be merged with the submitted JSON and saved to the report
-                        </li>
-                        <li>If neither of the above is true, the raw JSON is stored</li>
-                    </ul>
+                    Command line options are:
                 </text>
+                <text>
+                    <table>
+                        <tr>
+                            <th>Option</th>
+                            <th>Default</th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td>-ws</td>
+                            <td>N/A</td>
+                            <td>Run in&#160;<b>w</b>eb&#160;<b>s</b>erver mode - see
+                                <a href="#serverMode">below</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>-fs</td>
+                            <td>N/A</td>
+                            <td>Run in&#160;<b>f</b>ile&#160;<b>s</b>ystem mode - see
+                                <a href="#fileMode">below</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>-h,--help</td>
+                            <td>N/A</td>
+                            <td>Display command line help</td>
+                        </tr>
+                        <tr>
+                            <td>-V,--version</td>
+                            <td>N/A</td>
+                            <td>Display version</td>
+                        </tr>
+                    </table>
+                </text>
+                <item>
+                    <heading id="encoding">Encoding</heading>
+                    <text>
+                        The encoding defaults to the platform's default encoding which is usually what you want.
+                        To specify an encoding, add the JVM option
+                        <var>-Dfile.encoding=ENCODING</var>.
+                        For example:
+                        <code>java -Dfile.encoding=UTF-8 -jar JSCover-all.jar [OPTIONS]...</code>
+                        <note>To see the available encodings (as well as the current default) run
+                            <var>JSCover</var>
+                            with options
+                            <var>-h encoding</var>
+                        </note>
+                        <code>java -jar JSCover-all.jar -h encoding</code>
+                    </text>
+                </item>
             </item>
             <item>
-                <heading id="jsReportStorage">Programmatic Report Storage</heading>
+                <heading id="serverMode">Server Mode</heading>
                 <text>
-                    If you are executing a test suite using the server-mode, you can store a coverage report
-                    programmatically by having your test suite call the jscoverage_report function (automatically
-                    generated by JSCover) after all your tests have finished running:
+                    <code>java -jar JSCover-all.jar -ws [OPTIONS]</code>
+                    For example:
+                    <code>java -jar JSCover-all.jar -ws --port=80 --no-instrument=lib --no-instrument=test</code>
+                </text>
+                <text>
+                    <table>
+                        <tr>
+                            <th>Option</th>
+                            <th>Default</th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td>-h,--help</td>
+                            <td>N/A</td>
+                            <td>Display command line help</td>
+                        </tr>
+                        <tr>
+                            <td>--document-root=PATH</td>
+                            <td>current directory</td>
+                            <td>Serve web content from the directory given by PATH (can be relative or absolute)</td>
+                        </tr>
+                        <tr>
+                            <td>--no-instrument=URL</td>
+                            <td>None</td>
+                            <td>Specify URLs not to be instrumented. Can be specified multiple times.</td>
+                        </tr>
+                        <tr>
+                            <td>--report-dir=PATH</td>
+                            <td>current directory</td>
+                            <td>Use the directory given by PATH (can be relative or absolute) for storing coverage
+                                reports.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>--port=PORT</td>
+                            <td>8080</td>
+                            <td>Specify the port to listen on</td>
+                        </tr>
+                        <tr>
+                            <td>--proxy</td>
+                            <td>N/A</td>
+                            <td>Run in proxy mode</td>
+                        </tr>
+                        <tr>
+                            <td>--branch</td>
+                            <td>N/A</td>
+                            <td>Collect branch coverage data</td>
+                        </tr>
+                        <tr>
+                            <td>--include-unloaded-js</td>
+                            <td>false</td>
+                            <td>
+                                When storing report in web-server mode, search beneath the document root
+                                <br/>
+                                path for JavaScript file not served and include in the coverage report.
+                                <br/>
+                                Not compatible with --proxy. Will respect --no-instrument.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>--js-version=VERSION</td>
+                            <td>1.5</td>
+                            <td>
+                                Use the specified JavaScript version; valid values for VERSION are
+                                <a href="http://en.wikipedia.org/wiki/JavaScript#Versions" target="_blank">1.0, 1.1,
+                                    1.2, ..., 1.8</a>.
+                            </td>
+                        </tr>
+                    </table>
+                    See the
+                    <a href="#encoding">encoding section</a>
+                    above for specifying encoding.
+                </text>
+                <item>
+                    <heading id="implementationStoreReport">Storing reports</heading>
+                    <text>
+                        The store button triggers the POSTing of the coverage data to the server in JSON format. The
+                        following will then occur:
+                        <ul>
+                            <li>If a JSON file, jscoverage.json, already exists, the coverage data will be merged</li>
+                            <li>
+                                If no JSON file exists, but --include-unloaded-js is present, all un-loaded JavaScript
+                                files will be merged with the submitted JSON and saved to the report
+                            </li>
+                            <li>If neither of the above is true, the raw JSON is stored</li>
+                        </ul>
+                    </text>
+                </item>
+                <item>
+                    <heading id="jsReportStorage">Programmatic Report Storage</heading>
+                    <text>
+                        If you are executing a test suite using the server-mode, you can store a coverage report
+                        programmatically by having your test suite call the jscoverage_report function (automatically
+                        generated by JSCover) after all your tests have finished running:
 
 <code>if (window.jscoverage_report) {
   jscoverage_report();
 }</code>
 
-                    You can specify the name of the directory in which to store the report by passing the name as a
-                    parameter to the jscoverage_report function:
+                        You can specify the name of the directory in which to store the report by passing the name as a
+                        parameter to the jscoverage_report function:
 
 <code>if (window.jscoverage_report) {
   // determine the directory name based on the browser
@@ -363,161 +417,167 @@
   jscoverage_report(directory);
 }</code>
 
-                    This directory will be a subdirectory under the jscoverage-report/ directory (or whatever is
-                    specified with the --report-dir option). Using the above example, the report would be stored to
-                    either jscoverage-report/IE/ or jscoverage-report/other/.
-                </text>
-                <text>
-                    It is not necessary that your test suite be executed within the jscoverage.html web interface to
-                    store a coverage report. The URL of the test suite can simply be loaded directly in a web browser.
-                </text>
-                <text>
-                    The example in doc/example-jsunit/ demonstrates storing coverage reports programmatically.
-                </text>
+                        This directory will be a subdirectory under the jscoverage-report/ directory (or whatever is
+                        specified with the --report-dir option). Using the above example, the report would be stored to
+                        either jscoverage-report/IE/ or jscoverage-report/other/.
+                    </text>
+                    <text>
+                        It is not necessary that your test suite be executed within the jscoverage.html web interface to
+                        store a coverage report. The URL of the test suite can simply be loaded directly in a web
+                        browser.
+                    </text>
+                    <text>
+                        The example in doc/example-jsunit/ demonstrates storing coverage reports programmatically.
+                    </text>
+                </item>
             </item>
-        </item>
-        <item>
-            <heading id="fileMode">File Mode</heading>
-            <text>
-                <code>java -jar JSCover-all.jar -fs [OPTIONS] SOURCE-DIRECTORY DESTINATION-DIRECTORY</code>
-                For example:
-                <code>java -jar JSCover-all.jar -fs --no-instrument=lib --no-instrument=test</code>
-            </text>
-            <text>
-                <table>
-                    <tr>
-                        <th>Option</th>
-                        <th>Default</th>
-                        <th>Description</th>
-                    </tr>
-                    <tr>
-                        <td>-h,--help</td>
-                        <td>N/A</td>
-                        <td>Display command line help</td>
-                    </tr>
-                    <tr>
-                        <td>--no-instrument=URL</td>
-                        <td>None</td>
-                        <td>Specify URLs not to be instrumented. Can be specified multiple times.</td>
-                    </tr>
-                    <tr>
-                        <td>--exclude=PATH</td>
-                        <td>None</td>
-                        <td>Copies SOURCE-DIRECTORY to DESTINATION-DIRECTORY recursively, but does not copy
-                            SOURCE-DIRECTORY/PATH. PATH must be a complete path relative to SOURCE-DIRECTORY. PATH can
-                            be a file or a directory (in which case the directory and its entire contents are skipped).
-                            This option may be given multiple times.
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>--js-version=VERSION</td>
-                        <td>1.5</td>
-                        <td>
-                            Use the specified JavaScript version; valid values for VERSION are
-                            <a href="http://en.wikipedia.org/wiki/JavaScript#Versions" target="_blank">1.0, 1.1, 1.2,
-                                ..., 1.8</a>.
-                        </td>
-                    </tr>
-                </table>
-                See the <a href="#encoding">encoding section</a> above for specifying encoding.
-            </text>
-            <text>
-                The first step is to add instrumentation to your JavaScript code. You do this by executing JSCover
-                with two arguments:
-                <code>java -jar JSCover-all.jar -fs SOURCE-DIRECTORY DESTINATION-DIRECTORY</code>
-            </text>
-            <text>
-                SOURCE-DIRECTORY is the directory containing the JavaScript code to be instrumented, and
-                DESTINATION-DIRECTORY is the name of the directory to which JSCover should output the instrumented
-                code. The JSCover program will create DESTINATION-DIRECTORY if necessary and (recursively) copy
-                SOURCE-DIRECTORY to DESTINATION-DIRECTORY, instrumenting any files ending with a .js extension.
-            </text>
-            <text>
-                The directory structure under SOURCE-DIRECTORY will be preserved, so that if you have a file
-                SOURCE-DIRECTORY/dir/index.html referencing the script SOURCE-DIRECTORY/dir/script.js, then JSCover
-                will create a copy of the HTML file at DESTINATION-DIRECTORY/dir/index.html and an instrumented version
-                of the script at DESTINATION-DIRECTORY/dir/script.js. In addition, JSCover will create a file called
-                jscoverage.html which will be used to execute the instrumented code.
-                <code>java -jar JSCover-all.jar -fs SOURCE-DIRECTORY DESTINATION-DIRECTORY</code>
-            </text>
-            <text>
-                <table class="noBorder">
-                    <tbody>
+            <item>
+                <heading id="fileMode">File Mode</heading>
+                <text>
+                    <code>java -jar JSCover-all.jar -fs [OPTIONS] SOURCE-DIRECTORY DESTINATION-DIRECTORY</code>
+                    For example:
+                    <code>java -jar JSCover-all.jar -fs --no-instrument=lib --no-instrument=test</code>
+                </text>
+                <text>
+                    <table>
                         <tr>
+                            <th>Option</th>
+                            <th>Default</th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td>-h,--help</td>
+                            <td>N/A</td>
+                            <td>Display command line help</td>
+                        </tr>
+                        <tr>
+                            <td>--no-instrument=URL</td>
+                            <td>None</td>
+                            <td>Specify URLs not to be instrumented. Can be specified multiple times.</td>
+                        </tr>
+                        <tr>
+                            <td>--exclude=PATH</td>
+                            <td>None</td>
+                            <td>Copies SOURCE-DIRECTORY to DESTINATION-DIRECTORY recursively, but does not copy
+                                SOURCE-DIRECTORY/PATH. PATH must be a complete path relative to SOURCE-DIRECTORY. PATH
+                                can be a file or a directory (in which case the directory and its entire contents are
+                                skipped). This option may be given multiple times.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>--js-version=VERSION</td>
+                            <td>1.5</td>
                             <td>
+                                Use the specified JavaScript version; valid values for VERSION are
+                                <a href="http://en.wikipedia.org/wiki/JavaScript#Versions" target="_blank">1.0, 1.1,
+                                    1.2, ..., 1.8</a>.
+                            </td>
+                        </tr>
+                    </table>
+                    See the
+                    <a href="#encoding">encoding section</a>
+                    above for specifying encoding.
+                </text>
+                <text>
+                    The first step is to add instrumentation to your JavaScript code. You do this by executing JSCover
+                    with two arguments:
+                    <code>java -jar JSCover-all.jar -fs SOURCE-DIRECTORY DESTINATION-DIRECTORY</code>
+                </text>
+                <text>
+                    SOURCE-DIRECTORY is the directory containing the JavaScript code to be instrumented, and
+                    DESTINATION-DIRECTORY is the name of the directory to which JSCover should output the instrumented
+                    code. The JSCover program will create DESTINATION-DIRECTORY if necessary and (recursively) copy
+                    SOURCE-DIRECTORY to DESTINATION-DIRECTORY, instrumenting any files ending with a .js extension.
+                </text>
+                <text>
+                    The directory structure under SOURCE-DIRECTORY will be preserved, so that if you have a file
+                    SOURCE-DIRECTORY/dir/index.html referencing the script SOURCE-DIRECTORY/dir/script.js, then JSCover
+                    will create a copy of the HTML file at DESTINATION-DIRECTORY/dir/index.html and an instrumented
+                    version of the script at DESTINATION-DIRECTORY/dir/script.js. In addition, JSCover will create a
+                    file called jscoverage.html which will be used to execute the instrumented code.
+                    <code>java -jar JSCover-all.jar -fs SOURCE-DIRECTORY DESTINATION-DIRECTORY</code>
+                </text>
+                <text>
+                    <table class="noBorder">
+                        <tbody>
+                            <tr>
+                                <td>
 <code><var>SOURCE-DIRECTORY</var>/
     dir/
         index.html
-        script.js
-                                </code>
-                            </td>
-                            <td class="arrow">&#8594;</td>
-                            <td>
+        script.js</code>
+                                </td>
+                                <td class="arrow">&#8594;</td>
+                                <td>
 <code><var>DESTINATION-DIRECTORY</var>/
     dir/
-        index.html
-        script.js [instrumented]
-        jscoverage.html
-                                </code>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </text>
-            <text>
-                For the example code in the doc/example/ directory, you can execute the following command line from the
-                top-level directory of the JSCoverage distribution:
-                <code>java -jar JSCover-all.jar -fs doc/example doc/instrumented</code>
-            </text>
-            <text>
-                This will create the directory doc/instrumented/ and place an instrumented copy of the code from
-                doc/example/ in doc/instrumented/.
-            </text>
-            <text>
-                <table class="noBorder">
-                    <tbody>
-                        <tr>
-                            <td>
+    index.html
+    script.js [instrumented]
+    jscoverage.html</code>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </text>
+                <text>
+                    For the example code in the doc/example/ directory, you can execute the following command line from
+                    the top-level directory of the JSCoverage distribution:
+                    <code>java -jar JSCover-all.jar -fs doc/example doc/instrumented</code>
+                </text>
+                <text>
+                    This will create the directory doc/instrumented/ and place an instrumented copy of the code from
+                    doc/example/ in doc/instrumented/.
+                </text>
+                <text>
+                    <table class="noBorder">
+                        <tbody>
+                            <tr>
+                                <td>
 <code>doc/example/
     index.html
     script.js</code>
-                            </td>
-                            <td class="arrow">&#8594;</td>
-                            <td>
+                                </td>
+                                <td class="arrow">&#8594;</td>
+                                <td>
 <code>doc/instrumented/
     index.html
     script.js [instrumented]
     jscoverage.html</code>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </text>
-        </item>
-        <item>
-            <heading id="errorLog">Error Log</heading>
-            <text>
-                A log file, <var>errors.log</var>, is produced in the output directory
-                if any instrumentation errors occurred. In addition, the program will exit with an exit status of 1.
-            </text>
-            <text>
-                The <var>errors.log</var> file should be inspected, but does not necessarily indicate an instrumentation
-                error.
-                Logged errors are usually the result of trying to insert a statement to an invalid location
-                in the parse tree. Please report the issue so that it can be addressed, but you should check whether the
-                instrumented code is actually missing a valid instrumentation line.
-            </text>
-            <text>
-                For example, if the log contains <var>Error on line 200 of test.js</var>, that line should be inspected.
-                If the code is a multi-line declaration, it may not make sense to add further instrumentation on top of
-                the first line of the declaration.
-            </text>
-            <text>
-                To speed up the resolution of the issue, try to write a failing test in <var>InstrumenterTest</var> for
-                line coverage and in <var>BranchInstrumentorIntegrationTest</var> for branch coverage. You may even find
-                that you can fix the issue and create patch for the project.
-            </text>
-        </item>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </text>
+            </item>
+            <item>
+                <heading id="errorLog">Error Log</heading>
+                <text>
+                    A log file, <var>errors.log</var>, is produced in the output directory
+                    if any instrumentation errors occurred. In addition, the program will exit with an exit status of 1.
+                </text>
+                <text>
+                    The
+                    <var>errors.log</var>
+                    file should be inspected, but does not necessarily indicate an instrumentation
+                    error.
+                    Logged errors are usually the result of trying to insert a statement to an invalid location
+                    in the parse tree. Please report the issue so that it can be addressed, but you should check whether
+                    the instrumented code is actually missing a valid instrumentation line.
+                </text>
+                <text>
+                    For example, if the log contains <var>Error on line 200 of test.js</var>, that line should be
+                    inspected.
+                    If the code is a multi-line declaration, it may not make sense to add further instrumentation on top
+                    of the first line of the declaration.
+                </text>
+                <text>
+                    To speed up the resolution of the issue, try to write a failing test in
+                    <var>InstrumenterTest</var>
+                    for line coverage and in
+                    <var>BranchInstrumentorIntegrationTest</var>
+                    for branch coverage. You may even find that you can fix the issue and create patch for the project.
+                </text>
+            </item>
             <item>
                 <heading id="reportConvertMerge">Report Conversion &amp; Merging</heading>
                 <text>
@@ -594,18 +654,25 @@
                         </text>
                         <text>
                             If using LCOV with genhtml, SRC-DIRECTORY needs to point to the uninstrumented source on the
-                            file system, minus the URI part used with JSCover (i.e. usually the same directory as specified
-                            by the <var>--document-root</var> path).
-                            For example if YUI3 exists at <var>c:/js/yui3</var>, you would run JSCover with
-                            <var>--document-root=c:/js/yui3</var>. JSCover would access <var>yui.js</var> via the path
-                            <var>/build/yui/yui.js</var>. JSCover will add the URI path to the SRC-DIRECTORY to create the
-                            correct path in the LCOV file (i.e. <var>c:/js/yui3/build/yui/yui.js</var>).
+                            file system, minus the URI part used with JSCover (i.e. usually the same directory as
+                            specified by the
+                            <var>--document-root</var>
+                            path).
+                            For example if YUI3 exists at
+                            <var>c:/js/yui3</var>, you would run JSCover with
+                            <var>--document-root=c:/js/yui3</var>. JSCover would access
+                            <var>yui.js</var>
+                            via the path
+                            <var>/build/yui/yui.js</var>. JSCover will add the URI path to the SRC-DIRECTORY to create
+                            the
+                            correct path in the LCOV file (i.e.&#160;<var>c:/js/yui3/build/yui/yui.js</var>).
                         </text>
                         <text>
                             <img src="images/lcov-11-summary.png" alt="LCov Summary Report for YUI3"/>
                         </text>
                         <text>
-                            <img src="images/lcov-12-file.png" alt="LCov File Report for YUI3"/><br/>
+                            <img src="images/lcov-12-file.png" alt="LCov File Report for YUI3"/>
+                            <br/>
                         </text>
                     </item>
                 </item>
@@ -623,170 +690,184 @@
     <item>
         <heading id="execModes">Execution Modes</heading>
         <section>
-        <item>
-            <heading id="iframeMode">IFrame Mode</heading>
-            <text>
-                This is the most commonly used mode, and is described in the
-                <a href="#gettingStarted">Getting Started</a> section above.
-            </text>
-        </item>
-        <item>
-            <heading id="windowMode">Window Mode</heading>
-            <text>
-                In some situations it may be difficult to execute your code within the
-                &lt;iframe&gt;
-                in the JSCover "Browser" tab. For example, the code may assume that it is running in the top-level
-                browser window, generating errors if it is executed from within a frame. JSCover has an alternative
-                mode of operation, called window mode, which may be useful in this case.
-            </text>
-            <text>
-                To use JSCover in window mode, load your URL by clicking the "Open in window" button instead of the
-                "Open in frame" button. This will cause your URL to be opened in a new window. (Depending on your
-                browser settings, it may be opened in a new browser tab instead.) Execute your code in this new window,
-                and then return to the jscoverage.html window and click the "Summary" tab to get code coverage
-                statistics.
-            </text>
-        </item>
-        <item>
-            <heading id="invertedMode">Inverted Mode</heading>
-            <text>
-                There is another alternative mode of operation, called inverted mode. Like window mode, this allows you
-                to avoid running your code inside an &lt;iframe&gt;.
-            </text>
-            <text>
-                Normally you load jscoverage.html in your web browser, and in its "Browser" tab you launch your test
-                code.
-                In inverted mode, you do the opposite: you load your test page directly in your web browser, and from
-                there you launch JSCover.
-                To do this you need to add some code to your test page:
-                <code>window.open('path/to/jscoverage.html');</code>
-            </text>
-            <text>
-                The "path/to/jscoverage.html" should be a URL pointing to the location of the jscoverage.html file
-                (remember, this will be in the top level of the DESTINATION-DIRECTORY you specified when running
-                JSCover).
-            </text>
-            <text>
-                You can place this code wherever you like in your page: for example, you could attach it to a button:
-                <code>&lt;button type="button" onclick="window.open('path/to/jscoverage.html');"&gt;Coverage report&lt;/button&gt;</code>
-            </text>
-            <text>Note that you must use a window.open call; simply making a link to jscoverage.html is not
-                sufficient.
-            </text>
-        </item>
-        <item>
-            <heading id="queryStringOptions">Query String Options</heading>
-            <text>
-                When accessing jscoverage.html in a web browser, you may provide a query string consisting of options
-                separated by ampersand (&amp;) or semicolon (;). Any option not containing an equals sign (=) is
-                considered to be a URL which will be loaded in the &lt;iframe&gt; within the "Browser" tab.
-            </text>
-            <text>
-                u=URL, url=URL, frame=URL, f=URL<br/>
-                Load URL in the &lt;iframe&gt;
-                within the "Browser" tab. (This is the same as specifying an option without an equals sign.)
-            </text>
-            <text>
-                w=URL, window=URL<br/>
-                Load URL in a new window (window mode).
-            </text>
-            <text>
-                m=BOOLEAN, missing=BOOLEAN<br/>
-                Determines whether to initially display the "Missing" column in the "Summary" tab. BOOLEAN can be true,
-                t, yes, y, on, 1 (to display the "Missing" column), or false, f, no, n, off, 0 (to hide the "Missing"
-                column). By default, the "Missing" column is not displayed.
-            </text>
-        </item>
+            <item>
+                <heading id="iframeMode">IFrame Mode</heading>
+                <text>
+                    This is the most commonly used mode, and is described in the
+                    <a href="#gettingStarted">Getting Started</a>
+                    section above.
+                </text>
+            </item>
+            <item>
+                <heading id="windowMode">Window Mode</heading>
+                <text>
+                    In some situations it may be difficult to execute your code within the
+                    &lt;iframe&gt;
+                    in the JSCover "Browser" tab. For example, the code may assume that it is running in the top-level
+                    browser window, generating errors if it is executed from within a frame. JSCover has an alternative
+                    mode of operation, called window mode, which may be useful in this case.
+                </text>
+                <text>
+                    To use JSCover in window mode, load your URL by clicking the "Open in window" button instead of the
+                    "Open in frame" button. This will cause your URL to be opened in a new window. (Depending on your
+                    browser settings, it may be opened in a new browser tab instead.) Execute your code in this new
+                    window, and then return to the jscoverage.html window and click the "Summary" tab to get code
+                    coverage statistics.
+                </text>
+            </item>
+            <item>
+                <heading id="invertedMode">Inverted Mode</heading>
+                <text>
+                    There is another alternative mode of operation, called inverted mode. Like window mode, this allows
+                    you to avoid running your code inside an &lt;iframe&gt;.
+                </text>
+                <text>
+                    Normally you load jscoverage.html in your web browser, and in its "Browser" tab you launch your test
+                    code.
+                    In inverted mode, you do the opposite: you load your test page directly in your web browser, and
+                    from there you launch JSCover.
+                    To do this you need to add some code to your test page:
+                    <code>window.open('path/to/jscoverage.html');</code>
+                </text>
+                <text>
+                    The "path/to/jscoverage.html" should be a URL pointing to the location of the jscoverage.html file
+                    (remember, this will be in the top level of the DESTINATION-DIRECTORY you specified when running
+                    JSCover).
+                </text>
+                <text>
+                    You can place this code wherever you like in your page: for example, you could attach it to a
+                    button:
+                    <code>&lt;button type="button" onclick="window.open('path/to/jscoverage.html');"&gt;Coverage report&lt;/button&gt;</code>
+                </text>
+                <text>Note that you must use a window.open call; simply making a link to jscoverage.html is not
+                    sufficient.
+                </text>
+            </item>
+            <item>
+                <heading id="queryStringOptions">Query String Options</heading>
+                <text>
+                    When accessing jscoverage.html in a web browser, you may provide a query string consisting of
+                    options separated by ampersand (&amp;) or semicolon (;). Any option not containing an equals sign
+                    (=) is considered to be a URL which will be loaded in the &lt;iframe&gt; within the "Browser" tab.
+                </text>
+                <text>
+                    u=URL, url=URL, frame=URL, f=URL
+                    <br/>
+                    Load URL in the &lt;iframe&gt;
+                    within the "Browser" tab. (This is the same as specifying an option without an equals sign.)
+                </text>
+                <text>
+                    w=URL, window=URL
+                    <br/>
+                    Load URL in a new window (window mode).
+                </text>
+                <text>
+                    m=BOOLEAN, missing=BOOLEAN
+                    <br/>
+                    Determines whether to initially display the "Missing" column in the "Summary" tab. BOOLEAN can be
+                    true,
+                    t, yes, y, on, 1 (to display the "Missing" column), or false, f, no, n, off, 0 (to hide the
+                    "Missing" column). By default, the "Missing" column is not displayed.
+                </text>
+            </item>
         </section>
     </item>
     <item>
         <heading id="automating">Automated Tests</heading>
         <section>
-        <text>JSCover has made some additions to jscoverage.html to provide DOM ID hooks to assist with automated
-            testing with tools such as Selenium and HtmlUnit.
-        </text>
-        <item>
-            <heading id="automatingDomIds">DOM IDs &amp; JavaScript</heading>
-            <text>
-                <table>
-                    <tr>
-                        <th>Area</th>
-                        <th>ID</th>
-                        <th>JavaScript</th>
-                    </tr>
-                    <tr>
-                        <td>URL Text Input</td>
-                        <td>location</td>
-                        <td><a href="#queryStringOptions">Use Query String</a></td>
-                    </tr>
-                    <tr>
-                        <td>Open In Frame Button</td>
-                        <td>openInFrameButton</td>
-                        <td>jscoverage_openInFrameButton_click()</td>
-                    </tr>
-                    <tr>
-                        <td>Open In Window Button</td>
-                        <td>openInWindowButton</td>
-                        <td>jscoverage_openInWindowButton_click()</td>
-                    </tr>
-                    <tr>
-                        <td>Summary tab<note>*</note></td>
-                        <td>summaryTab</td>
-                        <td>N/A</td>
-                    </tr>
-                    <tr>
-                        <td>Coverage Total</td>
-                        <td>summaryTotal</td>
-                        <td>N/A</td>
-                    </tr>
-                    <tr>
-                        <td>Branch Coverage Total</td>
-                        <td>branchSummaryTotal</td>
-                        <td>N/A</td>
-                    </tr>
-                    <tr>
-                        <td>Storage tab</td>
-                        <td>storeTab</td>
-                        <td>N/A</td>
-                    </tr>
-                    <tr>
-                        <td>Store Report Button<note>*</note></td>
-                        <td>storeButton</td>
-                        <td>See <a href="#jsReportStorage">Programmatic Report Storage</a></td>
-                    </tr>
-                </table>
+            <text>JSCover has made some additions to jscoverage.html to provide DOM ID hooks to assist with automated
+                testing with tools such as Selenium and HtmlUnit.
             </text>
-            <text><note>* - You will need to wait for the JavaScript operation to complete</note></text>
-        </item>
-        <item>
-            <heading id="automatingHtmlUnit">HtmlUnit</heading>
-            <text>
-                For a working example see
-                <a href="https://github.com/tntim96/JSCover/blob/master/src/test-acceptance/java/jscover/server/HtmlUnitServerTest.java"
-                        >HtmlUnitServerTest</a>
-            </text>
-            <text>
-                Example of JavaScript to store the report:
+            <item>
+                <heading id="automatingDomIds">DOM IDs &amp; JavaScript</heading>
+                <text>
+                    <table>
+                        <tr>
+                            <th>Area</th>
+                            <th>ID</th>
+                            <th>JavaScript</th>
+                        </tr>
+                        <tr>
+                            <td>URL Text Input</td>
+                            <td>location</td>
+                            <td><a href="#queryStringOptions">Use Query String</a></td>
+                        </tr>
+                        <tr>
+                            <td>Open In Frame Button</td>
+                            <td>openInFrameButton</td>
+                            <td>jscoverage_openInFrameButton_click()</td>
+                        </tr>
+                        <tr>
+                            <td>Open In Window Button</td>
+                            <td>openInWindowButton</td>
+                            <td>jscoverage_openInWindowButton_click()</td>
+                        </tr>
+                        <tr>
+                            <td>Summary tab
+                                <note>*</note>
+                            </td>
+                            <td>summaryTab</td>
+                            <td>N/A</td>
+                        </tr>
+                        <tr>
+                            <td>Coverage Total</td>
+                            <td>summaryTotal</td>
+                            <td>N/A</td>
+                        </tr>
+                        <tr>
+                            <td>Branch Coverage Total</td>
+                            <td>branchSummaryTotal</td>
+                            <td>N/A</td>
+                        </tr>
+                        <tr>
+                            <td>Storage tab</td>
+                            <td>storeTab</td>
+                            <td>N/A</td>
+                        </tr>
+                        <tr>
+                            <td>Store Report Button
+                                <note>*</note>
+                            </td>
+                            <td>storeButton</td>
+                            <td>See
+                                <a href="#jsReportStorage">Programmatic Report Storage</a>
+                            </td>
+                        </tr>
+                    </table>
+                </text>
+                <text>
+                    <note>* - You will need to wait for the JavaScript operation to complete</note>
+                </text>
+            </item>
+            <item>
+                <heading id="automatingHtmlUnit">HtmlUnit</heading>
+                <text>
+                    For a working example see
+                    <a href="https://github.com/tntim96/JSCover/blob/master/src/test-acceptance/java/jscover/server/HtmlUnitServerTest.java"
+                            >HtmlUnitServerTest</a>
+                </text>
+                <text>
+                    Example of JavaScript to store the report:
                 <code>ScriptResult result = ((HtmlPage)webWindow.getEnclosedPage()).executeJavaScript("jscoverage_report('directory');");</code>
-            </text>
-        </item>
-        <item>
-            <heading id="automatingSelenium">Selenium</heading>
-            <text>
-                Example of JavaScript to store the report:
+                </text>
+            </item>
+            <item>
+                <heading id="automatingSelenium">Selenium</heading>
+                <text>
+                    Example of JavaScript to store the report:
                 <code>String jscoverageJson = selenium.getEval("selenium.browserbot.getUserWindow().jscoverage_report();");</code>
-            </text>
-            <text>
-                Example of JavaScript to retrieve the JSON coverage data:
+                </text>
+                <text>
+                    Example of JavaScript to retrieve the JSON coverage data:
                 <code>String jscoverageJson = selenium.getEval("selenium.browserbot.getUserWindow().jscoverage_serializeCoverageToJSON();");</code>
-            </text>
-        </item>
-        <item>
-            <heading id="automatingAnt">Ant</heading>
-            <text>
-                Example starting the server
+                </text>
+            </item>
+            <item>
+                <heading id="automatingAnt">Ant</heading>
+                <text>
+                    Example starting the server
 <code>    &lt;target name="JSCover-start"&gt;
-        &lt;java jar="JSCover-all.jar" fork="true" spawn="true"&gt;
+         &lt;java jar="JSCover-all.jar" fork="true" spawn="true"&gt;
             &lt;arg value="-ws"/&gt;
             &lt;arg value="--branch"/&gt;
             &lt;arg value="--report-dir=${jscover.dir}"/&gt;
@@ -799,32 +880,31 @@
             &lt;http url="http://localhost:8081/jscoverage.html"/&gt;
         &lt;/waitfor&gt;
         &lt;fail if="failed"/&gt;
-    &lt;/target&gt;
-</code>
-            </text>
-            <text>
-                Example stopping the server
+    &lt;/target&gt;</code>
+                </text>
+                <text>
+                    Example stopping the server
 <code>    &lt;target name="JSCover-stop"&gt;
         &lt;get src="http://localhost:8081/stop" dest="${build.dir}/stop.txt" /&gt;
-    &lt;/target&gt;
-</code>
-            </text>
-        </item>
+    &lt;/target&gt;</code>
+                </text>
+            </item>
         </section>
     </item>
     <item>
         <heading id="howWork">How does it work</heading>
         <section>
-        <item>
-            <heading id="implementationInstrumentation">Instrumentation</heading>
-            <text>See <a href="#jsCoverageVJSCoverInstrumentation">implementation
-                differences with JSCoverage</a>.</text>
             <item>
-                <heading id="lineInstrumentation">Line</heading>
-                <text>
-                    JSCover works by instrumenting the specified JavaScript. A simple example is shown below:
-                    <code>alert('Hello World!');</code>
-                    ...becomes...
+                <heading id="implementationInstrumentation">Instrumentation</heading>
+                <text>See <a href="#jsCoverageVJSCoverInstrumentation">implementation
+                    differences with JSCoverage</a>.
+                </text>
+                <item>
+                    <heading id="lineInstrumentation">Line</heading>
+                    <text>
+                        JSCover works by instrumenting the specified JavaScript. A simple example is shown below:
+                        <code>alert('Hello World!');</code>
+                        ...becomes...
 <code>//...header code above
 if (! this._$jscoverage) {
     this._$jscoverage = {};
@@ -836,16 +916,16 @@ if (! _$jscoverage['test.js']) {
 }
 _$jscoverage['test.js'].lineData[1]++;
 alert('Hello World!');</code>
-                    This illustrates that when the target code is executed, a counter for the file name and line
-                    is incremented. The header code manages the declaration of _$jscoverage.
-                </text>
-            </item>
-            <item>
-                <heading id="branchInstrumentation">Branch</heading>
-                <text>
-                    A branch coverage example:
-                    <code>var y = x > 0 ? 1 : 0;</code>
-                    ...becomes...
+                        This illustrates that when the target code is executed, a counter for the file name and line
+                        is incremented. The header code manages the declaration of _$jscoverage.
+                    </text>
+                </item>
+                <item>
+                    <heading id="branchInstrumentation">Branch</heading>
+                    <text>
+                        A branch coverage example:
+                        <code>var y = x > 0 ? 1 : 0;</code>
+                        ...becomes...
 <code>//...header code above
 if (! this._$jscoverage) {
     this._$jscoverage = {};
@@ -862,74 +942,76 @@ if (! _$jscoverage['test.js'].branchData) {
 }
 _$jscoverage['test.js'].branchData[1][1].init(19, 5, 'x > 0');
 function visit1_2_1(result) {
-  _$jscoverage['test.js'].branchData[1][1].ranCondition(result);
-  return result;
+    _$jscoverage['test.js'].branchData[1][1].ranCondition(result);
+    return result;
 }
 var y = visit1_2_1(x > 0) ? 1 : 0;</code>
-                    This result of the boolean operation is passed to <var>visit1_2_1</var> for recording, which then
-                    returns that same result to the main calling code.
-                </text>
+                        This result of the boolean operation is passed to
+                        <var>visit1_2_1</var>
+                        for recording, which then
+                        returns that same result to the main calling code.
+                    </text>
+                </item>
             </item>
-        </item>
         </section>
     </item>
     <item>
         <heading id="other">Other</heading>
         <section>
-        <item>
-            <heading id="jsCoverageVJSCover">JSCover V. JSCoverage</heading>
             <item>
-                <heading id="jsCoverageVJSCoverImplementation">Implementation</heading>
-                <text>
-                    The main difference in the implementation is the tools used for parsing.
-                    Most JavaScript code is the same, and so the UI interaction is the same.
-                </text>
-                <text>
-                    <table>
-                        <tr>
-                            <th>Tool</th>
-                            <th>Parser Language</th>
-                            <th>Parser Implementation</th>
-                        </tr>
-                        <tr>
-                            <td>JSCover</td>
-                            <td>Java</td>
-                            <td>
-                                <a href="https://github.com/tntim96/rhino">Rhino</a>
-                                1.7R5pre (forked)
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>JSCoverage</td>
-                            <td>C/C++</td>
-                            <td>
-                                <a href="https://developer.mozilla.org/en/SpiderMonkey">SpiderMonkey</a>
-                            </td>
-                        </tr>
-                    </table>
-                </text>
-            </item>
-            <item>
-                <heading id="jsCoverageVJSCoverInstrumentation">Instrumentation</heading>
-                <text>
-                    JSCover's instrumentation has changed from JSCoverage's to more elegantly
-                    accommodate other statistics related to a file (including branch coverage).
-                </text>
-                <text>
-                    JSCover
-                    <code>_$jscoverage['test.js'].lineData[1]++;</code>
-                </text>
-                <text>
-                    Compare with JSCoverage
-                    <code>_$jscoverage['test.js'][1]++;</code>
-                </text>
-            </item>
-            <item>
-                <heading id="jsCoverageVJSCoverJSON">JSON</heading>
-                <text>
-                    JSCover's JSON format has also changed from JSCoverage's to more elegantly
-                    accommodate branch data. In addition, a <note>major change was made to remove the
-                    source from JSON</note>, improving the performance of loading the summary statistics.
+                <heading id="jsCoverageVJSCover">JSCover V. JSCoverage</heading>
+                <item>
+                    <heading id="jsCoverageVJSCoverImplementation">Implementation</heading>
+                    <text>
+                        The main difference in the implementation is the tools used for parsing.
+                        Most JavaScript code is the same, and so the UI interaction is the same.
+                    </text>
+                    <text>
+                        <table>
+                            <tr>
+                                <th>Tool</th>
+                                <th>Parser Language</th>
+                                <th>Parser Implementation</th>
+                            </tr>
+                            <tr>
+                                <td>JSCover</td>
+                                <td>Java</td>
+                                <td>
+                                    <a href="https://github.com/tntim96/rhino">Rhino</a>
+                                    1.7R5pre (forked)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>JSCoverage</td>
+                                <td>C/C++</td>
+                                <td>
+                                    <a href="https://developer.mozilla.org/en/SpiderMonkey">SpiderMonkey</a>
+                                </td>
+                            </tr>
+                        </table>
+                    </text>
+                </item>
+                <item>
+                    <heading id="jsCoverageVJSCoverInstrumentation">Instrumentation</heading>
+                    <text>
+                        JSCover's instrumentation has changed from JSCoverage's to more elegantly
+                        accommodate other statistics related to a file (including branch coverage).
+                    </text>
+                    <text>
+                        JSCover
+                        <code>_$jscoverage['test.js'].lineData[1]++;</code>
+                    </text>
+                    <text>
+                        Compare with JSCoverage
+                        <code>_$jscoverage['test.js'][1]++;</code>
+                    </text>
+                </item>
+                <item>
+                    <heading id="jsCoverageVJSCoverJSON">JSON</heading>
+                    <text>
+                        JSCover's JSON format has also changed from JSCoverage's to more elegantly
+                        accommodate branch data. In addition, a <note>major change was made to remove the
+                        source from JSON</note>, improving the performance of loading the summary statistics.
 <code>{"/path/file1.js":
     {
       "lineData":[null,1,1,1],       //Each element represents a line. Value is number of times executed.
@@ -949,91 +1031,111 @@ var y = visit1_2_1(x > 0) ? 1 : 0;</code>
        ]
     }
 }</code>
-                </text>
+                    </text>
+                </item>
+                <item>
+                    <heading id="jsCoverageVJSCoverFeatures">Features</heading>
+                    <text>
+                        <table>
+                            <tr>
+                                <th>Feature</th>
+                                <th>JSCover (0.1.0)</th>
+                                <th>JSCoverage (0.5.1)</th>
+                            </tr>
+                            <tr>
+                                <td>Branch Coverage</td>
+                                <td class="tick"></td>
+                                <td class="cross"></td>
+                            </tr>
+                            <tr>
+                                <td>File Instrumentation</td>
+                                <td class="tick"></td>
+                                <td class="tick"></td>
+                            </tr>
+                            <tr>
+                                <td>Web Server Instrumentation</td>
+                                <td class="tick"></td>
+                                <td class="tick"></td>
+                            </tr>
+                            <tr>
+                                <td>Proxy Server Instrumentation</td>
+                                <td class="tick"></td>
+                                <td class="tick"></td>
+                            </tr>
+                            <tr>
+                                <td>Specify Encoding</td>
+                                <td class="tick"></td>
+                                <td class="tick"></td>
+                            </tr>
+                            <tr>
+                                <td>Inclusion of Uncovered/Unloaded JavaScript</td>
+                                <td class="tick"></td>
+                                <td class="cross"></td>
+                            </tr>
+                            <tr>
+                                <td>Multiple Report Formats</td>
+                                <td class="tick"></td>
+                                <td class="cross"></td>
+                            </tr>
+                            <tr>
+                                <td>JavaScript Syntax Highlighting</td>
+                                <td class="cross"></td>
+                                <td class="tick"></td>
+                            </tr>
+                            <tr>
+                                <td>Ignoring certain lines of code</td>
+                                <td class="cross"></td>
+                                <td class="tick"></td>
+                            </tr>
+                        </table>
+                    </text>
+                    <text>
+                        Other differences include:
+                        <ul>
+                            <li>JSCover's server mode works on Windows 7 (this was part of the incentive to write
+                                JSCover)
+                            </li>
+                            <li>JSCover allows sorting of files by coverage and branch coverage</li>
+                            <li>JSCover
+                                <a href="#automating">has added hooks</a>
+                                to assist with automated testing
+                            </li>
+                            <li>JSCover's encoding default's to that of the platform, while JSCoverage's is ISO-8859-1
+                            </li>
+                            <li>JSCoverage has an option for code coverage for Mozilla platform applications</li>
+                        </ul>
+                    </text>
+                </item>
             </item>
             <item>
-                <heading id="jsCoverageVJSCoverFeatures">Features</heading>
+                <heading id="caveats">Caveats</heading>
                 <text>
-                    <table>
-                        <tr>
-                            <th>Feature</th>
-                            <th>JSCover (0.1.0)</th>
-                            <th>JSCoverage (0.5.1)</th>
-                        </tr>
-                        <tr>
-                            <td>Branch Coverage</td>
-                            <td class="tick"></td>
-                            <td class="cross"></td>
-                        </tr>
-                        <tr>
-                            <td>File Instrumentation</td>
-                            <td class="tick"></td>
-                            <td class="tick"></td>
-                        </tr>
-                        <tr>
-                            <td>Web Server Instrumentation</td>
-                            <td class="tick"></td>
-                            <td class="tick"></td>
-                        </tr>
-                        <tr>
-                            <td>Proxy Server Instrumentation</td>
-                            <td class="tick"></td>
-                            <td class="tick"></td>
-                        </tr>
-                        <tr>
-                            <td>Specify Encoding</td>
-                            <td class="tick"></td>
-                            <td class="tick"></td>
-                        </tr>
-                        <tr>
-                            <td>Inclusion of Uncovered/Unloaded JavaScript</td>
-                            <td class="tick"></td>
-                            <td class="cross"></td>
-                        </tr>
-                        <tr>
-                            <td>Multiple Report Formats</td>
-                            <td class="tick"></td>
-                            <td class="cross"></td>
-                        </tr>
-                        <tr>
-                            <td>JavaScript Syntax Highlighting</td>
-                            <td class="cross"></td>
-                            <td class="tick"></td>
-                        </tr>
-                        <tr>
-                            <td>Ignoring certain lines of code</td>
-                            <td class="cross"></td>
-                            <td class="tick"></td>
-                        </tr>
-                    </table>
-                </text>
-                <text>
-                    Other differences include:
+                    Caveats
                     <ul>
-                        <li>JSCover's server mode works on Windows 7 (this was part of the incentive to write JSCover)</li>
-                        <li>JSCover allows sorting of files by coverage and branch coverage</li>
-                        <li>JSCover <a href="#automating">has added hooks</a> to assist with automated testing</li>
-                        <li>JSCover's encoding default's to that of the platform, while JSCoverage's is ISO-8859-1</li>
-                        <li>JSCoverage has an option for code coverage for Mozilla platform applications</li>
+                        <li>JSCover adds instrumentation to JavaScript code, which will slow down execution speed.
+                            Expect instrumented code to take at least twice as much time to run.
+                        </li>
+                        <li>JSCover currently instruments only .js files; it does not instrument code in &lt;script&gt;
+                            elements in HTML files.
+                        </li>
+                        <li>HTML files must use relative URLs to reference scripts. If you use an absolute URL, your
+                            page will reference the original uninstrumented script rather than the instrumented one, and
+                            no code coverage data will be collected.
+                        </li>
+                        <li>JSCover line coverage instruments physical lines of code rather than logical JavaScript
+                            statements; it works bests with code that has exactly one statement per line. If you put
+                            multiple statements on a line, or split a line across two or more statements, you may get
+                            strange results.
+                        </li>
+                        <li>JSCover uses frames. Some web pages that use frames may not function properly when run with
+                            JSCover, especially those which try to access the top-level frame (window.top,
+                            target="_top", etc.).
+                        </li>
+                        <li>JSCover proxy currently only supports HTTP, not HTTPS</li>
+                        <li>JSCover is distributed without any warranty. See the license for more details.</li>
                     </ul>
                 </text>
             </item>
-        </item>
-        <item>
-            <heading id="caveats">Caveats</heading>
-            <text>
-                Caveats
-                <ul>
-                    <li>JSCover adds instrumentation to JavaScript code, which will slow down execution speed. Expect instrumented code to take at least twice as much time to run.</li>
-                    <li>JSCover currently instruments only .js files; it does not instrument code in &lt;script&gt; elements in HTML files.</li>
-                    <li>HTML files must use relative URLs to reference scripts. If you use an absolute URL, your page will reference the original uninstrumented script rather than the instrumented one, and no code coverage data will be collected.</li>
-                    <li>JSCover line coverage instruments physical lines of code rather than logical JavaScript statements; it works bests with code that has exactly one statement per line. If you put multiple statements on a line, or split a line across two or more statements, you may get strange results.</li>
-                    <li>JSCover uses frames. Some web pages that use frames may not function properly when run with JSCover, especially those which try to access the top-level frame (window.top, target="_top", etc.).</li>
-                    <li>JSCover proxy currently only supports HTTP, not HTTPS</li>
-                    <li>JSCover is distributed without any warranty. See the license for more details.</li>
-                </ul>
-            </text>
-        </item>
         </section>
     </item>
 </document>
