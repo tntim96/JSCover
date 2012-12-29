@@ -740,8 +740,8 @@ public class BranchInstrumentorIntegrationTest {
         context = Context.enter();
         scope = context.initStandardObjects();
         String source = branchObjectHeader + header + branchInstrumentor.getJsLineInitialization() + astRoot.toSource();
-        System.out.println("--------------------------------------");
-        System.out.println("source = " + source);
+        //System.out.println("--------------------------------------");
+        //System.out.println("source = " + source);
 
         return context.evaluateString(scope, source, "test.js", 1, null);
     }

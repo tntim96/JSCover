@@ -401,6 +401,6 @@ public class HttpRequest {
     }
 
     public boolean skipInstrumentation() {
-        return headers!=null && headers.containsKey("NoInstrument");
+        return getHeaders()!=null && getHeaders().containsKey("NoInstrument");
     }
 }

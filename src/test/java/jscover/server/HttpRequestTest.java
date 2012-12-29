@@ -421,4 +421,11 @@ public class HttpRequestTest {
         httpRequest.setHeaders(headers);
         assertThat(httpRequest.skipInstrumentation(), equalTo(true));
     }
+
+    @Test
+    public void shouldGetRelativePath() {
+        assertThat(new HttpRequest("test.js").getRelativePath(), equalTo("test.js"));
+        assertThat(new HttpRequest("/test.js").getRelativePath(), equalTo("test.js"));
+        assertThat(new HttpRequest("/js/test.js").getRelativePath(), equalTo("js/test.js"));
+    }
 }

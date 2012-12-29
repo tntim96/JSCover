@@ -64,6 +64,23 @@ public class FileSystemInstrumenterTest {
         fsi.copyFolder(src, dest);
 
         verify(instrumenterService).instrumentJSForFileSystem(compilerEnvirons, src, dest, path, configuration.isIncludeBranch());
+        verify(destParent).mkdirs();
+    }
+
+    @Test
+    public void shouldNotMakeSubDirectoriesIfExist() {
+        String path = "somePath.js";
+        given(ioUtils.getRelativePath(any(File.class), any(File.class))).willReturn(path);
+        given(configuration.exclude(path)).willReturn(false);
+        given(src.isDirectory()).willReturn(false);
+        given(src.toString()).willReturn(path);
+        given(configuration.skipInstrumentation(path)).willReturn(false);
+        given(destParent.exists()).willReturn(true);
+
+        fsi.copyFolder(src, dest);
+
+        verify(instrumenterService).instrumentJSForFileSystem(compilerEnvirons, src, dest, path, configuration.isIncludeBranch());
+        verify(destParent, times(0)).mkdirs();
     }
 
     @Test
@@ -74,6 +91,20 @@ public class FileSystemInstrumenterTest {
         given(src.isDirectory()).willReturn(false);
         given(src.toString()).willReturn(path);
         given(configuration.skipInstrumentation(path)).willReturn(false);
+
+        fsi.copyFolder(src, dest);
+
+        verifyZeroInteractions(instrumenterService);
+    }
+
+    @Test
+    public void shouldNotInstrumentSkippedJSFile() {
+        String path = "somePath.js";
+        given(ioUtils.getRelativePath(any(File.class), any(File.class))).willReturn(path);
+        given(configuration.exclude(path)).willReturn(false);
+        given(src.isDirectory()).willReturn(false);
+        given(src.toString()).willReturn(path);
+        given(configuration.skipInstrumentation(path)).willReturn(true);
 
         fsi.copyFolder(src, dest);
 
