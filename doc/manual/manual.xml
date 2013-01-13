@@ -521,7 +521,7 @@
                 </text>
                 <text>
                     For the example code in the doc/example/ directory, you can execute the following command line from
-                    the top-level directory of the JSCoverage distribution:
+                    the top-level directory of the JSCover distribution:
                     <code>java -jar JSCover-all.jar -fs doc/example doc/instrumented</code>
                 </text>
                 <text>
