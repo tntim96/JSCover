@@ -38,7 +38,7 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="1.7" jdkType="JavaSDK" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
