@@ -58,7 +58,8 @@
 	</target>
 
 	<target name="compile" depends="init, dirsetup">
-		<javac includeantruntime="false" debug="true" srcdir="${src.main.dir}" destdir="${classes.main.dir}" classpathref="classpath-main" />
+		<javac includeantruntime="false" debug="true" srcdir="${src.main.dir}" destdir="${classes.main.dir}"
+               classpathref="classpath-main" source="1.5" target="1.5"/>
 		<copy todir="${classes.main.dir}" includeemptydirs="no">
 			<fileset dir="${src.resources.dir}" />
 		</copy>
@@ -155,7 +156,7 @@
 
 	<target name="compile-tests" depends="compile">
 		<javac includeantruntime="false" debug="true" srcdir="${src.test-unit.dir}"
-			destdir="${classes.test-unit.dir}" classpathref="classpath-main" />
+			destdir="${classes.test-unit.dir}" classpathref="classpath-main" source="1.5" target="1.5"/>
 		<copy todir="${classes.test-unit.dir}" includeemptydirs="no">
 			<fileset dir="${src.test-resources.dir}" />
 		</copy>
@@ -163,7 +164,7 @@
 
 	<target name="compile-integration-tests" depends="compile-tests">
 		<javac includeantruntime="false" debug="true" srcdir="${src.test-integration.dir}"
-			destdir="${classes.test-integration.dir}" classpathref="classpath-main" />
+			destdir="${classes.test-integration.dir}" classpathref="classpath-main" source="1.5" target="1.5" />
 		<copy todir="${classes.test-integration.dir}" includeemptydirs="no">
 			<fileset dir="${src.test-integration.resources.dir}" />
 		</copy>
@@ -171,7 +172,7 @@
 
 	<target name="compile-acceptance-tests" depends="compile-integration-tests">
 		<javac includeantruntime="false" debug="true" srcdir="${src.test-acceptance.dir}"
-			destdir="${classes.test-acceptance.dir}">
+			destdir="${classes.test-acceptance.dir}" source="1.5" target="1.5">
             <classpath>
                 <path refid="classpath-main" />
                 <path refid="classpath-htmlunit" />
