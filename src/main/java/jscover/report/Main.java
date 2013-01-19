@@ -351,7 +351,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.SortedMap;
 
-//This entry point is currently in flux until the output format is determined.
 public class Main {
     public static void main(String[] args) throws IOException {
         new Main().runMain(args);
@@ -384,6 +383,9 @@ public class Main {
     }
 
     private void mergeReports() {
+        File firstReportDir = config.getMergeDirs().get(0);
+        ioUtils.copyDir(firstReportDir, config.getMergeDestDir());
+
         String[] data = new String[config.getMergeDirs().size()];
         for (int i = 0; i < data.length; i++) {
             File dataFile = new File(config.getMergeDirs().get(i), "jscoverage.json");
@@ -394,9 +396,7 @@ public class Main {
         File mergedJson = new File(config.getMergeDestDir(), "jscoverage.json");
         ioUtils.copy(jsonDataMerger.toJSON(mergedMap), mergedJson);
 
-        File firstReportDir = config.getMergeDirs().get(0);
         File srcDir = new File(config.getMergeDestDir(), jscover.Main.reportSrcSubDir);
-        ioUtils.copyDir(firstReportDir, config.getMergeDestDir());
         for (int i = 1; i < config.getMergeDirs().size(); i++)
             ioUtils.copyDir(new File( config.getMergeDirs().get(i), jscover.Main.reportSrcSubDir), srcDir);
     }

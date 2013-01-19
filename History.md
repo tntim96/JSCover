@@ -1,3 +1,7 @@
+0.2.1 / 2013-01-20
+==================
+  * Fix report merging (https://github.com/tntim96/JSCover/issues/38)
+
 0.2.0 / 2012-12-28
 ==================
   * Fix web-server for URLs with a space in them (https://github.com/tntim96/JSCover/issues/33)

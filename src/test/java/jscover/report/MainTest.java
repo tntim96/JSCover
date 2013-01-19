@@ -352,6 +352,7 @@ import org.hamcrest.TypeSafeMatcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -365,6 +366,7 @@ import java.util.TreeMap;
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.argThat;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
@@ -492,14 +494,19 @@ public class MainTest {
 
         main.runMain(new String[]{});
 
+        InOrder inOrder = inOrder(ioUtils);
+
         //Verify JSON merging
         File mergedJson = new File(config.getMergeDestDir(), "jscoverage.json");
         verify(ioUtils).copy("mergedJSON", mergedJson);
 
+        //Verify the merged JSON is copied after directory 11 is copied across
+        inOrder.verify(ioUtils).copyDir(dir1, destDir);
+        inOrder.verify(ioUtils).copy("mergedJSON", mergedJson);
+
         //Verify src copying
         File src2 = new File(dir2, jscover.Main.reportSrcSubDir);
         File srcDest = new File(destDir, jscover.Main.reportSrcSubDir);
-        verify(ioUtils).copyDir(dir1, destDir);
         verify(ioUtils).copyDir(src2, srcDest);
         verifyZeroInteractions(mainHelper);
     }
