@@ -500,7 +500,7 @@ public class MainTest {
         File mergedJson = new File(config.getMergeDestDir(), "jscoverage.json");
         verify(ioUtils).copy("mergedJSON", mergedJson);
 
-        //Verify the merged JSON is copied after directory 11 is copied across
+        //Verify the merged JSON is copied after 1st directory is copied across
         inOrder.verify(ioUtils).copyDir(dir1, destDir);
         inOrder.verify(ioUtils).copy("mergedJSON", mergedJson);
 
