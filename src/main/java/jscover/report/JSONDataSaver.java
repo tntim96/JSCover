@@ -348,27 +348,15 @@ import java.io.File;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
 
 public class JSONDataSaver {
     private JSONDataMerger jsonDataMerger = new JSONDataMerger();
     private IoUtils ioUtils = IoUtils.getInstance();
-    private static Semaphore semaphore = new Semaphore(1);
 
-    public void saveJSONData(File reportDir, String data, List<ScriptLinesAndSource> unloadJSData) {
+    public synchronized void saveJSONData(File reportDir, String data, List<ScriptLinesAndSource> unloadJSData) {
         reportDir.mkdirs();
         File jsonFile = new File(reportDir, "jscoverage.json");
         SortedMap<String, FileData> extraData = new TreeMap<String, FileData>();
-        
-        // Wait until we have a lock on the merging process
-        try {                        
-            while (!semaphore.tryAcquire(10, TimeUnit.MILLISECONDS)) {               
-                System.out.println("Another thread is trying to save jscoverage.json at this time, waiting for semaphore.");                
-            }            
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         
         if (jsonFile.exists()) {
             String existingJSON = ioUtils.toString(jsonFile);
@@ -381,8 +369,6 @@ public class JSONDataSaver {
             ioUtils.copy(jsonDataMerger.toJSON(extraData), jsonFile);
         } else
             ioUtils.copy(data, jsonFile);
-        
-        semaphore.release();
-        
+
     }
 }
