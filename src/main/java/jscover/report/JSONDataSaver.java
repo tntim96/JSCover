@@ -353,7 +353,7 @@ public class JSONDataSaver {
     private JSONDataMerger jsonDataMerger = new JSONDataMerger();
     private IoUtils ioUtils = IoUtils.getInstance();
 
-    public void saveJSONData(File reportDir, String data, List<ScriptLinesAndSource> unloadJSData) {
+    public synchronized void saveJSONData(File reportDir, String data, List<ScriptLinesAndSource> unloadJSData) {
         reportDir.mkdirs();
         File jsonFile = new File(reportDir, "jscoverage.json");
         SortedMap<String, FileData> extraData = new TreeMap<String, FileData>();
