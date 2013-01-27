@@ -357,6 +357,7 @@ public class JSONDataSaver {
         reportDir.mkdirs();
         File jsonFile = new File(reportDir, "jscoverage.json");
         SortedMap<String, FileData> extraData = new TreeMap<String, FileData>();
+        
         if (jsonFile.exists()) {
             String existingJSON = ioUtils.toString(jsonFile);
             extraData.putAll(jsonDataMerger.mergeJSONCoverageStrings(existingJSON, data));
@@ -368,5 +369,6 @@ public class JSONDataSaver {
             ioUtils.copy(jsonDataMerger.toJSON(extraData), jsonFile);
         } else
             ioUtils.copy(data, jsonFile);
+
     }
 }
