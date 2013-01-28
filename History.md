@@ -1,3 +1,8 @@
+0.2.2 / 2013-??-??
+==================
+  * Synchronize threads saving JSON to the same report directory (https://github.com/tntim96/JSCover/pull/40).
+  * Fix logger NPE in InstrumentingRequestHandler
+
 0.2.1 / 2013-01-20
 ==================
   * Fix report merging (https://github.com/tntim96/JSCover/issues/38)

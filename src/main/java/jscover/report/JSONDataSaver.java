@@ -343,30 +343,56 @@ Public License instead of this License.
 package jscover.report;
 
 import jscover.util.IoUtils;
+import jscover.util.Logger;
 
 import java.io.File;
-import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
 
 public class JSONDataSaver {
+    protected static Set<File> files = new HashSet<File>();
     private JSONDataMerger jsonDataMerger = new JSONDataMerger();
     private IoUtils ioUtils = IoUtils.getInstance();
+    private Logger logger = Logger.getInstance();
 
     public void saveJSONData(File reportDir, String data, List<ScriptLinesAndSource> unloadJSData) {
-        reportDir.mkdirs();
-        File jsonFile = new File(reportDir, "jscoverage.json");
-        SortedMap<String, FileData> extraData = new TreeMap<String, FileData>();
-        if (jsonFile.exists()) {
-            String existingJSON = ioUtils.toString(jsonFile);
-            extraData.putAll(jsonDataMerger.mergeJSONCoverageStrings(existingJSON, data));
-            ioUtils.copy(jsonDataMerger.toJSON(extraData), jsonFile);
-        } else if (unloadJSData != null) {
-            //Only scan for unloaded JS if JSON not saved before
-            extraData.putAll(jsonDataMerger.createEmptyJSON(unloadJSData));
-            extraData.putAll(jsonDataMerger.jsonToMap(data));
-            ioUtils.copy(jsonDataMerger.toJSON(extraData), jsonFile);
-        } else
-            ioUtils.copy(data, jsonFile);
+        try {
+            lockOnReportDir(reportDir);
+            reportDir.mkdirs();
+            File jsonFile = new File(reportDir, "jscoverage.json");
+            SortedMap<String, FileData> extraData = new TreeMap<String, FileData>();
+            if (jsonFile.exists()) {
+                String existingJSON = ioUtils.toString(jsonFile);
+                extraData.putAll(jsonDataMerger.mergeJSONCoverageStrings(existingJSON, data));
+                ioUtils.copy(jsonDataMerger.toJSON(extraData), jsonFile);
+            } else if (unloadJSData != null) {
+                //Only scan for unloaded JS if JSON not saved before
+                extraData.putAll(jsonDataMerger.createEmptyJSON(unloadJSData));
+                extraData.putAll(jsonDataMerger.jsonToMap(data));
+                ioUtils.copy(jsonDataMerger.toJSON(extraData), jsonFile);
+            } else
+                ioUtils.copy(data, jsonFile);
+        } finally {
+            unlockOnReportDir(reportDir);
+        }
+    }
+
+    private void lockOnReportDir(File reportDir) {
+        synchronized (files) {
+            while (files.contains(reportDir))
+                try {
+                    files.wait();
+                } catch (InterruptedException ex) {
+                    logger.log(Thread.currentThread().getName() +" INTERRUPTED", ex);
+                }
+            files.add(reportDir);
+            files.notifyAll();  // must own the lock
+        }
+    }
+
+    private void unlockOnReportDir(File reportDir) {
+        synchronized (files) {
+            files.remove(reportDir);
+            files.notifyAll();
+        }
     }
 }

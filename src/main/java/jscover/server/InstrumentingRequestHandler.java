@@ -370,7 +370,7 @@ public class InstrumentingRequestHandler extends HttpServer {
     private InstrumenterService instrumenterService = new InstrumenterService();
     private ProxyService proxyService = new ProxyService();
     private UnloadedSourceProcessor unloadedSourceProcessor;
-    private Logger logger;
+    private Logger logger = Logger.getInstance();
 
     public InstrumentingRequestHandler(Socket socket, ConfigurationForServer configuration) {
         super(socket, configuration.getDocumentRoot(), configuration.getVersion());
