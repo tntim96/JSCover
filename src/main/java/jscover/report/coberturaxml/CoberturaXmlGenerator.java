@@ -342,100 +342,41 @@ Public License instead of this License.
 
 package jscover.report.coberturaxml;
 
-import org.junit.Test;
 import org.w3c.dom.Document;
-import org.xml.sax.*;
+import org.w3c.dom.Element;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathFactory;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.StringWriter;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
+public class CoberturaXmlGenerator {
+    public String generateXml() {
+        try {
+            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+            Document doc = documentBuilder.newDocument();
 
-public class CoberturaXmlIntegrationTest {
-    private CoberturaXmlGenerator xmlGenerator = new CoberturaXmlGenerator();
-
-    private String validXml = "<?xml version=\"1.0\"?>\n" +
-            "<!DOCTYPE coverage SYSTEM \"http://cobertura.sourceforge.net/xml/coverage-04.dtd\">\n" +
-            "\n" +
-            "<coverage line-rate=\"0.9625564880568108\" branch-rate=\"0.9264475743348983\" lines-covered=\"1491\" lines-valid=\"1549\" branches-covered=\"592\" branches-valid=\"639\" complexity=\"2.702928870292887\" version=\"1.9.4.1\" timestamp=\"1359433906867\">\n" +
-            "  <sources/>\n" +
-            "  <packages>\n" +
-            "    <package name=\"jscover\" line-rate=\"0.96\" branch-rate=\"0.9166666666666666\" complexity=\"N/A\">\n" +
-            "      <classes>\n" +
-            "        <class name=\"code.js\"  filename=\"code.js\" line-rate=\"0.7857\"  branch-rate=\"0.5\" complexity=\"N/A\">\n" +
-            "          <methods/>\n" +
-            "          <lines>\n" +
-            "            <line number=\"1\"  hits=\"1\" branch=\"false\"/>\n" +
-            "            <line number=\"2\" hits=\"81\" branch=\"true\" condition-coverage=\"75% (3/4)\">\n" +
-            "              <conditions>\n" +
-            "                <condition number=\"0\" type=\"jump\" coverage=\"100%\"/>\n" +
-            "                <condition number=\"1\" type=\"jump\" coverage=\"50%\"/>\n" +
-            "              </conditions>\n" +
-            "            </line>\n" +
-            "          </lines>\n" +
-            "        </class>\n" +
-            "      </classes>\n" +
-            "    </package>\n" +
-            "  </packages>\n" +
-            "</coverage>";
-
-
-    static class LocalEntityResolver implements EntityResolver {
-        public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
-            int nameStart = systemId.lastIndexOf('/');
-            String file = systemId.substring(nameStart + 1);
-            InputStream is = getClass().getResourceAsStream("/jscover/report/coberturaxml/" + file);
-            return new InputSource(is);
+            Element root = doc.createElement("coverage");
+            doc.appendChild(root);
+            TransformerFactory tf = TransformerFactory.newInstance();
+            Transformer transformer = tf.newTransformer();
+            transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", Integer.toString(2));
+            transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, "http://cobertura.sourceforge.net/xml/coverage-04.dtd");
+    //        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+            StringWriter writer = new StringWriter();
+            DOMSource xmlSource = new DOMSource(doc.getDocumentElement());
+    //        xmlSource.setSystemId("http://cobertura.sourceforge.net/xml/coverage-04.dtd");
+            transformer.transform(xmlSource, new StreamResult(writer));
+            return writer.getBuffer().toString();
+        } catch(Exception e) {
+            throw new RuntimeException(e);
         }
-    }
-
-    static class ReThrowingErrorHandler implements ErrorHandler {
-        public void warning(SAXParseException exception) throws SAXException {
-            throw exception;
-        }
-
-        public void error(SAXParseException exception) throws SAXException {
-            throw exception;
-        }
-
-        public void fatalError(SAXParseException exception) throws SAXException {
-            throw exception;
-        }
-    }
-
-    @Test
-    public void shouldValidateXmlToDtd() throws Exception {
-        DocumentBuilderFactory factory =  DocumentBuilderFactory.newInstance();
-        factory.setValidating(true);
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        builder.setEntityResolver(new LocalEntityResolver());
-        builder.setErrorHandler(new ReThrowingErrorHandler());
-        builder.parse(new ByteArrayInputStream(validXml.getBytes()));
-    }
-
-    @Test
-    public void shouldGenerateXml() throws Exception {
-        String xml = xmlGenerator.generateXml();
-        XPath xpath = XPathFactory.newInstance().newXPath();
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setValidating(true);
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        builder.setEntityResolver(new LocalEntityResolver());
-        //TODO turn on line below when XML DTD validation will pass
-        //builder.setErrorHandler(new ReThrowingErrorHandler());
-        Document document = builder.parse(new ByteArrayInputStream(xml.getBytes()));
-
-        assertThat(getXPath(xpath, document, "/coverage"), equalTo(""));
-    }
-
-    private String getXPath(XPath xpath, Document document, String expression) throws Exception {
-        return (String)xpath.evaluate(expression, document, XPathConstants.STRING);
     }
 }
