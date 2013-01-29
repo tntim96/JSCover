@@ -363,8 +363,12 @@ public class CoberturaXmlGenerator {
             Document doc = documentBuilder.newDocument();
 
             Element root = doc.createElement("coverage");
-            root.appendChild(doc.createElement("sources"));
             doc.appendChild(root);
+            root.appendChild(doc.createElement("sources"));
+
+            Element packages = doc.createElement("packages");
+            root.appendChild(packages);
+
             return getString(doc);
         } catch(Exception e) {
             throw new RuntimeException(e);

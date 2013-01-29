@@ -435,6 +435,7 @@ public class CoberturaXmlIntegrationTest {
         System.out.println("xml = " + xml);
         assertThat(xml, containsString("<coverage>"));
         assertThat(xml, containsString("<sources/>"));
+        assertThat(xml, containsString("<packages/>"));
 //        assertThat(getXPath(xpath, document, "/coverage"), equalTo(""));
     }
 
