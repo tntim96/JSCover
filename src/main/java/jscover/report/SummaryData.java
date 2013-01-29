@@ -359,6 +359,10 @@ public class SummaryData extends CoverageAdapter {
         }
     }
 
+    public String getUri() {
+        throw new UnsupportedOperationException();
+    }
+
     public int getCodeLineCount() {
         return codeLineCount;
     }

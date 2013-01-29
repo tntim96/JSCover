@@ -343,6 +343,7 @@ Public License instead of this License.
 package jscover.report;
 
 public interface Coverable {
+    String getUri();
     int getCodeLineCount();
     int getCodeLinesCoveredCount();
     int getBranchCount();

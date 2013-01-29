@@ -359,6 +359,13 @@ public class SummaryDataTest {
     @Mock Coverable fileData1;
     @Mock Coverable fileData2;
 
+    @Test(expected = UnsupportedOperationException.class)
+    public void shouldNotSupportOperation() {
+        List<Coverable> files = new ArrayList<Coverable>();
+        SummaryData summaryData = new SummaryData(files);
+        summaryData.getUri();
+    }
+
     @Test
     public void shouldAddLineStatistics() {
         given(fileData1.getCodeLineCount()).willReturn(4);
