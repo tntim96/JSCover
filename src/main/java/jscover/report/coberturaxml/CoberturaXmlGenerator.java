@@ -349,6 +349,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
@@ -362,21 +363,26 @@ public class CoberturaXmlGenerator {
             Document doc = documentBuilder.newDocument();
 
             Element root = doc.createElement("coverage");
+            root.appendChild(doc.createElement("sources"));
             doc.appendChild(root);
-            TransformerFactory tf = TransformerFactory.newInstance();
-            Transformer transformer = tf.newTransformer();
-            transformer.setOutputProperty(OutputKeys.METHOD, "xml");
-            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", Integer.toString(2));
-            transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, "http://cobertura.sourceforge.net/xml/coverage-04.dtd");
-    //        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-            StringWriter writer = new StringWriter();
-            DOMSource xmlSource = new DOMSource(doc.getDocumentElement());
-    //        xmlSource.setSystemId("http://cobertura.sourceforge.net/xml/coverage-04.dtd");
-            transformer.transform(xmlSource, new StreamResult(writer));
-            return writer.getBuffer().toString();
+            return getString(doc);
         } catch(Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private String getString(Document doc) throws TransformerException {
+        TransformerFactory tf = TransformerFactory.newInstance();
+        Transformer transformer = tf.newTransformer();
+        transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", Integer.toString(2));
+        transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, "http://cobertura.sourceforge.net/xml/coverage-04.dtd");
+        //        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+        StringWriter writer = new StringWriter();
+        DOMSource xmlSource = new DOMSource(doc.getDocumentElement());
+        //        xmlSource.setSystemId("http://cobertura.sourceforge.net/xml/coverage-04.dtd");
+        transformer.transform(xmlSource, new StreamResult(writer));
+        return writer.getBuffer().toString();
     }
 }

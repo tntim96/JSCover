@@ -355,8 +355,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.Assert.assertThat;
 
 public class CoberturaXmlIntegrationTest {
     private CoberturaXmlGenerator xmlGenerator = new CoberturaXmlGenerator();
@@ -432,7 +432,10 @@ public class CoberturaXmlIntegrationTest {
         //builder.setErrorHandler(new ReThrowingErrorHandler());
         Document document = builder.parse(new ByteArrayInputStream(xml.getBytes()));
 
-        assertThat(getXPath(xpath, document, "/coverage"), equalTo(""));
+        System.out.println("xml = " + xml);
+        assertThat(xml, containsString("<coverage>"));
+        assertThat(xml, containsString("<sources/>"));
+//        assertThat(getXPath(xpath, document, "/coverage"), equalTo(""));
     }
 
     private String getXPath(XPath xpath, Document document, String expression) throws Exception {
