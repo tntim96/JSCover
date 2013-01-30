@@ -356,7 +356,7 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.StringWriter;
 
 public class CoberturaXmlGenerator {
-    public String generateXml() {
+    public String generateXml(CoberturaData data) {
         try {
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
@@ -368,6 +368,12 @@ public class CoberturaXmlGenerator {
 
             Element packages = doc.createElement("packages");
             root.appendChild(packages);
+
+            for (String path : data.getPackageMap().keySet()) {
+               Element packageElement = doc.createElement("package");
+               packages.appendChild(packageElement);
+                packageElement.setAttribute("name", path);
+            }
 
             return getString(doc);
         } catch(Exception e) {

@@ -342,68 +342,115 @@ Public License instead of this License.
 
 package jscover.report.coberturaxml;
 
-import jscover.report.Coverable;
+import jscover.report.JSONDataMerger;
+import jscover.util.IoUtils;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.w3c.dom.Document;
+import org.xml.sax.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.BDDMockito.given;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalToIgnoringWhiteSpace;
+import static org.junit.Assert.assertThat;
 
-@RunWith(MockitoJUnitRunner.class)
-public class CoberturaDataTest {
-    @Mock Coverable fileData1;
-    @Mock Coverable fileData2;
+public class CoberturaXmlGeneratorIntegrationTest {
+    private CoberturaXmlGenerator xmlGenerator = new CoberturaXmlGenerator();
+    private JSONDataMerger jsonDataMerger = new JSONDataMerger();
 
-    @Test
-    public void shouldExtractPackage() {
-        CoberturaData data = new CoberturaData(new ArrayList<Coverable>());
+    private String validXml = "<?xml version=\"1.0\"?>\n" +
+            "<!DOCTYPE coverage SYSTEM \"http://cobertura.sourceforge.net/xml/coverage-04.dtd\">\n" +
+            "\n" +
+            "<coverage line-rate=\"0.9625564880568108\" branch-rate=\"0.9264475743348983\" lines-covered=\"1491\" lines-valid=\"1549\" branches-covered=\"592\" branches-valid=\"639\" complexity=\"2.702928870292887\" version=\"1.9.4.1\" timestamp=\"1359433906867\">\n" +
+            "  <sources/>\n" +
+            "  <packages>\n" +
+            "    <package name=\"jscover\" line-rate=\"0.96\" branch-rate=\"0.9166666666666666\" complexity=\"N/A\">\n" +
+            "      <classes>\n" +
+            "        <class name=\"code.js\"  filename=\"code.js\" line-rate=\"0.7857\"  branch-rate=\"0.5\" complexity=\"N/A\">\n" +
+            "          <methods/>\n" +
+            "          <lines>\n" +
+            "            <line number=\"1\"  hits=\"1\" branch=\"false\"/>\n" +
+            "            <line number=\"2\" hits=\"81\" branch=\"true\" condition-coverage=\"75% (3/4)\">\n" +
+            "              <conditions>\n" +
+            "                <condition number=\"0\" type=\"jump\" coverage=\"100%\"/>\n" +
+            "                <condition number=\"1\" type=\"jump\" coverage=\"50%\"/>\n" +
+            "              </conditions>\n" +
+            "            </line>\n" +
+            "          </lines>\n" +
+            "        </class>\n" +
+            "      </classes>\n" +
+            "    </package>\n" +
+            "  </packages>\n" +
+            "</coverage>";
 
-        assertThat(data.getPackage(null), equalTo(""));
-        assertThat(data.getPackage("test.js"), equalTo(""));
-        assertThat(data.getPackage("/test.js"), equalTo(""));
-        assertThat(data.getPackage("/level1/test.js"), equalTo("/level1"));
-        assertThat(data.getPackage("/level1/level2/test.js"), equalTo("/level1/level2"));
+
+    static class LocalEntityResolver implements EntityResolver {
+        public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
+            int nameStart = systemId.lastIndexOf('/');
+            String file = systemId.substring(nameStart + 1);
+            InputStream is = getClass().getResourceAsStream("/jscover/report/coberturaxml/" + file);
+            return new InputSource(is);
+        }
+    }
+
+    static class ReThrowingErrorHandler implements ErrorHandler {
+        public void warning(SAXParseException exception) throws SAXException {
+            throw exception;
+        }
+
+        public void error(SAXParseException exception) throws SAXException {
+            throw exception;
+        }
+
+        public void fatalError(SAXParseException exception) throws SAXException {
+            throw exception;
+        }
     }
 
     @Test
-    public void shouldAddLineStatistics() {
-        given(fileData1.getCodeLineCount()).willReturn(4);
-        given(fileData1.getCodeLinesCoveredCount()).willReturn(2);
-        given(fileData2.getCodeLineCount()).willReturn(6);
-        given(fileData2.getCodeLinesCoveredCount()).willReturn(5);
-
-        List<Coverable> files = new ArrayList<Coverable>();
-        files.add(fileData1);
-        files.add(fileData2);
-
-        CoberturaData data = new CoberturaData(files);
-
-        assertThat(data.getCodeLineCount(), equalTo(10));
-        assertThat(data.getCodeLinesCoveredCount(), equalTo(7));
-        assertThat(data.getLineCoverRate(), equalTo((double)7/10));
+    public void shouldValidateXmlToDtd() throws Exception {
+        DocumentBuilderFactory factory =  DocumentBuilderFactory.newInstance();
+        factory.setValidating(true);
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        builder.setEntityResolver(new LocalEntityResolver());
+        builder.setErrorHandler(new ReThrowingErrorHandler());
+        builder.parse(new ByteArrayInputStream(validXml.getBytes()));
     }
 
     @Test
-    public void shouldAddBranchStatistics() {
-        given(fileData1.getBranchCount()).willReturn(4);
-        given(fileData1.getBranchesCoveredCount()).willReturn(2);
-        given(fileData2.getBranchCount()).willReturn(6);
-        given(fileData2.getBranchesCoveredCount()).willReturn(5);
+    public void shouldGenerateXml() throws Exception {
+        String json = IoUtils.getInstance().loadFromFileSystem(new File("src/test-integration/resources/jscover/report/xml/jscoverage.json"));
+        CoberturaData data = new CoberturaData(jsonDataMerger.jsonToMap(json).values());
 
-        List<Coverable> files = new ArrayList<Coverable>();
-        files.add(fileData1);
-        files.add(fileData2);
+        String xml = xmlGenerator.generateXml(data);
+        XPath xpath = XPathFactory.newInstance().newXPath();
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setValidating(true);
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        builder.setEntityResolver(new LocalEntityResolver());
+        //TODO turn on line below when XML DTD validation will pass
+        //builder.setErrorHandler(new ReThrowingErrorHandler());
+        Document document = builder.parse(new ByteArrayInputStream(xml.getBytes()));
 
-        CoberturaData data = new CoberturaData(files);
+//        System.out.println("xml = " + xml);
+        assertThat(xml, containsString("<coverage>"));
+        assertThat(xml, containsString("<sources/>"));
+        assertThat(xml, containsString("<packages>"));
+        //Check packages
+        assertThat(getXPath(xpath, document, "count(/coverage/packages/package)"), equalToIgnoringWhiteSpace("41"));
+        assertThat(getXPath(xpath, document, "/coverage/packages/package[@name='/build/yui']/@name"), equalToIgnoringWhiteSpace("/build/yui"));
+//        assertThat(getXPath(xpath, document, "/coverage/package"), equalToIgnoringWhiteSpace(""));
+    }
 
-        assertThat(data.getBranchCount(), equalTo(10));
-        assertThat(data.getBranchesCoveredCount(), equalTo(7));
-        assertThat(data.getBranchRate(), equalTo((double)7/10));
+    private String getXPath(XPath xpath, Document document, String expression) throws Exception {
+        return (String)xpath.evaluate(expression, document, XPathConstants.STRING);
     }
 }

@@ -345,11 +345,29 @@ package jscover.report.coberturaxml;
 import jscover.report.Coverable;
 import jscover.report.SummaryData;
 
-import java.util.Collection;
+import java.util.*;
 
 public class CoberturaData extends SummaryData {
+    private Map<String, Set<? extends Coverable>> packageMap = new HashMap<String, Set<? extends Coverable>>();
 
     public CoberturaData(Collection<? extends Coverable> files) {
         super(files);
+        for (Coverable file : files) {
+            String path = getPackage(file.getUri());
+            if (!packageMap.containsKey(path)) {
+                packageMap.put(path, new HashSet<Coverable>());
+            }
+            ((Set<Coverable>)packageMap.get(path)).add(file);
+        }
+    }
+
+    protected String getPackage(String uri) {
+        if (uri == null || uri.indexOf("/") == -1)
+            return "";
+        return uri.substring(0, uri.lastIndexOf("/"));
+    }
+
+    public Map<String, Set<? extends Coverable>> getPackageMap() {
+        return packageMap;
     }
 }
