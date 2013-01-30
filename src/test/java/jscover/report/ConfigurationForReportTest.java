@@ -446,6 +446,15 @@ public class ConfigurationForReportTest {
     }
 
     @Test
+    public void shouldParseCoberturaXml() {
+        configuration.parse(new String[]{"--format=COBERTURAXML", "target"});
+        assertThat(configuration.showHelp(), equalTo(false));
+        assertThat(configuration.isInvalid(), equalTo(false));
+        assertThat(configuration.getReportFormat(), equalTo(ReportFormat.COBERTURAXML));
+        assertThat(configuration.getJsonDirectory(), equalTo(new File("target")));
+    }
+
+    @Test
     public void shouldParseLCov() {
         configuration.parse(new String[]{"--format=LCOV", "target", "src"});
         assertThat(configuration.showHelp(), equalTo(false));
