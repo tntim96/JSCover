@@ -356,6 +356,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalToIgnoringWhiteSpace;
 import static org.junit.Assert.assertThat;
 
 public class CoberturaXmlIntegrationTest {
@@ -436,7 +437,7 @@ public class CoberturaXmlIntegrationTest {
         assertThat(xml, containsString("<coverage>"));
         assertThat(xml, containsString("<sources/>"));
         assertThat(xml, containsString("<packages/>"));
-//        assertThat(getXPath(xpath, document, "/coverage"), equalTo(""));
+        assertThat(getXPath(xpath, document, "/coverage"), equalToIgnoringWhiteSpace(""));
     }
 
     private String getXPath(XPath xpath, Document document, String expression) throws Exception {
