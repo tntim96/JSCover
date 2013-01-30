@@ -345,10 +345,10 @@ package jscover.report;
 public abstract class CoverageAdapter implements Coverable {
 
     public double getLineCoverRate() {
-        return (double)getCodeLinesCoveredCount() / getCodeLineCount();
+        return getCodeLineCount() == 0 ? 0 : (double)getCodeLinesCoveredCount() / getCodeLineCount();
     }
 
     public double getBranchRate() {
-        return (double)getBranchesCoveredCount() / getBranchCount();
+        return getBranchCount() == 0 ? 0 : (double)getBranchesCoveredCount() / getBranchCount();
     }
 }

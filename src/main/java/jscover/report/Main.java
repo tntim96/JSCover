@@ -343,12 +343,15 @@ Public License instead of this License.
 package jscover.report;
 
 import jscover.MainHelper;
+import jscover.report.coberturaxml.CoberturaData;
+import jscover.report.coberturaxml.CoberturaXmlGenerator;
 import jscover.report.lcov.LCovGenerator;
 import jscover.report.xml.XMLSummary;
 import jscover.util.IoUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Properties;
 import java.util.SortedMap;
 
 public class Main {
@@ -356,14 +359,23 @@ public class Main {
         new Main().runMain(args);
     }
 
+    public static final Properties properties = new Properties();
+
+    void initialize() throws IOException {
+        properties.load(jscover.Main.class.getResourceAsStream("/jscover/configuration.properties"));
+    }
+
     private MainHelper mainHelper = new MainHelper();
     private XMLSummary xmlSummary = new XMLSummary();
+    private CoberturaXmlGenerator coberturaXmlGenerator = new CoberturaXmlGenerator();
     private LCovGenerator lCovGenerator = new LCovGenerator();
     private JSONDataMerger jsonDataMerger = new JSONDataMerger();
     private IoUtils ioUtils = IoUtils.getInstance();
     private ConfigurationForReport config = new ConfigurationForReport();
 
     void runMain(String[] args) throws IOException {
+        initialize();
+        config.setProperties(properties);
         config.parse(args);
         if (config.isInvalid()) {
             System.out.println(config.getHelpText());
@@ -374,6 +386,8 @@ public class Main {
             generateLCovDataFile();
         } else  if (config.getReportFormat() == ReportFormat.XMLSUMMARY) {
             saveXmlSummary();
+        } else  if (config.getReportFormat() == ReportFormat.COBERTURAXML) {
+            saveCoberturaXml();
         } else if (config.isMerge()) {
             mergeReports();
         } else {
@@ -401,16 +415,23 @@ public class Main {
             ioUtils.copyDir(new File( config.getMergeDirs().get(i), jscover.Main.reportSrcSubDir), srcDir);
     }
 
-
     private void generateLCovDataFile() throws IOException {
         String json = ioUtils.loadFromFileSystem(new File(config.getJsonDirectory(), "jscoverage.json"));
         File lcovFile = new File(config.getJsonDirectory(), "jscover.lcov");
         lCovGenerator.saveData(jsonDataMerger.jsonToMap(json).values(), config.getSourceDirectory().getCanonicalPath(), lcovFile);
     }
 
+
     private void saveXmlSummary() {
         String json = ioUtils.loadFromFileSystem(new File(config.getJsonDirectory(), "jscoverage.json"));
         SummaryData summaryData = new SummaryData(jsonDataMerger.jsonToMap(json).values());
-        xmlSummary.saveSummary(summaryData, config.getJsonDirectory(), "version");
+        xmlSummary.saveSummary(summaryData, config.getJsonDirectory(), config.getVersion());
+    }
+
+    private void saveCoberturaXml() {
+        String json = ioUtils.loadFromFileSystem(new File(config.getJsonDirectory(), "jscoverage.json"));
+        String xml = coberturaXmlGenerator.generateXml(new CoberturaData(jsonDataMerger.jsonToMap(json).values()), config.getVersion());
+        File dest = new File(config.getJsonDirectory(), "cobertura-coverage.xml");
+        ioUtils.copy(xml, dest);
     }
 }

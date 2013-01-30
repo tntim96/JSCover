@@ -344,5 +344,6 @@ package jscover.report;
 
 public enum ReportFormat {
     XMLSUMMARY,
+    COBERTURAXML,
     LCOV
 }

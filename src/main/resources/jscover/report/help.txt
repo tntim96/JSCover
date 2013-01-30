@@ -1,4 +1,4 @@
-Usage: java -cp JSCover-all.jar jscover.report.Main --format=[ XMLSUMMARY | LCOV ] REPORT-DIR [SRC-DIRECTORY]
+Usage: java -cp JSCover-all.jar jscover.report.Main --format=[ XMLSUMMARY | LCOV | COBERTURAXML ] REPORT-DIR [SRC-DIRECTORY]
 Convert REPORT-DIR/jscoverage.json to specified output format in REPORT-DIR
 or     java -cp JSCover-all.jar jscover.report.Main --merge REPORT-DIR1 REPORT-DIR2... DEST-DIR
 Merge REPORT-DIR1 and REPORT-DIR2 to DEST-DIR
@@ -7,4 +7,5 @@ Options:
       -h, --help                display this help and exit
       --format=XMLSUMMARY       output XML summary to REPORT-DIR/jscover-summary.xml
       --format=LCOV             output LCOV data to REPORT-DIR/jscover.lcov with source at SRC-DIRECTORY
+      --format=COBERTURAXML     output cobertura data to REPORT-DIR/cobertura-coverage.xml
       --merge                   merge specified report directories to the specified directory

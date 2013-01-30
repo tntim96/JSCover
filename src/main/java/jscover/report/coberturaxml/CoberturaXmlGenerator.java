@@ -342,6 +342,7 @@ Public License instead of this License.
 
 package jscover.report.coberturaxml;
 
+import jscover.report.Coverable;
 import jscover.report.SummaryData;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -355,16 +356,29 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.StringWriter;
+import java.util.Date;
+import java.util.Set;
 
 public class CoberturaXmlGenerator {
-    public String generateXml(CoberturaData data) {
+    public String generateXml(CoberturaData data, String version) {
         try {
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
             Document doc = documentBuilder.newDocument();
 
+            SummaryData summaryTotal = new SummaryData(data.getFiles());
             Element root = doc.createElement("coverage");
             doc.appendChild(root);
+            root.setAttribute("line-rate", "" + summaryTotal.getLineCoverRate());
+            root.setAttribute("lines-covered", "" + summaryTotal.getCodeLinesCoveredCount());
+            root.setAttribute("lines-valid", "" + summaryTotal.getCodeLineCount());
+            root.setAttribute("branch-rate", "" + summaryTotal.getBranchRate());
+            root.setAttribute("branches-covered", "" + summaryTotal.getBranchesCoveredCount());
+            root.setAttribute("branches-valid", "" + summaryTotal.getBranchCount());
+            root.setAttribute("complexity", "0");
+            root.setAttribute("version", version);
+            root.setAttribute("timestamp", "" + new Date().getTime());
+
             root.appendChild(doc.createElement("sources"));
 
             Element packages = doc.createElement("packages");
@@ -374,10 +388,27 @@ public class CoberturaXmlGenerator {
                 Element packageElement = doc.createElement("package");
                 packages.appendChild(packageElement);
                 packageElement.setAttribute("name", path);
-                SummaryData summaryData = new SummaryData(data.getPackageMap().get(path));
-                packageElement.setAttribute("line-rate", ""+summaryData.getLineCoverRate());
-                packageElement.setAttribute("branch-rate", ""+summaryData.getBranchRate());
+                Set<? extends Coverable> files = data.getPackageMap().get(path);
+                SummaryData summaryPackage = new SummaryData(files);
+                packageElement.setAttribute("line-rate", "" + summaryPackage.getLineCoverRate());
+                packageElement.setAttribute("branch-rate", "" + summaryPackage.getBranchRate());
                 packageElement.setAttribute("complexity", "0");
+
+                Element classesElement = doc.createElement("classes");
+                packageElement.appendChild(classesElement);
+
+                for (Coverable file : files) {
+                    Element classElement = doc.createElement("class");
+                    classesElement.appendChild(classElement);
+                    classElement.setAttribute("name", file.getUri());
+                    classElement.setAttribute("filename", file.getUri());
+                    classElement.setAttribute("line-rate", "" + file.getLineCoverRate());
+                    classElement.setAttribute("branch-rate", "" + file.getBranchRate());
+                    classElement.setAttribute("complexity", "0");
+
+                    classElement.appendChild(doc.createElement("methods"));
+                    classElement.appendChild(doc.createElement("lines"));
+                }
             }
 
             return getString(doc);

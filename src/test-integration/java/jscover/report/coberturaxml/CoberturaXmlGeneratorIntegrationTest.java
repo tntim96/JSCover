@@ -360,12 +360,14 @@ import java.io.InputStream;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 public class CoberturaXmlGeneratorIntegrationTest {
     private CoberturaXmlGenerator xmlGenerator = new CoberturaXmlGenerator();
     private JSONDataMerger jsonDataMerger = new JSONDataMerger();
 
+    /*
     private String validXml = "<?xml version=\"1.0\"?>\n" +
             "<!DOCTYPE coverage SYSTEM \"http://cobertura.sourceforge.net/xml/coverage-04.dtd\">\n" +
             "\n" +
@@ -390,6 +392,7 @@ public class CoberturaXmlGeneratorIntegrationTest {
             "    </package>\n" +
             "  </packages>\n" +
             "</coverage>";
+            */
 
 
     static class LocalEntityResolver implements EntityResolver {
@@ -415,6 +418,7 @@ public class CoberturaXmlGeneratorIntegrationTest {
         }
     }
 
+    /*
     @Test
     public void shouldValidateXmlToDtd() throws Exception {
         DocumentBuilderFactory factory =  DocumentBuilderFactory.newInstance();
@@ -424,33 +428,51 @@ public class CoberturaXmlGeneratorIntegrationTest {
         builder.setErrorHandler(new ReThrowingErrorHandler());
         builder.parse(new ByteArrayInputStream(validXml.getBytes()));
     }
+    */
 
     @Test
     public void shouldGenerateXml() throws Exception {
         String json = IoUtils.getInstance().loadFromFileSystem(new File("src/test-integration/resources/jscover/report/xml/jscoverage.json"));
         CoberturaData data = new CoberturaData(jsonDataMerger.jsonToMap(json).values());
 
-        String xml = xmlGenerator.generateXml(data);
+        String xml = xmlGenerator.generateXml(data, "theVersion");
         XPath xpath = XPathFactory.newInstance().newXPath();
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setValidating(true);
         DocumentBuilder builder = factory.newDocumentBuilder();
         builder.setEntityResolver(new LocalEntityResolver());
-        //TODO turn on line below when XML DTD validation will pass
-        //builder.setErrorHandler(new ReThrowingErrorHandler());
+        //Turn on line below when XML DTD validation will pass.
+        builder.setErrorHandler(new ReThrowingErrorHandler());
         Document document = builder.parse(new ByteArrayInputStream(xml.getBytes()));
 
-        System.out.println("xml = " + xml);
-        assertThat(xml, containsString("<coverage>"));
+        //System.out.println("xml = " + xml);
+
+        //Check summary
+        assertThat(getXPath(xpath, document, "/coverage/@complexity"), equalTo("0"));
+        assertThat(getXPath(xpath, document, "/coverage/@line-rate"), equalTo("0.5340724716062737"));
+        assertThat(getXPath(xpath, document, "/coverage/@branch-rate"), equalTo("0.3461671270718232"));
+        assertThat(getXPath(xpath, document, "/coverage/@lines-covered"), equalTo("3950"));
+        assertThat(getXPath(xpath, document, "/coverage/@lines-valid"), equalTo("7396"));
+        assertThat(getXPath(xpath, document, "/coverage/@branches-covered"), equalTo("2005"));
+        assertThat(getXPath(xpath, document, "/coverage/@branches-valid"), equalTo("5792"));
+        assertThat(getXPath(xpath, document, "/coverage/@version"), equalTo("theVersion"));
+        assertThat(getXPath(xpath, document, "/coverage/@timestamp"), notNullValue());
+
         assertThat(xml, containsString("<sources/>"));
-        assertThat(xml, containsString("<packages>"));
+
         //Check packages
+        assertThat(xml, containsString("<packages>"));
         assertThat(getXPath(xpath, document, "count(/coverage/packages/package)"), equalTo("41"));
         assertThat(getXPath(xpath, document, "/coverage/packages/package[@name='/build/yui']/@name"), equalTo("/build/yui"));
         assertThat(getXPath(xpath, document, "/coverage/packages/package[@name='/build/yui']/@complexity"), equalTo("0"));
         assertThat(getXPath(xpath, document, "/coverage/packages/package[@name='/build/yui']/@line-rate"), equalTo("0.5852017937219731"));
         assertThat(getXPath(xpath, document, "/coverage/packages/package[@name='/build/yui']/@branch-rate"), equalTo("0.3778801843317972"));
-//        assertThat(getXPath(xpath, document, "/coverage/package"), equalToIgnoringWhiteSpace(""));
+
+        //Check class
+        assertThat(getXPath(xpath, document, "/coverage/packages/package[@name='/build/yui']/classes/class[@name='/build/yui/yui.js']/@branch-rate"), equalTo("0.3778801843317972"));
+        assertThat(getXPath(xpath, document, "/coverage/packages/package[@name='/build/yui']/classes/class[@name='/build/yui/yui.js']/@line-rate"), equalTo("0.5852017937219731"));
+        assertThat(getXPath(xpath, document, "/coverage/packages/package[@name='/build/yui']/classes/class[@name='/build/yui/yui.js']/@complexity"), equalTo("0"));
+        assertThat(getXPath(xpath, document, "/coverage/packages/package[@name='/build/yui']/classes/class[@name='/build/yui/yui.js']/@filename"), equalTo("/build/yui/yui.js"));
     }
 
     private String getXPath(XPath xpath, Document document, String expression) throws Exception {

@@ -349,9 +349,11 @@ import java.util.*;
 
 public class CoberturaData extends SummaryData {
     private Map<String, Set<? extends Coverable>> packageMap = new HashMap<String, Set<? extends Coverable>>();
+    private Collection<? extends Coverable> files;
 
     public CoberturaData(Collection<? extends Coverable> files) {
         super(files);
+        this.files = files;
         for (Coverable file : files) {
             String path = getPackage(file.getUri());
             if (!packageMap.containsKey(path)) {
@@ -365,6 +367,10 @@ public class CoberturaData extends SummaryData {
         if (uri == null || uri.indexOf("/") == -1)
             return "";
         return uri.substring(0, uri.lastIndexOf("/"));
+    }
+
+    public Collection<? extends Coverable> getFiles() {
+        return files;
     }
 
     public Map<String, Set<? extends Coverable>> getPackageMap() {

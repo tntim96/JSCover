@@ -515,7 +515,7 @@ public class ConfigurationForReportTest {
     @Test
     public void shouldRetrieveHelpText() {
         String helpText = configuration.getHelpText();
-        assertThat(helpText, containsString("Usage: java -cp JSCover-all.jar jscover.report.Main --format=[ XMLSUMMARY | LCOV ] REPORT-DIR [SRC-DIRECTORY]"));
+        assertThat(helpText, containsString("Usage: java -cp JSCover-all.jar jscover.report.Main --format=[ XMLSUMMARY | LCOV | COBERTURAXML ] REPORT-DIR [SRC-DIRECTORY]"));
         assertThat(helpText, containsString("or     java -cp JSCover-all.jar jscover.report.Main --merge REPORT-DIR1 REPORT-DIR2... DEST-DIR"));
     }
 }
