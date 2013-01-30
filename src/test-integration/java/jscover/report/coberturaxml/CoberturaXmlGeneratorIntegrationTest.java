@@ -350,6 +350,7 @@ import org.xml.sax.*;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
@@ -367,7 +368,6 @@ public class CoberturaXmlGeneratorIntegrationTest {
     private CoberturaXmlGenerator xmlGenerator = new CoberturaXmlGenerator();
     private JSONDataMerger jsonDataMerger = new JSONDataMerger();
 
-    /*
     private String validXml = "<?xml version=\"1.0\"?>\n" +
             "<!DOCTYPE coverage SYSTEM \"http://cobertura.sourceforge.net/xml/coverage-04.dtd\">\n" +
             "\n" +
@@ -376,24 +376,14 @@ public class CoberturaXmlGeneratorIntegrationTest {
             "  <packages>\n" +
             "    <package name=\"jscover\" line-rate=\"0.96\" branch-rate=\"0.9166666666666666\" complexity=\"N/A\">\n" +
             "      <classes>\n" +
-            "        <class name=\"code.js\"  filename=\"code.js\" line-rate=\"0.7857\"  branch-rate=\"0.5\" complexity=\"N/A\">\n" +
+            "        <class name=\"code.js\" filename=\"code.js\" line-rate=\"0.7857\"  branch-rate=\"0.5\" complexity=\"N/A\">\n" +
             "          <methods/>\n" +
-            "          <lines>\n" +
-            "            <line number=\"1\"  hits=\"1\" branch=\"false\"/>\n" +
-            "            <line number=\"2\" hits=\"81\" branch=\"true\" condition-coverage=\"75% (3/4)\">\n" +
-            "              <conditions>\n" +
-            "                <condition number=\"0\" type=\"jump\" coverage=\"100%\"/>\n" +
-            "                <condition number=\"1\" type=\"jump\" coverage=\"50%\"/>\n" +
-            "              </conditions>\n" +
-            "            </line>\n" +
-            "          </lines>\n" +
+            "          <lines/>\n" +
             "        </class>\n" +
             "      </classes>\n" +
             "    </package>\n" +
             "  </packages>\n" +
             "</coverage>";
-            */
-
 
     static class LocalEntityResolver implements EntityResolver {
         public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
@@ -418,32 +408,22 @@ public class CoberturaXmlGeneratorIntegrationTest {
         }
     }
 
-    /*
     @Test
     public void shouldValidateXmlToDtd() throws Exception {
-        DocumentBuilderFactory factory =  DocumentBuilderFactory.newInstance();
-        factory.setValidating(true);
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        builder.setEntityResolver(new LocalEntityResolver());
-        builder.setErrorHandler(new ReThrowingErrorHandler());
-        builder.parse(new ByteArrayInputStream(validXml.getBytes()));
+        parseXml(validXml);
     }
-    */
+
+    @Test(expected = SAXParseException.class)
+    public void shouldThrowErrorForInvalidXmlToDtd() throws Exception {
+        parseXml(validXml.replaceAll("filename=\"code.js\"", ""));
+    }
 
     @Test
     public void shouldGenerateXml() throws Exception {
         String json = IoUtils.getInstance().loadFromFileSystem(new File("src/test-integration/resources/jscover/report/xml/jscoverage.json"));
         CoberturaData data = new CoberturaData(jsonDataMerger.jsonToMap(json).values());
-
-        String xml = xmlGenerator.generateXml(data, "theVersion");
+        Document document = parseXml(xmlGenerator.generateXml(data, "theVersion"));
         XPath xpath = XPathFactory.newInstance().newXPath();
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setValidating(true);
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        builder.setEntityResolver(new LocalEntityResolver());
-        //Turn on line below when XML DTD validation will pass.
-        builder.setErrorHandler(new ReThrowingErrorHandler());
-        Document document = builder.parse(new ByteArrayInputStream(xml.getBytes()));
 
         //System.out.println("xml = " + xml);
 
@@ -458,10 +438,10 @@ public class CoberturaXmlGeneratorIntegrationTest {
         assertThat(getXPath(xpath, document, "/coverage/@version"), equalTo("theVersion"));
         assertThat(getXPath(xpath, document, "/coverage/@timestamp"), notNullValue());
 
-        assertThat(xml, containsString("<sources/>"));
+        assertThat(xmlGenerator.generateXml(data, "theVersion"), containsString("<sources/>"));
 
         //Check packages
-        assertThat(xml, containsString("<packages>"));
+        assertThat(xmlGenerator.generateXml(data, "theVersion"), containsString("<packages>"));
         assertThat(getXPath(xpath, document, "count(/coverage/packages/package)"), equalTo("41"));
         assertThat(getXPath(xpath, document, "/coverage/packages/package[@name='/build/yui']/@name"), equalTo("/build/yui"));
         assertThat(getXPath(xpath, document, "/coverage/packages/package[@name='/build/yui']/@complexity"), equalTo("0"));
@@ -473,6 +453,16 @@ public class CoberturaXmlGeneratorIntegrationTest {
         assertThat(getXPath(xpath, document, "/coverage/packages/package[@name='/build/yui']/classes/class[@name='/build/yui/yui.js']/@line-rate"), equalTo("0.5852017937219731"));
         assertThat(getXPath(xpath, document, "/coverage/packages/package[@name='/build/yui']/classes/class[@name='/build/yui/yui.js']/@complexity"), equalTo("0"));
         assertThat(getXPath(xpath, document, "/coverage/packages/package[@name='/build/yui']/classes/class[@name='/build/yui/yui.js']/@filename"), equalTo("/build/yui/yui.js"));
+    }
+
+    private Document parseXml(String xml) throws ParserConfigurationException, SAXException, IOException {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setValidating(true);
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        builder.setEntityResolver(new LocalEntityResolver());
+        //Turn on line below when XML DTD validation will pass.
+        builder.setErrorHandler(new ReThrowingErrorHandler());
+        return builder.parse(new ByteArrayInputStream(xml.getBytes()));
     }
 
     private String getXPath(XPath xpath, Document document, String expression) throws Exception {
