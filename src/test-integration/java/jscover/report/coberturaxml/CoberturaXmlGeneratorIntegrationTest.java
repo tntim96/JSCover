@@ -359,7 +359,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalToIgnoringWhiteSpace;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 public class CoberturaXmlGeneratorIntegrationTest {
@@ -440,13 +440,16 @@ public class CoberturaXmlGeneratorIntegrationTest {
         //builder.setErrorHandler(new ReThrowingErrorHandler());
         Document document = builder.parse(new ByteArrayInputStream(xml.getBytes()));
 
-//        System.out.println("xml = " + xml);
+        System.out.println("xml = " + xml);
         assertThat(xml, containsString("<coverage>"));
         assertThat(xml, containsString("<sources/>"));
         assertThat(xml, containsString("<packages>"));
         //Check packages
-        assertThat(getXPath(xpath, document, "count(/coverage/packages/package)"), equalToIgnoringWhiteSpace("41"));
-        assertThat(getXPath(xpath, document, "/coverage/packages/package[@name='/build/yui']/@name"), equalToIgnoringWhiteSpace("/build/yui"));
+        assertThat(getXPath(xpath, document, "count(/coverage/packages/package)"), equalTo("41"));
+        assertThat(getXPath(xpath, document, "/coverage/packages/package[@name='/build/yui']/@name"), equalTo("/build/yui"));
+        assertThat(getXPath(xpath, document, "/coverage/packages/package[@name='/build/yui']/@complexity"), equalTo("0"));
+        assertThat(getXPath(xpath, document, "/coverage/packages/package[@name='/build/yui']/@line-rate"), equalTo("0.5852017937219731"));
+        assertThat(getXPath(xpath, document, "/coverage/packages/package[@name='/build/yui']/@branch-rate"), equalTo("0.3778801843317972"));
 //        assertThat(getXPath(xpath, document, "/coverage/package"), equalToIgnoringWhiteSpace(""));
     }
 

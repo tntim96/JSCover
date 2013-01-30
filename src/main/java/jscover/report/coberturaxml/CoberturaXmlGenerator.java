@@ -342,6 +342,7 @@ Public License instead of this License.
 
 package jscover.report.coberturaxml;
 
+import jscover.report.SummaryData;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -370,13 +371,17 @@ public class CoberturaXmlGenerator {
             root.appendChild(packages);
 
             for (String path : data.getPackageMap().keySet()) {
-               Element packageElement = doc.createElement("package");
-               packages.appendChild(packageElement);
+                Element packageElement = doc.createElement("package");
+                packages.appendChild(packageElement);
                 packageElement.setAttribute("name", path);
+                SummaryData summaryData = new SummaryData(data.getPackageMap().get(path));
+                packageElement.setAttribute("line-rate", ""+summaryData.getLineCoverRate());
+                packageElement.setAttribute("branch-rate", ""+summaryData.getBranchRate());
+                packageElement.setAttribute("complexity", "0");
             }
 
             return getString(doc);
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
