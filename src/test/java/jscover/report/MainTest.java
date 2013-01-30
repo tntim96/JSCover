@@ -343,6 +343,7 @@ Public License instead of this License.
 package jscover.report;
 
 import jscover.MainHelper;
+import jscover.report.coberturaxml.CoberturaXmlGenerator;
 import jscover.report.lcov.LCovGenerator;
 import jscover.report.xml.XMLSummary;
 import jscover.util.IoUtils;
@@ -375,6 +376,7 @@ public class MainTest {
     private Main main = new Main();
     private @Mock MainHelper mainHelper;
     private @Mock XMLSummary xmlSummary;
+    private @Mock CoberturaXmlGenerator coberturaXmlGenerator;
     private @Mock LCovGenerator lCovGenerator;
     private @Mock JSONDataMerger jsonDataMerger;
     private @Mock IoUtils ioUtils;
@@ -384,6 +386,7 @@ public class MainTest {
     public void setUp() {
         ReflectionUtils.setField(main, "mainHelper", mainHelper);
         ReflectionUtils.setField(main, "xmlSummary", xmlSummary);
+        ReflectionUtils.setField(main, "coberturaXmlGenerator", coberturaXmlGenerator);
         ReflectionUtils.setField(main, "lCovGenerator", lCovGenerator);
         ReflectionUtils.setField(main, "jsonDataMerger", jsonDataMerger);
         ReflectionUtils.setField(main, "ioUtils", ioUtils);
@@ -428,6 +431,26 @@ public class MainTest {
         File lcovFile = new File(jsonDirectory, "jscover.lcov");
         verify(lCovGenerator).saveData(list.values(), srcDir.getCanonicalPath(), lcovFile);
         verifyZeroInteractions(mainHelper);
+    }
+
+    @Test
+    public void shouldRunCoberturaXmlReport() throws IOException {
+        given(config.getReportFormat()).willReturn(ReportFormat.COBERTURAXML);
+        given(config.getVersion()).willReturn("version");
+        File jsonDirectory = new File("jsonDir");
+        File srcDir = new File("src");
+        given(config.getJsonDirectory()).willReturn(jsonDirectory);
+        given(config.getSourceDirectory()).willReturn(srcDir);
+        String json = "json";
+        given(ioUtils.loadFromFileSystem(new File(jsonDirectory, "jscoverage.json"))).willReturn(json);
+        SortedMap<String, FileData> list = new TreeMap<String, FileData>();
+        given(jsonDataMerger.jsonToMap(json)).willReturn(list);
+
+        main.runMain(new String[]{});
+
+//        File lcovFile = new File(jsonDirectory, "cobertura-coverage.xml");
+//        verify(lCovGenerator).saveData(list.values(), srcDir.getCanonicalPath(), lcovFile);
+//        verifyZeroInteractions(mainHelper);
     }
 
     @Test
