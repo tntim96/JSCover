@@ -583,12 +583,14 @@
                 <text>
                     JSCover's JSON coverage data can be merged together and converted to other formats.
                     This is useful to integrate with other tools - let us know what formats are required.
-                    Currently JSCover supports XML summary and LCOV report formats.
+                    Currently JSCover supports COBERTURAXML (e.g. for Jenkins), XML summary and LCOV report formats.
                 </text>
                 <text>
-                    <code>java -cp JSCover-all.jar jscover.report.Main --format=[ XMLSUMMARY | LCOV ] REPORT-DIR [SRC-DIRECTORY]</code>
+                    <code>java -cp JSCover-all.jar jscover.report.Main --format=[ XMLSUMMARY | COBERTURAXML ] REPORT-DIR</code>
+                    <code>java -cp JSCover-all.jar jscover.report.Main --format=LCOV REPORT-DIR SRC-DIRECTORY</code>
                     <code>java -cp JSCover-all.jar jscover.report.Main --merge REPORT-DIR1 REPORT-DIR2 REPORT-DIR3...DEST-DIR</code>
                     For example:
+                    <code>java -cp JSCover-all.jar jscover.report.Main --format=COBERTURAXML REPORT-DIR</code>
                     <code>java -cp JSCover-all.jar jscover.report.Main --format=LCOV REPORT-DIR SRC-DIRECTORY</code>
                     <code>java -cp JSCover-all.jar jscover.report.Main --merge target/coverage1 target/coverage2 target/total-coverage</code>
                 </text>
@@ -610,6 +612,11 @@
                             <td>Output XML summary to REPORT-DIR/jscover-summary.xml</td>
                         </tr>
                         <tr>
+                            <td>--format=COBERTURAXML</td>
+                            <td>None</td>
+                            <td>Output Cobertura XML to REPORT-DIR/cobertura-coverage.xml</td>
+                        </tr>
+                        <tr>
                             <td>--format=LCOV</td>
                             <td>None</td>
                             <td>Output LCOV data to REPORT-DIR/jscover.lcov with source at SRC-DIRECTORY</td>
@@ -624,11 +631,30 @@
                 <item>
                     <heading id="reportConversion">Report Conversion</heading>
                     <item>
+                        <heading id="coberturaXml">Cobertura XML</heading>
+                        <text>
+                            <code>java -cp JSCover-all.jar jscover.report.Main --format=COBERTURAXML REPORT-DIR</code>
+                        </text>
+                        <text>
+                            The Cobertura XML is provided to integrate with Jenkins. The XML validates against
+                            Cobertura's <var>coverage-04.dtd</var>.
+                            Supported elements for coverage metric targets:
+                            <ul>
+                                <li><var>coverage</var> totals for all JavaScript files</li>
+                                <li><var>package</var> totals for JavaScript files in the same path</li>
+                                <li><var>class</var> total for single JavaScript file</li>
+                            </ul>
+                            Unsupported elements (which should not affect Jenkins):
+                            <ul>
+                                <li><var>methods</var> not populated with method elements</li>
+                                <li><var>lines</var> not populated with line elements</li>
+                            </ul>
+                        </text>
+                    </item>
+                    <item>
                         <heading id="xmlSummary">XML Summary</heading>
                         <text>
-                            <code>java -cp JSCover-all.jar jscover.report.Main --format=[ XMLSUMMARY | LCOV ] REPORT-DIR [SRC-DIRECTORY]</code>
-                            For example:
-                            <code>java -cp JSCover-all.jar jscover.report.Main --format=LCOV REPORT-DIR SRC-DIRECTORY</code>
+                            <code>java -cp JSCover-all.jar jscover.report.Main --format=XMLSUMMARY REPORT-DIR</code>
                         </text>
                         <text>
                             The XML summary report records the following totals for easy parsing:
