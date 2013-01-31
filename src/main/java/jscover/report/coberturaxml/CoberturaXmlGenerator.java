@@ -342,6 +342,7 @@ Public License instead of this License.
 
 package jscover.report.coberturaxml;
 
+import jscover.report.BranchData;
 import jscover.report.Coverable;
 import jscover.report.FileData;
 import jscover.report.SummaryData;
@@ -358,7 +359,10 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.StringWriter;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
+
+import static java.lang.String.format;
 
 public class CoberturaXmlGenerator {
     public String generateXml(CoberturaData data, String version) {
@@ -428,9 +432,40 @@ public class CoberturaXmlGenerator {
                 linesElement.appendChild(lineElement);
                 lineElement.setAttribute("number", "" + i);
                 lineElement.setAttribute("hits", hits.toString());
-                lineElement.setAttribute("branch", "false");
+                if (i >= fileData.getBranchData().size()) {
+                    lineElement.setAttribute("branch", "false");
+                } else {
+                    List<BranchData> branchDatas = fileData.getBranchData().get(i);
+                    if (branchDatas.size() < 2) {
+                        lineElement.setAttribute("branch", "false");
+                    } else {
+                        addBranches(doc, lineElement, branchDatas);
+                    }
+                }
             }
         }
+    }
+
+    private void addBranches(Document doc, Element lineElement, List<BranchData> branchDatas) {
+        lineElement.setAttribute("branch", "true");
+        Element conditionsElement = doc.createElement("conditions");
+        lineElement.appendChild(conditionsElement);
+        int branches = 0;
+        int branchHits = 0;
+        for (int j = 1; j < branchDatas.size(); j++) {
+            Element conditionElement = doc.createElement("condition");
+            conditionsElement.appendChild(conditionElement);
+            conditionElement.setAttribute("number", "" + j);
+            conditionElement.setAttribute("type", "jump");
+            BranchData branchData = branchDatas.get(j);
+            conditionElement.setAttribute("coverage", format("%d%%", branchData.getCoverage()));
+            branches += 2;
+            if (branchData.getEvalFalse() > 0)
+                branchHits++;
+            if (branchData.getEvalTrue() > 0)
+                branchHits++;
+        }
+        lineElement.setAttribute("condition-coverage", format("%d%% (%d/%d)", Math.round(branchHits*100d/branches), branchHits, branches));
     }
 
     private void addCoverageAttributes(String version, SummaryData summaryTotal, Element root) {

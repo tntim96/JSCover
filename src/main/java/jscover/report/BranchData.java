@@ -377,6 +377,15 @@ public class BranchData {
         return evalTrue;
     }
 
+    public int getCoverage() {
+        int coverage = 0;
+        if (evalFalse > 0)
+            coverage += 50;
+        if (evalTrue > 0)
+            coverage += 50;
+        return coverage;
+    }
+
     public void addCoverage(BranchData branchData) {
         if (position != branchData.position || nodeLength != branchData.nodeLength)
             throw new IllegalStateException("Merging non-matching branch data");

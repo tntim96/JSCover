@@ -434,7 +434,7 @@ public class CoberturaXmlGeneratorIntegrationTest {
         Document document = parseXml(xml);
         XPath xpath = XPathFactory.newInstance().newXPath();
 
-        System.out.println("xml = " + xml);
+        //System.out.println("xml = " + xml);
 
         //Check summary
         assertThat(getXPath(xpath, document, "/coverage/@complexity"), equalTo("0"));
@@ -468,6 +468,13 @@ public class CoberturaXmlGeneratorIntegrationTest {
         //Check line
         String yuiLineXPath = yuiClassXPath + "/lines/line[@number='10']";
         assertThat(getXPath(xpath, document, yuiLineXPath + "/@hits"), equalTo("1"));
+        assertThat(getXPath(xpath, document, yuiLineXPath + "/@condition-coverage"), equalTo("50% (1/2)"));
+        assertThat(getXPath(xpath, document, yuiLineXPath + "/@branch"), equalTo("true"));
+
+        //Check condition
+        String yuiConditionXPath = yuiLineXPath + "/conditions/condition[@number='1']";
+        assertThat(getXPath(xpath, document, yuiConditionXPath + "/@coverage"), equalTo("50%"));
+        assertThat(getXPath(xpath, document, yuiConditionXPath + "/@type"), equalTo("jump"));
     }
 
     private Document parseXml(String xml) throws ParserConfigurationException, SAXException, IOException {
@@ -476,7 +483,7 @@ public class CoberturaXmlGeneratorIntegrationTest {
         DocumentBuilder builder = factory.newDocumentBuilder();
         builder.setEntityResolver(new LocalEntityResolver());
         //Turn on line below when XML DTD validation will pass.
-        //builder.setErrorHandler(new ReThrowingErrorHandler());
+        builder.setErrorHandler(new ReThrowingErrorHandler());
         return builder.parse(new ByteArrayInputStream(xml.getBytes()));
     }
 
