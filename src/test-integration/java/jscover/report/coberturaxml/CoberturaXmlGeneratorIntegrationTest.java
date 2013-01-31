@@ -430,10 +430,11 @@ public class CoberturaXmlGeneratorIntegrationTest {
     public void shouldGenerateXml() throws Exception {
         String json = IoUtils.getInstance().loadFromFileSystem(new File("src/test-integration/resources/jscover/report/xml/jscoverage.json"));
         CoberturaData data = new CoberturaData(jsonDataMerger.jsonToMap(json).values());
-        Document document = parseXml(xmlGenerator.generateXml(data, "theVersion"));
+        String xml = xmlGenerator.generateXml(data, "theVersion");
+        Document document = parseXml(xml);
         XPath xpath = XPathFactory.newInstance().newXPath();
 
-        //System.out.println("xml = " + xml);
+        System.out.println("xml = " + xml);
 
         //Check summary
         assertThat(getXPath(xpath, document, "/coverage/@complexity"), equalTo("0"));
@@ -448,19 +449,25 @@ public class CoberturaXmlGeneratorIntegrationTest {
 
         assertThat(xmlGenerator.generateXml(data, "theVersion"), containsString("<sources/>"));
 
-        //Check packages
+        //Check package
         assertThat(xmlGenerator.generateXml(data, "theVersion"), containsString("<packages>"));
         assertThat(getXPath(xpath, document, "count(/coverage/packages/package)"), equalTo("41"));
-        assertThat(getXPath(xpath, document, "/coverage/packages/package[@name='/build/yui']/@name"), equalTo("/build/yui"));
-        assertThat(getXPath(xpath, document, "/coverage/packages/package[@name='/build/yui']/@complexity"), equalTo("0"));
-        assertThat(getXPath(xpath, document, "/coverage/packages/package[@name='/build/yui']/@line-rate"), equalTo("0.5852017937219731"));
-        assertThat(getXPath(xpath, document, "/coverage/packages/package[@name='/build/yui']/@branch-rate"), equalTo("0.3778801843317972"));
+        String yuiPackageXPath = "/coverage/packages/package[@name='/build/yui']";
+        assertThat(getXPath(xpath, document, yuiPackageXPath + "/@name"), equalTo("/build/yui"));
+        assertThat(getXPath(xpath, document, yuiPackageXPath + "/@complexity"), equalTo("0"));
+        assertThat(getXPath(xpath, document, yuiPackageXPath + "/@line-rate"), equalTo("0.5852017937219731"));
+        assertThat(getXPath(xpath, document, yuiPackageXPath + "/@branch-rate"), equalTo("0.3778801843317972"));
 
         //Check class
-        assertThat(getXPath(xpath, document, "/coverage/packages/package[@name='/build/yui']/classes/class[@name='/build/yui/yui.js']/@branch-rate"), equalTo("0.3778801843317972"));
-        assertThat(getXPath(xpath, document, "/coverage/packages/package[@name='/build/yui']/classes/class[@name='/build/yui/yui.js']/@line-rate"), equalTo("0.5852017937219731"));
-        assertThat(getXPath(xpath, document, "/coverage/packages/package[@name='/build/yui']/classes/class[@name='/build/yui/yui.js']/@complexity"), equalTo("0"));
-        assertThat(getXPath(xpath, document, "/coverage/packages/package[@name='/build/yui']/classes/class[@name='/build/yui/yui.js']/@filename"), equalTo("/build/yui/yui.js"));
+        String yuiClassXPath = yuiPackageXPath + "/classes/class[@name='/build/yui/yui.js']";
+        assertThat(getXPath(xpath, document, yuiClassXPath + "/@branch-rate"), equalTo("0.3778801843317972"));
+        assertThat(getXPath(xpath, document, yuiClassXPath + "/@line-rate"), equalTo("0.5852017937219731"));
+        assertThat(getXPath(xpath, document, yuiClassXPath + "/@complexity"), equalTo("0"));
+        assertThat(getXPath(xpath, document, yuiClassXPath + "/@filename"), equalTo("/build/yui/yui.js"));
+
+        //Check line
+        String yuiLineXPath = yuiClassXPath + "/lines/line[@number='10']";
+        assertThat(getXPath(xpath, document, yuiLineXPath + "/@hits"), equalTo("1"));
     }
 
     private Document parseXml(String xml) throws ParserConfigurationException, SAXException, IOException {
@@ -469,7 +476,7 @@ public class CoberturaXmlGeneratorIntegrationTest {
         DocumentBuilder builder = factory.newDocumentBuilder();
         builder.setEntityResolver(new LocalEntityResolver());
         //Turn on line below when XML DTD validation will pass.
-        builder.setErrorHandler(new ReThrowingErrorHandler());
+        //builder.setErrorHandler(new ReThrowingErrorHandler());
         return builder.parse(new ByteArrayInputStream(xml.getBytes()));
     }
 

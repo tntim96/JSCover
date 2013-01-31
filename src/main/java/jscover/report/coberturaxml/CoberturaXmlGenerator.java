@@ -343,6 +343,7 @@ Public License instead of this License.
 package jscover.report.coberturaxml;
 
 import jscover.report.Coverable;
+import jscover.report.FileData;
 import jscover.report.SummaryData;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -412,7 +413,23 @@ public class CoberturaXmlGenerator {
             classElement.setAttribute("complexity", "0");
 
             classElement.appendChild(doc.createElement("methods"));
-            classElement.appendChild(doc.createElement("lines"));
+            Element linesElement = doc.createElement("lines");
+            classElement.appendChild(linesElement);
+            FileData fileData = (FileData) file;
+            addLines(doc, linesElement, fileData);
+        }
+    }
+
+    private void addLines(Document doc, Element linesElement, FileData fileData) {
+        for (int i = 0; i < fileData.getLines().size(); i++) {
+            Integer hits = fileData.getLines().get(i);
+            if (hits != null && hits > 0) {
+                Element lineElement = doc.createElement("line");
+                linesElement.appendChild(lineElement);
+                lineElement.setAttribute("number", "" + i);
+                lineElement.setAttribute("hits", hits.toString());
+                lineElement.setAttribute("branch", "false");
+            }
         }
     }
 
