@@ -27,14 +27,27 @@
         <a href="https://github.com/tntim96/JSCover/blob/master/src/test-acceptance/java/jscover/server/HtmlUnitServerTest.java" target="_blank">HtmlUnitServerTest</a>,
         <a href="https://github.com/tntim96/JSCover/blob/master/src/test-acceptance/java/jscover/filesystem/HtmlUnitFileSystemTest.java" target="_blank">HtmlUnitFileSystemTest</a>)
     </li>
-    <li>JSCover will run anywhere Java does (NB: JSCoverage may not run on all your platforms)</li>
-    <li>You need to collate coverage results from multiple independent tests.</li>
+    <li>You need a report stored on the file-system</li>
+    <li>You need to collate coverage results from multiple independent tests</li>
+    <li>JSCover will run anywhere Java does (requires minimum Java 1.5)</li>
+    <li>Quick and easy to set-up using a single JAR file</li>
+    <li>Usually requires no modification to existing tests (e.g. Jasmine, QUnit, etc...)</li>
     <li>
-        You need a report stored on the file-system (multiple report formats supported including LCOV and Cobertura XML
-        for Jenkins)
+        Multiple report formats supported (let us know what formats are required):
+        <ul>
+            <li>LCOV</li>
+            <li>Cobertura XML for Jenkins</li>
+            <li>XML summary - coverage metric totals</li>
+        </ul>
     </li>
-    <li>Quick and easy to set-up</li>
     <li>JSCover is under active development</li>
+    <li>
+        Can run in multiple modes:
+        <ul>
+            <li>Web-server  : runs as a web-server instrumenting JavaScript on the fly</li>
+            <li>File-System : instruments JavaScript to the file-system</li>
+            <li>Proxy-server: runs as a proxy-server instrumenting JavaScript on the fly</li>
+        </ul>
     <li>
         JSCover is architecturally simple and modular, and so should be easy to
         contribute to and maintain, hopefully ensuring a long life-time.
@@ -46,8 +59,7 @@
     <a href="https://github.com/tntim96/JSCover/issues" target="_blank">report it</a>
     and we'll endeavour to correct it.
     Alternatively, you can try
-    <a href="http://siliconforks.com/jscoverage/" target="_blank">JSCoverage</a>
-    (N.B. JSCoverage does not support branch coverage).
+    <a href="http://siliconforks.com/jscoverage/" target="_blank">JSCoverage</a>.
 </p>
 
 <p>
@@ -64,8 +76,9 @@
 </p>
 
 <p>
-    Rhino bugs can be posted <a href="http://www.mozilla.org/rhino/" target="_blank">there</a>, but please notify us to avoid
-    duplication. If the report is urgent and includes a patch, it can be manually patched and included in JSCover.
+    Rhino bugs can be posted <a href="http://www.mozilla.org/rhino/" target="_blank">there</a>, but please notify us
+    to avoid duplication. If the report is urgent it can be manually patched and included in JSCover which already
+    uses a forked version of Rhino (there is a pull request to merge this fork back to Rhino trunk).
 </p>
 
 <p>&nbsp;</p>
