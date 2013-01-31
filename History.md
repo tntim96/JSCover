@@ -3,6 +3,7 @@
   * Synchronize threads saving JSON to the same report directory (https://github.com/tntim96/JSCover/pull/40).
   * Fix logger NPE in InstrumentingRequestHandler
   * Add Cobertura XML output (https://github.com/tntim96/JSCover/issues/39)
+  * Fix handling of comma error (https://github.com/tntim96/JSCover/issues/41)
 
 0.2.1 / 2013-01-20
 ==================

@@ -399,7 +399,12 @@ public class BranchInstrumentor implements NodeVisitor {
         List<AstNode> arguments = new ArrayList<AstNode>();
         functionCall.setTarget(functionNode.getFunctionName());
 
-        arguments.add(node);
+        if (node.getType() == Token.COMMA) {
+            ParenthesizedExpression parenthesizedExpression = new ParenthesizedExpression();
+            parenthesizedExpression.setExpression(node);
+            arguments.add(parenthesizedExpression);
+        } else
+            arguments.add(node);
         functionCall.setArguments(arguments);
         if (parent instanceof IfStatement && node == ((IfStatement) parent).getCondition()) {
             ((IfStatement) parent).setCondition(functionCall);

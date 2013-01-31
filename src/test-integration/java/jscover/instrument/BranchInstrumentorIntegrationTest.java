@@ -462,6 +462,26 @@ public class BranchInstrumentorIntegrationTest {
     }
 
     @Test
+    public void shouldNotBreakCommaCondition() {
+        StringBuilder script = new StringBuilder("if (true, false)\n");
+        script.append("  ;\n");
+        runScript(script.toString());
+        Scriptable coverageData = getCoverageData(scope, "test.js", 1, 1);
+        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(0d));
+        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(1d));
+    }
+
+    @Test
+    public void shouldNotBreakCommaCondition2() {
+        StringBuilder script = new StringBuilder("if (false, true)\n");
+        script.append("  ;\n");
+        runScript(script.toString());
+        Scriptable coverageData = getCoverageData(scope, "test.js", 1, 1);
+        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
+        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
+    }
+
+    @Test
     public void shouldWrapDoCondition() {
         StringBuilder script = new StringBuilder("var x = 1;\n");
         script.append("do\n");
@@ -740,8 +760,8 @@ public class BranchInstrumentorIntegrationTest {
         context = Context.enter();
         scope = context.initStandardObjects();
         String source = branchObjectHeader + header + branchInstrumentor.getJsLineInitialization() + astRoot.toSource();
-        //System.out.println("--------------------------------------");
-        //System.out.println("source = " + source);
+        System.out.println("--------------------------------------");
+        System.out.println("source = " + source);
 
         return context.evaluateString(scope, source, "test.js", 1, null);
     }
