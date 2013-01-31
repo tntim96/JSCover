@@ -23,9 +23,13 @@
     <li>You need line and branch coverage</li>
     <li>You need coverage measured via a browser (e.g. your tests include DOM interaction)</li>
     <li>
-        You need coverage measured in headless mode (see
-        <a href="https://github.com/tntim96/JSCover/blob/master/src/test-acceptance/java/jscover/server/HtmlUnitServerTest.java" target="_blank">HtmlUnitServerTest</a>,
-        <a href="https://github.com/tntim96/JSCover/blob/master/src/test-acceptance/java/jscover/filesystem/HtmlUnitFileSystemTest.java" target="_blank">HtmlUnitFileSystemTest</a>)
+        You need automated coverage measured in headless mode:
+        <ul>
+            <li><a href="manual/manual.xml#automatingHtmlUnit" target="_blank">HtmlUnit</a></li>
+            <li><a href="manual/manual.xml#automatingPhantomJS" target="_blank">PhantomJS</a></li>
+        </ul>
+        Also supports <a href="manual/manual.xml#automatingSelenium" target="_blank">Selenium</a>
+        (can be made headless via XVFB).
     </li>
     <li>You need a report stored on the file-system</li>
     <li>You need to collate coverage results from multiple independent tests</li>

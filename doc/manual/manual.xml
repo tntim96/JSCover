@@ -894,6 +894,28 @@
                 </text>
             </item>
             <item>
+                <heading id="automatingPhantomJS">PhantomJS</heading>
+                <text>
+                    The example here is for running Jasmine tests. Please feel free to send more documentation to this
+                    project if using PhantomJS.
+                </text>
+                <text>
+                    You need to download <var>PhantomJS</var> and <var>run-jasmine.js</var>, and add the following
+                    before the exit command, <var>phantom.exit(exitCode);</var>, of <var>run-jasmine.js</var>.
+<code>page.evaluate(function(){
+    jscoverage_report('phantom-dir');
+});</code>
+                </text>
+                <text>
+                    Once you have JSCover running in server mode, you can then execute:
+                <code>phantomjs /RUN-JASMINE-PATH/run-jasmine.js http://localhost:8080/test/javascript/spec/suite.html</code>
+                </text>
+                <text>
+                    This will execute the tests and store the result the 'phantom-dir' sub-directory of the of JSCover's
+                    report directory (NB the sub-directory argument given to <var>jscoverage_report</var> is optional).
+                </text>
+            </item>
+            <item>
                 <heading id="automatingAnt">Ant</heading>
                 <text>
                     Example starting the server
