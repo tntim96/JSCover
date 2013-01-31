@@ -649,6 +649,7 @@
                                 <li><var>methods</var> not populated with method elements</li>
                                 <li><var>lines</var> not populated with line elements</li>
                             </ul>
+                            Where there are no branches the branch rate is set to 1.
                         </text>
                     </item>
                     <item>

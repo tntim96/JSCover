@@ -343,6 +343,7 @@ Public License instead of this License.
 package jscover.report;
 
 import jscover.MainHelper;
+import jscover.report.coberturaxml.CoberturaData;
 import jscover.report.coberturaxml.CoberturaXmlGenerator;
 import jscover.report.lcov.LCovGenerator;
 import jscover.report.xml.XMLSummary;
@@ -354,6 +355,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InOrder;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -366,6 +368,7 @@ import java.util.TreeMap;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
@@ -445,12 +448,26 @@ public class MainTest {
         given(ioUtils.loadFromFileSystem(new File(jsonDirectory, "jscoverage.json"))).willReturn(json);
         SortedMap<String, FileData> list = new TreeMap<String, FileData>();
         given(jsonDataMerger.jsonToMap(json)).willReturn(list);
+        given(coberturaXmlGenerator.generateXml(Matchers.<CoberturaData>any(), anyString())).willReturn("<xml/>");
 
         main.runMain(new String[]{});
 
-//        File lcovFile = new File(jsonDirectory, "cobertura-coverage.xml");
-//        verify(lCovGenerator).saveData(list.values(), srcDir.getCanonicalPath(), lcovFile);
-//        verifyZeroInteractions(mainHelper);
+        TypeSafeMatcher<CoberturaData> coberturaDataMatcher = new TypeSafeMatcher<CoberturaData>() {
+            @Override
+            protected boolean matchesSafely(CoberturaData coverable) {
+                return true;
+            }
+
+            public void describeTo(Description description) {
+
+            }
+        };
+
+
+        File xmlFile = new File(jsonDirectory, "cobertura-coverage.xml");
+        verify(coberturaXmlGenerator).generateXml(argThat(coberturaDataMatcher), argThat(is("version")));
+        verify(ioUtils).copy("<xml/>", xmlFile);
+        verifyZeroInteractions(mainHelper);
     }
 
     @Test
