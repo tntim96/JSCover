@@ -378,7 +378,15 @@ public class CoberturaXmlGeneratorIntegrationTest {
             "      <classes>\n" +
             "        <class name=\"code.js\" filename=\"code.js\" line-rate=\"0.7857\"  branch-rate=\"0.5\" complexity=\"N/A\">\n" +
             "          <methods/>\n" +
-            "          <lines/>\n" +
+            "          <lines>\n" +
+            "            <line number=\"1\"  hits=\"1\" branch=\"false\"/>\n" +
+            "            <line number=\"2\" hits=\"81\" branch=\"true\" condition-coverage=\"75% (3/4)\">\n" +
+            "              <conditions>\n" +
+            "                <condition number=\"0\" type=\"jump\" coverage=\"100%\"/>\n" +
+            "                <condition number=\"1\" type=\"jump\" coverage=\"50%\"/>\n" +
+            "              </conditions>\n" +
+            "            </line>\n" +
+            "          </lines>\n" +
             "        </class>\n" +
             "      </classes>\n" +
             "    </package>\n" +

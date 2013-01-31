@@ -369,52 +369,63 @@ public class CoberturaXmlGenerator {
             SummaryData summaryTotal = new SummaryData(data.getFiles());
             Element root = doc.createElement("coverage");
             doc.appendChild(root);
-            root.setAttribute("line-rate", "" + summaryTotal.getLineCoverRate());
-            root.setAttribute("lines-covered", "" + summaryTotal.getCodeLinesCoveredCount());
-            root.setAttribute("lines-valid", "" + summaryTotal.getCodeLineCount());
-            root.setAttribute("branch-rate", "" + summaryTotal.getBranchRate());
-            root.setAttribute("branches-covered", "" + summaryTotal.getBranchesCoveredCount());
-            root.setAttribute("branches-valid", "" + summaryTotal.getBranchCount());
-            root.setAttribute("complexity", "0");
-            root.setAttribute("version", version);
-            root.setAttribute("timestamp", "" + new Date().getTime());
+            addCoverageAttributes(version, summaryTotal, root);
 
             root.appendChild(doc.createElement("sources"));
 
             Element packages = doc.createElement("packages");
             root.appendChild(packages);
-
-            for (String path : data.getPackageMap().keySet()) {
-                Element packageElement = doc.createElement("package");
-                packages.appendChild(packageElement);
-                packageElement.setAttribute("name", path);
-                Set<? extends Coverable> files = data.getPackageMap().get(path);
-                SummaryData summaryPackage = new SummaryData(files);
-                packageElement.setAttribute("line-rate", "" + summaryPackage.getLineCoverRate());
-                packageElement.setAttribute("branch-rate", "" + summaryPackage.getBranchRate());
-                packageElement.setAttribute("complexity", "0");
-
-                Element classesElement = doc.createElement("classes");
-                packageElement.appendChild(classesElement);
-
-                for (Coverable file : files) {
-                    Element classElement = doc.createElement("class");
-                    classesElement.appendChild(classElement);
-                    classElement.setAttribute("name", file.getUri());
-                    classElement.setAttribute("filename", file.getUri());
-                    classElement.setAttribute("line-rate", "" + file.getLineCoverRate());
-                    classElement.setAttribute("branch-rate", "" + file.getBranchRate());
-                    classElement.setAttribute("complexity", "0");
-
-                    classElement.appendChild(doc.createElement("methods"));
-                    classElement.appendChild(doc.createElement("lines"));
-                }
-            }
+            addPackages(data, doc, packages);
 
             return getString(doc);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void addPackages(CoberturaData data, Document doc, Element packages) {
+        for (String path : data.getPackageMap().keySet()) {
+            Element packageElement = doc.createElement("package");
+            packages.appendChild(packageElement);
+            packageElement.setAttribute("name", path);
+            Set<? extends Coverable> files = data.getPackageMap().get(path);
+            SummaryData summaryPackage = new SummaryData(files);
+            packageElement.setAttribute("line-rate", "" + summaryPackage.getLineCoverRate());
+            packageElement.setAttribute("branch-rate", "" + summaryPackage.getBranchRate());
+            packageElement.setAttribute("complexity", "0");
+
+            Element classesElement = doc.createElement("classes");
+            packageElement.appendChild(classesElement);
+
+            addClasses(doc, files, classesElement);
+        }
+    }
+
+    private void addClasses(Document doc, Set<? extends Coverable> files, Element classesElement) {
+        for (Coverable file : files) {
+            Element classElement = doc.createElement("class");
+            classesElement.appendChild(classElement);
+            classElement.setAttribute("name", file.getUri());
+            classElement.setAttribute("filename", file.getUri());
+            classElement.setAttribute("line-rate", "" + file.getLineCoverRate());
+            classElement.setAttribute("branch-rate", "" + file.getBranchRate());
+            classElement.setAttribute("complexity", "0");
+
+            classElement.appendChild(doc.createElement("methods"));
+            classElement.appendChild(doc.createElement("lines"));
+        }
+    }
+
+    private void addCoverageAttributes(String version, SummaryData summaryTotal, Element root) {
+        root.setAttribute("line-rate", "" + summaryTotal.getLineCoverRate());
+        root.setAttribute("lines-covered", "" + summaryTotal.getCodeLinesCoveredCount());
+        root.setAttribute("lines-valid", "" + summaryTotal.getCodeLineCount());
+        root.setAttribute("branch-rate", "" + summaryTotal.getBranchRate());
+        root.setAttribute("branches-covered", "" + summaryTotal.getBranchesCoveredCount());
+        root.setAttribute("branches-valid", "" + summaryTotal.getBranchCount());
+        root.setAttribute("complexity", "0");
+        root.setAttribute("version", version);
+        root.setAttribute("timestamp", "" + new Date().getTime());
     }
 
     private String getString(Document doc) throws TransformerException {
