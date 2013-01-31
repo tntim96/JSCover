@@ -366,4 +366,28 @@ public class BranchDataTest {
         assertThat(branchData.getEvalFalse(), equalTo(4));
         assertThat(branchData.getEvalTrue(), equalTo(7));
     }
+
+    @Test
+    public void shouldReturnCoverage00() {
+        BranchData branchData = new BranchData(1, 2, "x > y", 0, 0);
+        assertThat(branchData.getCoverage(), equalTo(0));
+    }
+
+    @Test
+    public void shouldReturnCoverage01() {
+        BranchData branchData = new BranchData(1, 2, "x > y", 0, 1);
+        assertThat(branchData.getCoverage(), equalTo(50));
+    }
+
+    @Test
+    public void shouldReturnCoverage10() {
+        BranchData branchData = new BranchData(1, 2, "x > y", 1, 0);
+        assertThat(branchData.getCoverage(), equalTo(50));
+    }
+
+    @Test
+    public void shouldReturnCoverage11() {
+        BranchData branchData = new BranchData(1, 2, "x > y", 1, 1);
+        assertThat(branchData.getCoverage(), equalTo(100));
+    }
 }
