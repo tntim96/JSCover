@@ -362,7 +362,7 @@ public class HtmlUnitJSTest {
     protected WebClient webClient = new WebClient();
     private String[] args = new String[]{
             "-ws",
-            "--port=8080",
+            "--port=8081",
             "--no-instrument=doc",
             "--no-instrument=src/test",
             "--no-instrument=src/main/resources/jscoverage-common.js",//Move functions out to testable files
@@ -388,7 +388,7 @@ public class HtmlUnitJSTest {
 
     @Test
     public void shouldTestJavaScript() throws Exception {
-        HtmlPage page = webClient.getPage("http://localhost:8080/jscoverage.html?src/test/javascript/spec/suite.html");
+        HtmlPage page = webClient.getPage("http://localhost:8081/jscoverage.html?src/test/javascript/spec/suite.html");
         webClient.waitForBackgroundJavaScript(2000);
 
         //Verify Jasmine test result

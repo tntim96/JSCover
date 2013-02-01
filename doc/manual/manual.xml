@@ -636,7 +636,9 @@
                             <code>java -cp JSCover-all.jar jscover.report.Main --format=COBERTURAXML REPORT-DIR</code>
                         </text>
                         <text>
-                            The Cobertura XML is provided to integrate with Jenkins. The XML validates against
+                            The Cobertura XML is provided to integrate with
+                            <a href="http://jenkins-ci.org/" target="_blank">Jenkins CI</a>.
+                            The XML validates against
                             Cobertura's <var>coverage-04.dtd</var>.
                             Supported elements for coverage metric targets:
                             <ul>
@@ -897,22 +899,26 @@
                 <heading id="automatingPhantomJS">PhantomJS</heading>
                 <text>
                     The example here is for running Jasmine tests. Please feel free to send more documentation to this
-                    project if using PhantomJS.
+                    project if you're using PhantomJS.
                 </text>
                 <text>
-                    You need to download <var>PhantomJS</var> and <var>run-jasmine.js</var>, and add the following
-                    before the exit command, <var>phantom.exit(exitCode);</var>, of <var>run-jasmine.js</var>.
+                    Download <a href="http://phantomjs.org/" target="_blank">PhantomJS</a> and
+                    <a href="http://code.google.com/p/phantomjs/source/browse/examples/run-jasmine.js" target="_blank">run-jasmine.js</a>
+                    , and add the <a href="#jsReportStorage">programmatic report storage</a>
+                    call before the exit command, <var>phantom.exit(exitCode);</var>, of <var>run-jasmine.js</var>.
 <code>page.evaluate(function(){
     jscoverage_report('phantom-dir');
-});</code>
+});
+phantom.exit(exitCode);</code>
                 </text>
                 <text>
                     Once you have JSCover running in server mode, you can then execute:
                 <code>phantomjs /RUN-JASMINE-PATH/run-jasmine.js http://localhost:8080/test/javascript/spec/suite.html</code>
                 </text>
                 <text>
-                    This will execute the tests and store the result the 'phantom-dir' sub-directory of the of JSCover's
-                    report directory (NB the sub-directory argument given to <var>jscoverage_report</var> is optional).
+                    This will execute the tests and store the coverage results in the 'phantom-dir' sub-directory of the
+                    of JSCover's report directory.
+                    NB the sub-directory argument given to <var>jscoverage_report</var> is optional.
                 </text>
             </item>
             <item>
@@ -922,6 +928,7 @@
 <code>    &lt;target name="JSCover-start"&gt;
          &lt;java jar="JSCover-all.jar" fork="true" spawn="true"&gt;
             &lt;arg value="-ws"/&gt;
+            &lt;arg value="--document-root=src"/&gt;
             &lt;arg value="--branch"/&gt;
             &lt;arg value="--report-dir=${jscover.dir}"/&gt;
             &lt;arg value="--no-instrument=src/main/webapp/js/lib"/&gt;
