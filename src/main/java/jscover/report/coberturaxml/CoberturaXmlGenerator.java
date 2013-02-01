@@ -372,14 +372,14 @@ public class CoberturaXmlGenerator {
             Document doc = documentBuilder.newDocument();
 
             SummaryData summaryTotal = new SummaryData(data.getFiles());
-            Element root = doc.createElement("coverage");
-            doc.appendChild(root);
-            addCoverageAttributes(version, summaryTotal, root);
+            Element coverageElement = doc.createElement("coverage");
+            doc.appendChild(coverageElement);
+            addCoverageAttributes(version, summaryTotal, coverageElement);
 
-            root.appendChild(doc.createElement("sources"));
+            coverageElement.appendChild(doc.createElement("sources"));
 
             Element packages = doc.createElement("packages");
-            root.appendChild(packages);
+            coverageElement.appendChild(packages);
             addPackages(data, doc, packages, sourceDir);
 
             return getString(doc);

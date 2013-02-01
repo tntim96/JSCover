@@ -376,10 +376,10 @@ public class CoberturaXmlGeneratorIntegrationTest {
             "  <packages>\n" +
             "    <package name=\"jscover\" line-rate=\"0.96\" branch-rate=\"0.9166666666666666\" complexity=\"N/A\">\n" +
             "      <classes>\n" +
-            "        <class name=\"code.js\" filename=\"code.js\" line-rate=\"0.7857\"  branch-rate=\"0.5\" complexity=\"N/A\">\n" +
+            "        <class name=\"code.js\" filename=\"code.js\" line-rate=\"0.7857\" branch-rate=\"0.5\" complexity=\"N/A\">\n" +
             "          <methods/>\n" +
             "          <lines>\n" +
-            "            <line number=\"1\"  hits=\"1\" branch=\"false\"/>\n" +
+            "            <line number=\"1\" hits=\"1\" branch=\"false\"/>\n" +
             "            <line number=\"2\" hits=\"81\" branch=\"true\" condition-coverage=\"75% (3/4)\">\n" +
             "              <conditions>\n" +
             "                <condition number=\"0\" type=\"jump\" coverage=\"100%\"/>\n" +
