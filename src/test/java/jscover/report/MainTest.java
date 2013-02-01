@@ -448,7 +448,7 @@ public class MainTest {
         given(ioUtils.loadFromFileSystem(new File(jsonDirectory, "jscoverage.json"))).willReturn(json);
         SortedMap<String, FileData> list = new TreeMap<String, FileData>();
         given(jsonDataMerger.jsonToMap(json)).willReturn(list);
-        given(coberturaXmlGenerator.generateXml(Matchers.<CoberturaData>any(), anyString())).willReturn("<xml/>");
+        given(coberturaXmlGenerator.generateXml(Matchers.<CoberturaData>any(), anyString(), anyString())).willReturn("<xml/>");
 
         main.runMain(new String[]{});
 
@@ -465,7 +465,7 @@ public class MainTest {
 
 
         File xmlFile = new File(jsonDirectory, "cobertura-coverage.xml");
-        verify(coberturaXmlGenerator).generateXml(argThat(coberturaDataMatcher), argThat(is("version")));
+        verify(coberturaXmlGenerator).generateXml(argThat(coberturaDataMatcher), argThat(is(srcDir.getCanonicalPath())), argThat(is("version")));
         verify(ioUtils).copy("<xml/>", xmlFile);
         verifyZeroInteractions(mainHelper);
     }

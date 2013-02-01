@@ -350,6 +350,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import static jscover.report.ReportFormat.COBERTURAXML;
+import static jscover.report.ReportFormat.LCOV;
+
 public class ConfigurationForReport  extends Configuration {
     public static final String HELP_PREFIX1 = jscover.Main.HELP_PREFIX1;
     public static final String HELP_PREFIX2 = jscover.Main.HELP_PREFIX2;
@@ -447,7 +450,7 @@ public class ConfigurationForReport  extends Configuration {
                 }
             }
         } else {//Must be format
-            if (reportFormat == ReportFormat.LCOV) {
+            if (reportFormat == LCOV || reportFormat == COBERTURAXML) {
                 if (args.length != 3) {
                     invalid = true;
                     showHelp = true;

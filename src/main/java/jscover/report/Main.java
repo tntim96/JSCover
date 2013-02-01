@@ -428,9 +428,9 @@ public class Main {
         xmlSummary.saveSummary(summaryData, config.getJsonDirectory(), config.getVersion());
     }
 
-    private void saveCoberturaXml() {
+    private void saveCoberturaXml() throws IOException {
         String json = ioUtils.loadFromFileSystem(new File(config.getJsonDirectory(), "jscoverage.json"));
-        String xml = coberturaXmlGenerator.generateXml(new CoberturaData(jsonDataMerger.jsonToMap(json).values()), config.getVersion());
+        String xml = coberturaXmlGenerator.generateXml(new CoberturaData(jsonDataMerger.jsonToMap(json).values()), config.getSourceDirectory().getCanonicalPath(), config.getVersion());
         File dest = new File(config.getJsonDirectory(), "cobertura-coverage.xml");
         ioUtils.copy(xml, dest);
     }

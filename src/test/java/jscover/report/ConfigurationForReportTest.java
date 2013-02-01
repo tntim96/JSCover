@@ -447,7 +447,7 @@ public class ConfigurationForReportTest {
 
     @Test
     public void shouldParseCoberturaXml() {
-        configuration.parse(new String[]{"--format=COBERTURAXML", "target"});
+        configuration.parse(new String[]{"--format=COBERTURAXML", "target", "src"});
         assertThat(configuration.showHelp(), equalTo(false));
         assertThat(configuration.isInvalid(), equalTo(false));
         assertThat(configuration.getReportFormat(), equalTo(ReportFormat.COBERTURAXML));
@@ -524,8 +524,8 @@ public class ConfigurationForReportTest {
     @Test
     public void shouldRetrieveHelpText() {
         String helpText = configuration.getHelpText();
-        assertThat(helpText, containsString("Usage: java -cp JSCover-all.jar jscover.report.Main --format=[ XMLSUMMARY | COBERTURAXML ] REPORT-DIR"));
-        assertThat(helpText, containsString("or     java -cp JSCover-all.jar jscover.report.Main --format=LCOV REPORT-DIR SRC-DIRECTORY"));
+        assertThat(helpText, containsString("Usage: java -cp JSCover-all.jar jscover.report.Main --format=XMLSUMMARY REPORT-DIR"));
+        assertThat(helpText, containsString("or     java -cp JSCover-all.jar jscover.report.Main --format=[ LCOV | COBERTURAXML ] REPORT-DIR SRC-DIRECTORY"));
         assertThat(helpText, containsString("or     java -cp JSCover-all.jar jscover.report.Main --merge REPORT-DIR1 REPORT-DIR2... DEST-DIR"));
     }
 }

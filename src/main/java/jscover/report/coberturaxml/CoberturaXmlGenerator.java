@@ -365,7 +365,7 @@ import java.util.Set;
 import static java.lang.String.format;
 
 public class CoberturaXmlGenerator {
-    public String generateXml(CoberturaData data, String version) {
+    public String generateXml(CoberturaData data, String sourceDir, String version) {
         try {
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
@@ -380,7 +380,7 @@ public class CoberturaXmlGenerator {
 
             Element packages = doc.createElement("packages");
             root.appendChild(packages);
-            addPackages(data, doc, packages);
+            addPackages(data, doc, packages, sourceDir);
 
             return getString(doc);
         } catch (Exception e) {
@@ -388,7 +388,7 @@ public class CoberturaXmlGenerator {
         }
     }
 
-    private void addPackages(CoberturaData data, Document doc, Element packages) {
+    private void addPackages(CoberturaData data, Document doc, Element packages, String sourceDir) {
         for (String path : data.getPackageMap().keySet()) {
             Element packageElement = doc.createElement("package");
             packages.appendChild(packageElement);
@@ -402,15 +402,15 @@ public class CoberturaXmlGenerator {
             Element classesElement = doc.createElement("classes");
             packageElement.appendChild(classesElement);
 
-            addClasses(doc, files, classesElement);
+            addClasses(doc, files, classesElement, sourceDir);
         }
     }
 
-    private void addClasses(Document doc, Set<? extends Coverable> files, Element classesElement) {
+    private void addClasses(Document doc, Set<? extends Coverable> files, Element classesElement, String sourceDir) {
         for (Coverable file : files) {
             Element classElement = doc.createElement("class");
             classesElement.appendChild(classElement);
-            classElement.setAttribute("name", file.getUri());
+            classElement.setAttribute("name", format("%s%s", sourceDir.replaceAll("\\\\","/"), file.getUri()));
             classElement.setAttribute("filename", file.getUri());
             classElement.setAttribute("line-rate", "" + file.getLineCoverRate());
             classElement.setAttribute("branch-rate", "" + file.getBranchRate());

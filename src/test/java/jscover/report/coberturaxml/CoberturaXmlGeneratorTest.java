@@ -349,6 +349,6 @@ public class CoberturaXmlGeneratorTest {
 
     @Test(expected = RuntimeException.class)
     public void shouldWrapException() {
-        generator.generateXml(null, null);
+        generator.generateXml(null, null, null);
     }
 }

@@ -586,13 +586,9 @@
                     Currently JSCover supports COBERTURAXML (e.g. for Jenkins), XML summary and LCOV report formats.
                 </text>
                 <text>
-                    <code>java -cp JSCover-all.jar jscover.report.Main --format=[ XMLSUMMARY | COBERTURAXML ] REPORT-DIR</code>
-                    <code>java -cp JSCover-all.jar jscover.report.Main --format=LCOV REPORT-DIR SRC-DIRECTORY</code>
+                    <code>java -cp JSCover-all.jar jscover.report.Main --format=XMLSUMMARY REPORT-DIR</code>
+                    <code>java -cp JSCover-all.jar jscover.report.Main --format=[ LCOV | COBERTURAXML ] REPORT-DIR SRC-DIRECTORY</code>
                     <code>java -cp JSCover-all.jar jscover.report.Main --merge REPORT-DIR1 REPORT-DIR2 REPORT-DIR3...DEST-DIR</code>
-                    For example:
-                    <code>java -cp JSCover-all.jar jscover.report.Main --format=COBERTURAXML REPORT-DIR</code>
-                    <code>java -cp JSCover-all.jar jscover.report.Main --format=LCOV REPORT-DIR SRC-DIRECTORY</code>
-                    <code>java -cp JSCover-all.jar jscover.report.Main --merge target/coverage1 target/coverage2 target/total-coverage</code>
                 </text>
                 <text>
                     <table>
@@ -614,7 +610,7 @@
                         <tr>
                             <td>--format=COBERTURAXML</td>
                             <td>None</td>
-                            <td>Output Cobertura XML to REPORT-DIR/cobertura-coverage.xml</td>
+                            <td>Output Cobertura XML to REPORT-DIR/cobertura-coverage.xml with source at SRC-DIRECTORY</td>
                         </tr>
                         <tr>
                             <td>--format=LCOV</td>
@@ -633,7 +629,7 @@
                     <item>
                         <heading id="coberturaXml">Cobertura XML</heading>
                         <text>
-                            <code>java -cp JSCover-all.jar jscover.report.Main --format=COBERTURAXML REPORT-DIR</code>
+                            <code>java -cp JSCover-all.jar jscover.report.Main --format=COBERTURAXML REPORT-DIR SRC-DIRECTORY</code>
                         </text>
                         <text>
                             The Cobertura XML is provided to integrate with
