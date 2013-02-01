@@ -583,14 +583,12 @@
                 <text>
                     JSCover's JSON coverage data can be merged together and converted to other formats.
                     This is useful to integrate with other tools - let us know what formats are required.
-                    Currently JSCover supports XML summary and LCOV report formats.
+                    Currently JSCover supports COBERTURAXML (e.g. for Jenkins), XML summary and LCOV report formats.
                 </text>
                 <text>
-                    <code>java -cp JSCover-all.jar jscover.report.Main --format=[ XMLSUMMARY | LCOV ] REPORT-DIR [SRC-DIRECTORY]</code>
+                    <code>java -cp JSCover-all.jar jscover.report.Main --format=XMLSUMMARY REPORT-DIR</code>
+                    <code>java -cp JSCover-all.jar jscover.report.Main --format=[ LCOV | COBERTURAXML ] REPORT-DIR SRC-DIRECTORY</code>
                     <code>java -cp JSCover-all.jar jscover.report.Main --merge REPORT-DIR1 REPORT-DIR2 REPORT-DIR3...DEST-DIR</code>
-                    For example:
-                    <code>java -cp JSCover-all.jar jscover.report.Main --format=LCOV REPORT-DIR SRC-DIRECTORY</code>
-                    <code>java -cp JSCover-all.jar jscover.report.Main --merge target/coverage1 target/coverage2 target/total-coverage</code>
                 </text>
                 <text>
                     <table>
@@ -610,6 +608,11 @@
                             <td>Output XML summary to REPORT-DIR/jscover-summary.xml</td>
                         </tr>
                         <tr>
+                            <td>--format=COBERTURAXML</td>
+                            <td>None</td>
+                            <td>Output Cobertura XML to REPORT-DIR/cobertura-coverage.xml with source at SRC-DIRECTORY</td>
+                        </tr>
+                        <tr>
                             <td>--format=LCOV</td>
                             <td>None</td>
                             <td>Output LCOV data to REPORT-DIR/jscover.lcov with source at SRC-DIRECTORY</td>
@@ -624,11 +627,37 @@
                 <item>
                     <heading id="reportConversion">Report Conversion</heading>
                     <item>
+                        <heading id="coberturaXml">Cobertura XML</heading>
+                        <text>
+                            <code>java -cp JSCover-all.jar jscover.report.Main --format=COBERTURAXML REPORT-DIR SRC-DIRECTORY</code>
+                        </text>
+                        <text>
+                            The Cobertura XML is provided to integrate with
+                            <a href="http://jenkins-ci.org/" target="_blank">Jenkins CI</a>.
+                            The XML validates against
+                            Cobertura's <var>coverage-04.dtd</var>.
+                            Supported elements for coverage metric targets:
+                            <ul>
+                                <li><var>coverage</var> totals for all JavaScript files</li>
+                                <li><var>package</var> totals for JavaScript files in the same path</li>
+                                <li><var>class</var> total for single JavaScript file</li>
+                                <li>
+                                    <var>line</var> hits for single JavaScript line
+                                    and total for all conditions on the line
+                                </li>
+                                <li><var>condition</var> coverage for single JavaScript condition</li>
+                            </ul>
+                            Unsupported elements (which should not affect Jenkins):
+                            <ul>
+                                <li><var>methods</var> not populated with method elements</li>
+                            </ul>
+                            Where there are no branches the branch rate is set to 1.
+                        </text>
+                    </item>
+                    <item>
                         <heading id="xmlSummary">XML Summary</heading>
                         <text>
-                            <code>java -cp JSCover-all.jar jscover.report.Main --format=[ XMLSUMMARY | LCOV ] REPORT-DIR [SRC-DIRECTORY]</code>
-                            For example:
-                            <code>java -cp JSCover-all.jar jscover.report.Main --format=LCOV REPORT-DIR SRC-DIRECTORY</code>
+                            <code>java -cp JSCover-all.jar jscover.report.Main --format=XMLSUMMARY REPORT-DIR</code>
                         </text>
                         <text>
                             The XML summary report records the following totals for easy parsing:
@@ -863,12 +892,39 @@
                 </text>
             </item>
             <item>
+                <heading id="automatingPhantomJS">PhantomJS</heading>
+                <text>
+                    The example here is for running Jasmine tests. Please feel free to send more documentation to this
+                    project if you're using PhantomJS.
+                </text>
+                <text>
+                    Download <a href="http://phantomjs.org/" target="_blank">PhantomJS</a> and
+                    <a href="http://code.google.com/p/phantomjs/source/browse/examples/run-jasmine.js" target="_blank">run-jasmine.js</a>
+                    , and add the <a href="#jsReportStorage">programmatic report storage</a>
+                    call before the exit command, <var>phantom.exit(exitCode);</var>, of <var>run-jasmine.js</var>.
+<code>page.evaluate(function(){
+    jscoverage_report('phantom-dir');
+});
+phantom.exit(exitCode);</code>
+                </text>
+                <text>
+                    Once you have JSCover running in server mode, you can then execute:
+                <code>phantomjs /RUN-JASMINE-PATH/run-jasmine.js http://localhost:8080/test/javascript/spec/suite.html</code>
+                </text>
+                <text>
+                    This will execute the tests and store the coverage results in the 'phantom-dir' sub-directory of the
+                    of JSCover's report directory.
+                    NB the sub-directory argument given to <var>jscoverage_report</var> is optional.
+                </text>
+            </item>
+            <item>
                 <heading id="automatingAnt">Ant</heading>
                 <text>
                     Example starting the server
 <code>    &lt;target name="JSCover-start"&gt;
          &lt;java jar="JSCover-all.jar" fork="true" spawn="true"&gt;
             &lt;arg value="-ws"/&gt;
+            &lt;arg value="--document-root=src"/&gt;
             &lt;arg value="--branch"/&gt;
             &lt;arg value="--report-dir=${jscover.dir}"/&gt;
             &lt;arg value="--no-instrument=src/main/webapp/js/lib"/&gt;
