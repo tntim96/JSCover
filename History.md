@@ -1,3 +1,7 @@
+0.2.3 / 2013-02-??
+==================
+  * Fix Cobertura XML output (https://github.com/tntim96/JSCover/issues/39)
+
 0.2.2 / 2013-02-01
 ==================
   * Synchronize threads saving JSON to the same report directory (https://github.com/tntim96/JSCover/pull/40).

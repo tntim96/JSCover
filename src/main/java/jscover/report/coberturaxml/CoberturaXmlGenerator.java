@@ -425,23 +425,32 @@ public class CoberturaXmlGenerator {
     }
 
     private void addLines(Document doc, Element linesElement, FileData fileData) {
-        for (int i = 0; i < fileData.getLines().size(); i++) {
-            Integer hits = fileData.getLines().get(i);
-            if (hits != null && hits > 0) {
-                Element lineElement = doc.createElement("line");
-                linesElement.appendChild(lineElement);
-                lineElement.setAttribute("number", "" + i);
-                lineElement.setAttribute("hits", hits.toString());
-                if (i >= fileData.getBranchData().size()) {
+        int maxLines = Math.max(fileData.getLines().size(), fileData.getBranchData().size());
+        for (int i = 0; i < maxLines; i++) {
+            Element lineElement = null;
+            //Add line element
+            if (i < fileData.getLines().size()) {
+                Integer hits = fileData.getLines().get(i);
+                if (hits != null && hits > 0) {
+                    lineElement = doc.createElement("line");
+                    linesElement.appendChild(lineElement);
+                    lineElement.setAttribute("number", "" + i);
+                    lineElement.setAttribute("hits", hits.toString());
                     lineElement.setAttribute("branch", "false");
-                } else {
-                    List<BranchData> branchDatas = fileData.getBranchData().get(i);
-                    if (branchDatas.size() < 2) {
-                        lineElement.setAttribute("branch", "false");
-                    } else {
-                        addBranches(doc, lineElement, branchDatas);
-                    }
                 }
+            }
+            //Add branch element
+            if (i < fileData.getBranchData().size()) {
+                List<BranchData> branchDatas = fileData.getBranchData().get(i);
+                if (fileData.getBranchData().get(i).size() < 2)
+                    continue;
+                if (lineElement == null) {
+                    lineElement = doc.createElement("line");
+                    linesElement.appendChild(lineElement);
+                    lineElement.setAttribute("number", "" + i);
+                    lineElement.setAttribute("hits", "0");
+                }
+                addBranches(doc, lineElement, branchDatas);
             }
         }
     }
