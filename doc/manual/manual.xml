@@ -639,6 +639,7 @@
                             Supported elements for coverage metric targets:
                             <ul>
                                 <li><var>coverage</var> totals for all JavaScript files</li>
+                                <li><var>source</var> path to source (currently only supports one path)</li>
                                 <li><var>package</var> totals for JavaScript files in the same path</li>
                                 <li><var>class</var> total for single JavaScript file</li>
                                 <li>

@@ -380,11 +380,11 @@ public class CoberturaXmlGenerator {
             coverageElement.appendChild(sources);
             Element source = doc.createElement("source");
             sources.appendChild(source);
-            source.setTextContent(sourceDir);
+            source.setTextContent(sourceDir.replaceAll("\\\\","/"));
 
             Element packages = doc.createElement("packages");
             coverageElement.appendChild(packages);
-            addPackages(data, doc, packages, sourceDir);
+            addPackages(data, doc, packages);
 
             return getString(doc);
         } catch (Exception e) {
@@ -392,7 +392,7 @@ public class CoberturaXmlGenerator {
         }
     }
 
-    private void addPackages(CoberturaData data, Document doc, Element packages, String sourceDir) {
+    private void addPackages(CoberturaData data, Document doc, Element packages) {
         for (String path : data.getPackageMap().keySet()) {
             Element packageElement = doc.createElement("package");
             packages.appendChild(packageElement);
@@ -406,15 +406,15 @@ public class CoberturaXmlGenerator {
             Element classesElement = doc.createElement("classes");
             packageElement.appendChild(classesElement);
 
-            addClasses(doc, files, classesElement, sourceDir);
+            addClasses(doc, files, classesElement);
         }
     }
 
-    private void addClasses(Document doc, Set<? extends Coverable> files, Element classesElement, String sourceDir) {
+    private void addClasses(Document doc, Set<? extends Coverable> files, Element classesElement) {
         for (Coverable file : files) {
             Element classElement = doc.createElement("class");
             classesElement.appendChild(classElement);
-            classElement.setAttribute("name", format("%s%s", sourceDir.replaceAll("\\\\","/"), file.getUri()));
+            classElement.setAttribute("name", file.getUri());
             classElement.setAttribute("filename", file.getUri());
             classElement.setAttribute("line-rate", "" + file.getLineCoverRate());
             classElement.setAttribute("branch-rate", "" + file.getBranchRate());

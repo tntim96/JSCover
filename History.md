@@ -1,4 +1,4 @@
-0.2.3 / 2013-02-??
+0.2.3 / 2013-02-04
 ==================
   * Fix Cobertura XML output (https://github.com/tntim96/JSCover/issues/39)
 

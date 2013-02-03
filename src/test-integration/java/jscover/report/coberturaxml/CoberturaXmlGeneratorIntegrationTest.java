@@ -430,7 +430,7 @@ public class CoberturaXmlGeneratorIntegrationTest {
     public void shouldGenerateXml() throws Exception {
         String json = IoUtils.getInstance().loadFromFileSystem(new File("src/test-integration/resources/jscover/report/xml/jscoverage.json"));
         CoberturaData data = new CoberturaData(jsonDataMerger.jsonToMap(json).values());
-        String xml = xmlGenerator.generateXml(data, "/sourceDir", "theVersion");
+        String xml = xmlGenerator.generateXml(data, "c:\\sourceDir", "theVersion");
         Document document = parseXml(xml);
         XPath xpath = XPathFactory.newInstance().newXPath();
 
@@ -448,7 +448,7 @@ public class CoberturaXmlGeneratorIntegrationTest {
         assertThat(getXPath(xpath, document, "/coverage/@timestamp"), notNullValue());
 
         //Check summary
-        assertThat(getXPath(xpath, document, "/coverage/sources/source"), equalTo("/sourceDir"));
+        assertThat(getXPath(xpath, document, "/coverage/sources/source"), equalTo("c:/sourceDir"));
 
         //Check package
         assertThat(xml, containsString("<packages>"));
@@ -460,7 +460,7 @@ public class CoberturaXmlGeneratorIntegrationTest {
         assertThat(getXPath(xpath, document, yuiPackageXPath + "/@branch-rate"), equalTo("0.3778801843317972"));
 
         //Check class
-        String yuiClassXPath = yuiPackageXPath + "/classes/class[@name='/sourceDir/build/yui/yui.js']";
+        String yuiClassXPath = yuiPackageXPath + "/classes/class[@name='/build/yui/yui.js']";
         assertThat(getXPath(xpath, document, yuiClassXPath + "/@branch-rate"), equalTo("0.3778801843317972"));
         assertThat(getXPath(xpath, document, yuiClassXPath + "/@line-rate"), equalTo("0.5852017937219731"));
         assertThat(getXPath(xpath, document, yuiClassXPath + "/@complexity"), equalTo("0"));
