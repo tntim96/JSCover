@@ -376,7 +376,11 @@ public class CoberturaXmlGenerator {
             doc.appendChild(coverageElement);
             addCoverageAttributes(version, summaryTotal, coverageElement);
 
-            coverageElement.appendChild(doc.createElement("sources"));
+            Element sources = doc.createElement("sources");
+            coverageElement.appendChild(sources);
+            Element source = doc.createElement("source");
+            sources.appendChild(source);
+            source.setTextContent(sourceDir);
 
             Element packages = doc.createElement("packages");
             coverageElement.appendChild(packages);

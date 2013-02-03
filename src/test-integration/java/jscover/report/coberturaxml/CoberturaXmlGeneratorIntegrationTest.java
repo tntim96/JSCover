@@ -447,7 +447,8 @@ public class CoberturaXmlGeneratorIntegrationTest {
         assertThat(getXPath(xpath, document, "/coverage/@version"), equalTo("theVersion"));
         assertThat(getXPath(xpath, document, "/coverage/@timestamp"), notNullValue());
 
-        assertThat(xml, containsString("<sources/>"));
+        //Check summary
+        assertThat(getXPath(xpath, document, "/coverage/sources/source"), equalTo("/sourceDir"));
 
         //Check package
         assertThat(xml, containsString("<packages>"));
