@@ -342,13 +342,58 @@ Public License instead of this License.
 
 package jscover.report.coberturaxml;
 
+import jscover.report.FileData;
+import jscover.util.LocalEntityResolver;
+import jscover.util.ReThrowingErrorHandler;
 import org.junit.Test;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.HashSet;
+
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
 
 public class CoberturaXmlGeneratorTest {
     private CoberturaXmlGenerator generator = new CoberturaXmlGenerator();
+    Collection<FileData> files = new HashSet<FileData>();
+    CoberturaData data = new CoberturaData(files);
 
     @Test(expected = RuntimeException.class)
     public void shouldWrapException() {
         generator.generateXml(null, null, null);
+    }
+
+    @Test
+    public void shouldGenerateXmlSourceAndVersion() throws Exception {
+        String xml = generator.generateXml(data, "c:\\sourceDir", "version");
+        //System.out.println("xml = " + xml);
+        Document document = parseXml(xml);
+        XPath xpath = XPathFactory.newInstance().newXPath();
+        assertThat(getXPath(xpath, document, "/coverage/@version"), equalTo("version"));
+        assertThat(getXPath(xpath, document, "/coverage/sources/source"), equalTo("c:/sourceDir"));
+    }
+
+    private Document parseXml(String xml) throws ParserConfigurationException, SAXException, IOException {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setValidating(true);
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        builder.setEntityResolver(new LocalEntityResolver());
+        //Turn on line below when XML DTD validation will pass.
+        builder.setErrorHandler(new ReThrowingErrorHandler());
+        return builder.parse(new ByteArrayInputStream(xml.getBytes()));
+    }
+
+    private String getXPath(XPath xpath, Document document, String expression) throws Exception {
+        return (String)xpath.evaluate(expression, document, XPathConstants.STRING);
     }
 }

@@ -344,6 +344,8 @@ package jscover.report.coberturaxml;
 
 import jscover.report.JSONDataMerger;
 import jscover.util.IoUtils;
+import jscover.util.LocalEntityResolver;
+import jscover.util.ReThrowingErrorHandler;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.xml.sax.*;
@@ -392,29 +394,6 @@ public class CoberturaXmlGeneratorIntegrationTest {
             "    </package>\n" +
             "  </packages>\n" +
             "</coverage>";
-
-    static class LocalEntityResolver implements EntityResolver {
-        public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
-            int nameStart = systemId.lastIndexOf('/');
-            String file = systemId.substring(nameStart + 1);
-            InputStream is = getClass().getResourceAsStream("/jscover/report/coberturaxml/" + file);
-            return new InputSource(is);
-        }
-    }
-
-    static class ReThrowingErrorHandler implements ErrorHandler {
-        public void warning(SAXParseException exception) throws SAXException {
-            throw exception;
-        }
-
-        public void error(SAXParseException exception) throws SAXException {
-            throw exception;
-        }
-
-        public void fatalError(SAXParseException exception) throws SAXException {
-            throw exception;
-        }
-    }
 
     @Test
     public void shouldValidateXmlToDtd() throws Exception {
