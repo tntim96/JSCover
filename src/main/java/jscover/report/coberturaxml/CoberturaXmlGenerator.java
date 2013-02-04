@@ -386,10 +386,22 @@ public class CoberturaXmlGenerator {
             coverageElement.appendChild(packages);
             addPackages(data, doc, packages);
 
-            return getString(doc);
+            return getXmlString(doc);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void addCoverageAttributes(String version, SummaryData summaryTotal, Element root) {
+        root.setAttribute("line-rate", "" + summaryTotal.getLineCoverRate());
+        root.setAttribute("lines-covered", "" + summaryTotal.getCodeLinesCoveredCount());
+        root.setAttribute("lines-valid", "" + summaryTotal.getCodeLineCount());
+        root.setAttribute("branch-rate", "" + summaryTotal.getBranchRate());
+        root.setAttribute("branches-covered", "" + summaryTotal.getBranchesCoveredCount());
+        root.setAttribute("branches-valid", "" + summaryTotal.getBranchCount());
+        root.setAttribute("complexity", "0");
+        root.setAttribute("version", version);
+        root.setAttribute("timestamp", "" + new Date().getTime());
     }
 
     private void addPackages(CoberturaData data, Document doc, Element packages) {
@@ -433,29 +445,38 @@ public class CoberturaXmlGenerator {
         for (int i = 0; i < maxLines; i++) {
             Element lineElement = null;
             //Add line element
-            if (i < fileData.getLines().size()) {
-                Integer hits = fileData.getLines().get(i);
-                if (hits != null) {
-                    lineElement = doc.createElement("line");
-                    linesElement.appendChild(lineElement);
-                    lineElement.setAttribute("number", "" + i);
-                    lineElement.setAttribute("hits", hits.toString());
-                    lineElement.setAttribute("branch", "false");
-                }
-            }
+            lineElement = addLineElement(doc, linesElement, fileData, i, lineElement);
             //Add branch element
-            if (i < fileData.getBranchData().size()) {
-                List<BranchData> branchDatas = fileData.getBranchData().get(i);
-                if (fileData.getBranchData().get(i).size() < 2)
-                    continue;
-                if (lineElement == null) {
-                    lineElement = doc.createElement("line");
-                    linesElement.appendChild(lineElement);
-                    lineElement.setAttribute("number", "" + i);
-                }
-                boolean wasHit = addBranches(doc, lineElement, branchDatas);
-                lineElement.setAttribute("hits", wasHit ? "1" : "0");
+            addBranchElement(doc, linesElement, fileData, i, lineElement);
+        }
+    }
+
+    private Element addLineElement(Document doc, Element linesElement, FileData fileData, int i, Element lineElement) {
+        if (i < fileData.getLines().size()) {
+            Integer hits = fileData.getLines().get(i);
+            if (hits != null) {
+                lineElement = doc.createElement("line");
+                linesElement.appendChild(lineElement);
+                lineElement.setAttribute("number", "" + i);
+                lineElement.setAttribute("hits", hits.toString());
+                lineElement.setAttribute("branch", "false");
             }
+        }
+        return lineElement;
+    }
+
+    private void addBranchElement(Document doc, Element linesElement, FileData fileData, int i, Element lineElement) {
+        if (i < fileData.getBranchData().size()) {
+            List<BranchData> branchDatas = fileData.getBranchData().get(i);
+            if (fileData.getBranchData().get(i).size() < 2)
+                return;
+            if (lineElement == null) {
+                lineElement = doc.createElement("line");
+                linesElement.appendChild(lineElement);
+                lineElement.setAttribute("number", "" + i);
+            }
+            boolean wasHit = addBranches(doc, lineElement, branchDatas);
+            lineElement.setAttribute("hits", wasHit ? "1" : "0");
         }
     }
 
@@ -482,29 +503,16 @@ public class CoberturaXmlGenerator {
         return branchHits > 0;
     }
 
-    private void addCoverageAttributes(String version, SummaryData summaryTotal, Element root) {
-        root.setAttribute("line-rate", "" + summaryTotal.getLineCoverRate());
-        root.setAttribute("lines-covered", "" + summaryTotal.getCodeLinesCoveredCount());
-        root.setAttribute("lines-valid", "" + summaryTotal.getCodeLineCount());
-        root.setAttribute("branch-rate", "" + summaryTotal.getBranchRate());
-        root.setAttribute("branches-covered", "" + summaryTotal.getBranchesCoveredCount());
-        root.setAttribute("branches-valid", "" + summaryTotal.getBranchCount());
-        root.setAttribute("complexity", "0");
-        root.setAttribute("version", version);
-        root.setAttribute("timestamp", "" + new Date().getTime());
-    }
-
-    private String getString(Document doc) throws TransformerException {
+    private String getXmlString(Document doc) throws TransformerException {
         TransformerFactory tf = TransformerFactory.newInstance();
         Transformer transformer = tf.newTransformer();
         transformer.setOutputProperty(OutputKeys.METHOD, "xml");
         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
         transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", Integer.toString(2));
         transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, "http://cobertura.sourceforge.net/xml/coverage-04.dtd");
-        //        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+        //transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
         StringWriter writer = new StringWriter();
         DOMSource xmlSource = new DOMSource(doc.getDocumentElement());
-        //        xmlSource.setSystemId("http://cobertura.sourceforge.net/xml/coverage-04.dtd");
         transformer.transform(xmlSource, new StreamResult(writer));
         return writer.getBuffer().toString();
     }
