@@ -639,6 +639,7 @@
                             Supported elements for coverage metric targets:
                             <ul>
                                 <li><var>coverage</var> totals for all JavaScript files</li>
+                                <li><var>source</var> path to source (currently only supports one path)</li>
                                 <li><var>package</var> totals for JavaScript files in the same path</li>
                                 <li><var>class</var> total for single JavaScript file</li>
                                 <li>
@@ -652,6 +653,16 @@
                                 <li><var>methods</var> not populated with method elements</li>
                             </ul>
                             Where there are no branches the branch rate is set to 1.
+
+                        </text>
+                        <text>
+                            <img src="images/jenkins-13-summary.png" alt="Jenkins-CI Summary Report for YUI3"/>
+                        </text>
+                        <text>
+                            <img src="images/jenkins-14-package.png" alt="Jenkins-CI Package Report for YUI3"/>
+                        </text>
+                        <text>
+                            <img src="images/jenkins-15-file.png" alt="Jenkins-CI File Report for YUI3"/>
                         </text>
                     </item>
                     <item>
