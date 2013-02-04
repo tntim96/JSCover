@@ -452,14 +452,14 @@ public class CoberturaXmlGenerator {
                     lineElement = doc.createElement("line");
                     linesElement.appendChild(lineElement);
                     lineElement.setAttribute("number", "" + i);
-                    lineElement.setAttribute("hits", "1");
                 }
-                addBranches(doc, lineElement, branchDatas);
+                boolean wasHit = addBranches(doc, lineElement, branchDatas);
+                lineElement.setAttribute("hits", wasHit ? "1" : "0");
             }
         }
     }
 
-    private void addBranches(Document doc, Element lineElement, List<BranchData> branchDatas) {
+    private boolean addBranches(Document doc, Element lineElement, List<BranchData> branchDatas) {
         lineElement.setAttribute("branch", "true");
         Element conditionsElement = doc.createElement("conditions");
         lineElement.appendChild(conditionsElement);
@@ -479,6 +479,7 @@ public class CoberturaXmlGenerator {
                 branchHits++;
         }
         lineElement.setAttribute("condition-coverage", format("%d%% (%d/%d)", Math.round(branchHits*100d/branches), branchHits, branches));
+        return branchHits > 0;
     }
 
     private void addCoverageAttributes(String version, SummaryData summaryTotal, Element root) {
