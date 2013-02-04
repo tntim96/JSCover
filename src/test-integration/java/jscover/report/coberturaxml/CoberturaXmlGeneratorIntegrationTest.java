@@ -480,6 +480,10 @@ public class CoberturaXmlGeneratorIntegrationTest {
         String yuiBranchXPath = yuiClassXPath + "/lines/line[@number='62']";
         assertThat(getXPath(xpath, document, yuiBranchXPath + "/@hits"), equalTo("1"));
         assertThat(getXPath(xpath, document, yuiBranchXPath + "/@condition-coverage"), equalTo("50% (2/4)"));
+        //Check line 4393, branch data with no line hit
+        String yuiBranchUnHitXPath = yuiClassXPath + "/lines/line[@number='4393']";
+        assertThat(getXPath(xpath, document, yuiBranchUnHitXPath + "/@hits"), equalTo("0"));
+        assertThat(getXPath(xpath, document, yuiBranchUnHitXPath + "/@condition-coverage"), equalTo("0% (0/2)"));
 
         //Check condition
         String yuiConditionXPath = yuiLineXPath + "/conditions/condition[@number='1']";
