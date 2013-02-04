@@ -464,7 +464,7 @@ public class CoberturaXmlGeneratorIntegrationTest {
         assertThat(getXPath(xpath, document, yuiClassXPath + "/@branch-rate"), equalTo("0.3778801843317972"));
         assertThat(getXPath(xpath, document, yuiClassXPath + "/@line-rate"), equalTo("0.5852017937219731"));
         assertThat(getXPath(xpath, document, yuiClassXPath + "/@complexity"), equalTo("0"));
-        assertThat(getXPath(xpath, document, yuiClassXPath + "/@filename"), equalTo("/build/yui/yui.js"));
+        assertThat(getXPath(xpath, document, yuiClassXPath + "/@filename"), equalTo("build/yui/yui.js"));
 
         //Check line
         String yuiLineXPath = yuiClassXPath + "/lines/line[@number='10']";

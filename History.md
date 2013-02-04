@@ -1,6 +1,6 @@
 0.2.3 / 2013-02-04
 ==================
-  * Fix Cobertura XML output (https://github.com/tntim96/JSCover/issues/39)
+  * Fix Cobertura XML source display (https://github.com/tntim96/JSCover/issues/39)
 
 0.2.2 / 2013-02-01
 ==================

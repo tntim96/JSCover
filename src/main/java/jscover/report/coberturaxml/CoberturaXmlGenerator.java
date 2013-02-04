@@ -415,7 +415,7 @@ public class CoberturaXmlGenerator {
             Element classElement = doc.createElement("class");
             classesElement.appendChild(classElement);
             classElement.setAttribute("name", file.getUri());
-            classElement.setAttribute("filename", file.getUri());
+            classElement.setAttribute("filename", file.getUri().substring(1));
             classElement.setAttribute("line-rate", "" + file.getLineCoverRate());
             classElement.setAttribute("branch-rate", "" + file.getBranchRate());
             classElement.setAttribute("complexity", "0");
