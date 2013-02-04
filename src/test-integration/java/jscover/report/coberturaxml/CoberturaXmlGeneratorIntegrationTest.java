@@ -435,6 +435,7 @@ public class CoberturaXmlGeneratorIntegrationTest {
         XPath xpath = XPathFactory.newInstance().newXPath();
 
         //System.out.println("xml = " + xml);
+        //IoUtils.getInstance().copy(xml, new File("cobertura-coverage.xml"));
 
         //Check summary
         assertThat(getXPath(xpath, document, "/coverage/@complexity"), equalTo("0"));
@@ -471,10 +472,13 @@ public class CoberturaXmlGeneratorIntegrationTest {
         assertThat(getXPath(xpath, document, yuiLineXPath + "/@hits"), equalTo("1"));
         assertThat(getXPath(xpath, document, yuiLineXPath + "/@condition-coverage"), equalTo("50% (1/2)"));
         assertThat(getXPath(xpath, document, yuiLineXPath + "/@branch"), equalTo("true"));
+        //Check line with zero hits
+        String yuiLineZeroHitsXPath = yuiClassXPath + "/lines/line[@number='11']";
+        assertThat(getXPath(xpath, document, yuiLineZeroHitsXPath + "/@hits"), equalTo("0"));
 
         //Check line 62, branch data with no line hit
         String yuiBranchXPath = yuiClassXPath + "/lines/line[@number='62']";
-        assertThat(getXPath(xpath, document, yuiBranchXPath + "/@hits"), equalTo("0"));
+        assertThat(getXPath(xpath, document, yuiBranchXPath + "/@hits"), equalTo("1"));
         assertThat(getXPath(xpath, document, yuiBranchXPath + "/@condition-coverage"), equalTo("50% (2/4)"));
 
         //Check condition

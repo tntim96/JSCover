@@ -435,7 +435,7 @@ public class CoberturaXmlGenerator {
             //Add line element
             if (i < fileData.getLines().size()) {
                 Integer hits = fileData.getLines().get(i);
-                if (hits != null && hits > 0) {
+                if (hits != null) {
                     lineElement = doc.createElement("line");
                     linesElement.appendChild(lineElement);
                     lineElement.setAttribute("number", "" + i);
@@ -452,7 +452,7 @@ public class CoberturaXmlGenerator {
                     lineElement = doc.createElement("line");
                     linesElement.appendChild(lineElement);
                     lineElement.setAttribute("number", "" + i);
-                    lineElement.setAttribute("hits", "0");
+                    lineElement.setAttribute("hits", "1");
                 }
                 addBranches(doc, lineElement, branchDatas);
             }
