@@ -428,6 +428,51 @@ public class CoberturaXmlGeneratorTest {
         assertThat(getXPath(xpath, document, yuiClassXPath + "/@filename"), equalTo("dir/file.js"));
     }
 
+    @Test
+    public void shouldGenerateXmlForTwoFiles() throws Exception {
+        FileData coverable1 = mock(FileData.class);
+        files.add(coverable1);
+        FileData coverable2 = mock(FileData.class);
+        files.add(coverable2);
+
+        given(coverable1.getUri()).willReturn("/dir/file1.js");
+        given(coverable1.getCodeLineCount()).willReturn(8);
+        given(coverable1.getCodeLinesCoveredCount()).willReturn(4);
+        given(coverable1.getLineCoverRate()).willReturn(.5d);
+        given(coverable1.getBranchCount()).willReturn(5);
+        given(coverable1.getBranchesCoveredCount()).willReturn(2);
+        given(coverable1.getBranchRate()).willReturn(.4d);
+
+        given(coverable2.getUri()).willReturn("/dir/file2.js");
+        given(coverable2.getCodeLineCount()).willReturn(2);
+        given(coverable2.getCodeLinesCoveredCount()).willReturn(2);
+        given(coverable2.getLineCoverRate()).willReturn(1d);
+        given(coverable2.getBranchCount()).willReturn(5);
+        given(coverable2.getBranchesCoveredCount()).willReturn(5);
+        given(coverable2.getBranchRate()).willReturn(1d);
+
+        data = new CoberturaData(files);
+        String xml = generator.generateXml(data, "srcDir", "version");
+        //System.out.println("xml = " + xml);
+
+        Document document = parseXml(xml);
+        XPath xpath = XPathFactory.newInstance().newXPath();
+        assertThat(getXPath(xpath, document, "/coverage/@line-rate"), equalTo("0.6"));
+        assertThat(getXPath(xpath, document, "/coverage/@branch-rate"), equalTo("0.7"));
+        assertThat(getXPath(xpath, document, "/coverage/@lines-covered"), equalTo("6"));
+        assertThat(getXPath(xpath, document, "/coverage/@lines-valid"), equalTo("10"));
+        assertThat(getXPath(xpath, document, "/coverage/@branches-covered"), equalTo("7"));
+        assertThat(getXPath(xpath, document, "/coverage/@branches-valid"), equalTo("10"));
+
+        //Check package
+        assertThat(getXPath(xpath, document, "count(/coverage/packages/package)"), equalTo("1"));
+        String yuiPackageXPath = "/coverage/packages/package[@name='/dir']";
+        assertThat(getXPath(xpath, document, yuiPackageXPath + "/@name"), equalTo("/dir"));
+        assertThat(getXPath(xpath, document, yuiPackageXPath + "/@complexity"), equalTo("0"));
+        assertThat(getXPath(xpath, document, yuiPackageXPath + "/@line-rate"), equalTo("0.6"));
+        assertThat(getXPath(xpath, document, yuiPackageXPath + "/@branch-rate"), equalTo("0.7"));
+    }
+
     private Document parseXml(String xml) throws ParserConfigurationException, SAXException, IOException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setValidating(true);
