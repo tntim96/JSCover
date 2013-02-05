@@ -348,7 +348,8 @@ import jscover.util.LocalEntityResolver;
 import jscover.util.ReThrowingErrorHandler;
 import org.junit.Test;
 import org.w3c.dom.Document;
-import org.xml.sax.*;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -359,9 +360,7 @@ import javax.xml.xpath.XPathFactory;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
@@ -431,7 +430,6 @@ public class CoberturaXmlGeneratorIntegrationTest {
         assertThat(getXPath(xpath, document, "/coverage/sources/source"), equalTo("c:/sourceDir"));
 
         //Check package
-        assertThat(xml, containsString("<packages>"));
         assertThat(getXPath(xpath, document, "count(/coverage/packages/package)"), equalTo("41"));
         String yuiPackageXPath = "/coverage/packages/package[@name='/build/yui']";
         assertThat(getXPath(xpath, document, yuiPackageXPath + "/@name"), equalTo("/build/yui"));

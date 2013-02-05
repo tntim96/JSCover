@@ -342,6 +342,7 @@ Public License instead of this License.
 
 package jscover.report.coberturaxml;
 
+import jscover.report.Coverable;
 import jscover.report.FileData;
 import jscover.util.LocalEntityResolver;
 import jscover.util.ReThrowingErrorHandler;
@@ -362,10 +363,12 @@ import java.util.HashSet;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 
 public class CoberturaXmlGeneratorTest {
     private CoberturaXmlGenerator generator = new CoberturaXmlGenerator();
-    Collection<FileData> files = new HashSet<FileData>();
+    Collection<Coverable> files = new HashSet<Coverable>();
     CoberturaData data = new CoberturaData(files);
 
     @Test(expected = RuntimeException.class)
@@ -376,11 +379,53 @@ public class CoberturaXmlGeneratorTest {
     @Test
     public void shouldGenerateXmlSourceAndVersion() throws Exception {
         String xml = generator.generateXml(data, "c:\\sourceDir", "version");
-        //System.out.println("xml = " + xml);
+
         Document document = parseXml(xml);
         XPath xpath = XPathFactory.newInstance().newXPath();
         assertThat(getXPath(xpath, document, "/coverage/@version"), equalTo("version"));
         assertThat(getXPath(xpath, document, "/coverage/sources/source"), equalTo("c:/sourceDir"));
+    }
+
+    @Test
+    public void shouldGenerateXmlForOneFile() throws Exception {
+        FileData coverable = mock(FileData.class);
+        files.add(coverable);
+
+        given(coverable.getUri()).willReturn("/dir/file.js");
+        given(coverable.getCodeLineCount()).willReturn(10);
+        given(coverable.getCodeLinesCoveredCount()).willReturn(5);
+        given(coverable.getLineCoverRate()).willReturn(.5d);
+        given(coverable.getBranchCount()).willReturn(5);
+        given(coverable.getBranchesCoveredCount()).willReturn(2);
+        given(coverable.getBranchRate()).willReturn(.4d);
+
+        data = new CoberturaData(files);
+        String xml = generator.generateXml(data, "srcDir", "version");
+        //System.out.println("xml = " + xml);
+
+        Document document = parseXml(xml);
+        XPath xpath = XPathFactory.newInstance().newXPath();
+        assertThat(getXPath(xpath, document, "/coverage/@line-rate"), equalTo("0.5"));
+        assertThat(getXPath(xpath, document, "/coverage/@branch-rate"), equalTo("0.4"));
+        assertThat(getXPath(xpath, document, "/coverage/@lines-covered"), equalTo("5"));
+        assertThat(getXPath(xpath, document, "/coverage/@lines-valid"), equalTo("10"));
+        assertThat(getXPath(xpath, document, "/coverage/@branches-covered"), equalTo("2"));
+        assertThat(getXPath(xpath, document, "/coverage/@branches-valid"), equalTo("5"));
+
+        //Check package
+        assertThat(getXPath(xpath, document, "count(/coverage/packages/package)"), equalTo("1"));
+        String yuiPackageXPath = "/coverage/packages/package[@name='/dir']";
+        assertThat(getXPath(xpath, document, yuiPackageXPath + "/@name"), equalTo("/dir"));
+        assertThat(getXPath(xpath, document, yuiPackageXPath + "/@complexity"), equalTo("0"));
+        assertThat(getXPath(xpath, document, yuiPackageXPath + "/@line-rate"), equalTo("0.5"));
+        assertThat(getXPath(xpath, document, yuiPackageXPath + "/@branch-rate"), equalTo("0.4"));
+
+        //Check class
+        String yuiClassXPath = yuiPackageXPath + "/classes/class[@name='/dir/file.js']";
+        assertThat(getXPath(xpath, document, yuiClassXPath + "/@branch-rate"), equalTo("0.4"));
+        assertThat(getXPath(xpath, document, yuiClassXPath + "/@line-rate"), equalTo("0.5"));
+        assertThat(getXPath(xpath, document, yuiClassXPath + "/@complexity"), equalTo("0"));
+        assertThat(getXPath(xpath, document, yuiClassXPath + "/@filename"), equalTo("dir/file.js"));
     }
 
     private Document parseXml(String xml) throws ParserConfigurationException, SAXException, IOException {
