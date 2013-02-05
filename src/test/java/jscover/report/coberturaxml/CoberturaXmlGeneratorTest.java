@@ -494,6 +494,35 @@ public class CoberturaXmlGeneratorTest {
         assertThat(getXPath(xpath, document, "//line/@branch"), equalTo("false"));
     }
 
+    @Test
+    public void shouldGenerateXmlBranchNoLine() throws Exception {
+        List<Integer> lines = new ArrayList<Integer>();
+        List<List<BranchData>> branchDatas = new ArrayList<List<BranchData>>();
+        List<BranchData> branchData = new ArrayList<BranchData>(){{add(null);}{
+        BranchData branchData1 = new BranchData(0, 0, null, 1, 0);
+        add(branchData1);}};
+        branchDatas.add(new ArrayList<BranchData>());
+        branchDatas.add(branchData);
+        files.add(new FileData("/dir/file.js", lines, branchDatas));
+
+        data = new CoberturaData(files);
+        String xml = generator.generateXml(data, "srcDir", "version");
+        //System.out.println("xml = " + xml);
+
+        Document document = parseXml(xml);
+        XPath xpath = XPathFactory.newInstance().newXPath();
+        assertThat(getXPath(xpath, document, "count(//line)"), equalTo("1"));
+        assertThat(getXPath(xpath, document, "//line/@number"), equalTo("1"));
+        assertThat(getXPath(xpath, document, "//line/@hits"), equalTo("1"));
+        assertThat(getXPath(xpath, document, "//line/@branch"), equalTo("true"));
+        assertThat(getXPath(xpath, document, "//line/@condition-coverage"), equalTo("50% (1/2)"));
+
+        assertThat(getXPath(xpath, document, "count(//condition)"), equalTo("1"));
+        assertThat(getXPath(xpath, document, "//condition/@coverage"), equalTo("50%"));
+        assertThat(getXPath(xpath, document, "//condition/@number"), equalTo("1"));
+        assertThat(getXPath(xpath, document, "//condition/@type"), equalTo("jump"));
+    }
+
     private Document parseXml(String xml) throws ParserConfigurationException, SAXException, IOException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setValidating(true);
