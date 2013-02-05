@@ -497,13 +497,13 @@ public class CoberturaXmlGeneratorTest {
     @Test
     public void shouldGenerateXmlBranchNoLine() throws Exception {
         List<Integer> lines = new ArrayList<Integer>();
-        List<List<BranchData>> branchDatas = new ArrayList<List<BranchData>>();
-        List<BranchData> branchData = new ArrayList<BranchData>(){{add(null);}{
-        BranchData branchData1 = new BranchData(0, 0, null, 1, 0);
-        add(branchData1);}};
-        branchDatas.add(new ArrayList<BranchData>());
-        branchDatas.add(branchData);
-        files.add(new FileData("/dir/file.js", lines, branchDatas));
+        List<List<BranchData>> branchDataLists = new ArrayList<List<BranchData>>();
+        List<BranchData> branchDataList = new ArrayList<BranchData>(){{add(null);}{
+        BranchData branchData = new BranchData(0, 0, null, 1, 0);
+        add(branchData);}};
+        branchDataLists.add(new ArrayList<BranchData>());
+        branchDataLists.add(branchDataList);
+        files.add(new FileData("/dir/file.js", lines, branchDataLists));
 
         data = new CoberturaData(files);
         String xml = generator.generateXml(data, "srcDir", "version");
@@ -519,6 +519,64 @@ public class CoberturaXmlGeneratorTest {
 
         assertThat(getXPath(xpath, document, "count(//condition)"), equalTo("1"));
         assertThat(getXPath(xpath, document, "//condition/@coverage"), equalTo("50%"));
+        assertThat(getXPath(xpath, document, "//condition/@number"), equalTo("1"));
+        assertThat(getXPath(xpath, document, "//condition/@type"), equalTo("jump"));
+    }
+
+    @Test
+    public void shouldGenerateXmlLineAndBranch() throws Exception {
+        List<Integer> lines = new ArrayList<Integer>(){{add(null);}{add(10);}};
+        List<List<BranchData>> branchDataLists = new ArrayList<List<BranchData>>();
+        List<BranchData> branchDataList = new ArrayList<BranchData>(){{add(null);}{
+        BranchData branchData = new BranchData(0, 0, null, 0, 1);
+        add(branchData);}};
+        branchDataLists.add(new ArrayList<BranchData>());
+        branchDataLists.add(branchDataList);
+        files.add(new FileData("/dir/file.js", lines, branchDataLists));
+
+        data = new CoberturaData(files);
+        String xml = generator.generateXml(data, "srcDir", "version");
+        //System.out.println("xml = " + xml);
+
+        Document document = parseXml(xml);
+        XPath xpath = XPathFactory.newInstance().newXPath();
+        assertThat(getXPath(xpath, document, "count(//line)"), equalTo("1"));
+        assertThat(getXPath(xpath, document, "//line/@number"), equalTo("1"));
+        assertThat(getXPath(xpath, document, "//line/@hits"), equalTo("1"));
+        assertThat(getXPath(xpath, document, "//line/@branch"), equalTo("true"));
+        assertThat(getXPath(xpath, document, "//line/@condition-coverage"), equalTo("50% (1/2)"));
+
+        assertThat(getXPath(xpath, document, "count(//condition)"), equalTo("1"));
+        assertThat(getXPath(xpath, document, "//condition/@coverage"), equalTo("50%"));
+        assertThat(getXPath(xpath, document, "//condition/@number"), equalTo("1"));
+        assertThat(getXPath(xpath, document, "//condition/@type"), equalTo("jump"));
+    }
+
+    @Test
+    public void shouldGenerateXmlBranchNoLineNoHit() throws Exception {
+        List<Integer> lines = new ArrayList<Integer>();
+        List<List<BranchData>> branchDatas = new ArrayList<List<BranchData>>();
+        List<BranchData> branchData = new ArrayList<BranchData>(){{add(null);}{
+        BranchData branchData1 = new BranchData(0, 0, null, 0, 0);
+        add(branchData1);}};
+        branchDatas.add(new ArrayList<BranchData>());
+        branchDatas.add(branchData);
+        files.add(new FileData("/dir/file.js", lines, branchDatas));
+
+        data = new CoberturaData(files);
+        String xml = generator.generateXml(data, "srcDir", "version");
+        //System.out.println("xml = " + xml);
+
+        Document document = parseXml(xml);
+        XPath xpath = XPathFactory.newInstance().newXPath();
+        assertThat(getXPath(xpath, document, "count(//line)"), equalTo("1"));
+        assertThat(getXPath(xpath, document, "//line/@number"), equalTo("1"));
+        assertThat(getXPath(xpath, document, "//line/@hits"), equalTo("0"));
+        assertThat(getXPath(xpath, document, "//line/@branch"), equalTo("true"));
+        assertThat(getXPath(xpath, document, "//line/@condition-coverage"), equalTo("0% (0/2)"));
+
+        assertThat(getXPath(xpath, document, "count(//condition)"), equalTo("1"));
+        assertThat(getXPath(xpath, document, "//condition/@coverage"), equalTo("0%"));
         assertThat(getXPath(xpath, document, "//condition/@number"), equalTo("1"));
         assertThat(getXPath(xpath, document, "//condition/@type"), equalTo("jump"));
     }
