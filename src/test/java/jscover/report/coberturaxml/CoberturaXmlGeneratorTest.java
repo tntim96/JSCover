@@ -555,13 +555,13 @@ public class CoberturaXmlGeneratorTest {
     @Test
     public void shouldGenerateXmlBranchNoLineNoHit() throws Exception {
         List<Integer> lines = new ArrayList<Integer>();
-        List<List<BranchData>> branchDatas = new ArrayList<List<BranchData>>();
-        List<BranchData> branchData = new ArrayList<BranchData>(){{add(null);}{
-        BranchData branchData1 = new BranchData(0, 0, null, 0, 0);
-        add(branchData1);}};
-        branchDatas.add(new ArrayList<BranchData>());
-        branchDatas.add(branchData);
-        files.add(new FileData("/dir/file.js", lines, branchDatas));
+        List<List<BranchData>> branchDataLists = new ArrayList<List<BranchData>>();
+        List<BranchData> branchDataList = new ArrayList<BranchData>(){{add(null);}{
+        BranchData branchData = new BranchData(0, 0, null, 0, 0);
+        add(branchData);}};
+        branchDataLists.add(new ArrayList<BranchData>());
+        branchDataLists.add(branchDataList);
+        files.add(new FileData("/dir/file.js", lines, branchDataLists));
 
         data = new CoberturaData(files);
         String xml = generator.generateXml(data, "srcDir", "version");
