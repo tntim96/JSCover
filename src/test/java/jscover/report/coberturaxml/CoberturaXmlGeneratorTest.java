@@ -342,6 +342,7 @@ Public License instead of this License.
 
 package jscover.report.coberturaxml;
 
+import jscover.report.BranchData;
 import jscover.report.Coverable;
 import jscover.report.FileData;
 import jscover.util.LocalEntityResolver;
@@ -358,8 +359,10 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -471,6 +474,24 @@ public class CoberturaXmlGeneratorTest {
         assertThat(getXPath(xpath, document, yuiPackageXPath + "/@complexity"), equalTo("0"));
         assertThat(getXPath(xpath, document, yuiPackageXPath + "/@line-rate"), equalTo("0.6"));
         assertThat(getXPath(xpath, document, yuiPackageXPath + "/@branch-rate"), equalTo("0.7"));
+    }
+
+    @Test
+    public void shouldGenerateXmlLineNoBranch() throws Exception {
+        List<Integer> lines = new ArrayList<Integer>(){{add(null);}{add(10);}};
+        List<List<BranchData>> branchData = new ArrayList<List<BranchData>>();
+        files.add(new FileData("/dir/file.js", lines, branchData));
+
+        data = new CoberturaData(files);
+        String xml = generator.generateXml(data, "srcDir", "version");
+        //System.out.println("xml = " + xml);
+
+        Document document = parseXml(xml);
+        XPath xpath = XPathFactory.newInstance().newXPath();
+        assertThat(getXPath(xpath, document, "count(//line)"), equalTo("1"));
+        assertThat(getXPath(xpath, document, "//line/@number"), equalTo("1"));
+        assertThat(getXPath(xpath, document, "//line/@hits"), equalTo("10"));
+        assertThat(getXPath(xpath, document, "//line/@branch"), equalTo("false"));
     }
 
     private Document parseXml(String xml) throws ParserConfigurationException, SAXException, IOException {
