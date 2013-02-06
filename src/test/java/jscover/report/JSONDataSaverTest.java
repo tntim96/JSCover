@@ -348,6 +348,7 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.internal.matchers.TypeSafeMatcher;
 import org.junit.runner.RunWith;
@@ -389,6 +390,64 @@ public class JSONDataSaverTest {
 
         String json = ioUtils.loadFromFileSystem(new File(destDir, "jscoverage.json"));
         assertThat(json, equalTo("data"));
+    }
+
+    @Test
+    @Ignore
+    public void shouldSaveDataAfterFirstThread() throws InterruptedException {
+        final StringBuilder sb = new StringBuilder();
+        Thread thread = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    synchronized (JSONDataSaver.files) {
+                        sb.append("1");
+                        Thread.sleep(200);
+                        JSONDataSaver.files.remove(destDir);
+                        JSONDataSaver.files.notifyAll();
+                        Thread.sleep(200);
+                        sb.append("2");
+                    }
+                    Thread.sleep(200);
+                    sb.append("3");
+                } catch (InterruptedException e) {
+                    throw new RuntimeException();
+                }
+            }
+        });
+        JSONDataSaver.files.add(destDir);
+        thread.start();
+        jsonDataSaver.saveJSONData(destDir, "data", null);
+        sb.append("4");
+        thread.join();
+
+        String json = ioUtils.loadFromFileSystem(new File(destDir, "jscoverage.json"));
+        assertThat(json, equalTo("data"));
+        assertThat(sb.toString(), equalTo("1243"));
+    }
+
+    @Test(expected = RuntimeException.class)
+    @Ignore
+    public void shouldReThrowInterruptedException() throws InterruptedException {
+        final StringBuilder sb = new StringBuilder();
+        final Thread testThread = Thread.currentThread();
+        Thread thread = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    synchronized (JSONDataSaver.files) {
+                        sb.append("1");
+                        Thread.sleep(200);
+                        testThread.interrupt();
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        JSONDataSaver.files.add(destDir);
+        thread.start();
+        jsonDataSaver.saveJSONData(destDir, "data", null);
+        sb.append("4");
+        thread.join();
     }
 
     @Test
