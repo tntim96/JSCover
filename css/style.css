@@ -31,10 +31,12 @@ table td {
 
 h2 {
     color: #F2D062;
+    margin: 5px 0px 2px 0px;
 }
 
 h3{
     color: #028A9E;
+    margin: 10px 0px 0px 0px;
 }
 
 p{
@@ -43,6 +45,7 @@ p{
 
 ul{
     color: #ddd;
+    margin: 0px;
 }
 
 #container {
