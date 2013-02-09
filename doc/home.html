@@ -19,27 +19,27 @@
 <h3>Coverage Features</h3>
 <ul>
     <li>Measures line and branch coverage</li>
-    <li>Coverage measured via a browser (i.e. supports DOM interaction)</li>
+    <li>Coverage measured via a browser, allowing DOM interaction</li>
+    <li>Browser independent and can be run headless in
+        <a href="manual/manual.xml#automatingHtmlUnit" target="_blank">HtmlUnit</a>
+        and
+        <a href="manual/manual.xml#automatingPhantomJS" target="_blank">PhantomJS</a>.
+    </li>
     <li>
-        Supports coverage measured in headless mode:
-        <ul>
-            <li><a href="manual/manual.xml#automatingHtmlUnit" target="_blank">HtmlUnit</a></li>
-            <li><a href="manual/manual.xml#automatingPhantomJS" target="_blank">PhantomJS</a></li>
-        </ul>
-        Also supports <a href="manual/manual.xml#automatingSelenium" target="_blank">Selenium</a>
-        (can be made headless via XVFB).
+        Because test coverage is collected in-browser, multiple tests can be run concurrently and
+        <a href="manual/manual.xml#reportMerging" target="_blank">report data merged</a>.
     </li>
 </ul>
 <h3>Coverage Reports</h3>
 <ul>
     <li>Stores report on the file-system</li>
-    <li>Supports collation coverage results from multiple independent tests</li>
+    <li>Supports <a href="manual/manual.xml#reportMerging" target="_blank">LCOVtest coverage results merging from multiple independent tests</a></li>
     <li>
         Multiple report formats supported (let us know what formats are required):
         <ul>
-            <li>LCOV</li>
-            <li>Cobertura XML for  <a href="http://jenkins-ci.org/" target="_blank">Jenkins CI</a></li>
-            <li>XML summary - coverage metric totals</li>
+            <li><a href="manual/manual.xml#lcov" target="_blank">LCOV</a></li>
+            <li><a href="manual/manual.xml#coberturaXml" target="_blank">Cobertura XML</a> for <a href="http://jenkins-ci.org/" target="_blank">Jenkins CI</a></li>
+            <li><a href="manual/manual.xml#xmlSummary" target="_blank">XML summary - coverage metric totals</a></li>
         </ul>
     </li>
 </ul>
@@ -61,18 +61,3 @@
         contribute to and maintain, hopefully ensuring a long life-time.
     </li>
 </ul>
-
-<p>
-    If you find a bug please
-    <a href="https://github.com/tntim96/JSCover/issues" target="_blank">report it</a>
-    and we'll endeavour to correct it.
-    Alternatively, you can try
-    <a href="http://siliconforks.com/jscoverage/" target="_blank">JSCoverage</a>.
-</p>
-
-<p>
-    If running as part of a test suite, the test suite should be run a second time without instrumentation to
-    ensure consistent behaviour.
-</p>
-
-<p>&nbsp;</p>
