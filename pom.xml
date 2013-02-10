@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+NB, JSCover-all contains a forked version of Rhino. See:
+http://github.com/tntim96/rhino/
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>jscover</groupId>
+    <artifactId>JSCover-all</artifactId>
+    <packaging>jar</packaging>
+    <name>JSCover</name>
+    <version>0.2.3</version>
+    <description>JSCover is a tool that measures code coverage for JavaScript programs.</description>
+    <url>http://tntim96.github.com/JSCover/</url>
+    <licenses>
+        <license>
+            <name>GNU General Public License, version 2</name>
+            <url>http://www.gnu.org/licenses/gpl-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <url>http://github.com/tntim96/JSCover/</url>
+        <connection>https://github.com/tntim96/JSCover.git</connection>
+    </scm>
+    <developers/>
+    <issueManagement>
+        <system>github</system>
+        <url>http://github.com/tntim96/JSCover/issues</url>
+    </issueManagement>
+</project>
