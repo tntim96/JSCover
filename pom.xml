@@ -24,7 +24,7 @@ http://github.com/tntim96/rhino/
     </licenses>
     <scm>
         <url>http://github.com/tntim96/JSCover/</url>
-        <connection>git:git://github.com/tntim96/JSCover.git</connection>
+        <connection>scm:git:git://github.com/tntim96/JSCover.git</connection>
     </scm>
     <developers/>
     <issueManagement>
