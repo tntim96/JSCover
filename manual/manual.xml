@@ -197,6 +197,56 @@
                 </item>
             </item>
             <item>
+                <heading id="gettingStartedProxy">Proxy</heading>
+                <text>
+                    The proxy mode operates in a similar fashion to the server.
+                    To demonstrate the proxy functionality locally, perform the following steps.
+                </text>
+                <item>
+                    <heading id="gettingStartedProxyHost">Edit Your Hosts File</heading>
+                    <text>
+                        Edit your host file adding the following entry
+                        <code>127.0.0.1       localhost-proxy</code>
+                    </text>
+                </item>
+                <item>
+                    <heading id="gettingStartedProxyBrowser">Configure Browser To Use The Proxy</heading>
+                    <text>
+                        Set the proxy-host to <var>localhost</var>
+                        and the proxy-port to <var>3128</var>.
+                        Make sure 'localhost' is in the proxy-bypass list, and that 'localhost-proxy' is not.
+                    </text>
+                </item>
+                <item>
+                    <heading id="gettingStartedProxyWS">Start A Web-Server</heading>
+                    <text>
+                        This is the web-server we'll be accessing via the proxy.
+                        Run
+                        <var>example-ws-for-proxy.bat</var>
+                        or
+                        <var>example-ws-for-proxy.sh</var>. The contents are:
+                        <code>java -cp target/dist/JSCover-all.jar jscover.server.SimpleWebServer 8080</code>
+                    </text>
+                </item>
+                <item>
+                    <heading id="gettingStartedProxyProxy">Start JSCover as a proxy</heading>
+                    <text>
+                        Run
+                        <var>example-proxy.bat</var>
+                        or
+                        <var>example-proxy.sh</var>. The contents are:
+                        <code>$ java -jar target/dist/JSCover-all.jar -ws --branch --proxy --port=3128 --report-dir=target</code>
+                    </text>
+                </item>
+                <text>
+                    Point your browser to:
+                    <a href="http://localhost-proxy:8080/jscoverage.html?doc/example/index.html">http://localhost-proxy:8080/jscoverage.html?doc/example/index.html</a>.
+                </text>
+                <text>
+                    The site can now be instrumented in a similar way to the server mode in the previous section.
+                </text>
+            </item>
+            <item>
                 <heading id="gettingStartedFileSystem">File System</heading>
                 <text>
                     Run
