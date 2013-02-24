@@ -175,7 +175,7 @@
                         <var>Store Report</var>
                         button.
                         <br/>
-                        <img src="images/ws-7-store.png"/>
+                        <img src="images/ws-9-store.png"/>
                         <br/>
                         <note>The report does not work in Google Chrome when viewed using a file: URL. Either use an
                             ordinary web server to serve the report (JSCover comes with a
