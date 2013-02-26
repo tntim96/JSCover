@@ -68,6 +68,9 @@
                         </li>
                     </ul>
                 </text>
+                <text>
+                    The JARs are available in the ZIP download file under the directory <var>target/dist</var>
+                </text>
             </item>
         </section>
     </item>
