@@ -494,6 +494,18 @@ public class BranchInstrumentorIntegrationTest {
     }
 
     @Test
+    public void shouldWrapSwitchCondition() {
+        StringBuilder script = new StringBuilder("  switch (null || 'd') {\n");
+        script.append("    case 'd' : case 'D' :\n");
+        script.append("      break;\n");
+        script.append("}\n");
+        runScript(script.toString());
+        Scriptable coverageData = getCoverageData(scope, "test.js", 1, 1);
+        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
+        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
+    }
+
+    @Test
     public void shouldWrapForCondition() {
         StringBuilder script = new StringBuilder("for (var i = 0; i < 1; i++)\n");
         script.append("  ;\n");

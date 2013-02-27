@@ -420,6 +420,8 @@ public class BranchInstrumentor implements NodeVisitor {
             ((ReturnStatement)parent).setReturnValue(functionCall);
         } else if (parent instanceof VariableInitializer) {
             ((VariableInitializer)parent).setInitializer(functionCall);
+        } else if (parent instanceof SwitchStatement) {
+            ((SwitchStatement)parent).setExpression(functionCall);
         } else if (parent instanceof WhileLoop) {
             ((WhileLoop)parent).setCondition(functionCall);
         } else if (parent instanceof DoLoop) {
