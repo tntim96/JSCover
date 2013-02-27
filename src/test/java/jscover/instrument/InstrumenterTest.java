@@ -412,6 +412,55 @@ public class InstrumenterTest {
     }
 
     @Test
+    public void shouldInstrumentIfWithLoopParent() {
+        String source = "for ( var i = 0; i < 2; i++ )\n" +
+                "if ( true )\n" +
+                "  i++";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "for (var i = 0; i < 2; i++) {\n" +
+                "  _$jscoverage['test.js'].lineData[2]++;\n" +
+                "  if (true) {\n" +
+                "    _$jscoverage['test.js'].lineData[3]++;\n" +
+                "    i++;\n" +
+                "  }\n" +
+                "}\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+    @Test
+    public void shouldInstrumentIfWithIfParent() {
+        String source = "if ( i > 0 )\n" +
+                "  var x = 1;";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "if (i > 0) {\n" +
+                "  _$jscoverage['test.js'].lineData[2]++;\n" +
+                "  var x = 1;\n" +
+                "}\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+    @Test
+    public void shouldInstrumentSwitchWithIfParent() {
+        String source = "if ( i > 0 )\n" +
+                "  switch(x) {\n" +
+                "    case 1: break;\n" +
+                "}\n";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "if (i > 0) {\n" +
+                "  _$jscoverage['test.js'].lineData[2]++;\n" +
+                "  switch (x) {\n" +
+                "    case 1:\n" +
+                "      _$jscoverage['test.js'].lineData[3]++;\n" +
+                "      break;\n" +
+                "  }\n" +
+                "}\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+    @Test
     public void shouldInstrumentFunctionDeclarationAndAssignment() {
         String source = "var x,\n" +
                 "  fn = function() {\n" +

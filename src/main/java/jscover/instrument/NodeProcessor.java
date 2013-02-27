@@ -380,18 +380,8 @@ class NodeProcessor {
         if (parent instanceof ObjectProperty || parent instanceof FunctionCall) {
             return true;
         }
-        if (node instanceof SwitchStatement || node instanceof WithStatement) {
-            parent.addChildBefore(buildInstrumentationStatement(node.getLineno()), node);
-        } else if (node instanceof SwitchCase) {
-            List<AstNode> statements = ((SwitchCase) node).getStatements();
-            if (statements == null) {
-                return true;
-            }
-            for (int i = statements.size() - 1; i >= 0; i--) {
-                AstNode statement = statements.get(i);
-                statements.add(i, buildInstrumentationStatement(statement.getLineno()));
-            }
-        } else if (node instanceof ExpressionStatement || node instanceof EmptyExpression || node instanceof ContinueStatement
+        if (node instanceof ExpressionStatement || node instanceof EmptyExpression
+                || node instanceof ContinueStatement || node instanceof VariableDeclaration || node instanceof SwitchStatement
                 || node instanceof BreakStatement || node instanceof EmptyStatement || node instanceof ThrowStatement) {
 
             if (node.getLineno() < 1) {
@@ -425,6 +415,17 @@ class NodeProcessor {
                 if (parent != null) {
                     parent.addChildBefore(buildInstrumentationStatement(node.getLineno()), node);
                 }
+            }
+        } else if (node instanceof SwitchStatement || node instanceof WithStatement) {
+            parent.addChildBefore(buildInstrumentationStatement(node.getLineno()), node);
+        } else if (node instanceof SwitchCase) {
+            List<AstNode> statements = ((SwitchCase) node).getStatements();
+            if (statements == null) {
+                return true;
+            }
+            for (int i = statements.size() - 1; i >= 0; i--) {
+                AstNode statement = statements.get(i);
+                statements.add(i, buildInstrumentationStatement(statement.getLineno()));
             }
         } else if (node instanceof FunctionNode || node instanceof TryStatement || isDebugStatement(node)) {
             if (!(parent instanceof InfixExpression) && !(parent instanceof VariableInitializer)
@@ -476,6 +477,12 @@ class NodeProcessor {
                 if (parentIf.getElsePart() == node) {
                     parentIf.setElsePart(scope);
                 }
+            } else if (parent instanceof Loop) {
+                Loop parentLoop = (Loop) parent;
+                Scope scope = new Scope();
+                scope.addChild(newChild);
+                scope.addChild(node);
+                parentLoop.setBody(scope);
             } else {
                 parent.addChildBefore(newChild, node);
             }
