@@ -380,7 +380,7 @@ class NodeProcessor {
         if (parent instanceof ObjectProperty || parent instanceof FunctionCall) {
             return true;
         }
-        if (node instanceof ExpressionStatement || node instanceof EmptyExpression
+        if (node instanceof ExpressionStatement || node instanceof EmptyExpression || node instanceof Loop
                 || node instanceof ContinueStatement || node instanceof VariableDeclaration || node instanceof SwitchStatement
                 || node instanceof BreakStatement || node instanceof EmptyStatement || node instanceof ThrowStatement) {
 

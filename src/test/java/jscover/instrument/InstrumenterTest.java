@@ -461,6 +461,23 @@ public class InstrumenterTest {
     }
 
     @Test
+    public void shouldInstrumentLoopWithIfParent() {
+        String source = "if ( i > 0 )\n" +
+                "  while ( i > 0 )\n" +
+                "    i--;\n";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "if (i > 0) {\n" +
+                "  _$jscoverage['test.js'].lineData[2]++;\n" +
+                "  while (i > 0) {\n" +
+                "    _$jscoverage['test.js'].lineData[3]++;\n" +
+                "    i--;\n" +
+                "  }\n" +
+                "}\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+    @Test
     public void shouldInstrumentFunctionDeclarationAndAssignment() {
         String source = "var x,\n" +
                 "  fn = function() {\n" +
