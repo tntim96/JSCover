@@ -1,3 +1,7 @@
+0.2.4 / 2013-02-27
+==================
+  * Fix NPE (https://github.com/tntim96/JSCover/issues/47)
+
 0.2.3 / 2013-02-04
 ==================
   * Fix Cobertura XML source display (https://github.com/tntim96/JSCover/issues/39)
