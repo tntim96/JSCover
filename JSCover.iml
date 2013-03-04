@@ -39,7 +39,6 @@
       </library>
     </orderEntry>
     <orderEntry type="jdk" jdkName="1.7" jdkType="JavaSDK" />
-    <orderEntry type="library" name="Hamcrest" level="project" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>

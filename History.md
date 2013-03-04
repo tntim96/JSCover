@@ -1,3 +1,7 @@
+0.2.5 / 2013-03-04
+==================
+  * Include headers in proxy mode when fetching '.js' files (https://github.com/tntim96/JSCover/issues/49)
+
 0.2.4 / 2013-02-27
 ==================
   * Fix NPE (https://github.com/tntim96/JSCover/issues/47)

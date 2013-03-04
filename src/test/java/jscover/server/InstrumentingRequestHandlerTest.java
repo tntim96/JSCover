@@ -656,30 +656,15 @@ public class InstrumentingRequestHandlerTest {
         given(configuration.getCompilerEnvirons()).willReturn(compilerEnvirons);
         given(configuration.skipInstrumentation("/js/production.js")).willReturn(false);
         String uri = "http://someserver.org/js/production.js";
-        given(proxyService.getUrl(argThat(matchesUrl(uri)))).willReturn("someJavaScript;");
+        HttpRequest request = new HttpRequest(uri);
+        given(proxyService.getUrl(request)).willReturn("someJavaScript;");
 
-        webServer.handleGet(new HttpRequest(uri));
+        webServer.handleGet(request);
 
         verify(instrumenterService).instrumentJSForWebServer(compilerEnvirons, "someJavaScript;", "/js/production.js", false);
         verifyZeroInteractions(ioService);
         verifyZeroInteractions(jsonDataSaver);
         assertThat(InstrumentingRequestHandler.uris.size(), equalTo(0));
-    }
-
-    private Matcher<URL> matchesUrl(final String uri) {
-        return new TypeSafeMatcher<URL>() {
-            @Override
-            protected boolean matchesSafely(URL url) {
-                try {
-                    return new URL(uri).equals(url);
-                } catch (MalformedURLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-
-            public void describeTo(Description description) {
-            }
-        };
     }
 
     @Test

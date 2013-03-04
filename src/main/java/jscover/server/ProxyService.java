@@ -433,8 +433,20 @@ public class ProxyService {
         remotePrintWriter.flush();
     }
 
-    public String getUrl(URL url) throws IOException {
+    public String getUrl(HttpRequest request) throws IOException {
+        URL url = request.getUrl();
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        return ioUtils.toString(conn.getInputStream());
-    }
+        Map<String, List<String>> clientHeaders = request.getHeaders();
+        if (clientHeaders != null) {
+            for (String header : clientHeaders.keySet()) {
+                if (header.equalsIgnoreCase("accept-encoding")) {
+                    continue;
+                }
+                List<String> values = clientHeaders.get(header);
+                for (String value : values) {
+                    conn.addRequestProperty(header, value);
+                }
+            }
+        }
+        return ioUtils.toString(conn.getInputStream());    }
 }

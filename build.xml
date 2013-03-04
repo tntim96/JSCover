@@ -78,7 +78,7 @@
                 <attribute name="Implementation-Title" value="${ant.project.name}"/>
                 <attribute name="Implementation-Version" value="${version}"/>
                 <attribute name="Main-Class" value="jscover.Main"/>
-                <attribute name="Class-Path" value="commons-io-1.4.jar commons-lang-2.4.jar js.jar"/>
+                <attribute name="Class-Path" value="js.jar"/><!--Add required JARs here-->
             </manifest>
         </jar>
     </target>
@@ -147,7 +147,7 @@
 	</target>
 
 	<target name="coverage-check">
-		<cobertura-check totallinerate="89" totalbranchrate="88"/>
+		<cobertura-check totallinerate="88" totalbranchrate="87"/>
 	</target>
 
 	<target name="coverage-check-all">
