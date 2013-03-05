@@ -417,18 +417,37 @@ public class CoberturaXmlGeneratorTest {
 
         //Check package
         assertThat(getXPath(xpath, document, "count(/coverage/packages/package)"), equalTo("1"));
-        String yuiPackageXPath = "/coverage/packages/package[@name='/dir']";
-        assertThat(getXPath(xpath, document, yuiPackageXPath + "/@name"), equalTo("/dir"));
-        assertThat(getXPath(xpath, document, yuiPackageXPath + "/@complexity"), equalTo("0"));
-        assertThat(getXPath(xpath, document, yuiPackageXPath + "/@line-rate"), equalTo("0.5"));
-        assertThat(getXPath(xpath, document, yuiPackageXPath + "/@branch-rate"), equalTo("0.4"));
+        String packageXPath = "/coverage/packages/package[@name='/dir']";
+        assertThat(getXPath(xpath, document, packageXPath + "/@name"), equalTo("/dir"));
+        assertThat(getXPath(xpath, document, packageXPath + "/@complexity"), equalTo("0"));
+        assertThat(getXPath(xpath, document, packageXPath + "/@line-rate"), equalTo("0.5"));
+        assertThat(getXPath(xpath, document, packageXPath + "/@branch-rate"), equalTo("0.4"));
 
         //Check class
-        String yuiClassXPath = yuiPackageXPath + "/classes/class[@name='/dir/file.js']";
-        assertThat(getXPath(xpath, document, yuiClassXPath + "/@branch-rate"), equalTo("0.4"));
-        assertThat(getXPath(xpath, document, yuiClassXPath + "/@line-rate"), equalTo("0.5"));
-        assertThat(getXPath(xpath, document, yuiClassXPath + "/@complexity"), equalTo("0"));
-        assertThat(getXPath(xpath, document, yuiClassXPath + "/@filename"), equalTo("dir/file.js"));
+        String classXPath = packageXPath + "/classes/class[@name='/dir/file.js']";
+        assertThat(getXPath(xpath, document, classXPath + "/@branch-rate"), equalTo("0.4"));
+        assertThat(getXPath(xpath, document, classXPath + "/@line-rate"), equalTo("0.5"));
+        assertThat(getXPath(xpath, document, classXPath + "/@complexity"), equalTo("0"));
+        assertThat(getXPath(xpath, document, classXPath + "/@filename"), equalTo("dir/file.js"));
+    }
+
+    @Test
+    public void shouldNotStripLeadingCharIfNotASlash() throws Exception {
+        FileData coverable = mock(FileData.class);
+        files.add(coverable);
+
+        given(coverable.getUri()).willReturn("dir/file.js");
+
+        data = new CoberturaData(files);
+        String xml = generator.generateXml(data, "srcDir", "version");
+        //System.out.println("xml = " + xml);
+
+        Document document = parseXml(xml);
+        XPath xpath = XPathFactory.newInstance().newXPath();
+
+        String packageXPath = "/coverage/packages/package[@name='dir']";
+        String classXPath = packageXPath + "/classes/class[@name='dir/file.js']";
+        assertThat(getXPath(xpath, document, classXPath + "/@filename"), equalTo("dir/file.js"));
     }
 
     @Test
@@ -469,11 +488,11 @@ public class CoberturaXmlGeneratorTest {
 
         //Check package
         assertThat(getXPath(xpath, document, "count(/coverage/packages/package)"), equalTo("1"));
-        String yuiPackageXPath = "/coverage/packages/package[@name='/dir']";
-        assertThat(getXPath(xpath, document, yuiPackageXPath + "/@name"), equalTo("/dir"));
-        assertThat(getXPath(xpath, document, yuiPackageXPath + "/@complexity"), equalTo("0"));
-        assertThat(getXPath(xpath, document, yuiPackageXPath + "/@line-rate"), equalTo("0.6"));
-        assertThat(getXPath(xpath, document, yuiPackageXPath + "/@branch-rate"), equalTo("0.7"));
+        String packageXPath = "/coverage/packages/package[@name='/dir']";
+        assertThat(getXPath(xpath, document, packageXPath + "/@name"), equalTo("/dir"));
+        assertThat(getXPath(xpath, document, packageXPath + "/@complexity"), equalTo("0"));
+        assertThat(getXPath(xpath, document, packageXPath + "/@line-rate"), equalTo("0.6"));
+        assertThat(getXPath(xpath, document, packageXPath + "/@branch-rate"), equalTo("0.7"));
     }
 
     @Test
