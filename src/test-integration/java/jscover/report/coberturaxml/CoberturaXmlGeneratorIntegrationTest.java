@@ -431,41 +431,41 @@ public class CoberturaXmlGeneratorIntegrationTest {
 
         //Check package
         assertThat(getXPath(xpath, document, "count(/coverage/packages/package)"), equalTo("41"));
-        String yuiPackageXPath = "/coverage/packages/package[@name='/build/yui']";
-        assertThat(getXPath(xpath, document, yuiPackageXPath + "/@name"), equalTo("/build/yui"));
-        assertThat(getXPath(xpath, document, yuiPackageXPath + "/@complexity"), equalTo("0"));
-        assertThat(getXPath(xpath, document, yuiPackageXPath + "/@line-rate"), equalTo("0.5852017937219731"));
-        assertThat(getXPath(xpath, document, yuiPackageXPath + "/@branch-rate"), equalTo("0.3778801843317972"));
+        String packageXPath = "/coverage/packages/package[@name='/build/yui']";
+        assertThat(getXPath(xpath, document, packageXPath + "/@name"), equalTo("/build/yui"));
+        assertThat(getXPath(xpath, document, packageXPath + "/@complexity"), equalTo("0"));
+        assertThat(getXPath(xpath, document, packageXPath + "/@line-rate"), equalTo("0.5852017937219731"));
+        assertThat(getXPath(xpath, document, packageXPath + "/@branch-rate"), equalTo("0.3778801843317972"));
 
         //Check class
-        String yuiClassXPath = yuiPackageXPath + "/classes/class[@name='/build/yui/yui.js']";
-        assertThat(getXPath(xpath, document, yuiClassXPath + "/@branch-rate"), equalTo("0.3778801843317972"));
-        assertThat(getXPath(xpath, document, yuiClassXPath + "/@line-rate"), equalTo("0.5852017937219731"));
-        assertThat(getXPath(xpath, document, yuiClassXPath + "/@complexity"), equalTo("0"));
-        assertThat(getXPath(xpath, document, yuiClassXPath + "/@filename"), equalTo("build/yui/yui.js"));
+        String classXPath = packageXPath + "/classes/class[@name='/build/yui/yui.js']";
+        assertThat(getXPath(xpath, document, classXPath + "/@branch-rate"), equalTo("0.3778801843317972"));
+        assertThat(getXPath(xpath, document, classXPath + "/@line-rate"), equalTo("0.5852017937219731"));
+        assertThat(getXPath(xpath, document, classXPath + "/@complexity"), equalTo("0"));
+        assertThat(getXPath(xpath, document, classXPath + "/@filename"), equalTo("build/yui/yui.js"));
 
         //Check line
-        String yuiLineXPath = yuiClassXPath + "/lines/line[@number='10']";
-        assertThat(getXPath(xpath, document, yuiLineXPath + "/@hits"), equalTo("1"));
-        assertThat(getXPath(xpath, document, yuiLineXPath + "/@condition-coverage"), equalTo("50% (1/2)"));
-        assertThat(getXPath(xpath, document, yuiLineXPath + "/@branch"), equalTo("true"));
+        String lineXPath = classXPath + "/lines/line[@number='10']";
+        assertThat(getXPath(xpath, document, lineXPath + "/@hits"), equalTo("1"));
+        assertThat(getXPath(xpath, document, lineXPath + "/@condition-coverage"), equalTo("50% (1/2)"));
+        assertThat(getXPath(xpath, document, lineXPath + "/@branch"), equalTo("true"));
         //Check line with zero hits
-        String yuiLineZeroHitsXPath = yuiClassXPath + "/lines/line[@number='11']";
-        assertThat(getXPath(xpath, document, yuiLineZeroHitsXPath + "/@hits"), equalTo("0"));
+        String lineZeroHitsXPath = classXPath + "/lines/line[@number='11']";
+        assertThat(getXPath(xpath, document, lineZeroHitsXPath + "/@hits"), equalTo("0"));
 
         //Check line 62, branch data with branch hit but no line hit
-        String yuiBranchXPath = yuiClassXPath + "/lines/line[@number='62']";
-        assertThat(getXPath(xpath, document, yuiBranchXPath + "/@hits"), equalTo("1"));
-        assertThat(getXPath(xpath, document, yuiBranchXPath + "/@condition-coverage"), equalTo("50% (2/4)"));
+        String branchXPath = classXPath + "/lines/line[@number='62']";
+        assertThat(getXPath(xpath, document, branchXPath + "/@hits"), equalTo("1"));
+        assertThat(getXPath(xpath, document, branchXPath + "/@condition-coverage"), equalTo("50% (2/4)"));
         //Check line 4393, branch data with no branch hit or line hit
-        String yuiBranchUnHitXPath = yuiClassXPath + "/lines/line[@number='4393']";
-        assertThat(getXPath(xpath, document, yuiBranchUnHitXPath + "/@hits"), equalTo("0"));
-        assertThat(getXPath(xpath, document, yuiBranchUnHitXPath + "/@condition-coverage"), equalTo("0% (0/2)"));
+        String branchUnHitXPath = classXPath + "/lines/line[@number='4393']";
+        assertThat(getXPath(xpath, document, branchUnHitXPath + "/@hits"), equalTo("0"));
+        assertThat(getXPath(xpath, document, branchUnHitXPath + "/@condition-coverage"), equalTo("0% (0/2)"));
 
         //Check condition
-        String yuiConditionXPath = yuiLineXPath + "/conditions/condition[@number='1']";
-        assertThat(getXPath(xpath, document, yuiConditionXPath + "/@coverage"), equalTo("50%"));
-        assertThat(getXPath(xpath, document, yuiConditionXPath + "/@type"), equalTo("jump"));
+        String conditionXPath = lineXPath + "/conditions/condition[@number='1']";
+        assertThat(getXPath(xpath, document, conditionXPath + "/@coverage"), equalTo("50%"));
+        assertThat(getXPath(xpath, document, conditionXPath + "/@type"), equalTo("jump"));
     }
 
     private Document parseXml(String xml) throws ParserConfigurationException, SAXException, IOException {
