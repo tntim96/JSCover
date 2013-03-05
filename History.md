@@ -1,3 +1,7 @@
+0.2.6 / 2013-03-??
+==================
+  * Fix Cobertura report for file-system instrumentation (https://github.com/tntim96/JSCover/pull/50)
+
 0.2.5 / 2013-03-04
 ==================
   * Include headers in proxy mode when fetching '.js' files (https://github.com/tntim96/JSCover/issues/49)
