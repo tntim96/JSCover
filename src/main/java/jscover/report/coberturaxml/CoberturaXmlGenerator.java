@@ -427,7 +427,7 @@ public class CoberturaXmlGenerator {
             Element classElement = doc.createElement("class");
             classesElement.appendChild(classElement);
             classElement.setAttribute("name", file.getUri());
-            classElement.setAttribute("filename", file.getUri().substring(1));
+            classElement.setAttribute("filename", stripLeadingSlash(file.getUri()));
             classElement.setAttribute("line-rate", "" + file.getLineCoverRate());
             classElement.setAttribute("branch-rate", "" + file.getBranchRate());
             classElement.setAttribute("complexity", "0");
@@ -438,6 +438,10 @@ public class CoberturaXmlGenerator {
             FileData fileData = (FileData) file;
             addLines(doc, linesElement, fileData);
         }
+    }
+    
+    private String stripLeadingSlash(String filename) {
+        return filename.replaceFirst("^/", "");
     }
 
     private void addLines(Document doc, Element linesElement, FileData fileData) {
