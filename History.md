@@ -1,6 +1,7 @@
 0.2.6 / 2013-03-??
 ==================
   * Fix Cobertura report for file-system instrumentation (https://github.com/tntim96/JSCover/pull/50)
+  * Fix continue label handling (https://github.com/tntim96/JSCover/issues/51)
 
 0.2.5 / 2013-03-04
 ==================

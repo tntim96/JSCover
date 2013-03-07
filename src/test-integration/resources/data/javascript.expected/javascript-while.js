@@ -13,7 +13,6 @@ if (! _$jscoverage['javascript-while.js']) {
   _$jscoverage['javascript-while.js'].lineData[16] = 0;
   _$jscoverage['javascript-while.js'].lineData[17] = 0;
   _$jscoverage['javascript-while.js'].lineData[21] = 0;
-  _$jscoverage['javascript-while.js'].lineData[22] = 0;
   _$jscoverage['javascript-while.js'].lineData[23] = 0;
   _$jscoverage['javascript-while.js'].lineData[24] = 0;
   _$jscoverage['javascript-while.js'].lineData[28] = 0;
@@ -50,31 +49,26 @@ while (x) {
     continue;
   }
 }
+_$jscoverage['javascript-while.js'].lineData[21]++;
 label:
-  {
-    _$jscoverage['javascript-while.js'].lineData[21]++;
-    _$jscoverage['javascript-while.js'].lineData[22]++;
-    while (x) {
-      _$jscoverage['javascript-while.js'].lineData[23]++;
-      if (x) {
-        _$jscoverage['javascript-while.js'].lineData[24]++;
-        continue label;
-      }
+  while (x) {
+    _$jscoverage['javascript-while.js'].lineData[23]++;
+    if (x) {
+      _$jscoverage['javascript-while.js'].lineData[24]++;
+      continue label;
     }
   }
+_$jscoverage['javascript-while.js'].lineData[28]++;
 label2:
   {
-    _$jscoverage['javascript-while.js'].lineData[28]++;
-    {
-      _$jscoverage['javascript-while.js'].lineData[29]++;
-      f();
-      _$jscoverage['javascript-while.js'].lineData[30]++;
-      while (x) {
-        _$jscoverage['javascript-while.js'].lineData[31]++;
-        if (x) {
-          _$jscoverage['javascript-while.js'].lineData[32]++;
-          break label2;
-        }
+    _$jscoverage['javascript-while.js'].lineData[29]++;
+    f();
+    _$jscoverage['javascript-while.js'].lineData[30]++;
+    while (x) {
+      _$jscoverage['javascript-while.js'].lineData[31]++;
+      if (x) {
+        _$jscoverage['javascript-while.js'].lineData[32]++;
+        break label2;
       }
     }
   }

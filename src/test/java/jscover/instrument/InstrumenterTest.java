@@ -609,4 +609,52 @@ public class InstrumenterTest {
         String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\nvar x, y;\n_$jscoverage['test.js'].lineData[2]++;\nx = 1;\ny = x * 1;\n";
         assertEquals(expectedSource, instrumentedSource);
     }
+
+    @Test
+    public void shouldInstrumentLoopWithContinueLabel() {
+        String source = "labelmark:\n" +
+                "for( x=0; x<5; x++) {\n" +
+                "  if (x)\n" +
+                "    continue labelmark;\n" +
+                "}\n";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "labelmark:\n" +
+                "  for (x = 0; x < 5; x++) {\n" +
+                "    _$jscoverage['test.js'].lineData[3]++;\n" +
+                "    if (x) {\n" +
+                "      _$jscoverage['test.js'].lineData[4]++;\n" +
+                "      continue labelmark;\n" +
+                "    }\n" +
+                "  }\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+    @Test
+    public void shouldInstrumentLoopWithBreakLabel() {
+        String source = "label2: {\n" +
+                "  f();\n" +
+                "  while (x) {\n" +
+                "    if (x) {\n" +
+                "      break label2;\n" +
+                "    }\n" +
+                "  }\n" +
+                "}\n";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "label2:\n" +
+                "  {\n" +
+                "    _$jscoverage['test.js'].lineData[2]++;\n" +
+                "    f();\n" +
+                "    _$jscoverage['test.js'].lineData[3]++;\n" +
+                "    while (x) {\n" +
+                "      _$jscoverage['test.js'].lineData[4]++;\n" +
+                "      if (x) {\n" +
+                "        _$jscoverage['test.js'].lineData[5]++;\n" +
+                "        break label2;\n" +
+                "      }\n" +
+                "    }\n" +
+                "  }\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
 }

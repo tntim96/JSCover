@@ -411,6 +411,8 @@ class NodeProcessor {
                 ((WithStatement)parent).setStatement(scope);
             } else if (parent instanceof SwitchCase) {
                 //Don't do anything here. Direct modification of statements will result in concurrent modification exception.
+            } else if (parent instanceof LabeledStatement) {
+                //Don't do anything here.
             } else {
                 if (parent != null) {
                     parent.addChildBefore(buildInstrumentationStatement(node.getLineno()), node);
@@ -456,17 +458,10 @@ class NodeProcessor {
             }
         } else if (node instanceof Loop) {
             parent.addChildBefore(buildInstrumentationStatement(node.getLineno()), node);
-        } else if (node instanceof Label) {
-            ExpressionStatement newChild = buildInstrumentationStatement(node.getLineno());
-            if (parent instanceof LabeledStatement) {
-                LabeledStatement parentLabel = (LabeledStatement) parent;
-                Scope scope = new Scope();
-                scope.addChild(newChild);
-                scope.addChild(parentLabel.getStatement());
-                parentLabel.setStatement(scope);
-            } else {
-                parent.addChildAfter(newChild, node);
-            }
+        } else if (node instanceof LabeledStatement) {
+            LabeledStatement labeledStatement = (LabeledStatement)node;
+            ExpressionStatement newChild = buildInstrumentationStatement(labeledStatement.getLineno());
+            parent.addChildBefore(newChild, node);
         } else if (node instanceof IfStatement) {
             ExpressionStatement newChild = buildInstrumentationStatement(node.getLineno());
             if (parent instanceof IfStatement) {
