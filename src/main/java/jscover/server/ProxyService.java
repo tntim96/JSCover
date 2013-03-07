@@ -440,6 +440,7 @@ public class ProxyService {
         if (clientHeaders != null) {
             for (String header : clientHeaders.keySet()) {
                 if (header.equalsIgnoreCase("accept-encoding")) {
+                    //Don't want to allow GZIP header
                     continue;
                 }
                 List<String> values = clientHeaders.get(header);
