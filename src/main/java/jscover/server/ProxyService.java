@@ -436,6 +436,10 @@ public class ProxyService {
     public String getUrl(HttpRequest request) throws IOException {
         URL url = request.getUrl();
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        copyHeadersExceptEncoding(request, conn);
+        return ioUtils.toString(conn.getInputStream());    }
+
+    void copyHeadersExceptEncoding(HttpRequest request, HttpURLConnection conn) {
         Map<String, List<String>> clientHeaders = request.getHeaders();
         if (clientHeaders != null) {
             for (String header : clientHeaders.keySet()) {
@@ -449,5 +453,5 @@ public class ProxyService {
                 }
             }
         }
-        return ioUtils.toString(conn.getInputStream());    }
+    }
 }
