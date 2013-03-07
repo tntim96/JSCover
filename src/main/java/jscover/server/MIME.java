@@ -352,9 +352,8 @@ public enum MIME {
     JSON("application/json", "json"),
     HTML("text/html", "htm", "html"),
     GIF("image/gif", "gif"),
-    JPG("image/gif", "jpg"),
-    JPEG("image/gif", "jpeg"),
-    PNG("image/gif", "png"),
+    JPG("image/jpeg", "jpg", "jpeg"),
+    PNG("image/png", "png"),
     TEXT_PLAIN("text/plain", "txt");
     private String contentType;
     private List<String> extensions;
