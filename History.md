@@ -2,6 +2,8 @@
 ==================
   * Fix Cobertura report for file-system instrumentation (https://github.com/tntim96/JSCover/pull/50)
   * Fix continue label handling (https://github.com/tntim96/JSCover/issues/51)
+  * Fix MIME image mappings
+  * Add tests for headers in proxy for '.js' files (https://github.com/tntim96/JSCover/issues/49)
 
 0.2.5 / 2013-03-04
 ==================
