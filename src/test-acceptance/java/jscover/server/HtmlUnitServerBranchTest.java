@@ -363,7 +363,7 @@ public class HtmlUnitServerBranchTest extends HtmlUnitServerTest {
             "--port=9001",
             "--no-instrument=example/lib",
             "--branch",
-            "--report-dir=" + reportDir
+            "--report-dir=" + getReportDir()
     };
 
     @Override

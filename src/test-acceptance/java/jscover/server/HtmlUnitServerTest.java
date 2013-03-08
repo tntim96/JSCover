@@ -368,14 +368,16 @@ public class HtmlUnitServerTest {
 
     protected WebClient webClient = new WebClient();
     protected IoUtils ioUtils = IoUtils.getInstance();
-    protected String reportDir = "target/ws-report";
     private String[] args = new String[]{
             "-ws",
             "--document-root=src/test-acceptance/resources",
             "--port=9001",
             "--no-instrument=example/lib",
-            "--report-dir=" + reportDir
+            "--report-dir=" + getReportDir()
     };
+    protected String getReportDir() {
+        return "target/ws-report";
+    }
 
     @Before
     public void setUp() throws IOException {
@@ -486,7 +488,7 @@ public class HtmlUnitServerTest {
     }
 
     protected void testStoreAndLoadResult(int branchPercentage) throws IOException {
-        File jsonFile = new File(reportDir+"/jscoverage.json");
+        File jsonFile = new File(getReportDir()+"/jscoverage.json");
         if (jsonFile.exists())
             jsonFile.delete();
 
@@ -507,13 +509,13 @@ public class HtmlUnitServerTest {
         String json = ioUtils.toString(jsonFile);
         assertThat(json, containsString("/script.js"));
 
-        page = webClient.getPage("file:///"+ new File(reportDir+"/jscoverage.html").getAbsolutePath());
+        page = webClient.getPage("file:///"+ new File(getReportDir()+"/jscoverage.html").getAbsolutePath());
         verifyTotal(webClient, page, 86, branchPercentage);
     }
 
     @Test
     public void shouldStoreResultViaJavaScriptCall() throws Exception {
-        File jsonFile = new File(reportDir + "/directory/jscoverage.json");
+        File jsonFile = new File(getReportDir() + "/directory/jscoverage.json");
         if (jsonFile.exists())
             jsonFile.delete();
 
@@ -527,12 +529,12 @@ public class HtmlUnitServerTest {
         WebWindow webWindow = webClient.getWebWindowByName("jscoverage_window");
         ScriptResult result = ((HtmlPage)webWindow.getEnclosedPage()).executeJavaScript("jscoverage_report('directory');");
 
-        assertThat(result.getJavaScriptResult().toString(), equalTo("Coverage data stored at " + new File(reportDir + "/directory").getPath()));
+        assertThat(result.getJavaScriptResult().toString(), equalTo("Coverage data stored at " + new File(getReportDir() + "/directory").getPath()));
 
         String json = ioUtils.toString(jsonFile);
         assertThat(json, containsString("/script.js"));
 
-        page = webClient.getPage("file:///"+ new File(reportDir+"/directory/jscoverage.html").getAbsolutePath());
+        page = webClient.getPage("file:///"+ new File(getReportDir()+"/directory/jscoverage.html").getAbsolutePath());
         verifyTotal(webClient, page, 6);
     }
 

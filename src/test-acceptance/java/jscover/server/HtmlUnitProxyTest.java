@@ -356,15 +356,19 @@ public class HtmlUnitProxyTest extends HtmlUnitServerTest {
     private static Thread server;
     private static int proxyPort = 3129;
 
-    private String reportDir = "target/ws-report";
     private String[] args = new String[]{
             "-ws",
             "--document-root=src/test-acceptance/resources",
             "--port="+proxyPort,
             "--proxy",
             "--no-instrument=example/lib",
-            "--report-dir=" + reportDir
+            "--report-dir=" + getReportDir()
     };
+
+    @Override
+    protected String getReportDir() {
+        return "target/proxy-report";
+    }
 
     @Before
     public void setUp() throws IOException {

@@ -393,7 +393,7 @@ public class InstrumentingRequestHandlerTest {
 
     @Before
     public void setUp() throws IOException {
-        InstrumentingRequestHandler.uris = new HashSet<String>();
+        InstrumentingRequestHandler.uris = new HashMap<String, String>();
         webServer = new InstrumentingRequestHandler(null, configuration);
         ReflectionUtils.setField(webServer, "ioService", ioService);
         ReflectionUtils.setField(webServer, "jsonDataSaver", jsonDataSaver);
@@ -524,7 +524,7 @@ public class InstrumentingRequestHandlerTest {
 
     @Test
     public void shouldStoreJSCoverageJSONInSpecifiedSubDirectoryAndCopySourceForReport() {
-        InstrumentingRequestHandler.uris = new HashSet<String>(){{add("js/util.js");}};
+        InstrumentingRequestHandler.uris = new HashMap<String, String>(){{put("js/util.js",null);}};
         File file = new File("target/temp");
         file.deleteOnExit();
         given(configuration.getReportDir()).willReturn(file);
@@ -536,6 +536,25 @@ public class InstrumentingRequestHandlerTest {
         verify(jsonDataSaver).saveJSONData(subdirectory, "data", null);
         verify(ioService).generateJSCoverFilesForWebServer(subdirectory, "theVersion");
         verify(ioUtils).copy(new File("js/util.js"), new File(configuration.getReportDir(), "subdirectory/" + Main.reportSrcSubDir + "/js/util.js"));
+        verifyZeroInteractions(instrumenterService);
+        assertThat(stringWriter.toString(), containsString(format("Coverage data stored at %s", subdirectory)));
+    }
+
+    @Test
+    public void shouldStoreJSCoverageJSONInSpecifiedSubDirectoryAndCopySourceForReportForProxy() {
+        InstrumentingRequestHandler.uris = new HashMap<String, String>(){{put("js/util.js","someJavaScript");}};
+        File file = new File("target/temp");
+        file.deleteOnExit();
+        given(configuration.isProxy()).willReturn(true);
+        given(configuration.getReportDir()).willReturn(file);
+        given(configuration.getVersion()).willReturn("theVersion");
+
+        webServer.handlePost(new HttpRequest(JSCOVERAGE_STORE + "subdirectory"), "data");
+
+        File subdirectory = new File(file, "subdirectory");
+        verify(jsonDataSaver).saveJSONData(subdirectory, "data", null);
+        verify(ioService).generateJSCoverFilesForWebServer(subdirectory, "theVersion");
+        verify(ioUtils).copy("someJavaScript", new File(configuration.getReportDir(), "subdirectory/" + Main.reportSrcSubDir + "/js/util.js"));
         verifyZeroInteractions(instrumenterService);
         assertThat(stringWriter.toString(), containsString(format("Coverage data stored at %s", subdirectory)));
     }
@@ -602,6 +621,7 @@ public class InstrumentingRequestHandlerTest {
         verifyZeroInteractions(jsonDataSaver);
         verifyZeroInteractions(proxyService);
         assertThat(InstrumentingRequestHandler.uris.size(), equalTo(1));
+        assertThat(InstrumentingRequestHandler.uris.keySet().iterator().next(), equalTo("js/production.js"));
     }
 
     @Test
@@ -620,7 +640,7 @@ public class InstrumentingRequestHandlerTest {
         verifyZeroInteractions(jsonDataSaver);
         verifyZeroInteractions(proxyService);
         assertThat(InstrumentingRequestHandler.uris.size(), equalTo(1));
-        assertThat(InstrumentingRequestHandler.uris.iterator().next(), equalTo("js/production.js"));
+        assertThat(InstrumentingRequestHandler.uris.keySet().iterator().next(), equalTo("js/production.js"));
     }
 
     @Test
@@ -664,7 +684,9 @@ public class InstrumentingRequestHandlerTest {
         verify(instrumenterService).instrumentJSForWebServer(compilerEnvirons, "someJavaScript;", "/js/production.js", false);
         verifyZeroInteractions(ioService);
         verifyZeroInteractions(jsonDataSaver);
-        assertThat(InstrumentingRequestHandler.uris.size(), equalTo(0));
+        assertThat(InstrumentingRequestHandler.uris.size(), equalTo(1));
+        assertThat(InstrumentingRequestHandler.uris.keySet().iterator().next(), equalTo("js/production.js"));
+        assertThat(InstrumentingRequestHandler.uris.values().iterator().next(), equalTo("someJavaScript;"));
     }
 
     @Test

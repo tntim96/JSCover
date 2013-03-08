@@ -355,15 +355,15 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.Socket;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import static java.lang.String.format;
 
 public class InstrumentingRequestHandler extends HttpServer {
     public static final String JSCOVERAGE_STORE = "/jscoverage-store";
-    static Set<String> uris = new HashSet<String>();
+    static Map<String, String> uris = new HashMap<String, String>();
     private ConfigurationForServer configuration;
     private IoService ioService = new IoService();
     private JSONDataSaver jsonDataSaver = new JSONDataSaver();
@@ -389,17 +389,24 @@ public class InstrumentingRequestHandler extends HttpServer {
             try {
                 List<ScriptLinesAndSource> unloadJSData = null;
                 if (configuration.isIncludeUnloadedJS()) {
-                    unloadJSData = unloadedSourceProcessor.getEmptyCoverageData(uris);
+                    unloadJSData = unloadedSourceProcessor.getEmptyCoverageData(uris.keySet());
                     for (ScriptLinesAndSource scriptLinesAndSource : unloadJSData) {
                         File src = new File(configuration.getDocumentRoot(), scriptLinesAndSource.getUri());
                         ioUtils.copy(src, new File(reportDir, Main.reportSrcSubDir + scriptLinesAndSource.getUri()));
                     }
                 }
                 jsonDataSaver.saveJSONData(reportDir, data, unloadJSData);
-                for (String jsURI : uris) {
-                    File src = new File(configuration.getDocumentRoot(), jsURI);
-                    File dest = new File(reportDir, Main.reportSrcSubDir + "/" + jsURI);
-                    ioUtils.copy(src, dest);
+                if (configuration.isProxy()) {
+                    for (String jsURI : uris.keySet()) {
+                        File dest = new File(reportDir, Main.reportSrcSubDir + "/" + jsURI);
+                        ioUtils.copy(uris.get(jsURI), dest);
+                    }
+                } else {
+                    for (String jsURI : uris.keySet()) {
+                        File src = new File(configuration.getDocumentRoot(), jsURI);
+                        File dest = new File(reportDir, Main.reportSrcSubDir + "/" + jsURI);
+                        ioUtils.copy(src, dest);
+                    }
                 }
                 ioService.generateJSCoverFilesForWebServer(reportDir, configuration.getVersion());
                 sendResponse(HTTP_STATUS.HTTP_OK, MIME.TEXT_PLAIN, "Coverage data stored at " + reportDir);
@@ -432,9 +439,10 @@ public class InstrumentingRequestHandler extends HttpServer {
                 if (configuration.isProxy()) {
                     String originalJS = proxyService.getUrl(request);
                     jsInstrumented = instrumenterService.instrumentJSForWebServer(configuration.getCompilerEnvirons(), originalJS, uri, configuration.isIncludeBranch());
+                    uris.put(uri.substring(1), originalJS);
                 } else {
                     jsInstrumented = instrumenterService.instrumentJSForWebServer(configuration.getCompilerEnvirons(), new File(wwwRoot, uri), uri, configuration.isIncludeBranch());
-                    uris.add(uri.substring(1));
+                    uris.put(uri.substring(1), null);
                 }
                 sendResponse(HTTP_STATUS.HTTP_OK, MIME.JS, jsInstrumented);
             } else {

@@ -530,6 +530,7 @@ public class IoUtils {
     }
 
     public void copy(String string, File dest) {
+        dest.getParentFile().mkdirs();
         ByteArrayInputStream bais = new ByteArrayInputStream(string.getBytes(charSet));
         copy(new InputStreamReader(bais, charSet), dest);
     }
