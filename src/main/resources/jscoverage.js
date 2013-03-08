@@ -1266,7 +1266,5 @@ function jscoverage_storeButton_click() {
     }
   };
   request.setRequestHeader('Content-Type', 'application/json');
-  var json = jscoverage_serializeCoverageToJSON();
-  request.setRequestHeader('Content-Length', json.length.toString());
-  request.send(json);
+  request.send(jscoverage_serializeCoverageToJSON());
 }

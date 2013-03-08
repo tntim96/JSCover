@@ -4,6 +4,7 @@
   * Fix continue label handling (https://github.com/tntim96/JSCover/issues/51)
   * Fix MIME image mappings
   * Fix proxy report for viewing source (https://github.com/tntim96/JSCover/issues/53)
+  * Fix "Refused to set unsafe header 'Content-Length'" (https://github.com/tntim96/JSCover/issues/54)
   * Internal: Upgrade to HTMLUnit 2.12
               Add tests for headers in proxy for '.js' files (https://github.com/tntim96/JSCover/issues/49)
 

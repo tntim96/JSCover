@@ -38,7 +38,6 @@ if (! window.jscoverage_report) {
     }
     request.open('POST', url, false);
     request.setRequestHeader('Content-Type', 'application/json');
-    request.setRequestHeader('Content-Length', json.length.toString());
     request.send(json);
     if (request.status === 200 || request.status === 201 || request.status === 204) {
       return request.responseText;
