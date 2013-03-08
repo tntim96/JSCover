@@ -399,7 +399,7 @@ public class HtmlUnitProxyTest extends HtmlUnitServerTest {
         }
         ProxyConfig proxyConfig = new ProxyConfig("localhost", proxyPort);
         proxyConfig.addHostsToProxyBypass("127.0.0.1");
-        webClient.setProxyConfig(proxyConfig);
+        webClient.getOptions().setProxyConfig(proxyConfig);
     }
 
     @Override
