@@ -7,6 +7,7 @@
   * Fix "Refused to set unsafe header 'Content-Length'" (https://github.com/tntim96/JSCover/issues/54)
   * Internal: Upgrade to HTMLUnit 2.12
               Add tests for headers in proxy for '.js' files (https://github.com/tntim96/JSCover/issues/49)
+              Add PhantomJS samples
 
 0.2.5 / 2013-03-04
 ==================
