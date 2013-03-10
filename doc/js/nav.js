@@ -14,7 +14,7 @@ $(document).ready(function() {
     $(this).addClass('navButtonHover');
     $(this).fadeTo("fast", 1.0);
   }, function() {
-    $(this).removeClass('navButtonHover');
+    $(this).removeClass('navButtonHover').removeClass('navButtonDown');
     if (!$(this).hasClass('brand'))
       $(this).fadeTo("fast", 0.7);
   });
