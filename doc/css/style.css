@@ -67,7 +67,7 @@ ul{
     padding: 10px 50px;
     color: #fff;
     line-height: 36px;
-    height: 36px;
+    height: 38px;
 
     -moz-box-shadow: 0px 1px 5px #000;
     -webkit-box-shadow: 0px 1px 5px #000;
@@ -75,10 +75,38 @@ ul{
     box-shadow: 0px 1px 5px #000;
 }
 
-.brand{
+#nav{
+    float: right;
+    font-size: 20px;
+}
+
+.navButton {
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #ffffff;
+    border: 1px solid #666666;
+    border-radius: 5px;
+    margin: 2;
+    padding: 3;
+    text-decoration: none;
+}
+
+.navButtonHover {
+    cursor: hand;
+    color: #F2C12E;
+    border: 1px solid #336699;
+    text-shadow: #336699 0px 0px 5px;
+}
+
+.brand {
+    font-size: 36px;
     float: left;
     font-weight: 900;
-    font-size: 36px;
+    border: 1px solid #6699ff;
+
+    padding-top: 0px;
+    margin-top: 0px;
 
     -moz-text-shadow: 0px -1px 1px #000;
     -webkit-text-shadow: 0px -1px 1px #000;
@@ -88,11 +116,13 @@ ul{
     cursor: pointer;
 }
 
-#nav{
-    float: right;
-    font-size: 20px;
+.navButtonDown {
+    cursor: hand;
+    border: 1px solid #6699ff;
+    text-shadow: #6699ff 0px 0px 5px;
 }
 
+/*
 .navButton{
     padding: 0 10px;
     cursor: pointer;
@@ -107,6 +137,7 @@ ul{
     color: #fff;
     text-decoration: none;
 }
+*/
 
 .selected {
     font-weight: bold;
