@@ -709,7 +709,7 @@
 
                         </text>
                         <text>
-                            <img src="images/jenkins-13-summary.png" alt="Jenkins-CI Summary Report for YUI3"/>
+                            <imgThumb src="images/jenkins-13-summary.png" alt="Jenkins-CI Summary Report for YUI3" width="650"/>
                         </text>
                         <text>
                             <img src="images/jenkins-14-package.png" alt="Jenkins-CI Package Report for YUI3"/>

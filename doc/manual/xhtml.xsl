@@ -14,35 +14,39 @@
   </a>
 </xsl:template>
 
-<xsl:template match="img">
+<xsl:template match="imgThumb">
+    <a target="_blank">
+        <xsl:attribute name="href"><xsl:value-of select="@src"/></xsl:attribute>
+        <xsl:call-template name="img"/>
+    </a>
+</xsl:template>
+
+<xsl:template match="img" name="img">
     <xsl:choose>
         <xsl:when test="@alt!=''">
             <table>
-                <tr>
-                    <th><xsl:value-of select="@alt"/></th>
-                </tr>
-                <tr>
-                    <td>
-                        <img>
-                            <xsl:attribute name="src"><xsl:value-of select="@src"/></xsl:attribute>
-                            <xsl:attribute name="alt"><xsl:value-of select="@alt"/></xsl:attribute>
-                            <xsl:attribute name="title"><xsl:value-of select="@alt"/></xsl:attribute>
-                            <xsl:attribute name="border">0</xsl:attribute>
-                        </img>
-                    </td>
-                </tr>
+                <tr><th><xsl:value-of select="@alt"/></th></tr>
+                <tr><td><xsl:call-template name="imageTemplate"/></td></tr>
             </table>
         </xsl:when>
         <xsl:otherwise>
-            <img>
-                <xsl:attribute name="src"><xsl:value-of select="@src"/></xsl:attribute>
-                <xsl:attribute name="alt"><xsl:value-of select="@alt"/></xsl:attribute>
-                <xsl:attribute name="title"><xsl:value-of select="@alt"/></xsl:attribute>
-                <xsl:attribute name="border">0</xsl:attribute>
-            </img>
+            <xsl:call-template name="imageTemplate"/>
         </xsl:otherwise>
     </xsl:choose>
+</xsl:template>
 
+<xsl:template name="imageTemplate">
+    <img>
+        <xsl:attribute name="src"><xsl:value-of select="@src"/></xsl:attribute>
+        <xsl:attribute name="alt"><xsl:value-of select="@alt"/></xsl:attribute>
+        <xsl:attribute name="title"><xsl:value-of select="@alt"/></xsl:attribute>
+        <xsl:attribute name="border">0</xsl:attribute>
+        <xsl:choose>
+            <xsl:when test="@width!=''">
+                <xsl:attribute name="width"><xsl:value-of select="@width"/></xsl:attribute>
+            </xsl:when>
+        </xsl:choose>
+    </img>
 </xsl:template>
 
 <xsl:template match="b">
