@@ -46,3 +46,28 @@
     <p>
         See the <a href="manual/manual.xml#gettingStartedProxy" target="_blank">manual</a> for details.
     </p>
+
+    <h2>PhantomJS &amp; JSCover Server</h2>
+
+    <p>
+        This example uses QUnit and
+        <a href="https://github.com/tntim96/JSCover/blob/master/src/test/javascript/lib/PhantomJS/run-jscover-qunit.js" target="_blank">run-jscover-qunit.js</a>,
+        but can easily be run with Jasmine. See the file
+        <a href="https://github.com/tntim96/JSCover/blob/master/src/test/javascript/lib/PhantomJS/run-jscover-jasmine.js" target="_blank">run-jscover-jasmine.js</a>
+        and the <a href="manual/manual.xml#automatingPhantomJS" target="_blank">manual</a> for more details.
+    </p>
+
+    <p>Download <a href="http://phantomjs.org/" target="_blank">PhantomJS</a> and put the executable on your path.</p>
+
+    <p>Run the web-server, example-phantom-ws.sh</p>
+
+    <p>Run example-phantoms.sh</p>
+
+    <div class="shell">
+        phantomjs src/test/javascript/lib/PhantomJS/run-jscover-qunit.js http://localhost:8080/test/index.html
+    </div>
+
+    <p>
+        The QUnit test results appear in the PhantomJS console, and the coverage report should be in 'target/phantom'.
+        Don't forget to <a href="http://localhost:8080/stop" target="_blank">shutdown the server</a>.
+    </p>

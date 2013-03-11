@@ -709,7 +709,7 @@
 
                         </text>
                         <text>
-                            <img src="images/jenkins-13-summary.png" alt="Jenkins-CI Summary Report for YUI3"/>
+                            <imgThumb src="images/jenkins-13-summary.png" alt="Jenkins-CI Summary Report for YUI3" width="650"/>
                         </text>
                         <text>
                             <img src="images/jenkins-14-package.png" alt="Jenkins-CI Package Report for YUI3"/>
@@ -958,27 +958,38 @@
             <item>
                 <heading id="automatingPhantomJS">PhantomJS</heading>
                 <text>
-                    The example here is for running Jasmine tests. Please feel free to send more documentation to this
-                    project if you're using PhantomJS.
+                    The examples here are for running Jasmine and QUnit tests. Please feel free to send more
+                    documentation to this project if you're using PhantomJS in some other way.
+                </text>
+                <text>Download <a href="http://phantomjs.org/" target="_blank">PhantomJS</a>.</text>
+                <text>
+                     For Jasmine, download
+                    <a href="https://github.com/tntim96/JSCover/blob/master/src/test/javascript/lib/PhantomJS/run-jscover-jasmine.js" target="_blank">run-jscover-jasmine.js</a>,
+                    a modified version of PhantomJS's
+                    <a href="http://code.google.com/p/phantomjs/source/browse/examples/run-jasmine.js" target="_blank">run-jasmine.js</a>.
                 </text>
                 <text>
-                    Download <a href="http://phantomjs.org/" target="_blank">PhantomJS</a> and
-                    <a href="http://code.google.com/p/phantomjs/source/browse/examples/run-jasmine.js" target="_blank">run-jasmine.js</a>
-                    , and add the <a href="#jsReportStorage">programmatic report storage</a>
-                    call before the exit command, <var>phantom.exit(exitCode);</var>, of <var>run-jasmine.js</var>.
-<code>page.evaluate(function(){
-    jscoverage_report('phantom-dir');
-});
-phantom.exit(exitCode);</code>
+                    For QUnit, download
+                    <a href="https://github.com/tntim96/JSCover/blob/master/src/test/javascript/lib/PhantomJS/run-jscover-qunit.js" target="_blank">run-jscover-qunit.js</a>,
+                    a modified version of PhantomJS's
+                    <a href="http://code.google.com/p/phantomjs/source/browse/examples/run-qunit.js" target="_blank">run-qunit.js</a>.
+                </text>
+                <text>
+                    Both of these modified scripts have simply added the
+                    <a href="#jsReportStorage">programmatic report storage</a>
+                    call before the exit command, <var>phantom.exit(exitCode);</var>. For example
+<code>    page.evaluate(function(){
+        jscoverage_report('phantom');
+    });
+    phantom.exit(exitCode);</code>
                 </text>
                 <text>
                     Once you have JSCover running in server mode, you can then execute:
-                <code>phantomjs /RUN-JASMINE-PATH/run-jasmine.js http://localhost:8080/test/javascript/spec/suite.html</code>
+                <code>phantomjs /RUN-JASMINE-PATH/run-jscover-jasmine.js http://localhost:8080/test/javascript/spec/suite.html</code>
                 </text>
                 <text>
-                    This will execute the tests and store the coverage results in the 'phantom-dir' sub-directory of the
-                    of JSCover's report directory.
-                    NB the sub-directory argument given to <var>jscoverage_report</var> is optional.
+                    This will execute the tests, outputting the test results to the console, and store the coverage
+                    results in the 'phantom' sub-directory of JSCover's report directory.
                 </text>
             </item>
             <item>
