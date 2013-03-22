@@ -351,6 +351,7 @@ public enum MIME {
     JS("application/javascript", "js"),
     JSON("application/json", "json"),
     HTML("text/html", "htm", "html"),
+    XML("application/xml", "xml"),
     GIF("image/gif", "gif"),
     JPG("image/jpeg", "jpg", "jpeg"),
     PNG("image/png", "png"),

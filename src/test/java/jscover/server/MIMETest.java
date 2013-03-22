@@ -353,4 +353,9 @@ public class MIMETest {
         assertThat(MIME.getMime("jpg"), equalTo(MIME.JPG));
         assertThat(MIME.getMime("jpeg"), equalTo(MIME.JPG));
     }
+
+    @Test
+    public void shouldGetXmlMimeType() {
+        assertThat(MIME.getMime("xml"), equalTo(MIME.XML));
+    }
 }

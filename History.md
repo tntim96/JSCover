@@ -1,3 +1,7 @@
+0.2.7 / 2013-??
+==================
+  * Add HTTP Server support for XML MIME type (https://github.com/tntim96/JSCover/issues/56)
+
 0.2.6 / 2013-03-11
 ==================
   * Fix Cobertura report for file-system instrumentation (https://github.com/tntim96/JSCover/pull/50)
