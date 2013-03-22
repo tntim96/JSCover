@@ -32,7 +32,7 @@ $(document).ready(function() {
     $('#container').html('<div style="position:relative"><h2>Loading...</h2></div>');
     var contentId = $(this).attr("id").replace('Link', '');
     $.ajax({
-      url: contentId + '.html?v=026',
+      url: contentId + '.html?v=026b',
       dataType:'html',
       success: function(data) {
       $('#container').html(data+'<p>&nbsp;</p>');
