@@ -437,11 +437,29 @@ public class ConfigurationForServerTest {
 
     @Test
     public void shouldParseNoInstrument() {
-        ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--no-instrument=lib1", "--no-instrument=lib2"});
+        ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--no-instrument=lib1", "--no-instrument=lib2", "--no-instrument=/lib3"});
         assertThat(configuration.skipInstrumentation("test.js"), equalTo(false));
         assertThat(configuration.skipInstrumentation("lib1/test.js"), equalTo(true));
         assertThat(configuration.skipInstrumentation("lib2/test.js"), equalTo(true));
-        assertThat(configuration.skipInstrumentation("lib3/test.js"), equalTo(false));
+        assertThat(configuration.skipInstrumentation("lib3/test.js"), equalTo(true));
+        assertThat(configuration.skipInstrumentation("lib4/test.js"), equalTo(false));
+    }
+
+    @Test
+    public void shouldParseNoInstrumentReg() {
+        ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--no-instrument-reg=.*/lib/.*", "--no-instrument-reg=.*/test/.*", "--no-instrument-reg=/.*/test2/.*"});
+        assertThat(configuration.skipInstrumentation("test.js"), equalTo(false));
+        assertThat(configuration.skipInstrumentation("lib1/lib/test.js"), equalTo(true));
+        assertThat(configuration.skipInstrumentation("lib2/test/test.js"), equalTo(true));
+        assertThat(configuration.skipInstrumentation("lib3/test2/test.js"), equalTo(true));
+        assertThat(configuration.skipInstrumentation("lib4/domain/test.js"), equalTo(false));
+    }
+
+    @Test
+    public void shouldHandleInvalidRegularExpression() {
+        ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--no-instrument-reg=*"});
+        assertThat(configuration.showHelp(), equalTo(true));
+        assertThat(configuration.isInvalid(), equalTo(true));
     }
 
     @Test

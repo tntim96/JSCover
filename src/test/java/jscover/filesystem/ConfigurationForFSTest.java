@@ -442,6 +442,23 @@ public class ConfigurationForFSTest {
     }
 
     @Test
+    public void shouldParseNoInstrumentReg() {
+        ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"--no-instrument-reg=.*/lib/.*", "--no-instrument-reg=.*/test/.*", "--no-instrument-reg=/.*/test2/.*"});
+        assertThat(configuration.skipInstrumentation("test.js"), equalTo(false));
+        assertThat(configuration.skipInstrumentation("lib1/lib/test.js"), equalTo(true));
+        assertThat(configuration.skipInstrumentation("lib2/test/test.js"), equalTo(true));
+        assertThat(configuration.skipInstrumentation("lib3/test2/test.js"), equalTo(true));
+        assertThat(configuration.skipInstrumentation("lib4/domain/test.js"), equalTo(false));
+    }
+
+    @Test
+    public void shouldHandleInvalidNoInstrumentRegularExpression() {
+        ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"--no-instrument-reg=*"});
+        assertThat(configuration.showHelp(), equalTo(true));
+        assertThat(configuration.isInvalid(), equalTo(true));
+    }
+
+    @Test
     public void shouldParseNoInstrumentWithLeadingSlash() {
         ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs","--no-instrument=/lib1", "--no-instrument=/lib2","src","doc"});
         assertThat(configuration.skipInstrumentation("test.js"), equalTo(false));
@@ -457,6 +474,23 @@ public class ConfigurationForFSTest {
         assertThat(configuration.exclude("lib1/test.js"), equalTo(true));
         assertThat(configuration.exclude("lib2/test.js"), equalTo(true));
         assertThat(configuration.exclude("lib3/test.js"), equalTo(false));
+    }
+
+    @Test
+    public void shouldParseExcludeReg() {
+        ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs","--exclude-reg=.*/lib/.*", "--exclude-reg=/.*/test/.*", "--exclude-reg=/.*/test2/.*","src","doc"});
+        assertThat(configuration.exclude("test.js"), equalTo(false));
+        assertThat(configuration.exclude("lib1/lib/test.js"), equalTo(true));
+        assertThat(configuration.exclude("/lib2/test/test.js"), equalTo(true));
+        assertThat(configuration.exclude("/lib3/test2/test.js"), equalTo(true));
+        assertThat(configuration.exclude("lib4/domain/test.js"), equalTo(false));
+    }
+
+    @Test
+    public void shouldHandleInvalidExcludeRegularExpression() {
+        ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"--exclude-reg=*"});
+        assertThat(configuration.showHelp(), equalTo(true));
+        assertThat(configuration.isInvalid(), equalTo(true));
     }
 
     @Test

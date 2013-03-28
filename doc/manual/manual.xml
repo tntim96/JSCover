@@ -383,6 +383,11 @@
                             <td>Specify URLs not to be instrumented. Can be specified multiple times.</td>
                         </tr>
                         <tr>
+                            <td>--no-instrument-reg=URL</td>
+                            <td>None</td>
+                            <td>Same as '--no-instrument=PATH', except PATH is interpreted as a regular expression</td>
+                        </tr>
+                        <tr>
                             <td>--report-dir=PATH</td>
                             <td>current directory</td>
                             <td>Use the directory given by PATH (can be relative or absolute) for storing coverage
@@ -412,7 +417,7 @@
                                 <br/>
                                 path for JavaScript file not served and include in the coverage report.
                                 <br/>
-                                Not compatible with --proxy. Will respect --no-instrument.
+                                Not compatible with --proxy. Will respect --no-instrument(-reg).
                             </td>
                         </tr>
                         <tr>
@@ -509,6 +514,11 @@
                             <td>Specify URLs not to be instrumented. Can be specified multiple times.</td>
                         </tr>
                         <tr>
+                            <td>--no-instrument-reg=URL</td>
+                            <td>None</td>
+                            <td>Same as '--no-instrument=PATH', except PATH is interpreted as a regular expression</td>
+                        </tr>
+                        <tr>
                             <td>--exclude=PATH</td>
                             <td>None</td>
                             <td>Copies SOURCE-DIRECTORY to DESTINATION-DIRECTORY recursively, but does not copy
@@ -516,6 +526,11 @@
                                 can be a file or a directory (in which case the directory and its entire contents are
                                 skipped). This option may be given multiple times.
                             </td>
+                        </tr>
+                        <tr>
+                            <td>--exclude-reg=PATH</td>
+                            <td>None</td>
+                            <td>Same as '--exclude=PATH', except PATH is interpreted as a regular expression</td>
                         </tr>
                         <tr>
                             <td>--js-version=VERSION</td>
@@ -1170,7 +1185,7 @@ var y = visit1_2_1(x > 0) ? 1 : 0;</code>
                         <table>
                             <tr>
                                 <th>Feature</th>
-                                <th>JSCover (0.1.0)</th>
+                                <th>JSCover (0.2.7)</th>
                                 <th>JSCoverage (0.5.1)</th>
                             </tr>
                             <tr>
@@ -1205,6 +1220,11 @@ var y = visit1_2_1(x > 0) ? 1 : 0;</code>
                             </tr>
                             <tr>
                                 <td>Multiple Report Formats</td>
+                                <td class="tick"></td>
+                                <td class="cross"></td>
+                            </tr>
+                            <tr>
+                                <td>Regular Expression Path Support</td>
                                 <td class="tick"></td>
                                 <td class="cross"></td>
                             </tr>

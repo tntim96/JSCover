@@ -351,6 +351,8 @@ import org.mozilla.javascript.Context;
 import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import static java.lang.String.format;
 
@@ -358,7 +360,9 @@ public class ConfigurationForFS extends Configuration {
     public static final String HELP_PREFIX1 = Main.HELP_PREFIX1;
     public static final String HELP_PREFIX2 = Main.HELP_PREFIX2;
     public static final String EXLCUDE_PREFIX = "--exclude=";
+    public static final String EXLCUDE_REG_PREFIX = "--exclude-reg=";
     public static final String NO_INSTRUMENT_PREFIX = "--no-instrument=";
+    public static final String NO_INSTRUMENT_REG_PREFIX = "--no-instrument-reg=";
     public static final String BRANCH_PREFIX = "--branch";
     public static final String JS_VERSION_PREFIX = "--js-version=";
 
@@ -366,7 +370,9 @@ public class ConfigurationForFS extends Configuration {
     private boolean invalid;
     private boolean includeBranch = false;
     private final Set<String> noInstruments = new HashSet<String>();
+    private final Set<Pattern> noInstrumentRegs = new HashSet<Pattern>();
     private final Set<String> excludes = new HashSet<String>();
+    private final Set<Pattern> excludeRegs = new HashSet<Pattern>();
     private File srcDir = new File(System.getProperty("user.dir"));
     private File destDir = new File(System.getProperty("user.dir"));
     private int JSVersion = Context.VERSION_1_5;
@@ -398,18 +404,22 @@ public class ConfigurationForFS extends Configuration {
     }
 
     public boolean skipInstrumentation(String uri) {
-        for (String noInstrument : noInstruments) {
+        for (String noInstrument : noInstruments)
             if (uri.startsWith(noInstrument))
                 return true;
-        }
+        for (Pattern noInstrumentReg : noInstrumentRegs)
+            if (noInstrumentReg.matcher(uri).matches())
+                return true;
         return false;
     }
 
     public boolean exclude(String path) {
-        for (String exclude : excludes) {
+        for (String exclude : excludes)
             if (path.startsWith(exclude))
                 return true;
-        }
+        for (Pattern excludeReg : excludeRegs)
+            if (excludeReg.matcher(path).matches())
+                return true;
         return false;
     }
 
@@ -430,11 +440,33 @@ public class ConfigurationForFS extends Configuration {
                 if (uri.startsWith("/"))
                     uri = uri.substring(1);
                 configuration.noInstruments.add(uri);
+            } else if (arg.startsWith(NO_INSTRUMENT_REG_PREFIX)) {
+                String patternString = arg.substring(NO_INSTRUMENT_REG_PREFIX.length());
+                if (patternString.startsWith("/"))
+                    patternString = patternString.substring(1);
+                try {
+                    Pattern pattern = Pattern.compile(patternString);
+                    configuration.noInstrumentRegs.add(pattern);
+                } catch(PatternSyntaxException e) {
+                    e.printStackTrace(System.err);
+                    configuration.showHelp = true;
+                    configuration.invalid = true;
+                }
             } else if (arg.startsWith(EXLCUDE_PREFIX)) {
                 String uri = arg.substring(EXLCUDE_PREFIX.length());
                 if (uri.startsWith("/"))
                     uri = uri.substring(1);
                 configuration.excludes.add(uri);
+            } else if (arg.startsWith(EXLCUDE_REG_PREFIX)) {
+                String patternString = arg.substring(EXLCUDE_REG_PREFIX.length());
+                try {
+                    Pattern pattern = Pattern.compile(patternString);
+                    configuration.excludeRegs.add(pattern);
+                } catch(PatternSyntaxException e) {
+                    e.printStackTrace(System.err);
+                    configuration.showHelp = true;
+                    configuration.invalid = true;
+                }
             } else if (arg.startsWith(JS_VERSION_PREFIX)) {
                 configuration.JSVersion = (int) (Float.valueOf(arg.substring(JS_VERSION_PREFIX.length())) * 100);
             }
