@@ -2,6 +2,7 @@
 ==================
   * Add regular expression based path switch support (https://github.com/tntim96/JSCover/issues/57)
   * Add HTTP Server support for XML MIME type (https://github.com/tntim96/JSCover/issues/56)
+  * Remember UI sort order (https://github.com/tntim96/JSCover/issues/59)
 
 0.2.6 / 2013-03-11
 ==================

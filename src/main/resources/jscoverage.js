@@ -479,8 +479,11 @@ function jscoverage_createLink(file, line) {
 
 var sortOrder = 0;
 var sortColumn = 'Coverage';
+var sortReOrder = true;
+var sortedFiles = null;
 
 function jscoverage_recalculateSummaryTabBy(type) {
+  sortReOrder = true;
   if (sortColumn !== type)
     sortOrder = 1;
   sortColumn = type;
@@ -510,8 +513,12 @@ function jscoverage_recalculateSummaryTab(cc) {
   if (files.length === 0)
     return;
 
-  files = getFilesSortedByCoverage(files);
-  sortOrder++;
+  if (sortReOrder) {
+    sortedFiles = getFilesSortedByCoverage(files);
+    sortOrder++;
+    sortReOrder = false;
+  }
+  files = sortedFiles;
 
   var tbody = document.getElementById("summaryTbody");
   while (tbody.hasChildNodes()) {
