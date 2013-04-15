@@ -1,4 +1,4 @@
-0.2.7 / 2013-??
+0.2.7 / 2013-04-15
 ==================
   * Add regular expression based path switch support (https://github.com/tntim96/JSCover/issues/57)
   * Add HTTP Server support for XML MIME type (https://github.com/tntim96/JSCover/issues/56)
