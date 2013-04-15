@@ -354,6 +354,8 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import static java.lang.String.format;
+
 public class ConfigurationForServer extends Configuration {
     public static final String HELP_PREFIX1 = Main.HELP_PREFIX1;
     public static final String HELP_PREFIX2 = Main.HELP_PREFIX2;
@@ -428,6 +430,15 @@ public class ConfigurationForServer extends Configuration {
                 configuration.showHelp = true;
             } else if (arg.startsWith(DOC_ROOT_PREFIX)) {
                 configuration.documentRoot = new File(arg.substring(DOC_ROOT_PREFIX.length()));
+                if (!configuration.documentRoot.exists()) {
+                    System.err.println(format("Document root '%s' doesn't exist", configuration.documentRoot));
+                    configuration.showHelp = true;
+                    configuration.invalid = true;
+                } else if (!configuration.documentRoot.isDirectory()) {
+                    System.err.println(format("Document root '%s' can't be a file", configuration.documentRoot));
+                    configuration.showHelp = true;
+                    configuration.invalid = true;
+                }
             } else if (arg.startsWith(PORT_PREFIX)) {
                 configuration.port = Integer.valueOf(arg.substring(PORT_PREFIX.length()));
             } else if (arg.equals(PROXY_PREFIX)) {

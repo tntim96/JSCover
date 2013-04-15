@@ -404,6 +404,16 @@ public class ConfigurationForServerTest {
     }
 
     @Test
+    public void shouldDisallowDocumentRootThatIsNonExistent() {
+        assertThat(ConfigurationForServer.parse(new String[]{"--document-root=xxx"}).isInvalid(), equalTo(true));
+    }
+
+    @Test
+    public void shouldDisallowDocumentRootThatIsAFile() {
+        assertThat(ConfigurationForServer.parse(new String[]{"--document-root=build.xml"}).isInvalid(), equalTo(true));
+    }
+
+    @Test
     public void shouldParsePort() {
         assertThat(ConfigurationForServer.parse(new String[]{"--port=80"}).getPort(), equalTo(80));
     }
