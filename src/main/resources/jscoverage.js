@@ -513,7 +513,7 @@ function jscoverage_recalculateSummaryTab(cc) {
   if (files.length === 0)
     return;
 
-  if (sortReOrder) {
+  if (sortReOrder || files.length != sortedFiles.length) {
     sortedFiles = getFilesSortedByCoverage(files);
     sortOrder++;
     sortReOrder = false;
