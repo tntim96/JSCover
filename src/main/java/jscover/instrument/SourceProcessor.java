@@ -339,6 +339,9 @@ consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
 */
+/*
+	Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013
+*/
 
 package jscover.instrument;
 
@@ -354,6 +357,9 @@ import static java.lang.String.format;
 class SourceProcessor {
 
     private static final String initLine = "  _$jscoverage['%s'].lineData[%d] = 0;\n";
+
+	// Function Coverage (HA-CA)
+    private static final String initFunction = "  _$jscoverage['%s'].functionData[%d] = 0;\n";
 
     private String uri;
     private ParseTreeInstrumenter instrumenter;
@@ -394,6 +400,11 @@ class SourceProcessor {
         String instrumentedSource = instrumentSource(sourceURI, source);
 
         String jsLineInitialization = getJsLineInitialization(uri, instrumenter.getValidLines());
+        
+		// Function Coverage (HA-CA)
+        //TODO: if (includeFunctionCoverage)
+        jsLineInitialization += getJsFunctionInitialization(uri, instrumenter.getNumFunctions());
+
         if (includeBranchCoverage)
             jsLineInitialization += branchInstrumentor.getJsLineInitialization();
 
@@ -421,6 +432,17 @@ class SourceProcessor {
         sb.append(format("  _$jscoverage['%s'].lineData = [];\n", fileName));
         for (Integer line : validLines) {
             sb.append(format(initLine, fileName, line));
+        }
+        sb.append("}\n");
+        return sb.toString();
+    }
+    
+	// Function Coverage (HA-CA)
+    protected String getJsFunctionInitialization(String fileName, int numFunction) {
+        StringBuilder sb = new StringBuilder(format("if (! _$jscoverage['%s'].functionData) {\n", fileName));
+        sb.append(format("  _$jscoverage['%s'].functionData = [];\n", fileName));
+        for ( int i = 0; i < numFunction; ++i) {
+            sb.append(format(initFunction, fileName, i));
         }
         sb.append("}\n");
         return sb.toString();

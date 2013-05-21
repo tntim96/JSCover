@@ -339,6 +339,9 @@ consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
  */
+/*
+	Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013
+*/
 
 package jscover.instrument;
 
@@ -368,6 +371,29 @@ class StatementBuilder {
 
         NumberLiteral lineNumberLiteral = new NumberLiteral();
         lineNumberLiteral.setValue("" + lineNumber);
+        ElementGet indexLineNumber = new ElementGet(lineProperty, lineNumberLiteral);
+
+        boolean postFix = true;
+        UnaryExpression unaryExpression = new UnaryExpression(Token.INC, 0, indexLineNumber, postFix);
+        return new ExpressionStatement(unaryExpression);
+    }
+   
+   	// Function Coverage (HA-CA) 
+    public ExpressionStatement buildFunctionInstrumentationStatement(int functionNumber, String fileName, SortedSet<Integer> validLines) {
+
+        Name var = new Name(0, "_$jscoverage");
+        StringLiteral fileNameLiteral = new StringLiteral();
+        fileNameLiteral.setValue(fileName);
+        fileNameLiteral.setQuoteCharacter('\'');
+
+        ElementGet indexJSFile = new ElementGet(var, fileNameLiteral);
+
+        Name branchPropertyName = new Name();
+        branchPropertyName.setIdentifier("functionData");
+        PropertyGet lineProperty = new PropertyGet(indexJSFile, branchPropertyName);
+
+        NumberLiteral lineNumberLiteral = new NumberLiteral();
+        lineNumberLiteral.setValue("" + functionNumber);
         ElementGet indexLineNumber = new ElementGet(lineProperty, lineNumberLiteral);
 
         boolean postFix = true;

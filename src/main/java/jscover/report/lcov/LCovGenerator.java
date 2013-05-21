@@ -340,6 +340,10 @@ library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
  */
 
+/*
+	Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013
+*/
+
 package jscover.report.lcov;
 
 import jscover.report.BranchData;
@@ -385,6 +389,7 @@ public class LCovGenerator {
     String generateRecord(FileData coverageData, String sourceDirectory) {
         StringBuilder lcov = new StringBuilder();
         lcov.append(format(source, sourceDirectory.replaceAll("\\\\","/") + coverageData.getUri()));
+        processFunctions(coverageData, lcov);
         processBranches(coverageData, lcov);
         processLines(coverageData, lcov);
         lcov.append(endRecord);
@@ -398,6 +403,31 @@ public class LCovGenerator {
                 lcov.append(format(lineData, lineNumber, count));
             }
         }
+    }
+
+    // Function Coverage (HA-CA) 
+    private void processFunctions(FileData coverageData, StringBuilder lcov) {
+    	int total = 0;
+    	int hit = 0;
+        for (int functionNumber = 0; functionNumber < coverageData.getFunctions().size(); functionNumber++) {
+            Integer count = coverageData.getFunctions().get(functionNumber);
+            total++;
+            if (count != null && count > 0)
+            	hit++;
+            
+            int lineNumber = 0; //XXX TODO
+            String functionName = "" + functionNumber;
+            lcov.append(format("FN:%d,%s\n", lineNumber,functionName));
+        }
+
+        for (int functionNumber = 0; functionNumber < coverageData.getFunctions().size(); functionNumber++) {
+            Integer count = coverageData.getFunctions().get(functionNumber);
+            String functionName = "" + functionNumber;
+            lcov.append(format("FNDA:%d,%s\n", count,functionName));
+        }
+
+        lcov.append(format("FNF:%d\n", total));
+        lcov.append(format("FNH:%d\n", hit));
     }
 
     private void processBranches(FileData coverageData, StringBuilder lcov) {

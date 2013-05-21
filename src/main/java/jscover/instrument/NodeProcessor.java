@@ -339,6 +339,9 @@ consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
  */
+/*
+	Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013
+*/
 
 package jscover.instrument;
 
@@ -362,8 +365,24 @@ class NodeProcessor {
         return statementBuilder.buildInstrumentationStatement(lineNumber, fileName, validLines);
     }
 
+	// Function Coverage (HA-CA)
+    public ExpressionStatement buildFunctionInstrumentationStatement(int functionNumber) {
+        return statementBuilder.buildFunctionInstrumentationStatement(functionNumber, fileName, validLines);
+    }
+
     boolean processNode(AstNode node) {
-        if (validLines.contains(node.getLineno())) {
+		
+		// Function Coverage (HA-CA)
+        if ( node instanceof FunctionNode )
+        {
+        	AstNode block = ((FunctionNode)node).getBody();
+        	if ( block instanceof Block )
+        	{
+        		block.addChildToFront( buildFunctionInstrumentationStatement( functionNumber++ ) );
+        	}
+        }
+
+    	if (validLines.contains(node.getLineno())) {
             // Don't add instrumentation if already there
             return true;
         }
@@ -494,5 +513,11 @@ class NodeProcessor {
 
     public SortedSet<Integer> getValidLines() {
         return validLines;
+    }
+    
+	// Function Coverage (HA-CA)
+    private int functionNumber = 0;
+    public int getNumFunctions() {
+    	return functionNumber;
     }
 }

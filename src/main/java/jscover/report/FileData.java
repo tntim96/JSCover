@@ -339,6 +339,9 @@ consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
  */
+/*
+	Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013
+*/
 
 package jscover.report;
 
@@ -353,9 +356,15 @@ public class FileData extends CoverageAdapter {
     private int branchCount;
     private int branchesCoveredCount;
 
-    public FileData(String uri, List<Integer> lines, List<List<BranchData>> branchData) {
+   	// Function Coverage (HA-CA) 
+    private List<Integer> functions;
+    private int functionCount;
+    private int functionsCoveredCount;
+
+    public FileData(String uri, List<Integer> lines, List<Integer> functions, List<List<BranchData>> branchData) {
         this.uri = uri;
         this.lines = lines;
+        this.functions = functions;
         this.branchData = branchData;
     }
 
@@ -396,6 +405,37 @@ public class FileData extends CoverageAdapter {
         }
     }
 
+   	// Function Coverage (HA-CA) 
+    public List<Integer> getFunctions() {
+        return functions;
+    }
+
+    public void addFunctionCoverage(Integer coverage, int index) {
+        this.functions.set(index, this.functions.get(index) + coverage);
+    }
+
+    public int getCodeFunctionCount() {
+        calculateFunctionStatistics();
+        return functionCount;
+    }
+
+    public int getCodeFunctionCoveredCount() {
+        calculateFunctionStatistics();
+        return functionsCoveredCount;
+    }
+
+    public void calculateFunctionStatistics() {
+        if (functionCount == 0) {
+            for (int i = 0; i < functions.size(); i++)
+                if (functions.get(0) != null) {
+                    functionCount++;
+                    if (functions.get(i) > 0)
+                        functionsCoveredCount++;
+                }
+        }
+    }
+    ////
+    
     public int getBranchCount() {
         calculateBranchStatistics();
         return branchCount;

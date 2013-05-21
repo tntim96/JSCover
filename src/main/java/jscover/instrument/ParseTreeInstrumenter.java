@@ -339,6 +339,9 @@ consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
 */
+/*
+	Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013
+*/
 
 package jscover.instrument;
 
@@ -362,6 +365,11 @@ class ParseTreeInstrumenter implements NodeVisitor {
         return nodeProcessor.getValidLines();
     }
 
+	// Function Coverage (HA-CA)
+    public int getNumFunctions() {
+    	return nodeProcessor.getNumFunctions();
+    }
+    
     public boolean visit(AstNode node) {
         try {
             return nodeProcessor.processNode(node);

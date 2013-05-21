@@ -339,6 +339,10 @@ consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License. */
 
+/*
+	Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013
+*/
+
 package jscover.report;
 
 import org.mozilla.javascript.Context;
@@ -373,6 +377,17 @@ public class JSONDataMerger {
                         coverageData.addCoverage(map2.get(scriptName).getLines().get(i), i);
                     }
                 }
+                
+                // Function Coverage (HA-CA) 
+                if ( coverageData.getFunctions() != null )
+                {
+	                for (int i = 0; i < coverageData.getFunctions().size(); i++) {
+	                    if (coverageData.getFunctions().get(i) != null) {
+	                        coverageData.addFunctionCoverage(map2.get(scriptName).getFunctions().get(i), i);
+	                    }
+	                }
+                }
+	                
                 for (int i = 0; i < coverageData.getBranchData().size(); i++) {
                     List<BranchData> conditions = coverageData.getBranchData().get(i);
                     if (conditions != null) {
@@ -405,11 +420,21 @@ public class JSONDataMerger {
                 List<Integer> countData = new ArrayList<Integer>(lineCoverageArray.size());
                 for (int i = 0; i < lineCoverageArray.size(); i++)
                     countData.add((Integer) lineCoverageArray.get(i));
+    
+                // Function Coverage (HA-CA) 
+                NativeArray functionCoverageArray = (NativeArray) scriptData.get("functionData");
+                List<Integer> funcData = new ArrayList<Integer>();
+                if ( functionCoverageArray != null )
+                {
+	                for (int i = 0; i < functionCoverageArray.size(); i++)
+	                	funcData.add((Integer) functionCoverageArray.get(i));
+                }
+                
                 List<List<BranchData>> branchLineArray = new ArrayList<List<BranchData>>();
                 if (branchJSONArray != null) {
                     readBranchLines(branchJSONArray, branchLineArray);
                 }
-                map.put((String) scriptURI, new FileData((String) scriptURI, countData, branchLineArray));
+                map.put((String) scriptURI, new FileData((String) scriptURI, countData, funcData, branchLineArray));
             }
         } catch (JsonParser.ParseException e) {
             throw new RuntimeException(e);
@@ -456,13 +481,22 @@ public class JSONDataMerger {
                     coverage.append(",");
                 coverage.append(coverageData.getLines().get(i));
             }
+            
+            // Function Coverage (HA-CA) 
+            StringBuilder functions = new StringBuilder();
+            for (int i = 0; i < coverageData.getFunctions().size(); i++) {
+                if (i > 0)
+                	functions.append(",");
+                functions.append(coverageData.getFunctions().get(i));
+            } 
+                      
             addBranchData(branchData, coverageData);
             if (scriptCount++ > 0) {
                 json.append(",");
             }
 
-            String scriptJSON = "\"%s\":{\"lineData\":[%s],\"branchData\":[%s]}";
-            json.append(String.format(scriptJSON, scriptURI, coverage, branchData));
+            String scriptJSON = "\"%s\":{\"lineData\":[%s],\"functionData\":[%s],\"branchData\":[%s]}";
+            json.append(String.format(scriptJSON, scriptURI, coverage, functions, branchData));
         }
         json.append("}");
         return json.toString();
@@ -508,7 +542,7 @@ public class JSONDataMerger {
                 lines[script.getLines().get(i)] = 0;
             }
             List<List<BranchData>> branchLineArray = new ArrayList<List<BranchData>>();
-            FileData coverageData = new FileData(script.getUri(), Arrays.asList(lines), branchLineArray);
+            FileData coverageData = new FileData(script.getUri(), Arrays.asList(lines), new ArrayList<Integer>(), branchLineArray);
             map.put(script.getUri(), coverageData);
         }
         return map;
