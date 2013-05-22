@@ -339,7 +339,9 @@ consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
  */
-
+/*
+    Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013
+*/
 package jscover.report;
 
 import java.util.Collection;
@@ -349,6 +351,8 @@ public class SummaryData extends CoverageAdapter {
     private int codeLinesCoveredCount;
     private int branchCount;
     private int branchesCoveredCount;
+    private int functionCount;
+    private int functionCoveredCount;
 
     public SummaryData(Collection<? extends Coverable> files) {
         for (Coverable file : files) {
@@ -356,6 +360,8 @@ public class SummaryData extends CoverageAdapter {
             codeLinesCoveredCount += file.getCodeLinesCoveredCount();
             branchCount += file.getBranchCount();
             branchesCoveredCount += file.getBranchesCoveredCount();
+            functionCount += file.getCodeFunctionCount();
+            functionCoveredCount += file.getCodeFunctionCoveredCount();
         }
     }
 
@@ -377,5 +383,13 @@ public class SummaryData extends CoverageAdapter {
 
     public int getBranchesCoveredCount() {
         return branchesCoveredCount;
+    }
+    
+    public int getCodeFunctionCount() {
+        return functionCount;
+    }
+
+    public int getCodeFunctionCoveredCount() {
+        return functionCoveredCount;
     }
 }

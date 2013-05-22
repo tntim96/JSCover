@@ -43,6 +43,13 @@ if (! _$jscoverage['javascript-let.js']) {
   _$jscoverage['javascript-let.js'].lineData[78] = 0;
   _$jscoverage['javascript-let.js'].lineData[79] = 0;
 }
+if (! _$jscoverage['javascript-let.js'].functionData) {
+  _$jscoverage['javascript-let.js'].functionData = [];
+  _$jscoverage['javascript-let.js'].functionData[0] = 0;
+  _$jscoverage['javascript-let.js'].functionData[1] = 0;
+  _$jscoverage['javascript-let.js'].functionData[2] = 0;
+  _$jscoverage['javascript-let.js'].functionData[3] = 0;
+}
 _$jscoverage['javascript-let.js'].lineData[5]++;
 let (x = x + 10, y = 12) {
   _$jscoverage['javascript-let.js'].lineData[6]++;
@@ -69,6 +76,7 @@ for (var i = 1; i <= 5; i++) {
   let j = i;
   _$jscoverage['javascript-let.js'].lineData[27]++;
   item.onclick = function(ev) {
+  _$jscoverage['javascript-let.js'].functionData[0]++;
   _$jscoverage['javascript-let.js'].lineData[28]++;
   alert("Item " + j + " is clicked.");
 };
@@ -77,6 +85,7 @@ for (var i = 1; i <= 5; i++) {
 }
 _$jscoverage['javascript-let.js'].lineData[33]++;
 function varTest() {
+  _$jscoverage['javascript-let.js'].functionData[1]++;
   _$jscoverage['javascript-let.js'].lineData[34]++;
   var x = 31;
   _$jscoverage['javascript-let.js'].lineData[35]++;
@@ -91,6 +100,7 @@ function varTest() {
 }
 _$jscoverage['javascript-let.js'].lineData[42]++;
 function letTest() {
+  _$jscoverage['javascript-let.js'].functionData[2]++;
   _$jscoverage['javascript-let.js'].lineData[43]++;
   let x = 31;
   _$jscoverage['javascript-let.js'].lineData[44]++;
@@ -105,6 +115,7 @@ function letTest() {
 }
 _$jscoverage['javascript-let.js'].lineData[51]++;
 function letTests() {
+  _$jscoverage['javascript-let.js'].functionData[3]++;
   _$jscoverage['javascript-let.js'].lineData[52]++;
   let x = 10;
   _$jscoverage['javascript-let.js'].lineData[55]++;

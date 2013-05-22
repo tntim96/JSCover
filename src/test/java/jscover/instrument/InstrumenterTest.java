@@ -339,6 +339,9 @@ consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
 */
+/*
+    Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013
+*/
 
 package jscover.instrument;
 
@@ -407,7 +410,7 @@ public class InstrumenterTest {
     public void shouldInstrumentStatementFunctionAssignment() {
         String source = "this.someFn()\n    ._renderItem = function() {};";
         String instrumentedSource = sourceProcessor.instrumentSource(source);
-        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\nthis.someFn()._renderItem = function() {\n};\n";
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\nthis.someFn()._renderItem = function() {\n  _$jscoverage['test.js'].functionData[0]++;\n};\n";
         assertEquals(expectedSource, instrumentedSource);
     }
 
@@ -486,6 +489,7 @@ public class InstrumenterTest {
         String instrumentedSource = sourceProcessor.instrumentSource(source);
         String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
                 "var x, fn = function() {\n" +
+                "  _$jscoverage['test.js'].functionData[0]++;\n" +
                 "  _$jscoverage['test.js'].lineData[3]++;\n" +
                 "  ;\n" +
                 "};\n";
@@ -508,6 +512,7 @@ public class InstrumenterTest {
                 "var x = {\n" +
                 "  'y': 0, \n" +
                 "  fn: 0 || function() {\n" +
+                "  _$jscoverage['test.js'].functionData[0]++;\n" +
                 "  _$jscoverage['test.js'].lineData[3]++;\n" +
                 "  return 1;\n" +
                 "}};\n";
@@ -529,9 +534,11 @@ public class InstrumenterTest {
         String instrumentedSource = sourceProcessor.instrumentSource(source);
         String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
                 "var x = a > b ? function() {\n" +
+                "  _$jscoverage['test.js'].functionData[0]++;\n" +
                 "  _$jscoverage['test.js'].lineData[3]++;\n" +
                 "  return true;\n" +
                 "} : function() {\n" +
+                "  _$jscoverage['test.js'].functionData[1]++;\n" +
                 "  _$jscoverage['test.js'].lineData[5]++;\n" +
                 "  return false;\n" +
                 "};\n";
@@ -551,6 +558,7 @@ public class InstrumenterTest {
         String instrumentedSource = sourceProcessor.instrumentSource(source);
         String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
                 "var x = [function() {\n" +
+                "  _$jscoverage['test.js'].functionData[0]++;\n" +
                 "  _$jscoverage['test.js'].lineData[3]++;\n" +
                 "  return true;\n" +
                 "}];\n";
@@ -569,6 +577,7 @@ public class InstrumenterTest {
         String instrumentedSource = sourceProcessor.instrumentSource(source);
         String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
                 "var x = (function() {\n" +
+                "  _$jscoverage['test.js'].functionData[0]++;\n" +
                 "  _$jscoverage['test.js'].lineData[3]++;\n" +
                 "  return true;\n" +
                 "});\n";

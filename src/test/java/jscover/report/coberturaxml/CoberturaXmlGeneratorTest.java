@@ -339,6 +339,9 @@ consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
  */
+/*
+    Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013
+*/
 
 package jscover.report.coberturaxml;
 
@@ -499,7 +502,7 @@ public class CoberturaXmlGeneratorTest {
     public void shouldGenerateXmlLineNoBranch() throws Exception {
         List<Integer> lines = new ArrayList<Integer>(){{add(null);}{add(10);}};
         List<List<BranchData>> branchData = new ArrayList<List<BranchData>>();
-        files.add(new FileData("/dir/file.js", lines, branchData));
+        files.add(new FileData("/dir/file.js", lines, null, branchData));
 
         data = new CoberturaData(files);
         String xml = generator.generateXml(data, "srcDir", "version");
@@ -522,7 +525,7 @@ public class CoberturaXmlGeneratorTest {
         add(branchData);}};
         branchDataLists.add(new ArrayList<BranchData>());
         branchDataLists.add(branchDataList);
-        files.add(new FileData("/dir/file.js", lines, branchDataLists));
+        files.add(new FileData("/dir/file.js", lines, null, branchDataLists));
 
         data = new CoberturaData(files);
         String xml = generator.generateXml(data, "srcDir", "version");
@@ -551,7 +554,7 @@ public class CoberturaXmlGeneratorTest {
         add(branchData);}};
         branchDataLists.add(new ArrayList<BranchData>());
         branchDataLists.add(branchDataList);
-        files.add(new FileData("/dir/file.js", lines, branchDataLists));
+        files.add(new FileData("/dir/file.js", lines, null, branchDataLists));
 
         data = new CoberturaData(files);
         String xml = generator.generateXml(data, "srcDir", "version");
@@ -580,7 +583,7 @@ public class CoberturaXmlGeneratorTest {
         add(branchData);}};
         branchDataLists.add(new ArrayList<BranchData>());
         branchDataLists.add(branchDataList);
-        files.add(new FileData("/dir/file.js", lines, branchDataLists));
+        files.add(new FileData("/dir/file.js", lines, null, branchDataLists));
 
         data = new CoberturaData(files);
         String xml = generator.generateXml(data, "srcDir", "version");

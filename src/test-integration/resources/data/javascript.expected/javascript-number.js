@@ -18,6 +18,9 @@ if (! _$jscoverage['javascript-number.js']) {
   _$jscoverage['javascript-number.js'].lineData[18] = 0;
   _$jscoverage['javascript-number.js'].lineData[19] = 0;
 }
+if (! _$jscoverage['javascript-number.js'].functionData) {
+  _$jscoverage['javascript-number.js'].functionData = [];
+}
 _$jscoverage['javascript-number.js'].lineData[1]++;
 x = 1;
 _$jscoverage['javascript-number.js'].lineData[2]++;

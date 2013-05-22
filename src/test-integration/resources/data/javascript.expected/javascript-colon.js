@@ -6,6 +6,9 @@ if (! _$jscoverage['javascript-colon.js']) {
   _$jscoverage['javascript-colon.js'].lineData[5] = 0;
   _$jscoverage['javascript-colon.js'].lineData[6] = 0;
 }
+if (! _$jscoverage['javascript-colon.js'].functionData) {
+  _$jscoverage['javascript-colon.js'].functionData = [];
+}
 _$jscoverage['javascript-colon.js'].lineData[1]++;
 x:
   y = 0;

@@ -21,6 +21,9 @@ if (! _$jscoverage['javascript-while.js']) {
   _$jscoverage['javascript-while.js'].lineData[31] = 0;
   _$jscoverage['javascript-while.js'].lineData[32] = 0;
 }
+if (! _$jscoverage['javascript-while.js'].functionData) {
+  _$jscoverage['javascript-while.js'].functionData = [];
+}
 _$jscoverage['javascript-while.js'].lineData[1]++;
 while (x) {
   _$jscoverage['javascript-while.js'].lineData[2]++;

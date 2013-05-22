@@ -9,6 +9,9 @@ if (! _$jscoverage['javascript-dot.js']) {
   _$jscoverage['javascript-dot.js'].lineData[7] = 0;
   _$jscoverage['javascript-dot.js'].lineData[8] = 0;
 }
+if (! _$jscoverage['javascript-dot.js'].functionData) {
+  _$jscoverage['javascript-dot.js'].functionData = [];
+}
 _$jscoverage['javascript-dot.js'].lineData[1]++;
 x.y = y.x;
 _$jscoverage['javascript-dot.js'].lineData[2]++;

@@ -9,6 +9,9 @@ if (! _$jscoverage['javascript-unaryop.js']) {
   _$jscoverage['javascript-unaryop.js'].lineData[6] = 0;
   _$jscoverage['javascript-unaryop.js'].lineData[7] = 0;
 }
+if (! _$jscoverage['javascript-unaryop.js'].functionData) {
+  _$jscoverage['javascript-unaryop.js'].functionData = [];
+}
 _$jscoverage['javascript-unaryop.js'].lineData[1]++;
 x = -x;
 _$jscoverage['javascript-unaryop.js'].lineData[2]++;

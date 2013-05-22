@@ -385,6 +385,8 @@ public class LCovGeneratorIntegrationTest {
         lCovGenerator.saveData(data.values(), path, dest);
         String result = ioUtils.loadFromFileSystem(dest);
         String expected = "SF:" + path + "/doc/example" + "/script.js\n" +
+                "FNF:0\n" +
+                "FNH:0\n" +
                 "BRDA:3,0,1,2\n" +
                 "BRDA:3,0,2,-\n" +
                 "BRDA:6,0,1,1\n" +

@@ -18,6 +18,9 @@ if (! _$jscoverage['javascript-if.js']) {
   _$jscoverage['javascript-if.js'].lineData[26] = 0;
   _$jscoverage['javascript-if.js'].lineData[29] = 0;
 }
+if (! _$jscoverage['javascript-if.js'].functionData) {
+  _$jscoverage['javascript-if.js'].functionData = [];
+}
 _$jscoverage['javascript-if.js'].lineData[1]++;
 var x = 0;
 _$jscoverage['javascript-if.js'].lineData[3]++;

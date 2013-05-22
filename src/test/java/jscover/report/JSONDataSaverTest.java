@@ -339,6 +339,9 @@ consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
  */
+/*
+    Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013
+*/
 
 package jscover.report;
 
@@ -469,12 +472,12 @@ public class JSONDataSaverTest {
 
         SortedMap<String, FileData> jsonMap = new TreeMap<String, FileData>();
         final String loadedKey = "/loaded.js";
-        FileData fileData = new FileData(loadedKey, null, null);
+        FileData fileData = new FileData(loadedKey, null, null, null);
         jsonMap.put(loadedKey, fileData);
 
         SortedMap<String, FileData> emptyJsonMap = new TreeMap<String, FileData>();
         final String unloadedKey = "/unloaded.js";
-        FileData emptyFileData = new FileData(unloadedKey, null, null);
+        FileData emptyFileData = new FileData(unloadedKey, null, null, null);
         emptyJsonMap.put(unloadedKey, emptyFileData);
 
         given(jsonDataMerger.createEmptyJSON(unloadJSData)).willReturn(emptyJsonMap);

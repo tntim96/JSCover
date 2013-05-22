@@ -15,8 +15,13 @@ if (! _$jscoverage['javascript-new.js']) {
   _$jscoverage['javascript-new.js'].lineData[12] = 0;
   _$jscoverage['javascript-new.js'].lineData[13] = 0;
 }
+if (! _$jscoverage['javascript-new.js'].functionData) {
+  _$jscoverage['javascript-new.js'].functionData = [];
+  _$jscoverage['javascript-new.js'].functionData[0] = 0;
+}
 _$jscoverage['javascript-new.js'].lineData[1]++;
 function X() {
+  _$jscoverage['javascript-new.js'].functionData[0]++;
 }
 _$jscoverage['javascript-new.js'].lineData[2]++;
 x = new X();

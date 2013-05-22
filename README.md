@@ -24,7 +24,7 @@ Most development has been done with IntelliJ community edition, and some with Ec
 Project files for both IDEs are checked in, but any editor can be used.
 Before checking in any changes, be sure to run the build files `pre-commit`.
 NB: `pre-commit` runs the report and enforces coverage limits on unit and integration tests.
-Acceptance test coverage is collected and can be viewed by running the `cobertura-report`
+Acceptance test coverage is collected and can be viewed by running the `coverage-report`
 target manually after `pre-commit`.
 
 To save repository space, the acceptance test framework HTMLUnit is not checked in.

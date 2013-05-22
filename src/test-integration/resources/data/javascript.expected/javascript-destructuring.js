@@ -28,10 +28,18 @@ if (! _$jscoverage['javascript-destructuring.js']) {
   _$jscoverage['javascript-destructuring.js'].lineData[40] = 0;
   _$jscoverage['javascript-destructuring.js'].lineData[41] = 0;
 }
+if (! _$jscoverage['javascript-destructuring.js'].functionData) {
+  _$jscoverage['javascript-destructuring.js'].functionData = [];
+  _$jscoverage['javascript-destructuring.js'].functionData[0] = 0;
+  _$jscoverage['javascript-destructuring.js'].functionData[1] = 0;
+  _$jscoverage['javascript-destructuring.js'].functionData[2] = 0;
+  _$jscoverage['javascript-destructuring.js'].functionData[3] = 0;
+}
 _$jscoverage['javascript-destructuring.js'].lineData[3]++;
 [a, b] = [b, a];
 _$jscoverage['javascript-destructuring.js'].lineData[5]++;
 function f() {
+  _$jscoverage['javascript-destructuring.js'].functionData[0]++;
   _$jscoverage['javascript-destructuring.js'].lineData[6]++;
   return [1, 2];
 }
@@ -60,6 +68,7 @@ _$jscoverage['javascript-destructuring.js'].lineData[21]++;
 [, , ,] = f();
 _$jscoverage['javascript-destructuring.js'].lineData[23]++;
 function g() {
+  _$jscoverage['javascript-destructuring.js'].functionData[1]++;
   _$jscoverage['javascript-destructuring.js'].lineData[24]++;
   var parsedURL = /^(\w+)\:\/\/([^\/]+)\/(.*)$/.exec(url);
   _$jscoverage['javascript-destructuring.js'].lineData[25]++;
@@ -74,6 +83,7 @@ _$jscoverage['javascript-destructuring.js'].lineData[30]++;
 function h(a, [b, c], {
   foo: d, 
   'bar': e}) {
+  _$jscoverage['javascript-destructuring.js'].functionData[2]++;
   _$jscoverage['javascript-destructuring.js'].lineData[31]++;
   f();
   _$jscoverage['javascript-destructuring.js'].lineData[32]++;

@@ -8,6 +8,9 @@ if (! _$jscoverage['javascript-rb.js']) {
   _$jscoverage['javascript-rb.js'].lineData[5] = 0;
   _$jscoverage['javascript-rb.js'].lineData[6] = 0;
 }
+if (! _$jscoverage['javascript-rb.js'].functionData) {
+  _$jscoverage['javascript-rb.js'].functionData = [];
+}
 _$jscoverage['javascript-rb.js'].lineData[1]++;
 x = [];
 _$jscoverage['javascript-rb.js'].lineData[2]++;

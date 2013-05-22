@@ -339,6 +339,9 @@ consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
  */
+/*
+    Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013
+*/
 
 package jscover.report;
 
@@ -483,7 +486,8 @@ public class MainTest {
         for (int i = 0; i <= 42; i++)
             lines.add(i);
         List<List<BranchData>> branches = new ArrayList<List<BranchData>>();
-        list.put("/test.js", new FileData("/test.js", lines, branches));
+        List<Integer> functions = new ArrayList<Integer>();
+        list.put("/test.js", new FileData("/test.js", lines, functions, branches));
         given(jsonDataMerger.jsonToMap(json)).willReturn(list);
 
         main.runMain(new String[]{});

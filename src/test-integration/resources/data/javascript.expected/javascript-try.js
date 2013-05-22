@@ -16,8 +16,13 @@ if (! _$jscoverage['javascript-try.js']) {
   _$jscoverage['javascript-try.js'].lineData[28] = 0;
   _$jscoverage['javascript-try.js'].lineData[31] = 0;
 }
+if (! _$jscoverage['javascript-try.js'].functionData) {
+  _$jscoverage['javascript-try.js'].functionData = [];
+  _$jscoverage['javascript-try.js'].functionData[0] = 0;
+}
 _$jscoverage['javascript-try.js'].lineData[1]++;
 function f() {
+  _$jscoverage['javascript-try.js'].functionData[0]++;
 }
 _$jscoverage['javascript-try.js'].lineData[3]++;
 try {

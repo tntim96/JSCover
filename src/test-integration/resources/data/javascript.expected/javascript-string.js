@@ -11,6 +11,9 @@ if (! _$jscoverage['javascript-string.js']) {
   _$jscoverage['javascript-string.js'].lineData[8] = 0;
   _$jscoverage['javascript-string.js'].lineData[10] = 0;
 }
+if (! _$jscoverage['javascript-string.js'].functionData) {
+  _$jscoverage['javascript-string.js'].functionData = [];
+}
 _$jscoverage['javascript-string.js'].lineData[1]++;
 x = "";
 _$jscoverage['javascript-string.js'].lineData[2]++;

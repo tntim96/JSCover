@@ -339,6 +339,9 @@ consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
  */
+/*
+    Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013
+*/
 
 package jscover.report.lcov;
 
@@ -372,11 +375,26 @@ public class LCovGeneratorTest {
         branches.add(null);
         branches.add(asList(null, getBranchData(1, 1)));
 
+        List<Integer> functions = new ArrayList<Integer>();
+        functions.add(7);
+        functions.add(2);
+        functions.add(0);
+        functions.add(5);
 
-        FileData coverageData = new FileData("/test.js", lines, branches);
+        FileData coverageData = new FileData("/test.js", lines, functions, branches);
 
         String result = lCovGenerator.generateRecord(coverageData, "dest");
         String expected = "SF:dest/test.js\n" +
+                "FN:0,0\n" +
+                "FN:0,1\n" +
+                "FN:0,2\n" +
+                "FN:0,3\n" +
+                "FNDA:7,0\n" +
+                "FNDA:2,1\n" +
+                "FNDA:0,2\n" +
+                "FNDA:5,3\n" +
+                "FNF:4\n" +
+                "FNH:3\n" +
                 "BRDA:1,0,1,1\n" +
                 "BRDA:1,0,2,-\n" +
                 "BRDA:1,0,3,-\n" +

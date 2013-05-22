@@ -7,6 +7,9 @@ if (! _$jscoverage['javascript-do.js']) {
   _$jscoverage['javascript-do.js'].lineData[8] = 0;
   _$jscoverage['javascript-do.js'].lineData[9] = 0;
 }
+if (! _$jscoverage['javascript-do.js'].functionData) {
+  _$jscoverage['javascript-do.js'].functionData = [];
+}
 _$jscoverage['javascript-do.js'].lineData[1]++;
 var x;
 _$jscoverage['javascript-do.js'].lineData[3]++;

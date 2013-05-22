@@ -12,6 +12,10 @@ if (! _$jscoverage['javascript-generator-expression.js']) {
   _$jscoverage['javascript-generator-expression.js'].lineData[16] = 0;
   _$jscoverage['javascript-generator-expression.js'].lineData[18] = 0;
 }
+if (! _$jscoverage['javascript-generator-expression.js'].functionData) {
+  _$jscoverage['javascript-generator-expression.js'].functionData = [];
+  _$jscoverage['javascript-generator-expression.js'].functionData[0] = 0;
+}
 _$jscoverage['javascript-generator-expression.js'].lineData[3]++;
 let it = (i + 3 for (i in someObj));
 _$jscoverage['javascript-generator-expression.js'].lineData[4]++;
@@ -27,6 +31,7 @@ try {
 }
 _$jscoverage['javascript-generator-expression.js'].lineData[12]++;
 function handleResults(results) {
+  _$jscoverage['javascript-generator-expression.js'].functionData[0]++;
   _$jscoverage['javascript-generator-expression.js'].lineData[13]++;
   for (let i in results) {
     _$jscoverage['javascript-generator-expression.js'].lineData[14]++;

@@ -16,6 +16,9 @@ if (! _$jscoverage['javascript-assign.js']) {
   _$jscoverage['javascript-assign.js'].lineData[13] = 0;
   _$jscoverage['javascript-assign.js'].lineData[14] = 0;
 }
+if (! _$jscoverage['javascript-assign.js'].functionData) {
+  _$jscoverage['javascript-assign.js'].functionData = [];
+}
 _$jscoverage['javascript-assign.js'].lineData[1]++;
 var x = 1;
 _$jscoverage['javascript-assign.js'].lineData[2]++;

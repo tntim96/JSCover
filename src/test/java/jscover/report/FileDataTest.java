@@ -354,7 +354,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class FileDataTest {
     @Test
     public void shouldReturnUri() {
-        FileData lineData = new FileData("/test/test.js", null, null);
+        FileData lineData = new FileData("/test/test.js", null, null, null);
         assertThat(lineData.getUri(), equalTo("/test/test.js"));
     }
 
@@ -367,7 +367,7 @@ public class FileDataTest {
         lines.add(null);
         lines.add(0);
         lines.add(5);
-        FileData lineData = new FileData("test.js", lines, null);
+        FileData lineData = new FileData("test.js", lines, null, null);
         assertThat(lineData.getCodeLineCount(), equalTo(4));
         assertThat(lineData.getCodeLineCount(), equalTo(4));//Check cache
         assertThat(lineData.getCodeLinesCoveredCount(), equalTo(3));
@@ -376,13 +376,31 @@ public class FileDataTest {
     }
 
     @Test
+    public void shouldReturnFunctionStats() {
+        List<Integer> functions = new ArrayList<Integer>();
+        functions.add(7);
+        functions.add(2);
+        functions.add(0);
+        functions.add(5);
+        FileData functionData = new FileData("test.js", null, functions, null);
+        assertThat(functionData.getCodeFunctionCount(), equalTo(4));
+        assertThat(functionData.getCodeFunctionCount(), equalTo(4));//Check cache
+        assertThat(functionData.getCodeFunctionCoveredCount(), equalTo(3));
+        assertThat(functionData.getCodeFunctionCoveredCount(), equalTo(3));//Check cache
+        assertThat(functionData.getFunctionCoverRate(), equalTo((double)3 / 4));
+        
+        functionData = new FileData("test.js", null, new ArrayList<Integer>(), null);
+        assertThat(functionData.getFunctionCoverRate(), equalTo((double)1.0));
+    }
+    
+    @Test
     public void shouldReturnBranchStats() {
         List<List<BranchData>> lines = new ArrayList<List<BranchData>>();
         lines.add(null);
         lines.add(asList(null, getBranchData(1, 0), getBranchData(0, 1)));
         lines.add(null);
         lines.add(asList(null, getBranchData(1, 1)));
-        FileData lineData = new FileData("test.js", null, lines);
+        FileData lineData = new FileData("test.js", null, null, lines);
         assertThat(lineData.getBranchCount(), equalTo(6));
         assertThat(lineData.getBranchCount(), equalTo(6));//Check cache
         assertThat(lineData.getBranchesCoveredCount(), equalTo(4));

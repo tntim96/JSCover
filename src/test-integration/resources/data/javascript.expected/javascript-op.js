@@ -35,6 +35,9 @@ if (! _$jscoverage['javascript-op.js']) {
   _$jscoverage['javascript-op.js'].lineData[54] = 0;
   _$jscoverage['javascript-op.js'].lineData[55] = 0;
 }
+if (! _$jscoverage['javascript-op.js'].functionData) {
+  _$jscoverage['javascript-op.js'].functionData = [];
+}
 _$jscoverage['javascript-op.js'].lineData[1]++;
 var a = 1, b = 1, c = 1, d = 1;
 _$jscoverage['javascript-op.js'].lineData[4]++;

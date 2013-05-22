@@ -6,6 +6,9 @@ if (! _$jscoverage['javascript-primary.js']) {
   _$jscoverage['javascript-primary.js'].lineData[3] = 0;
   _$jscoverage['javascript-primary.js'].lineData[4] = 0;
 }
+if (! _$jscoverage['javascript-primary.js'].functionData) {
+  _$jscoverage['javascript-primary.js'].functionData = [];
+}
 _$jscoverage['javascript-primary.js'].lineData[1]++;
 x = true;
 _$jscoverage['javascript-primary.js'].lineData[2]++;

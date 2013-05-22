@@ -9,8 +9,13 @@ if (! _$jscoverage['javascript-generator.js']) {
   _$jscoverage['javascript-generator.js'].lineData[8] = 0;
   _$jscoverage['javascript-generator.js'].lineData[9] = 0;
 }
+if (! _$jscoverage['javascript-generator.js'].functionData) {
+  _$jscoverage['javascript-generator.js'].functionData = [];
+  _$jscoverage['javascript-generator.js'].functionData[0] = 0;
+}
 _$jscoverage['javascript-generator.js'].lineData[3]++;
 function fib() {
+  _$jscoverage['javascript-generator.js'].functionData[0]++;
   _$jscoverage['javascript-generator.js'].lineData[4]++;
   var i = 0, j = 1;
   _$jscoverage['javascript-generator.js'].lineData[5]++;

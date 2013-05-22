@@ -20,6 +20,9 @@ if (! _$jscoverage['javascript-switch.js']) {
   _$jscoverage['javascript-switch.js'].lineData[29] = 0;
   _$jscoverage['javascript-switch.js'].lineData[30] = 0;
 }
+if (! _$jscoverage['javascript-switch.js'].functionData) {
+  _$jscoverage['javascript-switch.js'].functionData = [];
+}
 _$jscoverage['javascript-switch.js'].lineData[1]++;
 switch (x) {
   case x:

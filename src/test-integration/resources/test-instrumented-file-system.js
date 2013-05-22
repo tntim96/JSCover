@@ -207,6 +207,9 @@ if (! _$jscoverage['test-simple.js']) {
   _$jscoverage['test-simple.js'].lineData[2] = 0;
   _$jscoverage['test-simple.js'].lineData[3] = 0;
 }
+if (! _$jscoverage['test-simple.js'].functionData) {
+  _$jscoverage['test-simple.js'].functionData = [];
+}
 _$jscoverage['test-simple.js'].lineData[1]++;
 var x, y;
 _$jscoverage['test-simple.js'].lineData[2]++;

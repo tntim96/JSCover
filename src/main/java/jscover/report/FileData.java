@@ -425,7 +425,7 @@ public class FileData extends CoverageAdapter {
     }
 
     public void calculateFunctionStatistics() {
-        if (functionCount == 0) {
+        if (functionCount == 0 && functions != null ) {
             for (int i = 0; i < functions.size(); i++)
                 if (functions.get(0) != null) {
                     functionCount++;

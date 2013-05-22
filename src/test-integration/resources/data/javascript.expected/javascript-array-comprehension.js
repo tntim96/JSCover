@@ -9,8 +9,13 @@ if (! _$jscoverage['javascript-array-comprehension.js']) {
   _$jscoverage['javascript-array-comprehension.js'].lineData[12] = 0;
   _$jscoverage['javascript-array-comprehension.js'].lineData[14] = 0;
 }
+if (! _$jscoverage['javascript-array-comprehension.js'].functionData) {
+  _$jscoverage['javascript-array-comprehension.js'].functionData = [];
+  _$jscoverage['javascript-array-comprehension.js'].functionData[0] = 0;
+}
 _$jscoverage['javascript-array-comprehension.js'].lineData[3]++;
 function range(begin, end) {
+  _$jscoverage['javascript-array-comprehension.js'].functionData[0]++;
   _$jscoverage['javascript-array-comprehension.js'].lineData[4]++;
   for (let i = begin; i < end; ++i) {
     _$jscoverage['javascript-array-comprehension.js'].lineData[5]++;

@@ -14,6 +14,9 @@ if (! _$jscoverage['javascript-for.js']) {
   _$jscoverage['javascript-for.js'].lineData[20] = 0;
   _$jscoverage['javascript-for.js'].lineData[21] = 0;
 }
+if (! _$jscoverage['javascript-for.js'].functionData) {
+  _$jscoverage['javascript-for.js'].functionData = [];
+}
 _$jscoverage['javascript-for.js'].lineData[1]++;
 for (i in x) {
   _$jscoverage['javascript-for.js'].lineData[2]++;

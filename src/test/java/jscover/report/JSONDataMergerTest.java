@@ -339,6 +339,9 @@ consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
 */
+/*
+    Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013
+*/
 
 package jscover.report;
 
@@ -378,12 +381,23 @@ public class JSONDataMergerTest {
 
         assertThat(merged, equalTo(expected));
     }
+    
+    @Test
+    public void shouldMergeFunctionData() {
+        String data1 = ioUtils.loadFromClassPath("/jscover/report/jscoverage-select-1-function.json");
+        String data2 = ioUtils.loadFromClassPath("/jscover/report/jscoverage-select-3-function.json");
+        String expected = ioUtils.loadFromClassPath("/jscover/report/jscoverage-select-1-3-function.json");
 
+        String merged = jsonMerger.toJSON(jsonMerger.mergeJSONCoverageStrings(data1, data2));
+
+        assertThat(merged, equalTo(expected));
+    }
+    
     @Test
     public void shouldMergeDataWithDifferentFiles() {
         String data1 = "{\"/test1.js\":{\"lineData\":[null,0,1],\"branchData\":[]}}";
         String data2 = "{\"/test2.js\":{\"lineData\":[null,0,1],\"branchData\":[]}}";
-        String expected = "{\"/test1.js\":{\"lineData\":[null,0,1],\"branchData\":[]},\"/test2.js\":{\"lineData\":[null,0,1],\"branchData\":[]}}";
+        String expected = "{\"/test1.js\":{\"lineData\":[null,0,1],\"functionData\":[],\"branchData\":[]},\"/test2.js\":{\"lineData\":[null,0,1],\"functionData\":[],\"branchData\":[]}}";
 
         String merged = jsonMerger.toJSON(jsonMerger.mergeJSONCoverageStrings(data1, data2));
 
@@ -435,7 +449,7 @@ public class JSONDataMergerTest {
 
     @Test
     public void shouldConvertBranchMapToJSONString() {
-        String data = "{\"/test.js\":{\"lineData\":[null,1,2],\"branchData\":[null,null,[null,{\"position\":13,\"nodeLength\":4,\"src\":\"x == 0\",\"evalFalse\":1,\"evalTrue\":2}]]}}";
+        String data = "{\"/test.js\":{\"lineData\":[null,1,2],\"functionData\":[],\"branchData\":[null,null,[null,{\"position\":13,\"nodeLength\":4,\"src\":\"x == 0\",\"evalFalse\":1,\"evalTrue\":2}]]}}";
         SortedMap<String, FileData> map = jsonMerger.jsonToMap(data);
 
         String jsonString = jsonMerger.toJSON(map);
@@ -445,7 +459,7 @@ public class JSONDataMergerTest {
 
     @Test
     public void shouldConvertMapToJSONString() {
-        String data = "{\"/test.js\":{\"lineData\":[null,0,1],\"branchData\":[]}}";
+        String data = "{\"/test.js\":{\"lineData\":[null,0,1],\"functionData\":[],\"branchData\":[]}}";
         SortedMap<String, FileData> map = jsonMerger.jsonToMap(data);
 
         String jsonString = jsonMerger.toJSON(map);
