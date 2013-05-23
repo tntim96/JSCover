@@ -370,11 +370,15 @@ public class BranchStatementBuilder {
         lengthLiteral.setValue(""+length);
         fnCall.addArgument(lengthLiteral);
         StringLiteral stringLiteral = new StringLiteral();
-        stringLiteral.setValue(source);
+        stringLiteral.setValue(removeInstrumentation(source));
         stringLiteral.setQuoteCharacter('\'');
         fnCall.addArgument(stringLiteral);
 
         return new ExpressionStatement(fnCall);
+    }
+
+    protected String removeInstrumentation(String source) {
+        return source.replaceAll(" *_\\$jscoverage\\['[^']+'\\]\\.[^\\[]+\\[\\d+\\]\\+\\+;\n", "");
     }
 
     public ExpressionStatement buildLineAndConditionCall(String uri, int lineNo, int conditionNo) {

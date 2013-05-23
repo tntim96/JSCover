@@ -18,8 +18,12 @@ $(document).ready(function() {
     if (!$(this).hasClass('brand'))
       $(this).fadeTo("fast", 0.7);
   });
+  var page = "home.html";
+  var pageIndex = document.location.href.indexOf("?page=");
+  if (pageIndex !== -1)
+    page = document.location.href.substring(pageIndex + 6);
   $.ajax({
-    url: 'home.html',
+    url: page,
     dataType:'html',
     success: function(data) {
       $('#container').html(data+'<p>&nbsp;</p>');
@@ -32,7 +36,7 @@ $(document).ready(function() {
     $('#container').html('<div style="position:relative"><h2>Loading...</h2></div>');
     var contentId = $(this).attr("id").replace('Link', '');
     $.ajax({
-      url: contentId + '.html?v=027b',
+      url: contentId + '.html?v=028',
       dataType:'html',
       success: function(data) {
       $('#container').html(data+'<p>&nbsp;</p>');

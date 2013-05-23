@@ -1,3 +1,8 @@
+0.2.8 / 2013-??-??
+==================
+  * Remove instrumentation code from branch data source
+  * Website - handle direct links to HTML pages
+
 0.2.7 / 2013-04-15
 ==================
   * Add regular expression based path switch support (https://github.com/tntim96/JSCover/issues/57)
