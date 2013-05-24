@@ -369,7 +369,7 @@ class ParseTreeInstrumenter implements NodeVisitor {
     public int getNumFunctions() {
     	return nodeProcessor.getNumFunctions();
     }
-    
+
     public boolean visit(AstNode node) {
         try {
             return nodeProcessor.processNode(node);

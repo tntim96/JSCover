@@ -367,4 +367,11 @@ public class StatementBuilderTest {
     public void shouldThrowExceptionIfLineNumberInvalid() {
         builder.buildInstrumentationStatement(0, "/dir/file.js", validLines);
     }
+
+    @Test
+    public void shouldCreateFunctionInstrumentationStatement() {
+        ExpressionStatement statement = builder.buildFunctionInstrumentationStatement(7, "/dir/file.js");
+
+        assertThat("_$jscoverage['/dir/file.js'].functionData[7]++;\n", equalTo(statement.toSource()));
+    }
 }

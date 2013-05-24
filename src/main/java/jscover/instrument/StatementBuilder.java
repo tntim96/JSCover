@@ -378,9 +378,8 @@ class StatementBuilder {
         return new ExpressionStatement(unaryExpression);
     }
    
-   	// Function Coverage (HA-CA) 
-    public ExpressionStatement buildFunctionInstrumentationStatement(int functionNumber, String fileName, SortedSet<Integer> validLines) {
-
+   	// Function Coverage (HA-CA), tntim96
+    public ExpressionStatement buildFunctionInstrumentationStatement(int functionNumber, String fileName) {
         Name var = new Name(0, "_$jscoverage");
         StringLiteral fileNameLiteral = new StringLiteral();
         fileNameLiteral.setValue(fileName);
