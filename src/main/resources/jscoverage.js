@@ -1214,11 +1214,7 @@ function jscoverage_pad(s) {
   return '0000'.substr(s.length) + s;
 }
 
-function jscoverage_serializeCoverageToJSON() {
-  var json = [];
-  for (var file in _$jscoverage) {
-    var coverage = _$jscoverage[file].lineData;
-
+function getArrayJSON(coverage) {
     var array = [];
     var length = coverage.length;
     for (var line = 0; line < length; line++) {
@@ -1228,8 +1224,16 @@ function jscoverage_serializeCoverageToJSON() {
       }
       array.push(value);
     }
+    return array;
+}
 
-    json.push(jscoverage_quote(file) + ':{"lineData":[' + array.join(',') + '],"branchData":' + convertBranchDataLinesToJSON(_$jscoverage[file].branchData) + '}');
+function jscoverage_serializeCoverageToJSON() {
+  var json = [];
+  for (var file in _$jscoverage) {
+    var lineArray = getArrayJSON(_$jscoverage[file].lineData);
+    var fnArray = getArrayJSON(_$jscoverage[file].functionData);
+
+    json.push(jscoverage_quote(file) + ':{"lineData":[' + lineArray.join(',') + '],"functionData":[' + fnArray.join(',') + '],"branchData":' + convertBranchDataLinesToJSON(_$jscoverage[file].branchData) + '}');
   }
   return '{' + json.join(',') + '}';
 }
