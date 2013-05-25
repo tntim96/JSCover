@@ -352,7 +352,7 @@ import java.util.List;
 
 import static java.lang.String.format;
 
-//Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013
+//Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013, tntim96
 //http://ltp.sourceforge.net/coverage/lcov/geninfo.1.php
 public class LCovGenerator {
     private IoUtils ioUtils = IoUtils.getInstance();
@@ -372,7 +372,15 @@ public class LCovGenerator {
     //LH:<number of lines with a non-zero execution count>
     //private String linesHit = "LH:%d\n";
     //LF:<number of instrumented lines>
-   // private String linesFound = "LF:%d\n";
+    // private String linesFound = "LF:%d\n";
+    //FN:<line number of function start>,<function name>
+    //private String functionStart = "FN:0,%s\n";
+    //FNDA:<execution count>,<function name>
+    private String functionData = "FNDA:%d,%s\n";
+    //FNF:<number of functions found>
+    private String functionFound = "FNF:%d\n";
+    //FNH:<number of function hit>
+    private String functionHit = "FNH:%d\n";
     private String endRecord = "end_of_record\n";
 
     public void saveData(Collection<FileData> files, String sourceDirectory, File dest) {
@@ -402,29 +410,22 @@ public class LCovGenerator {
         }
     }
 
-    // Function Coverage (HA-CA) 
+    // Function Coverage (HA-CA), tntim96
     private void processFunctions(FileData coverageData, StringBuilder lcov) {
-    	int total = 0;
-    	int hit = 0;
+        int total = 0;
+        int hit = 0;
         for (int functionNumber = 0; functionNumber < coverageData.getFunctions().size(); functionNumber++) {
-            Integer count = coverageData.getFunctions().get(functionNumber);
             total++;
-            if (count != null && count > 0)
-            	hit++;
-            
-            int lineNumber = 0; //XXX TODO
+            Integer functionHits = coverageData.getFunctions().get(functionNumber);
+            if (functionHits > 0)
+                hit++;
+
             String functionName = "" + functionNumber;
-            lcov.append(format("FN:%d,%s\n", lineNumber, functionName));
+            lcov.append(format(functionData, functionHits, functionName));
         }
 
-        for (int functionNumber = 0; functionNumber < coverageData.getFunctions().size(); functionNumber++) {
-            Integer count = coverageData.getFunctions().get(functionNumber);
-            String functionName = "" + functionNumber;
-            lcov.append(format("FNDA:%d,%s\n", count,functionName));
-        }
-
-        lcov.append(format("FNF:%d\n", total));
-        lcov.append(format("FNH:%d\n", hit));
+        lcov.append(format(functionFound, total));
+        lcov.append(format(functionHit, hit));
     }
 
     private void processBranches(FileData coverageData, StringBuilder lcov) {

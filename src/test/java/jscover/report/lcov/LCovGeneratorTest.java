@@ -385,10 +385,6 @@ public class LCovGeneratorTest {
 
         String result = lCovGenerator.generateRecord(coverageData, "dest");
         String expected = "SF:dest/test.js\n" +
-                "FN:0,0\n" +
-                "FN:0,1\n" +
-                "FN:0,2\n" +
-                "FN:0,3\n" +
                 "FNDA:7,0\n" +
                 "FNDA:2,1\n" +
                 "FNDA:0,2\n" +
