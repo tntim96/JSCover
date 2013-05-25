@@ -367,12 +367,13 @@ public class ConfigurationForServer extends Configuration {
     public static final String JS_VERSION_PREFIX = "--js-version=";
     public static final String PROXY_PREFIX = "--proxy";
     public static final String INCLUDE_UNLOADED_JS_PREFIX = "--include-unloaded-js";
-    public static final String BRANCH_PREFIX = "--branch";
-    public static final String FUNCTION_PREFIX = "--function";
+    public static final String BRANCH_PREFIX = "--no-branch";
+    public static final String FUNCTION_PREFIX = "--no-function";
 
     private boolean showHelp;
     private boolean invalid;
-    private boolean includeBranch = false;
+    private boolean includeBranch = true;
+    private boolean includeFunction = true;
     private File documentRoot = new File(System.getProperty("user.dir"));
     private Integer port = 8080;
     private final Set<String> noInstruments = new HashSet<String>();
@@ -383,7 +384,6 @@ public class ConfigurationForServer extends Configuration {
     private CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
     private boolean includeUnloadedJS;
     private IoUtils ioUtils = IoUtils.getInstance();
-    private boolean includeFunction;
 
     public Boolean showHelp() {
         return showHelp;
@@ -474,9 +474,9 @@ public class ConfigurationForServer extends Configuration {
             } else if (arg.startsWith(JS_VERSION_PREFIX)) {
                 configuration.JSVersion = (int)(Float.valueOf(arg.substring(JS_VERSION_PREFIX.length()))*100);
             } else if (arg.equals(BRANCH_PREFIX)) {
-                configuration.includeBranch = true;
+                configuration.includeBranch = false;
             } else if (arg.equals(FUNCTION_PREFIX)) {
-                configuration.includeFunction = true;
+                configuration.includeFunction = false;
             } else {
                 configuration.showHelp = true;
                 configuration.invalid = true;

@@ -363,6 +363,7 @@ public class HtmlUnitJSTest {
     private String[] args = new String[]{
             "-ws",
             "--port=8081",
+            "--no-branch",
             "--no-instrument=doc",
             "--no-instrument=src/test",
             "--no-instrument=src/main/resources/jscoverage-common.js",//Move functions out to testable files

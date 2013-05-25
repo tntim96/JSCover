@@ -1,5 +1,7 @@
-0.2.8 / 2013-??-??
+0.3.0 / 2013-??-??
 ==================
+  * Add function coverage https://github.com/tntim96/JSCover/issues/61
+  * Include branch coverage by default. Replace '--branch' switch with '--no-branch'
   * Remove instrumentation code from branch data source
   * Website - handle direct links to HTML pages
 

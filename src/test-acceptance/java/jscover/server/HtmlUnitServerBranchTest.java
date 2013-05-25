@@ -362,7 +362,6 @@ public class HtmlUnitServerBranchTest extends HtmlUnitServerTest {
             "--document-root=src/test-acceptance/resources",
             "--port=9001",
             "--no-instrument=example/lib",
-            "--branch",
             "--report-dir=" + getReportDir()
     };
 

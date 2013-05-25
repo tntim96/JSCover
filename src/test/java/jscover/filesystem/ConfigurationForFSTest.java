@@ -357,12 +357,11 @@ public class ConfigurationForFSTest {
         ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs","src","doc"});
         assertThat(configuration.showHelp(), equalTo(false));
         assertThat(configuration.isInvalid(), equalTo(false));
-        assertThat(configuration.isIncludeBranch(), equalTo(false));
         assertThat(configuration.getJSVersion(), equalTo(150));
         assertThat(configuration.skipInstrumentation("/"), equalTo(false));
         assertThat(configuration.getCompilerEnvirons().getLanguageVersion(), equalTo(150));
-        assertThat(configuration.isIncludeBranch(), equalTo(false));
-        assertThat(configuration.isIncludeFunction(), equalTo(false));
+        assertThat(configuration.isIncludeBranch(), equalTo(true));
+        assertThat(configuration.isIncludeFunction(), equalTo(true));
     }
 
     @Test
@@ -408,12 +407,12 @@ public class ConfigurationForFSTest {
 
     @Test
     public void shouldParseBranch() {
-        assertThat(ConfigurationForFS.parse(new String[]{"-fs","--branch","src","doc"}).isIncludeBranch(), equalTo(true));
+        assertThat(ConfigurationForFS.parse(new String[]{"-fs","--no-branch","src","doc"}).isIncludeBranch(), equalTo(false));
     }
 
     @Test
     public void shouldParseFunction() {
-        assertThat(ConfigurationForFS.parse(new String[]{"-fs", "--function"}).isIncludeFunction(), equalTo(true));
+        assertThat(ConfigurationForFS.parse(new String[]{"-fs", "--no-function"}).isIncludeFunction(), equalTo(false));
     }
 
     @Test

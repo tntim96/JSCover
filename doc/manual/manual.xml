@@ -85,7 +85,7 @@
                     <text>
                         Run&#160;<var>example-server.bat</var>&#160;or&#160;<var>example-server.sh</var>. The contents
                         are:
-                        <code>java -jar target/dist/JSCover-all.jar -ws --branch --document-root=doc/example --report-dir=target</code>
+                        <code>java -jar target/dist/JSCover-all.jar -ws --document-root=doc/example --report-dir=target</code>
                         This will start a web server, and the JSCover interface can be loaded by going to
                         <a href="http://localhost:8080/jscoverage.html">http://localhost:8080/jscoverage.html</a>.
                         <br/>
@@ -238,7 +238,7 @@
                         <var>example-proxy.bat</var>
                         or
                         <var>example-proxy.sh</var>. The contents are:
-                        <code>$ java -jar target/dist/JSCover-all.jar -ws --branch --proxy --port=3128 --report-dir=target</code>
+                        <code>$ java -jar target/dist/JSCover-all.jar -ws --proxy --port=3128 --report-dir=target</code>
                     </text>
                 </item>
                 <text>
@@ -256,7 +256,7 @@
                     <var>example-filesystem.bat</var>
                     or
                     <var>example-filesystem.sh</var>. The contents are:
-                    <code>java -jar target/dist/JSCover-all.jar -fs --branch doc/example target/example</code>
+                    <code>java -jar target/dist/JSCover-all.jar -fs doc/example target/example</code>
                     This will recursively copy all the resources from
                     <var>doc/example</var>
                     to
@@ -405,9 +405,14 @@
                             <td>Run in proxy mode</td>
                         </tr>
                         <tr>
-                            <td>--branch</td>
+                            <td>--no-branch</td>
                             <td>N/A</td>
-                            <td>Collect branch coverage data</td>
+                            <td>Turn off branch coverage data collection</td>
+                        </tr>
+                        <tr>
+                            <td>--no-function</td>
+                            <td>N/A</td>
+                            <td>Turn off function coverage data collection</td>
                         </tr>
                         <tr>
                             <td>--include-unloaded-js</td>
@@ -1015,7 +1020,6 @@
          &lt;java jar="JSCover-all.jar" fork="true" spawn="true"&gt;
             &lt;arg value="-ws"/&gt;
             &lt;arg value="--document-root=src"/&gt;
-            &lt;arg value="--branch"/&gt;
             &lt;arg value="--report-dir=${jscover.dir}"/&gt;
             &lt;arg value="--no-instrument=src/main/webapp/js/lib"/&gt;
             &lt;arg value="--no-instrument=src/test/"/&gt;

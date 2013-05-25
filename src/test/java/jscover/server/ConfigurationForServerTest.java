@@ -363,8 +363,8 @@ public class ConfigurationForServerTest {
         assertThat(configuration.getCompilerEnvirons().getLanguageVersion(), equalTo(150));
         assertThat(configuration.isProxy(), is(false));
         assertThat(configuration.isIncludeUnloadedJS(), is(false));
-        assertThat(configuration.isIncludeBranch(), is(false));
-        assertThat(configuration.isIncludeFunction(), is(false));
+        assertThat(configuration.isIncludeBranch(), is(true));
+        assertThat(configuration.isIncludeFunction(), is(true));
     }
 
     @Test
@@ -376,8 +376,8 @@ public class ConfigurationForServerTest {
         assertThat(configuration.isProxy(), is(false));
         assertThat(configuration.getJSVersion(), equalTo(150));
         assertThat(configuration.skipInstrumentation("/"), equalTo(false));
-        assertThat(configuration.isIncludeBranch(), equalTo(false));
-        assertThat(configuration.isIncludeFunction(), is(false));
+        assertThat(configuration.isIncludeBranch(), equalTo(true));
+        assertThat(configuration.isIncludeFunction(), is(true));
     }
 
     @Test
@@ -397,12 +397,12 @@ public class ConfigurationForServerTest {
 
     @Test
     public void shouldParseBranch() {
-        assertThat(ConfigurationForServer.parse(new String[]{"-ws", "--branch"}).isIncludeBranch(), equalTo(true));
+        assertThat(ConfigurationForServer.parse(new String[]{"-ws", "--no-branch"}).isIncludeBranch(), equalTo(false));
     }
 
     @Test
     public void shouldParseFunction() {
-        assertThat(ConfigurationForServer.parse(new String[]{"-ws", "--function"}).isIncludeFunction(), equalTo(true));
+        assertThat(ConfigurationForServer.parse(new String[]{"-ws", "--no-function"}).isIncludeFunction(), equalTo(false));
     }
 
     @Test

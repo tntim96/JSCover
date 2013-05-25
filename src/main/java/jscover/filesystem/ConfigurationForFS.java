@@ -363,14 +363,14 @@ public class ConfigurationForFS extends Configuration {
     public static final String EXLCUDE_REG_PREFIX = "--exclude-reg=";
     public static final String NO_INSTRUMENT_PREFIX = "--no-instrument=";
     public static final String NO_INSTRUMENT_REG_PREFIX = "--no-instrument-reg=";
-    public static final String BRANCH_PREFIX = "--branch";
-    public static final String FUNCTION_PREFIX = "--function";
+    public static final String BRANCH_PREFIX = "--no-branch";
+    public static final String FUNCTION_PREFIX = "--no-function";
     public static final String JS_VERSION_PREFIX = "--js-version=";
 
     private boolean showHelp;
     private boolean invalid;
-    private boolean includeBranch;
-    private boolean includeFunction;
+    private boolean includeBranch = true;
+    private boolean includeFunction = true;
     private final Set<String> noInstruments = new HashSet<String>();
     private final Set<Pattern> noInstrumentRegs = new HashSet<Pattern>();
     private final Set<String> excludes = new HashSet<String>();
@@ -440,9 +440,9 @@ public class ConfigurationForFS extends Configuration {
                 configuration.showHelp = true;
                 return configuration;
             } else if (arg.equals(BRANCH_PREFIX)) {
-                configuration.includeBranch = true;
+                configuration.includeBranch = false;
             } else if (arg.equals(FUNCTION_PREFIX)) {
-                configuration.includeFunction = true;
+                configuration.includeFunction = false;
             } else if (arg.startsWith(NO_INSTRUMENT_PREFIX)) {
                 String uri = arg.substring(NO_INSTRUMENT_PREFIX.length());
                 if (uri.startsWith("/"))
