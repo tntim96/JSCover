@@ -340,10 +340,6 @@ library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
  */
 
-/*
-	Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013
-*/
-
 package jscover.report.lcov;
 
 import jscover.report.BranchData;
@@ -356,6 +352,7 @@ import java.util.List;
 
 import static java.lang.String.format;
 
+//Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013
 //http://ltp.sourceforge.net/coverage/lcov/geninfo.1.php
 public class LCovGenerator {
     private IoUtils ioUtils = IoUtils.getInstance();
@@ -417,7 +414,7 @@ public class LCovGenerator {
             
             int lineNumber = 0; //XXX TODO
             String functionName = "" + functionNumber;
-            lcov.append(format("FN:%d,%s\n", lineNumber,functionName));
+            lcov.append(format("FN:%d,%s\n", lineNumber, functionName));
         }
 
         for (int functionNumber = 0; functionNumber < coverageData.getFunctions().size(); functionNumber++) {

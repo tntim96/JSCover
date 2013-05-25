@@ -339,10 +339,6 @@ consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License. */
 
-/*
-	Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013
-*/
-
 package jscover.report;
 
 import org.mozilla.javascript.Context;
@@ -355,6 +351,7 @@ import java.util.*;
 
 import static java.lang.String.format;
 
+//Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013, tntim96
 public class JSONDataMerger {
     private Context cx = Context.enter();
     private JsonParser parser = new JsonParser(cx, cx.initStandardObjects());
@@ -372,33 +369,21 @@ public class JSONDataMerger {
         for (String scriptName : map1.keySet()) {
             if (map2.containsKey(scriptName)) {
                 FileData coverageData = map1.get(scriptName);
-                for (int i = 0; i < coverageData.getLines().size(); i++) {
-                    if (coverageData.getLines().get(i) != null) {
+                for (int i = 0; i < coverageData.getLines().size(); i++)
+                    if (coverageData.getLines().get(i) != null)
                         coverageData.addCoverage(map2.get(scriptName).getLines().get(i), i);
-                    }
-                }
-                
-                // Function Coverage (HA-CA) 
-                if ( coverageData.getFunctions() != null )
-                {
-	                for (int i = 0; i < coverageData.getFunctions().size(); i++) {
-	                    if (coverageData.getFunctions().get(i) != null) {
-	                        coverageData.addFunctionCoverage(map2.get(scriptName).getFunctions().get(i), i);
-	                    }
-	                }
-                }
-	                
+
+                // Function Coverage (HA-CA), tntim96
+                for (int i = 0; i < coverageData.getFunctions().size(); i++)
+                    coverageData.addFunctionCoverage(map2.get(scriptName).getFunctions().get(i), i);
+
                 for (int i = 0; i < coverageData.getBranchData().size(); i++) {
                     List<BranchData> conditions = coverageData.getBranchData().get(i);
-                    if (conditions != null) {
-                        for (int j = 0; j < conditions.size(); j++) {
-                            if (conditions.get(j) != null) {
+                    if (conditions != null)
+                        for (int j = 0; j < conditions.size(); j++)
+                            if (conditions.get(j) != null)
                                 conditions.get(j).addCoverage(map2.get(scriptName).getBranchData().get(i).get(j));
-                            }
-                        }
-                    }
                 }
-
             }
         }
         for (String scriptName : map2.keySet()) {
@@ -424,12 +409,11 @@ public class JSONDataMerger {
                 // Function Coverage (HA-CA) 
                 NativeArray functionCoverageArray = (NativeArray) scriptData.get("functionData");
                 List<Integer> funcData = new ArrayList<Integer>();
-                if ( functionCoverageArray != null )
-                {
-	                for (int i = 0; i < functionCoverageArray.size(); i++)
-	                	funcData.add((Integer) functionCoverageArray.get(i));
+                if (functionCoverageArray != null) {
+                    for (int i = 0; i < functionCoverageArray.size(); i++)
+                        funcData.add((Integer) functionCoverageArray.get(i));
                 }
-                
+
                 List<List<BranchData>> branchLineArray = new ArrayList<List<BranchData>>();
                 if (branchJSONArray != null) {
                     readBranchLines(branchJSONArray, branchLineArray);

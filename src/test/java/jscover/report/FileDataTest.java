@@ -390,7 +390,7 @@ public class FileDataTest {
         assertThat(functionData.getFunctionCoverRate(), equalTo((double)3 / 4));
         
         functionData = new FileData("test.js", null, new ArrayList<Integer>(), null);
-        assertThat(functionData.getFunctionCoverRate(), equalTo((double)1.0));
+        assertThat(functionData.getFunctionCoverRate(), equalTo(1.0));
     }
     
     @Test
