@@ -364,6 +364,7 @@ public class ConfigurationForServerTest {
         assertThat(configuration.isProxy(), is(false));
         assertThat(configuration.isIncludeUnloadedJS(), is(false));
         assertThat(configuration.isIncludeBranch(), is(false));
+        assertThat(configuration.isIncludeFunction(), is(false));
     }
 
     @Test
@@ -376,6 +377,7 @@ public class ConfigurationForServerTest {
         assertThat(configuration.getJSVersion(), equalTo(150));
         assertThat(configuration.skipInstrumentation("/"), equalTo(false));
         assertThat(configuration.isIncludeBranch(), equalTo(false));
+        assertThat(configuration.isIncludeFunction(), is(false));
     }
 
     @Test
@@ -396,6 +398,11 @@ public class ConfigurationForServerTest {
     @Test
     public void shouldParseBranch() {
         assertThat(ConfigurationForServer.parse(new String[]{"-ws", "--branch"}).isIncludeBranch(), equalTo(true));
+    }
+
+    @Test
+    public void shouldParseFunction() {
+        assertThat(ConfigurationForServer.parse(new String[]{"-ws", "--function"}).isIncludeFunction(), equalTo(true));
     }
 
     @Test

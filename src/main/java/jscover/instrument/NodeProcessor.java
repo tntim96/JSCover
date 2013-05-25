@@ -339,9 +339,6 @@ consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
  */
-/*
-	Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013, tntim96
-*/
 
 package jscover.instrument;
 
@@ -352,14 +349,17 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+//Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013, tntim96
 class NodeProcessor {
     private StatementBuilder statementBuilder = new StatementBuilder();
     private SortedSet<Integer> validLines = new TreeSet<Integer>();
     private int functionNumber;// Function Coverage (HA-CA)
     private String fileName;
+    private boolean includeFunctionCoverage;
 
-    public NodeProcessor(String uri) {
+    public NodeProcessor(String uri, boolean includeFunctionCoverage) {
         this.fileName = uri;
+        this.includeFunctionCoverage = includeFunctionCoverage;
     }
 
     public ExpressionStatement buildInstrumentationStatement(int lineNumber) {
@@ -372,8 +372,8 @@ class NodeProcessor {
     }
 
     boolean processNode(AstNode node) {
-		// Function Coverage (HA-CA)
-        if (node instanceof FunctionNode) {
+		// Function Coverage (HA-CA), tntim96
+        if (includeFunctionCoverage && node instanceof FunctionNode) {
             AstNode block = ((FunctionNode) node).getBody();
             if (block instanceof Block) {
                 block.addChildToFront(buildFunctionInstrumentationStatement(functionNumber++));

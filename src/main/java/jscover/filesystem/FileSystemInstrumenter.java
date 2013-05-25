@@ -396,7 +396,7 @@ public class FileSystemInstrumenter {
             if (!isReportSrc && src.toString().endsWith(".js") && !configuration.skipInstrumentation(path)) {
                 if (!dest.getParentFile().exists())
                     dest.getParentFile().mkdirs();
-                instrumenterService.instrumentJSForFileSystem(configuration.getCompilerEnvirons(), src, dest, path, configuration.isIncludeBranch());
+                instrumenterService.instrumentJSForFileSystem(configuration.getCompilerEnvirons(), src, dest, path, configuration.isIncludeBranch(), configuration.isIncludeFunction());
             } else {
                 if (!(isReportSrc && configuration.skipInstrumentation(path)))
                     ioUtils.copy(src, dest);

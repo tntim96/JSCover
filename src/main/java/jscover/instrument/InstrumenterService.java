@@ -353,8 +353,8 @@ import java.io.FileNotFoundException;
 public class InstrumenterService {
     private IoUtils ioUtils = IoUtils.getInstance();
 
-    public String instrumentJSForWebServer(CompilerEnvirons compilerEnvirons, File srcFile, String uri, boolean includeBranch) {
-        SourceProcessor sourceProcessor = new SourceProcessor(compilerEnvirons, uri, includeBranch);
+    public String instrumentJSForWebServer(CompilerEnvirons compilerEnvirons, File srcFile, String uri, boolean includeBranch, boolean includeFunction) {
+        SourceProcessor sourceProcessor = new SourceProcessor(compilerEnvirons, uri, includeBranch, includeFunction);
         try {
             String source = ioUtils.toString(new FileInputStream(srcFile));
             return sourceProcessor.processSourceForServer(source);
@@ -363,13 +363,13 @@ public class InstrumenterService {
         }
     }
 
-    public String instrumentJSForWebServer(CompilerEnvirons compilerEnvirons, String source, String uri, boolean includeBranch) {
-        SourceProcessor sourceProcessor = new SourceProcessor(compilerEnvirons, uri, includeBranch);
+    public String instrumentJSForWebServer(CompilerEnvirons compilerEnvirons, String source, String uri, boolean includeBranch, boolean includeFunction) {
+        SourceProcessor sourceProcessor = new SourceProcessor(compilerEnvirons, uri, includeBranch, includeFunction);
         return sourceProcessor.processSourceForServer(source);
     }
 
-    public void instrumentJSForFileSystem(CompilerEnvirons compilerEnvirons, File srcFile, File dest, String uri, boolean includeBranch) {
-        SourceProcessor sourceProcessor = new SourceProcessor(compilerEnvirons, uri, includeBranch);
+    public void instrumentJSForFileSystem(CompilerEnvirons compilerEnvirons, File srcFile, File dest, String uri, boolean includeBranch, boolean includeFunction) {
+        SourceProcessor sourceProcessor = new SourceProcessor(compilerEnvirons, uri, includeBranch, includeFunction);
         String source = ioUtils.loadFromFileSystem(srcFile);
         String jsInstrumented = sourceProcessor.processSourceForFileSystem(source);
         ioUtils.copy(jsInstrumented, dest);

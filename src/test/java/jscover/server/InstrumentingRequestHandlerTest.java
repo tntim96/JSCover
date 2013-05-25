@@ -351,9 +351,6 @@ import jscover.util.IoService;
 import jscover.util.IoUtils;
 import jscover.util.Logger;
 import jscover.util.ReflectionUtils;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeMatcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -365,8 +362,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.*;
 
 import static java.lang.String.format;
@@ -616,7 +611,7 @@ public class InstrumentingRequestHandlerTest {
 
         webServer.handleGet(new HttpRequest("/js/production.js"));
 
-        verify(instrumenterService).instrumentJSForWebServer(compilerEnvirons, new File("wwwRoot/js/production.js"), "/js/production.js", false);
+        verify(instrumenterService).instrumentJSForWebServer(compilerEnvirons, new File("wwwRoot/js/production.js"), "/js/production.js", false, false);
         verifyZeroInteractions(ioService);
         verifyZeroInteractions(jsonDataSaver);
         verifyZeroInteractions(proxyService);
@@ -635,7 +630,7 @@ public class InstrumentingRequestHandlerTest {
 
         webServer.handleGet(new HttpRequest("/js/production.js"));
 
-        verify(instrumenterService).instrumentJSForWebServer(compilerEnvirons, new File("wwwRoot/js/production.js"), "/js/production.js", false);
+        verify(instrumenterService).instrumentJSForWebServer(compilerEnvirons, new File("wwwRoot/js/production.js"), "/js/production.js", false, false);
         verifyZeroInteractions(ioService);
         verifyZeroInteractions(jsonDataSaver);
         verifyZeroInteractions(proxyService);
@@ -651,7 +646,7 @@ public class InstrumentingRequestHandlerTest {
         CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
         given(configuration.getCompilerEnvirons()).willReturn(compilerEnvirons);
         given(configuration.skipInstrumentation("/js/production.js")).willReturn(false);
-        given(instrumenterService.instrumentJSForWebServer(compilerEnvirons, new File("wwwRoot/js/production.js"), "/js/production.js", false)).willThrow(new UriNotFound("Ouch!", null));
+        given(instrumenterService.instrumentJSForWebServer(compilerEnvirons, new File("wwwRoot/js/production.js"), "/js/production.js", false, false)).willThrow(new UriNotFound("Ouch!", null));
 
         webServer.handleGet(new HttpRequest("/js/production.js"));
 
@@ -681,7 +676,7 @@ public class InstrumentingRequestHandlerTest {
 
         webServer.handleGet(request);
 
-        verify(instrumenterService).instrumentJSForWebServer(compilerEnvirons, "someJavaScript;", "/js/production.js", false);
+        verify(instrumenterService).instrumentJSForWebServer(compilerEnvirons, "someJavaScript;", "/js/production.js", false, false);
         verifyZeroInteractions(ioService);
         verifyZeroInteractions(jsonDataSaver);
         assertThat(InstrumentingRequestHandler.uris.size(), equalTo(1));

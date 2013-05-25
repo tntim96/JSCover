@@ -339,9 +339,6 @@ consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
 */
-/*
-	Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013
-*/
 
 package jscover.instrument;
 
@@ -354,6 +351,7 @@ import java.util.SortedSet;
 
 import static java.lang.String.format;
 
+//Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013
 class SourceProcessor {
 
     private static final String initLine = "  _$jscoverage['%s'].lineData[%d] = 0;\n";
@@ -367,13 +365,15 @@ class SourceProcessor {
     private Parser parser;
     private IoUtils ioUtils = IoUtils.getInstance();
     private boolean includeBranchCoverage;
+    private boolean includeFunctionCoverage;
 
-    public SourceProcessor(CompilerEnvirons compilerEnv, String uri, boolean includeBranchCoverage) {
+    public SourceProcessor(CompilerEnvirons compilerEnv, String uri, boolean includeBranchCoverage, boolean includeFunctionCoverage) {
         this.uri = uri;
-        this.instrumenter = new ParseTreeInstrumenter(uri);
+        this.instrumenter = new ParseTreeInstrumenter(uri, includeFunctionCoverage);
         this.branchInstrumentor = new BranchInstrumentor(uri);
         parser = new Parser(compilerEnv);
         this.includeBranchCoverage = includeBranchCoverage;
+        this.includeFunctionCoverage = includeFunctionCoverage;
     }
 
     public String processSourceForServer(String source) {
@@ -401,9 +401,8 @@ class SourceProcessor {
 
         String jsLineInitialization = getJsLineInitialization(uri, instrumenter.getValidLines());
         
-		// Function Coverage (HA-CA)
-        //TODO: if (includeFunctionCoverage)
-        jsLineInitialization += getJsFunctionInitialization(uri, instrumenter.getNumFunctions());
+        if (includeFunctionCoverage)
+            jsLineInitialization += getJsFunctionInitialization(uri, instrumenter.getNumFunctions());
 
         if (includeBranchCoverage)
             jsLineInitialization += branchInstrumentor.getJsLineInitialization();

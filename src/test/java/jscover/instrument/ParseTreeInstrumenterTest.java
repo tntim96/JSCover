@@ -365,7 +365,7 @@ public class ParseTreeInstrumenterTest {
 
     @Before
     public void setUp() throws IOException {
-        instrumenter = new ParseTreeInstrumenter("/dir/file.js");
+        instrumenter = new ParseTreeInstrumenter("/dir/file.js", true);
         ReflectionUtils.setField(instrumenter, "nodeProcessor", nodeProcessor);
         ReflectionUtils.setField(instrumenter, "logger", logger);
     }

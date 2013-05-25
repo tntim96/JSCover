@@ -376,7 +376,7 @@ public class SourceProcessorTest {
 
     @Before
     public void setUp() {
-        sourceProcessor = new SourceProcessor(compilerEnvirons, "test.js", false);
+        sourceProcessor = new SourceProcessor(compilerEnvirons, "test.js", false, false);
         ReflectionUtils.setField(sourceProcessor, "ioUtils", ioUtils);
         ReflectionUtils.setField(sourceProcessor, "parser", parser);
     }

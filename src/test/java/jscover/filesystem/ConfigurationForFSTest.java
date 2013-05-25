@@ -361,6 +361,8 @@ public class ConfigurationForFSTest {
         assertThat(configuration.getJSVersion(), equalTo(150));
         assertThat(configuration.skipInstrumentation("/"), equalTo(false));
         assertThat(configuration.getCompilerEnvirons().getLanguageVersion(), equalTo(150));
+        assertThat(configuration.isIncludeBranch(), equalTo(false));
+        assertThat(configuration.isIncludeFunction(), equalTo(false));
     }
 
     @Test
@@ -407,6 +409,11 @@ public class ConfigurationForFSTest {
     @Test
     public void shouldParseBranch() {
         assertThat(ConfigurationForFS.parse(new String[]{"-fs","--branch","src","doc"}).isIncludeBranch(), equalTo(true));
+    }
+
+    @Test
+    public void shouldParseFunction() {
+        assertThat(ConfigurationForFS.parse(new String[]{"-fs", "--function"}).isIncludeFunction(), equalTo(true));
     }
 
     @Test

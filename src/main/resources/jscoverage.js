@@ -1282,6 +1282,9 @@ function jscoverage_pad(s) {
 
 function getArrayJSON(coverage) {
     var array = [];
+    if (coverage  === undefined)
+      return array;
+
     var length = coverage.length;
     for (var line = 0; line < length; line++) {
       var value = coverage[line];

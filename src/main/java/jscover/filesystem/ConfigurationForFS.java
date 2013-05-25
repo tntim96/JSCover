@@ -364,11 +364,13 @@ public class ConfigurationForFS extends Configuration {
     public static final String NO_INSTRUMENT_PREFIX = "--no-instrument=";
     public static final String NO_INSTRUMENT_REG_PREFIX = "--no-instrument-reg=";
     public static final String BRANCH_PREFIX = "--branch";
+    public static final String FUNCTION_PREFIX = "--function";
     public static final String JS_VERSION_PREFIX = "--js-version=";
 
     private boolean showHelp;
     private boolean invalid;
-    private boolean includeBranch = false;
+    private boolean includeBranch;
+    private boolean includeFunction;
     private final Set<String> noInstruments = new HashSet<String>();
     private final Set<Pattern> noInstrumentRegs = new HashSet<Pattern>();
     private final Set<String> excludes = new HashSet<String>();
@@ -389,6 +391,10 @@ public class ConfigurationForFS extends Configuration {
 
     public boolean isIncludeBranch() {
         return includeBranch;
+    }
+
+    public boolean isIncludeFunction() {
+        return includeFunction;
     }
 
     public File getSrcDir() {
@@ -435,6 +441,8 @@ public class ConfigurationForFS extends Configuration {
                 return configuration;
             } else if (arg.equals(BRANCH_PREFIX)) {
                 configuration.includeBranch = true;
+            } else if (arg.equals(FUNCTION_PREFIX)) {
+                configuration.includeFunction = true;
             } else if (arg.startsWith(NO_INSTRUMENT_PREFIX)) {
                 String uri = arg.substring(NO_INSTRUMENT_PREFIX.length());
                 if (uri.startsWith("/"))

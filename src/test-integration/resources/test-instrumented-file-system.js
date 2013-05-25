@@ -210,6 +210,9 @@ if (! _$jscoverage['test-simple.js']) {
 if (! _$jscoverage['test-simple.js'].functionData) {
   _$jscoverage['test-simple.js'].functionData = [];
 }
+if (! _$jscoverage['test-simple.js'].branchData) {
+  _$jscoverage['test-simple.js'].branchData = [];
+}
 _$jscoverage['test-simple.js'].lineData[1]++;
 var x, y;
 _$jscoverage['test-simple.js'].lineData[2]++;

@@ -368,6 +368,7 @@ public class ConfigurationForServer extends Configuration {
     public static final String PROXY_PREFIX = "--proxy";
     public static final String INCLUDE_UNLOADED_JS_PREFIX = "--include-unloaded-js";
     public static final String BRANCH_PREFIX = "--branch";
+    public static final String FUNCTION_PREFIX = "--function";
 
     private boolean showHelp;
     private boolean invalid;
@@ -382,6 +383,7 @@ public class ConfigurationForServer extends Configuration {
     private CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
     private boolean includeUnloadedJS;
     private IoUtils ioUtils = IoUtils.getInstance();
+    private boolean includeFunction;
 
     public Boolean showHelp() {
         return showHelp;
@@ -393,6 +395,10 @@ public class ConfigurationForServer extends Configuration {
 
     public boolean isIncludeBranch() {
         return includeBranch;
+    }
+
+    public boolean isIncludeFunction() {
+        return includeFunction;
     }
 
     public File getDocumentRoot() {
@@ -469,6 +475,8 @@ public class ConfigurationForServer extends Configuration {
                 configuration.JSVersion = (int)(Float.valueOf(arg.substring(JS_VERSION_PREFIX.length()))*100);
             } else if (arg.equals(BRANCH_PREFIX)) {
                 configuration.includeBranch = true;
+            } else if (arg.equals(FUNCTION_PREFIX)) {
+                configuration.includeFunction = true;
             } else {
                 configuration.showHelp = true;
                 configuration.invalid = true;
