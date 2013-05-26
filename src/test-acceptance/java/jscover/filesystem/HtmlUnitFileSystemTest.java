@@ -379,13 +379,13 @@ public class HtmlUnitFileSystemTest {
         assertThat(new File(reportDir+"/example/noCopy/test.txt").exists(), equalTo(false));
 
         HtmlPage page = webClient.getPage(getFileURL(reportDir + "/jscoverage.html?example/index.html"));
-        verifyTotal(webClient, page, 6);
+        verifyTotal(webClient, page, 15);
 
         page = webClient.getPage(getFileURL(reportDir + "/jscoverage.html"));
         ((HtmlInput)page.getHtmlElementById("location")).setValueAttribute(getFileURL(reportDir+"/example/index.html"));
         page.getHtmlElementById("openInFrameButton").click();
         webClient.waitForBackgroundJavaScript(100);
-        verifyTotal(webClient, page, 6);
+        verifyTotal(webClient, page, 15);
     }
 
     private String getFileURL(String file) {
