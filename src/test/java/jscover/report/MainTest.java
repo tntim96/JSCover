@@ -339,9 +339,6 @@ consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
  */
-/*
-    Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013
-*/
 
 package jscover.report;
 
@@ -377,6 +374,7 @@ import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
+//Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013
 @RunWith(MockitoJUnitRunner.class)
 public class MainTest {
     private Main main = new Main();
