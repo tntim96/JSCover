@@ -1018,6 +1018,120 @@ if (! _$jscoverage['qunit/qunit.js']) {
   _$jscoverage['qunit/qunit.js'].lineData[2009] = 0;
   _$jscoverage['qunit/qunit.js'].lineData[2013] = 0;
 }
+if (! _$jscoverage['qunit/qunit.js'].functionData) {
+  _$jscoverage['qunit/qunit.js'].functionData = [];
+  _$jscoverage['qunit/qunit.js'].functionData[0] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[1] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[2] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[3] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[4] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[5] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[6] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[7] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[8] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[9] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[10] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[11] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[12] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[13] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[14] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[15] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[16] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[17] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[18] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[19] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[20] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[21] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[22] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[23] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[24] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[25] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[26] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[27] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[28] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[29] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[30] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[31] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[32] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[33] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[34] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[35] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[36] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[37] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[38] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[39] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[40] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[41] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[42] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[43] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[44] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[45] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[46] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[47] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[48] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[49] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[50] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[51] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[52] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[53] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[54] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[55] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[56] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[57] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[58] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[59] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[60] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[61] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[62] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[63] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[64] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[65] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[66] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[67] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[68] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[69] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[70] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[71] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[72] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[73] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[74] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[75] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[76] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[77] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[78] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[79] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[80] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[81] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[82] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[83] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[84] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[85] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[86] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[87] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[88] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[89] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[90] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[91] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[92] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[93] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[94] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[95] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[96] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[97] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[98] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[99] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[100] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[101] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[102] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[103] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[104] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[105] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[106] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[107] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[108] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[109] = 0;
+  _$jscoverage['qunit/qunit.js'].functionData[110] = 0;
+}
 if (! _$jscoverage['qunit/qunit.js'].branchData) {
   _$jscoverage['qunit/qunit.js'].branchData = [];
   _$jscoverage['qunit/qunit.js'].branchData[17] = [];
@@ -1609,1364 +1723,1366 @@ if (! _$jscoverage['qunit/qunit.js'].branchData) {
   _$jscoverage['qunit/qunit.js'].branchData[2008] = [];
   _$jscoverage['qunit/qunit.js'].branchData[2008][1] = new BranchData();
 }
-_$jscoverage['qunit/qunit.js'].branchData[2008][1].init(52328, 30, 'typeof exports !== "undefined"');
+_$jscoverage['qunit/qunit.js'].branchData[2008][1].init(54325, 30, 'typeof exports !== "undefined"');
 function visit338_2008_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[2008][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1995][3].init(112, 21, 'out.o[n].text == null');
+}_$jscoverage['qunit/qunit.js'].branchData[1995][3].init(116, 21, 'out.o[n].text == null');
 function visit337_1995_3(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1995][3].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1995][2].init(92, 16, 'n < out.o.length');
+}_$jscoverage['qunit/qunit.js'].branchData[1995][2].init(96, 16, 'n < out.o.length');
 function visit336_1995_2(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1995][2].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1995][1].init(92, 41, 'n < out.o.length && out.o[n].text == null');
+}_$jscoverage['qunit/qunit.js'].branchData[1995][1].init(96, 41, 'n < out.o.length && out.o[n].text == null');
 function visit335_1995_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1995][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1988][1].init(9, 21, 'out.n[i].text == null');
+}_$jscoverage['qunit/qunit.js'].branchData[1988][1].init(10, 21, 'out.n[i].text == null');
 function visit334_1988_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1988][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1987][1].init(186, 16, 'i < out.n.length');
+}_$jscoverage['qunit/qunit.js'].branchData[1987][1].init(193, 16, 'i < out.n.length');
 function visit333_1987_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1987][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1982][3].init(38, 21, 'out.o[n].text == null');
+}_$jscoverage['qunit/qunit.js'].branchData[1982][3].init(39, 21, 'out.o[n].text == null');
 function visit332_1982_3(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1982][3].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1982][2].init(18, 16, 'n < out.o.length');
+}_$jscoverage['qunit/qunit.js'].branchData[1982][2].init(19, 16, 'n < out.o.length');
 function visit331_1982_2(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1982][2].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1982][1].init(18, 41, 'n < out.o.length && out.o[n].text == null');
+}_$jscoverage['qunit/qunit.js'].branchData[1982][1].init(19, 41, 'n < out.o.length && out.o[n].text == null');
 function visit330_1982_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1982][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1981][1].init(9, 21, 'out.n[0].text == null');
+}_$jscoverage['qunit/qunit.js'].branchData[1981][1].init(10, 21, 'out.n[0].text == null');
 function visit329_1981_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1981][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1976][1].init(17, 16, 'i < out.o.length');
+}_$jscoverage['qunit/qunit.js'].branchData[1976][1].init(18, 16, 'i < out.o.length');
 function visit328_1976_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1976][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1975][1].init(414, 18, 'out.n.length === 0');
+}_$jscoverage['qunit/qunit.js'].branchData[1975][1].init(438, 18, 'out.n.length === 0');
 function visit327_1975_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1975][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1968][1].init(326, 14, 'nSpace == null');
+}_$jscoverage['qunit/qunit.js'].branchData[1968][1].init(343, 14, 'nSpace == null');
 function visit326_1968_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1968][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1961][1].init(238, 14, 'oSpace == null');
+}_$jscoverage['qunit/qunit.js'].branchData[1961][1].init(248, 14, 'oSpace == null');
 function visit325_1961_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1961][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1957][2].init(71, 8, 'n === ""');
+}_$jscoverage['qunit/qunit.js'].branchData[1957][2].init(73, 8, 'n === ""');
 function visit324_1957_2(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1957][2].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1957][1].init(39, 8, 'o === ""');
+}_$jscoverage['qunit/qunit.js'].branchData[1957][1].init(41, 8, 'o === ""');
 function visit323_1957_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1957][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1932][1].init(39, 31, 'n[i - 1] == o[n[i].row - 1]');
+}_$jscoverage['qunit/qunit.js'].branchData[1932][1].init(40, 31, 'n[i - 1] == o[n[i].row - 1]');
 function visit322_1932_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1932][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1931][8].init(73, 30, 'o[n[i].row - 1].text == null');
+}_$jscoverage['qunit/qunit.js'].branchData[1931][8].init(74, 30, 'o[n[i].row - 1].text == null');
 function visit321_1931_8(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1931][8].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1931][7].init(73, 71, 'o[n[i].row - 1].text == null && n[i - 1] == o[n[i].row - 1]');
+}_$jscoverage['qunit/qunit.js'].branchData[1931][7].init(74, 72, 'o[n[i].row - 1].text == null && n[i - 1] == o[n[i].row - 1]');
 function visit320_1931_7(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1931][7].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1931][6].init(57, 12, 'n[i].row > 0');
+}_$jscoverage['qunit/qunit.js'].branchData[1931][6].init(58, 12, 'n[i].row > 0');
 function visit319_1931_6(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1931][6].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1931][5].init(57, 87, 'n[i].row > 0 && o[n[i].row - 1].text == null && n[i - 1] == o[n[i].row - 1]');
+}_$jscoverage['qunit/qunit.js'].branchData[1931][5].init(58, 88, 'n[i].row > 0 && o[n[i].row - 1].text == null && n[i - 1] == o[n[i].row - 1]');
 function visit318_1931_5(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1931][5].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1931][4].init(30, 23, 'n[i - 1].text == null');
+}_$jscoverage['qunit/qunit.js'].branchData[1931][4].init(31, 23, 'n[i - 1].text == null');
 function visit317_1931_4(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1931][4].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1931][3].init(30, 114, 'n[i - 1].text == null && n[i].row > 0 && o[n[i].row - 1].text == null && n[i - 1] == o[n[i].row - 1]');
+}_$jscoverage['qunit/qunit.js'].branchData[1931][3].init(31, 115, 'n[i - 1].text == null && n[i].row > 0 && o[n[i].row - 1].text == null && n[i - 1] == o[n[i].row - 1]');
 function visit316_1931_3(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1931][3].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1931][2].init(9, 17, 'n[i].text != null');
+}_$jscoverage['qunit/qunit.js'].branchData[1931][2].init(10, 17, 'n[i].text != null');
 function visit315_1931_2(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1931][2].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1931][1].init(9, 135, 'n[i].text != null && n[i - 1].text == null && n[i].row > 0 && o[n[i].row - 1].text == null && n[i - 1] == o[n[i].row - 1]');
+}_$jscoverage['qunit/qunit.js'].branchData[1931][1].init(10, 136, 'n[i].text != null && n[i - 1].text == null && n[i].row > 0 && o[n[i].row - 1].text == null && n[i - 1] == o[n[i].row - 1]');
 function visit314_1931_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1931][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1930][1].init(1100, 5, 'i > 0');
+}_$jscoverage['qunit/qunit.js'].branchData[1930][1].init(1156, 5, 'i > 0');
 function visit313_1930_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1930][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1917][1].init(39, 31, 'n[i + 1] == o[n[i].row + 1]');
+}_$jscoverage['qunit/qunit.js'].branchData[1917][1].init(40, 31, 'n[i + 1] == o[n[i].row + 1]');
 function visit312_1917_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1917][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1916][8].init(84, 30, 'o[n[i].row + 1].text == null');
+}_$jscoverage['qunit/qunit.js'].branchData[1916][8].init(85, 30, 'o[n[i].row + 1].text == null');
 function visit311_1916_8(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1916][8].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1916][7].init(84, 71, 'o[n[i].row + 1].text == null && n[i + 1] == o[n[i].row + 1]');
+}_$jscoverage['qunit/qunit.js'].branchData[1916][7].init(85, 72, 'o[n[i].row + 1].text == null && n[i + 1] == o[n[i].row + 1]');
 function visit310_1916_7(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1916][7].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1916][6].init(57, 23, 'n[i].row + 1 < o.length');
+}_$jscoverage['qunit/qunit.js'].branchData[1916][6].init(58, 23, 'n[i].row + 1 < o.length');
 function visit309_1916_6(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1916][6].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1916][5].init(57, 98, 'n[i].row + 1 < o.length && o[n[i].row + 1].text == null && n[i + 1] == o[n[i].row + 1]');
+}_$jscoverage['qunit/qunit.js'].branchData[1916][5].init(58, 99, 'n[i].row + 1 < o.length && o[n[i].row + 1].text == null && n[i + 1] == o[n[i].row + 1]');
 function visit308_1916_5(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1916][5].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1916][4].init(30, 23, 'n[i + 1].text == null');
+}_$jscoverage['qunit/qunit.js'].branchData[1916][4].init(31, 23, 'n[i + 1].text == null');
 function visit307_1916_4(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1916][4].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1916][3].init(30, 125, 'n[i + 1].text == null && n[i].row + 1 < o.length && o[n[i].row + 1].text == null && n[i + 1] == o[n[i].row + 1]');
+}_$jscoverage['qunit/qunit.js'].branchData[1916][3].init(31, 126, 'n[i + 1].text == null && n[i].row + 1 < o.length && o[n[i].row + 1].text == null && n[i + 1] == o[n[i].row + 1]');
 function visit306_1916_3(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1916][3].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1916][2].init(9, 17, 'n[i].text != null');
+}_$jscoverage['qunit/qunit.js'].branchData[1916][2].init(10, 17, 'n[i].text != null');
 function visit305_1916_2(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1916][2].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1916][1].init(9, 146, 'n[i].text != null && n[i + 1].text == null && n[i].row + 1 < o.length && o[n[i].row + 1].text == null && n[i + 1] == o[n[i].row + 1]');
+}_$jscoverage['qunit/qunit.js'].branchData[1916][1].init(10, 147, 'n[i].text != null && n[i + 1].text == null && n[i].row + 1 < o.length && o[n[i].row + 1].text == null && n[i + 1] == o[n[i].row + 1]');
 function visit304_1916_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1916][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1915][1].init(727, 16, 'i < n.length - 1');
+}_$jscoverage['qunit/qunit.js'].branchData[1915][1].init(768, 16, 'i < n.length - 1');
 function visit303_1915_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1915][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1903][5].init(119, 22, 'os[i].rows.length == 1');
+}_$jscoverage['qunit/qunit.js'].branchData[1903][5].init(123, 22, 'os[i].rows.length == 1');
 function visit302_1903_5(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1903][5].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1903][4].init(88, 27, 'typeof os[i] != "undefined"');
+}_$jscoverage['qunit/qunit.js'].branchData[1903][4].init(92, 27, 'typeof os[i] != "undefined"');
 function visit301_1903_4(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1903][4].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1903][3].init(88, 53, 'typeof os[i] != "undefined" && os[i].rows.length == 1');
+}_$jscoverage['qunit/qunit.js'].branchData[1903][3].init(92, 53, 'typeof os[i] != "undefined" && os[i].rows.length == 1');
 function visit300_1903_3(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1903][3].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1903][2].init(62, 22, 'ns[i].rows.length == 1');
+}_$jscoverage['qunit/qunit.js'].branchData[1903][2].init(66, 22, 'ns[i].rows.length == 1');
 function visit299_1903_2(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1903][2].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1903][1].init(62, 79, 'ns[i].rows.length == 1 && typeof os[i] != "undefined" && os[i].rows.length == 1');
+}_$jscoverage['qunit/qunit.js'].branchData[1903][1].init(66, 79, 'ns[i].rows.length == 1 && typeof os[i] != "undefined" && os[i].rows.length == 1');
 function visit298_1903_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1903][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1900][1].init(9, 21, '!hasOwn.call(ns, i)');
+}_$jscoverage['qunit/qunit.js'].branchData[1900][1].init(10, 21, '!hasOwn.call(ns, i)');
 function visit297_1900_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1900][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1890][1].init(9, 18, 'os[o[i]] == null');
+}_$jscoverage['qunit/qunit.js'].branchData[1890][1].init(10, 18, 'os[o[i]] == null');
 function visit296_1890_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1890][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1889][1].init(212, 12, 'i < o.length');
+}_$jscoverage['qunit/qunit.js'].branchData[1889][1].init(227, 12, 'i < o.length');
 function visit295_1889_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1889][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1880][1].init(9, 18, 'ns[n[i]] == null');
+}_$jscoverage['qunit/qunit.js'].branchData[1880][1].init(10, 18, 'ns[n[i]] == null');
 function visit294_1880_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1880][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1879][1].init(50, 12, 'i < n.length');
+}_$jscoverage['qunit/qunit.js'].branchData[1879][1].init(55, 12, 'i < n.length');
 function visit293_1879_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1879][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1851][1].init(8, 19, 'array[i] === elem');
+}_$jscoverage['qunit/qunit.js'].branchData[1851][1].init(9, 19, 'array[i] === elem');
 function visit292_1851_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1851][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1850][1].init(102, 10, 'i < length');
+}_$jscoverage['qunit/qunit.js'].branchData[1850][1].init(107, 10, 'i < length');
 function visit291_1850_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1850][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1846][1].init(7, 13, 'array.indexOf');
+}_$jscoverage['qunit/qunit.js'].branchData[1846][1].init(8, 13, 'array.indexOf');
 function visit290_1846_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1846][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1836][1].init(219, 19, 'elem.nodeType !== 8');
+}_$jscoverage['qunit/qunit.js'].branchData[1836][1].init(227, 19, 'elem.nodeType !== 8');
 function visit289_1836_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1836][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1832][3].init(101, 19, 'elem.nodeType === 4');
+}_$jscoverage['qunit/qunit.js'].branchData[1832][3].init(105, 19, 'elem.nodeType === 4');
 function visit288_1832_3(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1832][3].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1832][2].init(78, 19, 'elem.nodeType === 3');
+}_$jscoverage['qunit/qunit.js'].branchData[1832][2].init(82, 19, 'elem.nodeType === 3');
 function visit287_1832_2(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1832][2].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1832][1].init(78, 42, 'elem.nodeType === 3 || elem.nodeType === 4');
+}_$jscoverage['qunit/qunit.js'].branchData[1832][1].init(82, 42, 'elem.nodeType === 3 || elem.nodeType === 4');
 function visit286_1832_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1832][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1783][1].init(48, 2, '!l');
+}_$jscoverage['qunit/qunit.js'].branchData[1783][1].init(52, 2, '!l');
 function visit285_1783_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1783][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1772][1].init(58, 3, 'val');
+}_$jscoverage['qunit/qunit.js'].branchData[1772][1].init(60, 3, 'val');
 function visit284_1772_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1772][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1755][1].init(173, 15, 'i < keys.length');
+}_$jscoverage['qunit/qunit.js'].branchData[1755][1].init(181, 15, 'i < keys.length');
 function visit283_1755_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1755][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1736][1].init(146, 4, 'name');
+}_$jscoverage['qunit/qunit.js'].branchData[1736][1].init(151, 4, 'name');
 function visit282_1736_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1736][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1734][1].init(101, 21, 'reName.exec(fn) || []');
+}_$jscoverage['qunit/qunit.js'].branchData[1734][1].init(103, 21, 'reName.exec(fn) || []');
 function visit281_1734_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1734][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1710][1].init(21, 6, 'a || 1');
+}_$jscoverage['qunit/qunit.js'].branchData[1710][1].init(22, 6, 'a || 1');
 function visit280_1710_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1710][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1707][1].init(21, 6, 'a || 1');
+}_$jscoverage['qunit/qunit.js'].branchData[1707][1].init(22, 6, 'a || 1');
 function visit279_1707_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1707][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1704][1].init(216, 8, 'extra || 0');
+}_$jscoverage['qunit/qunit.js'].branchData[1704][1].init(224, 8, 'extra || 0');
 function visit278_1704_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1704][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1701][1].init(92, 9, 'this.HTML');
+}_$jscoverage['qunit/qunit.js'].branchData[1701][1].init(97, 9, 'this.HTML');
 function visit277_1701_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1701][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1697][1].init(10, 15, '!this.multiline');
+}_$jscoverage['qunit/qunit.js'].branchData[1697][1].init(11, 15, '!this.multiline');
 function visit276_1697_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1697][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1685][1].init(954, 47, 'obj.constructor === Error.prototype.constructor');
+}_$jscoverage['qunit/qunit.js'].branchData[1685][1].init(979, 47, 'obj.constructor === Error.prototype.constructor');
 function visit275_1685_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1685][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1682][8].init(213, 29, 'typeof obj[0] === "undefined"');
+}_$jscoverage['qunit/qunit.js'].branchData[1682][8].init(215, 29, 'typeof obj[0] === "undefined"');
 function visit274_1682_8(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1682][8].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1682][7].init(187, 22, 'obj.item(0) === null');
+}_$jscoverage['qunit/qunit.js'].branchData[1682][7].init(189, 22, 'obj.item(0) === null');
 function visit273_1682_7(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1682][7].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1682][6].init(187, 55, 'obj.item(0) === null && typeof obj[0] === "undefined"');
+}_$jscoverage['qunit/qunit.js'].branchData[1682][6].init(189, 55, 'obj.item(0) === null && typeof obj[0] === "undefined"');
 function visit272_1682_6(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1682][6].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1682][5].init(160, 22, 'obj.item(0) === obj[0]');
+}_$jscoverage['qunit/qunit.js'].branchData[1682][5].init(162, 22, 'obj.item(0) === obj[0]');
 function visit271_1682_5(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1682][5].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1682][4].init(110, 31, 'typeof obj.item !== "undefined"');
+}_$jscoverage['qunit/qunit.js'].branchData[1682][4].init(112, 31, 'typeof obj.item !== "undefined"');
 function visit270_1682_4(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1682][4].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1682][3].init(110, 136, 'typeof obj.item !== "undefined" && (obj.length ? obj.item(0) === obj[0] : (obj.item(0) === null && typeof obj[0] === "undefined"))');
+}_$jscoverage['qunit/qunit.js'].branchData[1682][3].init(112, 136, 'typeof obj.item !== "undefined" && (obj.length ? obj.item(0) === obj[0] : (obj.item(0) === null && typeof obj[0] === "undefined"))');
 function visit269_1682_3(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1682][3].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1682][2].init(76, 30, 'typeof obj.length === "number"');
+}_$jscoverage['qunit/qunit.js'].branchData[1682][2].init(78, 30, 'typeof obj.length === "number"');
 function visit268_1682_2(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1682][2].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1682][1].init(76, 170, 'typeof obj.length === "number" && typeof obj.item !== "undefined" && (obj.length ? obj.item(0) === obj[0] : (obj.item(0) === null && typeof obj[0] === "undefined"))');
+}_$jscoverage['qunit/qunit.js'].branchData[1682][1].init(78, 170, 'typeof obj.length === "number" && typeof obj.item !== "undefined" && (obj.length ? obj.item(0) === obj[0] : (obj.item(0) === null && typeof obj[0] === "undefined"))');
 function visit267_1682_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1682][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1680][2].init(659, 41, 'toString.call(obj) === "[object Array]"');
+}_$jscoverage['qunit/qunit.js'].branchData[1680][2].init(679, 41, 'toString.call(obj) === "[object Array]"');
 function visit266_1680_2(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1680][2].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1680][1].init(31, 249, 'toString.call(obj) === "[object Array]" || (typeof obj.length === "number" && typeof obj.item !== "undefined" && (obj.length ? obj.item(0) === obj[0] : (obj.item(0) === null && typeof obj[0] === "undefined")))');
+}_$jscoverage['qunit/qunit.js'].branchData[1680][1].init(33, 251, 'toString.call(obj) === "[object Array]" || (typeof obj.length === "number" && typeof obj.item !== "undefined" && (obj.length ? obj.item(0) === obj[0] : (obj.item(0) === null && typeof obj[0] === "undefined")))');
 function visit265_1680_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1680][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1676][1].init(577, 12, 'obj.nodeType');
+}_$jscoverage['qunit/qunit.js'].branchData[1676][1].init(593, 12, 'obj.nodeType');
 function visit264_1676_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1676][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1674][1].init(513, 18, 'obj.nodeType === 9');
+}_$jscoverage['qunit/qunit.js'].branchData[1674][1].init(527, 18, 'obj.nodeType === 9');
 function visit263_1674_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1674][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1672][5].init(434, 35, 'typeof obj.nodeType === "undefined"');
+}_$jscoverage['qunit/qunit.js'].branchData[1672][5].init(446, 35, 'typeof obj.nodeType === "undefined"');
 function visit262_1672_5(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1672][5].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1672][4].init(395, 35, 'typeof obj.document !== "undefined"');
+}_$jscoverage['qunit/qunit.js'].branchData[1672][4].init(407, 35, 'typeof obj.document !== "undefined"');
 function visit261_1672_4(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1672][4].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1672][3].init(395, 74, 'typeof obj.document !== "undefined" && typeof obj.nodeType === "undefined"');
+}_$jscoverage['qunit/qunit.js'].branchData[1672][3].init(407, 74, 'typeof obj.document !== "undefined" && typeof obj.nodeType === "undefined"');
 function visit260_1672_3(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1672][3].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1672][2].init(355, 36, 'typeof obj.setInterval !== undefined');
+}_$jscoverage['qunit/qunit.js'].branchData[1672][2].init(367, 36, 'typeof obj.setInterval !== undefined');
 function visit259_1672_2(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1672][2].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1672][1].init(355, 114, 'typeof obj.setInterval !== undefined && typeof obj.document !== "undefined" && typeof obj.nodeType === "undefined"');
+}_$jscoverage['qunit/qunit.js'].branchData[1672][1].init(367, 114, 'typeof obj.setInterval !== undefined && typeof obj.document !== "undefined" && typeof obj.nodeType === "undefined"');
 function visit258_1672_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1672][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1670][1].init(283, 26, 'QUnit.is("function", obj)');
+}_$jscoverage['qunit/qunit.js'].branchData[1670][1].init(293, 26, 'QUnit.is("function", obj)');
 function visit257_1670_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1670][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1668][1].init(219, 22, 'QUnit.is("date", obj)');
+}_$jscoverage['qunit/qunit.js'].branchData[1668][1].init(227, 22, 'QUnit.is("date", obj)');
 function visit256_1668_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1668][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1666][1].init(151, 24, 'QUnit.is("regexp", obj)');
+}_$jscoverage['qunit/qunit.js'].branchData[1666][1].init(157, 24, 'QUnit.is("regexp", obj)');
 function visit255_1666_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1666][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1664][1].init(78, 26, 'typeof obj === "undefined"');
+}_$jscoverage['qunit/qunit.js'].branchData[1664][1].init(82, 26, 'typeof obj === "undefined"');
 function visit254_1664_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1664][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1662][1].init(24, 12, 'obj === null');
+}_$jscoverage['qunit/qunit.js'].branchData[1662][1].init(26, 12, 'obj === null');
 function visit253_1662_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1662][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1658][1].init(417, 16, 'type == "string"');
+}_$jscoverage['qunit/qunit.js'].branchData[1658][1].init(434, 16, 'type == "string"');
 function visit252_1658_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1658][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1652][1].init(271, 18, 'type == "function"');
+}_$jscoverage['qunit/qunit.js'].branchData[1652][1].init(282, 18, 'type == "function"');
 function visit251_1652_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1652][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1649][1].init(179, 13, 'inStack != -1');
+}_$jscoverage['qunit/qunit.js'].branchData[1649][1].init(187, 13, 'inStack != -1');
 function visit250_1649_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1649][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1644][1].init(45, 24, 'type || this.typeOf(obj)');
+}_$jscoverage['qunit/qunit.js'].branchData[1644][1].init(46, 24, 'type || this.typeOf(obj)');
 function visit249_1644_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1644][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1642][1].init(13, 12, 'stack || []');
+}_$jscoverage['qunit/qunit.js'].branchData[1642][1].init(14, 12, 'stack || []');
 function visit248_1642_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1642][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1623][1].init(156, 4, '!arr');
+}_$jscoverage['qunit/qunit.js'].branchData[1623][1].init(163, 4, '!arr');
 function visit247_1623_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1623][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1620][1].init(94, 8, 'arr.join');
+}_$jscoverage['qunit/qunit.js'].branchData[1620][1].init(98, 8, 'arr.join');
 function visit246_1620_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1620][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1586][1].init(32, 43, 'QUnit.objectType(a) !== QUnit.objectType(b)');
+}_$jscoverage['qunit/qunit.js'].branchData[1586][1].init(33, 43, 'QUnit.objectType(a) !== QUnit.objectType(b)');
 function visit245_1586_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1586][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1585][2].init(145, 24, 'typeof b === "undefined"');
+}_$jscoverage['qunit/qunit.js'].branchData[1585][2].init(149, 24, 'typeof b === "undefined"');
 function visit244_1585_2(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1585][2].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1585][1].init(32, 76, 'typeof b === "undefined" || QUnit.objectType(a) !== QUnit.objectType(b)');
+}_$jscoverage['qunit/qunit.js'].branchData[1585][1].init(33, 77, 'typeof b === "undefined" || QUnit.objectType(a) !== QUnit.objectType(b)');
 function visit243_1585_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1585][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1584][6].init(108, 24, 'typeof a === "undefined"');
+}_$jscoverage['qunit/qunit.js'].branchData[1584][6].init(111, 24, 'typeof a === "undefined"');
 function visit242_1584_6(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1584][6].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1584][5].init(108, 109, 'typeof a === "undefined" || typeof b === "undefined" || QUnit.objectType(a) !== QUnit.objectType(b)');
+}_$jscoverage['qunit/qunit.js'].branchData[1584][5].init(111, 111, 'typeof a === "undefined" || typeof b === "undefined" || QUnit.objectType(a) !== QUnit.objectType(b)');
 function visit241_1584_5(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1584][5].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1584][4].init(94, 10, 'b === null');
+}_$jscoverage['qunit/qunit.js'].branchData[1584][4].init(97, 10, 'b === null');
 function visit240_1584_4(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1584][4].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1584][3].init(94, 123, 'b === null || typeof a === "undefined" || typeof b === "undefined" || QUnit.objectType(a) !== QUnit.objectType(b)');
+}_$jscoverage['qunit/qunit.js'].branchData[1584][3].init(97, 125, 'b === null || typeof a === "undefined" || typeof b === "undefined" || QUnit.objectType(a) !== QUnit.objectType(b)');
 function visit239_1584_3(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1584][3].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1584][2].init(80, 10, 'a === null');
+}_$jscoverage['qunit/qunit.js'].branchData[1584][2].init(83, 10, 'a === null');
 function visit238_1584_2(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1584][2].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1584][1].init(80, 137, 'a === null || b === null || typeof a === "undefined" || typeof b === "undefined" || QUnit.objectType(a) !== QUnit.objectType(b)');
+}_$jscoverage['qunit/qunit.js'].branchData[1584][1].init(83, 139, 'a === null || b === null || typeof a === "undefined" || typeof b === "undefined" || QUnit.objectType(a) !== QUnit.objectType(b)');
 function visit237_1584_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1584][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1582][1].init(9, 7, 'a === b');
+}_$jscoverage['qunit/qunit.js'].branchData[1582][1].init(10, 7, 'a === b');
 function visit236_1582_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1582][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1593][1].init(-1, 502, 'function(a, b) {\n  _$jscoverage[\'qunit/qunit.js\'].lineData[1582]++;\n  if (a === b) {\n    _$jscoverage[\'qunit/qunit.js\'].lineData[1583]++;\n    return true;\n  } else {\n    _$jscoverage[\'qunit/qunit.js\'].lineData[1584]++;\n    if (a === null || b === null || typeof a === "undefined" || typeof b === "undefined" || QUnit.objectType(a) !== QUnit.objectType(b)) {\n      _$jscoverage[\'qunit/qunit.js\'].lineData[1587]++;\n      return false;\n    } else {\n      _$jscoverage[\'qunit/qunit.js\'].lineData[1589]++;\n      return bindCallbacks(a, callbacks, [b, a]);\n    }\n  }\n}(args[0], args[1]) && arguments.callee.apply(this, args.splice(1, args.length - 1))');
+}_$jscoverage['qunit/qunit.js'].branchData[1593][1].init(-1, 514, 'function(a, b) {\n  if (a === b) {\n    return true;\n  } else {\n    if (a === null || b === null || typeof a === "undefined" || typeof b === "undefined" || QUnit.objectType(a) !== QUnit.objectType(b)) {\n      return false;\n    } else {\n      return bindCallbacks(a, callbacks, [b, a]);\n    }\n  }\n}(args[0], args[1]) && arguments.callee.apply(this, args.splice(1, args.length - 1))');
 function visit235_1593_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1593][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1577][1].init(81, 15, 'args.length < 2');
+}_$jscoverage['qunit/qunit.js'].branchData[1577][1].init(83, 15, 'args.length < 2');
 function visit234_1577_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1577][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1570][1].init(1336, 58, 'eq && innerEquiv(aProperties.sort(), bProperties.sort())');
+}_$jscoverage['qunit/qunit.js'].branchData[1570][1].init(1384, 58, 'eq && innerEquiv(aProperties.sort(), bProperties.sort())');
 function visit233_1570_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1570][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1556][1].init(318, 34, '!loop && !innerEquiv(a[i], b[i])');
+}_$jscoverage['qunit/qunit.js'].branchData[1556][1].init(329, 34, '!loop && !innerEquiv(a[i], b[i])');
 function visit232_1556_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1556][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1549][1].init(13, 19, 'parents[j] === a[i]');
+}_$jscoverage['qunit/qunit.js'].branchData[1549][1].init(14, 19, 'parents[j] === a[i]');
 function visit231_1549_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1549][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1548][1].init(107, 18, 'j < parents.length');
+}_$jscoverage['qunit/qunit.js'].branchData[1548][1].init(110, 18, 'j < parents.length');
 function visit230_1548_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1548][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1535][3].init(94, 32, 'getProto(a) === Object.prototype');
+}_$jscoverage['qunit/qunit.js'].branchData[1535][3].init(95, 32, 'getProto(a) === Object.prototype');
 function visit229_1535_3(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1535][3].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1535][2].init(70, 20, 'getProto(b) === null');
+}_$jscoverage['qunit/qunit.js'].branchData[1535][2].init(71, 20, 'getProto(b) === null');
 function visit228_1535_2(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1535][2].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1535][1].init(70, 56, 'getProto(b) === null && getProto(a) === Object.prototype');
+}_$jscoverage['qunit/qunit.js'].branchData[1535][1].init(71, 56, 'getProto(b) === null && getProto(a) === Object.prototype');
 function visit227_1535_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1535][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1534][5].init(152, 32, 'getProto(b) === Object.prototype');
+}_$jscoverage['qunit/qunit.js'].branchData[1534][5].init(155, 32, 'getProto(b) === Object.prototype');
 function visit226_1534_5(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1534][5].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1534][4].init(128, 20, 'getProto(a) === null');
+}_$jscoverage['qunit/qunit.js'].branchData[1534][4].init(131, 20, 'getProto(a) === null');
 function visit225_1534_4(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1534][4].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1534][3].init(128, 56, 'getProto(a) === null && getProto(b) === Object.prototype');
+}_$jscoverage['qunit/qunit.js'].branchData[1534][3].init(131, 56, 'getProto(a) === null && getProto(b) === Object.prototype');
 function visit224_1534_3(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1534][3].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1534][2].init(128, 129, '(getProto(a) === null && getProto(b) === Object.prototype) || (getProto(b) === null && getProto(a) === Object.prototype)');
+}_$jscoverage['qunit/qunit.js'].branchData[1534][2].init(131, 130, '(getProto(a) === null && getProto(b) === Object.prototype) || (getProto(b) === null && getProto(a) === Object.prototype)');
 function visit223_1534_2(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1534][2].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1534][1].init(124, 135, '!((getProto(a) === null && getProto(b) === Object.prototype) || (getProto(b) === null && getProto(a) === Object.prototype))');
+}_$jscoverage['qunit/qunit.js'].branchData[1534][1].init(127, 136, '!((getProto(a) === null && getProto(b) === Object.prototype) || (getProto(b) === null && getProto(a) === Object.prototype))');
 function visit222_1534_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1534][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1531][1].init(199, 31, 'a.constructor !== b.constructor');
+}_$jscoverage['qunit/qunit.js'].branchData[1531][1].init(208, 31, 'a.constructor !== b.constructor');
 function visit221_1531_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1531][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1513][1].init(173, 32, '!loop && !innerEquiv(a[i], b[i])');
+}_$jscoverage['qunit/qunit.js'].branchData[1513][1].init(180, 32, '!loop && !innerEquiv(a[i], b[i])');
 function visit220_1513_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1513][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1509][1].init(13, 19, 'parents[j] === a[i]');
+}_$jscoverage['qunit/qunit.js'].branchData[1509][1].init(14, 19, 'parents[j] === a[i]');
 function visit219_1509_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1509][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1508][1].init(40, 18, 'j < parents.length');
+}_$jscoverage['qunit/qunit.js'].branchData[1508][1].init(42, 18, 'j < parents.length');
 function visit218_1508_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1508][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1506][1].init(346, 7, 'i < len');
+}_$jscoverage['qunit/qunit.js'].branchData[1506][1].init(362, 7, 'i < len');
 function visit217_1506_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1506][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1499][1].init(177, 16, 'len !== b.length');
+}_$jscoverage['qunit/qunit.js'].branchData[1499][1].init(186, 16, 'len !== b.length');
 function visit216_1499_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1499][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1494][1].init(80, 33, 'QUnit.objectType(b) !== "array"');
+}_$jscoverage['qunit/qunit.js'].branchData[1494][1].init(84, 33, 'QUnit.objectType(b) !== "array"');
 function visit215_1494_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1494][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1487][3].init(81, 29, 'typeof caller !== "undefined"');
+}_$jscoverage['qunit/qunit.js'].branchData[1487][3].init(83, 29, 'typeof caller !== "undefined"');
 function visit214_1487_3(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1487][3].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1487][2].init(60, 17, 'caller !== Object');
+}_$jscoverage['qunit/qunit.js'].branchData[1487][2].init(62, 17, 'caller !== Object');
 function visit213_1487_2(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1487][2].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1487][1].init(60, 50, 'caller !== Object && typeof caller !== "undefined"');
+}_$jscoverage['qunit/qunit.js'].branchData[1487][1].init(62, 50, 'caller !== Object && typeof caller !== "undefined"');
 function visit212_1487_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1487][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1479][1].init(36, 21, 'a.sticky === b.sticky');
+}_$jscoverage['qunit/qunit.js'].branchData[1479][1].init(37, 21, 'a.sticky === b.sticky');
 function visit211_1479_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1479][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1478][2].init(234, 27, 'a.multiline === b.multiline');
+}_$jscoverage['qunit/qunit.js'].branchData[1478][2].init(242, 27, 'a.multiline === b.multiline');
 function visit210_1478_2(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1478][2].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1478][1].init(38, 58, 'a.multiline === b.multiline && a.sticky === b.sticky');
+}_$jscoverage['qunit/qunit.js'].branchData[1478][1].init(39, 59, 'a.multiline === b.multiline && a.sticky === b.sticky');
 function visit209_1478_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1478][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1477][2].init(194, 29, 'a.ignoreCase === b.ignoreCase');
+}_$jscoverage['qunit/qunit.js'].branchData[1477][2].init(201, 29, 'a.ignoreCase === b.ignoreCase');
 function visit208_1477_2(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1477][2].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1477][1].init(49, 97, 'a.ignoreCase === b.ignoreCase && a.multiline === b.multiline && a.sticky === b.sticky');
+}_$jscoverage['qunit/qunit.js'].branchData[1477][1].init(51, 99, 'a.ignoreCase === b.ignoreCase && a.multiline === b.multiline && a.sticky === b.sticky');
 function visit207_1477_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1477][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1475][2].init(143, 21, 'a.global === b.global');
+}_$jscoverage['qunit/qunit.js'].branchData[1475][2].init(148, 21, 'a.global === b.global');
 function visit206_1475_2(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1475][2].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1475][1].init(56, 147, 'a.global === b.global && a.ignoreCase === b.ignoreCase && a.multiline === b.multiline && a.sticky === b.sticky');
+}_$jscoverage['qunit/qunit.js'].branchData[1475][1].init(58, 151, 'a.global === b.global && a.ignoreCase === b.ignoreCase && a.multiline === b.multiline && a.sticky === b.sticky');
 function visit205_1475_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1475][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1473][2].init(85, 21, 'a.source === b.source');
+}_$jscoverage['qunit/qunit.js'].branchData[1473][2].init(88, 21, 'a.source === b.source');
 function visit204_1473_2(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1473][2].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1473][1].init(69, 204, 'a.source === b.source && a.global === b.global && a.ignoreCase === b.ignoreCase && a.multiline === b.multiline && a.sticky === b.sticky');
+}_$jscoverage['qunit/qunit.js'].branchData[1473][1].init(71, 210, 'a.source === b.source && a.global === b.global && a.ignoreCase === b.ignoreCase && a.multiline === b.multiline && a.sticky === b.sticky');
 function visit203_1473_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1473][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1471][2].init(13, 34, 'QUnit.objectType(b) === "regexp"');
+}_$jscoverage['qunit/qunit.js'].branchData[1471][2].init(14, 34, 'QUnit.objectType(b) === "regexp"');
 function visit202_1471_2(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1471][2].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1471][1].init(13, 274, 'QUnit.objectType(b) === "regexp" && a.source === b.source && a.global === b.global && a.ignoreCase === b.ignoreCase && a.multiline === b.multiline && a.sticky === b.sticky');
+}_$jscoverage['qunit/qunit.js'].branchData[1471][1].init(14, 282, 'QUnit.objectType(b) === "regexp" && a.source === b.source && a.global === b.global && a.ignoreCase === b.ignoreCase && a.multiline === b.multiline && a.sticky === b.sticky');
 function visit201_1471_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1471][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1467][3].init(49, 27, 'a.valueOf() === b.valueOf()');
+}_$jscoverage['qunit/qunit.js'].branchData[1467][3].init(50, 27, 'a.valueOf() === b.valueOf()');
 function visit200_1467_3(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1467][3].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1467][2].init(13, 32, 'QUnit.objectType(b) === "date"');
+}_$jscoverage['qunit/qunit.js'].branchData[1467][2].init(14, 32, 'QUnit.objectType(b) === "date"');
 function visit199_1467_2(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1467][2].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1467][1].init(13, 63, 'QUnit.objectType(b) === "date" && a.valueOf() === b.valueOf()');
+}_$jscoverage['qunit/qunit.js'].branchData[1467][1].init(14, 63, 'QUnit.objectType(b) === "date" && a.valueOf() === b.valueOf()');
 function visit198_1467_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1467][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1451][1].init(13, 7, 'a === b');
+}_$jscoverage['qunit/qunit.js'].branchData[1451][1].init(14, 7, 'a === b');
 function visit197_1451_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1451][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1449][1].init(146, 6, 'a == b');
+}_$jscoverage['qunit/qunit.js'].branchData[1449][1].init(151, 6, 'a == b');
 function visit196_1449_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1449][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1444][1].init(10, 56, 'b instanceof a.constructor || a instanceof b.constructor');
+}_$jscoverage['qunit/qunit.js'].branchData[1444][1].init(11, 56, 'b instanceof a.constructor || a instanceof b.constructor');
 function visit195_1444_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1444][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1437][1].init(166, 72, 'Object.getPrototypeOf || function(obj) {\n  _$jscoverage[\'qunit/qunit.js\'].lineData[1438]++;\n  return obj.__proto__;\n}');
+}_$jscoverage['qunit/qunit.js'].branchData[1437][1].init(172, 74, 'Object.getPrototypeOf || function(obj) {\n  return obj.__proto__;\n}');
 function visit194_1437_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1437][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1422][1].init(9, 52, 'QUnit.objectType(callbacks[prop]) === "function"');
+}_$jscoverage['qunit/qunit.js'].branchData[1422][1].init(10, 52, 'QUnit.objectType(callbacks[prop]) === "function"');
 function visit193_1422_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1422][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1421][1].init(44, 4, 'prop');
+}_$jscoverage['qunit/qunit.js'].branchData[1421][1].init(46, 4, 'prop');
 function visit192_1421_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1421][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1408][1].init(45, 20, 'i < callbacks.length');
+}_$jscoverage['qunit/qunit.js'].branchData[1408][1].init(47, 20, 'i < callbacks.length');
 function visit191_1408_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1408][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1404][1].init(39, 27, 'QUnit.hasOwnProperty(key)');
+}_$jscoverage['qunit/qunit.js'].branchData[1404][1].init(42, 27, 'QUnit.hasOwnProperty(key)');
 function visit190_1404_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1404][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1390][4].init(48, 35, 'document && document.getElementById');
+}_$jscoverage['qunit/qunit.js'].branchData[1390][4].init(49, 35, 'document && document.getElementById');
 function visit189_1390_4(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1390][4].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1390][3].init(13, 31, 'typeof document !== "undefined"');
+}_$jscoverage['qunit/qunit.js'].branchData[1390][3].init(14, 31, 'typeof document !== "undefined"');
 function visit188_1390_3(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1390][3].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1390][2].init(13, 70, 'typeof document !== "undefined" && document && document.getElementById');
+}_$jscoverage['qunit/qunit.js'].branchData[1390][2].init(14, 70, 'typeof document !== "undefined" && document && document.getElementById');
 function visit187_1390_2(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1390][2].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1390][1].init(9, 113, '!!(typeof document !== "undefined" && document && document.getElementById) && document.getElementById(name)');
+}_$jscoverage['qunit/qunit.js'].branchData[1390][1].init(10, 114, '!!(typeof document !== "undefined" && document && document.getElementById) && document.getElementById(name)');
 function visit186_1390_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1390][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1382][1].init(90, 34, 'set.indexOf(" " + name + " ") > -1');
+}_$jscoverage['qunit/qunit.js'].branchData[1382][1].init(93, 34, 'set.indexOf(" " + name + " ") > -1');
 function visit185_1382_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1382][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1374][1].init(7, 23, '!hasClass(elem, name)');
+}_$jscoverage['qunit/qunit.js'].branchData[1374][1].init(8, 23, '!hasClass(elem, name)');
 function visit184_1374_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1374][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1370][1].init(10, 58, '(" " + elem.className + " ").indexOf(" " + name + " ") > -1');
+}_$jscoverage['qunit/qunit.js'].branchData[1370][1].init(11, 58, '(" " + elem.className + " ").indexOf(" " + name + " ") > -1');
 function visit183_1370_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1370][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1362][1].init(91, 16, 'elem.attachEvent');
+}_$jscoverage['qunit/qunit.js'].branchData[1362][1].init(94, 16, 'elem.attachEvent');
 function visit182_1362_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1362][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1360][1].init(7, 21, 'elem.addEventListener');
+}_$jscoverage['qunit/qunit.js'].branchData[1360][1].init(8, 21, 'elem.addEventListener');
 function visit181_1360_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1360][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1351][3].init(179, 12, 'a !== window');
+}_$jscoverage['qunit/qunit.js'].branchData[1351][3].init(184, 12, 'a !== window');
 function visit180_1351_3(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1351][3].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1351][2].init(153, 22, 'prop !== "constructor"');
+}_$jscoverage['qunit/qunit.js'].branchData[1351][2].init(158, 22, 'prop !== "constructor"');
 function visit179_1351_2(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1351][2].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1351][1].init(153, 38, 'prop !== "constructor" || a !== window');
+}_$jscoverage['qunit/qunit.js'].branchData[1351][1].init(158, 38, 'prop !== "constructor" || a !== window');
 function visit178_1351_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1351][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1347][1].init(8, 23, 'b[prop] === undefined');
+}_$jscoverage['qunit/qunit.js'].branchData[1347][1].init(9, 23, 'b[prop] === undefined');
 function visit177_1347_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1347][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1335][1].init(9, 18, 'result[i] === b[j]');
+}_$jscoverage['qunit/qunit.js'].branchData[1335][1].init(10, 18, 'result[i] === b[j]');
 function visit176_1335_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1335][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1334][1].init(16, 12, 'j < b.length');
+}_$jscoverage['qunit/qunit.js'].branchData[1334][1].init(17, 12, 'j < b.length');
 function visit175_1334_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1334][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1333][1].init(49, 17, 'i < result.length');
+}_$jscoverage['qunit/qunit.js'].branchData[1333][1].init(53, 17, 'i < result.length');
 function visit174_1333_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1333][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1323][1].init(297, 25, 'deletedGlobals.length > 0');
+}_$jscoverage['qunit/qunit.js'].branchData[1323][1].init(310, 25, 'deletedGlobals.length > 0');
 function visit173_1323_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1323][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1318][1].init(130, 21, 'newGlobals.length > 0');
+}_$jscoverage['qunit/qunit.js'].branchData[1318][1].init(138, 21, 'newGlobals.length > 0');
 function visit172_1318_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1318][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1302][1].init(76, 63, '!hasOwn.call(window, key) || /^qunit-test-output/.test(key)');
+}_$jscoverage['qunit/qunit.js'].branchData[1302][1].init(78, 63, '!hasOwn.call(window, key) || /^qunit-test-output/.test(key)');
 function visit171_1302_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1302][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1299][1].init(32, 16, 'config.noglobals');
+}_$jscoverage['qunit/qunit.js'].branchData[1299][1].init(35, 16, 'config.noglobals');
 function visit170_1299_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1299][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1291][4].init(465, 18, 'config.depth === 0');
+}_$jscoverage['qunit/qunit.js'].branchData[1291][4].init(481, 18, 'config.depth === 0');
 function visit169_1291_4(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1291][4].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1291][3].init(441, 42, '!config.queue.length && config.depth === 0');
+}_$jscoverage['qunit/qunit.js'].branchData[1291][3].init(457, 42, '!config.queue.length && config.depth === 0');
 function visit168_1291_3(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1291][3].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1291][2].init(421, 62, '!config.blocking && !config.queue.length && config.depth === 0');
+}_$jscoverage['qunit/qunit.js'].branchData[1291][2].init(437, 62, '!config.blocking && !config.queue.length && config.depth === 0');
 function visit167_1291_2(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1291][2].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1291][1].init(413, 70, 'last && !config.blocking && !config.queue.length && config.depth === 0');
+}_$jscoverage['qunit/qunit.js'].branchData[1291][1].init(429, 70, 'last && !config.blocking && !config.queue.length && config.depth === 0');
 function visit166_1291_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1291][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1283][4].init(61, 50, '(new Date().getTime() - start) < config.updateRate');
+}_$jscoverage['qunit/qunit.js'].branchData[1283][4].init(62, 50, '(new Date().getTime() - start) < config.updateRate');
 function visit165_1283_4(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1283][4].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1283][3].init(31, 22, 'config.updateRate <= 0');
+}_$jscoverage['qunit/qunit.js'].branchData[1283][3].init(32, 22, 'config.updateRate <= 0');
 function visit164_1283_3(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1283][3].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1283][2].init(31, 82, 'config.updateRate <= 0 || ((new Date().getTime() - start) < config.updateRate)');
+}_$jscoverage['qunit/qunit.js'].branchData[1283][2].init(32, 82, 'config.updateRate <= 0 || ((new Date().getTime() - start) < config.updateRate)');
 function visit163_1283_2(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1283][2].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1283][1].init(8, 105, '!defined.setTimeout || config.updateRate <= 0 || ((new Date().getTime() - start) < config.updateRate)');
+}_$jscoverage['qunit/qunit.js'].branchData[1283][1].init(9, 105, '!defined.setTimeout || config.updateRate <= 0 || ((new Date().getTime() - start) < config.updateRate)');
 function visit162_1283_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1283][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1282][1].init(140, 39, 'config.queue.length && !config.blocking');
+}_$jscoverage['qunit/qunit.js'].branchData[1282][1].init(147, 39, 'config.queue.length && !config.blocking');
 function visit161_1282_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1282][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1270][1].init(40, 34, 'config.autorun && !config.blocking');
+}_$jscoverage['qunit/qunit.js'].branchData[1270][1].init(43, 34, 'config.autorun && !config.blocking');
 function visit160_1270_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1270][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1253][1].init(7, 2, '!s');
+}_$jscoverage['qunit/qunit.js'].branchData[1253][1].init(8, 2, '!s');
 function visit159_1253_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1253][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1237][1].init(153, 31, '/qunit.js$/.test(e.sourceURL)');
+}_$jscoverage['qunit/qunit.js'].branchData[1237][1].init(157, 31, '/qunit.js$/.test(e.sourceURL)');
 function visit158_1237_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1237][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1233][1].init(602, 11, 'e.sourceURL');
+}_$jscoverage['qunit/qunit.js'].branchData[1233][1].init(629, 11, 'e.sourceURL');
 function visit157_1233_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1233][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1228][1].init(178, 14, 'include.length');
+}_$jscoverage['qunit/qunit.js'].branchData[1228][1].init(186, 14, 'include.length');
 function visit156_1228_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1228][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1223][1].init(10, 36, 'stack[i].indexOf(fileName) != -1');
+}_$jscoverage['qunit/qunit.js'].branchData[1223][1].init(11, 36, 'stack[i].indexOf(fileName) != -1');
 function visit155_1223_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1223][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1222][1].init(39, 16, 'i < stack.length');
+}_$jscoverage['qunit/qunit.js'].branchData[1222][1].init(41, 16, 'i < stack.length');
 function visit154_1222_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1222][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1220][1].init(122, 8, 'fileName');
+}_$jscoverage['qunit/qunit.js'].branchData[1220][1].init(128, 8, 'fileName');
 function visit153_1220_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1220][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1217][1].init(61, 27, '/^error$/i.test(stack[0])');
+}_$jscoverage['qunit/qunit.js'].branchData[1217][1].init(64, 27, '/^error$/i.test(stack[0])');
 function visit152_1217_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1217][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1214][1].init(178, 7, 'e.stack');
+}_$jscoverage['qunit/qunit.js'].branchData[1214][1].init(186, 7, 'e.stack');
 function visit151_1214_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1214][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1211][1].init(85, 12, 'e.stacktrace');
+}_$jscoverage['qunit/qunit.js'].branchData[1211][1].init(90, 12, 'e.stacktrace');
 function visit150_1211_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1211][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1207][1].init(11, 20, 'offset === undefined');
+}_$jscoverage['qunit/qunit.js'].branchData[1207][1].init(12, 20, 'offset === undefined');
 function visit149_1207_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1207][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1195][1].init(726, 33, 'fullName.indexOf(filter) !== -1');
+}_$jscoverage['qunit/qunit.js'].branchData[1195][1].init(756, 33, 'fullName.indexOf(filter) !== -1');
 function visit148_1195_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1195][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1190][1].init(620, 8, '!include');
+}_$jscoverage['qunit/qunit.js'].branchData[1190][1].init(645, 8, '!include');
 function visit147_1190_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1190][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1189][1].init(586, 26, 'filter.charAt(0) !== "!"');
+}_$jscoverage['qunit/qunit.js'].branchData[1189][1].init(610, 26, 'filter.charAt(0) !== "!"');
 function visit146_1189_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1189][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1185][1].init(544, 7, '!filter');
+}_$jscoverage['qunit/qunit.js'].branchData[1185][1].init(564, 7, '!filter');
 function visit145_1185_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1185][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1181][3].init(475, 36, 'test.module.toLowerCase() !== module');
+}_$jscoverage['qunit/qunit.js'].branchData[1181][3].init(491, 36, 'test.module.toLowerCase() !== module');
 function visit144_1181_3(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1181][3].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1181][2].init(459, 52, '!test.module || test.module.toLowerCase() !== module');
+}_$jscoverage['qunit/qunit.js'].branchData[1181][2].init(475, 52, '!test.module || test.module.toLowerCase() !== module');
 function visit143_1181_2(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1181][2].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1181][1].init(447, 66, 'module && (!test.module || test.module.toLowerCase() !== module)');
+}_$jscoverage['qunit/qunit.js'].branchData[1181][1].init(463, 66, 'module && (!test.module || test.module.toLowerCase() !== module)');
 function visit142_1181_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1181][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1178][1].init(10, 37, 'test.testNumber === config.testNumber');
+}_$jscoverage['qunit/qunit.js'].branchData[1178][1].init(11, 37, 'test.testNumber === config.testNumber');
 function visit141_1178_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1178][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1177][1].init(367, 17, 'config.testNumber');
+}_$jscoverage['qunit/qunit.js'].branchData[1177][1].init(379, 17, 'config.testNumber');
 function visit140_1177_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1177][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1172][2].init(266, 37, 'test.callback.validTest === validTest');
+}_$jscoverage['qunit/qunit.js'].branchData[1172][2].init(273, 37, 'test.callback.validTest === validTest');
 function visit139_1172_2(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1172][2].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1172][1].init(249, 54, 'test.callback && test.callback.validTest === validTest');
+}_$jscoverage['qunit/qunit.js'].branchData[1172][1].init(256, 54, 'test.callback && test.callback.validTest === validTest');
 function visit138_1172_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1172][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1168][1].init(80, 44, 'config.module && config.module.toLowerCase()');
+}_$jscoverage['qunit/qunit.js'].branchData[1168][1].init(82, 44, 'config.module && config.module.toLowerCase()');
 function visit137_1168_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1168][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1167][1].init(23, 44, 'config.filter && config.filter.toLowerCase()');
+}_$jscoverage['qunit/qunit.js'].branchData[1167][1].init(24, 44, 'config.filter && config.filter.toLowerCase()');
 function visit136_1167_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1167][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1152][1].init(1673, 15, 'window.scrollTo');
+}_$jscoverage['qunit/qunit.js'].branchData[1152][1].init(1733, 15, 'window.scrollTo');
 function visit135_1152_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1152][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1145][1].init(45, 34, 'key.indexOf("qunit-test-") === 0');
+}_$jscoverage['qunit/qunit.js'].branchData[1145][1].init(47, 34, 'key.indexOf("qunit-test-") === 0');
 function visit134_1145_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1145][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1143][1].init(61, 25, 'i < sessionStorage.length');
+}_$jscoverage['qunit/qunit.js'].branchData[1143][1].init(63, 25, 'i < sessionStorage.length');
 function visit133_1143_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1143][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1141][3].init(1372, 22, 'config.stats.bad === 0');
+}_$jscoverage['qunit/qunit.js'].branchData[1141][3].init(1421, 22, 'config.stats.bad === 0');
 function visit132_1141_3(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1141][3].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1141][2].init(1346, 48, 'defined.sessionStorage && config.stats.bad === 0');
+}_$jscoverage['qunit/qunit.js'].branchData[1141][2].init(1395, 48, 'defined.sessionStorage && config.stats.bad === 0');
 function visit131_1141_2(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1141][2].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1141][1].init(1328, 66, 'config.reorder && defined.sessionStorage && config.stats.bad === 0');
+}_$jscoverage['qunit/qunit.js'].branchData[1141][1].init(1377, 66, 'config.reorder && defined.sessionStorage && config.stats.bad === 0');
 function visit130_1141_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1141][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1131][3].init(939, 31, 'typeof document !== "undefined"');
+}_$jscoverage['qunit/qunit.js'].branchData[1131][3].init(978, 31, 'typeof document !== "undefined"');
 function visit129_1131_3(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1131][3].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1131][2].init(939, 49, 'typeof document !== "undefined" && document.title');
+}_$jscoverage['qunit/qunit.js'].branchData[1131][2].init(978, 49, 'typeof document !== "undefined" && document.title');
 function visit128_1131_2(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1131][2].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1131][1].init(918, 70, 'config.altertitle && typeof document !== "undefined" && document.title');
+}_$jscoverage['qunit/qunit.js'].branchData[1131][1].init(957, 70, 'config.altertitle && typeof document !== "undefined" && document.title');
 function visit127_1131_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1131][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1127][1].init(853, 5, 'tests');
+}_$jscoverage['qunit/qunit.js'].branchData[1127][1].init(888, 5, 'tests');
 function visit126_1127_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1127][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1123][1].init(759, 6, 'banner');
+}_$jscoverage['qunit/qunit.js'].branchData[1123][1].init(790, 6, 'banner');
 function visit125_1123_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1123][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1096][1].init(64, 20, 'config.currentModule');
+}_$jscoverage['qunit/qunit.js'].branchData[1096][1].init(68, 20, 'config.currentModule');
 function visit124_1096_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1096][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1077][1].init(9, 39, 'QUnit.config.current.ignoreGlobalErrors');
+}_$jscoverage['qunit/qunit.js'].branchData[1077][1].init(10, 39, 'QUnit.config.current.ignoreGlobalErrors');
 function visit123_1077_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1077][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1076][1].init(8, 20, 'QUnit.config.current');
+}_$jscoverage['qunit/qunit.js'].branchData[1076][1].init(9, 20, 'QUnit.config.current');
 function visit122_1076_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1076][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1075][1].init(202, 12, 'ret !== true');
+}_$jscoverage['qunit/qunit.js'].branchData[1075][1].init(210, 12, 'ret !== true');
 function visit121_1075_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1075][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1069][1].init(25, 13, 'onErrorFnPrev');
+}_$jscoverage['qunit/qunit.js'].branchData[1069][1].init(27, 13, 'onErrorFnPrev');
 function visit120_1069_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1069][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1053][1].init(4306, 16, 'config.autostart');
+}_$jscoverage['qunit/qunit.js'].branchData[1053][1].init(4428, 16, 'config.autostart');
 function visit119_1053_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1053][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1049][1].init(4252, 4, 'main');
+}_$jscoverage['qunit/qunit.js'].branchData[1049][1].init(4370, 4, 'main');
 function visit118_1049_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1049][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1041][1].init(210, 21, 'selectedModule === ""');
+}_$jscoverage['qunit/qunit.js'].branchData[1041][1].init(214, 21, 'selectedModule === ""');
 function visit117_1041_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1041][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1033][1].init(1681, 14, 'numModules > 1');
+}_$jscoverage['qunit/qunit.js'].branchData[1033][1].init(1730, 14, 'numModules > 1');
 function visit116_1033_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1033][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1009][2].init(718, 79, 'defined.sessionStorage && sessionStorage.getItem("qunit-filter-passed-tests")');
+}_$jscoverage['qunit/qunit.js'].branchData[1009][2].init(743, 79, 'defined.sessionStorage && sessionStorage.getItem("qunit-filter-passed-tests")');
 function visit115_1009_2(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1009][2].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1009][1].init(697, 100, 'config.hidepassed || defined.sessionStorage && sessionStorage.getItem("qunit-filter-passed-tests")');
+}_$jscoverage['qunit/qunit.js'].branchData[1009][1].init(722, 100, 'config.hidepassed || defined.sessionStorage && sessionStorage.getItem("qunit-filter-passed-tests")');
 function visit114_1009_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1009][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1001][1].init(9, 14, 'filter.checked');
+}_$jscoverage['qunit/qunit.js'].branchData[1001][1].init(10, 14, 'filter.checked');
 function visit113_1001_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1001][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[1000][1].init(281, 22, 'defined.sessionStorage');
+}_$jscoverage['qunit/qunit.js'].branchData[1000][1].init(291, 22, 'defined.sessionStorage');
 function visit112_1000_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[1000][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[994][1].init(73, 14, 'filter.checked');
+}_$jscoverage['qunit/qunit.js'].branchData[994][1].init(77, 14, 'filter.checked');
 function visit111_994_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[994][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[984][1].init(1928, 7, 'toolbar');
+}_$jscoverage['qunit/qunit.js'].branchData[984][1].init(1981, 7, 'toolbar');
 function visit110_984_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[984][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[978][1].init(1673, 6, 'banner');
+}_$jscoverage['qunit/qunit.js'].branchData[978][1].init(1720, 6, 'banner');
 function visit109_978_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[978][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[972][1].init(1531, 9, 'userAgent');
+}_$jscoverage['qunit/qunit.js'].branchData[972][1].init(1572, 9, 'userAgent');
 function visit108_972_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[972][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[965][1].init(97, 19, 'config.module === i');
+}_$jscoverage['qunit/qunit.js'].branchData[965][1].init(99, 19, 'config.module === i');
 function visit107_965_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[965][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[963][1].init(8, 34, 'config.modules.hasOwnProperty(i)');
+}_$jscoverage['qunit/qunit.js'].branchData[963][1].init(9, 34, 'config.modules.hasOwnProperty(i)');
 function visit106_963_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[963][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[961][1].init(1083, 27, 'config.module === undefined');
+}_$jscoverage['qunit/qunit.js'].branchData[961][1].init(1113, 27, 'config.module === undefined');
 function visit105_961_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[961][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[950][1].init(37, 23, 'typeof val === "string"');
+}_$jscoverage['qunit/qunit.js'].branchData[950][1].init(39, 23, 'typeof val === "string"');
 function visit104_950_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[950][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[948][1].init(432, 7, 'i < len');
+}_$jscoverage['qunit/qunit.js'].branchData[948][1].init(449, 7, 'i < len');
 function visit103_948_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[948][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[927][3].init(23929, 34, 'document.readyState === "complete"');
+}_$jscoverage['qunit/qunit.js'].branchData[927][3].init(24845, 34, 'document.readyState === "complete"');
 function visit102_927_3(result) {
   _$jscoverage['qunit/qunit.js'].branchData[927][3].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[927][2].init(23894, 31, 'typeof document === "undefined"');
+}_$jscoverage['qunit/qunit.js'].branchData[927][2].init(24810, 31, 'typeof document === "undefined"');
 function visit101_927_2(result) {
   _$jscoverage['qunit/qunit.js'].branchData[927][2].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[927][1].init(23894, 69, 'typeof document === "undefined" || document.readyState === "complete"');
+}_$jscoverage['qunit/qunit.js'].branchData[927][1].init(24810, 69, 'typeof document === "undefined" || document.readyState === "complete"');
 function visit100_927_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[927][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[880][1].init(9, 27, '!hasOwn.call(params, key)');
+}_$jscoverage['qunit/qunit.js'].branchData[880][1].init(10, 27, '!hasOwn.call(params, key)');
 function visit99_880_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[880][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[859][1].init(588, 6, 'source');
+}_$jscoverage['qunit/qunit.js'].branchData[859][1].init(611, 6, 'source');
 function visit98_859_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[859][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[855][1].init(449, 6, 'actual');
+}_$jscoverage['qunit/qunit.js'].branchData[855][1].init(468, 6, 'actual');
 function visit97_855_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[855][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[849][1].init(293, 37, 'escapeInnerText(message) || "error"');
+}_$jscoverage['qunit/qunit.js'].branchData[849][1].init(306, 37, 'escapeInnerText(message) || "error"');
 function visit96_849_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[849][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[837][1].init(8, 15, '!config.current');
+}_$jscoverage['qunit/qunit.js'].branchData[837][1].init(9, 15, '!config.current');
 function visit95_837_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[837][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[820][1].init(532, 6, 'source');
+}_$jscoverage['qunit/qunit.js'].branchData[820][1].init(544, 6, 'source');
 function visit94_820_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[820][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[813][1].init(242, 18, 'actual != expected');
+}_$jscoverage['qunit/qunit.js'].branchData[813][1].init(247, 18, 'actual != expected');
 function visit93_813_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[813][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[808][1].init(486, 7, '!result');
+}_$jscoverage['qunit/qunit.js'].branchData[808][1].init(505, 7, '!result');
 function visit92_808_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[808][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[804][1].init(331, 60, 'escapeInnerText(message) || (result ? "okay" : "failed")');
+}_$jscoverage['qunit/qunit.js'].branchData[804][1].init(346, 60, 'escapeInnerText(message) || (result ? "okay" : "failed")');
 function visit91_804_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[804][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[790][1].init(8, 15, '!config.current');
+}_$jscoverage['qunit/qunit.js'].branchData[790][1].init(9, 15, '!config.current');
 function visit90_790_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[790][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[783][1].init(511, 23, 'typeof obj === "object"');
+}_$jscoverage['qunit/qunit.js'].branchData[783][1].init(537, 23, 'typeof obj === "object"');
 function visit89_783_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[783][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[771][1].init(23, 10, 'isNaN(obj)');
+}_$jscoverage['qunit/qunit.js'].branchData[771][1].init(24, 10, 'isNaN(obj)');
 function visit88_771_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[771][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[767][2].init(71, 17, 'match && match[1]');
+}_$jscoverage['qunit/qunit.js'].branchData[767][2].init(72, 17, 'match && match[1]');
 function visit87_767_2(result) {
   _$jscoverage['qunit/qunit.js'].branchData[767][2].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[767][1].init(71, 23, 'match && match[1] || ""');
+}_$jscoverage['qunit/qunit.js'].branchData[767][1].init(72, 23, 'match && match[1] || ""');
 function visit86_767_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[767][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[762][1].init(112, 12, 'obj === null');
+}_$jscoverage['qunit/qunit.js'].branchData[762][1].init(117, 12, 'obj === null');
 function visit85_762_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[762][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[758][1].init(8, 26, 'typeof obj === "undefined"');
+}_$jscoverage['qunit/qunit.js'].branchData[758][1].init(9, 26, 'typeof obj === "undefined"');
 function visit84_758_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[758][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[754][1].init(10, 31, 'QUnit.objectType(obj) == type');
+}_$jscoverage['qunit/qunit.js'].branchData[754][1].init(11, 31, 'QUnit.objectType(obj) == type');
 function visit83_754_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[754][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[747][1].init(262, 14, 'elem.fireEvent');
+}_$jscoverage['qunit/qunit.js'].branchData[747][1].init(269, 14, 'elem.fireEvent');
 function visit82_747_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[747][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[741][1].init(8, 20, 'document.createEvent');
+}_$jscoverage['qunit/qunit.js'].branchData[741][1].init(9, 20, 'document.createEvent');
 function visit81_741_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[741][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[733][1].init(47, 7, 'fixture');
+}_$jscoverage['qunit/qunit.js'].branchData[733][1].init(49, 7, 'fixture');
 function visit80_733_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[733][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[721][1].init(851, 5, 'tests');
+}_$jscoverage['qunit/qunit.js'].branchData[721][1].init(893, 5, 'tests');
 function visit79_721_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[721][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[717][1].init(784, 6, 'result');
+}_$jscoverage['qunit/qunit.js'].branchData[717][1].init(822, 6, 'result');
 function visit78_717_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[717][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[713][1].init(735, 6, 'banner');
+}_$jscoverage['qunit/qunit.js'].branchData[713][1].init(769, 6, 'banner');
 function visit77_713_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[713][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[709][1].init(688, 5, 'tests');
+}_$jscoverage['qunit/qunit.js'].branchData[709][1].init(718, 5, 'tests');
 function visit76_709_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[709][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[696][1].init(307, 5, 'qunit');
+}_$jscoverage['qunit/qunit.js'].branchData[696][1].init(324, 5, 'qunit');
 function visit75_696_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[696][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[666][1].init(17150, 30, 'typeof exports === "undefined"');
+}_$jscoverage['qunit/qunit.js'].branchData[666][1].init(17805, 30, 'typeof exports === "undefined"');
 function visit74_666_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[666][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[661][1].init(867, 29, 'location.protocol === "file:"');
+}_$jscoverage['qunit/qunit.js'].branchData[661][1].init(896, 29, 'location.protocol === "file:"');
 function visit73_661_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[661][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[658][1].init(740, 44, 'parseInt(urlParams.testNumber, 10) || null');
+}_$jscoverage['qunit/qunit.js'].branchData[658][1].init(766, 44, 'parseInt(urlParams.testNumber, 10) || null');
 function visit72_658_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[658][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[641][1].init(16, 10, 'i < length');
+}_$jscoverage['qunit/qunit.js'].branchData[641][1].init(17, 10, 'i < length');
 function visit71_641_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[641][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[640][1].init(190, 11, 'params[0]');
+}_$jscoverage['qunit/qunit.js'].branchData[640][1].init(198, 11, 'params[0]');
 function visit70_640_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[640][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[634][1].init(19, 52, 'window.location || {\n  search: "", \n  protocol: "file:"}');
+}_$jscoverage['qunit/qunit.js'].branchData[634][1].init(20, 52, 'window.location || {\n  search: "", \n  protocol: "file:"}');
 function visit69_634_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[634][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[533][1].init(423, 36, 'expected.call({}, actual) === true');
+}_$jscoverage['qunit/qunit.js'].branchData[533][1].init(435, 36, 'expected.call({}, actual) === true');
 function visit68_533_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[533][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[530][1].init(281, 26, 'actual instanceof expected');
+}_$jscoverage['qunit/qunit.js'].branchData[530][1].init(290, 26, 'actual instanceof expected');
 function visit67_530_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[530][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[527][1].init(153, 41, 'QUnit.objectType(expected) === "regexp"');
+}_$jscoverage['qunit/qunit.js'].branchData[527][1].init(159, 41, 'QUnit.objectType(expected) === "regexp"');
 function visit66_527_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[527][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[523][1].init(54, 9, '!expected');
+}_$jscoverage['qunit/qunit.js'].branchData[523][1].init(56, 9, '!expected');
 function visit65_523_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[523][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[521][1].init(366, 6, 'actual');
+}_$jscoverage['qunit/qunit.js'].branchData[521][1].init(385, 6, 'actual');
 function visit64_521_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[521][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[508][1].init(96, 28, 'typeof expected === "string"');
+}_$jscoverage['qunit/qunit.js'].branchData[508][1].init(102, 28, 'typeof expected === "string"');
 function visit63_508_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[508][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[499][1].init(15, 19, 'expected !== actual');
+}_$jscoverage['qunit/qunit.js'].branchData[499][1].init(16, 19, 'expected !== actual');
 function visit62_499_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[499][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[491][1].init(15, 19, 'expected === actual');
+}_$jscoverage['qunit/qunit.js'].branchData[491][1].init(16, 19, 'expected === actual');
 function visit61_491_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[491][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[467][1].init(15, 18, 'expected != actual');
+}_$jscoverage['qunit/qunit.js'].branchData[467][1].init(16, 18, 'expected != actual');
 function visit60_467_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[467][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[459][1].init(15, 18, 'expected == actual');
+}_$jscoverage['qunit/qunit.js'].branchData[459][1].init(16, 18, 'expected == actual');
 function visit59_459_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[459][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[439][1].init(48, 6, 'source');
+}_$jscoverage['qunit/qunit.js'].branchData[439][1].init(50, 6, 'source');
 function visit58_439_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[439][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[437][1].init(420, 7, '!result');
+}_$jscoverage['qunit/qunit.js'].branchData[437][1].init(437, 7, '!result');
 function visit57_437_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[437][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[434][1].init(315, 36, 'msg || (result ? "okay" : "failed")');
+}_$jscoverage['qunit/qunit.js'].branchData[434][1].init(329, 36, 'msg || (result ? "okay" : "failed")');
 function visit56_434_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[434][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[421][1].init(8, 15, '!config.current');
+}_$jscoverage['qunit/qunit.js'].branchData[421][1].init(9, 15, '!config.current');
 function visit55_421_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[421][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[398][1].init(69, 40, 'config.testTimeout && defined.setTimeout');
+}_$jscoverage['qunit/qunit.js'].branchData[398][1].init(73, 40, 'config.testTimeout && defined.setTimeout');
 function visit54_398_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[398][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[395][1].init(23, 10, 'count || 1');
+}_$jscoverage['qunit/qunit.js'].branchData[395][1].init(24, 10, 'count || 1');
 function visit53_395_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[395][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[381][1].init(63, 14, 'config.timeout');
+}_$jscoverage['qunit/qunit.js'].branchData[381][1].init(67, 14, 'config.timeout');
 function visit52_381_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[381][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[378][1].init(10, 20, 'config.semaphore > 0');
+}_$jscoverage['qunit/qunit.js'].branchData[378][1].init(11, 20, 'config.semaphore > 0');
 function visit51_378_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[378][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[376][1].init(449, 18, 'defined.setTimeout');
+}_$jscoverage['qunit/qunit.js'].branchData[376][1].init(462, 18, 'defined.setTimeout');
 function visit50_376_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[376][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[370][1].init(191, 20, 'config.semaphore < 0');
+}_$jscoverage['qunit/qunit.js'].branchData[370][1].init(198, 20, 'config.semaphore < 0');
 function visit49_370_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[370][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[366][1].init(92, 20, 'config.semaphore > 0');
+}_$jscoverage['qunit/qunit.js'].branchData[366][1].init(95, 20, 'config.semaphore > 0');
 function visit48_366_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[366][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[364][1].init(23, 10, 'count || 1');
+}_$jscoverage['qunit/qunit.js'].branchData[364][1].init(24, 10, 'count || 1');
 function visit47_364_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[364][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[356][1].init(7, 22, 'arguments.length === 1');
+}_$jscoverage['qunit/qunit.js'].branchData[356][1].init(8, 22, 'arguments.length === 1');
 function visit46_356_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[356][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[347][1].init(565, 18, '!validTest(test)');
+}_$jscoverage['qunit/qunit.js'].branchData[347][1].init(589, 18, '!validTest(test)');
 function visit45_347_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[347][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[332][1].init(184, 20, 'config.currentModule');
+}_$jscoverage['qunit/qunit.js'].branchData[332][1].init(193, 20, 'config.currentModule');
 function visit44_332_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[332][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[327][1].init(101, 22, 'arguments.length === 2');
+}_$jscoverage['qunit/qunit.js'].branchData[327][1].init(105, 22, 'arguments.length === 2');
 function visit43_327_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[327][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[315][1].init(8, 22, 'arguments.length === 2');
+}_$jscoverage['qunit/qunit.js'].branchData[315][1].init(9, 22, 'arguments.length === 2');
 function visit42_315_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[315][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[295][1].init(604, 3, 'bad');
+}_$jscoverage['qunit/qunit.js'].branchData[295][1].init(632, 3, 'bad');
 function visit41_295_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[295][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[292][2].init(486, 108, 'defined.sessionStorage && +sessionStorage.getItem("qunit-test-" + this.module + "-" + this.testName)');
+}_$jscoverage['qunit/qunit.js'].branchData[292][2].init(511, 109, 'defined.sessionStorage && +sessionStorage.getItem("qunit-test-" + this.module + "-" + this.testName)');
 function visit40_292_2(result) {
   _$jscoverage['qunit/qunit.js'].branchData[292][2].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[292][1].init(462, 132, 'QUnit.config.reorder && defined.sessionStorage && +sessionStorage.getItem("qunit-test-" + this.module + "-" + this.testName)');
+}_$jscoverage['qunit/qunit.js'].branchData[292][1].init(487, 133, 'QUnit.config.reorder && defined.sessionStorage && +sessionStorage.getItem("qunit-test-" + this.module + "-" + this.testName)');
 function visit39_292_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[292][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[246][1].init(10, 26, '!this.assertions[i].result');
+}_$jscoverage['qunit/qunit.js'].branchData[246][1].init(11, 26, '!this.assertions[i].result');
 function visit38_246_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[246][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[245][1].init(17, 26, 'i < this.assertions.length');
+}_$jscoverage['qunit/qunit.js'].branchData[245][1].init(18, 26, 'i < this.assertions.length');
 function visit37_245_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[245][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[230][2].init(230, 42, 'target.nodeName.toLowerCase() === "strong"');
+}_$jscoverage['qunit/qunit.js'].branchData[230][2].init(235, 42, 'target.nodeName.toLowerCase() === "strong"');
 function visit36_230_2(result) {
   _$jscoverage['qunit/qunit.js'].branchData[230][2].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[230][1].init(211, 61, 'window.location && target.nodeName.toLowerCase() === "strong"');
+}_$jscoverage['qunit/qunit.js'].branchData[230][1].init(216, 61, 'window.location && target.nodeName.toLowerCase() === "strong"');
 function visit35_230_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[230][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[227][3].init(122, 36, 'target.nodeName.toLowerCase() == "b"');
+}_$jscoverage['qunit/qunit.js'].branchData[227][3].init(124, 36, 'target.nodeName.toLowerCase() == "b"');
 function visit34_227_3(result) {
   _$jscoverage['qunit/qunit.js'].branchData[227][3].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[227][2].init(79, 39, 'target.nodeName.toLowerCase() == "span"');
+}_$jscoverage['qunit/qunit.js'].branchData[227][2].init(81, 39, 'target.nodeName.toLowerCase() == "span"');
 function visit33_227_2(result) {
   _$jscoverage['qunit/qunit.js'].branchData[227][2].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[227][1].init(79, 79, 'target.nodeName.toLowerCase() == "span" || target.nodeName.toLowerCase() == "b"');
+}_$jscoverage['qunit/qunit.js'].branchData[227][1].init(81, 79, 'target.nodeName.toLowerCase() == "span" || target.nodeName.toLowerCase() == "b"');
 function visit32_227_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[227][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[226][1].init(18, 13, 'e && e.target');
+}_$jscoverage['qunit/qunit.js'].branchData[226][1].init(19, 13, 'e && e.target');
 function visit31_226_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[226][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[211][1].init(825, 9, 'bad === 0');
+}_$jscoverage['qunit/qunit.js'].branchData[211][1].init(855, 9, 'bad === 0');
 function visit30_211_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[211][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[204][1].init(10, 3, 'bad');
+}_$jscoverage['qunit/qunit.js'].branchData[204][1].init(11, 3, 'bad');
 function visit29_204_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[204][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[203][1].init(552, 46, 'QUnit.config.reorder && defined.sessionStorage');
+}_$jscoverage['qunit/qunit.js'].branchData[203][1].init(574, 46, 'QUnit.config.reorder && defined.sessionStorage');
 function visit28_203_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[203][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[193][1].init(252, 16, 'assertion.result');
+}_$jscoverage['qunit/qunit.js'].branchData[193][1].init(260, 16, 'assertion.result');
 function visit27_193_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[193][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[190][1].init(153, 61, 'assertion.message || (assertion.result ? "okay" : "failed")');
+}_$jscoverage['qunit/qunit.js'].branchData[190][1].init(158, 61, 'assertion.message || (assertion.result ? "okay" : "failed")');
 function visit26_190_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[190][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[185][1].init(97, 26, 'i < this.assertions.length');
+}_$jscoverage['qunit/qunit.js'].branchData[185][1].init(101, 26, 'i < this.assertions.length');
 function visit25_185_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[185][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[181][1].init(826, 5, 'tests');
+}_$jscoverage['qunit/qunit.js'].branchData[181][1].init(845, 5, 'tests');
 function visit24_181_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[181][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[168][2].init(422, 21, 'this.expected == null');
+}_$jscoverage['qunit/qunit.js'].branchData[168][2].init(428, 21, 'this.expected == null');
 function visit23_168_2(result) {
   _$jscoverage['qunit/qunit.js'].branchData[168][2].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[168][1].init(422, 48, 'this.expected == null && !this.assertions.length');
+}_$jscoverage['qunit/qunit.js'].branchData[168][1].init(428, 48, 'this.expected == null && !this.assertions.length');
 function visit22_168_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[168][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[166][3].init(237, 39, 'this.expected != this.assertions.length');
+}_$jscoverage['qunit/qunit.js'].branchData[166][3].init(241, 39, 'this.expected != this.assertions.length');
 function visit21_166_3(result) {
   _$jscoverage['qunit/qunit.js'].branchData[166][3].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[166][2].init(212, 21, 'this.expected != null');
+}_$jscoverage['qunit/qunit.js'].branchData[166][2].init(216, 21, 'this.expected != null');
 function visit20_166_2(result) {
   _$jscoverage['qunit/qunit.js'].branchData[166][2].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[166][1].init(212, 64, 'this.expected != null && this.expected != this.assertions.length');
+}_$jscoverage['qunit/qunit.js'].branchData[166][1].init(216, 64, 'this.expected != null && this.expected != this.assertions.length');
 function visit19_166_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[166][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[164][2].init(58, 21, 'this.expected == null');
+}_$jscoverage['qunit/qunit.js'].branchData[164][2].init(60, 21, 'this.expected == null');
 function visit18_164_2(result) {
   _$jscoverage['qunit/qunit.js'].branchData[164][2].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[164][1].init(33, 46, 'config.requireExpects && this.expected == null');
+}_$jscoverage['qunit/qunit.js'].branchData[164][1].init(35, 46, 'config.requireExpects && this.expected == null');
 function visit17_164_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[164][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[157][1].init(73, 14, 'e.message || e');
+}_$jscoverage['qunit/qunit.js'].branchData[157][1].init(74, 14, 'e.message || e');
 function visit16_157_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[157][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[150][1].init(33, 17, 'config.notrycatch');
+}_$jscoverage['qunit/qunit.js'].branchData[150][1].init(35, 17, 'config.notrycatch');
 function visit15_150_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[150][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[143][1].init(269, 15, 'config.blocking');
+}_$jscoverage['qunit/qunit.js'].branchData[143][1].init(275, 15, 'config.blocking');
 function visit14_143_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[143][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[138][1].init(101, 14, 'e.message || e');
+}_$jscoverage['qunit/qunit.js'].branchData[138][1].init(102, 14, 'e.message || e');
 function visit13_138_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[138][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[130][1].init(198, 17, 'config.notrycatch');
+}_$jscoverage['qunit/qunit.js'].branchData[130][1].init(211, 17, 'config.notrycatch');
 function visit12_130_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[130][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[126][1].init(154, 10, 'this.async');
+}_$jscoverage['qunit/qunit.js'].branchData[126][1].init(163, 10, 'this.async');
 function visit11_126_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[126][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[122][1].init(77, 7, 'running');
+}_$jscoverage['qunit/qunit.js'].branchData[122][1].init(82, 7, 'running');
 function visit10_122_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[122][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[114][1].init(69, 14, 'e.message || e');
+}_$jscoverage['qunit/qunit.js'].branchData[114][1].init(70, 14, 'e.message || e');
 function visit9_114_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[114][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[107][1].init(1034, 17, 'config.notrycatch');
+}_$jscoverage['qunit/qunit.js'].branchData[107][1].init(1074, 17, 'config.notrycatch');
 function visit8_107_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[107][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[104][1].init(984, 17, '!config.pollution');
+}_$jscoverage['qunit/qunit.js'].branchData[104][1].init(1021, 17, '!config.pollution');
 function visit7_104_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[104][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[82][1].init(489, 14, 'config.autorun');
+}_$jscoverage['qunit/qunit.js'].branchData[82][1].init(504, 14, 'config.autorun');
 function visit6_82_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[82][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[69][1].init(9, 21, 'config.previousModule');
+}_$jscoverage['qunit/qunit.js'].branchData[69][1].init(10, 21, 'config.previousModule');
 function visit5_69_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[69][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[68][1].init(8, 37, 'this.module !== config.previousModule');
+}_$jscoverage['qunit/qunit.js'].branchData[68][1].init(9, 37, 'this.module !== config.previousModule');
 function visit4_68_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[68][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[49][1].init(62, 5, 'tests');
+}_$jscoverage['qunit/qunit.js'].branchData[49][1].init(66, 5, 'tests');
 function visit3_49_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[49][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[23][1].init(14, 40, 'typeof window.setTimeout !== "undefined"');
+}_$jscoverage['qunit/qunit.js'].branchData[23][1].init(15, 40, 'typeof window.setTimeout !== "undefined"');
 function visit2_23_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[23][1].ranCondition(result);
   return result;
-}_$jscoverage['qunit/qunit.js'].branchData[17][1].init(61, 31, 'sourceFromStacktrace(0) || ""');
+}_$jscoverage['qunit/qunit.js'].branchData[17][1].init(65, 31, 'sourceFromStacktrace(0) || ""');
 function visit1_17_1(result) {
   _$jscoverage['qunit/qunit.js'].branchData[17][1].ranCondition(result);
   return result;
 }_$jscoverage['qunit/qunit.js'].lineData[11]++;
 (function(window) {
+  _$jscoverage['qunit/qunit.js'].functionData[0]++;
   _$jscoverage['qunit/qunit.js'].lineData[13]++;
   var QUnit, config, onErrorFnPrev, testId = 0, fileName = (visit1_17_1(sourceFromStacktrace(0) || "")).replace(/(:\d+)+\)?/, "").replace(/.+\//, ""), toString = Object.prototype.toString, hasOwn = Object.prototype.hasOwnProperty, Date = window.Date, defined = {
   setTimeout: visit2_23_1(typeof window.setTimeout !== "undefined"), 
   sessionStorage: (function() {
+  _$jscoverage['qunit/qunit.js'].functionData[1]++;
   _$jscoverage['qunit/qunit.js'].lineData[25]++;
   var x = "qunit-test-string";
   _$jscoverage['qunit/qunit.js'].lineData[26]++;
@@ -2984,6 +3100,7 @@ function visit1_17_1(result) {
 }())};
   _$jscoverage['qunit/qunit.js'].lineData[36]++;
   function Test(settings) {
+    _$jscoverage['qunit/qunit.js'].functionData[2]++;
     _$jscoverage['qunit/qunit.js'].lineData[37]++;
     extend(this, settings);
     _$jscoverage['qunit/qunit.js'].lineData[38]++;
@@ -2996,6 +3113,7 @@ function visit1_17_1(result) {
   _$jscoverage['qunit/qunit.js'].lineData[44]++;
   Test.prototype = {
   init: function() {
+  _$jscoverage['qunit/qunit.js'].functionData[3]++;
   _$jscoverage['qunit/qunit.js'].lineData[46]++;
   var a, b, li, tests = id("qunit-tests");
   _$jscoverage['qunit/qunit.js'].lineData[49]++;
@@ -3026,6 +3144,7 @@ function visit1_17_1(result) {
   }
 }, 
   setup: function() {
+  _$jscoverage['qunit/qunit.js'].functionData[4]++;
   _$jscoverage['qunit/qunit.js'].lineData[68]++;
   if (visit4_68_1(this.module !== config.previousModule)) {
     _$jscoverage['qunit/qunit.js'].lineData[69]++;
@@ -3059,8 +3178,10 @@ function visit1_17_1(result) {
   _$jscoverage['qunit/qunit.js'].lineData[90]++;
   this.testEnvironment = extend({
   setup: function() {
+  _$jscoverage['qunit/qunit.js'].functionData[5]++;
 }, 
   teardown: function() {
+  _$jscoverage['qunit/qunit.js'].functionData[6]++;
 }}, this.moduleTestEnvironment);
   _$jscoverage['qunit/qunit.js'].lineData[95]++;
   runLoggingCallbacks("testStart", QUnit, {
@@ -3090,6 +3211,7 @@ function visit1_17_1(result) {
 }
 }, 
   run: function() {
+  _$jscoverage['qunit/qunit.js'].functionData[7]++;
   _$jscoverage['qunit/qunit.js'].lineData[118]++;
   config.current = this;
   _$jscoverage['qunit/qunit.js'].lineData[120]++;
@@ -3128,6 +3250,7 @@ function visit1_17_1(result) {
 }
 }, 
   teardown: function() {
+  _$jscoverage['qunit/qunit.js'].functionData[8]++;
   _$jscoverage['qunit/qunit.js'].lineData[149]++;
   config.current = this;
   _$jscoverage['qunit/qunit.js'].lineData[150]++;
@@ -3150,6 +3273,7 @@ function visit1_17_1(result) {
   checkPollution();
 }, 
   finish: function() {
+  _$jscoverage['qunit/qunit.js'].functionData[9]++;
   _$jscoverage['qunit/qunit.js'].lineData[163]++;
   config.current = this;
   _$jscoverage['qunit/qunit.js'].lineData[164]++;
@@ -3228,6 +3352,7 @@ function visit1_17_1(result) {
     b.innerHTML = this.name + " <b class='counts'>(<b class='failed'>" + bad + "</b>, <b class='passed'>" + good + "</b>, " + this.assertions.length + ")</b>";
     _$jscoverage['qunit/qunit.js'].lineData[219]++;
     addEvent(b, "click", function() {
+  _$jscoverage['qunit/qunit.js'].functionData[10]++;
   _$jscoverage['qunit/qunit.js'].lineData[220]++;
   var next = b.nextSibling.nextSibling, collapsed = hasClass(next, "qunit-collapsed");
   _$jscoverage['qunit/qunit.js'].lineData[222]++;
@@ -3235,6 +3360,7 @@ function visit1_17_1(result) {
 });
     _$jscoverage['qunit/qunit.js'].lineData[225]++;
     addEvent(b, "dblclick", function(e) {
+  _$jscoverage['qunit/qunit.js'].functionData[11]++;
   _$jscoverage['qunit/qunit.js'].lineData[226]++;
   var target = visit31_226_1(e && e.target) ? e.target : window.event.srcElement;
   _$jscoverage['qunit/qunit.js'].lineData[227]++;
@@ -3290,32 +3416,39 @@ function visit1_17_1(result) {
   config.current = undefined;
 }, 
   queue: function() {
+  _$jscoverage['qunit/qunit.js'].functionData[12]++;
   _$jscoverage['qunit/qunit.js'].lineData[268]++;
   var bad, test = this;
   _$jscoverage['qunit/qunit.js'].lineData[271]++;
   synchronize(function() {
+  _$jscoverage['qunit/qunit.js'].functionData[13]++;
   _$jscoverage['qunit/qunit.js'].lineData[272]++;
   test.init();
 });
   _$jscoverage['qunit/qunit.js'].lineData[274]++;
   function run() {
+    _$jscoverage['qunit/qunit.js'].functionData[14]++;
     _$jscoverage['qunit/qunit.js'].lineData[276]++;
     synchronize(function() {
+  _$jscoverage['qunit/qunit.js'].functionData[15]++;
   _$jscoverage['qunit/qunit.js'].lineData[277]++;
   test.setup();
 });
     _$jscoverage['qunit/qunit.js'].lineData[279]++;
     synchronize(function() {
+  _$jscoverage['qunit/qunit.js'].functionData[16]++;
   _$jscoverage['qunit/qunit.js'].lineData[280]++;
   test.run();
 });
     _$jscoverage['qunit/qunit.js'].lineData[282]++;
     synchronize(function() {
+  _$jscoverage['qunit/qunit.js'].functionData[17]++;
   _$jscoverage['qunit/qunit.js'].lineData[283]++;
   test.teardown();
 });
     _$jscoverage['qunit/qunit.js'].lineData[285]++;
     synchronize(function() {
+  _$jscoverage['qunit/qunit.js'].functionData[18]++;
   _$jscoverage['qunit/qunit.js'].lineData[286]++;
   test.finish();
 });
@@ -3334,6 +3467,7 @@ function visit1_17_1(result) {
   _$jscoverage['qunit/qunit.js'].lineData[305]++;
   QUnit = {
   module: function(name, testEnvironment) {
+  _$jscoverage['qunit/qunit.js'].functionData[19]++;
   _$jscoverage['qunit/qunit.js'].lineData[309]++;
   config.currentModule = name;
   _$jscoverage['qunit/qunit.js'].lineData[310]++;
@@ -3342,6 +3476,7 @@ function visit1_17_1(result) {
   config.modules[name] = true;
 }, 
   asyncTest: function(testName, expected, callback) {
+  _$jscoverage['qunit/qunit.js'].functionData[20]++;
   _$jscoverage['qunit/qunit.js'].lineData[315]++;
   if (visit42_315_1(arguments.length === 2)) {
     _$jscoverage['qunit/qunit.js'].lineData[316]++;
@@ -3353,6 +3488,7 @@ function visit1_17_1(result) {
   QUnit.test(testName, expected, callback, true);
 }, 
   test: function(testName, expected, callback, async) {
+  _$jscoverage['qunit/qunit.js'].functionData[21]++;
   _$jscoverage['qunit/qunit.js'].lineData[324]++;
   var test, name = "<span class='test-name'>" + escapeInnerText(testName) + "</span>";
   _$jscoverage['qunit/qunit.js'].lineData[327]++;
@@ -3386,6 +3522,7 @@ function visit1_17_1(result) {
   test.queue();
 }, 
   expect: function(asserts) {
+  _$jscoverage['qunit/qunit.js'].functionData[22]++;
   _$jscoverage['qunit/qunit.js'].lineData[356]++;
   if (visit46_356_1(arguments.length === 1)) {
     _$jscoverage['qunit/qunit.js'].lineData[357]++;
@@ -3396,6 +3533,7 @@ function visit1_17_1(result) {
   }
 }, 
   start: function(count) {
+  _$jscoverage['qunit/qunit.js'].functionData[23]++;
   _$jscoverage['qunit/qunit.js'].lineData[364]++;
   config.semaphore -= visit47_364_1(count || 1);
   _$jscoverage['qunit/qunit.js'].lineData[366]++;
@@ -3416,6 +3554,7 @@ function visit1_17_1(result) {
   if (visit50_376_1(defined.setTimeout)) {
     _$jscoverage['qunit/qunit.js'].lineData[377]++;
     window.setTimeout(function() {
+  _$jscoverage['qunit/qunit.js'].functionData[24]++;
   _$jscoverage['qunit/qunit.js'].lineData[378]++;
   if (visit51_378_1(config.semaphore > 0)) {
     _$jscoverage['qunit/qunit.js'].lineData[379]++;
@@ -3439,6 +3578,7 @@ function visit1_17_1(result) {
   }
 }, 
   stop: function(count) {
+  _$jscoverage['qunit/qunit.js'].functionData[25]++;
   _$jscoverage['qunit/qunit.js'].lineData[395]++;
   config.semaphore += visit53_395_1(count || 1);
   _$jscoverage['qunit/qunit.js'].lineData[396]++;
@@ -3449,6 +3589,7 @@ function visit1_17_1(result) {
     clearTimeout(config.timeout);
     _$jscoverage['qunit/qunit.js'].lineData[400]++;
     config.timeout = window.setTimeout(function() {
+  _$jscoverage['qunit/qunit.js'].functionData[26]++;
   _$jscoverage['qunit/qunit.js'].lineData[401]++;
   QUnit.ok(false, "Test timed out");
   _$jscoverage['qunit/qunit.js'].lineData[402]++;
@@ -3461,6 +3602,7 @@ function visit1_17_1(result) {
   _$jscoverage['qunit/qunit.js'].lineData[413]++;
   QUnit.assert = {
   ok: function(result, msg) {
+  _$jscoverage['qunit/qunit.js'].functionData[27]++;
   _$jscoverage['qunit/qunit.js'].lineData[421]++;
   if (visit55_421_1(!config.current)) {
     _$jscoverage['qunit/qunit.js'].lineData[422]++;
@@ -3498,30 +3640,37 @@ function visit1_17_1(result) {
   message: msg});
 }, 
   equal: function(actual, expected, message) {
+  _$jscoverage['qunit/qunit.js'].functionData[28]++;
   _$jscoverage['qunit/qunit.js'].lineData[459]++;
   QUnit.push(visit59_459_1(expected == actual), actual, expected, message);
 }, 
   notEqual: function(actual, expected, message) {
+  _$jscoverage['qunit/qunit.js'].functionData[29]++;
   _$jscoverage['qunit/qunit.js'].lineData[467]++;
   QUnit.push(visit60_467_1(expected != actual), actual, expected, message);
 }, 
   deepEqual: function(actual, expected, message) {
+  _$jscoverage['qunit/qunit.js'].functionData[30]++;
   _$jscoverage['qunit/qunit.js'].lineData[475]++;
   QUnit.push(QUnit.equiv(actual, expected), actual, expected, message);
 }, 
   notDeepEqual: function(actual, expected, message) {
+  _$jscoverage['qunit/qunit.js'].functionData[31]++;
   _$jscoverage['qunit/qunit.js'].lineData[483]++;
   QUnit.push(!QUnit.equiv(actual, expected), actual, expected, message);
 }, 
   strictEqual: function(actual, expected, message) {
+  _$jscoverage['qunit/qunit.js'].functionData[32]++;
   _$jscoverage['qunit/qunit.js'].lineData[491]++;
   QUnit.push(visit61_491_1(expected === actual), actual, expected, message);
 }, 
   notStrictEqual: function(actual, expected, message) {
+  _$jscoverage['qunit/qunit.js'].functionData[33]++;
   _$jscoverage['qunit/qunit.js'].lineData[499]++;
   QUnit.push(visit62_499_1(expected !== actual), actual, expected, message);
 }, 
   "throws": function(block, expected, message) {
+  _$jscoverage['qunit/qunit.js'].functionData[34]++;
   _$jscoverage['qunit/qunit.js'].lineData[503]++;
   var actual, expectedOutput = expected, ok = false;
   _$jscoverage['qunit/qunit.js'].lineData[508]++;
@@ -3585,18 +3734,22 @@ function visit1_17_1(result) {
   QUnit.raises = QUnit.assert["throws"];
   _$jscoverage['qunit/qunit.js'].lineData[561]++;
   QUnit.equals = function() {
+  _$jscoverage['qunit/qunit.js'].functionData[35]++;
   _$jscoverage['qunit/qunit.js'].lineData[562]++;
   QUnit.push(false, false, false, "QUnit.equals has been deprecated since 2009 (e88049a0), use QUnit.equal instead");
 };
   _$jscoverage['qunit/qunit.js'].lineData[564]++;
   QUnit.same = function() {
+  _$jscoverage['qunit/qunit.js'].functionData[36]++;
   _$jscoverage['qunit/qunit.js'].lineData[565]++;
   QUnit.push(false, false, false, "QUnit.same has been deprecated since 2009 (e88049a0), use QUnit.deepEqual instead");
 };
   _$jscoverage['qunit/qunit.js'].lineData[569]++;
   (function() {
+  _$jscoverage['qunit/qunit.js'].functionData[37]++;
   _$jscoverage['qunit/qunit.js'].lineData[570]++;
   function F() {
+    _$jscoverage['qunit/qunit.js'].functionData[38]++;
   }
   _$jscoverage['qunit/qunit.js'].lineData[571]++;
   F.prototype = QUnit;
@@ -3630,6 +3783,7 @@ function visit1_17_1(result) {
   moduleDone: []};
   _$jscoverage['qunit/qunit.js'].lineData[632]++;
   (function() {
+  _$jscoverage['qunit/qunit.js'].functionData[39]++;
   _$jscoverage['qunit/qunit.js'].lineData[633]++;
   var i, location = visit69_634_1(window.location || {
   search: "", 
@@ -3670,6 +3824,7 @@ function visit1_17_1(result) {
   extend(QUnit, {
   config: config, 
   init: function() {
+  _$jscoverage['qunit/qunit.js'].functionData[40]++;
   _$jscoverage['qunit/qunit.js'].lineData[680]++;
   extend(config, {
   stats: {
@@ -3729,6 +3884,7 @@ function visit1_17_1(result) {
   }
 }, 
   reset: function() {
+  _$jscoverage['qunit/qunit.js'].functionData[41]++;
   _$jscoverage['qunit/qunit.js'].lineData[732]++;
   var fixture = id("qunit-fixture");
   _$jscoverage['qunit/qunit.js'].lineData[733]++;
@@ -3738,6 +3894,7 @@ function visit1_17_1(result) {
   }
 }, 
   triggerEvent: function(elem, type, event) {
+  _$jscoverage['qunit/qunit.js'].functionData[42]++;
   _$jscoverage['qunit/qunit.js'].lineData[741]++;
   if (visit81_741_1(document.createEvent)) {
     _$jscoverage['qunit/qunit.js'].lineData[742]++;
@@ -3755,10 +3912,12 @@ function visit1_17_1(result) {
   }
 }, 
   is: function(type, obj) {
+  _$jscoverage['qunit/qunit.js'].functionData[43]++;
   _$jscoverage['qunit/qunit.js'].lineData[754]++;
   return visit83_754_1(QUnit.objectType(obj) == type);
 }, 
   objectType: function(obj) {
+  _$jscoverage['qunit/qunit.js'].functionData[44]++;
   _$jscoverage['qunit/qunit.js'].lineData[758]++;
   if (visit84_758_1(typeof obj === "undefined")) {
     _$jscoverage['qunit/qunit.js'].lineData[759]++;
@@ -3799,6 +3958,7 @@ function visit1_17_1(result) {
   return undefined;
 }, 
   push: function(result, actual, expected, message) {
+  _$jscoverage['qunit/qunit.js'].functionData[45]++;
   _$jscoverage['qunit/qunit.js'].lineData[790]++;
   if (visit90_790_1(!config.current)) {
     _$jscoverage['qunit/qunit.js'].lineData[791]++;
@@ -3853,6 +4013,7 @@ function visit1_17_1(result) {
   message: output});
 }, 
   pushFailure: function(message, source, actual) {
+  _$jscoverage['qunit/qunit.js'].functionData[46]++;
   _$jscoverage['qunit/qunit.js'].lineData[837]++;
   if (visit95_837_1(!config.current)) {
     _$jscoverage['qunit/qunit.js'].lineData[838]++;
@@ -3894,6 +4055,7 @@ function visit1_17_1(result) {
   message: output});
 }, 
   url: function(params) {
+  _$jscoverage['qunit/qunit.js'].functionData[47]++;
   _$jscoverage['qunit/qunit.js'].lineData[875]++;
   params = extend(extend({}, QUnit.urlParams), params);
   _$jscoverage['qunit/qunit.js'].lineData[876]++;
@@ -3930,6 +4092,7 @@ function visit1_17_1(result) {
   }
   _$jscoverage['qunit/qunit.js'].lineData[931]++;
   QUnit.load = function() {
+  _$jscoverage['qunit/qunit.js'].functionData[48]++;
   _$jscoverage['qunit/qunit.js'].lineData[932]++;
   runLoggingCallbacks("begin", QUnit, {});
   _$jscoverage['qunit/qunit.js'].lineData[935]++;
@@ -4002,6 +4165,7 @@ function visit1_17_1(result) {
     filter.id = "qunit-filter-pass";
     _$jscoverage['qunit/qunit.js'].lineData[990]++;
     addEvent(filter, "click", function() {
+  _$jscoverage['qunit/qunit.js'].functionData[49]++;
   _$jscoverage['qunit/qunit.js'].lineData[991]++;
   var tmp, ol = document.getElementById("qunit-tests");
   _$jscoverage['qunit/qunit.js'].lineData[994]++;
@@ -4053,6 +4217,7 @@ function visit1_17_1(result) {
     urlConfigCheckboxes.innerHTML = urlConfigHtml;
     _$jscoverage['qunit/qunit.js'].lineData[1026]++;
     addEvent(urlConfigCheckboxes, "change", function(event) {
+  _$jscoverage['qunit/qunit.js'].functionData[50]++;
   _$jscoverage['qunit/qunit.js'].lineData[1027]++;
   var params = {};
   _$jscoverage['qunit/qunit.js'].lineData[1028]++;
@@ -4072,6 +4237,7 @@ function visit1_17_1(result) {
       moduleFilter.innerHTML = moduleFilterHtml;
       _$jscoverage['qunit/qunit.js'].lineData[1037]++;
       addEvent(moduleFilter, "change", function() {
+  _$jscoverage['qunit/qunit.js'].functionData[51]++;
   _$jscoverage['qunit/qunit.js'].lineData[1038]++;
   var selectBox = moduleFilter.getElementsByTagName("select")[0], selectedModule = decodeURIComponent(selectBox.options[selectBox.selectedIndex].value);
   _$jscoverage['qunit/qunit.js'].lineData[1041]++;
@@ -4101,6 +4267,7 @@ function visit1_17_1(result) {
   onErrorFnPrev = window.onerror;
   _$jscoverage['qunit/qunit.js'].lineData[1067]++;
   window.onerror = function(error, filePath, linerNr) {
+  _$jscoverage['qunit/qunit.js'].functionData[52]++;
   _$jscoverage['qunit/qunit.js'].lineData[1068]++;
   var ret = false;
   _$jscoverage['qunit/qunit.js'].lineData[1069]++;
@@ -4122,6 +4289,7 @@ function visit1_17_1(result) {
     } else {
       _$jscoverage['qunit/qunit.js'].lineData[1082]++;
       QUnit.test("global failure", extend(function() {
+  _$jscoverage['qunit/qunit.js'].functionData[53]++;
   _$jscoverage['qunit/qunit.js'].lineData[1083]++;
   QUnit.pushFailure(error, filePath + ":" + linerNr);
 }, {
@@ -4135,6 +4303,7 @@ function visit1_17_1(result) {
 };
   _$jscoverage['qunit/qunit.js'].lineData[1092]++;
   function done() {
+    _$jscoverage['qunit/qunit.js'].functionData[54]++;
     _$jscoverage['qunit/qunit.js'].lineData[1093]++;
     config.autorun = true;
     _$jscoverage['qunit/qunit.js'].lineData[1096]++;
@@ -4190,6 +4359,7 @@ function visit1_17_1(result) {
   }
   _$jscoverage['qunit/qunit.js'].lineData[1165]++;
   function validTest(test) {
+    _$jscoverage['qunit/qunit.js'].functionData[55]++;
     _$jscoverage['qunit/qunit.js'].lineData[1166]++;
     var include, filter = visit136_1167_1(config.filter && config.filter.toLowerCase()), module = visit137_1168_1(config.module && config.module.toLowerCase()), fullName = (test.module + ": " + test.testName).toLowerCase();
     _$jscoverage['qunit/qunit.js'].lineData[1172]++;
@@ -4231,6 +4401,7 @@ function visit1_17_1(result) {
   }
   _$jscoverage['qunit/qunit.js'].lineData[1206]++;
   function extractStacktrace(e, offset) {
+    _$jscoverage['qunit/qunit.js'].functionData[56]++;
     _$jscoverage['qunit/qunit.js'].lineData[1207]++;
     offset = visit149_1207_1(offset === undefined) ? 3 : offset;
     _$jscoverage['qunit/qunit.js'].lineData[1209]++;
@@ -4287,6 +4458,7 @@ function visit1_17_1(result) {
   }
   _$jscoverage['qunit/qunit.js'].lineData[1244]++;
   function sourceFromStacktrace(offset) {
+    _$jscoverage['qunit/qunit.js'].functionData[57]++;
     _$jscoverage['qunit/qunit.js'].lineData[1245]++;
     try {
       _$jscoverage['qunit/qunit.js'].lineData[1246]++;
@@ -4298,6 +4470,7 @@ function visit1_17_1(result) {
   }
   _$jscoverage['qunit/qunit.js'].lineData[1252]++;
   function escapeInnerText(s) {
+    _$jscoverage['qunit/qunit.js'].functionData[58]++;
     _$jscoverage['qunit/qunit.js'].lineData[1253]++;
     if (visit159_1253_1(!s)) {
       _$jscoverage['qunit/qunit.js'].lineData[1254]++;
@@ -4307,6 +4480,7 @@ function visit1_17_1(result) {
     s = s + "";
     _$jscoverage['qunit/qunit.js'].lineData[1257]++;
     return s.replace(/[\&<>]/g, function(s) {
+  _$jscoverage['qunit/qunit.js'].functionData[59]++;
   _$jscoverage['qunit/qunit.js'].lineData[1258]++;
   switch (s) {
     case "&":
@@ -4326,6 +4500,7 @@ function visit1_17_1(result) {
   }
   _$jscoverage['qunit/qunit.js'].lineData[1267]++;
   function synchronize(callback, last) {
+    _$jscoverage['qunit/qunit.js'].functionData[60]++;
     _$jscoverage['qunit/qunit.js'].lineData[1268]++;
     config.queue.push(callback);
     _$jscoverage['qunit/qunit.js'].lineData[1270]++;
@@ -4336,8 +4511,10 @@ function visit1_17_1(result) {
   }
   _$jscoverage['qunit/qunit.js'].lineData[1275]++;
   function process(last) {
+    _$jscoverage['qunit/qunit.js'].functionData[61]++;
     _$jscoverage['qunit/qunit.js'].lineData[1276]++;
     function next() {
+      _$jscoverage['qunit/qunit.js'].functionData[62]++;
       _$jscoverage['qunit/qunit.js'].lineData[1277]++;
       process(last);
     }
@@ -4368,6 +4545,7 @@ function visit1_17_1(result) {
   }
   _$jscoverage['qunit/qunit.js'].lineData[1296]++;
   function saveGlobal() {
+    _$jscoverage['qunit/qunit.js'].functionData[63]++;
     _$jscoverage['qunit/qunit.js'].lineData[1297]++;
     config.pollution = [];
     _$jscoverage['qunit/qunit.js'].lineData[1299]++;
@@ -4386,6 +4564,7 @@ function visit1_17_1(result) {
   }
   _$jscoverage['qunit/qunit.js'].lineData[1310]++;
   function checkPollution(name) {
+    _$jscoverage['qunit/qunit.js'].functionData[64]++;
     _$jscoverage['qunit/qunit.js'].lineData[1311]++;
     var newGlobals, deletedGlobals, old = config.pollution;
     _$jscoverage['qunit/qunit.js'].lineData[1315]++;
@@ -4407,6 +4586,7 @@ function visit1_17_1(result) {
   }
   _$jscoverage['qunit/qunit.js'].lineData[1329]++;
   function diff(a, b) {
+    _$jscoverage['qunit/qunit.js'].functionData[65]++;
     _$jscoverage['qunit/qunit.js'].lineData[1330]++;
     var i, j, result = a.slice();
     _$jscoverage['qunit/qunit.js'].lineData[1333]++;
@@ -4429,6 +4609,7 @@ function visit1_17_1(result) {
   }
   _$jscoverage['qunit/qunit.js'].lineData[1345]++;
   function extend(a, b) {
+    _$jscoverage['qunit/qunit.js'].functionData[66]++;
     _$jscoverage['qunit/qunit.js'].lineData[1346]++;
     for (var prop in b) {
       _$jscoverage['qunit/qunit.js'].lineData[1347]++;
@@ -4448,6 +4629,7 @@ function visit1_17_1(result) {
   }
   _$jscoverage['qunit/qunit.js'].lineData[1359]++;
   function addEvent(elem, type, fn) {
+    _$jscoverage['qunit/qunit.js'].functionData[67]++;
     _$jscoverage['qunit/qunit.js'].lineData[1360]++;
     if (visit181_1360_1(elem.addEventListener)) {
       _$jscoverage['qunit/qunit.js'].lineData[1361]++;
@@ -4465,11 +4647,13 @@ function visit1_17_1(result) {
   }
   _$jscoverage['qunit/qunit.js'].lineData[1369]++;
   function hasClass(elem, name) {
+    _$jscoverage['qunit/qunit.js'].functionData[68]++;
     _$jscoverage['qunit/qunit.js'].lineData[1370]++;
     return visit183_1370_1((" " + elem.className + " ").indexOf(" " + name + " ") > -1);
   }
   _$jscoverage['qunit/qunit.js'].lineData[1373]++;
   function addClass(elem, name) {
+    _$jscoverage['qunit/qunit.js'].functionData[69]++;
     _$jscoverage['qunit/qunit.js'].lineData[1374]++;
     if (visit184_1374_1(!hasClass(elem, name))) {
       _$jscoverage['qunit/qunit.js'].lineData[1375]++;
@@ -4478,6 +4662,7 @@ function visit1_17_1(result) {
   }
   _$jscoverage['qunit/qunit.js'].lineData[1379]++;
   function removeClass(elem, name) {
+    _$jscoverage['qunit/qunit.js'].functionData[70]++;
     _$jscoverage['qunit/qunit.js'].lineData[1380]++;
     var set = " " + elem.className + " ";
     _$jscoverage['qunit/qunit.js'].lineData[1382]++;
@@ -4490,19 +4675,23 @@ function visit1_17_1(result) {
   }
   _$jscoverage['qunit/qunit.js'].lineData[1389]++;
   function id(name) {
+    _$jscoverage['qunit/qunit.js'].functionData[71]++;
     _$jscoverage['qunit/qunit.js'].lineData[1390]++;
     return visit186_1390_1(!!(visit187_1390_2(visit188_1390_3(typeof document !== "undefined") && visit189_1390_4(document && document.getElementById))) && document.getElementById(name));
   }
   _$jscoverage['qunit/qunit.js'].lineData[1394]++;
   function registerLoggingCallback(key) {
+    _$jscoverage['qunit/qunit.js'].functionData[72]++;
     _$jscoverage['qunit/qunit.js'].lineData[1395]++;
     return function(callback) {
+  _$jscoverage['qunit/qunit.js'].functionData[73]++;
   _$jscoverage['qunit/qunit.js'].lineData[1396]++;
   config[key].push(callback);
 };
   }
   _$jscoverage['qunit/qunit.js'].lineData[1401]++;
   function runLoggingCallbacks(key, scope, args) {
+    _$jscoverage['qunit/qunit.js'].functionData[74]++;
     _$jscoverage['qunit/qunit.js'].lineData[1403]++;
     var i, callbacks;
     _$jscoverage['qunit/qunit.js'].lineData[1404]++;
@@ -4521,8 +4710,10 @@ function visit1_17_1(result) {
   }
   _$jscoverage['qunit/qunit.js'].lineData[1416]++;
   QUnit.equiv = (function() {
+  _$jscoverage['qunit/qunit.js'].functionData[75]++;
   _$jscoverage['qunit/qunit.js'].lineData[1419]++;
   function bindCallbacks(o, callbacks, args) {
+    _$jscoverage['qunit/qunit.js'].functionData[76]++;
     _$jscoverage['qunit/qunit.js'].lineData[1420]++;
     var prop = QUnit.objectType(o);
     _$jscoverage['qunit/qunit.js'].lineData[1421]++;
@@ -4539,11 +4730,14 @@ function visit1_17_1(result) {
   }
   _$jscoverage['qunit/qunit.js'].lineData[1431]++;
   var innerEquiv, callers = [], parents = [], getProto = visit194_1437_1(Object.getPrototypeOf || function(obj) {
+  _$jscoverage['qunit/qunit.js'].functionData[77]++;
   _$jscoverage['qunit/qunit.js'].lineData[1438]++;
   return obj.__proto__;
 }), callbacks = (function() {
+  _$jscoverage['qunit/qunit.js'].functionData[78]++;
   _$jscoverage['qunit/qunit.js'].lineData[1443]++;
   function useStrictEquality(b, a) {
+    _$jscoverage['qunit/qunit.js'].functionData[79]++;
     _$jscoverage['qunit/qunit.js'].lineData[1444]++;
     if (visit195_1444_1(b instanceof a.constructor || a instanceof b.constructor)) {
       _$jscoverage['qunit/qunit.js'].lineData[1449]++;
@@ -4561,24 +4755,29 @@ function visit1_17_1(result) {
   "null": useStrictEquality, 
   "undefined": useStrictEquality, 
   "nan": function(b) {
+  _$jscoverage['qunit/qunit.js'].functionData[80]++;
   _$jscoverage['qunit/qunit.js'].lineData[1463]++;
   return isNaN(b);
 }, 
   "date": function(b, a) {
+  _$jscoverage['qunit/qunit.js'].functionData[81]++;
   _$jscoverage['qunit/qunit.js'].lineData[1467]++;
   return visit198_1467_1(visit199_1467_2(QUnit.objectType(b) === "date") && visit200_1467_3(a.valueOf() === b.valueOf()));
 }, 
   "regexp": function(b, a) {
+  _$jscoverage['qunit/qunit.js'].functionData[82]++;
   _$jscoverage['qunit/qunit.js'].lineData[1471]++;
   return visit201_1471_1(visit202_1471_2(QUnit.objectType(b) === "regexp") && visit203_1473_1(visit204_1473_2(a.source === b.source) && visit205_1475_1(visit206_1475_2(a.global === b.global) && visit207_1477_1(visit208_1477_2(a.ignoreCase === b.ignoreCase) && visit209_1478_1(visit210_1478_2(a.multiline === b.multiline) && visit211_1479_1(a.sticky === b.sticky))))));
 }, 
   "function": function() {
+  _$jscoverage['qunit/qunit.js'].functionData[83]++;
   _$jscoverage['qunit/qunit.js'].lineData[1486]++;
   var caller = callers[callers.length - 1];
   _$jscoverage['qunit/qunit.js'].lineData[1487]++;
   return visit212_1487_1(visit213_1487_2(caller !== Object) && visit214_1487_3(typeof caller !== "undefined"));
 }, 
   "array": function(b, a) {
+  _$jscoverage['qunit/qunit.js'].functionData[84]++;
   _$jscoverage['qunit/qunit.js'].lineData[1491]++;
   var i, j, len, loop;
   _$jscoverage['qunit/qunit.js'].lineData[1494]++;
@@ -4621,6 +4820,7 @@ function visit1_17_1(result) {
   return true;
 }, 
   "object": function(b, a) {
+  _$jscoverage['qunit/qunit.js'].functionData[85]++;
   _$jscoverage['qunit/qunit.js'].lineData[1523]++;
   var i, j, loop, eq = true, aProperties = [], bProperties = [];
   _$jscoverage['qunit/qunit.js'].lineData[1531]++;
@@ -4672,6 +4872,7 @@ function visit1_17_1(result) {
 }());
   _$jscoverage['qunit/qunit.js'].lineData[1575]++;
   innerEquiv = function() {
+  _$jscoverage['qunit/qunit.js'].functionData[86]++;
   _$jscoverage['qunit/qunit.js'].lineData[1576]++;
   var args = [].slice.apply(arguments);
   _$jscoverage['qunit/qunit.js'].lineData[1577]++;
@@ -4681,6 +4882,7 @@ function visit1_17_1(result) {
   }
   _$jscoverage['qunit/qunit.js'].lineData[1581]++;
   return (visit235_1593_1(function(a, b) {
+  _$jscoverage['qunit/qunit.js'].functionData[87]++;
   _$jscoverage['qunit/qunit.js'].lineData[1582]++;
   if (visit236_1582_1(a === b)) {
     _$jscoverage['qunit/qunit.js'].lineData[1583]++;
@@ -4702,18 +4904,22 @@ function visit1_17_1(result) {
 }());
   _$jscoverage['qunit/qunit.js'].lineData[1609]++;
   QUnit.jsDump = (function() {
+  _$jscoverage['qunit/qunit.js'].functionData[88]++;
   _$jscoverage['qunit/qunit.js'].lineData[1610]++;
   function quote(str) {
+    _$jscoverage['qunit/qunit.js'].functionData[89]++;
     _$jscoverage['qunit/qunit.js'].lineData[1611]++;
     return '"' + str.toString().replace(/"/g, '\\"') + '"';
   }
   _$jscoverage['qunit/qunit.js'].lineData[1613]++;
   function literal(o) {
+    _$jscoverage['qunit/qunit.js'].functionData[90]++;
     _$jscoverage['qunit/qunit.js'].lineData[1614]++;
     return o + "";
   }
   _$jscoverage['qunit/qunit.js'].lineData[1616]++;
   function join(pre, arr, post) {
+    _$jscoverage['qunit/qunit.js'].functionData[91]++;
     _$jscoverage['qunit/qunit.js'].lineData[1617]++;
     var s = jsDump.separator(), base = jsDump.indent(), inner = jsDump.indent(1);
     _$jscoverage['qunit/qunit.js'].lineData[1620]++;
@@ -4731,6 +4937,7 @@ function visit1_17_1(result) {
   }
   _$jscoverage['qunit/qunit.js'].lineData[1628]++;
   function array(arr, stack) {
+    _$jscoverage['qunit/qunit.js'].functionData[92]++;
     _$jscoverage['qunit/qunit.js'].lineData[1629]++;
     var i = arr.length, ret = new Array(i);
     _$jscoverage['qunit/qunit.js'].lineData[1630]++;
@@ -4748,6 +4955,7 @@ function visit1_17_1(result) {
   _$jscoverage['qunit/qunit.js'].lineData[1638]++;
   var reName = /^function (\w+)/, jsDump = {
   parse: function(obj, type, stack) {
+  _$jscoverage['qunit/qunit.js'].functionData[93]++;
   _$jscoverage['qunit/qunit.js'].lineData[1642]++;
   stack = visit248_1642_1(stack || []);
   _$jscoverage['qunit/qunit.js'].lineData[1643]++;
@@ -4776,6 +4984,7 @@ function visit1_17_1(result) {
   return (visit252_1658_1(type == "string")) ? parser : this.parsers.error;
 }, 
   typeOf: function(obj) {
+  _$jscoverage['qunit/qunit.js'].functionData[94]++;
   _$jscoverage['qunit/qunit.js'].lineData[1661]++;
   var type;
   _$jscoverage['qunit/qunit.js'].lineData[1662]++;
@@ -4844,10 +5053,12 @@ function visit1_17_1(result) {
   return type;
 }, 
   separator: function() {
+  _$jscoverage['qunit/qunit.js'].functionData[95]++;
   _$jscoverage['qunit/qunit.js'].lineData[1693]++;
   return this.multiline ? this.HTML ? "<br />" : "\n" : this.HTML ? "&nbsp;" : " ";
 }, 
   indent: function(extra) {
+  _$jscoverage['qunit/qunit.js'].functionData[96]++;
   _$jscoverage['qunit/qunit.js'].lineData[1697]++;
   if (visit276_1697_1(!this.multiline)) {
     _$jscoverage['qunit/qunit.js'].lineData[1698]++;
@@ -4864,14 +5075,17 @@ function visit1_17_1(result) {
   return new Array(this._depth_ + (visit278_1704_1(extra || 0))).join(chr);
 }, 
   up: function(a) {
+  _$jscoverage['qunit/qunit.js'].functionData[97]++;
   _$jscoverage['qunit/qunit.js'].lineData[1707]++;
   this._depth_ += visit279_1707_1(a || 1);
 }, 
   down: function(a) {
+  _$jscoverage['qunit/qunit.js'].functionData[98]++;
   _$jscoverage['qunit/qunit.js'].lineData[1710]++;
   this._depth_ -= visit280_1710_1(a || 1);
 }, 
   setParser: function(name, parser) {
+  _$jscoverage['qunit/qunit.js'].functionData[99]++;
   _$jscoverage['qunit/qunit.js'].lineData[1713]++;
   this.parsers[name] = parser;
 }, 
@@ -4883,6 +5097,7 @@ function visit1_17_1(result) {
   window: "[Window]", 
   document: "[Document]", 
   error: function(error) {
+  _$jscoverage['qunit/qunit.js'].functionData[100]++;
   _$jscoverage['qunit/qunit.js'].lineData[1726]++;
   return "Error(\"" + error.message + "\")";
 }, 
@@ -4890,6 +5105,7 @@ function visit1_17_1(result) {
   "null": "null", 
   "undefined": "undefined", 
   "function": function(fn) {
+  _$jscoverage['qunit/qunit.js'].functionData[101]++;
   _$jscoverage['qunit/qunit.js'].lineData[1732]++;
   var ret = "function", name = "name" in fn ? fn.name : (visit281_1734_1(reName.exec(fn) || []))[1];
   _$jscoverage['qunit/qunit.js'].lineData[1736]++;
@@ -4908,6 +5124,7 @@ function visit1_17_1(result) {
   nodelist: array, 
   "arguments": array, 
   object: function(map, stack) {
+  _$jscoverage['qunit/qunit.js'].functionData[102]++;
   _$jscoverage['qunit/qunit.js'].lineData[1748]++;
   var ret = [], keys, key, val, i;
   _$jscoverage['qunit/qunit.js'].lineData[1749]++;
@@ -4936,6 +5153,7 @@ function visit1_17_1(result) {
   return join("{", ret, "}");
 }, 
   node: function(node) {
+  _$jscoverage['qunit/qunit.js'].functionData[103]++;
   _$jscoverage['qunit/qunit.js'].lineData[1764]++;
   var a, val, open = QUnit.jsDump.HTML ? "&lt;" : "<", close = QUnit.jsDump.HTML ? "&gt;" : ">", tag = node.nodeName.toLowerCase(), ret = open + tag;
   _$jscoverage['qunit/qunit.js'].lineData[1770]++;
@@ -4952,6 +5170,7 @@ function visit1_17_1(result) {
   return ret + close + open + "/" + tag + close;
 }, 
   functionArgs: function(fn) {
+  _$jscoverage['qunit/qunit.js'].functionData[104]++;
   _$jscoverage['qunit/qunit.js'].lineData[1780]++;
   var args, l = fn.length;
   _$jscoverage['qunit/qunit.js'].lineData[1783]++;
@@ -4989,6 +5208,7 @@ function visit1_17_1(result) {
 }());
   _$jscoverage['qunit/qunit.js'].lineData[1824]++;
   function getText(elems) {
+    _$jscoverage['qunit/qunit.js'].functionData[105]++;
     _$jscoverage['qunit/qunit.js'].lineData[1825]++;
     var i, elem, ret = "";
     _$jscoverage['qunit/qunit.js'].lineData[1828]++;
@@ -5012,6 +5232,7 @@ function visit1_17_1(result) {
   }
   _$jscoverage['qunit/qunit.js'].lineData[1845]++;
   function inArray(elem, array) {
+    _$jscoverage['qunit/qunit.js'].functionData[106]++;
     _$jscoverage['qunit/qunit.js'].lineData[1846]++;
     if (visit290_1846_1(array.indexOf)) {
       _$jscoverage['qunit/qunit.js'].lineData[1847]++;
@@ -5030,8 +5251,10 @@ function visit1_17_1(result) {
   }
   _$jscoverage['qunit/qunit.js'].lineData[1873]++;
   QUnit.diff = (function() {
+  _$jscoverage['qunit/qunit.js'].functionData[107]++;
   _$jscoverage['qunit/qunit.js'].lineData[1874]++;
   function diff(o, n) {
+    _$jscoverage['qunit/qunit.js'].functionData[108]++;
     _$jscoverage['qunit/qunit.js'].lineData[1875]++;
     var i, ns = {}, os = {};
     _$jscoverage['qunit/qunit.js'].lineData[1879]++;
@@ -5112,6 +5335,7 @@ function visit1_17_1(result) {
   }
   _$jscoverage['qunit/qunit.js'].lineData[1951]++;
   return function(o, n) {
+  _$jscoverage['qunit/qunit.js'].functionData[109]++;
   _$jscoverage['qunit/qunit.js'].lineData[1952]++;
   o = o.replace(/\s+$/, "");
   _$jscoverage['qunit/qunit.js'].lineData[1953]++;
@@ -5179,6 +5403,7 @@ function visit1_17_1(result) {
     extend(exports, QUnit);
   }
 }((function() {
+  _$jscoverage['qunit/qunit.js'].functionData[110]++;
   _$jscoverage['qunit/qunit.js'].lineData[2013]++;
   return this;
 }.call())));

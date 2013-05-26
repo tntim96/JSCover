@@ -66,16 +66,21 @@
     <th class="leftColumn">File</th>
     <th><abbr title="The total number of executable statements">Statements</abbr></th>
     <th><abbr title="The number of statements actually executed">Executed</abbr></th>
-    <th><abbr title="The total number of branches">Branch Paths</abbr></th>
-    <th><abbr title="The number of branches covered">Branch Paths Covered</abbr></th>
+    <th><abbr title="The total number of branches">Branches</abbr></th>
+    <th><abbr title="The number of branches covered">Branches Hit</abbr></th>
+    <th><abbr title="The total number of functions">Functions</abbr></th>
+    <th><abbr title="The number of functions covered">Functions Hit</abbr></th>
     <th><a href="javascript:jscoverage_recalculateSummaryTabBy('Coverage')"><abbr title="Number of executed statements as a percentage of total number of statements">Coverage</abbr></a></th>
     <th><a href="javascript:jscoverage_recalculateSummaryTabBy('Branch')"><abbr title="Number of executed branch paths as a percentage of total number of branch paths">Branch</abbr></a></th>
+    <th><a href="javascript:jscoverage_recalculateSummaryTabBy('Function')"><abbr title="Number of executed functions as a percentage of total number of functions">Function</abbr></a></th>
     </tr>
     <tr id="summaryTotals">
         <td class="leftColumn">
             <span class="title">Total:</span>
             <span>0</span>
         </td>
+        <td class="numeric">0</td>
+        <td class="numeric">0</td>
         <td class="numeric">0</td>
         <td class="numeric">0</td>
         <td class="numeric">0</td>
@@ -91,6 +96,12 @@
                 <div class="covered"></div>
             </div>
             <span id="branchSummaryTotal" class="pct">0%</span>
+        </td>
+        <td class="coverage">
+            <div class="pctGraph">
+                <div class="covered"></div>
+            </div>
+            <span id="functionSummaryTotal" class="pct">0%</span>
         </td>
     </tr>
 
@@ -122,7 +133,7 @@
   </div>
   <div class="TabPage">
     <p>
-    This is version 0.2.0-RC1 of JSCover, a program that calculates code
+    This is version 0.3.0 of JSCover, a program that calculates code
     coverage statistics for JavaScript.
     </p>
     <p>
