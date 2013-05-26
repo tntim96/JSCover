@@ -85,11 +85,11 @@
                     <text>
                         Run&#160;<var>example-server.bat</var>&#160;or&#160;<var>example-server.sh</var>. The contents
                         are:
-                        <code>java -jar target/dist/JSCover-all.jar -ws --branch --document-root=doc/example --report-dir=target</code>
+                        <code>java -jar target/dist/JSCover-all.jar -ws --document-root=doc/example --report-dir=target</code>
                         This will start a web server, and the JSCover interface can be loaded by going to
                         <a href="http://localhost:8080/jscoverage.html">http://localhost:8080/jscoverage.html</a>.
                         <br/>
-                        <img src="images/ws-1-browser.png"/>
+                        <imgThumb src="images/ws-1-browser.png" alt="Load JSCover" width="650"/>
                         <br/>
                         You can then enter the URL
                         <var>http://localhost:8080/index.html</var>
@@ -104,7 +104,7 @@
                         To automatically load the web-page without entering it in the URL section, got to
                         <a href="http://localhost:8080/jscoverage.html?index.html">http://localhost:8080/jscoverage.html?index.html</a>.
                         <br/>
-                        <img src="images/ws-2-browser.png"/>
+                        <imgThumb src="images/ws-2-browser.png" alt="Load Test Page" width="650"/>
                     </text>
                 </item>
                 <item>
@@ -113,7 +113,7 @@
                         Tests that exercise the JavaScript can now be run.
                         <note>As long as you do not reload the jscoverage.html page, the coverage report statistics are
                             cumulative.</note>
-                        <img src="images/ws-3-browser.png"/>
+                        <imgThumb src="images/ws-3-browser.png" alt="Run Tests" width="650"/>
                     </text>
                 </item>
                 <item>
@@ -123,12 +123,13 @@
                         <var>Summary</var>
                         tab. Note, you can change the sorting
                         order by clicking on the
-                        <var>Coverage</var>
-                        link or the
+                        <var>Coverage</var>,
                         <var>Branch</var>
-                        link:
+                        or
+                        <var>Function</var>
+                        links:
                         <br/>
-                        <img src="images/ws-4-summary.png"/>
+                        <imgThumb src="images/ws-4-summary.png" alt="Coverage Summary" width="650"/>
                     </text>
                 </item>
                 <item>
@@ -138,7 +139,7 @@
                         <var>Show missing statements column</var>
                         check-box:
                         <br/>
-                        <img src="images/ws-5-summary.png"/>
+                        <imgThumb src="images/ws-5-summary.png" alt="Uncovered Lines" width="650"/>
                     </text>
                 </item>
                 <item>
@@ -149,7 +150,7 @@
                         column (shown above) - the
                         result is shown below.
                         <br/>
-                        <img src="images/ws-6-source.png"/>
+                        <imgThumb src="images/ws-6-source.png" alt="View Source" width="650"/>
                     </text>
                 </item>
                 <item>
@@ -159,7 +160,7 @@
                         <var>info</var>
                         link.
                         <br/>
-                        <img src="images/ws-7-source.png"/>
+                        <imgThumb src="images/ws-7-source.png" alt="Uncovered Branches" width="650"/>
                     </text>
                     <text>
                         If there are multiple paths, for example:
@@ -178,7 +179,7 @@
                         <var>Store Report</var>
                         button.
                         <br/>
-                        <img src="images/ws-9-store.png"/>
+                        <imgThumb src="images/ws-9-store.png" alt="Store Report" width="650"/>
                         <br/>
                         <note>The report does not work in Google Chrome when viewed using a file: URL. Either use an
                             ordinary web server to serve the report (JSCover comes with a
@@ -238,7 +239,7 @@
                         <var>example-proxy.bat</var>
                         or
                         <var>example-proxy.sh</var>. The contents are:
-                        <code>$ java -jar target/dist/JSCover-all.jar -ws --branch --proxy --port=3128 --report-dir=target</code>
+                        <code>$ java -jar target/dist/JSCover-all.jar -ws --proxy --port=3128 --report-dir=target</code>
                     </text>
                 </item>
                 <text>
@@ -256,7 +257,7 @@
                     <var>example-filesystem.bat</var>
                     or
                     <var>example-filesystem.sh</var>. The contents are:
-                    <code>java -jar target/dist/JSCover-all.jar -fs --branch doc/example target/example</code>
+                    <code>java -jar target/dist/JSCover-all.jar -fs doc/example target/example</code>
                     This will recursively copy all the resources from
                     <var>doc/example</var>
                     to
@@ -273,7 +274,7 @@
                     You would enter something like the following in your address bar:
                     <var>file:///C:/Java/JSCover/target/example/jscoverage.html?index.html</var>
                     <br/>
-                    <img src="images/fs-1-file-system.png"/>
+                    <imgThumb src="images/fs-1-file-system.png" alt="File System" width="650"/>
                 </text>
                 <heading id="simpleWebServer">Non-Instrumenting Web Server</heading>
                 <text>
@@ -405,9 +406,14 @@
                             <td>Run in proxy mode</td>
                         </tr>
                         <tr>
-                            <td>--branch</td>
+                            <td>--no-branch</td>
                             <td>N/A</td>
-                            <td>Collect branch coverage data</td>
+                            <td>Turn off branch coverage data collection</td>
+                        </tr>
+                        <tr>
+                            <td>--no-function</td>
+                            <td>N/A</td>
+                            <td>Turn off function coverage data collection</td>
                         </tr>
                         <tr>
                             <td>--include-unloaded-js</td>
@@ -727,10 +733,10 @@
                             <imgThumb src="images/jenkins-13-summary.png" alt="Jenkins-CI Summary Report for YUI3" width="650"/>
                         </text>
                         <text>
-                            <img src="images/jenkins-14-package.png" alt="Jenkins-CI Package Report for YUI3"/>
+                            <imgThumb src="images/jenkins-14-package.png" alt="Jenkins-CI Package Report for YUI3" width="650"/>
                         </text>
                         <text>
-                            <img src="images/jenkins-15-file.png" alt="Jenkins-CI File Report for YUI3"/>
+                            <imgThumb src="images/jenkins-15-file.png" alt="Jenkins-CI File Report for YUI3" width="650"/>
                         </text>
                     </item>
                     <item>
@@ -757,6 +763,9 @@
                     <item>
                         <heading id="lcov">LCOV</heading>
                         <text>
+                            <code>java -cp JSCover-all.jar jscover.report.Main --format=LCOV REPORT-DIR SRC-DIRECTORY</code>
+                        </text>
+                        <text>
                             LCOV can be used to generate a HTML coverage report that includes both lines and branch
                             statistics.
                         </text>
@@ -776,10 +785,10 @@
                             correct path in the LCOV file (i.e.&#160;<var>c:/js/yui3/build/yui/yui.js</var>).
                         </text>
                         <text>
-                            <img src="images/lcov-11-summary.png" alt="LCov Summary Report for YUI3"/>
+                            <imgThumb src="images/lcov-11-summary.png" alt="LCov Summary Report for YUI3" width="650"/>
                         </text>
                         <text>
-                            <img src="images/lcov-12-file.png" alt="LCov File Report for YUI3"/>
+                            <imgThumb src="images/lcov-12-file.png" alt="LCov File Report for YUI3" width="650"/>
                             <br/>
                         </text>
                     </item>
@@ -928,6 +937,11 @@
                             <td>N/A</td>
                         </tr>
                         <tr>
+                            <td>Function Coverage Total</td>
+                            <td>functionSummaryTotal</td>
+                            <td>N/A</td>
+                        </tr>
+                        <tr>
                             <td>Storage tab</td>
                             <td>storeTab</td>
                             <td>N/A</td>
@@ -1015,7 +1029,6 @@
          &lt;java jar="JSCover-all.jar" fork="true" spawn="true"&gt;
             &lt;arg value="-ws"/&gt;
             &lt;arg value="--document-root=src"/&gt;
-            &lt;arg value="--branch"/&gt;
             &lt;arg value="--report-dir=${jscover.dir}"/&gt;
             &lt;arg value="--no-instrument=src/main/webapp/js/lib"/&gt;
             &lt;arg value="--no-instrument=src/test/"/&gt;
@@ -1098,6 +1111,39 @@ var y = visit1_2_1(x > 0) ? 1 : 0;</code>
                         returns that same result to the main calling code.
                     </text>
                 </item>
+                <item>
+                    <heading id="functionInstrumentation">Function</heading>
+                    <text>
+                        A function coverage example:
+<code>function square(x) {
+    return x*x;
+}
+</code>
+                        ...becomes...
+<code>//...header code above
+if (! _$jscoverage['test.js']) {
+    _$jscoverage['test.js'] = {};
+    _$jscoverage['test.js'].lineData = [];
+    _$jscoverage['test.js'].lineData[1] = 0;
+    _$jscoverage['test.js'].lineData[2] = 0;
+}
+if (! _$jscoverage['test.js'].functionData) {
+    _$jscoverage['test.js'].functionData = [];
+    _$jscoverage['test.js'].functionData[0] = 0;
+}
+if (! _$jscoverage['test.js'].branchData) {
+    _$jscoverage['test.js'].branchData = [];
+}
+_$jscoverage['test.js'].lineData[1]++;
+function square(x) {
+    _$jscoverage['test.js'].functionData[0]++;
+    _$jscoverage['test.js'].lineData[2]++;
+    return x * x;
+}</code>
+                        Each function receives an index into the coverage array, the
+                        value of which is incremented each time the function is entered.
+                    </text>
+                </item>
             </item>
         </section>
     </item>
@@ -1161,6 +1207,7 @@ var y = visit1_2_1(x > 0) ? 1 : 0;</code>
 <code>{"/path/file1.js":
     {
       "lineData":[null,1,1,1],       //Each element represents a line. Value is number of times executed.
+      "functionData":[4,7,0],        //Each element represents a function. Value is number of times executed.
       "branchData":[
             null,                    //Each element represents a line. See below for value.
             null,
@@ -1185,11 +1232,16 @@ var y = visit1_2_1(x > 0) ? 1 : 0;</code>
                         <table>
                             <tr>
                                 <th>Feature</th>
-                                <th>JSCover (0.2.7)</th>
+                                <th>JSCover (0.3.0)</th>
                                 <th>JSCoverage (0.5.1)</th>
                             </tr>
                             <tr>
                                 <td>Branch Coverage</td>
+                                <td class="tick"></td>
+                                <td class="cross"></td>
+                            </tr>
+                            <tr>
+                                <td>Function Coverage</td>
                                 <td class="tick"></td>
                                 <td class="cross"></td>
                             </tr>

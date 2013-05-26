@@ -1,16 +1,22 @@
+function getMessage(number) {
+    return 'You selected the number '+number+'.';
+}
+function getMessage4() {
+    return 'You selected the number 4.';
+}
 function go(element) {
   var message;
   if (element.id === 'radio1') {
     message = 'You selected the number 1.';
   }
   else if (element.id === 'radio2') {
-    message = 'You selected the number 2.';
+    message = getMessage(2);
   }
   else if (element.id === 'radio3') {
-    message = 'You selected the number 3.';
+    message = getMessage(3);
   }
   else if (element.id === 'radio4') {
-    message = 'You selected the number 4.';
+    message = getMessage4();
   }
   var div = document.getElementById('request');
   div.className = 'black';
