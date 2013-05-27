@@ -406,7 +406,7 @@ public class Main {
             data[i] = ioUtils.loadFromFileSystem(dataFile);
         }
         SortedMap<String, FileData> mergedMap = jsonDataMerger.mergeJSONCoverageStrings(data);
-        ioUtils.mkdirs(config.getMergeDestDir());
+        config.getMergeDestDir().mkdirs();
         File mergedJson = new File(config.getMergeDestDir(), "jscoverage.json");
         ioUtils.copy(jsonDataMerger.toJSON(mergedMap), mergedJson);
 

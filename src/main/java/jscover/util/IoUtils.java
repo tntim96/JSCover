@@ -594,8 +594,4 @@ public class IoUtils {
         else
             ioUtils.copy(src, dest);
     }
-
-    public void mkdirs(File dir) {
-        dir.mkdirs();
-    }
 }
