@@ -352,6 +352,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -431,6 +432,7 @@ public class HtmlServerUnloadedJSTest {
     }
 
     private void verifyCoverage(HtmlPage page, String uri, int percentage) {
-        assertThat(page.getElementById("row-" + uri).getLastChild().getPreviousSibling().getPreviousSibling().getTextContent(), equalTo(percentage + "%"));
+        HtmlElement actual = (HtmlElement)((ArrayList) page.getByXPath("//tr[@id='row-" + uri + "']/td[8]/span")).get(0);
+        assertThat(actual.getTextContent(), equalTo(percentage + "%"));
     }
 }

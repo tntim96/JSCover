@@ -3,6 +3,7 @@
   * Add function coverage https://github.com/tntim96/JSCover/issues/61
   * Include branch coverage by default. Replace '--branch' switch with '--no-branch'
   * Remove instrumentation code from branch data source
+  * Make 'jscoverage.html' XHTML compliant
   * Website - handle direct links to HTML pages
 
 0.2.7 / 2013-04-15
