@@ -354,7 +354,7 @@ public class JSONDataSaver {
     private IoUtils ioUtils = IoUtils.getInstance();
     private Logger logger = Logger.getInstance();
 
-    public void saveJSONData(File reportDir, String data, List<ScriptLinesAndSource> unloadJSData) {
+    public void saveJSONData(File reportDir, String data, List<ScriptCoverageCount> unloadJSData) {
         try {
             lockOnReportDir(reportDir);
             reportDir.mkdirs();

@@ -338,34 +338,40 @@ proprietary programs.  If your program is a subroutine library, you may
 consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
- */
+*/
 
-package jscover.instrument;
+package jscover.report;
 
-import org.mozilla.javascript.CompilerEnvirons;
-import org.mozilla.javascript.Parser;
-import org.mozilla.javascript.ast.AstNode;
-import org.mozilla.javascript.ast.NodeVisitor;
-
+import java.util.List;
+import java.util.SortedMap;
 import java.util.SortedSet;
-import java.util.TreeSet;
 
-public class LineCountNodeVisitor implements NodeVisitor {
-    private CompilerEnvirons compilerEnv;
-    private SortedSet<Integer> validLines = new TreeSet<Integer>();
+public class ScriptCoverageCount {
+    private String uri;
+    private List<Integer> lines;
+    private int functionCount;
+    private SortedMap<Integer, SortedSet<Integer>> branchData;
 
-    public LineCountNodeVisitor(CompilerEnvirons compilerEnv) {
-        this.compilerEnv = compilerEnv;
+    public ScriptCoverageCount(String uri, List<Integer> lines, int functionCount, SortedMap<Integer, SortedSet<Integer>> branchData) {
+        this.uri = uri;
+        this.lines = lines;
+        this.functionCount = functionCount;
+        this.branchData = branchData;
     }
 
-    public SortedSet<Integer> getCodeLines(String source) {
-        Parser parser = new Parser(compilerEnv);
-        parser.parse(source, null, 1).visitAll(this);
-        return validLines;
+    public String getUri() {
+        return uri;
     }
 
-    public boolean visit(AstNode node) {
-        validLines.add(node.getLineno());
-        return true;
+    public List<Integer> getLines() {
+        return lines;
+    }
+
+    public int getFunctionCount() {
+        return functionCount;
+    }
+
+    public SortedMap<Integer, SortedSet<Integer>> getBranchData() {
+        return branchData;
     }
 }

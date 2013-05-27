@@ -1,3 +1,5 @@
 var z = 0;
-if (z > 0)
-    z--;
+function fn(z) {
+    if (z > 0)
+        z--;
+}

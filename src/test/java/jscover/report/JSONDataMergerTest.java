@@ -345,9 +345,7 @@ package jscover.report;
 import jscover.util.IoUtils;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.SortedMap;
+import java.util.*;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -468,8 +466,9 @@ public class JSONDataMergerTest {
     @Test
     public void shouldGenerateEmptyCoverageJSONString() {
         List<Integer> lines = new ArrayList<Integer>(){{add(1);add(2);add(3);}};
-        final ScriptLinesAndSource script = new ScriptLinesAndSource("/test.js", lines);
-        SortedMap<String, FileData> map = jsonMerger.createEmptyJSON(new ArrayList<ScriptLinesAndSource>(){{add(script);}});
+        SortedMap<Integer, SortedSet<Integer>> branchData = new TreeMap<Integer, SortedSet<Integer>>();
+        final ScriptCoverageCount script = new ScriptCoverageCount("/test.js", lines, 0, branchData);
+        SortedMap<String, FileData> map = jsonMerger.createEmptyJSON(new ArrayList<ScriptCoverageCount>(){{add(script);}});
 
         assertThat(map.keySet().iterator().next(), equalTo("/test.js"));
         assertThat(map.values().iterator().next().getLines().get(0), nullValue());
@@ -481,13 +480,51 @@ public class JSONDataMergerTest {
     @Test
     public void shouldGenerateEmptyCoverageJSONStringWithComments() {
         List<Integer> lines = new ArrayList<Integer>(){{add(1);add(3);}};
-        final ScriptLinesAndSource script = new ScriptLinesAndSource("/test.js", lines);
-        SortedMap<String, FileData> map = jsonMerger.createEmptyJSON(new ArrayList<ScriptLinesAndSource>(){{add(script);}});
+        final ScriptCoverageCount script = new ScriptCoverageCount("/test.js", lines, 0, new TreeMap<Integer, SortedSet<Integer>>());
+        SortedMap<String, FileData> map = jsonMerger.createEmptyJSON(new ArrayList<ScriptCoverageCount>(){{add(script);}});
 
         assertThat(map.keySet().iterator().next(), equalTo("/test.js"));
         assertThat(map.values().iterator().next().getLines().get(0), nullValue());
         assertThat(map.values().iterator().next().getLines().get(1), equalTo(0));
         assertThat(map.values().iterator().next().getLines().get(2), nullValue());
         assertThat(map.values().iterator().next().getLines().get(3), equalTo(0));
+    }
+
+    @Test
+    public void shouldGenerateEmptyCoverageJSONStringWithFunctions() {
+        List<Integer> lines = new ArrayList<Integer>(){{add(1);add(3);}};
+        final ScriptCoverageCount script = new ScriptCoverageCount("/test.js", lines, 4, new TreeMap<Integer, SortedSet<Integer>>());
+        SortedMap<String, FileData> map = jsonMerger.createEmptyJSON(new ArrayList<ScriptCoverageCount>(){{add(script);}});
+
+        assertThat(map.keySet().iterator().next(), equalTo("/test.js"));
+        assertThat(map.values().iterator().next().getFunctions().size(), equalTo(4));
+        assertThat(map.values().iterator().next().getFunctions().get(0), equalTo(0));
+        assertThat(map.values().iterator().next().getFunctions().get(1), equalTo(0));
+        assertThat(map.values().iterator().next().getFunctions().get(2), equalTo(0));
+        assertThat(map.values().iterator().next().getFunctions().get(3), equalTo(0));
+    }
+
+    @Test
+    public void shouldGenerateEmptyCoverageJSONStringWithBranchData() {
+        List<Integer> lines = new ArrayList<Integer>(){{add(1);add(3);}};
+        TreeMap<Integer, SortedSet<Integer>> branchData = new TreeMap<Integer, SortedSet<Integer>>();
+        branchData.put(12, new TreeSet<Integer>(){{add(1);add(2);}});
+        final ScriptCoverageCount script = new ScriptCoverageCount("/test.js", lines, 4, branchData);
+        SortedMap<String, FileData> map = jsonMerger.createEmptyJSON(new ArrayList<ScriptCoverageCount>(){{add(script);}});
+
+        assertThat(map.keySet().iterator().next(), equalTo("/test.js"));
+        List<List<BranchData>> branchMap = map.values().iterator().next().getBranchData();
+        assertThat(branchMap.size(), equalTo(13));
+        assertThat(branchMap.get(5).size(), equalTo(0));
+        assertThat(branchMap.get(12).size(), equalTo(3));
+        assertThat(branchMap.get(12).get(0), nullValue());
+        checkCondition(branchMap, 1);
+        checkCondition(branchMap, 2);
+    }
+
+    private void checkCondition(List<List<BranchData>> branchMap, int index) {
+        assertThat(branchMap.get(12).get(index).getEvalFalse(), equalTo(0));
+        assertThat(branchMap.get(12).get(index).getEvalTrue(), equalTo(0));
+        assertThat(branchMap.get(12).get(index).getSource(), equalTo("No conditions are covered"));
     }
 }

@@ -466,7 +466,7 @@ public class JSONDataSaverTest {
 
     @Test
     public void shouldSaveAndIncludeUnloadedJS() {
-        List<ScriptLinesAndSource> unloadJSData = new ArrayList<ScriptLinesAndSource>();
+        List<ScriptCoverageCount> unloadJSData = new ArrayList<ScriptCoverageCount>();
 
         SortedMap<String, FileData> jsonMap = new TreeMap<String, FileData>();
         final String loadedKey = "/loaded.js";

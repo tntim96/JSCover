@@ -353,7 +353,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsCollectionContaining.hasItem;
 
-public class LineCountNodeVisitorTest {
+public class CoverageCountNodeVisitorTest {
     private static CompilerEnvirons compilerEnv = new CompilerEnvirons();
     static {
         // compilerEnv.setAllowMemberExprAsFunctionName(true);
@@ -361,17 +361,18 @@ public class LineCountNodeVisitorTest {
         compilerEnv.setStrictMode(false);
     }
 
-    private LineCountNodeVisitor visitor;
+    private CoverageCountNodeVisitor visitor;
 
     @Before
     public void setUp() {
-        visitor = new LineCountNodeVisitor(compilerEnv);
+        visitor = new CoverageCountNodeVisitor(compilerEnv, true, true);
     }
 
     @Test
     public void shouldIncludeStatements() {
         String source = "var x,y;\nx = 1;\ny = x * 1;";
-        SortedSet<Integer> validLines = visitor.getCodeLines(source);
+        visitor.processSource(source);
+        SortedSet<Integer> validLines = visitor.getValidLines();
         assertThat(validLines.size(), equalTo(3));
         assertThat(validLines, hasItem(1));
         assertThat(validLines, hasItem(2));
@@ -381,7 +382,8 @@ public class LineCountNodeVisitorTest {
     @Test
     public void shouldExcludeLineComments() {
         String source = "var x,y;\n//x = 1;\ny = x * 1;";
-        SortedSet<Integer> validLines = visitor.getCodeLines(source);
+        visitor.processSource(source);
+        SortedSet<Integer> validLines = visitor.getValidLines();
         assertThat(validLines.size(), equalTo(2));
         assertThat(validLines, hasItem(1));
         assertThat(validLines, hasItem(3));
@@ -390,9 +392,42 @@ public class LineCountNodeVisitorTest {
     @Test
     public void shouldExcludeBlockComments() {
         String source = "var x,y;\n/*\nx = 1;\n*/\ny = x * 1;";
-        SortedSet<Integer> validLines = visitor.getCodeLines(source);
+        visitor.processSource(source);
+        SortedSet<Integer> validLines = visitor.getValidLines();
         assertThat(validLines.size(), equalTo(2));
         assertThat(validLines, hasItem(1));
         assertThat(validLines, hasItem(5));
+    }
+
+    @Test
+    public void shouldCountFunctions() {
+        String source = "function f1(){;}; function f2(){;}";
+        visitor.processSource(source);
+        assertThat(visitor.getFunctionNumber(), equalTo(2));
+    }
+
+    @Test
+    public void shouldNotCountFunctions() {
+        visitor = new CoverageCountNodeVisitor(compilerEnv, false, false);
+        String source = "function f1(){;}; function f2(){;}";
+        visitor.processSource(source);
+        assertThat(visitor.getFunctionNumber(), equalTo(0));
+    }
+
+    @Test
+    public void shouldCountBranches() {
+        String source = "var x = x==null? '' : x";
+        visitor.processSource(source);
+        assertThat(visitor.getLineConditionMap().size(), equalTo(1));
+        assertThat(visitor.getLineConditionMap().get(1).size(), equalTo(1));
+        assertThat(visitor.getLineConditionMap().get(1).first(), equalTo(1));
+    }
+
+    @Test
+    public void shouldNotCountBranches() {
+        visitor = new CoverageCountNodeVisitor(compilerEnv, false, false);
+        String source = "var x = x==null? '' : x";
+        visitor.processSource(source);
+        assertThat(visitor.getLineConditionMap().size(), equalTo(0));
     }
 }

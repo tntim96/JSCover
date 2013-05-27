@@ -518,17 +518,46 @@ public class JSONDataMerger {
         }
     }
 
-    public SortedMap<String, FileData> createEmptyJSON(List<ScriptLinesAndSource> scripts) {
+    public SortedMap<String, FileData> createEmptyJSON(List<ScriptCoverageCount> scripts) {
         SortedMap<String, FileData> map = new TreeMap<String, FileData>();
-        for (ScriptLinesAndSource script : scripts) {
-            Integer[] lines = new Integer[script.getLines().get(script.getLines().size() - 1) + 1];
-            for (int i = 0; i < script.getLines().size(); i++) {
-                lines[script.getLines().get(i)] = 0;
-            }
-            List<List<BranchData>> branchLineArray = new ArrayList<List<BranchData>>();
-            FileData coverageData = new FileData(script.getUri(), Arrays.asList(lines), new ArrayList<Integer>(), branchLineArray);
+        for (ScriptCoverageCount script : scripts) {
+            List<Integer> codeLines = script.getLines();
+            FileData coverageData = new FileData(script.getUri(), getNoHitLineData(codeLines), getNoHitFunctionData(script.getFunctionCount()), getNoHitBranchData(script.getBranchData()));
             map.put(script.getUri(), coverageData);
         }
         return map;
+    }
+
+    private List<Integer> getNoHitLineData(List<Integer> codeLines) {
+        Integer[] lines = new Integer[codeLines.get(codeLines.size() - 1) + 1];
+        for (int i = 0; i < codeLines.size(); i++) {
+            lines[codeLines.get(i)] = 0;
+        }
+        return Arrays.asList(lines);
+    }
+
+    private List<Integer> getNoHitFunctionData(int functionCount) {
+        ArrayList<Integer> functionData = new ArrayList<Integer>();
+        for (int i = 0; i < functionCount; i++)
+            functionData.add(0);
+        return functionData;
+    }
+
+    private List<List<BranchData>> getNoHitBranchData(SortedMap<Integer, SortedSet<Integer>> branchMap) {
+        List<List<BranchData>> branchData = new ArrayList<List<BranchData>>();
+        if (branchMap.size() == 0)
+            return branchData;
+
+        for (int i = 0; i <= branchMap.lastKey(); i++) {
+            List<BranchData> list = new ArrayList<BranchData>();
+            branchData.add(i, list);
+            if (branchMap.containsKey(i))
+                for (int j = 0; j <= branchMap.get(i).last(); j++)
+                    if (branchMap.get(i).contains(j))
+                        list.add(new BranchData(0, 0, "No conditions are covered", 0, 0));
+                    else
+                        list.add(null);
+        }
+        return branchData;
     }
 }

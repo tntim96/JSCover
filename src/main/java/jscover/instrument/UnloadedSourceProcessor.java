@@ -342,7 +342,7 @@ Public License instead of this License.
 
 package jscover.instrument;
 
-import jscover.report.ScriptLinesAndSource;
+import jscover.report.ScriptCoverageCount;
 import jscover.server.ConfigurationForServer;
 import jscover.util.FileScanner;
 import jscover.util.IoUtils;
@@ -352,7 +352,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.SortedSet;
 
 public class UnloadedSourceProcessor {
     private ConfigurationForServer config;
@@ -365,15 +364,15 @@ public class UnloadedSourceProcessor {
         this.config = config;
     }
 
-    public List<ScriptLinesAndSource> getEmptyCoverageData(Set<String> urisAlreadyProcessed) {
-        List<ScriptLinesAndSource> scripts = new ArrayList<ScriptLinesAndSource>();
+    public List<ScriptCoverageCount> getEmptyCoverageData(Set<String> urisAlreadyProcessed) {
+        List<ScriptCoverageCount> scripts = new ArrayList<ScriptCoverageCount>();
         for (File file: fileScanner.getFiles(urisAlreadyProcessed)) {
-                LineCountNodeVisitor visitor = new LineCountNodeVisitor(config.getCompilerEnvirons());
-                String uri = ioUtils.getRelativePath(file, config.getDocumentRoot());
-                String source = ioUtils.loadFromFileSystem(file);
+            CoverageCountNodeVisitor visitor = new CoverageCountNodeVisitor(config.getCompilerEnvirons(), config.isIncludeFunction(), config.isIncludeBranch());
+            String uri = ioUtils.getRelativePath(file, config.getDocumentRoot());
+            String source = ioUtils.loadFromFileSystem(file);
             try {
-                SortedSet<Integer> codeLines = visitor.getCodeLines(source);
-                ScriptLinesAndSource script = new ScriptLinesAndSource("/"+uri, new ArrayList<Integer>(codeLines));
+                visitor.processSource(source);
+                ScriptCoverageCount script = new ScriptCoverageCount("/"+uri, new ArrayList<Integer>(visitor.getValidLines()), visitor.getFunctionNumber(), visitor.getLineConditionMap());
                 scripts.add(script);
             } catch (RuntimeException t) {
                 logger.log(String.format("Problem parsing %s", uri), t);

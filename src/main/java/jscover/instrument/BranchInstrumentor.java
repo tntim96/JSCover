@@ -356,6 +356,7 @@ public class BranchInstrumentor implements NodeVisitor {
 
     private static int functionId = 1;
     private BranchStatementBuilder branchStatementBuilder = new BranchStatementBuilder();
+    private BranchHelper branchHelper = BranchHelper.getInstance();
     private Set<PostProcess> postProcesses = new HashSet<PostProcess>();
     private String uri;
     private AstRoot astRoot;
@@ -478,39 +479,10 @@ public class BranchInstrumentor implements NodeVisitor {
     }
 
     public boolean visit(AstNode node) {
-        if (isBoolean(node)) {
+        if (branchHelper.isBoolean(node)) {
             replaceWithFunction(node);
         }
         return true;
-    }
-
-    private boolean isBoolean(AstNode node) {
-        switch (node.getType()) {
-            case Token.EQ:
-            case Token.NE:
-            case Token.LT:
-            case Token.LE:
-            case Token.GT:
-            case Token.GE:
-            case Token.SHEQ:
-            case Token.SHNE:
-            case Token.OR:
-            case Token.AND:
-                return true;
-        }
-        if (node.getParent() instanceof IfStatement) {
-            return wrapNonInfixIfCondition((IfStatement)node.getParent(), node);
-        }
-        return false;
-    }
-
-    private boolean wrapNonInfixIfCondition(IfStatement parent, AstNode node) {
-        if (parent.getCondition() != node)
-            return false;
-        else if (node instanceof ParenthesizedExpression)
-            return false;
-        else
-            return true;
     }
 
     public int getLinePosition(AstNode node) {

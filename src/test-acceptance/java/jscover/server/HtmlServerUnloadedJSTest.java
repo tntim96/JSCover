@@ -388,7 +388,7 @@ public class HtmlServerUnloadedJSTest {
             });
             server.start();
         }
-        webClient.setTimeout(30000);
+        webClient.getOptions().setTimeout(30000);
     }
 
 
@@ -404,8 +404,8 @@ public class HtmlServerUnloadedJSTest {
         webClient.waitForBackgroundJavaScript(2000);
         assertEquals("77%", page.getElementById("summaryTotal").getTextContent());
 
-        verifyCoverage(page, "/root.js", 80);
-        verifyCoverage(page, "/level1/level1.js", 75);
+        verifyCoverage(page, "/root.js", "80%", "50%", "100%");
+        verifyCoverage(page, "/level1/level1.js", "75%", "50%", "N/A");
 
 
         page.getHtmlElementById("storeTab").click();
@@ -422,17 +422,23 @@ public class HtmlServerUnloadedJSTest {
         assertThat(json, containsString("/level1/level2/level2.js"));
 
         String url = "file:///" + new File(reportDir + "/jscoverage.html").getAbsolutePath();
-        System.out.println("url = " + url);
         page = webClient.getPage(url);
         webClient.waitForBackgroundJavaScript(1000);
-        assertEquals("58%", page.getElementById("summaryTotal").getTextContent());
-        verifyCoverage(page, "/root.js", 80);
-        verifyCoverage(page, "/level1/level1.js", 75);
-        verifyCoverage(page, "/level1/level2/level2.js", 0);
+        assertEquals("53%", page.getElementById("summaryTotal").getTextContent());
+        assertEquals("33%", page.getElementById("branchSummaryTotal").getTextContent());
+        assertEquals("50%", page.getElementById("functionSummaryTotal").getTextContent());
+        verifyCoverage(page, "/root.js", "80%", "50%", "100%");
+        verifyCoverage(page, "/level1/level1.js", "75%", "50%", "N/A");
+        verifyCoverage(page, "/level1/level2/level2.js", "0%", "0%", "0%");
     }
 
-    private void verifyCoverage(HtmlPage page, String uri, int percentage) {
-        HtmlElement actual = (HtmlElement)((ArrayList) page.getByXPath("//tr[@id='row-" + uri + "']/td[8]/span")).get(0);
-        assertThat(actual.getTextContent(), equalTo(percentage + "%"));
+    private void verifyCoverage(HtmlPage page, String uri, String linePercentage, String branchPercentage, String functionPercentage) {
+        assertThat(getHtmlElement(page, "//tr[@id='row-" + uri + "']/td[8]/span").getTextContent(), equalTo(linePercentage));
+        assertThat(getHtmlElement(page, "//tr[@id='row-" + uri + "']/td[9]/span").getTextContent(), equalTo(branchPercentage));
+        assertThat(getHtmlElement(page, "//tr[@id='row-" + uri + "']/td[10]/span").getTextContent(), equalTo(functionPercentage));
+    }
+
+    private HtmlElement getHtmlElement(HtmlPage page, String xpathExpr) {
+        return (HtmlElement)((ArrayList) page.getByXPath(xpathExpr)).get(0);
     }
 }

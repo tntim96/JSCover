@@ -346,7 +346,7 @@ import jscover.Main;
 import jscover.instrument.InstrumenterService;
 import jscover.instrument.UnloadedSourceProcessor;
 import jscover.report.JSONDataSaver;
-import jscover.report.ScriptLinesAndSource;
+import jscover.report.ScriptCoverageCount;
 import jscover.util.IoService;
 import jscover.util.Logger;
 
@@ -387,10 +387,10 @@ public class InstrumentingRequestHandler extends HttpServer {
                 reportDir = new File(reportDir, uri.substring(JSCOVERAGE_STORE.length()));
             }
             try {
-                List<ScriptLinesAndSource> unloadJSData = null;
+                List<ScriptCoverageCount> unloadJSData = null;
                 if (configuration.isIncludeUnloadedJS()) {
                     unloadJSData = unloadedSourceProcessor.getEmptyCoverageData(uris.keySet());
-                    for (ScriptLinesAndSource scriptLinesAndSource : unloadJSData) {
+                    for (ScriptCoverageCount scriptLinesAndSource : unloadJSData) {
                         File src = new File(configuration.getDocumentRoot(), scriptLinesAndSource.getUri());
                         ioUtils.copy(src, new File(reportDir, Main.reportSrcSubDir + scriptLinesAndSource.getUri()));
                     }
