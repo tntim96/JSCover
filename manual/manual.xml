@@ -1058,6 +1058,14 @@
     &lt;/target&gt;</code>
                 </text>
             </item>
+            <item>
+                <heading id="automatingJenkins">Jenkins</heading>
+                <text>
+                    When using JSCover in server mode, try using Jenkin's
+                    <a href="https://wiki.jenkins-ci.org/display/JENKINS/Port+Allocator+Plugin" target="_blank">Port Allocator Plugin</a>
+                    with the <var>--port</var> switch to avoid port allocation problems.
+                </text>
+            </item>
         </section>
     </item>
     <item>
