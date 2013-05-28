@@ -1,6 +1,6 @@
-0.3.0 / 2013-??-??
+0.3.0 / 2013-05-28
 ==================
-  * Add function coverage https://github.com/tntim96/JSCover/issues/61
+  * Add function coverage (https://github.com/tntim96/JSCover/issues/61)
   * Include branch and function statistics from unloaded JavaScript (https://github.com/tntim96/JSCover/issues/63)
   * Include branch coverage by default. Replace '--branch' switch with '--no-branch'
   * Remove instrumentation code from branch data source
