@@ -539,6 +539,16 @@
                             <td>Same as '--exclude=PATH', except PATH is interpreted as a regular expression</td>
                         </tr>
                         <tr>
+                            <td>--no-branch</td>
+                            <td>N/A</td>
+                            <td>Turn off branch coverage data collection</td>
+                        </tr>
+                        <tr>
+                            <td>--no-function</td>
+                            <td>N/A</td>
+                            <td>Turn off function coverage data collection</td>
+                        </tr>
+                        <tr>
                             <td>--js-version=VERSION</td>
                             <td>1.5</td>
                             <td>
