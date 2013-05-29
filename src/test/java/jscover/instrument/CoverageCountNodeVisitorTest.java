@@ -416,17 +416,31 @@ public class CoverageCountNodeVisitorTest {
 
     @Test
     public void shouldCountBranches() {
-        String source = "var x = x==null? '' : x";
+        String source = "var x = x==null? '' : x;";
         visitor.processSource(source);
         assertThat(visitor.getLineConditionMap().size(), equalTo(1));
         assertThat(visitor.getLineConditionMap().get(1).size(), equalTo(1));
-        assertThat(visitor.getLineConditionMap().get(1).first(), equalTo(1));
+    }
+
+    @Test
+    public void shouldCountMultipleBranchesOnALine() {
+        String source = "var x = x==null? '' : x || y;";
+        visitor.processSource(source);
+        assertThat(visitor.getLineConditionMap().size(), equalTo(1));
+        assertThat(visitor.getLineConditionMap().get(1).size(), equalTo(2));
+    }
+
+    @Test
+    public void shouldCountZeroBranches() {
+        String source = "var x = 0;";
+        visitor.processSource(source);
+        assertThat(visitor.getLineConditionMap().size(), equalTo(0));
     }
 
     @Test
     public void shouldNotCountBranches() {
         visitor = new CoverageCountNodeVisitor(compilerEnv, false, false);
-        String source = "var x = x==null? '' : x";
+        String source = "var x = x==null? '' : x;";
         visitor.processSource(source);
         assertThat(visitor.getLineConditionMap().size(), equalTo(0));
     }
