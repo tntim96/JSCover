@@ -9,7 +9,7 @@ http://github.com/tntim96/rhino/
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>jscover</groupId>
-    <artifactId>JSCover-all</artifactId>
+    <artifactId>JSCover</artifactId>
     <packaging>jar</packaging>
     <name>JSCover</name>
     <version>0.3.0</version>
