@@ -5,13 +5,35 @@
 	<property file="build.properties" />
 	<property file="src/main/resources/jscover/configuration.properties" />
 
+    <!-- Initialize Maven task. Allows Java dependencies to be managed in pom.xml -->
+    <target name="mvn-init" unless="compile.classpath" xmlns:artifact="urn:maven-artifact-ant">
+        <typedef resource="org/apache/maven/artifact/ant/antlib.xml" uri="urn:maven-artifact-ant"
+                 classpath="lib/maven-ant-tasks.jar"/>
+        <condition property="maven.repo.local" value="${maven.repo.local}" else="${user.home}/.m2/repository">
+            <isset property="maven.repo.local"/>
+        </condition>
+        <echo>maven.repo.local=${maven.repo.local}</echo>
+        <artifact:localRepository id="local.repository" path="${maven.repo.local}"/>
+        <artifact:pom file="pom.xml" id="maven.project"/>
+        <artifact:dependencies pathId="compile.classpath" filesetId="compile.fileset" useScope="compile">
+            <pom refid="maven.project"/>
+            <localRepository refid="local.repository"/>
+        </artifact:dependencies>
+        <artifact:dependencies pathId="test.classpath" filesetId="test.fileset" useScope="test">
+            <pom refid="maven.project"/>
+            <localRepository refid="local.repository"/>
+        </artifact:dependencies>
+        <artifact:dependencies pathId="runtime.classpath" filesetId="runtime.fileset" useScope="runtime">
+            <pom refid="maven.project"/>
+            <localRepository refid="local.repository"/>
+        </artifact:dependencies>
+    </target>
+
 	<path id="classpath-main">
 		<pathelement path="${classes.main.dir}" />
 		<pathelement path="${classes.test-unit.dir}" />
 		<pathelement path="${classes.test-integration.dir}" />
 		<pathelement path="${classes.test-acceptance.dir}" />
-		<fileset dir="${lib.build.dir}" includes="**/*.jar" />
-		<fileset dir="${lib.run.dir}" includes="*.jar" />
 	</path>
 
 	<path id="classpath-cobertura">
@@ -20,25 +42,14 @@
 		<pathelement path="${classes.test-unit.dir}" />
 		<pathelement path="${classes.test-integration.dir}" />
 		<pathelement path="${classes.test-acceptance.dir}" />
-		<fileset dir="${lib.build.dir}" includes="**/*.jar" />
-		<fileset dir="${lib.run.dir}" includes="*.jar" />
 	</path>
-
-	<path id="classpath-htmlunit">
-        <fileset dir="${html.unit.dir}/lib">
-            <include name="*.jar"/>
-        </fileset>
-    </path>
 
 	<target name="clean">
 		<delete dir="target" />
 		<delete file="cobertura.ser" />
 	</target>
 
-	<target name="init">
-        <available file="${html.unit.dir}" type="dir" property="htmlUnitPresent"/>
-        <fail unless="htmlUnitPresent" message="Please download HTMLUnit and extract to '${html.unit.dir}'"/>
-	</target>
+	<target name="init" depends="mvn-init"/>
 
 	<target name="dirsetup">
 		<mkdir dir="${build.dir}" />
@@ -59,7 +70,7 @@
 
 	<target name="compile" depends="init, dirsetup">
 		<javac includeantruntime="false" debug="true" srcdir="${src.main.dir}" destdir="${classes.main.dir}"
-               classpathref="classpath-main" source="1.5" target="1.5"/>
+               classpathref="compile.classpath" source="1.5" target="1.5"/>
 		<copy todir="${classes.main.dir}" includeemptydirs="no">
 			<fileset dir="${src.resources.dir}" />
 		</copy>
@@ -118,8 +129,8 @@
         </zip>
     </target>
 
-    <taskdef classpathref="classpath-cobertura" resource="tasks.properties" />
 	<target name="cobertura-setup" depends="compile">
+        <taskdef classpathref="test.classpath" resource="tasks.properties" />
 		<delete file="cobertura.ser" failonerror="false" />
 		<cobertura-instrument todir="${classes.instrumented.dir}">
 			<ignore regex="org.apache.log4j.*" />
@@ -156,7 +167,13 @@
 
 	<target name="compile-tests" depends="compile">
 		<javac includeantruntime="false" debug="true" srcdir="${src.test-unit.dir}"
-			destdir="${classes.test-unit.dir}" classpathref="classpath-main" source="1.5" target="1.5"/>
+			destdir="${classes.test-unit.dir}" source="1.5" target="1.5">
+            <classpath>
+                <path refid="classpath-main" />
+                <path refid="compile.classpath" />
+                <path refid="test.classpath" />
+            </classpath>
+        </javac>
 		<copy todir="${classes.test-unit.dir}" includeemptydirs="no">
 			<fileset dir="${src.test-resources.dir}" />
 		</copy>
@@ -164,7 +181,13 @@
 
 	<target name="compile-integration-tests" depends="compile-tests">
 		<javac includeantruntime="false" debug="true" srcdir="${src.test-integration.dir}"
-			destdir="${classes.test-integration.dir}" classpathref="classpath-main" source="1.5" target="1.5" />
+			destdir="${classes.test-integration.dir}" source="1.5" target="1.5">
+            <classpath>
+                <path refid="classpath-main" />
+                <path refid="compile.classpath" />
+                <path refid="test.classpath" />
+            </classpath>
+        </javac>
 		<copy todir="${classes.test-integration.dir}" includeemptydirs="no">
 			<fileset dir="${src.test-integration.resources.dir}" />
 		</copy>
@@ -175,7 +198,8 @@
 			destdir="${classes.test-acceptance.dir}" source="1.5" target="1.5">
             <classpath>
                 <path refid="classpath-main" />
-                <path refid="classpath-htmlunit" />
+                <path refid="compile.classpath" />
+                <path refid="test.classpath" />
             </classpath>
         </javac>
 		<copy todir="${classes.test-acceptance.dir}" includeemptydirs="no">
@@ -190,6 +214,8 @@
 		<junit forkmode="perBatch" haltonfailure="no" haltonerror="no" failureProperty="test.failure" errorproperty="test.failure">
 			<classpath>
 				<path refid="classpath-cobertura" />
+                <path refid="compile.classpath" />
+                <path refid="test.classpath" />
 			</classpath>
 			<formatter type="xml" />
 			<formatter type="brief" usefile="no" />
@@ -211,7 +237,8 @@
         <junit forkmode="perTest" haltonfailure="no" haltonerror="no" failureProperty="test.failure" errorproperty="test.failure">
             <classpath>
                 <path refid="classpath-cobertura" />
-                <path refid="classpath-htmlunit" />
+                <path refid="compile.classpath" />
+                <path refid="test.classpath" />
             </classpath>
             <formatter type="xml" />
             <formatter type="brief" usefile="no" />

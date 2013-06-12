@@ -12,14 +12,12 @@ It can be run with most tools (e.g.
 
 Development
 -----------
+Development with JSCover is simple. It is an Ant build using Maven's dependency management.
+What you need:
+* Java (minimum 1.5)
+* Ant (developed with version 1.9.0)
+* Ant's [Maven Task](http://maven.apache.org/ant-tasks/index.html) (developed with maven-ant-tasks-2.1.3.jar)
 
-Before checking-out,
-[make sure your git client has "Auto CrLf convert" turned off]
-(https://help.github.com/articles/dealing-with-line-endings).
-If not, this will cause some tests to fail on Windows machine (the tests may be altered to over-come this if it
-proves to be a common problem).
-
-Development with JSCover is simple. It is a fairly standard Ant and Java build.
 Most development has been done with IntelliJ community edition, and some with Eclipse.
 Project files for both IDEs are checked in, but any editor can be used.
 Before checking in any changes, be sure to run the build files `pre-commit`.
