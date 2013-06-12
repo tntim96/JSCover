@@ -82,9 +82,7 @@
 
     <target name="jar" depends="compile">
         <copy file="lib/runtime/js.jar" todir="${dist.dir}"/>
-        <jar jarfile="${dist.dir}/${ant.project.name}.jar"
-             basedir="${classes.main.dir}"
-             compress="true">
+        <jar jarfile="${dist.dir}/${ant.project.name}.jar" basedir="${classes.main.dir}" compress="true">
             <manifest>
                 <attribute name="Implementation-Title" value="${ant.project.name}"/>
                 <attribute name="Implementation-Version" value="${version}"/>
@@ -102,9 +100,7 @@
         <copy todir="${tmpDir}" includeemptydirs="no">
             <fileset dir="${classes.main.dir}" />
         </copy>
-        <jar jarfile="${dist.dir}/${ant.project.name}-all.jar"
-             basedir="${tmpDir}"
-             compress="true">
+        <jar jarfile="${dist.dir}/${ant.project.name}-all.jar" basedir="${tmpDir}" compress="true">
             <manifest>
                 <attribute name="Implementation-Title" value="JSCover"/>
                 <attribute name="Implementation-Version" value="${version}"/>
@@ -129,7 +125,22 @@
         </zip>
     </target>
 
-	<target name="cobertura-setup" depends="compile">
+    <target name="maven-files" depends="jar-all">
+        <property name="mavenBundleDir" value="${build.dir}/mavenBundle"/>
+        <mkdir dir="${mavenBundleDir}"/>
+        <copy file="pom.xml" tofile="${mavenBundleDir}/${ant.project.name}-${version}.pom"/>
+        <copy file="${dist.dir}/${ant.project.name}-all.jar" tofile="${mavenBundleDir}/${ant.project.name}-${version}.jar"/>
+        <jar jarfile="${mavenBundleDir}/${ant.project.name}-${version}-sources.jar" basedir="${src.main.dir}" compress="false"/>
+        <!-- Automate signing -->
+   </target>
+
+    <target name="maven-bundle">
+        <!-- Add dependency when signing automated -->
+        <property name="mavenBundleDir" value="${build.dir}/mavenBundle"/>
+        <jar jarfile="${dist.dir}/${ant.project.name}-${version}-bundle.jar" basedir="${mavenBundleDir}" compress="true"/>
+    </target>
+
+    <target name="cobertura-setup" depends="compile">
         <taskdef classpathref="test.classpath" resource="tasks.properties" />
 		<delete file="cobertura.ser" failonerror="false" />
 		<cobertura-instrument todir="${classes.instrumented.dir}">
