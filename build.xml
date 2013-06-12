@@ -127,10 +127,23 @@
 
     <target name="maven-files" depends="jar-all">
         <property name="mavenBundleDir" value="${build.dir}/mavenBundle"/>
-        <mkdir dir="${mavenBundleDir}"/>
+        <mkdir dir="${mavenBundleDir}/javadoc"/>
         <copy file="pom.xml" tofile="${mavenBundleDir}/${ant.project.name}-${version}.pom"/>
         <copy file="${dist.dir}/${ant.project.name}-all.jar" tofile="${mavenBundleDir}/${ant.project.name}-${version}.jar"/>
         <jar jarfile="${mavenBundleDir}/${ant.project.name}-${version}-sources.jar" basedir="${src.main.dir}" compress="false"/>
+        <javadoc destdir="${mavenBundleDir}/javadoc"
+                version="true"
+                use="true"
+                windowtitle="JSCover API">
+            <classpath refid="compile.classpath"/>
+            <packageset dir="${src.main.dir}" defaultexcludes="yes">
+                <include name="jscover/**"/>
+            </packageset>
+
+            <doctitle><![CDATA[<h1>JSCover</h1>]]></doctitle>
+        </javadoc>
+        <jar jarfile="${mavenBundleDir}/${ant.project.name}-${version}-javadoc.jar" basedir="${mavenBundleDir}/javadoc" compress="false"/>
+        <delete dir="${mavenBundleDir}/javadoc"/>
         <!-- Automate signing -->
    </target>
 
