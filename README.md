@@ -24,8 +24,3 @@ Before checking in any changes, be sure to run the build files `pre-commit`.
 NB: `pre-commit` runs the report and enforces coverage limits on unit and integration tests.
 Acceptance test coverage is collected and can be viewed by running the `coverage-report`
 target manually after `pre-commit`.
-
-To save repository space, the acceptance test framework HTMLUnit is not checked in.
-Download HTML Unit (2.12) and unzip it to the same parent directory as JSCover to match
-the build property `html.unit.dir=${basedir}/../htmlunit-2.12`.
-If this property needs changing, the IntelliJ and Eclipse project files will also need altering.
