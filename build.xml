@@ -143,7 +143,6 @@
             <doctitle><![CDATA[<h1>${ant.project.name}</h1>]]></doctitle>
         </javadoc>
         <jar jarfile="${mavenBundleDir}/${ant.project.name}-${version}-javadoc.jar" basedir="${mavenBundleDir}/javadoc" compress="false"/>
-        <delete dir="${mavenBundleDir}/javadoc"/>
         <!-- Automate signing -->
    </target>
 
