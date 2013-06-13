@@ -26,7 +26,17 @@ http://github.com/tntim96/rhino/
         <url>http://github.com/tntim96/JSCover/</url>
         <connection>scm:git:git://github.com/tntim96/JSCover.git</connection>
     </scm>
-    <developers/>
+    <developers>
+        <developer>
+            <id>tntim96</id>
+            <name>Tim</name>
+            <email>tntim96@gamil.com</email>
+            <roles>
+                <role>project-lead</role>
+            </roles>
+            <timezone>+10</timezone>
+        </developer>
+    </developers>
     <issueManagement>
         <system>github</system>
         <url>http://github.com/tntim96/JSCover/issues</url>
