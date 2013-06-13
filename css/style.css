@@ -157,6 +157,21 @@ ul{
     box-shadow: inset 0px 0px 5px #000;
 }
 
+.xmlBlock {
+    width: 350px;
+    padding: 15px;
+    box-shadow: inset 0px 0px 25px #244;
+}
+
+.xmlTag {
+    color: #04BFBF;
+}
+
+.xmlValue {
+    color: #F2D281;
+    font-weight: bold;
+}
+
 #license{
     background-color: #ccc;
     padding: 20px 40px;
