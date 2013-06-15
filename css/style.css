@@ -1,4 +1,4 @@
-html, body{
+html, body {
     margin: 0;
     padding: 0;
 }
@@ -27,6 +27,12 @@ table td {
     border: 1px inset #333;
     padding: 4px;
     margin: 0;
+}
+
+table.noBorder td {
+    border-collapse: collapse;
+    border: none;
+    vertical-align:top;
 }
 
 h2 {
