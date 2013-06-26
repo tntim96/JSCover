@@ -342,6 +342,8 @@ Public License instead of this License.
 
 package jscover.report;
 
+import static jscover.report.JSONDataMerger.NO_CONDITIONS_ARE_COVERED;
+
 public class BranchData {
     private int position;
     private int nodeLength;
@@ -387,8 +389,9 @@ public class BranchData {
     }
 
     public void addCoverage(BranchData branchData) {
-        if (position != branchData.position || nodeLength != branchData.nodeLength)
-            throw new IllegalStateException("Merging non-matching branch data");
+        if (!NO_CONDITIONS_ARE_COVERED.equals(source) && !NO_CONDITIONS_ARE_COVERED.equals(branchData.source))
+            if (position != branchData.position || nodeLength != branchData.nodeLength)
+                throw new IllegalStateException("Merging non-matching branch data");
         this.evalFalse += branchData.evalFalse;
         this.evalTrue += branchData.evalTrue;
     }

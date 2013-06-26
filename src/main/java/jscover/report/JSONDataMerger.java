@@ -353,6 +353,7 @@ import static java.lang.String.format;
 
 //Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013, tntim96
 public class JSONDataMerger {
+    public static final String NO_CONDITIONS_ARE_COVERED = "No conditions are covered";
     private Context cx = Context.enter();
     private JsonParser parser = new JsonParser(cx, cx.initStandardObjects());
 
@@ -554,7 +555,7 @@ public class JSONDataMerger {
             if (branchMap.containsKey(i))
                 for (int j = 0; j <= branchMap.get(i).last(); j++)
                     if (branchMap.get(i).contains(j))
-                        list.add(new BranchData(0, 0, "No conditions are covered", 0, 0));
+                        list.add(new BranchData(0, 0, NO_CONDITIONS_ARE_COVERED, 0, 0));
                     else
                         list.add(null);
         }

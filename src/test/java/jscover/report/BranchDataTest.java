@@ -361,6 +361,17 @@ public class BranchDataTest {
     }
 
     @Test
+    public void shouldIgnoreNodeComparisonIfAddedBranchWasUnloadedIncluded() {
+        branchData.addCoverage(new BranchData(0, 2, JSONDataMerger.NO_CONDITIONS_ARE_COVERED, 0, 0));
+    }
+
+    @Test
+    public void shouldIgnoreNodeComparisonIfSourceBranchWasUnloadedIncluded() {
+        BranchData branchData = new BranchData(1, 2, JSONDataMerger.NO_CONDITIONS_ARE_COVERED, 1, 2);
+        branchData.addCoverage(new BranchData(1, 0, "x > y", 0, 0));
+    }
+
+    @Test
     public void shouldAddCounts() {
         branchData.addCoverage(new BranchData(1, 2, "x > y", 3, 5));
         assertThat(branchData.getEvalFalse(), equalTo(4));
