@@ -1,3 +1,30 @@
+function getArrayJSON(coverage) {
+    var array = [];
+    if (coverage  === undefined)
+      return array;
+
+    var length = coverage.length;
+    for (var line = 0; line < length; line++) {
+      var value = coverage[line];
+      if (value === undefined || value === null) {
+        value = 'null';
+      }
+      array.push(value);
+    }
+    return array;
+}
+
+function jscoverage_serializeCoverageToJSON() {
+  var json = [];
+  for (var file in _$jscoverage) {
+    var lineArray = getArrayJSON(_$jscoverage[file].lineData);
+    var fnArray = getArrayJSON(_$jscoverage[file].functionData);
+
+    json.push(jscoverage_quote(file) + ':{"lineData":[' + lineArray.join(',') + '],"functionData":[' + fnArray.join(',') + '],"branchData":' + convertBranchDataLinesToJSON(_$jscoverage[file].branchData) + '}');
+  }
+  return '{' + json.join(',') + '}';
+}
+
 if (! window.jscoverage_report) {
   window.jscoverage_report = function jscoverage_report(dir) {
     var createRequest = function () {
@@ -13,23 +40,7 @@ if (! window.jscoverage_report) {
       return '0000'.substr(s.length) + s;
     };
 
-    var json = [];
-    for (var file in _$jscoverage) {
-      var coverage = _$jscoverage[file].lineData;
-
-      var array = [];
-      var length = coverage.length;
-      for (var line = 0; line < length; line++) {
-        var value = coverage[line];
-        if (value === undefined || value === null) {
-          value = 'null';
-        }
-        array.push(value);
-      }
-
-      json.push(jscoverage_quote(file) + ':{"lineData":[' + array.join(',') + '],"branchData":' + convertBranchDataLinesToJSON(_$jscoverage[file].branchData) + '}');
-    }
-    json = '{' + json.join(',') + '}';
+    json = jscoverage_serializeCoverageToJSON();
 
     var request = createRequest();
     var url = '/jscoverage-store';

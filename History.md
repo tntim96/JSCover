@@ -1,5 +1,6 @@
-?.?.? / 2013-??-??
+0.3.1 / 2013-??-??
 ==================
+  * Add function data to `jscoverage_report(dir)` function call (https://github.com/tntim96/JSCover/issues/69)
   * Internal: Use Maven for dependency management (https://github.com/tntim96/JSCover/issues/9)
 
 0.3.0 / 2013-05-28
