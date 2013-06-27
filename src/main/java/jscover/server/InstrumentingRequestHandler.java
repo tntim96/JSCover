@@ -412,7 +412,7 @@ public class InstrumentingRequestHandler extends HttpServer {
                 sendResponse(HTTP_STATUS.HTTP_OK, MIME.TEXT_PLAIN, "Coverage data stored at " + reportDir);
             } catch(Throwable t) {
                 logger.log("Error saving coverage data", t);
-                String message = format("Error saving coverage data. Try deleting JSON file at %s\n",reportDir);
+                String message = format("Error saving coverage data. Try deleting JSON file at %s",reportDir);
                 sendResponse(HTTP_STATUS.HTTP_OK, MIME.TEXT_PLAIN, message);
             }
         } else {

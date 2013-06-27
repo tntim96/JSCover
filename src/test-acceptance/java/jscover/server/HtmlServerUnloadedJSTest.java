@@ -415,7 +415,7 @@ public class HtmlServerUnloadedJSTest {
         webClient.waitForBackgroundJavaScript(2000);
         String result = page.getElementById("storeDiv").getTextContent();
 
-        assertThat(result, containsString("Coverage data stored at target"));
+        assertThat(result, containsString("Coverage data stored at " + new File(reportDir).getPath()));
 
         String json = ioUtils.toString(jsonFile);
         assertThat(json, containsString("/root.js"));
