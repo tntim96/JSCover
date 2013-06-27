@@ -376,6 +376,14 @@ class SourceProcessor {
         this.includeFunctionCoverage = includeFunctionCoverage;
     }
 
+    ParseTreeInstrumenter getInstrumenter() {
+        return instrumenter;
+    }
+
+    BranchInstrumentor getBranchInstrumentor() {
+        return branchInstrumentor;
+    }
+
     public String processSourceForServer(String source) {
         String reportJS = ioUtils.loadFromClassPath("/report.js");
         return reportJS + processSource(uri, source);

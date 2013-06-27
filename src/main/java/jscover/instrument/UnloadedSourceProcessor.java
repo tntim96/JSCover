@@ -367,12 +367,14 @@ public class UnloadedSourceProcessor {
     public List<ScriptCoverageCount> getEmptyCoverageData(Set<String> urisAlreadyProcessed) {
         List<ScriptCoverageCount> scripts = new ArrayList<ScriptCoverageCount>();
         for (File file: fileScanner.getFiles(urisAlreadyProcessed)) {
-            CoverageCountNodeVisitor visitor = new CoverageCountNodeVisitor(config.getCompilerEnvirons(), config.isIncludeFunction(), config.isIncludeBranch());
             String uri = ioUtils.getRelativePath(file, config.getDocumentRoot());
-            String source = ioUtils.loadFromFileSystem(file);
+            SourceProcessor sourceProcessor = new SourceProcessor(config.getCompilerEnvirons(), uri, config.isIncludeFunction(), config.isIncludeBranch());
             try {
-                visitor.processSource(source);
-                ScriptCoverageCount script = new ScriptCoverageCount("/"+uri, new ArrayList<Integer>(visitor.getValidLines()), visitor.getFunctionNumber(), visitor.getLineConditionMap());
+                sourceProcessor.instrumentSource(ioUtils.loadFromFileSystem(file));
+                ScriptCoverageCount script = new ScriptCoverageCount("/"+uri, new ArrayList<Integer>(
+                        sourceProcessor.getInstrumenter().getValidLines()),
+                        sourceProcessor.getInstrumenter().getNumFunctions(),
+                        sourceProcessor.getBranchInstrumentor().getLineConditionMap());
                 scripts.add(script);
             } catch (RuntimeException t) {
                 logger.log(String.format("Problem parsing %s", uri), t);

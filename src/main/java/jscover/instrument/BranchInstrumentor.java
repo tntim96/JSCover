@@ -367,6 +367,10 @@ public class BranchInstrumentor implements NodeVisitor {
         this.uri = uri;
     }
 
+    public SortedMap<Integer, SortedSet<Integer>> getLineConditionMap() {
+        return lineConditionMap;
+    }
+
     public void setAstRoot(AstRoot astRoot) {
         this.astRoot = astRoot;
     }
