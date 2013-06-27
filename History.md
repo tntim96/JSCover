@@ -1,4 +1,4 @@
-0.3.1 / 2013-??-??
+0.3.1 / 2013-06-28
 ==================
   * Add function data to `jscoverage_report(dir)` function call (https://github.com/tntim96/JSCover/issues/69)
   * Merging Empty Branches Causes IllegalStateException (https://github.com/tntim96/JSCover/issues/68)
