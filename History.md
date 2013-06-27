@@ -3,6 +3,7 @@
   * Add function data to `jscoverage_report(dir)` function call (https://github.com/tntim96/JSCover/issues/69)
   * Merging Empty Branches Causes IllegalStateException (https://github.com/tntim96/JSCover/issues/68)
   * Different Line Count When Unloaded (https://github.com/tntim96/JSCover/issues/70)
+  * Null Pointer Exception when performing --merge (https://github.com/tntim96/JSCover/issues/66)
   * Internal: Use Maven for dependency management (https://github.com/tntim96/JSCover/issues/9)
 
 0.3.0 / 2013-05-28
