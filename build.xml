@@ -125,7 +125,7 @@
         </zip>
     </target>
 
-    <target name="maven-files" depends="jar-all">
+    <target name="maven-files" depends="jar-all" description="Maven Step 1 - Create file to be signed">
         <property name="mavenBundleDir" value="${build.dir}/mavenBundle"/>
         <mkdir dir="${mavenBundleDir}/javadoc"/>
         <copy file="pom.xml" tofile="${mavenBundleDir}/${ant.project.name}-${version}.pom"/>
@@ -147,7 +147,7 @@
         <!-- Automate signing -->
    </target>
 
-    <target name="maven-bundle">
+    <target name="maven-bundle" description="Maven Step 2 - Bundle files after saving">
         <!-- Add dependency when signing automated -->
         <property name="mavenBundleDir" value="${build.dir}/mavenBundle"/>
         <jar jarfile="${dist.dir}/${ant.project.name}-${version}-bundle.jar" basedir="${mavenBundleDir}" compress="true"/>
