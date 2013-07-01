@@ -395,6 +395,7 @@ public class MainParsingTest {
     @Test
     public void shouldParseFileSystem() {
         assertThat(main.parse(new String[]{"-fs"}).isFileSystem(), equalTo(true));
+        assertThat(main.parse(new String[]{"src", "doc", "-fs"}).isFileSystem(), equalTo(true));
     }
 
     @Test

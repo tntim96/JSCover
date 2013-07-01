@@ -354,7 +354,7 @@ public class ConfigurationForFSTest {
 
     @Test
     public void shouldHaveDefaults() {
-        ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs","src","doc"});
+        ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs", "src", "doc"});
         assertThat(configuration.showHelp(), equalTo(false));
         assertThat(configuration.isInvalid(), equalTo(false));
         assertThat(configuration.getJSVersion(), equalTo(150));
@@ -366,28 +366,28 @@ public class ConfigurationForFSTest {
 
     @Test
     public void shouldNotAllowDestinationDirectoryToEqualSourceDirectory() {
-        ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs","src","src"});
+        ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs", "src", "src"});
         assertThat(configuration.showHelp(), equalTo(true));
         assertThat(configuration.isInvalid(), equalTo(true));
     }
 
     @Test
     public void shouldNotAllowDestinationDirectoryToBeSubDirectoryOfSourceDirectory() {
-        ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs","src","src/main/java"});
+        ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs", "src", "src/main/java"});
         assertThat(configuration.showHelp(), equalTo(true));
         assertThat(configuration.isInvalid(), equalTo(true));
     }
 
     @Test
     public void shouldNotAllowDestinationDirectoryToBeSubDirectoryOfSourceDirectorySpecifiedAsCurrentDirectory() {
-        ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs",".","src/java"});
+        ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs", ".", "src/java"});
         assertThat(configuration.showHelp(), equalTo(true));
         assertThat(configuration.isInvalid(), equalTo(true));
     }
 
     @Test
     public void shouldAllowDestinationDirectoryToBeDifferentDirectoryOfSourceDirectoryButStartingWithTheSameName() {
-        ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs","src/main/java","src/main/java-instrumented"});
+        ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs", "src/main/java", "src/main/java-instrumented"});
         assertThat(configuration.showHelp(), equalTo(false));
         assertThat(configuration.isInvalid(), equalTo(false));
     }
@@ -401,13 +401,13 @@ public class ConfigurationForFSTest {
 
     @Test
     public void shouldParseHelp() {
-        assertThat(ConfigurationForFS.parse(new String[]{"-fs","-h"}).showHelp(), equalTo(true));
-        assertThat(ConfigurationForFS.parse(new String[]{"-fs","--help"}).showHelp(), equalTo(true));
+        assertThat(ConfigurationForFS.parse(new String[]{"-fs", "-h"}).showHelp(), equalTo(true));
+        assertThat(ConfigurationForFS.parse(new String[]{"-fs", "--help"}).showHelp(), equalTo(true));
     }
 
     @Test
     public void shouldParseBranch() {
-        assertThat(ConfigurationForFS.parse(new String[]{"-fs","--no-branch","src","doc"}).isIncludeBranch(), equalTo(false));
+        assertThat(ConfigurationForFS.parse(new String[]{"-fs", "--no-branch", "src", "doc"}).isIncludeBranch(), equalTo(false));
     }
 
     @Test
@@ -416,19 +416,23 @@ public class ConfigurationForFSTest {
     }
 
     @Test
-    public void shouldParseSourceDirectory() {
-        assertThat(ConfigurationForFS.parse(new String[]{"-fs","src","doc"}).getSrcDir(), equalTo(new File("src")));
+    public void shouldParseDirectories() {
+        ConfigurationForFS configurationForFS = ConfigurationForFS.parse(new String[]{"-fs", "src", "doc"});
+        assertThat(configurationForFS.getSrcDir(), equalTo(new File("src")));
+        assertThat(configurationForFS.getDestDir(), equalTo(new File("doc")));
     }
 
     @Test
-    public void shouldParseDestinationDirectory() {
-        assertThat(ConfigurationForFS.parse(new String[]{"-fs","src","doc"}).getDestDir(), equalTo(new File("doc")));
+    public void shouldParseDirectoriesWithFSOptionLast() {
+        ConfigurationForFS configurationForFS = ConfigurationForFS.parse(new String[]{"src", "doc", "-fs"});
+        assertThat(configurationForFS.getSrcDir(), equalTo(new File("src")));
+        assertThat(configurationForFS.getDestDir(), equalTo(new File("doc")));
     }
 
     @Test
     public void shouldHandleNonExistingDirectory() {
-        assertThat(ConfigurationForFS.parse(new String[]{"-fs","unknown","doc"}).showHelp(), equalTo(true));
-        assertThat(ConfigurationForFS.parse(new String[]{"-fs","build.xml","doc"}).showHelp(), equalTo(true));
+        assertThat(ConfigurationForFS.parse(new String[]{"-fs", "unknown", "doc"}).showHelp(), equalTo(true));
+        assertThat(ConfigurationForFS.parse(new String[]{"-fs", "build.xml", "doc"}).showHelp(), equalTo(true));
     }
 
     @Test
@@ -440,7 +444,7 @@ public class ConfigurationForFSTest {
 
     @Test
     public void shouldParseNoInstrument() {
-        ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs","--no-instrument=lib1", "--no-instrument=/lib2","src","doc"});
+        ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs", "--no-instrument=lib1", "--no-instrument=/lib2", "src", "doc"});
         assertThat(configuration.skipInstrumentation("test.js"), equalTo(false));
         assertThat(configuration.skipInstrumentation("lib1/test.js"), equalTo(true));
         assertThat(configuration.skipInstrumentation("lib2/test.js"), equalTo(true));
@@ -449,7 +453,7 @@ public class ConfigurationForFSTest {
 
     @Test
     public void shouldParseNoInstrumentReg() {
-        ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"--no-instrument-reg=.*/lib/.*", "--no-instrument-reg=.*/test/.*", "--no-instrument-reg=/.*/test2/.*"});
+        ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs", "--no-instrument-reg=.*/lib/.*", "--no-instrument-reg=.*/test/.*", "--no-instrument-reg=/.*/test2/.*", "src", "doc"});
         assertThat(configuration.skipInstrumentation("test.js"), equalTo(false));
         assertThat(configuration.skipInstrumentation("lib1/lib/test.js"), equalTo(true));
         assertThat(configuration.skipInstrumentation("lib2/test/test.js"), equalTo(true));
@@ -466,7 +470,7 @@ public class ConfigurationForFSTest {
 
     @Test
     public void shouldParseNoInstrumentWithLeadingSlash() {
-        ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs","--no-instrument=/lib1", "--no-instrument=/lib2","src","doc"});
+        ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs", "--no-instrument=/lib1", "--no-instrument=/lib2", "src", "doc"});
         assertThat(configuration.skipInstrumentation("test.js"), equalTo(false));
         assertThat(configuration.skipInstrumentation("lib1/test.js"), equalTo(true));
         assertThat(configuration.skipInstrumentation("lib2/test.js"), equalTo(true));
@@ -475,7 +479,7 @@ public class ConfigurationForFSTest {
 
     @Test
     public void shouldParseExclude() {
-        ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs","--exclude=lib1", "--exclude=/lib2","src","doc"});
+        ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs", "--exclude=lib1", "--exclude=/lib2", "src", "doc"});
         assertThat(configuration.exclude("test.js"), equalTo(false));
         assertThat(configuration.exclude("lib1/test.js"), equalTo(true));
         assertThat(configuration.exclude("lib2/test.js"), equalTo(true));
@@ -484,7 +488,7 @@ public class ConfigurationForFSTest {
 
     @Test
     public void shouldParseExcludeReg() {
-        ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs","--exclude-reg=.*/lib/.*", "--exclude-reg=/.*/test/.*", "--exclude-reg=/.*/test2/.*","src","doc"});
+        ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs", "--exclude-reg=.*/lib/.*", "--exclude-reg=/.*/test/.*", "--exclude-reg=/.*/test2/.*", "src", "doc"});
         assertThat(configuration.exclude("test.js"), equalTo(false));
         assertThat(configuration.exclude("lib1/lib/test.js"), equalTo(true));
         assertThat(configuration.exclude("/lib2/test/test.js"), equalTo(true));

@@ -375,8 +375,8 @@ public class ConfigurationForFS extends Configuration {
     private final Set<Pattern> noInstrumentRegs = new HashSet<Pattern>();
     private final Set<String> excludes = new HashSet<String>();
     private final Set<Pattern> excludeRegs = new HashSet<Pattern>();
-    private File srcDir = new File(System.getProperty("user.dir"));
-    private File destDir = new File(System.getProperty("user.dir"));
+    private File srcDir;
+    private File destDir;
     private int JSVersion = Context.VERSION_1_5;
     private CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
     private IoUtils ioUtils = IoUtils.getInstance();
@@ -477,6 +477,10 @@ public class ConfigurationForFS extends Configuration {
                 }
             } else if (arg.startsWith(JS_VERSION_PREFIX)) {
                 configuration.JSVersion = (int) (Float.valueOf(arg.substring(JS_VERSION_PREFIX.length())) * 100);
+            } else if (configuration.srcDir == null) {
+                configuration.srcDir = new File(arg);
+            } else if (configuration.destDir == null) {
+                configuration.destDir = new File(arg);
             }
         }
 
@@ -485,8 +489,6 @@ public class ConfigurationForFS extends Configuration {
             configuration.showHelp = true;
             return configuration;
         }
-        configuration.srcDir = new File(args[args.length - 2]);
-        configuration.destDir = new File(args[args.length - 1]);
         if (!configuration.validSourceDirectory()) {
             System.err.println(format("Source directory '%s' is invalid", configuration.srcDir));
             configuration.invalid = true;

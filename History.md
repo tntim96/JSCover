@@ -1,3 +1,7 @@
+0.3.2 / 2013-??-??
+==================
+  * Allow `-fs` to be last option (https://github.com/tntim96/JSCover/issues/71)
+
 0.3.1 / 2013-06-28
 ==================
   * Add function data to `jscoverage_report(dir)` function call (https://github.com/tntim96/JSCover/issues/69)
