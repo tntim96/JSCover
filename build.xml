@@ -117,6 +117,7 @@
                 <exclude name="cobertura.ser"/>
                 <exclude name="junit*"/>
                 <exclude name="bin/**"/>
+                <exclude name="build/**"/>
                 <exclude name="${build.dir}/**"/>
             </fileset>
             <fileset dir="${basedir}">
