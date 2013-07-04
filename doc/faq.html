@@ -7,11 +7,16 @@
     See the <a href="manual/manual.xml#encoding" target="_blank">manual</a> for more information.
 </p>
 
-<h3>Does an error log entry mean my coverage report is wrong?</h3>
+<h3>How does JSCover maintain quality?</h3>
 <p>
-    Not necessarily.
-    Usually the worst that could happen is that an instrumentation line has been missed.
-    See the <a href="manual/manual.xml#errorLog" target="_blank">manual</a> for more information.
+    JSCover reuses JSCoverage's regression tests
+    (see <a href="https://github.com/tntim96/JSCover/blob/master/src/test-integration/java/jscover/instrument/InstrumentAndHighlightRegressionTest.java" target="_blank">InstrumentAndHighlightRegressionTest</a>)
+    and has added a suite of unit, integration and acceptance tests which give a fairly high degree of coverage (~96% line, ~93% branch).
+    JavaScript tests have also been added (using Jasmine) and JSCover is used to check JavaScript coverage
+    (see <a href="https://github.com/tntim96/JSCover/blob/master/src/test-acceptance/java/jscover/server/HtmlUnitJSTest.java" target="_blank">HtmlUnitJSTest</a>).
+</p>
+<p>
+    All bugs corrected are done through the development of a failing test to ensure no regression errors occur.
 </p>
 
 <h3>Why won't the coverage report load in Google Chrome?</h3>
@@ -22,4 +27,12 @@
 <h3>Does the developer use JSCover on projects</h3>
 <p>Yes.</p>
 
+<h3>Does an error log entry mean my coverage report is wrong?</h3>
+<p>
+    Not necessarily.
+    Usually the worst that could happen is that an instrumentation line has been missed.
+    See the <a href="manual/manual.xml#errorLog" target="_blank">manual</a> for more information.
+</p>
+
+<h3>JSCoverage FAQ</h3>
 <p>Also see the <a href="http://siliconforks.com/jscoverage/faq.html" target="_blank">JSCoverage FAQ</a></p>
