@@ -1,5 +1,7 @@
+.gradle
 /*.iws
 /*.ser
 bin
+build
 junit*
 target
