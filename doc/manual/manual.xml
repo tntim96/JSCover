@@ -995,6 +995,17 @@
                 </text>
             </item>
             <item>
+                <heading id="automatingWebDriver">WebDriver</heading>
+                <text>
+                    For a working example see
+                    <a href="https://github.com/tntim96/JMonitaur/blob/master/jmonitaur-parent/jmonitaur-webapp/src/test/java/com/github/tntim96/jmonitaur/web/WebDriverJasmineTest.java"
+                            >WebDriverJasmineTest</a>
+                </text>
+                <text>
+                    Any suggestions or contributions are welcome to this WIP.
+                </text>
+            </item>
+            <item>
                 <heading id="automatingPhantomJS">PhantomJS</heading>
                 <text>
                     The examples here are for running Jasmine and QUnit tests. Please feel free to send more
@@ -1249,7 +1260,7 @@ function square(x) {
                         <table>
                             <tr>
                                 <th>Feature</th>
-                                <th>JSCover (0.3.0)</th>
+                                <th>JSCover (0.4.0)</th>
                                 <th>JSCoverage (0.5.1)</th>
                             </tr>
                             <tr>
@@ -1322,6 +1333,8 @@ function square(x) {
                             </li>
                             <li>JSCover's encoding default's to that of the platform, while JSCoverage's is ISO-8859-1
                             </li>
+                            <li>JSCover's structure for <var>_$jscoverage</var> is improved, supporting for
+                                <var>JSON.stringify</var> and <var>JSON.parse</var> operations</li>
                             <li>JSCoverage has an option for code coverage for Mozilla platform applications</li>
                         </ul>
                     </text>
