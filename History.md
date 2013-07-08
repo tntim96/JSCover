@@ -1,3 +1,8 @@
+To-do
+Update manual for 0.4.0
+Update web-site for 0.4.0
+Maven release
+
 0.4.0 / 2013-??-??
 ==================
   * Reduce branch data JSON size (https://github.com/tntim96/JSCover/issues/73)

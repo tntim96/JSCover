@@ -587,8 +587,7 @@ function jscoverage_recalculateSummaryTab(cc) {
     var num_executed_branches = 0;
     var fileBranchCC = cc[file].branchData;
     if (fileBranchCC) {
-        var branchLength = fileBranchCC.length;
-        for (lineNumber = 0; lineNumber < branchLength; lineNumber++) {
+        for (var lineNumber in fileBranchCC) {
           var conditions = fileBranchCC[lineNumber];
           var covered = undefined;
           if (conditions !== undefined && conditions !== null && conditions.length) {
@@ -951,7 +950,8 @@ function jscoverage_makeTable(lines) {
       row += '<td></td>';
     }
 
-    if (_$jscoverage[jscoverage_currentFile].branchData !== undefined && _$jscoverage[jscoverage_currentFile].branchData.length !== undefined) {
+    lineNumber = '' + lineNumber;
+    if (branchData !== undefined) {
         var branchClass = '';
         var branchText = '&#160;';
         if (branchData[lineNumber] !== undefined && branchData[lineNumber] !== null) {
@@ -965,7 +965,7 @@ function jscoverage_makeTable(lines) {
 
         }
         if (branchClass === 'r') {
-            branchText = '<a href="#" onclick="alert(buildBranchMessage(_$jscoverage[\''+jscoverage_currentFile+'\'].branchData['+lineNumber+']));">info</a>';
+            branchText = '<a href="#" onclick="alert(buildBranchMessage(_$jscoverage[\''+jscoverage_currentFile+'\'].branchData[\''+lineNumber+'\']));">info</a>';
         }
         row += '<td class="numeric '+branchClass+'"><pre>' + branchText + '</pre></td>';
     }
@@ -1276,37 +1276,6 @@ var ProgressBar = {
 // -----------------------------------------------------------------------------
 // reports
 
-function jscoverage_pad(s) {
-  return '0000'.substr(s.length) + s;
-}
-
-function getArrayJSON(coverage) {
-    var array = [];
-    if (coverage  === undefined)
-      return array;
-
-    var length = coverage.length;
-    for (var line = 0; line < length; line++) {
-      var value = coverage[line];
-      if (value === undefined || value === null) {
-        value = 'null';
-      }
-      array.push(value);
-    }
-    return array;
-}
-
-function jscoverage_serializeCoverageToJSON() {
-  var json = [];
-  for (var file in _$jscoverage) {
-    var lineArray = getArrayJSON(_$jscoverage[file].lineData);
-    var fnArray = getArrayJSON(_$jscoverage[file].functionData);
-
-    json.push(jscoverage_quote(file) + ':{"lineData":[' + lineArray.join(',') + '],"functionData":[' + fnArray.join(',') + '],"branchData":' + convertBranchDataLinesToJSON(_$jscoverage[file].branchData) + '}');
-  }
-  return '{' + json.join(',') + '}';
-}
-
 function jscoverage_storeButton_click() {
   if (jscoverage_inLengthyOperation) {
     return;
@@ -1349,37 +1318,69 @@ function jscoverage_storeButton_click() {
   request.send(jscoverage_serializeCoverageToJSON());
 }
 function jscoverage_quote(s) {
-  return '"' + s.replace(/[\u0000-\u001f"\\\u007f-\uffff]/g, function (c) {
-    switch (c) {
-    case '\b':
-      return '\\b';
-    case '\f':
-      return '\\f';
-    case '\n':
-      return '\\n';
-    case '\r':
-      return '\\r';
-    case '\t':
-      return '\\t';
-    // IE doesn't support this
-    /*
-    case '\v':
-      return '\\v';
-    */
-    case '"':
-      return '\\"';
-    case '\\':
-      return '\\\\';
-    default:
-      return '\\u' + jscoverage_pad(c.charCodeAt(0).toString(16));
+    return '"' + s.replace(/[\u0000-\u001f"\\\u007f-\uffff]/g, function (c) {
+        switch (c) {
+            case '\b':
+                return '\\b';
+            case '\f':
+                return '\\f';
+            case '\n':
+                return '\\n';
+            case '\r':
+                return '\\r';
+            case '\t':
+                return '\\t';
+            // IE doesn't support this
+            /*
+             case '\v':
+             return '\\v';
+             */
+            case '"':
+                return '\\"';
+            case '\\':
+                return '\\\\';
+            default:
+                return '\\u' + jscoverage_pad(c.charCodeAt(0).toString(16));
+        }
+    }) + '"';
+}
+
+function getArrayJSON(coverage) {
+    var array = [];
+    if (coverage === undefined)
+        return array;
+
+    var length = coverage.length;
+    for (var line = 0; line < length; line++) {
+        var value = coverage[line];
+        if (value === undefined || value === null) {
+            value = 'null';
+        }
+        array.push(value);
     }
-  }) + '"';
+    return array;
+}
+
+function jscoverage_serializeCoverageToJSON() {
+    var json = [];
+    for (var file in _$jscoverage) {
+        var lineArray = getArrayJSON(_$jscoverage[file].lineData);
+        var fnArray = getArrayJSON(_$jscoverage[file].functionData);
+
+        json.push(jscoverage_quote(file) + ':{"lineData":[' + lineArray.join(',') + '],"functionData":[' + fnArray.join(',') + '],"branchData":' + convertBranchDataLinesToJSON(_$jscoverage[file].branchData) + '}');
+    }
+    return '{' + json.join(',') + '}';
+}
+
+
+function jscoverage_pad(s) {
+    return '0000'.substr(s.length) + s;
 }
 
 function jscoverage_html_escape(s) {
-    return s.replace(/[<>\&\"\']/g, function(c) {
-    return '&#' + c.charCodeAt(0) + ';';
-  });
+    return s.replace(/[<>\&\"\']/g, function (c) {
+        return '&#' + c.charCodeAt(0) + ';';
+    });
 }
 function BranchData() {
     this.position = -1;
@@ -1478,28 +1479,22 @@ function convertBranchDataConditionArrayToJSON(branchDataConditionArray) {
 
 function convertBranchDataLinesToJSON(branchData) {
     if (branchData === undefined) {
-        return '[]'
+        return '{}'
     }
-    var array = [];
-    var length = branchData.length;
-    for (var line = 0; line < length; line++) {
-        var branchDataObject = branchData[line];
-        if (branchDataObject === undefined || branchDataObject === null) {
-            value = 'null';
-        } else {
-            value = convertBranchDataConditionArrayToJSON(branchDataObject);
-        }
-        array.push(value);
+    var json = '';
+    for (var line in branchData) {
+        if (json !== '')
+            json += ','
+        json += '"' + line + '":' + convertBranchDataConditionArrayToJSON(branchData[line]);
     }
-    return '[' + array.join(',') + ']';
+    return '{' + json + '}';
 }
 
 function convertBranchDataLinesFromJSON(jsonObject) {
     if (jsonObject === undefined) {
-        return [];
+        return {};
     }
-    var length = jsonObject.length;
-    for (var line = 0; line < length; line++) {
+    for (var line in jsonObject) {
         var branchDataJSON = jsonObject[line];
         if (branchDataJSON !== null) {
             for (var conditionIndex = 0; conditionIndex < branchDataJSON.length; conditionIndex ++) {
