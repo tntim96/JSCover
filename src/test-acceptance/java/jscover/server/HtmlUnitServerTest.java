@@ -501,8 +501,7 @@ public class HtmlUnitServerTest {
 
         page.getHtmlElementById("storeTab").click();
         webClient.waitForBackgroundJavaScript(500);
-        HtmlElement storeButton = page.getHtmlElementById("storeButton");
-        storeButton.click();
+        page.getHtmlElementById("storeButton").click();
         webClient.waitForBackgroundJavaScript(2000);
         String result = page.getElementById("storeDiv").getTextContent();
 
