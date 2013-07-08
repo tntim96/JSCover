@@ -6,6 +6,7 @@ Maven release
 0.4.0 / 2013-??-??
 ==================
   * Reduce branch data JSON size (https://github.com/tntim96/JSCover/issues/73)
+  * Add 'Stop Server' Button to UI (https://github.com/tntim96/JSCover/issues/74)
   * Allow `-fs` to be last option (https://github.com/tntim96/JSCover/issues/71)
   * Internal: Move common JavaScript functions to common JavaScript file
               Remove unused JavaScript functions

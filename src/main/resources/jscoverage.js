@@ -1317,3 +1317,44 @@ function jscoverage_storeButton_click() {
   request.setRequestHeader('Content-Type', 'application/json');
   request.send(jscoverage_serializeCoverageToJSON());
 }
+
+function jscoverage_stopButton_click() {
+  if (jscoverage_inLengthyOperation) {
+    return;
+  }
+
+  jscoverage_beginLengthyOperation();
+  var img = document.getElementById('storeImg');
+  img.style.visibility = 'visible';
+
+  var request = jscoverage_createRequest();
+  request.open('GET', '/stop', true);
+  request.onreadystatechange = function (event) {
+    if (request.readyState === 4) {
+      var message;
+      try {
+        if (request.status !== 200 && request.status !== 201 && request.status !== 204) {
+          throw request.status;
+        }
+        message = request.responseText;
+      }
+      catch (e) {
+        if (e.toString().search(/^\d{3}$/) === 0) {
+          message = e + ': ' + request.responseText;
+        }
+        else {
+          message = 'Could not connect to server: ' + e;
+        }
+      }
+
+      jscoverage_endLengthyOperation();
+      var img = document.getElementById('storeImg');
+      img.style.visibility = 'hidden';
+
+      var div = document.getElementById('storeDiv');
+      div.appendChild(document.createTextNode(new Date() + ': ' + message));
+      div.appendChild(document.createElement('br'));
+    }
+  };
+  request.send();
+}
