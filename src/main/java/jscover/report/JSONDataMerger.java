@@ -378,12 +378,11 @@ public class JSONDataMerger {
                 for (int i = 0; i < coverageData.getFunctions().size(); i++)
                     coverageData.addFunctionCoverage(map2.get(scriptName).getFunctions().get(i), i);
 
-                for (int i = 0; i < coverageData.getBranchData().size(); i++) {
+                for (int i : coverageData.getBranchData().keySet()) {
                     List<BranchData> conditions = coverageData.getBranchData().get(i);
-                    if (conditions != null)
-                        for (int j = 0; j < conditions.size(); j++)
-                            if (conditions.get(j) != null)
-                                conditions.get(j).addCoverage(map2.get(scriptName).getBranchData().get(i).get(j));
+                    for (int j = 0; j < conditions.size(); j++)
+                        if (conditions.get(j) != null)
+                            conditions.get(j).addCoverage(map2.get(scriptName).getBranchData().get(i).get(j));
                 }
             }
         }
@@ -402,7 +401,7 @@ public class JSONDataMerger {
             for (Object scriptURI : json.keySet()) {
                 NativeObject scriptData = (NativeObject) json.get(scriptURI);
                 NativeArray lineCoverageArray = (NativeArray) scriptData.get("lineData");
-                NativeArray branchJSONArray = (NativeArray) scriptData.get("branchData");
+                NativeObject branchJSONArray = (NativeObject) scriptData.get("branchData");
                 List<Integer> countData = new ArrayList<Integer>(lineCoverageArray.size());
                 for (int i = 0; i < lineCoverageArray.size(); i++)
                     countData.add((Integer) lineCoverageArray.get(i));
@@ -415,11 +414,11 @@ public class JSONDataMerger {
                         funcData.add((Integer) functionCoverageArray.get(i));
                 }
 
-                List<List<BranchData>> branchLineArray = new ArrayList<List<BranchData>>();
+                SortedMap<Integer, List<BranchData>> branchLineMap = new TreeMap<Integer, List<BranchData>>();
                 if (branchJSONArray != null) {
-                    readBranchLines(branchJSONArray, branchLineArray);
+                    readBranchLines(branchJSONArray, branchLineMap);
                 }
-                map.put((String) scriptURI, new FileData((String) scriptURI, countData, funcData, branchLineArray));
+                map.put((String) scriptURI, new FileData((String) scriptURI, countData, funcData, branchLineMap));
             }
         } catch (JsonParser.ParseException e) {
             throw new RuntimeException(e);
@@ -427,14 +426,12 @@ public class JSONDataMerger {
         return map;
     }
 
-    private void readBranchLines(NativeArray branchJSONArray, List<List<BranchData>> branchLineArray) {
-        for (int i = 0; i < branchJSONArray.size(); i++) {
+    private void readBranchLines(NativeObject branchJSONObject, SortedMap<Integer, List<BranchData>> branchLineMap) {
+        for (Object line: branchJSONObject.keySet()) {
             List<BranchData> branchConditionArray = new ArrayList<BranchData>();
-            branchLineArray.add(branchConditionArray);
-            NativeArray conditionsJSON = (NativeArray) branchJSONArray.get(i);
-            if (conditionsJSON != null) {
-                readBranchCondition(branchConditionArray, conditionsJSON);
-            }
+            branchLineMap.put((Integer)line, branchConditionArray);
+            NativeArray conditionsJSON = (NativeArray) branchJSONObject.get(line);
+            readBranchCondition(branchConditionArray, conditionsJSON);
         }
     }
 
@@ -480,27 +477,28 @@ public class JSONDataMerger {
                 json.append(",");
             }
 
-            String scriptJSON = "\"%s\":{\"lineData\":[%s],\"functionData\":[%s],\"branchData\":[%s]}";
-            json.append(String.format(scriptJSON, scriptURI, coverage, functions, branchData));
+            StringBuilder scriptJSON = new StringBuilder(format("\"%s\":{", scriptURI));
+            scriptJSON.append(format("\"lineData\":[%s]", coverage));
+            if (functions.length() > 0)
+                scriptJSON.append(format(",\"functionData\":[%s]", functions));
+            if (branchData.length() > 0)
+                scriptJSON.append(format(",\"branchData\":{%s}", branchData));
+            scriptJSON.append("}");
+            json.append(scriptJSON);
         }
         json.append("}");
         return json.toString();
     }
 
     private void addBranchData(StringBuilder branchData, FileData coverageData) {
-        for (int i = 0; i < coverageData.getBranchData().size(); i++) {
-            if (i > 0)
-                branchData.append(",");
+        int count = 0;
+        for (Integer i: coverageData.getBranchData().keySet()) {
             List<BranchData> conditions = coverageData.getBranchData().get(i);
-            if (conditions.size() > 0) {
-                branchData.append("[");
-            } else {
-                branchData.append("null");
-            }
+            if (count++ > 0)
+                branchData.append(",");
+            branchData.append(format("\"%s\":[",i));
             addBranchConditions(branchData, conditions);
-            if (conditions.size() > 0) {
-                branchData.append("]");
-            }
+            branchData.append("]");
         }
     }
 
@@ -544,20 +542,19 @@ public class JSONDataMerger {
         return functionData;
     }
 
-    private List<List<BranchData>> getNoHitBranchData(SortedMap<Integer, SortedSet<Integer>> branchMap) {
-        List<List<BranchData>> branchData = new ArrayList<List<BranchData>>();
+    private SortedMap<Integer, List<BranchData>> getNoHitBranchData(SortedMap<Integer, SortedSet<Integer>> branchMap) {
+        SortedMap<Integer, List<BranchData>> branchData = new TreeMap<Integer, List<BranchData>>();
         if (branchMap.size() == 0)
             return branchData;
 
-        for (int i = 0; i <= branchMap.lastKey(); i++) {
+        for (int i : branchMap.keySet()) {
             List<BranchData> list = new ArrayList<BranchData>();
-            branchData.add(i, list);
-            if (branchMap.containsKey(i))
-                for (int j = 0; j <= branchMap.get(i).last(); j++)
-                    if (branchMap.get(i).contains(j))
-                        list.add(new BranchData(0, 0, NO_CONDITIONS_ARE_COVERED, 0, 0));
-                    else
-                        list.add(null);
+            branchData.put(i, list);
+            for (int j = 0; j <= branchMap.get(i).last(); j++)
+                if (branchMap.get(i).contains(j))
+                    list.add(new BranchData(0, 0, NO_CONDITIONS_ARE_COVERED, 0, 0));
+                else
+                    list.add(null);
         }
         return branchData;
     }

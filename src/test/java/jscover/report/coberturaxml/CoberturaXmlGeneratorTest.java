@@ -359,10 +359,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -499,7 +496,7 @@ public class CoberturaXmlGeneratorTest {
     @Test
     public void shouldGenerateXmlLineNoBranch() throws Exception {
         List<Integer> lines = new ArrayList<Integer>(){{add(null);}{add(10);}};
-        List<List<BranchData>> branchData = new ArrayList<List<BranchData>>();
+        SortedMap<Integer, List<BranchData>> branchData = new TreeMap<Integer, List<BranchData>>();
         files.add(new FileData("/dir/file.js", lines, null, branchData));
 
         data = new CoberturaData(files);
@@ -517,13 +514,12 @@ public class CoberturaXmlGeneratorTest {
     @Test
     public void shouldGenerateXmlBranchNoLine() throws Exception {
         List<Integer> lines = new ArrayList<Integer>();
-        List<List<BranchData>> branchDataLists = new ArrayList<List<BranchData>>();
-        List<BranchData> branchDataList = new ArrayList<BranchData>(){{add(null);}{
-        BranchData branchData = new BranchData(0, 0, null, 1, 0);
-        add(branchData);}};
-        branchDataLists.add(new ArrayList<BranchData>());
-        branchDataLists.add(branchDataList);
-        files.add(new FileData("/dir/file.js", lines, null, branchDataLists));
+        SortedMap<Integer, List<BranchData>> branchDataMap = new TreeMap<Integer, List<BranchData>>();
+        List<BranchData> conditionsList = new ArrayList<BranchData>();
+        conditionsList.add(null);
+        conditionsList.add(new BranchData(0, 0, null, 1, 0));
+        branchDataMap.put(1, conditionsList);
+        files.add(new FileData("/dir/file.js", lines, null, branchDataMap));
 
         data = new CoberturaData(files);
         String xml = generator.generateXml(data, "srcDir", "version");
@@ -546,13 +542,12 @@ public class CoberturaXmlGeneratorTest {
     @Test
     public void shouldGenerateXmlLineAndBranch() throws Exception {
         List<Integer> lines = new ArrayList<Integer>(){{add(null);}{add(10);}};
-        List<List<BranchData>> branchDataLists = new ArrayList<List<BranchData>>();
-        List<BranchData> branchDataList = new ArrayList<BranchData>(){{add(null);}{
-        BranchData branchData = new BranchData(0, 0, null, 0, 1);
-        add(branchData);}};
-        branchDataLists.add(new ArrayList<BranchData>());
-        branchDataLists.add(branchDataList);
-        files.add(new FileData("/dir/file.js", lines, null, branchDataLists));
+        SortedMap<Integer, List<BranchData>> branchDataMap = new TreeMap<Integer, List<BranchData>>();
+        List<BranchData> conditionsList = new ArrayList<BranchData>();
+        conditionsList.add(null);
+        conditionsList.add(new BranchData(0, 0, null, 0, 1));
+        branchDataMap.put(1, conditionsList);
+        files.add(new FileData("/dir/file.js", lines, null, branchDataMap));
 
         data = new CoberturaData(files);
         String xml = generator.generateXml(data, "srcDir", "version");
@@ -575,13 +570,12 @@ public class CoberturaXmlGeneratorTest {
     @Test
     public void shouldGenerateXmlBranchNoLineNoHit() throws Exception {
         List<Integer> lines = new ArrayList<Integer>();
-        List<List<BranchData>> branchDataLists = new ArrayList<List<BranchData>>();
-        List<BranchData> branchDataList = new ArrayList<BranchData>(){{add(null);}{
-        BranchData branchData = new BranchData(0, 0, null, 0, 0);
-        add(branchData);}};
-        branchDataLists.add(new ArrayList<BranchData>());
-        branchDataLists.add(branchDataList);
-        files.add(new FileData("/dir/file.js", lines, null, branchDataLists));
+        SortedMap<Integer, List<BranchData>> branchDataMap = new TreeMap<Integer, List<BranchData>>();
+        List<BranchData> conditionsList = new ArrayList<BranchData>();
+        conditionsList.add(null);
+        conditionsList.add(new BranchData(0, 0, null, 0, 0));
+        branchDataMap.put(1, conditionsList);
+        files.add(new FileData("/dir/file.js", lines, null, branchDataMap));
 
         data = new CoberturaData(files);
         String xml = generator.generateXml(data, "srcDir", "version");

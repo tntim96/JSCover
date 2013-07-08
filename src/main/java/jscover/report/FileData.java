@@ -343,12 +343,13 @@ Public License instead of this License.
 package jscover.report;
 
 import java.util.List;
+import java.util.SortedMap;
 
 //Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013, tntim96
 public class FileData extends CoverageAdapter {
     private String uri;
     private List<Integer> lines;
-    private List<List<BranchData>> branchData;
+    private SortedMap<Integer, List<BranchData>> branchData;
     private int codeLineCount;
     private int codeLinesCoveredCount;
     private int branchCount;
@@ -359,7 +360,7 @@ public class FileData extends CoverageAdapter {
     private int functionCount;
     private int functionsCoveredCount;
 
-    public FileData(String uri, List<Integer> lines, List<Integer> functions, List<List<BranchData>> branchData) {
+    public FileData(String uri, List<Integer> lines, List<Integer> functions, SortedMap<Integer, List<BranchData>> branchData) {
         this.uri = uri;
         this.lines = lines;
         this.functions = functions;
@@ -378,7 +379,7 @@ public class FileData extends CoverageAdapter {
         this.lines.set(index, this.lines.get(index) + coverage);
     }
 
-    public List<List<BranchData>> getBranchData() {
+    public SortedMap<Integer, List<BranchData>> getBranchData() {
         return branchData;
     }
 
@@ -444,7 +445,7 @@ public class FileData extends CoverageAdapter {
 
     public void calculateBranchStatistics() {
         if (branchCount == 0) {
-            for (int i = 1; i < branchData.size(); i++) {
+            for (int i : branchData.keySet()) {
                 List<BranchData> branchDatas = branchData.get(i);
                 if (branchDatas != null) {
                     for (int j = 1; j < branchDatas.size(); j++) {

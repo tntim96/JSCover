@@ -1,6 +1,9 @@
-0.3.2 / 2013-??-??
+0.4.0 / 2013-??-??
 ==================
+  * Reduce branch data JSON size (https://github.com/tntim96/JSCover/issues/73)
   * Allow `-fs` to be last option (https://github.com/tntim96/JSCover/issues/71)
+  * Internal: Move common JavaScript functions to common JavaScript file
+              Remove unused JavaScript functions
 
 0.3.1 / 2013-06-28
 ==================

@@ -417,7 +417,7 @@ public class BranchStatementBuilder {
         PropertyGet branchProperty = new PropertyGet(indexJSFile, branchPropertyName);
 
         NumberLiteral lineNumberLiteral = new NumberLiteral();
-        lineNumberLiteral.setValue("" + lineNo);
+        lineNumberLiteral.setValue("'" + lineNo + "'");
         return new ElementGet(branchProperty, lineNumberLiteral);
     }
 

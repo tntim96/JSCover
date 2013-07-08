@@ -370,9 +370,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.argThat;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.*;
 
 //Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013
 @RunWith(MockitoJUnitRunner.class)
@@ -483,7 +481,7 @@ public class MainTest {
         List<Integer> lines = new ArrayList<Integer>();
         for (int i = 0; i <= 42; i++)
             lines.add(i);
-        List<List<BranchData>> branches = new ArrayList<List<BranchData>>();
+        SortedMap<Integer, List<BranchData>> branches = new TreeMap<Integer, List<BranchData>>();
         List<Integer> functions = new ArrayList<Integer>();
         list.put("/test.js", new FileData("/test.js", lines, functions, branches));
         given(jsonDataMerger.jsonToMap(json)).willReturn(list);

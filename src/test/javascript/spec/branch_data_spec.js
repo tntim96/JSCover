@@ -118,7 +118,7 @@ $(document).ready(function() {
         });
 
         it("should handle undefined branch JSON data object", function() {
-            expect(convertBranchDataLinesToJSON(undefined)).toEqual('[]');
+            expect(convertBranchDataLinesToJSON(undefined)).toEqual('{}');
         });
 
         it("should handle undefined branch JSON data string", function() {
@@ -126,36 +126,36 @@ $(document).ready(function() {
         });
 
         it("should convert multiple lines to JSON and back", function() {
-            var lines = new Array();
-            lines[1] = new Array();
-            lines[1][1] = new BranchData().init(1,10,'src1');
-            lines[1][2] = new BranchData().init(2,20,'src2');
-            lines[2] = new Array();
-            lines[2][1] = new BranchData().init(3,30,'src3');
-            lines[2][2] = new BranchData().init(4,40,'src4');
-            lines[2][2].ranCondition(false);
-            lines[2][2].ranCondition(true);
+            var lines = {};
+            lines['1'] = new Array();
+            lines['1'][1] = new BranchData().init(1,10,'src1');
+            lines['1'][2] = new BranchData().init(2,20,'src2');
+            lines['2'] = new Array();
+            lines['2'][1] = new BranchData().init(3,30,'src3');
+            lines['2'][2] = new BranchData().init(4,40,'src4');
+            lines['2'][2].ranCondition(false);
+            lines['2'][2].ranCondition(true);
 
             var json = convertBranchDataLinesToJSON(lines);
             var jsonObject = eval('(' + json + ')');
             var fromJSON = convertBranchDataLinesFromJSON(jsonObject);
-            expect(fromJSON[0]).toBeNull();
+            expect(fromJSON[0]).toBeUndefined();
 
-            expect(fromJSON[1][0]).toBeNull();
-            expect(fromJSON[1][1].position).toEqual(1);
-            expect(fromJSON[1][1].nodeLength).toEqual(10);
-            expect(fromJSON[1][1].covered()).toEqual(false);
-            expect(fromJSON[1][2].position).toEqual(2);
-            expect(fromJSON[1][2].nodeLength).toEqual(20);
-            expect(fromJSON[1][2].covered()).toEqual(false);
+            expect(fromJSON['1'][0]).toBeNull();
+            expect(fromJSON['1'][1].position).toEqual(1);
+            expect(fromJSON['1'][1].nodeLength).toEqual(10);
+            expect(fromJSON['1'][1].covered()).toEqual(false);
+            expect(fromJSON['1'][2].position).toEqual(2);
+            expect(fromJSON['1'][2].nodeLength).toEqual(20);
+            expect(fromJSON['1'][2].covered()).toEqual(false);
 
-            expect(fromJSON[2][0]).toBeNull();
-            expect(fromJSON[2][1].position).toEqual(3);
-            expect(fromJSON[2][1].nodeLength).toEqual(30);
-            expect(fromJSON[2][1].covered()).toEqual(false);
-            expect(fromJSON[2][2].position).toEqual(4);
-            expect(fromJSON[2][2].nodeLength).toEqual(40);
-            expect(fromJSON[2][2].covered()).toEqual(true);
+            expect(fromJSON['2'][0]).toBeNull();
+            expect(fromJSON['2'][1].position).toEqual(3);
+            expect(fromJSON['2'][1].nodeLength).toEqual(30);
+            expect(fromJSON['2'][1].covered()).toEqual(false);
+            expect(fromJSON['2'][2].position).toEqual(4);
+            expect(fromJSON['2'][2].nodeLength).toEqual(40);
+            expect(fromJSON['2'][2].covered()).toEqual(true);
         });
     });
 });

@@ -384,32 +384,39 @@ public class LCovGeneratorIntegrationTest {
         dest = new File("target/test.lcov");
         lCovGenerator.saveData(data.values(), path, dest);
         String result = ioUtils.loadFromFileSystem(dest);
-        String expected = "SF:" + path + "/doc/example" + "/script.js\n" +
-                "FNF:0\n" +
-                "FNH:0\n" +
-                "BRDA:3,0,1,2\n" +
-                "BRDA:3,0,2,-\n" +
-                "BRDA:6,0,1,1\n" +
-                "BRDA:6,0,2,1\n" +
-                "BRDA:9,0,1,1\n" +
+        String expected = "SF:" + path + "/script.js\n" +
+                "FNDA:1,0\n" +
+                "FNDA:1,1\n" +
+                "FNDA:2,2\n" +
+                "FNF:3\n" +
+                "FNH:3\n" +
+                "BRDA:9,0,1,2\n" +
                 "BRDA:9,0,2,-\n" +
-                "BRDA:12,0,1,-\n" +
+                "BRDA:12,0,1,1\n" +
                 "BRDA:12,0,2,1\n" +
+                "BRDA:15,0,1,1\n" +
+                "BRDA:15,0,2,-\n" +
+                "BRDA:18,0,1,-\n" +
+                "BRDA:18,0,2,1\n" +
                 "DA:1,2\n" +
-                "DA:2,2\n" +
-                "DA:3,2\n" +
-                "DA:4,0\n" +
-                "DA:6,2\n" +
-                "DA:7,1\n" +
-                "DA:9,1\n" +
+                "DA:2,1\n" +
+                "DA:4,2\n" +
+                "DA:5,1\n" +
+                "DA:7,2\n" +
+                "DA:8,2\n" +
+                "DA:9,2\n" +
                 "DA:10,0\n" +
-                "DA:12,1\n" +
+                "DA:12,2\n" +
                 "DA:13,1\n" +
-                "DA:15,2\n" +
-                "DA:16,2\n" +
-                "DA:17,2\n" +
-                "DA:18,2\n" +
-                "DA:19,2\n" +
+                "DA:15,1\n" +
+                "DA:16,0\n" +
+                "DA:18,1\n" +
+                "DA:19,1\n" +
+                "DA:21,2\n" +
+                "DA:22,2\n" +
+                "DA:23,2\n" +
+                "DA:24,2\n" +
+                "DA:25,2\n" +
                 "end_of_record\n";
         assertThat(result, equalTo(expected));
     }

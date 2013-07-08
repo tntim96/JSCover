@@ -348,6 +348,8 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -367,11 +369,9 @@ public class LCovGeneratorTest {
         lines.add(0);
         lines.add(5);
 
-        List<List<BranchData>> branches = new ArrayList<List<BranchData>>();
-        branches.add(null);
-        branches.add(asList(null, getBranchData(1, 0), getBranchData(0, 1)));
-        branches.add(null);
-        branches.add(asList(null, getBranchData(1, 1)));
+        SortedMap<Integer, List<BranchData>> branches = new TreeMap<Integer, List<BranchData>>();
+        branches.put(1, asList(null, getBranchData(1, 0), getBranchData(0, 1)));
+        branches.put(3, asList(null, getBranchData(1, 1)));
 
         List<Integer> functions = new ArrayList<Integer>();
         functions.add(7);

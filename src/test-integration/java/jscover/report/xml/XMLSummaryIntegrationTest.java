@@ -379,12 +379,12 @@ public class XMLSummaryIntegrationTest {
         DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         Document document = builder.parse(dest);
 
-        assertThat(getXPath(xpath, document, "/coverage/@line-rate"), equalTo("0.534072"));
-        assertThat(getXPath(xpath, document, "/coverage/@branch-rate"), equalTo("0.346167"));
-        assertThat(getXPath(xpath, document, "/coverage/@lines-covered"), equalTo("3950"));
-        assertThat(getXPath(xpath, document, "/coverage/@lines"), equalTo("7396"));
-        assertThat(getXPath(xpath, document, "/coverage/@branches-covered"), equalTo("2005"));
-        assertThat(getXPath(xpath, document, "/coverage/@branches"), equalTo("5792"));
+        assertThat(getXPath(xpath, document, "/coverage/@line-rate"), equalTo("0.530135"));
+        assertThat(getXPath(xpath, document, "/coverage/@branch-rate"), equalTo("0.343301"));
+        assertThat(getXPath(xpath, document, "/coverage/@lines-covered"), equalTo("3967"));
+        assertThat(getXPath(xpath, document, "/coverage/@lines"), equalTo("7483"));
+        assertThat(getXPath(xpath, document, "/coverage/@branches-covered"), equalTo("2009"));
+        assertThat(getXPath(xpath, document, "/coverage/@branches"), equalTo("5852"));
         assertThat(getXPath(xpath, document, "/coverage/@version"), equalTo("theVersion"));
     }
 

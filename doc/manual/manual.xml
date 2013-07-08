@@ -1113,13 +1113,13 @@ if (! _$jscoverage['test.js']) {
     _$jscoverage['test.js'].lineData[1] = 0;
 }
 if (! _$jscoverage['test.js'].branchData) {
-    _$jscoverage['test.js'].branchData = [];
-    _$jscoverage['test.js'].branchData[1] = [];
-    _$jscoverage['test.js'].branchData[1][1] = new BranchData();
+    _$jscoverage['test.js'].branchData = {};
+    _$jscoverage['test.js'].branchData['1'] = [];
+    _$jscoverage['test.js'].branchData['1'][1] = new BranchData();
 }
-_$jscoverage['test.js'].branchData[1][1].init(19, 5, 'x > 0');
+_$jscoverage['test.js'].branchData['1'][1].init(19, 5, 'x > 0');
 function visit1_2_1(result) {
-    _$jscoverage['test.js'].branchData[1][1].ranCondition(result);
+    _$jscoverage['test.js'].branchData['1'][1].ranCondition(result);
     return result;
 }
 var y = visit1_2_1(x > 0) ? 1 : 0;</code>
@@ -1150,7 +1150,7 @@ if (! _$jscoverage['test.js'].functionData) {
     _$jscoverage['test.js'].functionData[0] = 0;
 }
 if (! _$jscoverage['test.js'].branchData) {
-    _$jscoverage['test.js'].branchData = [];
+    _$jscoverage['test.js'].branchData = {};
 }
 _$jscoverage['test.js'].lineData[1]++;
 function square(x) {
@@ -1226,11 +1226,10 @@ function square(x) {
     {
       "lineData":[null,1,1,1],       //Each element represents a line. Value is number of times executed.
       "functionData":[4,7,0],        //Each element represents a function. Value is number of times executed.
-      "branchData":[
-            null,                    //Each element represents a line. See below for value.
-            null,
-            null,
-            [null,                   //Each element represents a branch per line
+      "branchData":{
+            "9",                     //Each key represents a line. See below for value.
+            [
+                null,                //Each element represents a branch/condition per line
                 {
                     "position":n,    //Branch starts n chars in from line (future use)
                     "nodeLength":n,  //Branch length is n (future use)
@@ -1239,7 +1238,7 @@ function square(x) {
                     "evalTrue":0     //Number of times true path executed
                 }
              ]
-       ]
+       }
     }
 }</code>
                     </text>

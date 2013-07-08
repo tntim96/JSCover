@@ -429,7 +429,7 @@ public class LCovGenerator {
     }
 
     private void processBranches(FileData coverageData, StringBuilder lcov) {
-        for (int lineNumber = 0; lineNumber < coverageData.getBranchData().size(); lineNumber++) {
+        for (Integer lineNumber: coverageData.getBranchData().keySet()) {
             List<BranchData> conditions = coverageData.getBranchData().get(lineNumber);
             if (conditions != null) {
                 for (int j = 0; j < conditions.size(); j++) {

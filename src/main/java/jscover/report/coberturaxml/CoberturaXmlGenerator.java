@@ -358,6 +358,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.StringWriter;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -445,7 +446,9 @@ public class CoberturaXmlGenerator {
     }
 
     private void addLines(Document doc, Element linesElement, FileData fileData) {
-        int maxLines = Math.max(fileData.getLines().size(), fileData.getBranchData().size());
+        int maxLines = fileData.getLines().size();
+        if (fileData.getBranchData().size() > 0)
+            maxLines = Math.max(fileData.getLines().size(), Collections.max(fileData.getBranchData().keySet())+1);
         for (int i = 0; i < maxLines; i++) {
             Element lineElement = null;
             //Add line element
@@ -470,10 +473,8 @@ public class CoberturaXmlGenerator {
     }
 
     private void addBranchElement(Document doc, Element linesElement, FileData fileData, int i, Element lineElement) {
-        if (i < fileData.getBranchData().size()) {
+        if (fileData.getBranchData().keySet().contains(i)) {
             List<BranchData> branchDatas = fileData.getBranchData().get(i);
-            if (fileData.getBranchData().get(i).size() < 2)
-                return;
             if (lineElement == null) {
                 lineElement = doc.createElement("line");
                 linesElement.appendChild(lineElement);

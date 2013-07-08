@@ -346,6 +346,8 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -395,11 +397,9 @@ public class FileDataTest {
     
     @Test
     public void shouldReturnBranchStats() {
-        List<List<BranchData>> lines = new ArrayList<List<BranchData>>();
-        lines.add(null);
-        lines.add(asList(null, getBranchData(1, 0), getBranchData(0, 1)));
-        lines.add(null);
-        lines.add(asList(null, getBranchData(1, 1)));
+        SortedMap<Integer, List<BranchData>> lines = new TreeMap<Integer, List<BranchData>>();
+        lines.put(3, asList(null, getBranchData(1, 0), getBranchData(0, 1)));
+        lines.put(9, asList(null, getBranchData(1, 1)));
         FileData lineData = new FileData("test.js", null, null, lines);
         assertThat(lineData.getBranchCount(), equalTo(6));
         assertThat(lineData.getBranchCount(), equalTo(6));//Check cache

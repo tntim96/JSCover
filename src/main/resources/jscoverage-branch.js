@@ -95,28 +95,22 @@ function convertBranchDataConditionArrayToJSON(branchDataConditionArray) {
 
 function convertBranchDataLinesToJSON(branchData) {
     if (branchData === undefined) {
-        return '[]'
+        return '{}'
     }
-    var array = [];
-    var length = branchData.length;
-    for (var line = 0; line < length; line++) {
-        var branchDataObject = branchData[line];
-        if (branchDataObject === undefined || branchDataObject === null) {
-            value = 'null';
-        } else {
-            value = convertBranchDataConditionArrayToJSON(branchDataObject);
-        }
-        array.push(value);
+    var json = '';
+    for (var line in branchData) {
+        if (json !== '')
+            json += ','
+        json += '"' + line + '":' + convertBranchDataConditionArrayToJSON(branchData[line]);
     }
-    return '[' + array.join(',') + ']';
+    return '{' + json + '}';
 }
 
 function convertBranchDataLinesFromJSON(jsonObject) {
     if (jsonObject === undefined) {
-        return [];
+        return {};
     }
-    var length = jsonObject.length;
-    for (var line = 0; line < length; line++) {
+    for (var line in jsonObject) {
         var branchDataJSON = jsonObject[line];
         if (branchDataJSON !== null) {
             for (var conditionIndex = 0; conditionIndex < branchDataJSON.length; conditionIndex ++) {

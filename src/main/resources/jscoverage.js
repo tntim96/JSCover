@@ -587,8 +587,7 @@ function jscoverage_recalculateSummaryTab(cc) {
     var num_executed_branches = 0;
     var fileBranchCC = cc[file].branchData;
     if (fileBranchCC) {
-        var branchLength = fileBranchCC.length;
-        for (lineNumber = 0; lineNumber < branchLength; lineNumber++) {
+        for (var lineNumber in fileBranchCC) {
           var conditions = fileBranchCC[lineNumber];
           var covered = undefined;
           if (conditions !== undefined && conditions !== null && conditions.length) {
@@ -951,7 +950,8 @@ function jscoverage_makeTable(lines) {
       row += '<td></td>';
     }
 
-    if (_$jscoverage[jscoverage_currentFile].branchData !== undefined && _$jscoverage[jscoverage_currentFile].branchData.length !== undefined) {
+    lineNumber = '' + lineNumber;
+    if (branchData !== undefined) {
         var branchClass = '';
         var branchText = '&#160;';
         if (branchData[lineNumber] !== undefined && branchData[lineNumber] !== null) {
@@ -965,7 +965,7 @@ function jscoverage_makeTable(lines) {
 
         }
         if (branchClass === 'r') {
-            branchText = '<a href="#" onclick="alert(buildBranchMessage(_$jscoverage[\''+jscoverage_currentFile+'\'].branchData['+lineNumber+']));">info</a>';
+            branchText = '<a href="#" onclick="alert(buildBranchMessage(_$jscoverage[\''+jscoverage_currentFile+'\'].branchData[\''+lineNumber+'\']));">info</a>';
         }
         row += '<td class="numeric '+branchClass+'"><pre>' + branchText + '</pre></td>';
     }
@@ -1275,37 +1275,6 @@ var ProgressBar = {
 
 // -----------------------------------------------------------------------------
 // reports
-
-function jscoverage_pad(s) {
-  return '0000'.substr(s.length) + s;
-}
-
-function getArrayJSON(coverage) {
-    var array = [];
-    if (coverage  === undefined)
-      return array;
-
-    var length = coverage.length;
-    for (var line = 0; line < length; line++) {
-      var value = coverage[line];
-      if (value === undefined || value === null) {
-        value = 'null';
-      }
-      array.push(value);
-    }
-    return array;
-}
-
-function jscoverage_serializeCoverageToJSON() {
-  var json = [];
-  for (var file in _$jscoverage) {
-    var lineArray = getArrayJSON(_$jscoverage[file].lineData);
-    var fnArray = getArrayJSON(_$jscoverage[file].functionData);
-
-    json.push(jscoverage_quote(file) + ':{"lineData":[' + lineArray.join(',') + '],"functionData":[' + fnArray.join(',') + '],"branchData":' + convertBranchDataLinesToJSON(_$jscoverage[file].branchData) + '}');
-  }
-  return '{' + json.join(',') + '}';
-}
 
 function jscoverage_storeButton_click() {
   if (jscoverage_inLengthyOperation) {

@@ -417,12 +417,12 @@ public class CoberturaXmlGeneratorIntegrationTest {
 
         //Check summary
         assertThat(getXPath(xpath, document, "/coverage/@complexity"), equalTo("0"));
-        assertThat(getXPath(xpath, document, "/coverage/@line-rate"), equalTo("0.5340724716062737"));
-        assertThat(getXPath(xpath, document, "/coverage/@branch-rate"), equalTo("0.3461671270718232"));
-        assertThat(getXPath(xpath, document, "/coverage/@lines-covered"), equalTo("3950"));
-        assertThat(getXPath(xpath, document, "/coverage/@lines-valid"), equalTo("7396"));
-        assertThat(getXPath(xpath, document, "/coverage/@branches-covered"), equalTo("2005"));
-        assertThat(getXPath(xpath, document, "/coverage/@branches-valid"), equalTo("5792"));
+        assertThat(getXPath(xpath, document, "/coverage/@line-rate"), equalTo("0.5301349726045703"));
+        assertThat(getXPath(xpath, document, "/coverage/@branch-rate"), equalTo("0.34330143540669855"));
+        assertThat(getXPath(xpath, document, "/coverage/@lines-covered"), equalTo("3967"));
+        assertThat(getXPath(xpath, document, "/coverage/@lines-valid"), equalTo("7483"));
+        assertThat(getXPath(xpath, document, "/coverage/@branches-covered"), equalTo("2009"));
+        assertThat(getXPath(xpath, document, "/coverage/@branches-valid"), equalTo("5852"));
         assertThat(getXPath(xpath, document, "/coverage/@version"), equalTo("theVersion"));
         assertThat(getXPath(xpath, document, "/coverage/@timestamp"), notNullValue());
 
@@ -430,17 +430,17 @@ public class CoberturaXmlGeneratorIntegrationTest {
         assertThat(getXPath(xpath, document, "/coverage/sources/source"), equalTo("c:/sourceDir"));
 
         //Check package
-        assertThat(getXPath(xpath, document, "count(/coverage/packages/package)"), equalTo("41"));
+        assertThat(getXPath(xpath, document, "count(/coverage/packages/package)"), equalTo("42"));
         String packageXPath = "/coverage/packages/package[@name='/build/yui']";
         assertThat(getXPath(xpath, document, packageXPath + "/@name"), equalTo("/build/yui"));
         assertThat(getXPath(xpath, document, packageXPath + "/@complexity"), equalTo("0"));
-        assertThat(getXPath(xpath, document, packageXPath + "/@line-rate"), equalTo("0.5852017937219731"));
-        assertThat(getXPath(xpath, document, packageXPath + "/@branch-rate"), equalTo("0.3778801843317972"));
+        assertThat(getXPath(xpath, document, packageXPath + "/@line-rate"), equalTo("0.5865470852017938"));
+        assertThat(getXPath(xpath, document, packageXPath + "/@branch-rate"), equalTo("0.3797235023041475"));
 
         //Check class
         String classXPath = packageXPath + "/classes/class[@name='/build/yui/yui.js']";
-        assertThat(getXPath(xpath, document, classXPath + "/@branch-rate"), equalTo("0.3778801843317972"));
-        assertThat(getXPath(xpath, document, classXPath + "/@line-rate"), equalTo("0.5852017937219731"));
+        assertThat(getXPath(xpath, document, classXPath + "/@branch-rate"), equalTo("0.3797235023041475"));
+        assertThat(getXPath(xpath, document, classXPath + "/@line-rate"), equalTo("0.5865470852017938"));
         assertThat(getXPath(xpath, document, classXPath + "/@complexity"), equalTo("0"));
         assertThat(getXPath(xpath, document, classXPath + "/@filename"), equalTo("build/yui/yui.js"));
 

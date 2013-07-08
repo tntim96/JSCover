@@ -1,30 +1,3 @@
-function getArrayJSON(coverage) {
-    var array = [];
-    if (coverage  === undefined)
-      return array;
-
-    var length = coverage.length;
-    for (var line = 0; line < length; line++) {
-      var value = coverage[line];
-      if (value === undefined || value === null) {
-        value = 'null';
-      }
-      array.push(value);
-    }
-    return array;
-}
-
-function jscoverage_serializeCoverageToJSON() {
-  var json = [];
-  for (var file in _$jscoverage) {
-    var lineArray = getArrayJSON(_$jscoverage[file].lineData);
-    var fnArray = getArrayJSON(_$jscoverage[file].functionData);
-
-    json.push(jscoverage_quote(file) + ':{"lineData":[' + lineArray.join(',') + '],"functionData":[' + fnArray.join(',') + '],"branchData":' + convertBranchDataLinesToJSON(_$jscoverage[file].branchData) + '}');
-  }
-  return '{' + json.join(',') + '}';
-}
-
 if (! window.jscoverage_report) {
   window.jscoverage_report = function jscoverage_report(dir) {
     var createRequest = function () {
@@ -34,10 +7,6 @@ if (! window.jscoverage_report) {
       else if (window.ActiveXObject) {
         return new ActiveXObject("Microsoft.XMLHTTP");
       }
-    };
-
-    var pad = function (s) {
-      return '0000'.substr(s.length) + s;
     };
 
     json = jscoverage_serializeCoverageToJSON();
