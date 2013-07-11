@@ -1260,7 +1260,7 @@ function square(x) {
                         <table>
                             <tr>
                                 <th>Feature</th>
-                                <th>JSCover (0.4.0)</th>
+                                <th>JSCover (1.0.0)</th>
                                 <th>JSCoverage (0.5.1)</th>
                             </tr>
                             <tr>
