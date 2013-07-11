@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="AntConfiguration">
-    <buildFile url="file://$PROJECT_DIR$/build.xml" />
+    <buildFile url="file://$PROJECT_DIR$/build.xml">
+      <antReference name="Apache Ant version 1.9.0" />
+    </buildFile>
   </component>
   <component name="ClearCaseSharedConfig">
     <option name="myUseUcmModel" value="true" />
@@ -489,27 +491,23 @@
   </component>
   <component name="WebServicesPlugin" addRequiredLibraries="true" />
   <component name="libraryTable">
-    <library name="Maven: asm:asm-tree:3.0">
+    <library name="Maven: com.ibm.icu:icu4j:2.6.1">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/asm/asm-tree/3.0/asm-tree-3.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/ibm/icu/icu4j/2.6.1/icu4j-2.6.1.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/asm/asm-tree/3.0/asm-tree-3.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/ibm/icu/icu4j/2.6.1/icu4j-2.6.1-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/asm/asm-tree/3.0/asm-tree-3.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/ibm/icu/icu4j/2.6.1/icu4j-2.6.1-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: asm:asm:3.0">
+    <library name="Maven: com.sun:tools:0">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/asm/asm/3.0/asm-3.0.jar!/" />
+        <root url="jar://$APPLICATION_HOME_DIR$/jre/lib/tools.jar!/" />
       </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/asm/asm/3.0/asm-3.0-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/asm/asm/3.0/asm-3.0-sources.jar!/" />
-      </SOURCES>
+      <JAVADOC />
+      <SOURCES />
     </library>
     <library name="Maven: commons-codec:commons-codec:1.7">
       <CLASSES>
@@ -555,6 +553,39 @@
         <root url="jar://$MAVEN_REPOSITORY$/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1-sources.jar!/" />
       </SOURCES>
     </library>
+    <library name="Maven: dom4j:dom4j:1.6.1">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/dom4j/dom4j/1.6.1/dom4j-1.6.1.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/dom4j/dom4j/1.6.1/dom4j-1.6.1-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/dom4j/dom4j/1.6.1/dom4j-1.6.1-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: jaxen:jaxen:1.1-beta-8">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/jaxen/jaxen/1.1-beta-8/jaxen-1.1-beta-8.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/jaxen/jaxen/1.1-beta-8/jaxen-1.1-beta-8-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/jaxen/jaxen/1.1-beta-8/jaxen-1.1-beta-8-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: jdom:jdom:1.0">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/jdom/jdom/1.0/jdom-1.0.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/jdom/jdom/1.0/jdom-1.0-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/jdom/jdom/1.0/jdom-1.0-sources.jar!/" />
+      </SOURCES>
+    </library>
     <library name="Maven: junit:junit:4.11">
       <CLASSES>
         <root url="jar://$MAVEN_REPOSITORY$/junit/junit/4.11/junit-4.11.jar!/" />
@@ -577,15 +608,15 @@
         <root url="jar://$MAVEN_REPOSITORY$/log4j/log4j/1.2.9/log4j-1.2.9-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: net.sourceforge.cobertura:cobertura:1.9.4.1">
+    <library name="Maven: net.sourceforge.cobertura:cobertura:2.0.2">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/cobertura/cobertura/1.9.4.1/cobertura-1.9.4.1.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/cobertura/cobertura/2.0.2/cobertura-2.0.2.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/cobertura/cobertura/1.9.4.1/cobertura-1.9.4.1-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/cobertura/cobertura/2.0.2/cobertura-2.0.2-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/cobertura/cobertura/1.9.4.1/cobertura-1.9.4.1-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/cobertura/cobertura/2.0.2/cobertura-2.0.2-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: net.sourceforge.cssparser:cssparser:0.9.9">
@@ -632,26 +663,26 @@
         <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/nekohtml/nekohtml/1.9.18/nekohtml-1.9.18-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.apache.ant:ant-launcher:1.7.0">
+    <library name="Maven: org.apache.ant:ant-launcher:1.8.3">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/apache/ant/ant-launcher/1.7.0/ant-launcher-1.7.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/apache/ant/ant-launcher/1.8.3/ant-launcher-1.8.3.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/apache/ant/ant-launcher/1.7.0/ant-launcher-1.7.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/apache/ant/ant-launcher/1.8.3/ant-launcher-1.8.3-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/apache/ant/ant-launcher/1.7.0/ant-launcher-1.7.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/apache/ant/ant-launcher/1.8.3/ant-launcher-1.8.3-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.apache.ant:ant:1.7.0">
+    <library name="Maven: org.apache.ant:ant:1.8.3">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/apache/ant/ant/1.7.0/ant-1.7.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/apache/ant/ant/1.8.3/ant-1.8.3.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/apache/ant/ant/1.7.0/ant-1.7.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/apache/ant/ant/1.8.3/ant-1.8.3-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/apache/ant/ant/1.7.0/ant-1.7.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/apache/ant/ant/1.8.3/ant-1.8.3-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.apache.commons:commons-lang3:3.1">
@@ -696,6 +727,17 @@
       </JAVADOC>
       <SOURCES>
         <root url="jar://$MAVEN_REPOSITORY$/org/apache/httpcomponents/httpmime/4.2.3/httpmime-4.2.3-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.ccil.cowan.tagsoup:tagsoup:0.9.7">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/ccil/cowan/tagsoup/tagsoup/0.9.7/tagsoup-0.9.7.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/ccil/cowan/tagsoup/tagsoup/0.9.7/tagsoup-0.9.7-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/ccil/cowan/tagsoup/tagsoup/0.9.7/tagsoup-0.9.7-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.eclipse.jetty:jetty-http:8.1.9.v20130131">
@@ -775,6 +817,39 @@
         <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/1.9.5/mockito-core-1.9.5-sources.jar!/" />
       </SOURCES>
     </library>
+    <library name="Maven: org.mortbay.jetty:jetty-util:6.1.14">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/mortbay/jetty/jetty-util/6.1.14/jetty-util-6.1.14.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/mortbay/jetty/jetty-util/6.1.14/jetty-util-6.1.14-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/mortbay/jetty/jetty-util/6.1.14/jetty-util-6.1.14-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.mortbay.jetty:jetty:6.1.14">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/mortbay/jetty/jetty/6.1.14/jetty-6.1.14.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/mortbay/jetty/jetty/6.1.14/jetty-6.1.14-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/mortbay/jetty/jetty/6.1.14/jetty-6.1.14-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.mortbay.jetty:servlet-api-2.5:6.1.14">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/mortbay/jetty/servlet-api-2.5/6.1.14/servlet-api-2.5-6.1.14.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/mortbay/jetty/servlet-api-2.5/6.1.14/servlet-api-2.5-6.1.14-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/mortbay/jetty/servlet-api-2.5/6.1.14/servlet-api-2.5-6.1.14-sources.jar!/" />
+      </SOURCES>
+    </library>
     <library name="Maven: org.mozilla:rhino:1.7R5PRE-forked">
       <CLASSES>
         <root url="jar://$PROJECT_DIR$/lib/runtime/js.jar!/" />
@@ -791,6 +866,61 @@
       </JAVADOC>
       <SOURCES>
         <root url="jar://$MAVEN_REPOSITORY$/org/objenesis/objenesis/1.0/objenesis-1.0-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.ow2.asm:asm-analysis:4.1">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/ow2/asm/asm-analysis/4.1/asm-analysis-4.1.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/ow2/asm/asm-analysis/4.1/asm-analysis-4.1-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/ow2/asm/asm-analysis/4.1/asm-analysis-4.1-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.ow2.asm:asm-commons:4.1">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/ow2/asm/asm-commons/4.1/asm-commons-4.1.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/ow2/asm/asm-commons/4.1/asm-commons-4.1-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/ow2/asm/asm-commons/4.1/asm-commons-4.1-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.ow2.asm:asm-tree:4.1">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/ow2/asm/asm-tree/4.1/asm-tree-4.1.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/ow2/asm/asm-tree/4.1/asm-tree-4.1-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/ow2/asm/asm-tree/4.1/asm-tree-4.1-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.ow2.asm:asm-util:4.1">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/ow2/asm/asm-util/4.1/asm-util-4.1.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/ow2/asm/asm-util/4.1/asm-util-4.1-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/ow2/asm/asm-util/4.1/asm-util-4.1-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.ow2.asm:asm:4.1">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/ow2/asm/asm/4.1/asm-4.1.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/ow2/asm/asm/4.1/asm-4.1-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/ow2/asm/asm/4.1/asm-4.1-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.w3c.css:sac:1.3">
@@ -848,6 +978,17 @@
         <root url="jar://$MAVEN_REPOSITORY$/xerces/xercesImpl/2.10.0/xercesImpl-2.10.0-sources.jar!/" />
       </SOURCES>
     </library>
+    <library name="Maven: xerces:xmlParserAPIs:2.6.2">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/xerces/xmlParserAPIs/2.6.2/xmlParserAPIs-2.6.2.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/xerces/xmlParserAPIs/2.6.2/xmlParserAPIs-2.6.2-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/xerces/xmlParserAPIs/2.6.2/xmlParserAPIs-2.6.2-sources.jar!/" />
+      </SOURCES>
+    </library>
     <library name="Maven: xml-apis:xml-apis:1.4.01">
       <CLASSES>
         <root url="jar://$MAVEN_REPOSITORY$/xml-apis/xml-apis/1.4.01/xml-apis-1.4.01.jar!/" />
@@ -857,6 +998,17 @@
       </JAVADOC>
       <SOURCES>
         <root url="jar://$MAVEN_REPOSITORY$/xml-apis/xml-apis/1.4.01/xml-apis-1.4.01-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: xom:xom:1.0b3">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/xom/xom/1.0b3/xom-1.0b3.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/xom/xom/1.0b3/xom-1.0b3-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/xom/xom/1.0b3/xom-1.0b3-sources.jar!/" />
       </SOURCES>
     </library>
   </component>

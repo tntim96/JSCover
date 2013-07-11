@@ -1,8 +1,9 @@
 To-do
 Maven release
 
-0.4.0 / 2013-??-??
+1.0.0 / 2013-??-??
 ==================
+  * Use Semantic Versioning 2.0.0 Guidelines (https://github.com/tntim96/JSCover/issues/76)
   * Reduce branch data JSON size (https://github.com/tntim96/JSCover/issues/73)
   * Add 'Stop Server' Button to UI (https://github.com/tntim96/JSCover/issues/74)
   * Allow `-fs` to be last option (https://github.com/tntim96/JSCover/issues/71)
