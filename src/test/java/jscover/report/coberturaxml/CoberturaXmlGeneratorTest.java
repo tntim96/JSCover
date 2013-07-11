@@ -430,25 +430,6 @@ public class CoberturaXmlGeneratorTest {
     }
 
     @Test
-    public void shouldNotStripLeadingCharIfNotASlash() throws Exception {
-        FileData coverable = mock(FileData.class);
-        files.add(coverable);
-
-        given(coverable.getUri()).willReturn("dir/file.js");
-
-        data = new CoberturaData(files);
-        String xml = generator.generateXml(data, "srcDir", "version");
-        //System.out.println("xml = " + xml);
-
-        Document document = parseXml(xml);
-        XPath xpath = XPathFactory.newInstance().newXPath();
-
-        String packageXPath = "/coverage/packages/package[@name='dir']";
-        String classXPath = packageXPath + "/classes/class[@name='dir/file.js']";
-        assertThat(getXPath(xpath, document, classXPath + "/@filename"), equalTo("dir/file.js"));
-    }
-
-    @Test
     public void shouldGenerateXmlForTwoFiles() throws Exception {
         FileData coverable1 = mock(FileData.class);
         files.add(coverable1);
