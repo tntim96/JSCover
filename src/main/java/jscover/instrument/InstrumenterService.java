@@ -369,7 +369,7 @@ public class InstrumenterService {
     }
 
     public void instrumentJSForFileSystem(CompilerEnvirons compilerEnvirons, File srcFile, File dest, String uri, boolean includeBranch, boolean includeFunction) {
-        SourceProcessor sourceProcessor = new SourceProcessor(compilerEnvirons, uri, includeBranch, includeFunction);
+        SourceProcessor sourceProcessor = new SourceProcessor(compilerEnvirons, "/" + uri, includeBranch, includeFunction);
         String source = ioUtils.loadFromFileSystem(srcFile);
         String jsInstrumented = sourceProcessor.processSourceForFileSystem(source);
         ioUtils.copy(jsInstrumented, dest);

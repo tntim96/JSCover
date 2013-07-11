@@ -368,7 +368,7 @@ public class InstrumenterServiceTest {
     public void shouldInstrumentForFileSystem() {
         File dest = new File("target/dest.js");
         dest.deleteOnExit();
-        service.instrumentJSForFileSystem(compilerEnvirons, src, dest, "/src.js", false, false);
+        service.instrumentJSForFileSystem(compilerEnvirons, src, dest, "src.js", false, false);
         String jsInstrumented = ioUtils.loadFromFileSystem(dest);
 
         assertThat(jsInstrumented, containsString("x++;"));
