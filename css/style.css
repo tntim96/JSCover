@@ -169,6 +169,16 @@ ul{
     box-shadow: inset 0px 0px 25px #244;
 }
 
+.textBlock {
+    padding: 15px;
+    box-shadow: inset 0px 0px 25px #244;
+}
+
+.bigQuote {
+    font-size: 20pt;
+    color: #99ffff;
+}
+
 .xmlTag {
     color: #04BFBF;
 }
