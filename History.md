@@ -1,7 +1,4 @@
-To-do
-Maven release
-
-1.0.0 / 2013-??-??
+1.0.0 / 2013-07-13
 ==================
   * Remove difference in web-server and file-system instrumentation (https://github.com/tntim96/JSCover/issues/77)
   * Use Semantic Versioning 2.0.0 Guidelines (https://github.com/tntim96/JSCover/issues/76)
