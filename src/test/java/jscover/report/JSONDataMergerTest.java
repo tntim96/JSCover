@@ -477,6 +477,17 @@ public class JSONDataMergerTest {
     }
 
     @Test
+    public void shouldGenerateEmptyCoverageJSONStringForEmptyJS() {
+        List<Integer> lines = new ArrayList<Integer>();
+        SortedMap<Integer, SortedSet<Integer>> branchData = new TreeMap<Integer, SortedSet<Integer>>();
+        final ScriptCoverageCount script = new ScriptCoverageCount("/test.js", lines, 0, branchData);
+        SortedMap<String, FileData> map = jsonMerger.createEmptyJSON(new ArrayList<ScriptCoverageCount>(){{add(script);}});
+
+        assertThat(map.keySet().iterator().next(), equalTo("/test.js"));
+        assertThat(map.values().iterator().next().getLines().size(), equalTo(0));
+    }
+
+    @Test
     public void shouldGenerateEmptyCoverageJSONStringWithComments() {
         List<Integer> lines = new ArrayList<Integer>(){{add(1);add(3);}};
         final ScriptCoverageCount script = new ScriptCoverageCount("/test.js", lines, 0, new TreeMap<Integer, SortedSet<Integer>>());

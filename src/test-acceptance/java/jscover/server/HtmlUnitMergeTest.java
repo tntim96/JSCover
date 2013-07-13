@@ -414,8 +414,10 @@ public class HtmlUnitMergeTest {
         assertEquals("33%", page.getElementById("branchSummaryTotal").getTextContent());
         assertEquals("50%", page.getElementById("functionSummaryTotal").getTextContent());
         verifyCoverage(page, "/root.js", "80%", "50%", "100%");
+        verifyCoverage(page, "/root-empty.js", "N/A", "N/A", "N/A");
         verifyCoverage(page, "/level1/level1.js", "75%", "50%", "N/A");
         verifyCoverage(page, "/level1/level2/level2.js", "0%", "0%", "0%");
+        verifyCoverage(page, "/level1/level2/level2-empty.js", "N/A", "N/A", "N/A");
     }
 
     private void saveUnloadedJS() throws IOException {

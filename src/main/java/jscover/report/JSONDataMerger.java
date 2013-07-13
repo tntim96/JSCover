@@ -528,6 +528,8 @@ public class JSONDataMerger {
     }
 
     private List<Integer> getNoHitLineData(List<Integer> codeLines) {
+        if (codeLines.size() == 0)
+            return new ArrayList<Integer>();
         Integer[] lines = new Integer[codeLines.get(codeLines.size() - 1) + 1];
         for (int i = 0; i < codeLines.size(); i++) {
             lines[codeLines.get(i)] = 0;

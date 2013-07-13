@@ -1,3 +1,8 @@
+1.0.1 / 2013-07-??
+==================
+  * Empty JS Source not viewable (https://github.com/tntim96/JSCover/issues/79)
+  * Empty JS source causes exception upon storing (https://github.com/tntim96/JSCover/issues/78)
+
 1.0.0 / 2013-07-13
 ==================
   * Remove difference in web-server and file-system instrumentation (https://github.com/tntim96/JSCover/issues/77)

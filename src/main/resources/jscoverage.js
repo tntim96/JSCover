@@ -1065,9 +1065,6 @@ function jscoverage_recalculateSourceTab() {
             throw request.status;
           }
           var response = request.responseText;
-          if (response === '') {
-            throw 404;
-          }
           var displaySource = function() {
               var lines = response.split(/\n/);
               for (var i = 0; i < lines.length; i++)
