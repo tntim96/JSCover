@@ -190,13 +190,29 @@
                     </text>
                 </item>
                 <item>
+                    <heading id="gettingStartedServerStop">Stop The Server</heading>
+                    <text>
+                        To stop the server, click on the
+                        <var>Store</var>
+                        tab and then the
+                        <var>Stop Server</var>
+                        button.
+                        <br/>
+                        <imgThumb src="images/ws-10-stop.png" alt="Stop Server" width="650"/>
+                    </text>
+                    <text>
+                        Alternatively, the server can be stopped by entering the URI path
+                        <var>/stop</var> (for example <var>http://localhost:8080/stop</var>).
+                    </text>
+                </item>
+                <item>
                     <heading id="gettingStartedServerAbout">About Page</heading>
                     <text>
                         Version and other information can be viewed by clicking on the
                         <var>About</var>
                         tab:
                         <br/>
-                        <img src="images/ws-10-about.png"/>
+                        <img src="images/ws-11-about.png"/>
                     </text>
                 </item>
             </item>
