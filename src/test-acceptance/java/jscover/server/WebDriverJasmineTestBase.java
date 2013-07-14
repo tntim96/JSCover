@@ -468,12 +468,10 @@ public abstract class WebDriverJasmineTestBase {
         webClient.findElement(By.id("openInWindowButton")).click();
 
         String handle = webClient.getWindowHandle();
-        System.out.println("handle = " + handle);
         Set<String> allHandles = webClient.getWindowHandles();
         for(String currentHandle : allHandles) {
             if (!currentHandle.equals(handle)) {
                 webClient.switchTo().window(currentHandle);
-                System.out.println("currentHandle = " + currentHandle);
                 break;
             }
         }

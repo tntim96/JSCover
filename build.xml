@@ -109,11 +109,13 @@
         </jar>
     </target>
 
-    <target name="zip" depends="pre-commit, jar-test, jar-all-test">
+    <target name="zip">
         <zip destfile="${dist.dir}/${ant.project.name}-${version}.zip">
             <fileset dir="${basedir}">
                 <include name="**/*"/>
-                <exclude name=".*/**"/>
+                <exclude name=".gradle/**"/>
+                <exclude name=".settings/**"/>
+                <exclude name="*.log"/>
                 <exclude name="cobertura.ser"/>
                 <exclude name="junit*"/>
                 <exclude name="bin/**"/>
@@ -122,9 +124,12 @@
             </fileset>
             <fileset dir="${basedir}">
                 <include name="${dist.dir}/*.jar"/>
+                <exclude name="${dist.dir}/*-bundle.jar"/>
             </fileset>
         </zip>
     </target>
+
+    <target name="release" depends="pre-commit, jar-test, jar-all-test, zip" description="Build sourceforge release binary"/>
 
     <target name="maven-files" depends="jar-all" description="Maven Step 1 - Create files to be signed">
         <property name="mavenBundleDir" value="${build.dir}/mavenBundle"/>
