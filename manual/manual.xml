@@ -1002,8 +1002,8 @@
             <item>
                 <heading id="automatingWebDriver">WebDriver</heading>
                 <text>
-                    It's possible to run your JavaScripts tests and collect coverage datafrom a simple single Java class
-                    with web-driver.
+                    It's possible to run your JavaScripts tests and collect coverage data from a simple single Java
+                    class with web-driver.
                     The JSCover server can be started as a thread, and there is no need for the Selenium server.
                     The examples use Jasmine and Jasmine's <var>HtmlReporter</var>. All implementations are based on
                     <a href="https://github.com/tntim96/JSCover/blob/master/src/test-acceptance/java/jscover/server/WebDriverJasmineTestBase.java"
