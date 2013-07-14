@@ -17,8 +17,9 @@ What you need:
 * Java (minimum 1.5)
 * Ant (developed with version 1.9.0)
 * Ant's [Maven Task](http://maven.apache.org/ant-tasks/index.html) (developed with maven-ant-tasks-2.1.3.jar)
+* InternetExplorer and Chrome drivers for Selenium and PhantomJS for the WebDriver examples
 
-Most development has been done with IntelliJ community edition, and some with Eclipse.
+Most development has been done with IntelliJ ultimate edition, and some with Eclipse and IntelliJ community edition.
 Project files for both IDEs are checked in, but any editor can be used.
 Before checking in any changes, be sure to run the build files `pre-commit`.
 NB: `pre-commit` runs the report and enforces coverage limits on unit and integration tests.

@@ -1000,6 +1000,27 @@
                 </text>
             </item>
             <item>
+                <heading id="automatingWebDriver">WebDriver</heading>
+                <text>
+                    It's possible to run your JavaScripts tests and collect coverage datafrom a simple single Java class
+                    with web-driver.
+                    The JSCover server can be started as a thread, and there is no need for the Selenium server.
+                    The examples use Jasmine and Jasmine's <var>HtmlReporter</var>. All implementations are based on
+                    <a href="https://github.com/tntim96/JSCover/blob/master/src/test-acceptance/java/jscover/server/WebDriverJasmineTestBase.java"
+                            >WebDriverJasmineTestBase</a>.
+                    There are examples with:
+                    <ul>
+                        <li><a href="https://github.com/tntim96/JSCover/blob/master/src/test-acceptance/java/jscover/server/WebDriverJasmineFireFoxTest.java" target="_blank">FireFox</a></li>
+                        <li><a href="https://github.com/tntim96/JSCover/blob/master/src/test-acceptance/java/jscover/server/WebDriverJasmineTestBase.java" target="_blank">PhantomJS</a></li>
+                        <li><a href="https://github.com/tntim96/JSCover/blob/master/src/test-acceptance/java/jscover/server/WebDriverJasmineIETest.java" target="_blank">Internet Explorer</a></li>
+                        <li><a href="https://github.com/tntim96/JSCover/blob/master/src/test-acceptance/java/jscover/server/WebDriverChromeTest.java" target="_blank">Google Chrome</a></li>
+                    </ul>
+                </text>
+                <text>
+                    Any suggestions or contributions are welcome to this WIP.
+                </text>
+            </item>
+            <item>
                 <heading id="automatingSelenium">Selenium</heading>
                 <text>
                     Example of JavaScript to store the report:
@@ -1008,17 +1029,6 @@
                 <text>
                     Example of JavaScript to retrieve the JSON coverage data:
                 <code>String jscoverageJson = selenium.getEval("selenium.browserbot.getUserWindow().jscoverage_serializeCoverageToJSON();");</code>
-                </text>
-            </item>
-            <item>
-                <heading id="automatingWebDriver">WebDriver</heading>
-                <text>
-                    For a working example see
-                    <a href="https://github.com/tntim96/JMonitaur/blob/master/jmonitaur-parent/jmonitaur-webapp/src/test/java/com/github/tntim96/jmonitaur/web/WebDriverJasmineTest.java"
-                            >WebDriverJasmineTest</a>
-                </text>
-                <text>
-                    Any suggestions or contributions are welcome to this WIP.
                 </text>
             </item>
             <item>

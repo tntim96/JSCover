@@ -353,7 +353,7 @@ import org.junit.Test;
 import java.io.IOException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.StringContains.containsString;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 
 public class HtmlUnitJSTest {
@@ -393,9 +393,9 @@ public class HtmlUnitJSTest {
         webClient.waitForBackgroundJavaScript(2000);
 
         //Verify Jasmine test result
-        String jasmineResultXPath = "//div[@id='TrivialReporter']/div[2]/span[1]/a";
+        String jasmineResultXPath = "//span[contains(@class,'failingAlert')]";
         HtmlPage frame = (HtmlPage)page.getFrameByName("browserIframe").getEnclosedPage();
-        assertThat(((HtmlElement) frame.getByXPath(jasmineResultXPath).get(0)).getTextContent(), containsString("0 failures"));
+        assertThat(frame.getByXPath(jasmineResultXPath).size(), equalTo(0));
 
         //Store Report
         ScriptResult result = frame.executeJavaScript("jscoverage_report();");

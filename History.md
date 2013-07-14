@@ -2,6 +2,7 @@
 ==================
   * Empty JS Source not viewable (https://github.com/tntim96/JSCover/issues/79)
   * Empty JS source causes exception upon storing (https://github.com/tntim96/JSCover/issues/78)
+  * Add WebDriver samples with FireFox, PhantomJS, Internet Explorer and Google Chrome
 
 1.0.0 / 2013-07-13
 ==================
