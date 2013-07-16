@@ -406,6 +406,7 @@ public class HtmlUnitProxyTest extends HtmlUnitServerTest {
         ProxyConfig proxyConfig = new ProxyConfig("localhost", proxyPort);
         proxyConfig.addHostsToProxyBypass("127.0.0.1");
         webClient.getOptions().setProxyConfig(proxyConfig);
+        webClient.getOptions().setTimeout(1000);
     }
 
     @Override
