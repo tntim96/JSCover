@@ -353,6 +353,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlTable;
 import jscover.Main;
 import jscover.util.IoUtils;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -395,6 +396,7 @@ public class HtmlUnitServerTest {
             });
             server.start();
         }
+        webClient.getOptions().setTimeout(1000);
     }
 
     protected String[] getArgs() {
@@ -618,6 +620,26 @@ public class HtmlUnitServerTest {
 
         String data = page.getHtmlElementById("postData").getTextContent();
         assertThat(data, equalTo("inputName=POST+data%21%21%21"));
+    }
+
+    @Test
+    public void shouldWorkWithFileNoBOMUpload() throws Exception {
+        testFileUpload("data/test-utf-no-bom.txt");
+    }
+
+    @Test
+    @Ignore
+    public void shouldWorkWithFileBOMUpload() throws Exception {
+        testFileUpload("data/test-utf-bom.txt");
+    }
+
+    private void testFileUpload(String postFile) throws IOException {
+        HtmlPage page = webClient.getPage("http://localhost:9001/example/upload.html");
+        ((HtmlInput)page.getHtmlElementById("uploader")).setValueAttribute(postFile);
+        page = page.getHtmlElementById("submitButton").click();
+
+        String data = page.getHtmlElementById("postData").getTextContent();
+        assertThat(data, containsString("Line 1\nLine 2\n"));
     }
 
     protected void verifyTotal(WebClient webClient, HtmlPage page, int percentage) throws IOException {
