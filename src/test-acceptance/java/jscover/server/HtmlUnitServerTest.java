@@ -346,14 +346,12 @@ import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.ScriptResult;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebWindow;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlTable;
 import jscover.Main;
 import jscover.util.IoUtils;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -628,7 +626,6 @@ public class HtmlUnitServerTest {
     }
 
     @Test
-    @Ignore
     public void shouldWorkWithFileBOMUpload() throws Exception {
         testFileUpload("data/test-utf-bom.txt");
     }

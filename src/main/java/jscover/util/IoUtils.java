@@ -342,6 +342,8 @@ Public License instead of this License.
 
 package jscover.util;
 
+import org.apache.commons.io.input.ReaderInputStream;
+
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.Charset;
@@ -392,16 +394,12 @@ public class IoUtils {
     }
 
     public String toStringNoClose(Reader reader, int length) {
-        StringBuilder result = new StringBuilder();
-        int bufSize = 1024;
-        char buf[] = new char[bufSize];
-        int total = 0;
+        ReaderInputStream is = new ReaderInputStream(reader);
+        byte[] bytes = new byte[length];
         try {
-            for (int read = 0; total < length && (read = reader.read(buf)) != -1; ) {
-                total += read;
-                result.append(buf, 0, read);
-            }
-            return result.toString();
+            int bytesRead = is.read(bytes, 0, length);
+            assert bytesRead == length;
+            return new String(bytes);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

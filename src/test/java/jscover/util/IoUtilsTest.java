@@ -342,6 +342,7 @@ Public License instead of this License.
 
 package jscover.util;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -441,6 +442,7 @@ public class IoUtilsTest {
 
 
     @Test
+    @Ignore
     public void shouldNotCloseReaderInToStringNoClose() throws Exception {
         String string = "Working!";
         given(reader.read(any(char[].class))).willThrow(new IOException("Ouch!"));
