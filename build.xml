@@ -167,7 +167,6 @@
 			<fileset dir="${classes.main.dir}">
 				<include name="**/*.class" />
 				<exclude name="jscover/MainHelper.class" />
-                <exclude name="**/ReaderInputStream.class" />
                 <exclude name="**/SimpleWebServer.class" />
 			</fileset>
 			<classpath>
