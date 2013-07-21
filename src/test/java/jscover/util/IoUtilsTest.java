@@ -342,6 +342,7 @@ Public License instead of this License.
 
 package jscover.util;
 
+import org.hamcrest.Matchers;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -386,6 +387,19 @@ public class IoUtilsTest {
         ioUtils.toString(is);
     }
 
+    @Test
+    public void shouldConvertInputStreamToString() throws IOException {
+        String data = "Test";
+        byte bytes[] = data.getBytes();
+        assertThat(ioUtils.toStringNoClose(new ByteArrayInputStream(bytes), bytes.length), equalTo(data));
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void shouldWrapExceptionsInToStringNoCloseInputStream() throws IOException {
+        given(is.read(any(byte[].class), anyInt(), anyInt())).willThrow(new IOException("Ouch!"));
+        ioUtils.toStringNoClose(is, 10);
+    }
+
     @Test(expected = RuntimeException.class)
     public void shouldWrapExceptionsInToStringFile() {
         ioUtils.toString(new File("/"));
@@ -421,6 +435,54 @@ public class IoUtilsTest {
             ioUtils.copyNoClose(file, os);
             fail();
         } catch(Throwable throwable) {
+            verify(os, times(0)).close();
+        }
+    }
+
+    @Test
+    public void shouldCopyISToOSNoClose() throws Exception {
+        String data = "data";
+        byte bytes[] = data.getBytes();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        ioUtils.copyNoClose(new ByteArrayInputStream(bytes), baos);
+
+        assertThat(new String(baos.toByteArray()), equalTo(data));
+    }
+
+    @Test
+    public void shouldWrapExceptionsInCopyISToOSNoClose() throws Exception {
+        doThrow(new IOException("Ouch!")).when(os).write(any(byte[].class), anyInt(), anyInt());
+        try {
+            ioUtils.copyNoClose(is, os);
+            fail();
+        } catch(Throwable throwable) {
+            verify(is, times(0)).close();
+            verify(os, times(0)).close();
+        }
+    }
+
+    @Test
+    public void shouldCopyISToOSNoCloseLength() throws Exception {
+        String data = "data";
+        byte bytes[] = data.getBytes();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        ioUtils.copyNoClose(new ByteArrayInputStream(bytes), baos, bytes.length);
+
+        assertThat(new String(baos.toByteArray()), equalTo(data));
+    }
+
+    @Test
+    public void shouldWrapExceptionsInCopyISToOSNoCloseLength() throws Exception {
+        String data = "data";
+        byte bytes[] = data.getBytes();
+        doThrow(new IOException("Ouch!")).when(os).write(any(byte[].class), anyInt(), anyInt());
+        try {
+            ioUtils.copyNoClose(new ByteArrayInputStream(bytes), os, bytes.length);
+            fail();
+        } catch(Throwable throwable) {
+            verify(is, times(0)).close();
             verify(os, times(0)).close();
         }
     }
@@ -528,7 +590,18 @@ public class IoUtilsTest {
 
     @Test(expected = RuntimeException.class)
     public void shouldWrapExceptionsInCopyFileToFile() {
-        ioUtils.copy(new File("target"), new File("target"));
+        File dest = mock(File.class);
+        given(dest.getParentFile()).willReturn(dest);
+
+        ioUtils.copy(new File("target"), dest);
+    }
+
+    @Test//(expected = RuntimeException.class)
+    public void shouldWrapExceptionsInIsSubDirectory() throws IOException {
+        File file = mock(File.class);
+        given(file.getCanonicalPath()).willThrow(new IOException("Ouch!"));
+
+        assertThat(ioUtils.isSubDirectory(file, file), Matchers.is(false));
     }
 
     @Test
