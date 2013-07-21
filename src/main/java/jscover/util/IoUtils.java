@@ -392,9 +392,11 @@ public class IoUtils {
     }
 
     public String toStringNoClose(InputStream is, int length) {
-        byte[] bytes = new byte[Math.min(1024, length)];
+        byte bytes[] = new byte[length];
         try {
-            for (int total = 0, read = 0; total < length && (read = is.read(bytes)) != -1; total += read);
+            int total = 0;
+            for (int read = 0; total < length && (read = is.read(bytes, total, length-total)) != -1; total += read);
+            assert total == length;
             return new String(bytes);
         } catch (IOException e) {
             throw new RuntimeException(e);
