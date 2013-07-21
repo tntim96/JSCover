@@ -347,6 +347,9 @@ import java.net.Socket;
 import java.nio.charset.Charset;
 
 public class IoUtils {
+    public static String CRLFx2 = "\r\n\r\n";
+    public static String CRx2 = "\r\r";
+    public static String LFx2 = "\n\n";
     private static IoUtils ioUtils = new IoUtils();
 
     public static IoUtils getInstance() {

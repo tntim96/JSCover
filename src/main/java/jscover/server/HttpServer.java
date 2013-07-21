@@ -347,9 +347,11 @@ import jscover.util.JSCByteArrayInputStream;
 
 import java.io.*;
 import java.net.Socket;
+import java.nio.charset.Charset;
 import java.util.*;
 
 import static java.lang.String.format;
+import static jscover.util.IoUtils.*;
 
 public class HttpServer extends Thread {
 
@@ -403,7 +405,7 @@ public class HttpServer extends Thread {
 
             int postIndex = 0;
             if ("POST".equals(httpMethod))
-                postIndex = getPostIndex(headerBytes);
+                postIndex = getPostIndex(headerBytes, Charset.defaultCharset());
             HttpRequest httpRequest = new HttpRequest(path, pbis, os, postIndex, headers);
 
             pbis.unread(headerBytes, 0, read);
@@ -434,9 +436,22 @@ public class HttpServer extends Thread {
         }
     }
 
-    protected int getPostIndex(byte[] headerBytes) {
-        String firstBytes = new String(headerBytes);
-        String separator = "\r\n\r\n";
+    protected int getPostIndex(byte[] headerBytes, Charset charset) {
+        String firstBytes = new String(headerBytes, charset);
+        String separator = CRLFx2;
+        int index = firstBytes.indexOf(CRLFx2);
+        int indexCR = firstBytes.indexOf(CRx2);
+        int indexLF = firstBytes.indexOf(LFx2);
+        if (indexCR != -1 && indexCR < index) {
+            separator = CRx2;
+            index = indexCR;
+        }
+        if (indexLF != -1 && indexLF < index)
+            separator = LFx2;
+        return getByteIndex(firstBytes, separator);
+    }
+
+    private int getByteIndex(String firstBytes, String separator) {
         String header = firstBytes.substring(0, firstBytes.indexOf(separator) + separator.length());
         return header.getBytes().length;
     }
