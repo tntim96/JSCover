@@ -636,7 +636,7 @@ public class HtmlUnitServerTest {
         page = page.getHtmlElementById("submitButton").click();
 
         String data = page.getHtmlElementById("postData").getTextContent();
-        assertThat(data, containsString("Line 1\nLine 2\n"));
+        assertThat(data, containsString("Line 1\nLine 2"));
     }
 
     protected void verifyTotal(WebClient webClient, HtmlPage page, int percentage) throws IOException {

@@ -362,7 +362,7 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 @RunWith(MockitoJUnitRunner.class)
 public class ProxyServiceTest {
     private ProxyService proxyService = new ProxyService();
-    private HttpRequest request = new HttpRequest("test.js");
+    private HttpRequest request = new HttpRequest("test.js", null, null, 0, null);
     @Mock private HttpURLConnection conn;
     private Map<String, List<String>> headers = new HashMap<String, List<String>>();
 

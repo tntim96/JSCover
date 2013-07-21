@@ -343,6 +343,7 @@ Public License instead of this License.
 package jscover.server;
 
 import jscover.util.IoUtils;
+import jscover.util.JSCByteArrayInputStream;
 
 import java.io.*;
 import java.net.Socket;
@@ -356,6 +357,8 @@ public class HttpServer extends Thread {
     private String version;
     protected File wwwRoot;
     protected InputStream is;
+    protected PushbackInputStream pbis;
+    protected JSCByteArrayInputStream bais;
     protected OutputStream os;
     protected PrintWriter pw = null;
     protected IoUtils ioUtils = IoUtils.getInstance();
@@ -371,14 +374,20 @@ public class HttpServer extends Thread {
         try {
             is = socket.getInputStream();
             os = socket.getOutputStream();
-            br = new BufferedReader(new InputStreamReader(is));
+            int headerSize = 1024*5;
+            pbis = new PushbackInputStream(is, headerSize);
+            byte headerBytes[] = new byte[headerSize];
+            int read = pbis.read(headerBytes);
+
+            bais = new JSCByteArrayInputStream(headerBytes, 0, read);
+            br = new BufferedReader(new InputStreamReader(bais));
             pw = new PrintWriter(os);
 
             String requestString = br.readLine();
 
             StringTokenizer tokenizer = new StringTokenizer(requestString);
             String httpMethod = tokenizer.nextToken();
-            HttpRequest httpRequest = new HttpRequest(tokenizer.nextToken());
+            String path = tokenizer.nextToken();
             String headerLine;
             Map<String, List<String>> headers = new HashMap<String, List<String>>();
             while (!(headerLine = br.readLine()).equals("")) {
@@ -391,12 +400,27 @@ public class HttpServer extends Thread {
                     headers.get(headerField).add(headerValue);
                 }
             }
-            httpRequest.setHeaders(headers);
+
+            InputStream dataStream;
+            if (bais.getPosition() <= read) {
+                dataStream = new JSCByteArrayInputStream(headerBytes, 0, read);
+            } else {
+                dataStream = pbis;
+            }
+
+            int postIndex = 0;
+            if ("POST".equals(httpMethod))
+                postIndex = getPostIndex(headerBytes);
+            HttpRequest httpRequest = new HttpRequest(path, dataStream, os, postIndex, headers);
+
+            pbis.unread(headerBytes, 0, read);
+
 
             if (httpMethod.equals("GET")) {
                 if (httpRequest.getPath().equals("/stop")) {
                     sendResponse(HTTP_STATUS.HTTP_OK, MIME.TEXT_PLAIN, "Shutting down the server.");
                     ioUtils.closeQuietly(br);
+                    ioUtils.closeQuietly(pbis);
                     ioUtils.closeQuietly(os);
                     System.exit(0);
                 }
@@ -404,26 +428,38 @@ public class HttpServer extends Thread {
             } else if (httpMethod.equals("HEAD")) {
                 handleHead(httpRequest);
             } else if (httpMethod.equals("POST")) {
-                int length = Integer.valueOf(headers.get("Content-Length").get(0));
-                handlePost(httpRequest, ioUtils.toStringNoClose(br, length));
+                handlePost(httpRequest);
             } else
               throw new UnsupportedOperationException("No support for "+httpMethod);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             ioUtils.closeQuietly(br);
+            ioUtils.closeQuietly(pbis);
             ioUtils.closeQuietly(os);
             ioUtils.closeQuietly(socket);
         }
+    }
+
+    protected int getPostIndex(byte[] headerBytes) {
+        String firstBytes = new String(headerBytes);
+        String separator = "\r\n\r\n";
+        String header = firstBytes.substring(0, firstBytes.indexOf(separator) + separator.length());
+        return header.getBytes().length;
     }
 
     protected void handleHead(HttpRequest httpRequest) {
         throw new UnsupportedOperationException("No support for HEAD");
     }
 
-    protected void handlePost(HttpRequest request, String data) {
-        String response = format("<html><body>Posted<pre id=\"postData\">%s</pre></body></html>", data);
-        sendResponse(HTTP_STATUS.HTTP_OK, MIME.HTML, response);
+    protected void handlePost(HttpRequest request) {
+        try {
+            request.getInputStream().skip(request.getPostIndex());
+            String response = format("<html><body>Posted<pre id=\"postData\">%s</pre></body></html>", ioUtils.toString(request.getInputStream()));
+            sendResponse(HTTP_STATUS.HTTP_OK, MIME.HTML, response);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     protected void handleGet(HttpRequest request) throws IOException {

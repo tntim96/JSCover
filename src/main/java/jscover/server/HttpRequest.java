@@ -342,6 +342,8 @@ Public License instead of this License.
 
 package jscover.server;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -354,8 +356,15 @@ public class HttpRequest {
     private String path;
     private URL url;
     private Map<String, List<String>> headers;
+    private InputStream inputStream;
+    private OutputStream outputStream;
+    private int postIndex;
 
-    public HttpRequest(String path) {
+    public HttpRequest(String path, InputStream inputStream, OutputStream outputStream, int postIndex, Map<String, List<String>> headers) {
+        this.inputStream = inputStream;
+        this.outputStream = outputStream;
+        this.postIndex = postIndex;
+        this.headers = headers;
         try {
             this.url = new URL(path);
             this.path = url.getPath();
@@ -374,6 +383,18 @@ public class HttpRequest {
 
     public String getPath() {
         return path;
+    }
+
+    public InputStream getInputStream() {
+        return inputStream;
+    }
+
+    public int getPostIndex() {
+        return postIndex;
+    }
+
+    public OutputStream getOutputStream() {
+        return outputStream;
     }
 
     protected MIME getMime() {
@@ -398,6 +419,10 @@ public class HttpRequest {
 
     public Map<String, List<String>> getHeaders() {
         return headers;
+    }
+
+    public int getContentLength() {
+        return Integer.valueOf(headers.get("Content-Length").get(0));
     }
 
     public boolean skipInstrumentation() {

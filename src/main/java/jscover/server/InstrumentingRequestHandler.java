@@ -379,7 +379,7 @@ public class InstrumentingRequestHandler extends HttpServer {
     }
 
     @Override
-    protected void handlePost(HttpRequest request, String data) {
+    protected void handlePost(HttpRequest request) {
         String uri = request.getPath();
         if (uri.startsWith(JSCOVERAGE_STORE)) {
             File reportDir = configuration.getReportDir();
@@ -395,6 +395,9 @@ public class InstrumentingRequestHandler extends HttpServer {
                         ioUtils.copy(src, new File(reportDir, Main.reportSrcSubDir + scriptLinesAndSource.getUri()));
                     }
                 }
+                request.getInputStream().skip(request.getPostIndex());
+//                String data = ioUtils.toString(request.getInputStream());
+                String data = ioUtils.toStringNoClose(request.getInputStream(), request.getContentLength());
                 jsonDataSaver.saveJSONData(reportDir, data, unloadJSData);
                 if (configuration.isProxy()) {
                     for (String jsURI : uris.keySet()) {
@@ -417,9 +420,9 @@ public class InstrumentingRequestHandler extends HttpServer {
             }
         } else {
             if (configuration.isProxy())
-                proxyService.handleProxyPost(request, data, os);
+                proxyService.handleProxyPost(request);
             else
-                super.handlePost(request, data);
+                super.handlePost(request);
         }
     }
 

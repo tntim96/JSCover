@@ -388,7 +388,7 @@ public class ProxyService {
         }
     }
 
-    protected void handleProxyPost(HttpRequest request, String data, OutputStream os) {
+    protected void handleProxyPost(HttpRequest request) {
         URL url = request.getUrl();
         Socket socket = null;
         InputStream remoteInputStream = null;
@@ -398,13 +398,8 @@ public class ProxyService {
             socket = new Socket(url.getHost(), port == -1 ? 80 : port);
             remoteInputStream = socket.getInputStream();
             remoteOutputStream = socket.getOutputStream();
-            PrintWriter remotePrintWriter = new PrintWriter(remoteOutputStream);
-
-            String uri = getRawURI(url);
-            remotePrintWriter.print(format("POST %s HTTP/1.0\n", uri));
-            sendHeaders(request, remotePrintWriter);
-            ioUtils.copyNoClose(new ByteArrayInputStream(data.getBytes()), remoteOutputStream);
-            ioUtils.copyNoClose(remoteInputStream, os);
+            ioUtils.copyNoClose(request.getInputStream(), remoteOutputStream);
+            ioUtils.copyNoClose(remoteInputStream, request.getOutputStream());
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

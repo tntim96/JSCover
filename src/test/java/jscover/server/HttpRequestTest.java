@@ -344,78 +344,82 @@ package jscover.server;
 
 import org.junit.Test;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.mock;
 
 public class HttpRequestTest {
     @Test
     public void shouldReadSimplePath() {
-        HttpRequest httpRequest = new HttpRequest("/test.html");
+        HttpRequest httpRequest = new HttpRequest("/test.html", null, null, 0, null);
         assertThat(httpRequest.getPath(), equalTo("/test.html"));
         assertThat(httpRequest.getMime().getContentType(), equalTo("text/html"));
     }
 
     @Test
     public void shouldReplaceDoubleSlashes() {
-        HttpRequest httpRequest = new HttpRequest("//lib//test.html");
+        HttpRequest httpRequest = new HttpRequest("//lib//test.html", null, null, 0, null);
         assertThat(httpRequest.getPath(), equalTo("/lib/test.html"));
         assertThat(httpRequest.getMime().getContentType(), equalTo("text/html"));
     }
 
     @Test
     public void shouldReadSimpleURL() {
-        HttpRequest httpRequest = new HttpRequest("http://localhost:8080/test.html");
+        HttpRequest httpRequest = new HttpRequest("http://localhost:8080/test.html", null, null, 0, null);
         assertThat(httpRequest.getPath(), equalTo("/test.html"));
         assertThat(httpRequest.getMime().getContentType(), equalTo("text/html"));
     }
 
     @Test
     public void shouldHaveDefaultForUnknownExtension() {
-        HttpRequest httpRequest = new HttpRequest("/test.unknown");
+        HttpRequest httpRequest = new HttpRequest("/test.unknown", null, null, 0, null);
         assertThat(httpRequest.getPath(), equalTo("/test.unknown"));
         assertThat(httpRequest.getMime().getContentType(), equalTo("application/octet-stream"));
     }
 
     @Test
     public void shouldHaveDefaultForNoExtension() {
-        HttpRequest httpRequest = new HttpRequest("/test");
+        HttpRequest httpRequest = new HttpRequest("/test", null, null, 0, null);
         assertThat(httpRequest.getPath(), equalTo("/test"));
         assertThat(httpRequest.getMime().getContentType(), equalTo("application/octet-stream"));
     }
 
     @Test
     public void shouldHandleQueryString() {
-        HttpRequest httpRequest = new HttpRequest("/test.html?a=b");
+        HttpRequest httpRequest = new HttpRequest("/test.html?a=b", null, null, 0, null);
         assertThat(httpRequest.getPath(), equalTo("/test.html"));
         assertThat(httpRequest.getMime().getContentType(), equalTo("text/html"));
     }
 
     @Test
     public void shouldHandleSpecialChars() {
-        assertThat(new HttpRequest("/test%20space.html").getPath(), equalTo("/test space.html"));
+        assertThat(new HttpRequest("/test%20space.html", null, null, 0, null).getPath(), equalTo("/test space.html"));
     }
 
     @Test
     public void shouldNotSkipInstrumentationIfNoHeaders() {
-        HttpRequest httpRequest = new HttpRequest("/test.js");
+        HttpRequest httpRequest = new HttpRequest("/test.js", null, null, 0, null);
         assertThat(httpRequest.skipInstrumentation(), equalTo(false));
     }
 
     @Test
     public void shouldNotSkipInstrumentationIfNoInstrumentHeaderNotPresent() {
-        HttpRequest httpRequest = new HttpRequest("/test.js");
+        HttpRequest httpRequest = new HttpRequest("/test.js", null, null, 0, null);
         httpRequest.setHeaders(new HashMap<String, List<String>>());
         assertThat(httpRequest.skipInstrumentation(), equalTo(false));
     }
 
     @Test
     public void shouldSkipInstrumentationIfNoInstrumentHeaderPresent() {
-        HttpRequest httpRequest = new HttpRequest("/test.js");
+        HttpRequest httpRequest = new HttpRequest("/test.js", null, null, 0, null);
         Map<String, List<String>> headers = new HashMap<String, List<String>>();
         headers.put("NoInstrument", new ArrayList<String>());
         httpRequest.setHeaders(headers);
@@ -424,8 +428,32 @@ public class HttpRequestTest {
 
     @Test
     public void shouldGetRelativePath() {
-        assertThat(new HttpRequest("test.js").getRelativePath(), equalTo("test.js"));
-        assertThat(new HttpRequest("/test.js").getRelativePath(), equalTo("test.js"));
-        assertThat(new HttpRequest("/js/test.js").getRelativePath(), equalTo("js/test.js"));
+        assertThat(new HttpRequest("test.js", null, null, 0, null).getRelativePath(), equalTo("test.js"));
+        assertThat(new HttpRequest("/test.js", null, null, 0, null).getRelativePath(), equalTo("test.js"));
+        assertThat(new HttpRequest("/js/test.js", null, null, 0, null).getRelativePath(), equalTo("js/test.js"));
     }
+
+    @Test
+    public void shouldReturnContentLength() {
+        Map<String, List<String>> headers = new HashMap<String, List<String>>();
+        headers.put("Content-Length", new ArrayList<String>() {{
+            add("1234");
+        }});
+        HttpRequest request = new HttpRequest("test.js", null, null, 0, null);
+        request.setHeaders(headers);
+        assertThat(request.getHeaders(), sameInstance(headers));
+        assertThat(request.getContentLength(), equalTo(1234));
+    }
+
+    @Test
+    public void shouldConstructorParameters() {
+        InputStream is = mock(InputStream.class);
+        OutputStream os = mock(OutputStream.class);
+        Integer postIndex = 7;
+        HttpRequest httpRequest = new HttpRequest("/test.html", is, os, postIndex, null);
+        assertThat(httpRequest.getInputStream(), sameInstance(is));
+        assertThat(httpRequest.getOutputStream(), sameInstance(os));
+        assertThat(httpRequest.getPostIndex(), sameInstance(postIndex));
+    }
+
 }

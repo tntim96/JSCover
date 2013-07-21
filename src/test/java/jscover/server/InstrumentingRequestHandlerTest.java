@@ -347,10 +347,7 @@ import jscover.instrument.InstrumenterService;
 import jscover.instrument.UnloadedSourceProcessor;
 import jscover.report.JSONDataSaver;
 import jscover.report.ScriptCoverageCount;
-import jscover.util.IoService;
-import jscover.util.IoUtils;
-import jscover.util.Logger;
-import jscover.util.ReflectionUtils;
+import jscover.util.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -383,8 +380,10 @@ public class InstrumentingRequestHandlerTest {
     private @Mock ProxyService proxyService;
     private @Mock ConfigurationForServer configuration;
     private @Mock Logger logger;
+    private @Mock JSCByteArrayInputStream bais;
     private final StringWriter stringWriter = new StringWriter();
     private PrintWriter pw = new PrintWriter(stringWriter);
+    private Map<String, List<String>> headers = new HashMap<String, List<String>>();
 
     @Before
     public void setUp() throws IOException {
@@ -397,14 +396,16 @@ public class InstrumentingRequestHandlerTest {
         ReflectionUtils.setField(webServer, "proxyService", proxyService);
         ReflectionUtils.setField(webServer, "configuration", configuration);
         ReflectionUtils.setField(webServer, "logger", logger);
+        ReflectionUtils.setField(webServer, HttpServer.class, "bais", bais);
         ReflectionUtils.setField(webServer, HttpServer.class, "pw", pw);
         ReflectionUtils.setField(webServer, HttpServer.class, "version", "testVersion");
         ReflectionUtils.setField(webServer, HttpServer.class, "ioUtils", ioUtils);
+        headers.put("Content-Length", new ArrayList<String>(){{add("12");}});
     }
 
     @Test
     public void shouldServeJSCoverageJS() throws IOException {
-        webServer.handleGet(new HttpRequest("/jscoverage.js"));
+        webServer.handleGet(new HttpRequest("/jscoverage.js", null, null, 0, null));
         verify(ioService).generateJSCoverageServerJS();
         verifyZeroInteractions(jsonDataSaver);
         verifyZeroInteractions(instrumenterService);
@@ -416,11 +417,13 @@ public class InstrumentingRequestHandlerTest {
         reportDir.deleteOnExit();
         given(configuration.getReportDir()).willReturn(reportDir);
         given(configuration.getVersion()).willReturn("theVersion");
+        given(ioUtils.toStringNoClose(bais, 12)).willReturn("data");
 
-        webServer.handlePost(new HttpRequest(JSCOVERAGE_STORE), "data");
+        webServer.handlePost(new HttpRequest(JSCOVERAGE_STORE, bais, null, 50, headers));
 
         verify(jsonDataSaver).saveJSONData(reportDir, "data", null);
         verify(ioService).generateJSCoverFilesForWebServer(reportDir, "theVersion");
+        verify(bais).skip(50);
         verifyZeroInteractions(instrumenterService);
         assertThat(stringWriter.toString(), containsString(format("Coverage data stored at %s", reportDir)));
     }
@@ -429,16 +432,17 @@ public class InstrumentingRequestHandlerTest {
     public void shouldDirectHEADToHttpServer() {
         given(configuration.isProxy()).willReturn(false);
 
-        HttpRequest request = new HttpRequest("somePostUrl");
+        HttpRequest request = new HttpRequest("somePostUrl", null, null, 0, null);
         webServer.handleHead(request);
     }
 
     @Test
     public void shouldDirectPOSTToHttpServer() {
         given(configuration.isProxy()).willReturn(false);
+        given(ioUtils.toString(bais)).willReturn("thePostData");
 
-        HttpRequest request = new HttpRequest("somePostUrl");
-        webServer.handlePost(request, "thePostData");
+        HttpRequest request = new HttpRequest("somePostUrl", bais, null, 50, headers);
+        webServer.handlePost(request);
 
         verifyZeroInteractions(ioService);
         verifyZeroInteractions(jsonDataSaver);
@@ -450,7 +454,7 @@ public class InstrumentingRequestHandlerTest {
     public void shouldDirectGETToProxy() throws IOException {
         given(configuration.isProxy()).willReturn(true);
 
-        HttpRequest request = new HttpRequest("somePostUrl");
+        HttpRequest request = new HttpRequest("somePostUrl", null, null, 0, null);
         webServer.handleGet(request);
 
         verify(proxyService).handleProxyGet(request, null);
@@ -463,7 +467,7 @@ public class InstrumentingRequestHandlerTest {
     public void shouldDirectHEADToProxy() throws IOException {
         given(configuration.isProxy()).willReturn(true);
 
-        HttpRequest request = new HttpRequest("somePostUrl");
+        HttpRequest request = new HttpRequest("somePostUrl", null, null, 0, null);
         webServer.handleHead(request);
 
         verify(proxyService).handleProxyHead(request, null);
@@ -476,10 +480,10 @@ public class InstrumentingRequestHandlerTest {
     public void shouldDirectPOSTToProxy() {
         given(configuration.isProxy()).willReturn(true);
 
-        HttpRequest request = new HttpRequest("somePostUrl");
-        webServer.handlePost(request, "data");
+        HttpRequest request = new HttpRequest("somePostUrl", null, null, 0, null);
+        webServer.handlePost(request);
 
-        verify(proxyService).handleProxyPost(request, "data", null);
+        verify(proxyService).handleProxyPost(request);
         verifyZeroInteractions(ioService);
         verifyZeroInteractions(jsonDataSaver);
         verifyZeroInteractions(instrumenterService);
@@ -490,13 +494,15 @@ public class InstrumentingRequestHandlerTest {
         File reportDir = new File("target/temp");
         reportDir.deleteOnExit();
         given(configuration.getReportDir()).willReturn(reportDir);
+        given(ioUtils.toStringNoClose(bais, 12)).willReturn("data");
         RuntimeException toBeThrown = new RuntimeException("Ouch!");
         doThrow(toBeThrown).when(jsonDataSaver).saveJSONData(reportDir, "data", null);
 
-        webServer.handlePost(new HttpRequest(JSCOVERAGE_STORE), "data");
+        webServer.handlePost(new HttpRequest(JSCOVERAGE_STORE, bais, null, 50, headers));
 
         verify(jsonDataSaver).saveJSONData(reportDir, "data", null);
         verifyZeroInteractions(ioService);
+        verify(bais).skip(50);
         verifyZeroInteractions(instrumenterService);
         assertThat(stringWriter.toString(), containsString(format("Error saving coverage data. Try deleting JSON file at %s", reportDir)));
     }
@@ -507,11 +513,13 @@ public class InstrumentingRequestHandlerTest {
         file.deleteOnExit();
         given(configuration.getReportDir()).willReturn(file);
         given(configuration.getVersion()).willReturn("theVersion");
+        given(ioUtils.toStringNoClose(bais, 12)).willReturn("data");
 
-        webServer.handlePost(new HttpRequest(JSCOVERAGE_STORE + "subdirectory"), "data");
+        webServer.handlePost(new HttpRequest(JSCOVERAGE_STORE + "subdirectory", bais, null, 50, headers));
 
         File subdirectory = new File(file, "subdirectory");
         verify(jsonDataSaver).saveJSONData(subdirectory, "data", null);
+        verify(bais).skip(50);
         verify(ioService).generateJSCoverFilesForWebServer(subdirectory, "theVersion");
         verifyZeroInteractions(instrumenterService);
         assertThat(stringWriter.toString(), containsString(format("Coverage data stored at %s", subdirectory)));
@@ -524,12 +532,14 @@ public class InstrumentingRequestHandlerTest {
         file.deleteOnExit();
         given(configuration.getReportDir()).willReturn(file);
         given(configuration.getVersion()).willReturn("theVersion");
+        given(ioUtils.toStringNoClose(bais, 12)).willReturn("data");
 
-        webServer.handlePost(new HttpRequest(JSCOVERAGE_STORE + "subdirectory"), "data");
+        webServer.handlePost(new HttpRequest(JSCOVERAGE_STORE + "subdirectory", bais, null, 50, headers));
 
         File subdirectory = new File(file, "subdirectory");
         verify(jsonDataSaver).saveJSONData(subdirectory, "data", null);
         verify(ioService).generateJSCoverFilesForWebServer(subdirectory, "theVersion");
+        verify(bais).skip(50);
         verify(ioUtils).copy(new File("js/util.js"), new File(configuration.getReportDir(), "subdirectory/" + Main.reportSrcSubDir + "/js/util.js"));
         verifyZeroInteractions(instrumenterService);
         assertThat(stringWriter.toString(), containsString(format("Coverage data stored at %s", subdirectory)));
@@ -543,12 +553,14 @@ public class InstrumentingRequestHandlerTest {
         given(configuration.isProxy()).willReturn(true);
         given(configuration.getReportDir()).willReturn(file);
         given(configuration.getVersion()).willReturn("theVersion");
+        given(ioUtils.toStringNoClose(bais, 12)).willReturn("data");
 
-        webServer.handlePost(new HttpRequest(JSCOVERAGE_STORE + "subdirectory"), "data");
+        webServer.handlePost(new HttpRequest(JSCOVERAGE_STORE + "subdirectory", bais, null, 50, headers));
 
         File subdirectory = new File(file, "subdirectory");
         verify(jsonDataSaver).saveJSONData(subdirectory, "data", null);
         verify(ioService).generateJSCoverFilesForWebServer(subdirectory, "theVersion");
+        verify(bais).skip(50);
         verify(ioUtils).copy("someJavaScript", new File(configuration.getReportDir(), "subdirectory/" + Main.reportSrcSubDir + "/js/util.js"));
         verifyZeroInteractions(instrumenterService);
         assertThat(stringWriter.toString(), containsString(format("Coverage data stored at %s", subdirectory)));
@@ -561,14 +573,16 @@ public class InstrumentingRequestHandlerTest {
         given(configuration.isIncludeUnloadedJS()).willReturn(true);
         given(configuration.getReportDir()).willReturn(reportDir);
         given(configuration.getVersion()).willReturn("theVersion");
+        given(ioUtils.toStringNoClose(bais, 12)).willReturn("data");
         List<ScriptCoverageCount> unloadedJS = new ArrayList<ScriptCoverageCount>();
         unloadedJS.add(new ScriptCoverageCount("/js/unloaded.js", null, 0, null));
         given(unloadedSourceProcessor.getEmptyCoverageData(anySet())).willReturn(unloadedJS);
 
-        webServer.handlePost(new HttpRequest(JSCOVERAGE_STORE), "data");
+        webServer.handlePost(new HttpRequest(JSCOVERAGE_STORE, bais, null, 50, headers));
 
         verify(jsonDataSaver).saveJSONData(reportDir, "data", unloadedJS);
         verify(ioService).generateJSCoverFilesForWebServer(reportDir, "theVersion");
+        verify(bais).skip(50);
         verify(ioUtils).copy(new File("/js/unloaded.js"), new File(configuration.getReportDir(), Main.reportSrcSubDir + "/js/unloaded.js"));
         verifyZeroInteractions(instrumenterService);
         assertThat(stringWriter.toString(), containsString(format("Coverage data stored at %s", reportDir)));
@@ -579,7 +593,7 @@ public class InstrumentingRequestHandlerTest {
         given(configuration.getVersion()).willReturn("123");
         given(ioService.generateJSCoverageHtml("123")).willReturn("theHtml");
 
-        webServer.handleGet(new HttpRequest("/jscoverage.html"));
+        webServer.handleGet(new HttpRequest("/jscoverage.html", null, null, 0, null));
 
         verify(ioService).generateJSCoverageHtml("123");
         verifyZeroInteractions(jsonDataSaver);
@@ -594,7 +608,7 @@ public class InstrumentingRequestHandlerTest {
 
     @Test
     public void shouldServeJSCoverageHighlightCSS() throws IOException {
-        webServer.handleGet(new HttpRequest("/jscoverage-highlight.css"));
+        webServer.handleGet(new HttpRequest("/jscoverage-highlight.css", null, null, 0, null));
 
         verify(ioService).getResourceAsStream("/jscoverage-highlight.css");
         verifyZeroInteractions(jsonDataSaver);
@@ -609,7 +623,7 @@ public class InstrumentingRequestHandlerTest {
         given(configuration.getCompilerEnvirons()).willReturn(compilerEnvirons);
         given(configuration.skipInstrumentation("/js/production.js")).willReturn(false);
 
-        webServer.handleGet(new HttpRequest("/js/production.js"));
+        webServer.handleGet(new HttpRequest("/js/production.js", null, null, 0, null));
 
         verify(instrumenterService).instrumentJSForWebServer(compilerEnvirons, new File("wwwRoot/js/production.js"), "/js/production.js", false, false);
         verifyZeroInteractions(ioService);
@@ -628,7 +642,7 @@ public class InstrumentingRequestHandlerTest {
         given(configuration.getCompilerEnvirons()).willReturn(compilerEnvirons);
         given(configuration.skipInstrumentation("/js/production.js")).willReturn(false);
 
-        webServer.handleGet(new HttpRequest("/js/production.js"));
+        webServer.handleGet(new HttpRequest("/js/production.js", null, null, 0, null));
 
         verify(instrumenterService).instrumentJSForWebServer(compilerEnvirons, new File("wwwRoot/js/production.js"), "/js/production.js", false, false);
         verifyZeroInteractions(ioService);
@@ -648,7 +662,7 @@ public class InstrumentingRequestHandlerTest {
         given(configuration.skipInstrumentation("/js/production.js")).willReturn(false);
         given(instrumenterService.instrumentJSForWebServer(compilerEnvirons, new File("wwwRoot/js/production.js"), "/js/production.js", false, false)).willThrow(new UriNotFound("Ouch!", null));
 
-        webServer.handleGet(new HttpRequest("/js/production.js"));
+        webServer.handleGet(new HttpRequest("/js/production.js", null, null, 0, null));
 
         verifyZeroInteractions(ioService);
         verifyZeroInteractions(jsonDataSaver);
@@ -671,7 +685,7 @@ public class InstrumentingRequestHandlerTest {
         given(configuration.getCompilerEnvirons()).willReturn(compilerEnvirons);
         given(configuration.skipInstrumentation("/js/production.js")).willReturn(false);
         String uri = "http://someserver.org/js/production.js";
-        HttpRequest request = new HttpRequest(uri);
+        HttpRequest request = new HttpRequest(uri, null, null, 0, null);
         given(proxyService.getUrl(request)).willReturn("someJavaScript;");
 
         webServer.handleGet(request);
@@ -692,7 +706,7 @@ public class InstrumentingRequestHandlerTest {
         given(configuration.getCompilerEnvirons()).willReturn(compilerEnvirons);
         given(configuration.skipInstrumentation("test/production.js")).willReturn(true);
 
-        webServer.handleGet(new HttpRequest("/test/production.js"));
+        webServer.handleGet(new HttpRequest("/test/production.js", null, null, 0, null));
 
         verifyZeroInteractions(instrumenterService);
         verifyZeroInteractions(ioService);
@@ -709,7 +723,7 @@ public class InstrumentingRequestHandlerTest {
 
         Map<String, List<String>> headers = new HashMap<String, List<String>>();
         headers.put("NoInstrument", new ArrayList<String>(){{add("true");}});
-        HttpRequest request = new HttpRequest("/test/production.js");
+        HttpRequest request = new HttpRequest("/test/production.js", null, null, 0, null);
         request.setHeaders(headers);
         webServer.handleGet(request);
 

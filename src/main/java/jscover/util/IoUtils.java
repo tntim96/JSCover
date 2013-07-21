@@ -393,6 +393,10 @@ public class IoUtils {
         }
     }
 
+    public String toStringNoClose(InputStream is, int length) {
+        return toStringNoClose(new BufferedReader(new InputStreamReader(is)), length);
+    }
+
     public String toStringNoClose(Reader reader, int length) {
         ReaderInputStream is = new ReaderInputStream(reader);
         byte[] bytes = new byte[length];
