@@ -1,6 +1,6 @@
 1.0.2 / 2013-??-??
 ==================
-  * Content-length problem with BOM in POST data (https://github.com/tntim96/JSCover/issues/80)
+  * Proxy stream now forwarded exactly as received (https://github.com/tntim96/JSCover/issues/80)
 
 1.0.1 / 2013-07-14
 ==================
