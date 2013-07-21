@@ -347,7 +347,10 @@ import jscover.instrument.InstrumenterService;
 import jscover.instrument.UnloadedSourceProcessor;
 import jscover.report.JSONDataSaver;
 import jscover.report.ScriptCoverageCount;
-import jscover.util.*;
+import jscover.util.IoService;
+import jscover.util.IoUtils;
+import jscover.util.Logger;
+import jscover.util.ReflectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -355,11 +358,11 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mozilla.javascript.CompilerEnvirons;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.*;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static java.lang.String.format;
 import static jscover.server.InstrumentingRequestHandler.JSCOVERAGE_STORE;
@@ -380,7 +383,7 @@ public class InstrumentingRequestHandlerTest {
     private @Mock ProxyService proxyService;
     private @Mock ConfigurationForServer configuration;
     private @Mock Logger logger;
-    private @Mock JSCByteArrayInputStream bais;
+    private @Mock ByteArrayInputStream bais;
     private final StringWriter stringWriter = new StringWriter();
     private PrintWriter pw = new PrintWriter(stringWriter);
     private Map<String, List<String>> headers = new HashMap<String, List<String>>();

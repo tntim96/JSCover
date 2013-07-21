@@ -343,7 +343,6 @@ Public License instead of this License.
 package jscover.server;
 
 import jscover.util.IoUtils;
-import jscover.util.JSCByteArrayInputStream;
 
 import java.io.*;
 import java.net.Socket;
@@ -360,7 +359,7 @@ public class HttpServer extends Thread {
     protected File wwwRoot;
     protected InputStream is;
     protected PushbackInputStream pbis;
-    protected JSCByteArrayInputStream bais;
+    protected ByteArrayInputStream bais;
     protected OutputStream os;
     protected PrintWriter pw = null;
     protected IoUtils ioUtils = IoUtils.getInstance();
@@ -381,7 +380,7 @@ public class HttpServer extends Thread {
             byte headerBytes[] = new byte[headerSize];
             int read = pbis.read(headerBytes);
 
-            bais = new JSCByteArrayInputStream(headerBytes, 0, read);
+            bais = new ByteArrayInputStream(headerBytes, 0, read);
             br = new BufferedReader(new InputStreamReader(bais));
             pw = new PrintWriter(os);
 
