@@ -439,7 +439,7 @@ public class InstrumentingRequestHandlerTest {
     @Test
     public void shouldDirectPOSTToHttpServer() {
         given(configuration.isProxy()).willReturn(false);
-        given(ioUtils.toString(bais)).willReturn("thePostData");
+        given(ioUtils.toStringNoClose(bais, 12)).willReturn("thePostData");
 
         HttpRequest request = new HttpRequest("somePostUrl", bais, null, 50, headers);
         webServer.handlePost(request);

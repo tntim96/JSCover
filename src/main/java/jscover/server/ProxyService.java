@@ -398,7 +398,7 @@ public class ProxyService {
             socket = new Socket(url.getHost(), port == -1 ? 80 : port);
             remoteInputStream = socket.getInputStream();
             remoteOutputStream = socket.getOutputStream();
-            ioUtils.copyNoClose(request.getInputStream(), remoteOutputStream);
+            ioUtils.copyNoClose(request.getInputStream(), remoteOutputStream, request.getPostIndex() + request.getContentLength());
             ioUtils.copyNoClose(remoteInputStream, request.getOutputStream());
         } catch (IOException e) {
             e.printStackTrace();

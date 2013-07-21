@@ -440,31 +440,6 @@ public class IoUtilsTest {
         }
     }
 
-
-    @Test
-    @Ignore
-    public void shouldNotCloseReaderInToStringNoClose() throws Exception {
-        String string = "Working!";
-        given(reader.read(any(char[].class))).willThrow(new IOException("Ouch!"));
-        try {
-            ioUtils.toStringNoClose(reader, string.length());
-            fail();
-        } catch(Throwable throwable) {
-            verify(reader, times(0)).close();
-        }
-    }
-
-    @Test
-    public void shouldToStringReaderInToStringNoClose() throws Exception {
-        String string = "Working!!";
-        BufferedReader br = new BufferedReader(new StringReader(string));
-        try {
-            assertEquals("Working!!", ioUtils.toStringNoClose(br, string.length()));
-        } finally {
-            br.close();
-        }
-    }
-
     @Test(expected = RuntimeException.class)
     public void shouldWrapExceptionsInCopyReaderToFile() throws IOException {
         given(reader.read(any(char[].class))).willThrow(new IOException("Ouch!"));

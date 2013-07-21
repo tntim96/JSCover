@@ -401,17 +401,10 @@ public class HttpServer extends Thread {
                 }
             }
 
-            InputStream dataStream;
-            if (bais.getPosition() <= read) {
-                dataStream = new JSCByteArrayInputStream(headerBytes, 0, read);
-            } else {
-                dataStream = pbis;
-            }
-
             int postIndex = 0;
             if ("POST".equals(httpMethod))
                 postIndex = getPostIndex(headerBytes);
-            HttpRequest httpRequest = new HttpRequest(path, dataStream, os, postIndex, headers);
+            HttpRequest httpRequest = new HttpRequest(path, pbis, os, postIndex, headers);
 
             pbis.unread(headerBytes, 0, read);
 
@@ -455,7 +448,7 @@ public class HttpServer extends Thread {
     protected void handlePost(HttpRequest request) {
         try {
             request.getInputStream().skip(request.getPostIndex());
-            String response = format("<html><body>Posted<pre id=\"postData\">%s</pre></body></html>", ioUtils.toString(request.getInputStream()));
+            String response = format("<html><body>Posted<pre id=\"postData\">%s</pre></body></html>", ioUtils.toStringNoClose(request.getInputStream(), request.getContentLength()));
             sendResponse(HTTP_STATUS.HTTP_OK, MIME.HTML, response);
         } catch (IOException e) {
             throw new RuntimeException(e);

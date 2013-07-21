@@ -395,8 +395,8 @@ public class InstrumentingRequestHandler extends HttpServer {
                         ioUtils.copy(src, new File(reportDir, Main.reportSrcSubDir + scriptLinesAndSource.getUri()));
                     }
                 }
-                request.getInputStream().skip(request.getPostIndex());
-//                String data = ioUtils.toString(request.getInputStream());
+                long skipped = request.getInputStream().skip(request.getPostIndex());
+                assert skipped == request.getPostIndex();
                 String data = ioUtils.toStringNoClose(request.getInputStream(), request.getContentLength());
                 jsonDataSaver.saveJSONData(reportDir, data, unloadJSData);
                 if (configuration.isProxy()) {

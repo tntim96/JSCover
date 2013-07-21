@@ -342,8 +342,6 @@ Public License instead of this License.
 
 package jscover.util;
 
-import org.apache.commons.io.input.ReaderInputStream;
-
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.Charset;
@@ -394,15 +392,9 @@ public class IoUtils {
     }
 
     public String toStringNoClose(InputStream is, int length) {
-        return toStringNoClose(new BufferedReader(new InputStreamReader(is)), length);
-    }
-
-    public String toStringNoClose(Reader reader, int length) {
-        ReaderInputStream is = new ReaderInputStream(reader);
-        byte[] bytes = new byte[length];
+        byte[] bytes = new byte[Math.min(1024, length)];
         try {
-            int bytesRead = is.read(bytes, 0, length);
-            assert bytesRead == length;
+            for (int total = 0, read = 0; total < length && (read = is.read(bytes)) != -1; total += read);
             return new String(bytes);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -469,6 +461,18 @@ public class IoUtils {
         } finally {
             closeQuietly(is);
             closeQuietly(os);
+        }
+    }
+
+    public void copyNoClose(InputStream is, OutputStream os, int length) {
+        int bufSize = Math.min(1024, length);
+        byte buf[] = new byte[bufSize];
+        try {
+            for (int total = 0, read = 0; total < length && (read = is.read(buf)) != -1; total += read) {
+                os.write(buf, 0, read);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
