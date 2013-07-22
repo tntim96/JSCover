@@ -1007,7 +1007,7 @@
                     The JSCover server can be started as a thread, and there is no need for the Selenium server.
                     The examples use Jasmine and Jasmine's <var>HtmlReporter</var>. All implementations are based on
                     <a href="https://github.com/tntim96/JSCover/blob/master/src/test-acceptance/java/jscover/server/WebDriverJasmineTestBase.java"
-                            >WebDriverJasmineTestBase</a>.
+                       target="_blank">WebDriverJasmineTestBase</a>.
                     There are examples with:
                     <ul>
                         <li><a href="https://github.com/tntim96/JSCover/blob/master/src/test-acceptance/java/jscover/server/WebDriverJasmineFireFoxTest.java" target="_blank">FireFox</a></li>
