@@ -630,6 +630,16 @@ public class HtmlUnitServerTest {
         testFileUpload("data/test-utf-bom.txt");
     }
 
+    @Test
+    public void shouldWorkWithLargeUpload() throws Exception {
+        HtmlPage page = webClient.getPage("http://localhost:9001/example/upload.html");
+        ((HtmlInput)page.getHtmlElementById("uploader")).setValueAttribute("lib/runtime/js.jar");
+        page = page.getHtmlElementById("submitButton").click();
+
+        String data = page.getHtmlElementById("postData").getTextContent();
+        assertThat(data, containsString("js.jar"));
+    }
+
     private void testFileUpload(String postFile) throws IOException {
         HtmlPage page = webClient.getPage("http://localhost:9001/example/upload.html");
         ((HtmlInput)page.getHtmlElementById("uploader")).setValueAttribute(postFile);
