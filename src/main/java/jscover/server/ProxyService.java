@@ -377,7 +377,7 @@ public class ProxyService {
             PrintWriter remotePrintWriter = new PrintWriter(remoteOutputStream);
 
             String uri = getRawURI(url);
-            remotePrintWriter.print(method + " " +uri+" HTTP/1.0\n");
+            remotePrintWriter.print(method + " " + uri + " HTTP/1.0\n");
             sendHeaders(request, remotePrintWriter);
             ioUtils.copyNoClose(remoteInputStream, os);
         } catch (IOException e) {
@@ -410,8 +410,8 @@ public class ProxyService {
 
     String getRawURI(URL url) {
         String uri = url.getPath();
-        if (url.getQuery()!= null && url.getQuery().length()!=0) {
-            uri += "?"+url.getQuery();
+        if (url.getQuery() != null && url.getQuery().length() != 0) {
+            uri += "?" + url.getQuery();
         }
         return uri;
     }
@@ -421,7 +421,7 @@ public class ProxyService {
         for (String header : clientHeaders.keySet()) {
             List<String> values = clientHeaders.get(header);
             for (String value : values) {
-                remotePrintWriter.print(format("%s: %s\n",header, value));
+                remotePrintWriter.print(format("%s: %s\n", header, value));
             }
         }
         remotePrintWriter.print("\n");
@@ -432,7 +432,8 @@ public class ProxyService {
         URL url = request.getUrl();
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         copyHeadersExceptEncoding(request, conn);
-        return ioUtils.toString(conn.getInputStream());    }
+        return ioUtils.toString(conn.getInputStream());
+    }
 
     void copyHeadersExceptEncoding(HttpRequest request, HttpURLConnection conn) {
         Map<String, List<String>> clientHeaders = request.getHeaders();
