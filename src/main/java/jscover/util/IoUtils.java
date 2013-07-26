@@ -473,7 +473,7 @@ public class IoUtils {
         int bufSize = Math.min(1024, length);
         byte buf[] = new byte[bufSize];
         try {
-            for (int total = 0, read = 0; total < length && (read = is.read(buf)) != -1; total += read) {
+            for (int total = 0, read = 0; total < length && (read = is.read(buf, 0, Math.min(bufSize, length - total))) != -1; total += read) {
                 os.write(buf, 0, read);
             }
         } catch (IOException e) {

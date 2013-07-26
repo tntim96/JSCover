@@ -1,6 +1,7 @@
 1.0.2 / 2013-??-??
 ==================
   * Proxy stream now forwarded exactly as received (https://github.com/tntim96/JSCover/issues/80)
+  * Encoding problem with proxied binary data - fix by KPesendorfer (https://github.com/tntim96/JSCover/issues/80)
 
 1.0.1 / 2013-07-14
 ==================
