@@ -2,6 +2,7 @@
 ==================
   * Proxy stream now forwarded exactly as received (https://github.com/tntim96/JSCover/issues/80)
   * Encoding problem with proxied binary data - fix by KPesendorfer (https://github.com/tntim96/JSCover/issues/80)
+  * Document some ways to save a report in file-system mode (https://github.com/tntim96/JSCover/issues/83)
 
 1.0.1 / 2013-07-14
 ==================
