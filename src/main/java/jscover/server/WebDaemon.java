@@ -344,15 +344,14 @@ package jscover.server;
 
 import jscover.util.Logger;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 public class WebDaemon {
     public void start(ConfigurationForServer configuration) throws IOException, InterruptedException {
-        File log = new File(configuration.getReportDir(), "errors.log");
-        Logger.setLogFile(log);
+        Logger.setLogFileDirectory(configuration.getReportDir());
+        Logger.setDebug(configuration.isDebug());
         ServerSocket Server = new ServerSocket(configuration.getPort());
         while (true) {
             Socket socket = Server.accept();

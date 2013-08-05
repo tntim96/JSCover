@@ -343,6 +343,7 @@ Public License instead of this License.
 package jscover.server;
 
 import jscover.util.IoUtils;
+import jscover.util.Logger;
 
 import java.io.*;
 import java.net.Socket;
@@ -363,6 +364,7 @@ public class HttpServer extends Thread {
     protected OutputStream os;
     protected PrintWriter pw = null;
     protected IoUtils ioUtils = IoUtils.getInstance();
+    protected Logger logger = Logger.getInstance();
 
     public HttpServer(Socket socket, File wwwRoot, String version) {
         this.wwwRoot = wwwRoot;
@@ -372,6 +374,7 @@ public class HttpServer extends Thread {
 
     public void run() {
         BufferedReader br = null;
+        String requestString = null;
         try {
             is = socket.getInputStream();
             os = socket.getOutputStream();
@@ -384,7 +387,10 @@ public class HttpServer extends Thread {
             br = new BufferedReader(new InputStreamReader(bais));
             pw = new PrintWriter(os);
 
-            String requestString = br.readLine();
+            requestString = br.readLine();
+            logger.debug(requestString);
+            if (requestString == null)
+                return;
 
             StringTokenizer tokenizer = new StringTokenizer(requestString);
             String httpMethod = tokenizer.nextToken();
@@ -392,6 +398,7 @@ public class HttpServer extends Thread {
             String headerLine;
             Map<String, List<String>> headers = new HashMap<String, List<String>>();
             while (!(headerLine = br.readLine()).equals("")) {
+                logger.debug(headerLine);
                 int index = headerLine.indexOf(':');
                 if (index >= 0) {
                     String headerField = headerLine.substring(0, index).trim();
@@ -426,6 +433,7 @@ public class HttpServer extends Thread {
             } else
               throw new UnsupportedOperationException("No support for "+httpMethod);
         } catch (Exception e) {
+            logger.log(format("Error processing request string %s", requestString),e);
             e.printStackTrace();
         } finally {
             ioUtils.closeQuietly(br);

@@ -346,9 +346,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 
+import static java.lang.String.format;
+
 public class Logger {
     private static Logger instance = new Logger();
-    private static File log;
+    private static File errorLog;
+    private static File debugLog;
+    private static boolean debug;
     private IoUtils ioUtils = IoUtils.getInstance();
     private boolean loggedException;
 
@@ -356,10 +360,29 @@ public class Logger {
         return instance;
     }
 
-    public static void setLogFile(File file) {
+    public static void setLogFileDirectory(File dir) {
+        dir.mkdirs();
+        errorLog = createFile(dir, "errors.log");
+        debugLog = createFile(dir, "debug.log");
+    }
+
+    private static File createFile(File dir, String fileName) {
+        File file = new File(dir, fileName);
         if (file.exists())
             file.delete();
-        log = file;
+        return file;
+    }
+
+    public static File getErrorLog() {
+        return errorLog;
+    }
+
+    public static File getDebugLog() {
+        return debugLog;
+    }
+
+    public static void setDebug(boolean debug) {
+        Logger.debug = debug;
     }
 
     public boolean isLoggedException() {
@@ -367,22 +390,28 @@ public class Logger {
     }
 
     public void log(String message) {
-        log(message, null);
+        write(message, null, errorLog);
     }
 
     public void log(String message, Throwable t) {
-        if (log == null) {
+        write(message, t, errorLog);
+    }
+
+    public void write(String message, Throwable t, File logFile) {
+        if (logFile == null) {
             if (t == null) {
                 System.err.println(message);
                 return;
             } else
                 throw new RuntimeException(t);
         }
-        synchronized (log) {
+        synchronized (logFile) {
             PrintStream ps = null;
             try {
-                ps = new PrintStream(new FileOutputStream(log, true));
-                ps.println("-------------------------------------------------------------------------------");
+                ps = new PrintStream(new FileOutputStream(logFile, true));
+                if (t != null)
+                    ps.println("-------------------------------------------------------------------------------");
+                ps.print(format("Thread %d\t:", Thread.currentThread().getId()));
                 ps.println(message);
                 if (t != null) {
                     loggedException = true;
@@ -394,5 +423,10 @@ public class Logger {
                 ioUtils.closeQuietly(ps);
             }
         }
+    }
+
+    public void debug(String message) {
+        if (debug)
+            write(message, null, debugLog);
     }
 }

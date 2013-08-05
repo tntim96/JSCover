@@ -356,12 +356,10 @@ public class FileSystemInstrumenter {
     private InstrumenterService instrumenterService = new InstrumenterService();
     private IoUtils ioUtils = IoUtils.getInstance();
     private ConfigurationForFS configuration;
-    private File log;
 
     public void run(ConfigurationForFS configuration) {
         this.configuration = configuration;
-        this.log = new File(configuration.getDestDir(), "errors.log");
-        Logger.setLogFile(log);
+        Logger.setLogFileDirectory(configuration.getDestDir());
         ioService.generateJSCoverFilesForFileSystem(configuration.getDestDir(), configuration.getVersion());
         copyFolder(configuration.getSrcDir(), configuration.getDestDir());
         copyFolder(configuration.getSrcDir(), new File(configuration.getDestDir(), Main.reportSrcSubDir), getJavaScriptFilter(), true);

@@ -343,6 +343,7 @@ Public License instead of this License.
 package jscover.util;
 
 import org.hamcrest.Matchers;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -356,14 +357,18 @@ import static org.hamcrest.core.StringContains.containsString;
 public class LoggerIntegrationTest {
     private Logger logger = Logger.getInstance();
     private IoUtils ioUtils = IoUtils.getInstance();
-    private File file;
+    private File dir = new File("target/logTest");
 
     @Before
     public void setUp() throws IOException {
-        file = File.createTempFile("file","log");
-        file.deleteOnExit();
-        Logger.setLogFile(file);
+        Logger.setLogFileDirectory(dir);
         ReflectionUtils.setField(logger, "loggedException", false);
+    }
+
+    @After
+    public void tearDown() throws IOException {
+        Logger.getErrorLog().delete();
+        Logger.getDebugLog().delete();
     }
 
     @Test
@@ -374,13 +379,26 @@ public class LoggerIntegrationTest {
     @Test
     public void shouldLogMessage() {
         logger.log("Test message");
-        assertThat(ioUtils.loadFromFileSystem(file), containsString("Test message"));
+        assertThat(ioUtils.loadFromFileSystem(Logger.getErrorLog()), containsString("Test message"));
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void shouldNotLogDebugMessage() {
+        logger.debug("Test debug message");
+        assertThat(ioUtils.loadFromFileSystem(Logger.getDebugLog()), containsString("Test debug message"));
+    }
+
+    @Test
+    public void shouldLogDebugMessage() {
+        Logger.setDebug(true);
+        logger.debug("Test debug message");
+        assertThat(ioUtils.loadFromFileSystem(Logger.getDebugLog()), containsString("Test debug message"));
     }
 
     @Test
     public void shouldLogMessageAndException() {
         logger.log("Test message", new RuntimeException("Ouch!"));
-        String actual = ioUtils.loadFromFileSystem(file);
+        String actual = ioUtils.loadFromFileSystem(Logger.getErrorLog());
         assertThat(actual, containsString("Test message"));
         assertThat(actual, containsString("Ouch!"));
         assertThat(logger.isLoggedException(), equalTo(true));

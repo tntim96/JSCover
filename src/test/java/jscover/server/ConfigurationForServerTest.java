@@ -365,6 +365,7 @@ public class ConfigurationForServerTest {
         assertThat(configuration.isIncludeUnloadedJS(), is(false));
         assertThat(configuration.isIncludeBranch(), is(true));
         assertThat(configuration.isIncludeFunction(), is(true));
+        assertThat(configuration.isDebug(), is(false));
     }
 
     @Test
@@ -450,6 +451,11 @@ public class ConfigurationForServerTest {
     @Test
     public void shouldParseReportDir() {
         assertThat(ConfigurationForServer.parse(new String[]{"--report-dir=/"}).getReportDir(), equalTo(new File("/")));
+    }
+
+    @Test
+    public void shouldParseDebug() {
+        assertThat(ConfigurationForServer.parse(new String[]{"--debug"}).isDebug(), equalTo(true));
     }
 
     @Test

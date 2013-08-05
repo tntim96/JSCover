@@ -372,7 +372,6 @@ public class FileSystemInstrumenterTest {
     private @Mock File dest;
     private @Mock File destParent;
     private @Mock CompilerEnvirons compilerEnvirons;
-    private boolean includeBranch = true;
     private FilenameFilter acceptAll =  new FilenameFilter() {
         public boolean accept(File dir, String name) {
             return true;
@@ -386,7 +385,6 @@ public class FileSystemInstrumenterTest {
         ReflectionUtils.setField(fsi, "instrumenterService", instrumenterService);
         ReflectionUtils.setField(fsi, "ioUtils", ioUtils);
         ReflectionUtils.setField(fsi, "configuration", configuration);
-        ReflectionUtils.setField(fsi, "log", log);
 
         given(dest.getParentFile()).willReturn(destParent);
 
