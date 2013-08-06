@@ -351,6 +351,8 @@ public class LoggerUtils {
     private static LoggerUtils loggerUtils = new LoggerUtils();
     private LogFormatter formatter = new LogFormatter();
 
+    private LoggerUtils() {}
+
     public static LoggerUtils getInstance() {
         return loggerUtils;
     }
@@ -365,11 +367,11 @@ public class LoggerUtils {
             File file = new File(dir, "jscover.log");
             if (file.exists())
                 file.delete();
-            FileHandler fileTxt = new FileHandler(file.getCanonicalPath(), true);
+            FileHandler fileTxt = new FileHandler(file.getAbsolutePath(), true);
             Enumeration<String> names = LogManager.getLogManager().getLoggerNames();
             while (names.hasMoreElements()) {
-                String s = names.nextElement();
-                Logger logger = LogManager.getLogManager().getLogger(s);
+                String loggerName = names.nextElement();
+                Logger logger = LogManager.getLogManager().getLogger(loggerName);
                 logger.setLevel(level);
                 logger.addHandler(fileTxt);
                 Handler[] handlers = logger.getHandlers();
@@ -381,11 +383,5 @@ public class LoggerUtils {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public void log(Logger logger, Level level, String message, Object... args) {
-        if (!logger.isLoggable(level))
-            return;
-        logger.log(level, String.format(message, args));
     }
 }

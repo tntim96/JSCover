@@ -407,14 +407,14 @@ public class InstrumentingRequestHandler extends HttpServer {
                 if (configuration.isProxy()) {
                     for (String jsURI : uris.keySet()) {
                         File dest = new File(reportDir, Main.reportSrcSubDir + "/" + jsURI);
-                        loggerUtils.log(logger, Level.FINE, "Copying '%s' to '%s'", jsURI, dest.getCanonicalPath());
+                        logger.log(Level.FINE, "Copying {0} to {1}", new Object[]{jsURI, dest.getCanonicalPath()});
                         ioUtils.copy(uris.get(jsURI), dest);
                     }
                 } else {
                     for (String jsURI : uris.keySet()) {
                         File src = new File(configuration.getDocumentRoot(), jsURI);
                         File dest = new File(reportDir, Main.reportSrcSubDir + "/" + jsURI);
-                        loggerUtils.log(logger, Level.FINE, "Copying '%s' to '%s'", jsURI, dest.getCanonicalPath());
+                        logger.log(Level.FINE, "Copying {0} to {1}", new Object[]{jsURI, dest.getCanonicalPath()});
                         ioUtils.copy(src, dest);
                     }
                 }

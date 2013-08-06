@@ -378,6 +378,26 @@ public class LogFormatterTest {
     }
 
     @Test
+    public void shouldFormatLogRecordWithParameters() {
+        given(logRecord.getMessage()).willReturn("Hello {0}!");
+        given(logRecord.getParameters()).willReturn(new Object[]{"World"});
+
+        String actual = logFormatter.format(logRecord);
+
+        assertThat(actual, equalTo("2013-08-06:19-59-45-848,157,FINER,\"Hello World!\",Loggy,"+System.getProperty("line.separator")));
+    }
+
+    @Test
+    public void shouldFormatLogRecordWithZeroParameters() {
+        given(logRecord.getMessage()).willReturn("Hello {0}!");
+        given(logRecord.getParameters()).willReturn(new Object[]{});
+
+        String actual = logFormatter.format(logRecord);
+
+        assertThat(actual, equalTo("2013-08-06:19-59-45-848,157,FINER,\"Hello {0}!\",Loggy,"+System.getProperty("line.separator")));
+    }
+
+    @Test
     public void shouldFormatLogRecordWithThrowable() {
         given(logRecord.getThrown()).willReturn(new RuntimeException("Hey"));
 
