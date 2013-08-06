@@ -343,16 +343,18 @@ Public License instead of this License.
 package jscover.report;
 
 import jscover.util.IoUtils;
-import jscover.util.Logger;
 
 import java.io.File;
 import java.util.*;
+import java.util.logging.Logger;
+
+import static java.util.logging.Level.SEVERE;
 
 public class JSONDataSaver {
+    private static final Logger logger = Logger.getLogger(JSONDataSaver.class.getName());
     protected static Set<File> files = new HashSet<File>();
     private JSONDataMerger jsonDataMerger = new JSONDataMerger();
     private IoUtils ioUtils = IoUtils.getInstance();
-    private Logger logger = Logger.getInstance();
 
     public void saveJSONData(File reportDir, String data, List<ScriptCoverageCount> unloadJSData) {
         try {
@@ -382,7 +384,7 @@ public class JSONDataSaver {
                 try {
                     files.wait();
                 } catch (InterruptedException ex) {
-                    logger.log(Thread.currentThread().getName() +" INTERRUPTED", ex);
+                    logger.log(SEVERE, Thread.currentThread().getName() +" INTERRUPTED", ex);
                 }
             files.add(reportDir);
             files.notifyAll();  // must own the lock

@@ -346,18 +346,21 @@ import jscover.report.ScriptCoverageCount;
 import jscover.server.ConfigurationForServer;
 import jscover.util.FileScanner;
 import jscover.util.IoUtils;
-import jscover.util.Logger;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import static java.lang.String.format;
 
 public class UnloadedSourceProcessor {
+    private static final Logger logger = Logger.getLogger(UnloadedSourceProcessor.class.getName());
     private ConfigurationForServer config;
     private IoUtils ioUtils = IoUtils.getInstance();
     private FileScanner fileScanner;
-    private Logger logger = Logger.getInstance();
 
     public UnloadedSourceProcessor(ConfigurationForServer config) {
         fileScanner = new FileScanner(config);
@@ -377,7 +380,7 @@ public class UnloadedSourceProcessor {
                         sourceProcessor.getBranchInstrumentor().getLineConditionMap());
                 scripts.add(script);
             } catch (RuntimeException t) {
-                logger.log(String.format("Problem parsing %s", uri), t);
+                logger.log(Level.SEVERE, format("Problem parsing %s", uri), t);
             }
         }
         return scripts;

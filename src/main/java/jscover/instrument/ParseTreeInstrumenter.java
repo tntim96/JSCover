@@ -342,17 +342,20 @@ Public License instead of this License.
 
 package jscover.instrument;
 
-import jscover.util.Logger;
 import org.mozilla.javascript.ast.AstNode;
 import org.mozilla.javascript.ast.NodeVisitor;
 
 import java.util.SortedSet;
+import java.util.logging.Logger;
+
+import static java.lang.String.format;
+import static java.util.logging.Level.SEVERE;
 
 //Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013
 class ParseTreeInstrumenter implements NodeVisitor {
+    private static Logger logger = Logger.getLogger(ParseTreeInstrumenter.class.getName());
     private String fileName;
     private NodeProcessor nodeProcessor;
-    private Logger logger = Logger.getInstance();
 
     public ParseTreeInstrumenter(String uri, boolean includeFunctionCoverage) {
         this.fileName = uri;
@@ -372,7 +375,7 @@ class ParseTreeInstrumenter implements NodeVisitor {
         try {
             return nodeProcessor.processNode(node);
         } catch (RuntimeException t) {
-            logger.log(String.format("Error on line %s of %s", node.getLineno(), fileName), t);
+            logger.log(SEVERE, format("Error on line %s of %s", node.getLineno(), fileName), t);
             return true;
         }
     }

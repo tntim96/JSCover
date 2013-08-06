@@ -351,10 +351,12 @@ import org.mozilla.javascript.Context;
 import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import static java.lang.String.format;
+import static java.util.logging.Level.SEVERE;
 
 public class ConfigurationForFS extends Configuration {
     public static final String HELP_PREFIX1 = Main.HELP_PREFIX1;
@@ -366,6 +368,7 @@ public class ConfigurationForFS extends Configuration {
     public static final String BRANCH_PREFIX = "--no-branch";
     public static final String FUNCTION_PREFIX = "--no-function";
     public static final String JS_VERSION_PREFIX = "--js-version=";
+    public static final String LOG_LEVEL = "--log=";
 
     private boolean showHelp;
     private boolean invalid;
@@ -378,6 +381,7 @@ public class ConfigurationForFS extends Configuration {
     private File srcDir;
     private File destDir;
     private int JSVersion = Context.VERSION_1_5;
+    private Level logLevel = SEVERE;
     private CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
     private IoUtils ioUtils = IoUtils.getInstance();
 
@@ -477,6 +481,8 @@ public class ConfigurationForFS extends Configuration {
                 }
             } else if (arg.startsWith(JS_VERSION_PREFIX)) {
                 configuration.JSVersion = (int) (Float.valueOf(arg.substring(JS_VERSION_PREFIX.length())) * 100);
+            } else if (arg.startsWith(LOG_LEVEL)) {
+                configuration.logLevel = Level.parse(arg.substring(LOG_LEVEL.length()));
             } else if (configuration.srcDir == null) {
                 configuration.srcDir = new File(arg);
             } else if (configuration.destDir == null) {
@@ -516,5 +522,9 @@ public class ConfigurationForFS extends Configuration {
 
     public CompilerEnvirons getCompilerEnvirons() {
         return compilerEnvirons;
+    }
+
+    public Level getLogLevel() {
+        return logLevel;
     }
 }

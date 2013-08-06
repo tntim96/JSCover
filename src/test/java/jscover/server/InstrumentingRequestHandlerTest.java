@@ -349,7 +349,6 @@ import jscover.report.JSONDataSaver;
 import jscover.report.ScriptCoverageCount;
 import jscover.util.IoService;
 import jscover.util.IoUtils;
-import jscover.util.Logger;
 import jscover.util.ReflectionUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -382,7 +381,6 @@ public class InstrumentingRequestHandlerTest {
     private @Mock UnloadedSourceProcessor unloadedSourceProcessor;
     private @Mock ProxyService proxyService;
     private @Mock ConfigurationForServer configuration;
-    private @Mock Logger logger;
     private @Mock ByteArrayInputStream bais;
     private final StringWriter stringWriter = new StringWriter();
     private PrintWriter pw = new PrintWriter(stringWriter);
@@ -398,7 +396,6 @@ public class InstrumentingRequestHandlerTest {
         ReflectionUtils.setField(webServer, "unloadedSourceProcessor", unloadedSourceProcessor);
         ReflectionUtils.setField(webServer, "proxyService", proxyService);
         ReflectionUtils.setField(webServer, "configuration", configuration);
-        ReflectionUtils.setField(webServer, "logger", logger);
         ReflectionUtils.setField(webServer, HttpServer.class, "bais", bais);
         ReflectionUtils.setField(webServer, HttpServer.class, "pw", pw);
         ReflectionUtils.setField(webServer, HttpServer.class, "version", "testVersion");
@@ -421,6 +418,7 @@ public class InstrumentingRequestHandlerTest {
         given(configuration.getReportDir()).willReturn(reportDir);
         given(configuration.getVersion()).willReturn("theVersion");
         given(ioUtils.toStringNoClose(bais, 12)).willReturn("data");
+        given(bais.skip(50)).willReturn(50L);
 
         webServer.handlePost(new HttpRequest(JSCOVERAGE_STORE, bais, null, 50, headers));
 
@@ -429,6 +427,20 @@ public class InstrumentingRequestHandlerTest {
         verify(bais).skip(50);
         verifyZeroInteractions(instrumenterService);
         assertThat(stringWriter.toString(), containsString(format("Coverage data stored at %s", reportDir)));
+    }
+
+    @Test//NB This test must be run with assertions enabled (i.e. JVM arg -ea)
+    public void shouldThrowErrorIfBytesNotSkipped() {
+        File reportDir = new File("target/temp");
+        reportDir.deleteOnExit();
+        given(configuration.getReportDir()).willReturn(reportDir);
+        given(configuration.getVersion()).willReturn("theVersion");
+        given(ioUtils.toStringNoClose(bais, 12)).willReturn("data");
+        given(bais.skip(50)).willReturn(40L);
+
+        webServer.handlePost(new HttpRequest(JSCOVERAGE_STORE, bais, null, 50, headers));
+
+        verifyZeroInteractions(jsonDataSaver);
     }
 
     @Test(expected = UnsupportedOperationException.class)
@@ -498,6 +510,7 @@ public class InstrumentingRequestHandlerTest {
         reportDir.deleteOnExit();
         given(configuration.getReportDir()).willReturn(reportDir);
         given(ioUtils.toStringNoClose(bais, 12)).willReturn("data");
+        given(bais.skip(50)).willReturn(50L);
         RuntimeException toBeThrown = new RuntimeException("Ouch!");
         doThrow(toBeThrown).when(jsonDataSaver).saveJSONData(reportDir, "data", null);
 
@@ -517,6 +530,7 @@ public class InstrumentingRequestHandlerTest {
         given(configuration.getReportDir()).willReturn(file);
         given(configuration.getVersion()).willReturn("theVersion");
         given(ioUtils.toStringNoClose(bais, 12)).willReturn("data");
+        given(bais.skip(50)).willReturn(50L);
 
         webServer.handlePost(new HttpRequest(JSCOVERAGE_STORE + "subdirectory", bais, null, 50, headers));
 
@@ -536,6 +550,7 @@ public class InstrumentingRequestHandlerTest {
         given(configuration.getReportDir()).willReturn(file);
         given(configuration.getVersion()).willReturn("theVersion");
         given(ioUtils.toStringNoClose(bais, 12)).willReturn("data");
+        given(bais.skip(50)).willReturn(50L);
 
         webServer.handlePost(new HttpRequest(JSCOVERAGE_STORE + "subdirectory", bais, null, 50, headers));
 
@@ -557,6 +572,7 @@ public class InstrumentingRequestHandlerTest {
         given(configuration.getReportDir()).willReturn(file);
         given(configuration.getVersion()).willReturn("theVersion");
         given(ioUtils.toStringNoClose(bais, 12)).willReturn("data");
+        given(bais.skip(50)).willReturn(50L);
 
         webServer.handlePost(new HttpRequest(JSCOVERAGE_STORE + "subdirectory", bais, null, 50, headers));
 
@@ -577,6 +593,7 @@ public class InstrumentingRequestHandlerTest {
         given(configuration.getReportDir()).willReturn(reportDir);
         given(configuration.getVersion()).willReturn("theVersion");
         given(ioUtils.toStringNoClose(bais, 12)).willReturn("data");
+        given(bais.skip(50)).willReturn(50L);
         List<ScriptCoverageCount> unloadedJS = new ArrayList<ScriptCoverageCount>();
         unloadedJS.add(new ScriptCoverageCount("/js/unloaded.js", null, 0, null));
         given(unloadedSourceProcessor.getEmptyCoverageData(anySet())).willReturn(unloadedJS);

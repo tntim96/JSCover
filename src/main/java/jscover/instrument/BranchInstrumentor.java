@@ -342,25 +342,26 @@ Public License instead of this License.
 
 package jscover.instrument;
 
-import jscover.util.Logger;
 import org.mozilla.javascript.Token;
 import org.mozilla.javascript.ast.*;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 import static java.lang.String.format;
+import static java.util.logging.Level.SEVERE;
 
 public class BranchInstrumentor implements NodeVisitor {
     private static final String initBranchLine = "  _$jscoverage['%s'].branchData['%d'] = [];\n";
     private static final String initBranchCondition = "  _$jscoverage['%s'].branchData['%d'][%d] = new BranchData();\n";
-
+    private static final Logger logger = Logger.getLogger(BranchInstrumentor.class.getName());
     private static int functionId = 1;
+
     private BranchStatementBuilder branchStatementBuilder = new BranchStatementBuilder();
     private BranchHelper branchHelper = BranchHelper.getInstance();
     private Set<PostProcess> postProcesses = new HashSet<PostProcess>();
     private String uri;
     private AstRoot astRoot;
-    private Logger logger = Logger.getInstance();
     private SortedMap<Integer, SortedSet<Integer>> lineConditionMap = new TreeMap<Integer, SortedSet<Integer>>();
 
     public BranchInstrumentor(String uri) {
@@ -478,7 +479,7 @@ public class BranchInstrumentor implements NodeVisitor {
                 }
             });
         } else {
-            logger.log(format("Couldn't insert wrapper for parent %s, file: %s, line: %d, position: %d, source: %s", parent.getClass().getName(), uri, node.getLineno(), node.getPosition(), node.toSource()));
+            logger.log(SEVERE, format("Couldn't insert wrapper for parent %s, file: %s, line: %d, position: %d, source: %s", parent.getClass().getName(), uri, node.getLineno(), node.getPosition(), node.toSource()));
         }
     }
 

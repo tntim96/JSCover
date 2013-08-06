@@ -346,7 +346,7 @@ import jscover.Main;
 import jscover.instrument.InstrumenterService;
 import jscover.util.IoService;
 import jscover.util.IoUtils;
-import jscover.util.Logger;
+import jscover.util.LoggerUtils;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -355,11 +355,12 @@ public class FileSystemInstrumenter {
     private IoService ioService = new IoService();
     private InstrumenterService instrumenterService = new InstrumenterService();
     private IoUtils ioUtils = IoUtils.getInstance();
+    private LoggerUtils loggerUtils = LoggerUtils.getInstance();
     private ConfigurationForFS configuration;
 
     public void run(ConfigurationForFS configuration) {
         this.configuration = configuration;
-        Logger.setLogFileDirectory(configuration.getDestDir());
+        loggerUtils.configureLogger(configuration.getLogLevel(), configuration.getDestDir());
         ioService.generateJSCoverFilesForFileSystem(configuration.getDestDir(), configuration.getVersion());
         copyFolder(configuration.getSrcDir(), configuration.getDestDir());
         copyFolder(configuration.getSrcDir(), new File(configuration.getDestDir(), Main.reportSrcSubDir), getJavaScriptFilter(), true);

@@ -343,17 +343,20 @@ Public License instead of this License.
 package jscover.server;
 
 import jscover.util.IoUtils;
-import jscover.util.Logger;
 
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.Charset;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static java.lang.String.format;
+import static java.util.logging.Level.FINEST;
 import static jscover.util.IoUtils.*;
 
 public class HttpServer extends Thread {
+    private static final Logger logger = Logger.getLogger(HttpServer.class.getName());
 
     private Socket socket;
     private String version;
@@ -364,12 +367,12 @@ public class HttpServer extends Thread {
     protected OutputStream os;
     protected PrintWriter pw = null;
     protected IoUtils ioUtils = IoUtils.getInstance();
-    protected Logger logger = Logger.getInstance();
 
     public HttpServer(Socket socket, File wwwRoot, String version) {
         this.wwwRoot = wwwRoot;
         this.socket = socket;
         this.version = version;
+        logger.setLevel(Level.FINEST);
     }
 
     public void run() {
@@ -388,7 +391,7 @@ public class HttpServer extends Thread {
             pw = new PrintWriter(os);
 
             requestString = br.readLine();
-            logger.debug(requestString);
+            logger.log(FINEST, requestString);
             if (requestString == null)
                 return;
 
@@ -398,7 +401,7 @@ public class HttpServer extends Thread {
             String headerLine;
             Map<String, List<String>> headers = new HashMap<String, List<String>>();
             while (!(headerLine = br.readLine()).equals("")) {
-                logger.debug(headerLine);
+                logger.log(FINEST, headerLine);
                 int index = headerLine.indexOf(':');
                 if (index >= 0) {
                     String headerField = headerLine.substring(0, index).trim();
@@ -433,8 +436,7 @@ public class HttpServer extends Thread {
             } else
               throw new UnsupportedOperationException("No support for "+httpMethod);
         } catch (Exception e) {
-            logger.log(format("Error processing request string %s", requestString),e);
-            e.printStackTrace();
+            logger.log(Level.WARNING, format("Error processing request string %s", requestString),e);
         } finally {
             ioUtils.closeQuietly(br);
             ioUtils.closeQuietly(pbis);

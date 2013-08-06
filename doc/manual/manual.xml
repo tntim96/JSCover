@@ -425,6 +425,15 @@ fs.write("target/jscoverage.json", json, 'w');
                         <code>java -jar JSCover-all.jar -h encoding</code>
                     </text>
                 </item>
+                <item>
+                    <heading id="enableAssertions">Enable Assertions</heading>
+                    <text>
+                        To help detect errors while running JSCover, run the JVM with assertions enabled
+                        (JVM flag <var>-ea</var>).
+                        For example:
+                        <code>java -ea -jar JSCover-all.jar -ws --port=80 --no-instrument=lib --no-instrument=test</code>
+                    </text>
+                </item>
             </item>
             <item>
                 <heading id="serverMode">Server Mode</heading>
@@ -505,6 +514,15 @@ fs.write("target/jscoverage.json", json, 'w');
                                 Use the specified JavaScript version; valid values for VERSION are
                                 <a href="http://en.wikipedia.org/wiki/JavaScript#Versions" target="_blank">1.0, 1.1,
                                     1.2, ..., 1.8</a>.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>--log=LEVEL</td>
+                            <td>SEVERE</td>
+                            <td>
+                                Use the specified Java log level; valid values for LEVEL are
+                                <a href="http://docs.oracle.com/javase/1.5.0/docs/api/java/util/logging/Level.html"
+                                   target="_blank">SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST</a>.
                             </td>
                         </tr>
                     </table>
@@ -629,6 +647,15 @@ fs.write("target/jscoverage.json", json, 'w');
                                     1.2, ..., 1.8</a>.
                             </td>
                         </tr>
+                        <tr>
+                            <td>--log=LEVEL</td>
+                            <td>SEVERE</td>
+                            <td>
+                                Use the specified Java log level; valid values for LEVEL are
+                                <a href="http://docs.oracle.com/javase/1.5.0/docs/api/java/util/logging/Level.html"
+                                   target="_blank">SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST</a>.
+                            </td>
+                        </tr>
                     </table>
                     See the
                     <a href="#encoding">encoding section</a>
@@ -706,14 +733,15 @@ fs.write("target/jscoverage.json", json, 'w');
                 </text>
             </item>
             <item>
-                <heading id="errorLog">Error Log</heading>
+                <heading id="jscoverLog">JSCover Log</heading>
                 <text>
-                    A log file, <var>errors.log</var>, is produced in the output directory
-                    if any instrumentation errors occurred. In addition, the program will exit with an exit status of 1.
+                    A log file, <var>jscover.log</var>, may be produced in the output directory
+                    if any message logging occurred. If any exceptions were thrown, the program will exit with an exit
+                    status of 1.
                 </text>
                 <text>
                     The
-                    <var>errors.log</var>
+                    <var>jscover.log</var>
                     file should be inspected, but does not necessarily indicate an instrumentation
                     error.
                     Logged errors are usually the result of trying to insert a statement to an invalid location

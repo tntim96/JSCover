@@ -345,7 +345,9 @@ package jscover.server;
 import org.junit.Test;
 
 import java.io.File;
+import java.util.logging.Level;
 
+import static java.util.logging.Level.SEVERE;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
@@ -365,7 +367,7 @@ public class ConfigurationForServerTest {
         assertThat(configuration.isIncludeUnloadedJS(), is(false));
         assertThat(configuration.isIncludeBranch(), is(true));
         assertThat(configuration.isIncludeFunction(), is(true));
-        assertThat(configuration.isDebug(), is(false));
+        assertThat(configuration.getLogLevel(), is(SEVERE));
     }
 
     @Test
@@ -454,8 +456,8 @@ public class ConfigurationForServerTest {
     }
 
     @Test
-    public void shouldParseDebug() {
-        assertThat(ConfigurationForServer.parse(new String[]{"--debug"}).isDebug(), equalTo(true));
+    public void shouldParseLogLevel() {
+        assertThat(ConfigurationForServer.parse(new String[]{"--log=FINE"}).getLogLevel(), equalTo(Level.FINE));
     }
 
     @Test

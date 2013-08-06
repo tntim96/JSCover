@@ -345,9 +345,10 @@ package jscover.filesystem;
 import org.junit.Test;
 
 import java.io.File;
+import java.util.logging.Level;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
+import static java.util.logging.Level.SEVERE;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
 public class ConfigurationForFSTest {
@@ -362,6 +363,7 @@ public class ConfigurationForFSTest {
         assertThat(configuration.getCompilerEnvirons().getLanguageVersion(), equalTo(150));
         assertThat(configuration.isIncludeBranch(), equalTo(true));
         assertThat(configuration.isIncludeFunction(), equalTo(true));
+        assertThat(configuration.getLogLevel(), is(SEVERE));
     }
 
     @Test
@@ -440,6 +442,11 @@ public class ConfigurationForFSTest {
         ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs", "--js-version=1.8", "src", "doc"});
         assertThat(configuration.getJSVersion(), equalTo(180));
         assertThat(configuration.getCompilerEnvirons().getLanguageVersion(), equalTo(180));
+    }
+
+    @Test
+    public void shouldParseLogLevel() {
+        assertThat(ConfigurationForFS.parse(new String[]{"--log=FINE"}).getLogLevel(), equalTo(Level.FINE));
     }
 
     @Test

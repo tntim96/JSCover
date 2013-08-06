@@ -351,10 +351,12 @@ import org.mozilla.javascript.Context;
 import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import static java.lang.String.format;
+import static java.util.logging.Level.SEVERE;
 
 public class ConfigurationForServer extends Configuration {
     public static final String HELP_PREFIX1 = Main.HELP_PREFIX1;
@@ -369,7 +371,7 @@ public class ConfigurationForServer extends Configuration {
     public static final String INCLUDE_UNLOADED_JS_PREFIX = "--include-unloaded-js";
     public static final String BRANCH_PREFIX = "--no-branch";
     public static final String FUNCTION_PREFIX = "--no-function";
-    public static final String DEBUG = "--debug";
+    public static final String LOG_LEVEL = "--log=";
 
     private boolean showHelp;
     private boolean invalid;
@@ -384,7 +386,7 @@ public class ConfigurationForServer extends Configuration {
     private boolean proxy;
     private CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
     private boolean includeUnloadedJS;
-    private boolean debug;
+    private Level logLevel = SEVERE;
     private IoUtils ioUtils = IoUtils.getInstance();
 
     public Boolean showHelp() {
@@ -479,8 +481,8 @@ public class ConfigurationForServer extends Configuration {
                 configuration.includeBranch = false;
             } else if (arg.equals(FUNCTION_PREFIX)) {
                 configuration.includeFunction = false;
-            } else if (arg.equals(DEBUG)) {
-                configuration.debug = true;
+            } else if (arg.startsWith(LOG_LEVEL)) {
+                configuration.logLevel = Level.parse(arg.substring(LOG_LEVEL.length()));
             } else {
                 configuration.showHelp = true;
                 configuration.invalid = true;
@@ -506,7 +508,7 @@ public class ConfigurationForServer extends Configuration {
         return includeUnloadedJS && !proxy;
     }
 
-    public boolean isDebug() {
-        return debug;
+    public Level getLogLevel() {
+        return logLevel;
     }
 }

@@ -188,11 +188,11 @@
 	</target>
 
 	<target name="coverage-check">
-		<cobertura-check totallinerate="89" totalbranchrate="89"/>
+		<cobertura-check totallinerate="88" totalbranchrate="89"/>
 	</target>
 
 	<target name="coverage-check-all">
-		<cobertura-check totallinerate="97" totalbranchrate="93"/>
+		<cobertura-check totallinerate="96" totalbranchrate="93"/>
 	</target>
 
 	<target name="compile-tests" depends="compile">
@@ -242,6 +242,7 @@
 		<delete dir="${report.test.dir}" />
 		<mkdir dir="${report.test.dir}" />
 		<junit forkmode="perBatch" haltonfailure="no" haltonerror="no" failureProperty="test.failure" errorproperty="test.failure">
+            <jvmarg value="-ea"/>
 			<classpath>
 				<path refid="classpath-cobertura" />
                 <path refid="compile.classpath" />
@@ -265,6 +266,7 @@
     <target name="run-acceptance-tests" depends="compile-acceptance-tests">
         <property name="tests" value="*Test" />
         <junit forkmode="perTest" haltonfailure="no" haltonerror="no" failureProperty="test.failure" errorproperty="test.failure">
+            <jvmarg value="-ea"/>
             <classpath>
                 <path refid="classpath-cobertura" />
                 <path refid="compile.classpath" />

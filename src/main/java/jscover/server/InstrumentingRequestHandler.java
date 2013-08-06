@@ -348,7 +348,7 @@ import jscover.instrument.UnloadedSourceProcessor;
 import jscover.report.JSONDataSaver;
 import jscover.report.ScriptCoverageCount;
 import jscover.util.IoService;
-import jscover.util.Logger;
+import jscover.util.LoggerUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -358,19 +358,22 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static java.lang.String.format;
 
 public class InstrumentingRequestHandler extends HttpServer {
+    private static final Logger logger = Logger.getLogger(InstrumentingRequestHandler.class.getName());
     public static final String JSCOVERAGE_STORE = "/jscoverage-store";
     static Map<String, String> uris = new HashMap<String, String>();
+    private LoggerUtils loggerUtils = LoggerUtils.getInstance();
     private ConfigurationForServer configuration;
     private IoService ioService = new IoService();
     private JSONDataSaver jsonDataSaver = new JSONDataSaver();
     private InstrumenterService instrumenterService = new InstrumenterService();
     private ProxyService proxyService = new ProxyService();
     private UnloadedSourceProcessor unloadedSourceProcessor;
-    private Logger logger = Logger.getInstance();
 
     public InstrumentingRequestHandler(Socket socket, ConfigurationForServer configuration) {
         super(socket, configuration.getDocumentRoot(), configuration.getVersion());
@@ -382,6 +385,7 @@ public class InstrumentingRequestHandler extends HttpServer {
     protected void handlePost(HttpRequest request) {
         String uri = request.getPath();
         if (uri.startsWith(JSCOVERAGE_STORE)) {
+            logger.fine("Storing report");
             File reportDir = configuration.getReportDir();
             if (uri.length() > JSCOVERAGE_STORE.length()) {
                 reportDir = new File(reportDir, uri.substring(JSCOVERAGE_STORE.length()));
@@ -389,6 +393,7 @@ public class InstrumentingRequestHandler extends HttpServer {
             try {
                 List<ScriptCoverageCount> unloadJSData = null;
                 if (configuration.isIncludeUnloadedJS()) {
+                    logger.fine("Searching for unloaded JavaScript");
                     unloadJSData = unloadedSourceProcessor.getEmptyCoverageData(uris.keySet());
                     for (ScriptCoverageCount scriptLinesAndSource : unloadJSData) {
                         File src = new File(configuration.getDocumentRoot(), scriptLinesAndSource.getUri());
@@ -402,19 +407,21 @@ public class InstrumentingRequestHandler extends HttpServer {
                 if (configuration.isProxy()) {
                     for (String jsURI : uris.keySet()) {
                         File dest = new File(reportDir, Main.reportSrcSubDir + "/" + jsURI);
+                        loggerUtils.log(logger, Level.FINE, "Copying '%s' to '%s'", jsURI, dest.getCanonicalPath());
                         ioUtils.copy(uris.get(jsURI), dest);
                     }
                 } else {
                     for (String jsURI : uris.keySet()) {
                         File src = new File(configuration.getDocumentRoot(), jsURI);
                         File dest = new File(reportDir, Main.reportSrcSubDir + "/" + jsURI);
+                        loggerUtils.log(logger, Level.FINE, "Copying '%s' to '%s'", jsURI, dest.getCanonicalPath());
                         ioUtils.copy(src, dest);
                     }
                 }
                 ioService.generateJSCoverFilesForWebServer(reportDir, configuration.getVersion());
                 sendResponse(HTTP_STATUS.HTTP_OK, MIME.TEXT_PLAIN, "Coverage data stored at " + reportDir);
             } catch(Throwable t) {
-                logger.log("Error saving coverage data", t);
+                logger.log(Level.SEVERE, "Error saving coverage data", t);
                 String message = format("Error saving coverage data. Try deleting JSON file at %s",reportDir);
                 sendResponse(HTTP_STATUS.HTTP_OK, MIME.TEXT_PLAIN, message);
             }

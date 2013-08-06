@@ -342,7 +342,6 @@ Public License instead of this License.
 
 package jscover.instrument;
 
-import jscover.util.Logger;
 import jscover.util.ReflectionUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -352,7 +351,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.mozilla.javascript.ast.AstNode;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
+import static java.util.logging.Level.SEVERE;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
@@ -378,7 +379,7 @@ public class ParseTreeInstrumenterTest {
 
         instrumenter.visit(astNode);
 
-        verify(logger).log("Error on line 7 of /dir/file.js", exception);
+        verify(logger).log(SEVERE, "Error on line 7 of /dir/file.js", exception);
     }
 
     @Test(expected = RuntimeException.class)

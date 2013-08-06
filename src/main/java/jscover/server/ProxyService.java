@@ -343,20 +343,24 @@ Public License instead of this License.
 package jscover.server;
 
 import jscover.util.IoUtils;
-import jscover.util.Logger;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.Socket;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import static java.lang.String.format;
+import static java.util.logging.Level.SEVERE;
 
 public class ProxyService {
+    private static final Logger logger = Logger.getLogger(ProxyService.class.getName());
     private IoUtils ioUtils = IoUtils.getInstance();
-    private Logger logger = Logger.getInstance();
 
     protected void handleProxyGet(HttpRequest request, OutputStream os) {
         handleProxyRequest(request, os, "GET");
@@ -383,7 +387,7 @@ public class ProxyService {
             sendHeaders(request, remotePrintWriter);
             ioUtils.copyNoClose(remoteInputStream, os);
         } catch (IOException e) {
-            logger.log(request.getPath(), e);
+            logger.log(SEVERE, request.getPath(), e);
         } finally {
             ioUtils.closeQuietly(remoteOutputStream);
             ioUtils.closeQuietly(remoteInputStream);
