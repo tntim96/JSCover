@@ -345,8 +345,11 @@ package jscover.util;
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.Charset;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class IoUtils {
+    private static final Logger logger = Logger.getLogger(IoUtils.class.getName());
     public static String CRLFx2 = "\r\n\r\n";
     public static String CRx2 = "\r\r";
     public static String LFx2 = "\n\n";
@@ -560,6 +563,7 @@ public class IoUtils {
     }
 
     public void copy(File src, File dest) {
+        logger.log(Level.FINEST, "Copying ''{0}'' to ''{1}''", new Object[]{src.getPath(), dest.getPath()});
         dest.getParentFile().mkdirs();
         FileInputStream is = null;
         FileOutputStream os = null;

@@ -449,7 +449,7 @@ public class InstrumentingRequestHandler extends HttpServer {
                 String jsInstrumented;
                 if (configuration.isProxy()) {
                     String originalJS = proxyService.getUrl(request);
-                    jsInstrumented = instrumenterService.instrumentJSForWebServer(configuration.getCompilerEnvirons(), originalJS, uri, configuration.isIncludeBranch(), configuration.isIncludeFunction());
+                    jsInstrumented = instrumenterService.instrumentJSForProxyServer(configuration.getCompilerEnvirons(), originalJS, uri, configuration.isIncludeBranch(), configuration.isIncludeFunction());
                     uris.put(uri.substring(1), originalJS);
                 } else {
                     jsInstrumented = instrumenterService.instrumentJSForWebServer(configuration.getCompilerEnvirons(), new File(wwwRoot, uri), uri, configuration.isIncludeBranch(), configuration.isIncludeFunction());

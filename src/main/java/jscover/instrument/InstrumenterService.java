@@ -349,11 +349,16 @@ import org.mozilla.javascript.CompilerEnvirons;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.logging.Logger;
+
+import static java.util.logging.Level.INFO;
 
 public class InstrumenterService {
+    private static final Logger logger = Logger.getLogger(InstrumenterService.class.getName());
     private IoUtils ioUtils = IoUtils.getInstance();
 
     public String instrumentJSForWebServer(CompilerEnvirons compilerEnvirons, File srcFile, String uri, boolean includeBranch, boolean includeFunction) {
+        logger.log(INFO, "Instrumenting {0}", uri);
         SourceProcessor sourceProcessor = new SourceProcessor(compilerEnvirons, uri, includeBranch, includeFunction);
         try {
             String source = ioUtils.toString(new FileInputStream(srcFile));
@@ -363,12 +368,14 @@ public class InstrumenterService {
         }
     }
 
-    public String instrumentJSForWebServer(CompilerEnvirons compilerEnvirons, String source, String uri, boolean includeBranch, boolean includeFunction) {
+    public String instrumentJSForProxyServer(CompilerEnvirons compilerEnvirons, String source, String uri, boolean includeBranch, boolean includeFunction) {
+        logger.log(INFO, "Instrumenting {0}", uri);
         SourceProcessor sourceProcessor = new SourceProcessor(compilerEnvirons, uri, includeBranch, includeFunction);
         return sourceProcessor.processSourceForServer(source);
     }
 
     public void instrumentJSForFileSystem(CompilerEnvirons compilerEnvirons, File srcFile, File dest, String uri, boolean includeBranch, boolean includeFunction) {
+        logger.log(INFO, "Instrumenting {0}", uri);
         SourceProcessor sourceProcessor = new SourceProcessor(compilerEnvirons, "/" + uri, includeBranch, includeFunction);
         String source = ioUtils.loadFromFileSystem(srcFile);
         String jsInstrumented = sourceProcessor.processSourceForFileSystem(source);
