@@ -345,8 +345,8 @@ package jscover.server;
 import org.junit.Test;
 
 import java.io.File;
-import java.util.logging.Level;
 
+import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.SEVERE;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
@@ -457,7 +457,7 @@ public class ConfigurationForServerTest {
 
     @Test
     public void shouldParseLogLevel() {
-        assertThat(ConfigurationForServer.parse(new String[]{"--log=FINE"}).getLogLevel(), equalTo(Level.FINE));
+        assertThat(ConfigurationForServer.parse(new String[]{"--log=FINE"}).getLogLevel(), equalTo(FINE));
     }
 
     @Test

@@ -355,6 +355,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static java.lang.String.format;
+import static java.util.logging.Level.SEVERE;
 
 public class UnloadedSourceProcessor {
     private static final Logger logger = Logger.getLogger(UnloadedSourceProcessor.class.getName());
@@ -380,7 +381,7 @@ public class UnloadedSourceProcessor {
                         sourceProcessor.getBranchInstrumentor().getLineConditionMap());
                 scripts.add(script);
             } catch (RuntimeException t) {
-                logger.log(Level.SEVERE, format("Problem parsing %s", uri), t);
+                logger.log(SEVERE, format("Problem parsing %s", uri), t);
             }
         }
         return scripts;

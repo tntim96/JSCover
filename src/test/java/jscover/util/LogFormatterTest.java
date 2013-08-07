@@ -346,12 +346,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
+import static java.util.logging.Level.FINER;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -365,7 +364,7 @@ public class LogFormatterTest {
     public void setUp() {
         given(logRecord.getMillis()).willReturn(1375783185848L);
         given(logRecord.getThreadID()).willReturn(157);
-        given(logRecord.getLevel()).willReturn(Level.FINER);
+        given(logRecord.getLevel()).willReturn(FINER);
         given(logRecord.getMessage()).willReturn("Hello");
         given(logRecord.getLoggerName()).willReturn("Loggy");
     }

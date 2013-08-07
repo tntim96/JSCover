@@ -345,8 +345,8 @@ package jscover.filesystem;
 import org.junit.Test;
 
 import java.io.File;
-import java.util.logging.Level;
 
+import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.SEVERE;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
@@ -446,7 +446,7 @@ public class ConfigurationForFSTest {
 
     @Test
     public void shouldParseLogLevel() {
-        assertThat(ConfigurationForFS.parse(new String[]{"--log=FINE"}).getLogLevel(), equalTo(Level.FINE));
+        assertThat(ConfigurationForFS.parse(new String[]{"--log=FINE"}).getLogLevel(), equalTo(FINE));
     }
 
     @Test

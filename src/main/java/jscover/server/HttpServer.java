@@ -348,11 +348,10 @@ import java.io.*;
 import java.net.Socket;
 import java.nio.charset.Charset;
 import java.util.*;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static java.lang.String.format;
-import static java.util.logging.Level.FINEST;
+import static java.util.logging.Level.*;
 import static jscover.util.IoUtils.*;
 
 public class HttpServer extends Thread {
@@ -372,7 +371,6 @@ public class HttpServer extends Thread {
         this.wwwRoot = wwwRoot;
         this.socket = socket;
         this.version = version;
-        logger.setLevel(Level.FINEST);
     }
 
     public void run() {
@@ -391,7 +389,7 @@ public class HttpServer extends Thread {
             pw = new PrintWriter(os);
 
             requestString = br.readLine();
-            logger.log(FINEST, requestString);
+            logger.log(FINE, requestString);
             if (requestString == null)
                 return;
 
@@ -436,7 +434,7 @@ public class HttpServer extends Thread {
             } else
               throw new UnsupportedOperationException("No support for "+httpMethod);
         } catch (Exception e) {
-            logger.log(Level.WARNING, format("Error processing request string %s", requestString),e);
+            logger.log(WARNING, format("Error processing request string %s", requestString),e);
         } finally {
             ioUtils.closeQuietly(br);
             ioUtils.closeQuietly(pbis);

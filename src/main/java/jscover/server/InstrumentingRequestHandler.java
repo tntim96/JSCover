@@ -358,10 +358,11 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static java.lang.String.format;
+import static java.util.logging.Level.FINE;
+import static java.util.logging.Level.SEVERE;
 
 public class InstrumentingRequestHandler extends HttpServer {
     private static final Logger logger = Logger.getLogger(InstrumentingRequestHandler.class.getName());
@@ -407,21 +408,21 @@ public class InstrumentingRequestHandler extends HttpServer {
                 if (configuration.isProxy()) {
                     for (String jsURI : uris.keySet()) {
                         File dest = new File(reportDir, Main.reportSrcSubDir + "/" + jsURI);
-                        logger.log(Level.FINE, "Copying {0} to {1}", new Object[]{jsURI, dest.getCanonicalPath()});
+                        logger.log(FINE, "Copying {0} to {1}", new Object[]{jsURI, dest.getCanonicalPath()});
                         ioUtils.copy(uris.get(jsURI), dest);
                     }
                 } else {
                     for (String jsURI : uris.keySet()) {
                         File src = new File(configuration.getDocumentRoot(), jsURI);
                         File dest = new File(reportDir, Main.reportSrcSubDir + "/" + jsURI);
-                        logger.log(Level.FINE, "Copying {0} to {1}", new Object[]{jsURI, dest.getCanonicalPath()});
+                        logger.log(FINE, "Copying {0} to {1}", new Object[]{jsURI, dest.getCanonicalPath()});
                         ioUtils.copy(src, dest);
                     }
                 }
                 ioService.generateJSCoverFilesForWebServer(reportDir, configuration.getVersion());
                 sendResponse(HTTP_STATUS.HTTP_OK, MIME.TEXT_PLAIN, "Coverage data stored at " + reportDir);
             } catch(Throwable t) {
-                logger.log(Level.SEVERE, "Error saving coverage data", t);
+                logger.log(SEVERE, "Error saving coverage data", t);
                 String message = format("Error saving coverage data. Try deleting JSON file at %s",reportDir);
                 sendResponse(HTTP_STATUS.HTTP_OK, MIME.TEXT_PLAIN, message);
             }
