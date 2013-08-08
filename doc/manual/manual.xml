@@ -526,9 +526,8 @@ fs.write("target/jscoverage.json", json, 'w');
                             </td>
                         </tr>
                     </table>
-                    See the
-                    <a href="#encoding">encoding section</a>
-                    above for specifying encoding.
+                    See the <a href="#encoding">encoding section</a> above for specifying encoding.<br/>
+                    See the <a href="#logging">logging section</a> for more information.
                 </text>
                 <item>
                     <heading id="implementationStoreReport">Storing reports</heading>
@@ -658,8 +657,8 @@ fs.write("target/jscoverage.json", json, 'w');
                         </tr>
                     </table>
                     See the
-                    <a href="#encoding">encoding section</a>
-                    above for specifying encoding.
+                    See the <a href="#encoding">encoding section</a> above for specifying encoding.<br/>
+                    See the <a href="#logging">logging section</a> for more information.
                 </text>
                 <text>
                     The first step is to add instrumentation to your JavaScript code. You do this by executing JSCover
@@ -733,34 +732,53 @@ fs.write("target/jscoverage.json", json, 'w');
                 </text>
             </item>
             <item>
-                <heading id="jscoverLog">JSCover Log</heading>
-                <text>
-                    A log file, <var>jscover.log</var>, may be produced in the output directory
-                    if any message logging occurred. If any exceptions were thrown, the program will exit with an exit
-                    status of 1.
-                </text>
-                <text>
-                    The
-                    <var>jscover.log</var>
-                    file should be inspected, but does not necessarily indicate an instrumentation
-                    error.
-                    Logged errors are usually the result of trying to insert a statement to an invalid location
-                    in the parse tree. Please report the issue so that it can be addressed, but you should check whether
-                    the instrumented code is actually missing a valid instrumentation line.
-                </text>
-                <text>
-                    For example, if the log contains <var>Error on line 200 of test.js</var>, that line should be
-                    inspected.
-                    If the code is a multi-line declaration, it may not make sense to add further instrumentation on top
-                    of the first line of the declaration.
-                </text>
-                <text>
-                    To speed up the resolution of the issue, try to write a failing test in
-                    <var>InstrumenterTest</var>
-                    for line coverage and in
-                    <var>BranchInstrumentorIntegrationTest</var>
-                    for branch coverage. You may even find that you can fix the issue and create patch for the project.
-                </text>
+                <heading id="logging">Logging</heading>
+                <item>
+                    <heading id="simpleLogging">Simple Logging</heading>
+                    <text>
+                        A log file, <var>jscover.log</var>, may be produced in the output directory if any message
+                        logging occurred. If any exceptions were thrown, the program will exit with an exit status of 1.
+                    </text>
+                    <text>
+                        The
+                        <var>jscover.log</var>
+                        file should be inspected, but does not necessarily indicate an instrumentation
+                        error.
+                        Logged errors are usually the result of trying to insert a statement to an invalid location
+                        in the parse tree. Please report the issue so that it can be addressed, but you should check
+                        whether the instrumented code is actually missing a valid instrumentation line.
+                    </text>
+                    <text>
+                        For example, if the log contains <var>Error on line 200 of test.js</var>, that line should be
+                        inspected.
+                        If the code is a multi-line declaration, it may not make sense to add further instrumentation on
+                        top of the first line of the declaration.
+                    </text>
+                    <text>
+                        To speed up the resolution of the issue, try to write a failing test in
+                        <var>InstrumenterTest</var>
+                        for line coverage and in
+                        <var>BranchInstrumentorIntegrationTest</var>
+                        for branch coverage. You may even find that you can fix the issue and create patch for the
+                        project.
+                    </text>
+                </item>
+                <item>
+                    <heading id="advancedLogging">Advanced Logging</heading>
+                    <text>
+                        JSCover's allows finer control of logging by via the JVM option
+                        <var>-Djava.util.logging.config.file=FILE</var>. For example:
+                        <code>java -Djava.util.logging.config.file=log.properties -jar JSCover-all.jar [OPTIONS]...</code>
+                        A sample property file, <var>log.properties</var>, is included in the root directory of the
+                        ZIP distribution. Full Java documentation of the configuration of property file can be found in:
+                        <ul>
+                            <li><a href="http://docs.oracle.com/javase/1.5.0/docs/api/java/util/logging/ConsoleHandler.html" target="_blank">ConsoleHandler</a></li>
+                            <li><a href="http://docs.oracle.com/javase/1.5.0/docs/api/java/util/logging/FileHandler.html" target="_blank">FileHandler</a></li>
+                            <li><a href="http://docs.oracle.com/javase/1.5.0/docs/api/java/util/logging/Level.html" target="_blank">Level</a></li>
+                            <li><a href="http://docs.oracle.com/javase/1.5.0/docs/api/java/util/logging/package-summary.html" target="_blank">Logging package summary</a></li>
+                        </ul>
+                    </text>
+                </item>
             </item>
             <item>
                 <heading id="reportConvertMerge">Report Conversion &amp; Merging</heading>
