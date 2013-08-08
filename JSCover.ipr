@@ -295,7 +295,7 @@
       </extension>
       <option name="MAIN_CLASS_NAME" value="jscover.Main" />
       <option name="VM_PARAMETERS" value="" />
-      <option name="PROGRAM_PARAMETERS" value=" -fs doc/example target/example" />
+      <option name="PROGRAM_PARAMETERS" value=" -fs doc/example target/example --log=FINEST" />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" value="" />
@@ -351,7 +351,7 @@
       </extension>
       <option name="MAIN_CLASS_NAME" value="jscover.Main" />
       <option name="VM_PARAMETERS" value="" />
-      <option name="PROGRAM_PARAMETERS" value="-ws --report-dir=target --proxy" />
+      <option name="PROGRAM_PARAMETERS" value="-ws --report-dir=target --proxy --debug" />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" value="" />
@@ -360,6 +360,8 @@
       <option name="PASS_PARENT_ENVS" value="true" />
       <module name="JSCover" />
       <envs />
+      <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Run" />
       <method />
     </configuration>
     <configuration default="false" name="Main - run server" type="Application" factoryName="Application">
@@ -370,8 +372,8 @@
         </pattern>
       </extension>
       <option name="MAIN_CLASS_NAME" value="jscover.Main" />
-      <option name="VM_PARAMETERS" value="" />
-      <option name="PROGRAM_PARAMETERS" value="-ws --report-dir=target" />
+      <option name="VM_PARAMETERS" value="-ea -Djava.util.logging.config.file=log.properties" />
+      <option name="PROGRAM_PARAMETERS" value="-ws --report-dir=target --document-root=doc/example --include-unloaded-js" />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" value="" />

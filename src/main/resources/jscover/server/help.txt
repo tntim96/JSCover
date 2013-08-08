@@ -12,5 +12,5 @@ Options:
       --no-branch             turn off branch coverage data collection
       --no-function           turn off function coverage data collection
       --include-unloaded-js   include unloaded JavaScript under <document-root> in the report
-      --log=LEVEL             set logging level to LEVEL (SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST)
+      --log=LEVEL             set logging level to: SEVERE (default), WARNING, INFO, CONFIG, FINE, FINER, FINEST
   -h, --help                  display this help and exit

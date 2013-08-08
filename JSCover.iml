@@ -33,7 +33,9 @@
           <root url="jar://$MODULE_DIR$/lib/runtime/js.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="file://$MODULE_DIR$/../rhino-tntim96/src" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="jdk" jdkName="1.7" jdkType="JavaSDK" />
