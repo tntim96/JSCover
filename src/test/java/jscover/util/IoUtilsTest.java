@@ -343,7 +343,6 @@ Public License instead of this License.
 package jscover.util;
 
 import org.hamcrest.Matchers;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;

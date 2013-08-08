@@ -344,7 +344,6 @@ package jscover.server;
 
 import com.gargoylesoftware.htmlunit.ScriptResult;
 import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import jscover.Main;
 import org.junit.Before;
