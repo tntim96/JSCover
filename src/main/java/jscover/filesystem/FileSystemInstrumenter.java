@@ -350,8 +350,12 @@ import jscover.util.LoggerUtils;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.logging.Logger;
+
+import static java.util.logging.Level.INFO;
 
 public class FileSystemInstrumenter {
+    private static final Logger logger = Logger.getLogger(FileSystemInstrumenter.class.getName());
     private IoService ioService = new IoService();
     private InstrumenterService instrumenterService = new InstrumenterService();
     private IoUtils ioUtils = IoUtils.getInstance();
@@ -360,7 +364,9 @@ public class FileSystemInstrumenter {
 
     public void run(ConfigurationForFS configuration) {
         this.configuration = configuration;
-        loggerUtils.configureLogger(configuration.getLogLevel(), configuration.getDestDir());
+        if (System.getProperty("java.util.logging.config.file") == null)
+            loggerUtils.configureLogger(configuration.getLogLevel(), configuration.getDestDir());
+        logger.log(INFO, "Starting JSCover {0} file instrumentation", configuration.getVersion());
         ioService.generateJSCoverFilesForFileSystem(configuration.getDestDir(), configuration.getVersion());
         copyFolder(configuration.getSrcDir(), configuration.getDestDir());
         copyFolder(configuration.getSrcDir(), new File(configuration.getDestDir(), Main.reportSrcSubDir), getJavaScriptFilter(), true);

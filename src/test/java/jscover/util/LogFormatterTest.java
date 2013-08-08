@@ -373,7 +373,7 @@ public class LogFormatterTest {
     public void shouldFormatLogRecord() {
         String actual = logFormatter.format(logRecord);
 
-        assertThat(actual, equalTo("2013-08-06:19-59-45-848,157,FINER,\"Hello\",Loggy,"+System.getProperty("line.separator")));
+        assertThat(actual, equalTo("20130806 19:59:45.848,157,FINER,\"Hello\",Loggy,"+System.getProperty("line.separator")));
     }
 
     @Test
@@ -383,7 +383,7 @@ public class LogFormatterTest {
 
         String actual = logFormatter.format(logRecord);
 
-        assertThat(actual, equalTo("2013-08-06:19-59-45-848,157,FINER,\"Hello World!\",Loggy,"+System.getProperty("line.separator")));
+        assertThat(actual, equalTo("20130806 19:59:45.848,157,FINER,\"Hello World!\",Loggy,"+System.getProperty("line.separator")));
     }
 
     @Test
@@ -393,7 +393,7 @@ public class LogFormatterTest {
 
         String actual = logFormatter.format(logRecord);
 
-        assertThat(actual, equalTo("2013-08-06:19-59-45-848,157,FINER,\"Hello {0}!\",Loggy,"+System.getProperty("line.separator")));
+        assertThat(actual, equalTo("20130806 19:59:45.848,157,FINER,\"Hello {0}!\",Loggy,"+System.getProperty("line.separator")));
     }
 
     @Test
@@ -402,7 +402,7 @@ public class LogFormatterTest {
 
         String actual = logFormatter.format(logRecord);
 
-        assertThat(actual, startsWith("2013-08-06:19-59-45-848,157,FINER,\"Hello\",Loggy,"));
+        assertThat(actual, startsWith("20130806 19:59:45.848,157,FINER,\"Hello\",Loggy,"));
         assertThat(actual, containsString("java.lang.RuntimeException: Hey"));
     }
 }
