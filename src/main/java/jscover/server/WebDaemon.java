@@ -356,8 +356,7 @@ public class WebDaemon {
     private LoggerUtils loggerUtils = LoggerUtils.getInstance();
 
     public void start(ConfigurationForServer configuration) throws IOException, InterruptedException {
-        if (System.getProperty("java.util.logging.config.file") == null)
-            loggerUtils.configureLogger(configuration.getLogLevel(), configuration.getReportDir());
+        loggerUtils.configureLogger(configuration.getLogLevel(), configuration.getReportDir());
         logger.log(INFO, "Starting JSCover {0} HTTP, port {1,number,#}", new Object[]{configuration.getVersion(), configuration.getPort()});
         ServerSocket Server = new ServerSocket(configuration.getPort());
         while (true) {

@@ -364,8 +364,7 @@ public class FileSystemInstrumenter {
 
     public void run(ConfigurationForFS configuration) {
         this.configuration = configuration;
-        if (System.getProperty("java.util.logging.config.file") == null)
-            loggerUtils.configureLogger(configuration.getLogLevel(), configuration.getDestDir());
+        loggerUtils.configureLogger(configuration.getLogLevel(), configuration.getDestDir());
         logger.log(INFO, "Starting JSCover {0} file instrumentation", configuration.getVersion());
         ioService.generateJSCoverFilesForFileSystem(configuration.getDestDir(), configuration.getVersion());
         copyFolder(configuration.getSrcDir(), configuration.getDestDir());

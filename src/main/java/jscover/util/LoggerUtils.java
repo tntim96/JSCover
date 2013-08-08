@@ -349,7 +349,8 @@ import java.util.logging.*;
 
 public class LoggerUtils {
     private static LoggerUtils loggerUtils = new LoggerUtils();
-    private LogFormatter formatter = new LogFormatter();
+    private Formatter logFormatter = new LogFormatter();
+    private ExceptionRecordingHandler exceptionRecordingHandler = new ExceptionRecordingHandler();
 
     private LoggerUtils() {}
 
@@ -358,10 +359,16 @@ public class LoggerUtils {
     }
 
     public boolean isExceptionThrown() {
-        return formatter.isExceptionThrown();
+        return exceptionRecordingHandler.isExceptionThrown();
     }
 
     public void configureLogger(Level level, File dir) {
+        addExceptionRecorder();
+        if (System.getProperty("java.util.logging.config.file") == null)
+            addProgrammaticLogging(level, dir);//Only do this if not using logging configuration properties file
+    }
+
+    private void addProgrammaticLogging(Level level, File dir) {
         try {
             dir.mkdirs();
             File file = new File(dir, "jscover.log");
@@ -377,11 +384,20 @@ public class LoggerUtils {
                 Handler[] handlers = logger.getHandlers();
                 for (int index = 0; index < handlers.length; index++) {
                     handlers[index].setLevel(level);
-                    handlers[index].setFormatter(formatter);
+                    handlers[index].setFormatter(logFormatter);
                 }
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void addExceptionRecorder() {
+        Enumeration<String> names = LogManager.getLogManager().getLoggerNames();
+        while (names.hasMoreElements()) {
+            String loggerName = names.nextElement();
+            Logger logger = LogManager.getLogManager().getLogger(loggerName);
+            logger.addHandler(exceptionRecordingHandler);
         }
     }
 }

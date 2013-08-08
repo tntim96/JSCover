@@ -351,17 +351,10 @@ import java.util.logging.LogRecord;
 
 public class LogFormatter extends Formatter {
 
-    private boolean exceptionThrown;
-
-    public boolean isExceptionThrown() {
-        return exceptionThrown;
-    }
-
     @Override
     public String format(LogRecord record) {
         String throwable = "";
         if (record.getThrown() != null) {
-            exceptionThrown = true;
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
             pw.println();
