@@ -116,6 +116,7 @@
                 <exclude name=".gradle/**"/>
                 <exclude name=".settings/**"/>
                 <exclude name="*.log"/>
+                <exclude name="*.lck"/>
                 <exclude name="cobertura.ser"/>
                 <exclude name="junit*"/>
                 <exclude name="bin/**"/>
