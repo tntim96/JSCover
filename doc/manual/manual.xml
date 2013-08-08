@@ -434,6 +434,12 @@ fs.write("target/jscoverage.json", json, 'w');
                         <code>java -ea -jar JSCover-all.jar -ws --port=80 --no-instrument=lib --no-instrument=test</code>
                     </text>
                 </item>
+                <item>
+                    <heading id="exitStatus">Program Exit Status</heading>
+                    <text>
+                        If any exceptions were thrown, the program will exit with an exit status of 1.
+                    </text>
+                </item>
             </item>
             <item>
                 <heading id="serverMode">Server Mode</heading>
@@ -734,32 +740,15 @@ fs.write("target/jscoverage.json", json, 'w');
             <item>
                 <heading id="logging">Logging</heading>
                 <item>
-                    <heading id="simpleLogging">Simple Logging</heading>
+                    <heading id="defaultLogging">Default Logging</heading>
                     <text>
                         A log file, <var>jscover.log</var>, may be produced in the output directory if any message
-                        logging occurred. If any exceptions were thrown, the program will exit with an exit status of 1.
+                        logging occurred.
                     </text>
                     <text>
-                        The
-                        <var>jscover.log</var>
-                        file should be inspected, but does not necessarily indicate an instrumentation error.
-                        Logged errors are usually the result of trying to insert a statement to an invalid location
-                        in the parse tree. Please report the issue so that it can be addressed, but you should check
-                        whether the instrumented code is actually missing a valid instrumentation line.
-                    </text>
-                    <text>
-                        For example, if the log contains <var>Error on line 200 of test.js</var>, that line should be
-                        inspected.
-                        If the code is a multi-line declaration, it may not make sense to add further instrumentation on
-                        top of the first line of the declaration.
-                    </text>
-                    <text>
-                        To speed up the resolution of the issue, try to write a failing test in
-                        <var>InstrumenterTest</var>
-                        for line coverage and in
-                        <var>BranchInstrumentorIntegrationTest</var>
-                        for branch coverage. You may even find that you can fix the issue and create patch for the
-                        project.
+                        The logging level can be altered as described above use the
+                        <var>--log=LEVEL</var> flag in the
+                        <a href="#serverMode">server mode</a> and <a href="#fileMode">file mode</a> usage sections.
                     </text>
                 </item>
                 <item>
@@ -779,6 +768,32 @@ fs.write("target/jscoverage.json", json, 'w');
                             <li><a href="http://docs.oracle.com/javase/1.5.0/docs/api/java/util/logging/Level.html" target="_blank">Level</a></li>
                             <li><a href="http://docs.oracle.com/javase/1.5.0/docs/api/java/util/logging/package-summary.html" target="_blank">Logging package summary</a></li>
                         </ul>
+                    </text>
+                </item>
+                <item>
+                    <heading id="logInspection">Log Inspection</heading>
+                    <text>
+                        The log file should be inspected, but does not necessarily indicate an instrumentation error.
+                        Logged errors are usually the result of trying to insert a statement to an invalid location
+                        in the parse tree. Please report the issue so that it can be addressed, but you should check
+                        whether the instrumented code is actually missing a valid instrumentation line.
+                    </text>
+                    <text>
+                        For example, if the log contains <var>Error on line 200 of test.js</var>, that line should be
+                        inspected.
+                        If the code is a multi-line declaration, it may not make sense to add further instrumentation on
+                        top of the first line of the declaration.
+                    </text>
+                    <text>
+                        To speed up the resolution of the issue, try to write a failing test in
+                        <var>InstrumenterTest</var>
+                        for line coverage and in
+                        <var>BranchInstrumentorIntegrationTest</var>
+                        for branch coverage. You may even find that you can fix the issue and create a patch for the
+                        project.
+                    </text>
+                    <text>
+                        Finally, if you identify an area where you would like more logging, please open an issue.
                     </text>
                 </item>
             </item>
