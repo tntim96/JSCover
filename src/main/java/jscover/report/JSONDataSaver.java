@@ -363,15 +363,18 @@ public class JSONDataSaver {
             File jsonFile = new File(reportDir, "jscoverage.json");
             SortedMap<String, FileData> extraData = new TreeMap<String, FileData>();
             if (jsonFile.exists()) {
+                logger.info("Saving/merging JSON with existing JSON");
                 String existingJSON = ioUtils.toString(jsonFile);
                 extraData.putAll(jsonDataMerger.mergeJSONCoverageStrings(existingJSON, data));
                 ioUtils.copy(jsonDataMerger.toJSON(extraData), jsonFile);
             } else if (unloadJSData != null) {
+                logger.info("Saving/merging JSON with unloaded JavaScript JSON");
                 //Only scan for unloaded JS if JSON not saved before
                 extraData.putAll(jsonDataMerger.createEmptyJSON(unloadJSData));
                 extraData.putAll(jsonDataMerger.jsonToMap(data));
                 ioUtils.copy(jsonDataMerger.toJSON(extraData), jsonFile);
             } else
+                logger.info("Saving JSON");
                 ioUtils.copy(data, jsonFile);
         } finally {
             unlockOnReportDir(reportDir);

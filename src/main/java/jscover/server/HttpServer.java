@@ -420,6 +420,7 @@ public class HttpServer extends Thread {
 
             if (httpMethod.equals("GET")) {
                 if (httpRequest.getPath().equals("/stop")) {
+                    logger.info("Shutting down the server.");
                     sendResponse(HTTP_STATUS.HTTP_OK, MIME.TEXT_PLAIN, "Shutting down the server.");
                     ioUtils.closeQuietly(br);
                     ioUtils.closeQuietly(pbis);

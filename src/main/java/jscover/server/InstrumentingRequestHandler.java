@@ -404,6 +404,7 @@ public class InstrumentingRequestHandler extends HttpServer {
                 long skipped = request.getInputStream().skip(request.getPostIndex());
                 assert skipped == request.getPostIndex();
                 String data = ioUtils.toStringNoClose(request.getInputStream(), request.getContentLength());
+                logger.finest(data);
                 jsonDataSaver.saveJSONData(reportDir, data, unloadJSData);
                 if (configuration.isProxy()) {
                     for (String jsURI : uris.keySet()) {
