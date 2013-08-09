@@ -373,9 +373,10 @@ public class JSONDataSaver {
                 extraData.putAll(jsonDataMerger.createEmptyJSON(unloadJSData));
                 extraData.putAll(jsonDataMerger.jsonToMap(data));
                 ioUtils.copy(jsonDataMerger.toJSON(extraData), jsonFile);
-            } else
+            } else {
                 logger.info("Saving JSON");
                 ioUtils.copy(data, jsonFile);
+            }
         } finally {
             unlockOnReportDir(reportDir);
         }
