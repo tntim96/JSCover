@@ -1062,14 +1062,14 @@ fs.write("target/jscoverage.json", json, 'w');
                     class with web-driver.
                     The JSCover server can be started as a thread, and there is no need for the Selenium server.
                     The examples use Jasmine and Jasmine's <var>HtmlReporter</var>. All implementations are based on
-                    <a href="https://github.com/tntim96/JSCover/blob/master/src/test-acceptance/java/jscover/server/WebDriverJasmineTestBase.java"
+                    <a href="https://github.com/tntim96/JSCover-samples/blob/master/src/main/java/jscover/webdriver/jasmine/WebDriverJasmineTestBase.java"
                        target="_blank">WebDriverJasmineTestBase</a>.
                     There are examples with:
                     <ul>
-                        <li><a href="https://github.com/tntim96/JSCover/blob/master/src/test-acceptance/java/jscover/server/WebDriverJasmineFireFoxTest.java" target="_blank">FireFox</a></li>
-                        <li><a href="https://github.com/tntim96/JSCover/blob/master/src/test-acceptance/java/jscover/server/WebDriverJasmineTestBase.java" target="_blank">PhantomJS</a></li>
-                        <li><a href="https://github.com/tntim96/JSCover/blob/master/src/test-acceptance/java/jscover/server/WebDriverJasmineIETest.java" target="_blank">Internet Explorer</a></li>
-                        <li><a href="https://github.com/tntim96/JSCover/blob/master/src/test-acceptance/java/jscover/server/WebDriverChromeTest.java" target="_blank">Google Chrome</a></li>
+                        <li><a href="https://github.com/tntim96/JSCover-samples/blob/master/src/test/java/jscover/webdriver/jasmine/WebDriverJasmineFireFoxTest.java" target="_blank">FireFox</a></li>
+                        <li><a href="https://github.com/tntim96/JSCover-samples/blob/master/src/test/java/jscover/webdriver/jasmine/WebDriverJasminePhantomJSTest.java" target="_blank">PhantomJS</a></li>
+                        <li><a href="https://github.com/tntim96/JSCover-samples/blob/master/src/test/java/jscover/webdriver/jasmine/WebDriverJasmineIETest.java" target="_blank">Internet Explorer</a></li>
+                        <li><a href="https://github.com/tntim96/JSCover-samples/blob/master/src/test/java/jscover/webdriver/jasmine/WebDriverJasmineChromeTest.java" target="_blank">Google Chrome</a></li>
                     </ul>
                 </text>
                 <text>
