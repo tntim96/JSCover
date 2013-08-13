@@ -1100,6 +1100,13 @@ fs.write("target/jscoverage.json", json, 'w');
                                 <a href="#jsReportStorage">Programmatic Report Storage</a>
                             </td>
                         </tr>
+                        <tr>
+                            <td>Stop Server Button
+                                <note>*</note>
+                            </td>
+                            <td>stopButton</td>
+                            <td>jscoverage_stopButton_click()</td>
+                        </tr>
                     </table>
                 </text>
                 <text>
