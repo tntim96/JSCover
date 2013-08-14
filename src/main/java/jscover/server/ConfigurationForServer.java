@@ -345,6 +345,7 @@ package jscover.server;
 import jscover.Configuration;
 import jscover.Main;
 import jscover.util.IoUtils;
+
 import org.mozilla.javascript.CompilerEnvirons;
 import org.mozilla.javascript.Context;
 
@@ -366,6 +367,7 @@ public class ConfigurationForServer extends Configuration {
     public static final String REPORT_DIR_PREFIX = "--report-dir=";
     public static final String NO_INSTRUMENT_PREFIX = "--no-instrument=";
     public static final String NO_INSTRUMENT_REG_PREFIX = "--no-instrument-reg=";
+    public static final String ONLY_INSTRUMENT_REG_PREFIX = "--only-instrument-reg=";
     public static final String JS_VERSION_PREFIX = "--js-version=";
     public static final String PROXY_PREFIX = "--proxy";
     public static final String INCLUDE_UNLOADED_JS_PREFIX = "--include-unloaded-js";
@@ -381,6 +383,7 @@ public class ConfigurationForServer extends Configuration {
     private Integer port = 8080;
     private final Set<String> noInstruments = new HashSet<String>();
     private final Set<Pattern> noInstrumentRegs = new HashSet<Pattern>();
+    private final Set<Pattern> onlyInstrumentRegs = new HashSet<Pattern>();
     private File reportDir = new File(System.getProperty("user.dir"));
     private int JSVersion = Context.VERSION_1_5;
     private boolean proxy;
@@ -428,8 +431,23 @@ public class ConfigurationForServer extends Configuration {
         for (Pattern noInstrumentReg : noInstrumentRegs)
             if (noInstrumentReg.matcher(uri).matches())
                 return true;
+        
+        
+        if(!onlyInstrumentRegs.isEmpty()) {
+            //only instrument files that match the only
+            //instrument regex.
+            for (Pattern instrumentReg : onlyInstrumentRegs) {
+                if (instrumentReg.matcher(uri).matches()) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        
         return false;
     }
+    
 
     public static ConfigurationForServer parse(String[] args) {
         ConfigurationForServer configuration = new ConfigurationForServer();
@@ -475,7 +493,19 @@ public class ConfigurationForServer extends Configuration {
                     configuration.showHelp = true;
                     configuration.invalid = true;
                 }
-            } else if (arg.startsWith(JS_VERSION_PREFIX)) {
+            } else if (arg.startsWith(ONLY_INSTRUMENT_REG_PREFIX )) {
+                String patternString = arg.substring(ONLY_INSTRUMENT_REG_PREFIX .length());
+                if (patternString.startsWith("/"))
+                    patternString = patternString.substring(1);
+                try {
+                    Pattern pattern = Pattern.compile(patternString);
+                    configuration.onlyInstrumentRegs.add(pattern);
+                } catch(PatternSyntaxException e) {
+                    e.printStackTrace(System.err);
+                    configuration.showHelp = true;
+                    configuration.invalid = true;
+                }
+            }  else if (arg.startsWith(JS_VERSION_PREFIX)) {
                 configuration.JSVersion = (int)(Float.valueOf(arg.substring(JS_VERSION_PREFIX.length()))*100);
             } else if (arg.equals(BRANCH_PREFIX)) {
                 configuration.includeBranch = false;
