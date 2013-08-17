@@ -5,7 +5,7 @@ Options:
       --document-root=DIR       serve content from DIR (default: current directory)
       --no-instrument=URL       do not instrument URL
       --no-instrument-reg=URL   do not instrument if URL matches regular expression
-      --instrument-only-reg=URL only instrument if URL matches regular expression
+      --only-instrument-reg=URL only instrument if URL matches regular expression
       --report-dir=DIR          store report to DIR (default: current directory)
       --port=PORT               use PORT for TCP port (default: 8080)
       --proxy                   run as a proxy

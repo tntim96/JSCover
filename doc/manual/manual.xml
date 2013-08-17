@@ -476,7 +476,7 @@ fs.write("target/jscoverage.json", json, 'w');
                             <td>Same as '--no-instrument=PATH', except PATH is interpreted as a regular expression</td>
                         </tr>
                         <tr>
-                            <td>--instrument-only-reg=URL</td>
+                            <td>--only-instrument-reg=URL</td>
                             <td>None</td>
                             <td>
                                 Changes the default behavior to skip instrumentation except for the specified URLs.
@@ -628,7 +628,7 @@ fs.write("target/jscoverage.json", json, 'w');
                             <td>Same as '--no-instrument=PATH', except PATH is interpreted as a regular expression</td>
                         </tr>
                         <tr>
-                            <td>--instrument-only-reg=URL</td>
+                            <td>--only-instrument-reg=URL</td>
                             <td>None</td>
                             <td>
                                 Changes the default behavior to skip instrumentation except for the specified URLs.

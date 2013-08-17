@@ -366,7 +366,7 @@ public class ConfigurationForServer extends Configuration {
     public static final String DOC_ROOT_PREFIX = "--document-root=";
     public static final String PORT_PREFIX = "--port=";
     public static final String REPORT_DIR_PREFIX = "--report-dir=";
-    public static final String INSTRUMENT_ONLY_REG_PREFIX = "--instrument-only-reg=";
+    public static final String ONLY_INSTRUMENT_REG_PREFIX = "--only-instrument-reg=";
     public static final String NO_INSTRUMENT_PREFIX = "--no-instrument=";
     public static final String NO_INSTRUMENT_REG_PREFIX = "--no-instrument-reg=";
     public static final String JS_VERSION_PREFIX = "--js-version=";
@@ -476,8 +476,8 @@ public class ConfigurationForServer extends Configuration {
                     configuration.showHelp = true;
                     configuration.invalid = true;
                 }
-            } else if (arg.startsWith(INSTRUMENT_ONLY_REG_PREFIX)) {
-                String patternString = arg.substring(INSTRUMENT_ONLY_REG_PREFIX.length());
+            } else if (arg.startsWith(ONLY_INSTRUMENT_REG_PREFIX)) {
+                String patternString = arg.substring(ONLY_INSTRUMENT_REG_PREFIX.length());
                 if (patternString.startsWith("/"))
                     patternString = patternString.substring(1);
                 configuration.defaultSkip = true;
