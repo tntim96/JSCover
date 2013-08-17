@@ -501,4 +501,52 @@ public class ConfigurationForServerTest {
         String helpText = new ConfigurationForServer().getHelpText();
         assertThat(helpText, containsString("Usage: java -jar JSCover-all.jar -ws [OPTION]..."));
     }
+
+    @Test
+    public void shouldParseInstrumentReg() {
+        ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--instrument-only-reg=.*/production/.*"});
+        assertThat(configuration.skipInstrumentation("test.js"), equalTo(true));
+        assertThat(configuration.skipInstrumentation("lib1/production/code.js"), equalTo(false));
+        assertThat(configuration.skipInstrumentation("lib2/test/production.js"), equalTo(true));
+    }
+
+    @Test
+    public void shouldParseInstrumentRegWithLeadingSlash() {
+        ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--instrument-only-reg=/production/.*"});
+        assertThat(configuration.skipInstrumentation("production/code.js"), equalTo(false));
+    }
+
+    @Test
+    public void shouldHandleInvalidInstrumentRegularExpression() {
+        ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--instrument-only-reg=*"});
+        assertThat(configuration.showHelp(), equalTo(true));
+        assertThat(configuration.isInvalid(), equalTo(true));
+    }
+
+    @Test
+    public void shouldParseInstrumentAndNoInstrumentReg1() {
+        ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--no-instrument=lib1", "--no-instrument-reg=lib2/production/test.*", "--instrument-only-reg=.*/production/.*"});
+        assertThat(configuration.skipInstrumentation("lib1/production/test.js"), equalTo(true));
+        assertThat(configuration.skipInstrumentation("lib2/production/test.js"), equalTo(true));
+        assertThat(configuration.skipInstrumentation("lib3/production/code.js"), equalTo(false));
+        assertThat(configuration.skipInstrumentation("lib4/code.js"), equalTo(true));
+    }
+
+    @Test
+    public void shouldParseInstrumentAndNoInstrumentReg2() {
+        ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--no-instrument=lib1", "--instrument-only-reg=.*/production/.*", "--no-instrument-reg=lib2/production/test.*"});
+        assertThat(configuration.skipInstrumentation("lib1/production/test.js"), equalTo(true));
+        assertThat(configuration.skipInstrumentation("lib2/production/test.js"), equalTo(false));
+        assertThat(configuration.skipInstrumentation("lib3/production/code.js"), equalTo(false));
+        assertThat(configuration.skipInstrumentation("lib4/code.js"), equalTo(true));
+    }
+
+    @Test
+    public void shouldParseInstrumentAndNoInstrumentReg3() {
+        ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--instrument-only-reg=.*/production/.*", "--no-instrument=lib1", "--no-instrument-reg=lib2/production/test.*"});
+        assertThat(configuration.skipInstrumentation("lib1/production/test.js"), equalTo(false));
+        assertThat(configuration.skipInstrumentation("lib2/production/test.js"), equalTo(false));
+        assertThat(configuration.skipInstrumentation("lib3/production/code.js"), equalTo(false));
+        assertThat(configuration.skipInstrumentation("lib4/code.js"), equalTo(true));
+    }
 }

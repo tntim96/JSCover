@@ -342,45 +342,28 @@ Public License instead of this License.
 
 package jscover.util;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import java.util.regex.Pattern;
 
-import java.util.logging.LogRecord;
+public class PatternMatcherRegEx extends PatternMatcher {
+    private Pattern regPattern;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.BDDMockito.given;
-
-@RunWith(MockitoJUnitRunner.class)
-public class ExceptionRecordingHandlerTest {
-    private ExceptionRecordingHandler handler = new ExceptionRecordingHandler();
-    private @Mock LogRecord logRecord;
-
-    @Test
-    public void shouldRecordException() {
-        given(logRecord.getThrown()).willReturn(new RuntimeException("Hey"));
-
-        handler.publish(logRecord);
-
-        assertThat(handler.isExceptionThrown(), is(true));
+    private PatternMatcherRegEx(boolean exclude, String pattern) {
+        super(exclude);
+        regPattern = Pattern.compile(pattern);
     }
 
-    @Test
-    public void shouldNotRecordException() {
-        handler.publish(logRecord);
-
-        assertThat(handler.isExceptionThrown(), is(false));
+    public static PatternMatcher getIncludePatternMatcher(String pattern) {
+        return new PatternMatcherRegEx(false, pattern);
     }
 
-    @Test
-    public void shouldNotThrowExceptionOnFlush() {
-        handler.flush();
+    public static PatternMatcher getExcludePatternMatcher(String pattern) {
+        return new PatternMatcherRegEx(true, pattern);
     }
 
-    @Test
-    public void shouldNotThrowExceptionOnClose() {
-        handler.close();
+    @Override
+    public Boolean matches(String uri) {
+        if (regPattern.matcher(uri).matches())
+            return exclude;
+        return null;
     }
 }

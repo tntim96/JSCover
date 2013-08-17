@@ -2,12 +2,13 @@ Usage: java -jar JSCover-all.jar -fs [OPTION]... SOURCE-DIRECTORY DESTINATION-DI
 Instrument JavaScript with code coverage information.
 
 Options:
-      --js-version=VERSION    use the specified JavaScript version
-      --no-instrument=PATH    copy but do not instrument PATH
-      --no-instrument-reg=URL do not instrument if URL matches regular expression
-      --exclude=PATH          don't copy from source/PATH
-      --exclude-reg=PATH      don't copy from source/PATH if it matches regular expression
-      --no-branch             turn off branch coverage data collection
-      --no-function           turn off function coverage data collection
-      --log=LEVEL             set logging level to: SEVERE (default), WARNING, INFO, CONFIG, FINE, FINER, FINEST
-  -h, --help                  display this help and exit
+      --js-version=VERSION      use the specified JavaScript version
+      --no-instrument=PATH      copy but do not instrument PATH
+      --no-instrument-reg=URL   do not instrument if URL matches regular expression
+      --instrument-only-reg=URL only instrument if URL matches regular expression
+      --exclude=PATH            don't copy from source/PATH
+      --exclude-reg=PATH        don't copy from source/PATH if it matches regular expression
+      --no-branch               turn off branch coverage data collection
+      --no-function             turn off function coverage data collection
+      --log=LEVEL               set logging level to: SEVERE (default), WARNING, INFO, CONFIG, FINE, FINER, FINEST
+  -h, --help                    display this help and exit

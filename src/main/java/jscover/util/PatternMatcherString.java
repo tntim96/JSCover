@@ -342,45 +342,18 @@ Public License instead of this License.
 
 package jscover.util;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+public class PatternMatcherString extends PatternMatcher {
+    private String pattern;
 
-import java.util.logging.LogRecord;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.BDDMockito.given;
-
-@RunWith(MockitoJUnitRunner.class)
-public class ExceptionRecordingHandlerTest {
-    private ExceptionRecordingHandler handler = new ExceptionRecordingHandler();
-    private @Mock LogRecord logRecord;
-
-    @Test
-    public void shouldRecordException() {
-        given(logRecord.getThrown()).willReturn(new RuntimeException("Hey"));
-
-        handler.publish(logRecord);
-
-        assertThat(handler.isExceptionThrown(), is(true));
+    public PatternMatcherString(String pattern) {
+        super(true);
+        this.pattern = pattern;
     }
 
-    @Test
-    public void shouldNotRecordException() {
-        handler.publish(logRecord);
-
-        assertThat(handler.isExceptionThrown(), is(false));
-    }
-
-    @Test
-    public void shouldNotThrowExceptionOnFlush() {
-        handler.flush();
-    }
-
-    @Test
-    public void shouldNotThrowExceptionOnClose() {
-        handler.close();
+    public Boolean matches(String uri) {
+        if (uri.startsWith(pattern))
+            return exclude;
+        return null;
     }
 }

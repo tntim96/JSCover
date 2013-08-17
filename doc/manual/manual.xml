@@ -476,6 +476,14 @@ fs.write("target/jscoverage.json", json, 'w');
                             <td>Same as '--no-instrument=PATH', except PATH is interpreted as a regular expression</td>
                         </tr>
                         <tr>
+                            <td>--instrument-only-reg=URL</td>
+                            <td>None</td>
+                            <td>
+                                Changes the default behavior to skip instrumentation except for the specified URLs.
+                                This switch can be overridden if no-instrument switches are specified first.
+                            </td>
+                        </tr>
+                        <tr>
                             <td>--report-dir=PATH</td>
                             <td>current directory</td>
                             <td>Use the directory given by PATH (can be relative or absolute) for storing coverage
@@ -618,6 +626,14 @@ fs.write("target/jscoverage.json", json, 'w');
                             <td>--no-instrument-reg=URL</td>
                             <td>None</td>
                             <td>Same as '--no-instrument=PATH', except PATH is interpreted as a regular expression</td>
+                        </tr>
+                        <tr>
+                            <td>--instrument-only-reg=URL</td>
+                            <td>None</td>
+                            <td>
+                                Changes the default behavior to skip instrumentation except for the specified URLs.
+                                This switch can be overridden if no-instrument switches are specified first.
+                            </td>
                         </tr>
                         <tr>
                             <td>--exclude=PATH</td>

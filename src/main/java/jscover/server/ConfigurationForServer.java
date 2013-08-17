@@ -345,14 +345,16 @@ package jscover.server;
 import jscover.Configuration;
 import jscover.Main;
 import jscover.util.IoUtils;
+import jscover.util.PatternMatcher;
+import jscover.util.PatternMatcherRegEx;
+import jscover.util.PatternMatcherString;
 import org.mozilla.javascript.CompilerEnvirons;
 import org.mozilla.javascript.Context;
 
 import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
-import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import static java.lang.String.format;
@@ -364,6 +366,7 @@ public class ConfigurationForServer extends Configuration {
     public static final String DOC_ROOT_PREFIX = "--document-root=";
     public static final String PORT_PREFIX = "--port=";
     public static final String REPORT_DIR_PREFIX = "--report-dir=";
+    public static final String INSTRUMENT_ONLY_REG_PREFIX = "--instrument-only-reg=";
     public static final String NO_INSTRUMENT_PREFIX = "--no-instrument=";
     public static final String NO_INSTRUMENT_REG_PREFIX = "--no-instrument-reg=";
     public static final String JS_VERSION_PREFIX = "--js-version=";
@@ -379,13 +382,13 @@ public class ConfigurationForServer extends Configuration {
     private boolean includeFunction = true;
     private File documentRoot = new File(System.getProperty("user.dir"));
     private Integer port = 8080;
-    private final Set<String> noInstruments = new HashSet<String>();
-    private final Set<Pattern> noInstrumentRegs = new HashSet<Pattern>();
+    private final List<PatternMatcher> patternMatchers = new ArrayList<PatternMatcher>();
     private File reportDir = new File(System.getProperty("user.dir"));
     private int JSVersion = Context.VERSION_1_5;
     private boolean proxy;
     private CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
     private boolean includeUnloadedJS;
+    private boolean defaultSkip;
     private Level logLevel = SEVERE;
     private IoUtils ioUtils = IoUtils.getInstance();
 
@@ -422,13 +425,12 @@ public class ConfigurationForServer extends Configuration {
     }
 
     public boolean skipInstrumentation(String uri) {
-        for (String noInstrument : noInstruments)
-            if (uri.startsWith(noInstrument))
-                return true;
-        for (Pattern noInstrumentReg : noInstrumentRegs)
-            if (noInstrumentReg.matcher(uri).matches())
-                return true;
-        return false;
+        for (PatternMatcher patternMatcher : patternMatchers) {
+            Boolean instrumentIt = patternMatcher.matches(uri);
+            if (instrumentIt != null)
+                return instrumentIt;
+        }
+        return defaultSkip;
     }
 
     public static ConfigurationForServer parse(String[] args) {
@@ -462,15 +464,26 @@ public class ConfigurationForServer extends Configuration {
                 String uri = arg.substring(NO_INSTRUMENT_PREFIX.length());
                 if (uri.startsWith("/"))
                     uri = uri.substring(1);
-                configuration.noInstruments.add(uri);
+                configuration.patternMatchers.add(new PatternMatcherString(uri));
             } else if (arg.startsWith(NO_INSTRUMENT_REG_PREFIX)) {
                 String patternString = arg.substring(NO_INSTRUMENT_REG_PREFIX.length());
                 if (patternString.startsWith("/"))
                     patternString = patternString.substring(1);
                 try {
-                    Pattern pattern = Pattern.compile(patternString);
-                    configuration.noInstrumentRegs.add(pattern);
+                    configuration.patternMatchers.add(PatternMatcherRegEx.getExcludePatternMatcher(patternString));
                 } catch(PatternSyntaxException e) {
+                    e.printStackTrace(System.err);
+                    configuration.showHelp = true;
+                    configuration.invalid = true;
+                }
+            } else if (arg.startsWith(INSTRUMENT_ONLY_REG_PREFIX)) {
+                String patternString = arg.substring(INSTRUMENT_ONLY_REG_PREFIX.length());
+                if (patternString.startsWith("/"))
+                    patternString = patternString.substring(1);
+                configuration.defaultSkip = true;
+                try {
+                    configuration.patternMatchers.add(PatternMatcherRegEx.getIncludePatternMatcher(patternString));
+                } catch (PatternSyntaxException e) {
                     e.printStackTrace(System.err);
                     configuration.showHelp = true;
                     configuration.invalid = true;
