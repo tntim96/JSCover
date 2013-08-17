@@ -342,71 +342,27 @@ Public License instead of this License.
 
 package jscover.server;
 
-import jscover.Configuration;
+import jscover.ConfigurationCommon;
 import jscover.Main;
-import jscover.util.IoUtils;
-import jscover.util.PatternMatcher;
-import jscover.util.PatternMatcherRegEx;
 import jscover.util.PatternMatcherString;
-import org.mozilla.javascript.CompilerEnvirons;
-import org.mozilla.javascript.Context;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
-import java.util.regex.PatternSyntaxException;
 
 import static java.lang.String.format;
-import static java.util.logging.Level.SEVERE;
+import static jscover.Main.HELP_PREFIX1;
+import static jscover.Main.HELP_PREFIX2;
 
-public class ConfigurationForServer extends Configuration {
-    public static final String HELP_PREFIX1 = Main.HELP_PREFIX1;
-    public static final String HELP_PREFIX2 = Main.HELP_PREFIX2;
+public class ConfigurationForServer extends ConfigurationCommon {
     public static final String DOC_ROOT_PREFIX = "--document-root=";
     public static final String PORT_PREFIX = "--port=";
-    public static final String REPORT_DIR_PREFIX = "--report-dir=";
-    public static final String ONLY_INSTRUMENT_REG_PREFIX = "--only-instrument-reg=";
-    public static final String NO_INSTRUMENT_PREFIX = "--no-instrument=";
-    public static final String NO_INSTRUMENT_REG_PREFIX = "--no-instrument-reg=";
-    public static final String JS_VERSION_PREFIX = "--js-version=";
     public static final String PROXY_PREFIX = "--proxy";
     public static final String INCLUDE_UNLOADED_JS_PREFIX = "--include-unloaded-js";
-    public static final String BRANCH_PREFIX = "--no-branch";
-    public static final String FUNCTION_PREFIX = "--no-function";
-    public static final String LOG_LEVEL = "--log=";
 
-    private boolean showHelp;
-    private boolean invalid;
-    private boolean includeBranch = true;
-    private boolean includeFunction = true;
     private File documentRoot = new File(System.getProperty("user.dir"));
     private Integer port = 8080;
-    private final List<PatternMatcher> patternMatchers = new ArrayList<PatternMatcher>();
-    private File reportDir = new File(System.getProperty("user.dir"));
-    private int JSVersion = Context.VERSION_1_5;
     private boolean proxy;
-    private CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
     private boolean includeUnloadedJS;
-    private boolean defaultSkip;
-    private Level logLevel = SEVERE;
-    private IoUtils ioUtils = IoUtils.getInstance();
-
-    public Boolean showHelp() {
-        return showHelp;
-    }
-
-    public boolean isInvalid() {
-        return invalid;
-    }
-
-    public boolean isIncludeBranch() {
-        return includeBranch;
-    }
-
-    public boolean isIncludeFunction() {
-        return includeFunction;
-    }
 
     public File getDocumentRoot() {
         return documentRoot;
@@ -414,23 +370,6 @@ public class ConfigurationForServer extends Configuration {
 
     public Integer getPort() {
         return port;
-    }
-
-    public File getReportDir() {
-        return reportDir;
-    }
-
-    public int getJSVersion() {
-        return JSVersion;
-    }
-
-    public boolean skipInstrumentation(String uri) {
-        for (PatternMatcher patternMatcher : patternMatchers) {
-            Boolean instrumentIt = patternMatcher.matches(uri);
-            if (instrumentIt != null)
-                return instrumentIt;
-        }
-        return defaultSkip;
     }
 
     public static ConfigurationForServer parse(String[] args) {
@@ -466,28 +405,9 @@ public class ConfigurationForServer extends Configuration {
                     uri = uri.substring(1);
                 configuration.patternMatchers.add(new PatternMatcherString(uri));
             } else if (arg.startsWith(NO_INSTRUMENT_REG_PREFIX)) {
-                String patternString = arg.substring(NO_INSTRUMENT_REG_PREFIX.length());
-                if (patternString.startsWith("/"))
-                    patternString = patternString.substring(1);
-                try {
-                    configuration.patternMatchers.add(PatternMatcherRegEx.getExcludePatternMatcher(patternString));
-                } catch(PatternSyntaxException e) {
-                    e.printStackTrace(System.err);
-                    configuration.showHelp = true;
-                    configuration.invalid = true;
-                }
+                configuration.addNoInstrumentReg(arg);
             } else if (arg.startsWith(ONLY_INSTRUMENT_REG_PREFIX)) {
-                String patternString = arg.substring(ONLY_INSTRUMENT_REG_PREFIX.length());
-                if (patternString.startsWith("/"))
-                    patternString = patternString.substring(1);
-                configuration.defaultSkip = true;
-                try {
-                    configuration.patternMatchers.add(PatternMatcherRegEx.getIncludePatternMatcher(patternString));
-                } catch (PatternSyntaxException e) {
-                    e.printStackTrace(System.err);
-                    configuration.showHelp = true;
-                    configuration.invalid = true;
-                }
+                configuration.addOnlyInstrumentReg(arg);
             } else if (arg.startsWith(JS_VERSION_PREFIX)) {
                 configuration.JSVersion = (int)(Float.valueOf(arg.substring(JS_VERSION_PREFIX.length()))*100);
             } else if (arg.equals(BRANCH_PREFIX)) {
@@ -509,19 +429,11 @@ public class ConfigurationForServer extends Configuration {
         return ioUtils.toString(getClass().getResourceAsStream("help.txt"));
     }
 
-    public CompilerEnvirons getCompilerEnvirons() {
-        return compilerEnvirons;
-    }
-
     public boolean isProxy() {
         return proxy;
     }
 
     public boolean isIncludeUnloadedJS() {
         return includeUnloadedJS && !proxy;
-    }
-
-    public Level getLogLevel() {
-        return logLevel;
     }
 }

@@ -3,6 +3,7 @@
   * Add enhanced logging using JUL (https://github.com/tntim96/JSCover/issues/88)
   * Add '--only-instrument-reg=URL' switch (https://github.com/tntim96/JSCover/pull/89)
   * Internal: Move WebDriver samples to a separate project
+              Set up infrastructure to remove some code duplication
 
 1.0.2 / 2013-07-27
 ==================
