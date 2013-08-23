@@ -224,7 +224,8 @@
                 <heading id="gettingStartedProxy">Proxy</heading>
                 <text>
                     The proxy mode operates in a similar fashion to the server.
-                    To demonstrate the proxy functionality locally, perform the following steps.
+                    To demonstrate the proxy functionality locally, perform the following steps or
+                    see <a href="#automatingWebDriverProxy">here</a> for a working web-dfriver example.
                 </text>
                 <item>
                     <heading id="gettingStartedProxyHost">Edit Your Hosts File</heading>
@@ -1143,21 +1144,33 @@ fs.write("target/jscoverage.json", json, 'w');
             </item>
             <item>
                 <heading id="automatingWebDriver">WebDriver</heading>
-                <text>
-                    It's possible to run your JavaScripts tests and collect coverage data from a simple single Java
-                    class with web-driver.
-                    The JSCover server can be started as a thread, and there is no need for the Selenium server.
-                    The examples use Jasmine and Jasmine's <var>HtmlReporter</var>. All implementations are based on
-                    <a href="https://github.com/tntim96/JSCover-samples/blob/master/src/main/java/jscover/webdriver/jasmine/WebDriverJasmineTestBase.java"
-                       target="_blank">WebDriverJasmineTestBase</a>.
-                    There are examples with:
-                    <ul>
-                        <li><a href="https://github.com/tntim96/JSCover-samples/blob/master/src/test/java/jscover/webdriver/jasmine/WebDriverJasmineFireFoxTest.java" target="_blank">FireFox</a></li>
-                        <li><a href="https://github.com/tntim96/JSCover-samples/blob/master/src/test/java/jscover/webdriver/jasmine/WebDriverJasminePhantomJSTest.java" target="_blank">PhantomJS</a></li>
-                        <li><a href="https://github.com/tntim96/JSCover-samples/blob/master/src/test/java/jscover/webdriver/jasmine/WebDriverJasmineIETest.java" target="_blank">Internet Explorer</a></li>
-                        <li><a href="https://github.com/tntim96/JSCover-samples/blob/master/src/test/java/jscover/webdriver/jasmine/WebDriverJasmineChromeTest.java" target="_blank">Google Chrome</a></li>
-                    </ul>
-                </text>
+                <item>
+                    <heading id="automatingWebDriverServer">Server Mode</heading>
+                    <text>
+                        It's possible to run your JavaScripts tests and collect coverage data from a simple single Java
+                        class with web-driver.
+                        The JSCover server can be started as a thread, and there is no need for the Selenium server.
+                        The examples use Jasmine and Jasmine's <var>HtmlReporter</var>. All implementations are based on
+                        <a href="https://github.com/tntim96/JSCover-samples/blob/master/src/main/java/jscover/webdriver/jasmine/WebDriverJasmineTestBase.java"
+                           target="_blank">WebDriverJasmineTestBase</a>.
+                        There are examples with:
+                        <ul>
+                            <li><a href="https://github.com/tntim96/JSCover-samples/blob/master/src/test/java/jscover/webdriver/jasmine/WebDriverJasmineFireFoxTest.java" target="_blank">FireFox</a></li>
+                            <li><a href="https://github.com/tntim96/JSCover-samples/blob/master/src/test/java/jscover/webdriver/jasmine/WebDriverJasminePhantomJSTest.java" target="_blank">PhantomJS</a></li>
+                            <li><a href="https://github.com/tntim96/JSCover-samples/blob/master/src/test/java/jscover/webdriver/jasmine/WebDriverJasmineIETest.java" target="_blank">Internet Explorer</a></li>
+                            <li><a href="https://github.com/tntim96/JSCover-samples/blob/master/src/test/java/jscover/webdriver/jasmine/WebDriverJasmineChromeTest.java" target="_blank">Google Chrome</a></li>
+                        </ul>
+                    </text>
+                </item>
+                <item>
+                    <heading id="automatingWebDriverProxy">Proxy Mode</heading>
+                    <text>
+                        See a working example with FireFox and Underscore's online QUnit tests:
+                        <ul>
+                            <a href="https://github.com/tntim96/JSCover-samples/blob/master/src/test/java/jscover/webdriver/jasmine/WebDriverUnderscoreProxyTest.java" target="_blank">WebDriverUnderscoreProxyTest</a>
+                        </ul>
+                    </text>
+                </item>
                 <text>
                     Any suggestions or contributions are welcome to this WIP.
                 </text>
