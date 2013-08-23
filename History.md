@@ -2,6 +2,7 @@
 ==================
   * Add enhanced logging using JUL (https://github.com/tntim96/JSCover/issues/88)
   * Add '--only-instrument-reg=URL' switch (https://github.com/tntim96/JSCover/pull/89)
+  * Fix POSTs hanging due to persistent connections (https://github.com/tntim96/JSCover/issues/91)
   * Internal: Move WebDriver samples to a separate project
               Set up infrastructure to remove some code duplication
 

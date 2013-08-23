@@ -344,18 +344,18 @@ package jscover.server;
 
 import jscover.util.IoUtils;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.Socket;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
 import static java.lang.String.format;
+import static java.util.logging.Level.FINE;
+import static java.util.logging.Level.FINEST;
 import static java.util.logging.Level.SEVERE;
 
 public class ProxyService {
@@ -371,8 +371,9 @@ public class ProxyService {
     }
 
     private void handleProxyRequest(HttpRequest request, OutputStream os, String method) {
+        logger.log(FINE, "handleProxyRequest for {0}", request.getUrl());
         URL url = request.getUrl();
-        Socket socket = null;
+        Socket socket;
         InputStream remoteInputStream = null;
         OutputStream remoteOutputStream = null;
         try {
@@ -396,7 +397,7 @@ public class ProxyService {
 
     protected void handleProxyPost(HttpRequest request) {
         URL url = request.getUrl();
-        Socket socket = null;
+        Socket socket;
         InputStream remoteInputStream = null;
         OutputStream remoteOutputStream = null;
         try {
@@ -404,13 +405,34 @@ public class ProxyService {
             socket = new Socket(url.getHost(), port == -1 ? 80 : port);
             remoteInputStream = socket.getInputStream();
             remoteOutputStream = socket.getOutputStream();
-            ioUtils.copyNoClose(request.getInputStream(), remoteOutputStream, request.getPostIndex() + request.getContentLength());
+            ioUtils.copyNoClose(setHttp10(request.getInputStream()), remoteOutputStream, request.getPostIndex() + request.getContentLength());
             ioUtils.copyNoClose(remoteInputStream, request.getOutputStream());
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
             ioUtils.closeQuietly(remoteOutputStream);
             ioUtils.closeQuietly(remoteInputStream);
+        }
+    }
+
+    protected InputStream setHttp10(InputStream is) {
+        try {
+            logger.log(FINE, "Bytes available on stream {0}", is.available());
+            int bufSize = Math.min(is.available(), 2046);
+            PushbackInputStream pbis = new PushbackInputStream(is, bufSize);
+            byte headerBytes[] = new byte[bufSize];
+            int read = pbis.read(headerBytes);
+            int firstLineIndex = ioUtils.getNewLineIndex(headerBytes, Charset.defaultCharset());
+            pbis.unread(headerBytes, firstLineIndex, read - firstLineIndex);
+            String header = new String(headerBytes, 0, firstLineIndex);
+
+            logger.log(FINEST, "Header before {0}", header);
+            header = header.replaceFirst("HTTP/1.1", "HTTP/1.0");
+            logger.log(FINEST, "Header after {0}", header);
+            pbis.unread(header.getBytes());
+            return pbis;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

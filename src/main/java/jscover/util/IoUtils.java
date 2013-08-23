@@ -401,7 +401,7 @@ public class IoUtils {
         byte bytes[] = new byte[length];
         try {
             int total = 0;
-            for (int read = 0; total < length && (read = is.read(bytes, total, length-total)) != -1; total += read);
+            for (int read; total < length && (read = is.read(bytes, total, length-total)) != -1; total += read);
             assert total == length;
             return new String(bytes);
         } catch (IOException e) {
@@ -478,6 +478,7 @@ public class IoUtils {
         try {
             for (int total = 0, read = 0; total < length && (read = is.read(buf, 0, Math.min(bufSize, length - total))) != -1; total += read) {
                 os.write(buf, 0, read);
+                os.flush();
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -488,8 +489,9 @@ public class IoUtils {
         int bufSize = 1024;
         byte buf[] = new byte[bufSize];
         try {
-            for (int read = 0; (read = is.read(buf)) != -1; ) {
+            for (int read; (read = is.read(buf)) != -1; ) {
                 os.write(buf, 0, read);
+                os.flush();
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -504,6 +506,7 @@ public class IoUtils {
             is = new FileInputStream(file);
             for (int read = 0; (read = is.read(buf)) != -1; ) {
                 os.write(buf, 0, read);
+                os.flush();
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -608,5 +611,45 @@ public class IoUtils {
                 copyDir(new File(src, file), new File(dest, file));
         else
             ioUtils.copy(src, dest);
+    }
+
+    public int getPostIndex(byte[] bytes, Charset charset) {
+        String firstBytes = new String(bytes, charset);
+        String separator = CRLFx2;
+        int index = firstBytes.indexOf(CRLFx2);
+        int indexCR = firstBytes.indexOf(CRx2);
+        int indexLF = firstBytes.indexOf(LFx2);
+        if (indexCR != -1 && indexCR < index) {
+            separator = CRx2;
+            index = indexCR;
+        }
+        if (indexLF != -1 && indexLF < index)
+            separator = LFx2;
+        return getByteIndexIncludingSeparator(firstBytes, separator);
+    }
+
+    public int getByteIndex(String text, String separator) {
+        String header = text.substring(0, text.indexOf(separator));
+        return header.getBytes().length;
+    }
+
+    public int getByteIndexIncludingSeparator(String text, String separator) {
+        String header = text.substring(0, text.indexOf(separator) + separator.length());
+        return header.getBytes().length;
+    }
+
+    public int getNewLineIndex(byte[] bytes, Charset charset) {
+        String firstBytes = new String(bytes, charset);
+        String separator = "\r\n";
+        int index = firstBytes.indexOf("\r\n");
+        int indexCR = firstBytes.indexOf("\r");
+        int indexLF = firstBytes.indexOf("\n");
+        if (indexCR != -1 && indexCR < index) {
+            separator = "\r";
+            index = indexCR;
+        }
+        if (indexLF != -1 && indexLF < index)
+            separator = "\n";
+        return getByteIndex(firstBytes, separator);
     }
 }

@@ -352,10 +352,10 @@ import java.util.logging.Logger;
 
 import static java.lang.String.format;
 import static java.util.logging.Level.*;
-import static jscover.util.IoUtils.*;
 
 public class HttpServer extends Thread {
     private static final Logger logger = Logger.getLogger(HttpServer.class.getName());
+    public static final int HEADER_SIZE = 1024 * 5;
 
     private Socket socket;
     private String version;
@@ -379,9 +379,8 @@ public class HttpServer extends Thread {
         try {
             is = socket.getInputStream();
             os = socket.getOutputStream();
-            int headerSize = 1024*5;
-            pbis = new PushbackInputStream(is, headerSize);
-            byte headerBytes[] = new byte[headerSize];
+            pbis = new PushbackInputStream(is, HEADER_SIZE);
+            byte headerBytes[] = new byte[HEADER_SIZE];
             int read = pbis.read(headerBytes);
 
             bais = new ByteArrayInputStream(headerBytes, 0, read);
@@ -389,7 +388,7 @@ public class HttpServer extends Thread {
             pw = new PrintWriter(os);
 
             requestString = br.readLine();
-            logger.log(FINE, requestString);
+            logger.log(FINE, "Request: {0}", requestString);
             if (requestString == null)
                 return;
 
@@ -399,7 +398,7 @@ public class HttpServer extends Thread {
             String headerLine;
             Map<String, List<String>> headers = new HashMap<String, List<String>>();
             while (!(headerLine = br.readLine()).equals("")) {
-                logger.log(FINEST, headerLine);
+                logger.log(FINEST, "Header: {0}", headerLine);
                 int index = headerLine.indexOf(':');
                 if (index >= 0) {
                     String headerField = headerLine.substring(0, index).trim();
@@ -412,7 +411,7 @@ public class HttpServer extends Thread {
 
             int postIndex = 0;
             if ("POST".equals(httpMethod))
-                postIndex = getPostIndex(headerBytes, Charset.defaultCharset());
+                postIndex = ioUtils.getPostIndex(headerBytes, Charset.defaultCharset());
             HttpRequest httpRequest = new HttpRequest(path, pbis, os, postIndex, headers);
 
             pbis.unread(headerBytes, 0, read);
@@ -442,26 +441,6 @@ public class HttpServer extends Thread {
             ioUtils.closeQuietly(os);
             ioUtils.closeQuietly(socket);
         }
-    }
-
-    protected int getPostIndex(byte[] headerBytes, Charset charset) {
-        String firstBytes = new String(headerBytes, charset);
-        String separator = CRLFx2;
-        int index = firstBytes.indexOf(CRLFx2);
-        int indexCR = firstBytes.indexOf(CRx2);
-        int indexLF = firstBytes.indexOf(LFx2);
-        if (indexCR != -1 && indexCR < index) {
-            separator = CRx2;
-            index = indexCR;
-        }
-        if (indexLF != -1 && indexLF < index)
-            separator = LFx2;
-        return getByteIndex(firstBytes, separator);
-    }
-
-    private int getByteIndex(String firstBytes, String separator) {
-        String header = firstBytes.substring(0, firstBytes.indexOf(separator) + separator.length());
-        return header.getBytes().length;
     }
 
     protected void handleHead(HttpRequest httpRequest) {
@@ -514,6 +493,7 @@ public class HttpServer extends Thread {
         pw.print(format("HTTP/1.0 %s\n", status));
         pw.write(format("Server: JSCover/%s\n", version));
         pw.write(format("Content-Type: %s\n", mime.getContentType()));
+        pw.write("Connection: close\n");
         pw.write(format("Content-Length: %d\n\n", data.length()));
         pw.write(data);
         pw.flush();
@@ -523,6 +503,7 @@ public class HttpServer extends Thread {
         pw.print(format("HTTP/1.0 %s\n", status));
         pw.write(format("Server: JSCover/%s\n", version));
         pw.write(format("Content-Type: %s\n", mime.getContentType()));
+        pw.write("Connection: close\n");
         pw.write(format("Content-Length: %d\n\n", data.length()));
         pw.flush();
         ioUtils.copyNoClose(data, os);
@@ -531,7 +512,8 @@ public class HttpServer extends Thread {
     protected void sendResponse(HTTP_STATUS status, MIME mime, InputStream is) {
         pw.print(format("HTTP/1.0 %s\n", status));
         pw.write(format("Server: JSCover/%s\n", version));
-        pw.write(format("Content-Type: %s\n\n", mime.getContentType()));
+        pw.write(format("Content-Type: %s\n", mime.getContentType()));
+        pw.write("Connection: close\n\n");
         pw.flush();
         ioUtils.copy(is, os);
     }

@@ -342,18 +342,23 @@ Public License instead of this License.
 
  package jscover.server;
 
+import jscover.util.IoUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.*;
 
 
@@ -363,6 +368,7 @@ public class ProxyServiceTest {
     private HttpRequest request = new HttpRequest("test.js", null, null, 0, null);
     @Mock private HttpURLConnection conn;
     private Map<String, List<String>> headers = new HashMap<String, List<String>>();
+    private IoUtils ioUtils = IoUtils.getInstance();
 
     @Before
     public void setUp() {
@@ -390,10 +396,21 @@ public class ProxyServiceTest {
 
     @Test
     public void shouldNotAddEncodingHeaders() {
-        headers.put("Accept-Encoding", new ArrayList<String>(){{add("GZIP");}});
+        headers.put("Accept-Encoding", new ArrayList<String>() {{
+            add("GZIP");
+        }});
 
         proxyService.copyHeadersExceptEncoding(request, conn);
 
         verify(conn, times(0)).addRequestProperty("Accept-Encoding", "456");
+    }
+
+    @Test
+    public void shouldConvertToHTTP10() {
+        String requestString = "POST /someURL HTTP/1.1\r\nHeaders";
+
+        InputStream is = proxyService.setHttp10(new ByteArrayInputStream(requestString.getBytes()));
+
+        assertThat(ioUtils.toString(is), equalTo("POST /someURL HTTP/1.0\r\nHeaders"));
     }
 }
