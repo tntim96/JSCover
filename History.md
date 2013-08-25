@@ -1,4 +1,4 @@
-1.0.3 / 2013-??-??
+1.0.3 / 2013-08-25
 ==================
   * Add enhanced logging using JUL (https://github.com/tntim96/JSCover/issues/88)
   * Add '--only-instrument-reg=URL' switch (https://github.com/tntim96/JSCover/pull/89)
