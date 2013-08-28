@@ -41,10 +41,10 @@
                     </ul>
                 </text>
                 <text>
-                    The server mode has two advantages:
+                    The server (both web and proxy) has two advantages:
                     <ol>
-                        <li>can store coverage reports to the filesystem (with/without the proxy option)*</li>
-                        <li>can include unloaded/untested JavaScript in the report (only without the proxy option)</li>
+                        <li>can store coverage reports to the filesystem*</li>
+                        <li>can include unloaded/untested JavaScript in the report</li>
                     </ol>
                     * It's possible to store a report to the file-system as described
                     <a href="#fileSystemSave">below</a>.
@@ -225,7 +225,7 @@
                 <text>
                     The proxy mode operates in a similar fashion to the server.
                     To demonstrate the proxy functionality locally, perform the following steps or
-                    see <a href="#automatingWebDriverProxy">here</a> for a working web-dfriver example.
+                    see <a href="#automatingWebDriverProxy">here</a> for a working web-driver example.
                 </text>
                 <item>
                     <heading id="gettingStartedProxyHost">Edit Your Hosts File</heading>
@@ -519,7 +519,7 @@ fs.write("target/jscoverage.json", json, 'w');
                                 <br/>
                                 path for JavaScript file not served and include in the coverage report.
                                 <br/>
-                                Not compatible with --proxy. Will respect --no-instrument(-reg).
+                                Will respect --no-instrument(-reg).
                             </td>
                         </tr>
                         <tr>

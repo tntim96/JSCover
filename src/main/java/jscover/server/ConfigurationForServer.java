@@ -383,12 +383,10 @@ public class ConfigurationForServer extends ConfigurationCommon {
                 configuration.documentRoot = new File(arg.substring(DOC_ROOT_PREFIX.length()));
                 if (!configuration.documentRoot.exists()) {
                     System.err.println(format("Document root '%s' doesn't exist", configuration.documentRoot));
-                    configuration.showHelp = true;
-                    configuration.invalid = true;
+                    setInvalid(configuration);
                 } else if (!configuration.documentRoot.isDirectory()) {
                     System.err.println(format("Document root '%s' can't be a file", configuration.documentRoot));
-                    configuration.showHelp = true;
-                    configuration.invalid = true;
+                    setInvalid(configuration);
                 }
             } else if (arg.startsWith(PORT_PREFIX)) {
                 configuration.port = Integer.valueOf(arg.substring(PORT_PREFIX.length()));
@@ -417,12 +415,16 @@ public class ConfigurationForServer extends ConfigurationCommon {
             } else if (arg.startsWith(LOG_LEVEL)) {
                 configuration.logLevel = Level.parse(arg.substring(LOG_LEVEL.length()));
             } else {
-                configuration.showHelp = true;
-                configuration.invalid = true;
+                setInvalid(configuration);
             }
         }
         configuration.compilerEnvirons.setLanguageVersion(configuration.JSVersion);
         return configuration;
+    }
+
+    private static void setInvalid(ConfigurationForServer configuration) {
+        configuration.showHelp = true;
+        configuration.invalid = true;
     }
 
     public String getHelpText() {
@@ -434,6 +436,6 @@ public class ConfigurationForServer extends ConfigurationCommon {
     }
 
     public boolean isIncludeUnloadedJS() {
-        return includeUnloadedJS && !proxy;
+        return includeUnloadedJS;
     }
 }

@@ -439,8 +439,8 @@ public class ConfigurationForServerTest {
     }
 
     @Test
-    public void shouldNotIncludedUnloadedJSIfProxy() {
-        assertThat(ConfigurationForServer.parse(new String[]{"--proxy", "--include-unloaded-js"}).isIncludeUnloadedJS(), is(false));
+    public void shouldIncludedUnloadedJSIfProxy() {
+        assertThat(ConfigurationForServer.parse(new String[]{"--proxy", "--include-unloaded-js"}).isIncludeUnloadedJS(), is(true));
     }
 
     @Test

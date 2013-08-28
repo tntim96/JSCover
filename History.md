@@ -1,3 +1,7 @@
+1.0.4 / 2013-??-??
+==================
+  * Support 'include-unloaded-js' in proxy mode (https://github.com/tntim96/JSCover/issues/93)
+
 1.0.3 / 2013-08-25
 ==================
   * Add enhanced logging using JUL (https://github.com/tntim96/JSCover/issues/88)
