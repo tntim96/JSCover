@@ -452,13 +452,14 @@ public class InstrumentingRequestHandler extends HttpServer {
                 sendResponse(HTTP_STATUS.HTTP_OK, request.getMime(), ioService.getResourceAsStream(uri));
             } else if (uri.endsWith(".js") && !configuration.skipInstrumentation(uri.substring(1)) && !request.skipInstrumentation()) {
                 String jsInstrumented;
+                String uriToStore = uri.replace(":", "").substring(1);
                 if (configuration.isProxy()) {
                     String originalJS = proxyService.getUrl(request);
                     jsInstrumented = instrumenterService.instrumentJSForProxyServer(configuration.getCompilerEnvirons(), originalJS, uri, configuration.isIncludeBranch(), configuration.isIncludeFunction());
-                    uris.put(uri.substring(1), originalJS);
+                    uris.put(uriToStore, originalJS);
                 } else {
                     jsInstrumented = instrumenterService.instrumentJSForWebServer(configuration.getCompilerEnvirons(), new File(wwwRoot, uri), uri, configuration.isIncludeBranch(), configuration.isIncludeFunction());
-                    uris.put(uri.substring(1), null);
+                    uris.put(uriToStore, null);
                 }
                 sendResponse(HTTP_STATUS.HTTP_OK, MIME.JS, jsInstrumented);
             } else {
