@@ -1,7 +1,15 @@
-1.0.3 / 2013-??-??
+1.0.4 / 2013-??-??
+==================
+  * Support 'include-unloaded-js' in proxy mode (https://github.com/tntim96/JSCover/issues/93)
+  * Fix inclusion logic for unloaded-js (https://github.com/tntim96/JSCover/issues/93)
+
+1.0.3 / 2013-08-25
 ==================
   * Add enhanced logging using JUL (https://github.com/tntim96/JSCover/issues/88)
+  * Add '--only-instrument-reg=URL' switch (https://github.com/tntim96/JSCover/pull/89)
+  * Fix POSTs hanging due to persistent connections (https://github.com/tntim96/JSCover/issues/91)
   * Internal: Move WebDriver samples to a separate project
+              Set up infrastructure to remove some code duplication
 
 1.0.2 / 2013-07-27
 ==================

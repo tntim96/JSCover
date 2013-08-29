@@ -338,49 +338,73 @@ proprietary programs.  If your program is a subroutine library, you may
 consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
- */
+*/
 
-package jscover.util;
+package jscover.server;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import com.gargoylesoftware.htmlunit.ProxyConfig;
+import jscover.Main;
+import org.junit.Before;
 
-import java.util.logging.LogRecord;
+import java.io.File;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.BDDMockito.given;
+public class HtmlServerUnloadedJSProxyTest extends HtmlServerUnloadedJSTest {
+    private static Thread webServer;
+    private static Thread server;
+    private static int proxyPort = 3129;
 
-@RunWith(MockitoJUnitRunner.class)
-public class ExceptionRecordingHandlerTest {
-    private ExceptionRecordingHandler handler = new ExceptionRecordingHandler();
-    private @Mock LogRecord logRecord;
+    private String[] args = new String[]{
+            "-ws",
+            "--document-root=src/test-integration/resources/jsSearch",
+            "--port="+proxyPort,
+            "--proxy",
+            "--no-instrument=noInstrument",
+            "--include-unloaded-js",
+            "--report-dir=" + getReportDir()
+    };
 
-    @Test
-    public void shouldRecordException() {
-        given(logRecord.getThrown()).willReturn(new RuntimeException("Hey"));
-
-        handler.publish(logRecord);
-
-        assertThat(handler.isExceptionThrown(), is(true));
+    @Override
+    protected String getReportDir() {
+        return "target/proxy-report";
     }
 
-    @Test
-    public void shouldNotRecordException() {
-        handler.publish(logRecord);
-
-        assertThat(handler.isExceptionThrown(), is(false));
-    }
-
-    @Test
-    public void shouldNotThrowExceptionOnFlush() {
-        handler.flush();
-    }
-
-    @Test
-    public void shouldNotThrowExceptionOnClose() {
-        handler.close();
+    @Before
+    public void setUp() throws IOException {
+        if (server == null) {
+            server = new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        Main.main(args);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
+            server.start();
+        }
+        if (webServer == null) {
+            webServer = new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        ServerSocket Server = new ServerSocket(9001);
+                        File wwwRoot = new File("src/test-integration/resources/jsSearch");
+                        while (true) {
+                            Socket socket = Server.accept();
+                            (new HttpServer(socket, wwwRoot, "testVersion")).start();
+                        }
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
+            webServer.start();
+        }
+        ProxyConfig proxyConfig = new ProxyConfig("localhost", proxyPort);
+        proxyConfig.addHostsToProxyBypass("127.0.0.1");
+        webClient.getOptions().setProxyConfig(proxyConfig);
+        webClient.getOptions().setTimeout(1000);
     }
 }

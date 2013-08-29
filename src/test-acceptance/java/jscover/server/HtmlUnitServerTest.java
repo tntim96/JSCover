@@ -376,6 +376,7 @@ public class HtmlUnitServerTest {
             "--no-instrument=example/lib",
             "--report-dir=" + getReportDir()
     };
+
     protected String getReportDir() {
         return "target/ws-report";
     }

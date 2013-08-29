@@ -340,47 +340,109 @@ library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
  */
 
-package jscover.util;
+package jscover;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import jscover.util.IoUtils;
+import jscover.util.PatternMatcher;
+import jscover.util.PatternMatcherRegEx;
+import org.mozilla.javascript.CompilerEnvirons;
+import org.mozilla.javascript.Context;
 
-import java.util.logging.LogRecord;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.regex.PatternSyntaxException;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.BDDMockito.given;
+import static java.util.logging.Level.SEVERE;
 
-@RunWith(MockitoJUnitRunner.class)
-public class ExceptionRecordingHandlerTest {
-    private ExceptionRecordingHandler handler = new ExceptionRecordingHandler();
-    private @Mock LogRecord logRecord;
+public class ConfigurationCommon extends Configuration {
+    public static final String REPORT_DIR_PREFIX = "--report-dir=";
+    public static final String ONLY_INSTRUMENT_REG_PREFIX = "--only-instrument-reg=";
+    public static final String NO_INSTRUMENT_PREFIX = "--no-instrument=";
+    public static final String NO_INSTRUMENT_REG_PREFIX = "--no-instrument-reg=";
+    public static final String JS_VERSION_PREFIX = "--js-version=";
+    public static final String BRANCH_PREFIX = "--no-branch";
+    public static final String FUNCTION_PREFIX = "--no-function";
+    public static final String LOG_LEVEL = "--log=";
 
-    @Test
-    public void shouldRecordException() {
-        given(logRecord.getThrown()).willReturn(new RuntimeException("Hey"));
+    protected boolean showHelp;
+    protected boolean invalid;
+    protected boolean includeBranch = true;
+    protected boolean includeFunction = true;
+    protected final List<PatternMatcher> patternMatchers = new ArrayList<PatternMatcher>();
+    protected File reportDir = new File(System.getProperty("user.dir"));
+    protected int JSVersion = Context.VERSION_1_5;
+    protected CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
+    protected boolean defaultSkip;
+    protected IoUtils ioUtils = IoUtils.getInstance();
+    protected Level logLevel = SEVERE;
 
-        handler.publish(logRecord);
-
-        assertThat(handler.isExceptionThrown(), is(true));
+    public Boolean showHelp() {
+        return showHelp;
     }
 
-    @Test
-    public void shouldNotRecordException() {
-        handler.publish(logRecord);
-
-        assertThat(handler.isExceptionThrown(), is(false));
+    public boolean isInvalid() {
+        return invalid;
     }
 
-    @Test
-    public void shouldNotThrowExceptionOnFlush() {
-        handler.flush();
+    public boolean isIncludeBranch() {
+        return includeBranch;
     }
 
-    @Test
-    public void shouldNotThrowExceptionOnClose() {
-        handler.close();
+    public boolean isIncludeFunction() {
+        return includeFunction;
+    }
+
+    public File getReportDir() {
+        return reportDir;
+    }
+
+    public int getJSVersion() {
+        return JSVersion;
+    }
+
+    public CompilerEnvirons getCompilerEnvirons() {
+        return compilerEnvirons;
+    }
+
+    public Level getLogLevel() {
+        return logLevel;
+    }
+
+    public boolean skipInstrumentation(String uri) {
+        for (PatternMatcher patternMatcher : patternMatchers) {
+            Boolean instrumentIt = patternMatcher.matches(uri);
+            if (instrumentIt != null)
+                return instrumentIt;
+        }
+        return defaultSkip;
+    }
+
+    protected void addOnlyInstrumentReg(String arg) {
+        String patternString = arg.substring(ONLY_INSTRUMENT_REG_PREFIX.length());
+        if (patternString.startsWith("/"))
+            patternString = patternString.substring(1);
+        defaultSkip = true;
+        try {
+            patternMatchers.add(PatternMatcherRegEx.getIncludePatternMatcher(patternString));
+        } catch (PatternSyntaxException e) {
+            e.printStackTrace(System.err);
+            showHelp = true;
+            invalid = true;
+        }
+    }
+
+    protected void addNoInstrumentReg(String arg) {
+        String patternString = arg.substring(NO_INSTRUMENT_REG_PREFIX.length());
+        if (patternString.startsWith("/"))
+            patternString = patternString.substring(1);
+        try {
+            patternMatchers.add(PatternMatcherRegEx.getExcludePatternMatcher(patternString));
+        } catch(PatternSyntaxException e) {
+            e.printStackTrace(System.err);
+            showHelp = true;
+            invalid = true;
+        }
     }
 }

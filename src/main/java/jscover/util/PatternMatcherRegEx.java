@@ -340,37 +340,30 @@ library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
  */
 
-package jscover.server;
+package jscover.util;
 
+import java.util.regex.Pattern;
 
-import org.junit.Test;
+public class PatternMatcherRegEx extends PatternMatcher {
+    private Pattern regPattern;
 
-import java.nio.charset.Charset;
-
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
-
-public class HttpServerTest {
-    private HttpServer httpServer = new HttpServer(null, null, null);
-
-    @Test
-    public void shouldDetectPostIndexCRLF() {
-        String post = "POST /data HTTP/1.1\r\nSome Header\r\n\r\nData\r\rLine 3\n\nLine 5";
-        Charset charset = Charset.forName("UTF-8");
-        assertThat(httpServer.getPostIndex(post.getBytes(charset), charset), equalTo(36));
+    private PatternMatcherRegEx(boolean exclude, String pattern) {
+        super(exclude);
+        regPattern = Pattern.compile(pattern);
     }
 
-    @Test
-    public void shouldDetectPostIndexLF() {
-        String post = "POST /data HTTP/1.1\nSome Header\n\nData\r\n\r\nLine 3";
-        Charset charset = Charset.forName("UTF-8");
-        assertThat(httpServer.getPostIndex(post.getBytes(charset), charset), equalTo(33));
+    public static PatternMatcher getIncludePatternMatcher(String pattern) {
+        return new PatternMatcherRegEx(false, pattern);
     }
 
-    @Test
-    public void shouldDetectPostIndexCR() {
-        String post = "POST /data HTTP/1.1\rSome Header\r\rData\r\n\r\nLine 3";
-        Charset charset = Charset.forName("UTF-8");
-        assertThat(httpServer.getPostIndex(post.getBytes(charset), charset), equalTo(33));
+    public static PatternMatcher getExcludePatternMatcher(String pattern) {
+        return new PatternMatcherRegEx(true, pattern);
+    }
+
+    @Override
+    public Boolean matches(String uri) {
+        if (regPattern.matcher(uri).matches())
+            return exclude;
+        return null;
     }
 }

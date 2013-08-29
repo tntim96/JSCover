@@ -351,6 +351,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.*;
 import java.net.Socket;
+import java.nio.charset.Charset;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.*;
@@ -622,4 +623,46 @@ public class IoUtilsTest {
     }
 
     static class Dummy extends IoUtils {}
+
+    @Test
+    public void shouldDetectPostIndexCRLF() {
+        String post = "POST /data HTTP/1.1\r\nSome Header\r\n\r\nData\r\rLine 3\n\nLine 5";
+        Charset charset = Charset.forName("UTF-8");
+        assertThat(ioUtils.getPostIndex(post.getBytes(charset), charset), Matchers.equalTo(36));
+    }
+
+    @Test
+    public void shouldDetectPostIndexLF() {
+        String post = "POST /data HTTP/1.1\nSome Header\n\nData\r\n\r\nLine 3";
+        Charset charset = Charset.forName("UTF-8");
+        assertThat(ioUtils.getPostIndex(post.getBytes(charset), charset), Matchers.equalTo(33));
+    }
+
+    @Test
+    public void shouldDetectPostIndexCR() {
+        String post = "POST /data HTTP/1.1\rSome Header\r\rData\r\n\r\nLine 3";
+        Charset charset = Charset.forName("UTF-8");
+        assertThat(ioUtils.getPostIndex(post.getBytes(charset), charset), Matchers.equalTo(33));
+    }
+
+    @Test
+    public void shouldDetectFirstLineEndIndexCRLF() {
+        String post = "POST /data HTTP/1.1\r\nSome Header\r\n\r\nData\r\rLine 3\n\nLine 5";
+        Charset charset = Charset.forName("UTF-8");
+        assertThat(ioUtils.getNewLineIndex(post.getBytes(charset), charset), Matchers.equalTo(19));
+    }
+
+    @Test
+    public void shouldDetectFirstLineEndIndexLF() {
+        String post = "POST /data HTTP/1.1\nSome Header\n\nData\r\n\r\nLine 3";
+        Charset charset = Charset.forName("UTF-8");
+        assertThat(ioUtils.getNewLineIndex(post.getBytes(charset), charset), Matchers.equalTo(19));
+    }
+
+    @Test
+    public void shouldDetectFirstLineEndIndexCR() {
+        String post = "POST /data HTTP/1.1\rSome Header\r\rData\r\n\r\nLine 3";
+        Charset charset = Charset.forName("UTF-8");
+        assertThat(ioUtils.getNewLineIndex(post.getBytes(charset), charset), Matchers.equalTo(19));
+    }
 }

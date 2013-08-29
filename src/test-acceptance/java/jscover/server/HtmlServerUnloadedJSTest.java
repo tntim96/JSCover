@@ -363,16 +363,19 @@ public class HtmlServerUnloadedJSTest {
     private static Thread server;
 
     protected WebClient webClient = new WebClient();
-    private IoUtils ioUtils = IoUtils.getInstance();
-    private String reportDir = "target/ws-report";
+    protected IoUtils ioUtils = IoUtils.getInstance();
     private String[] args = new String[]{
             "-ws",
             "--document-root=src/test-integration/resources/jsSearch",
             "--port=9001",
             "--no-instrument=noInstrument",
             "--include-unloaded-js",
-            "--report-dir=" + reportDir
+            "--report-dir=" + getReportDir()
     };
+
+    protected String getReportDir() {
+        return "target/ws-report";
+    }
 
     @Before
     public void setUp() throws IOException {
@@ -388,13 +391,12 @@ public class HtmlServerUnloadedJSTest {
             });
             server.start();
         }
-        webClient.getOptions().setTimeout(30000);
+        webClient.getOptions().setTimeout(1000);
     }
-
 
     @Test
     public void shouldIncludeUnloadJSInSavedReport() throws Exception {
-        File jsonFile = new File(reportDir+"/jscoverage.json");
+        File jsonFile = new File(getReportDir()+"/jscoverage.json");
         if (jsonFile.exists())
             jsonFile.delete();
 
@@ -415,13 +417,13 @@ public class HtmlServerUnloadedJSTest {
         webClient.waitForBackgroundJavaScript(2000);
         String result = page.getElementById("storeDiv").getTextContent();
 
-        assertThat(result, containsString("Coverage data stored at " + new File(reportDir).getPath()));
+        assertThat(result, containsString("Coverage data stored at " + new File(getReportDir()).getPath()));
 
         String json = ioUtils.toString(jsonFile);
         assertThat(json, containsString("/root.js"));
         assertThat(json, containsString("/level1/level2/level2.js"));
 
-        String url = "file:///" + new File(reportDir + "/jscoverage.html").getAbsolutePath();
+        String url = "file:///" + new File(getReportDir() + "/jscoverage.html").getAbsolutePath();
         page = webClient.getPage(url);
         webClient.waitForBackgroundJavaScript(1000);
         assertEquals("53%", page.getElementById("summaryTotal").getTextContent());

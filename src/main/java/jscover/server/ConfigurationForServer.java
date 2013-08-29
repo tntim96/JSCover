@@ -342,71 +342,27 @@ Public License instead of this License.
 
 package jscover.server;
 
-import jscover.Configuration;
+import jscover.ConfigurationCommon;
 import jscover.Main;
-import jscover.util.IoUtils;
-
-import org.mozilla.javascript.CompilerEnvirons;
-import org.mozilla.javascript.Context;
+import jscover.util.PatternMatcherString;
 
 import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.logging.Level;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 import static java.lang.String.format;
-import static java.util.logging.Level.SEVERE;
+import static jscover.Main.HELP_PREFIX1;
+import static jscover.Main.HELP_PREFIX2;
 
-public class ConfigurationForServer extends Configuration {
-    public static final String HELP_PREFIX1 = Main.HELP_PREFIX1;
-    public static final String HELP_PREFIX2 = Main.HELP_PREFIX2;
+public class ConfigurationForServer extends ConfigurationCommon {
     public static final String DOC_ROOT_PREFIX = "--document-root=";
     public static final String PORT_PREFIX = "--port=";
-    public static final String REPORT_DIR_PREFIX = "--report-dir=";
-    public static final String NO_INSTRUMENT_PREFIX = "--no-instrument=";
-    public static final String NO_INSTRUMENT_REG_PREFIX = "--no-instrument-reg=";
-    public static final String ONLY_INSTRUMENT_REG_PREFIX = "--only-instrument-reg=";
-    public static final String JS_VERSION_PREFIX = "--js-version=";
     public static final String PROXY_PREFIX = "--proxy";
     public static final String INCLUDE_UNLOADED_JS_PREFIX = "--include-unloaded-js";
-    public static final String BRANCH_PREFIX = "--no-branch";
-    public static final String FUNCTION_PREFIX = "--no-function";
-    public static final String LOG_LEVEL = "--log=";
 
-    private boolean showHelp;
-    private boolean invalid;
-    private boolean includeBranch = true;
-    private boolean includeFunction = true;
     private File documentRoot = new File(System.getProperty("user.dir"));
     private Integer port = 8080;
-    private final Set<String> noInstruments = new HashSet<String>();
-    private final Set<Pattern> noInstrumentRegs = new HashSet<Pattern>();
-    private final Set<Pattern> onlyInstrumentRegs = new HashSet<Pattern>();
-    private File reportDir = new File(System.getProperty("user.dir"));
-    private int JSVersion = Context.VERSION_1_5;
     private boolean proxy;
-    private CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
     private boolean includeUnloadedJS;
-    private Level logLevel = SEVERE;
-    private IoUtils ioUtils = IoUtils.getInstance();
-
-    public Boolean showHelp() {
-        return showHelp;
-    }
-
-    public boolean isInvalid() {
-        return invalid;
-    }
-
-    public boolean isIncludeBranch() {
-        return includeBranch;
-    }
-
-    public boolean isIncludeFunction() {
-        return includeFunction;
-    }
 
     public File getDocumentRoot() {
         return documentRoot;
@@ -415,39 +371,6 @@ public class ConfigurationForServer extends Configuration {
     public Integer getPort() {
         return port;
     }
-
-    public File getReportDir() {
-        return reportDir;
-    }
-
-    public int getJSVersion() {
-        return JSVersion;
-    }
-
-    public boolean skipInstrumentation(String uri) {
-        for (String noInstrument : noInstruments)
-            if (uri.startsWith(noInstrument))
-                return true;
-        for (Pattern noInstrumentReg : noInstrumentRegs)
-            if (noInstrumentReg.matcher(uri).matches())
-                return true;
-        
-        
-        if(!onlyInstrumentRegs.isEmpty()) {
-            //only instrument files that match the only
-            //instrument regex.
-            for (Pattern instrumentReg : onlyInstrumentRegs) {
-                if (instrumentReg.matcher(uri).matches()) {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-        
-        return false;
-    }
-    
 
     public static ConfigurationForServer parse(String[] args) {
         ConfigurationForServer configuration = new ConfigurationForServer();
@@ -460,12 +383,10 @@ public class ConfigurationForServer extends Configuration {
                 configuration.documentRoot = new File(arg.substring(DOC_ROOT_PREFIX.length()));
                 if (!configuration.documentRoot.exists()) {
                     System.err.println(format("Document root '%s' doesn't exist", configuration.documentRoot));
-                    configuration.showHelp = true;
-                    configuration.invalid = true;
+                    setInvalid(configuration);
                 } else if (!configuration.documentRoot.isDirectory()) {
                     System.err.println(format("Document root '%s' can't be a file", configuration.documentRoot));
-                    configuration.showHelp = true;
-                    configuration.invalid = true;
+                    setInvalid(configuration);
                 }
             } else if (arg.startsWith(PORT_PREFIX)) {
                 configuration.port = Integer.valueOf(arg.substring(PORT_PREFIX.length()));
@@ -480,32 +401,12 @@ public class ConfigurationForServer extends Configuration {
                 String uri = arg.substring(NO_INSTRUMENT_PREFIX.length());
                 if (uri.startsWith("/"))
                     uri = uri.substring(1);
-                configuration.noInstruments.add(uri);
+                configuration.patternMatchers.add(new PatternMatcherString(uri));
             } else if (arg.startsWith(NO_INSTRUMENT_REG_PREFIX)) {
-                String patternString = arg.substring(NO_INSTRUMENT_REG_PREFIX.length());
-                if (patternString.startsWith("/"))
-                    patternString = patternString.substring(1);
-                try {
-                    Pattern pattern = Pattern.compile(patternString);
-                    configuration.noInstrumentRegs.add(pattern);
-                } catch(PatternSyntaxException e) {
-                    e.printStackTrace(System.err);
-                    configuration.showHelp = true;
-                    configuration.invalid = true;
-                }
-            } else if (arg.startsWith(ONLY_INSTRUMENT_REG_PREFIX )) {
-                String patternString = arg.substring(ONLY_INSTRUMENT_REG_PREFIX .length());
-                if (patternString.startsWith("/"))
-                    patternString = patternString.substring(1);
-                try {
-                    Pattern pattern = Pattern.compile(patternString);
-                    configuration.onlyInstrumentRegs.add(pattern);
-                } catch(PatternSyntaxException e) {
-                    e.printStackTrace(System.err);
-                    configuration.showHelp = true;
-                    configuration.invalid = true;
-                }
-            }  else if (arg.startsWith(JS_VERSION_PREFIX)) {
+                configuration.addNoInstrumentReg(arg);
+            } else if (arg.startsWith(ONLY_INSTRUMENT_REG_PREFIX)) {
+                configuration.addOnlyInstrumentReg(arg);
+            } else if (arg.startsWith(JS_VERSION_PREFIX)) {
                 configuration.JSVersion = (int)(Float.valueOf(arg.substring(JS_VERSION_PREFIX.length()))*100);
             } else if (arg.equals(BRANCH_PREFIX)) {
                 configuration.includeBranch = false;
@@ -514,20 +415,20 @@ public class ConfigurationForServer extends Configuration {
             } else if (arg.startsWith(LOG_LEVEL)) {
                 configuration.logLevel = Level.parse(arg.substring(LOG_LEVEL.length()));
             } else {
-                configuration.showHelp = true;
-                configuration.invalid = true;
+                setInvalid(configuration);
             }
         }
         configuration.compilerEnvirons.setLanguageVersion(configuration.JSVersion);
         return configuration;
     }
 
-    public String getHelpText() {
-        return ioUtils.toString(getClass().getResourceAsStream("help.txt"));
+    private static void setInvalid(ConfigurationForServer configuration) {
+        configuration.showHelp = true;
+        configuration.invalid = true;
     }
 
-    public CompilerEnvirons getCompilerEnvirons() {
-        return compilerEnvirons;
+    public String getHelpText() {
+        return ioUtils.toString(getClass().getResourceAsStream("help.txt"));
     }
 
     public boolean isProxy() {
@@ -535,10 +436,6 @@ public class ConfigurationForServer extends Configuration {
     }
 
     public boolean isIncludeUnloadedJS() {
-        return includeUnloadedJS && !proxy;
-    }
-
-    public Level getLogLevel() {
-        return logLevel;
+        return includeUnloadedJS;
     }
 }

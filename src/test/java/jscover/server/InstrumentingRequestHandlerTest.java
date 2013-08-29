@@ -621,6 +621,7 @@ public class InstrumentingRequestHandlerTest {
         assertThat(stringWriter.toString(), equalTo("HTTP/1.0 200 OK\n" +
                 "Server: JSCover/testVersion\n" +
                 "Content-Type: text/html\n" +
+                "Connection: close\n" +
                 "Content-Length: 7\n" +
                 "\n" +
                 "theHtml"));
@@ -691,6 +692,7 @@ public class InstrumentingRequestHandlerTest {
         assertThat(stringWriter.toString(), equalTo("HTTP/1.0 404 File Not Found\n" +
                 "Server: JSCover/testVersion\n" +
                 "Content-Type: text/plain\n" +
+                "Connection: close\n" +
                 "Content-Length: 5\n" +
                 "\n" +
                 "Ouch!"));
