@@ -369,21 +369,12 @@ public class FileScanner {
         if (inReportSrc(src))
             return;
         if (src.isDirectory()) {
-            String files[] = src.list();
-            for (String file : files) {
-                File srcFile = new File(src, file);
-                String path = ioUtils.getRelativePath(srcFile, configuration.getDocumentRoot());
-                if (configuration.skipInstrumentation(path)) {
-                    continue;
-                }
-                //recursive copy
-                searchFolder(srcFile, list, urisAlreadyProcessed);
-            }
+            for (String file : src.list())
+                searchFolder(new File(src, file), list, urisAlreadyProcessed);//recursive copy
         } else {
             String path = ioUtils.getRelativePath(src, configuration.getDocumentRoot());
-            if (src.getName().endsWith(".js") && !urisAlreadyProcessed.contains(path)) {
+            if (src.getName().endsWith(".js") && !urisAlreadyProcessed.contains(path) && !configuration.skipInstrumentation(path))
                 list.add(src);
-            }
         }
     }
 

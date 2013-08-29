@@ -436,4 +436,18 @@ public class FileScannerTest {
         assertThat(files.size(), equalTo(1));
         assertThat(files, hasItem(rootJSSourceCopy));
     }
+
+    @Test
+    public void shouldIncludeOnlyInstrument() {
+        configuration = ConfigurationForServer.parse(new String[]{
+                "--document-root=src/test-integration/resources/jsSearch",
+                "--only-instrument-reg=.*/level2/.*"
+        });
+        fileScanner = new FileScanner(configuration);
+
+        Set<File> files = fileScanner.getFiles(urisAlreadyProcessed);
+        assertThat(files.size(), equalTo(2));
+        assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/level1/level2/level2.js")));
+        assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/level1/level2/level2-empty.js")));
+    }
 }

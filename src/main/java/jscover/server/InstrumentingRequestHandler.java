@@ -386,52 +386,56 @@ public class InstrumentingRequestHandler extends HttpServer {
     protected void handlePost(HttpRequest request) {
         String uri = request.getPath();
         if (uri.startsWith(JSCOVERAGE_STORE)) {
-            logger.fine("Storing report");
-            File reportDir = configuration.getReportDir();
-            if (uri.length() > JSCOVERAGE_STORE.length()) {
-                reportDir = new File(reportDir, uri.substring(JSCOVERAGE_STORE.length()));
-            }
-            try {
-                List<ScriptCoverageCount> unloadJSData = null;
-                if (configuration.isIncludeUnloadedJS()) {
-                    logger.fine("Searching for unloaded JavaScript");
-                    unloadJSData = unloadedSourceProcessor.getEmptyCoverageData(uris.keySet());
-                    for (ScriptCoverageCount scriptLinesAndSource : unloadJSData) {
-                        File src = new File(configuration.getDocumentRoot(), scriptLinesAndSource.getUri());
-                        ioUtils.copy(src, new File(reportDir, Main.reportSrcSubDir + scriptLinesAndSource.getUri()));
-                    }
-                }
-                long skipped = request.getInputStream().skip(request.getPostIndex());
-                assert skipped == request.getPostIndex();
-                String data = ioUtils.toStringNoClose(request.getInputStream(), request.getContentLength());
-                logger.finest(data);
-                jsonDataSaver.saveJSONData(reportDir, data, unloadJSData);
-                if (configuration.isProxy()) {
-                    for (String jsURI : uris.keySet()) {
-                        File dest = new File(reportDir, Main.reportSrcSubDir + "/" + jsURI);
-                        logger.log(FINE, "Copying {0} to {1}", new Object[]{jsURI, dest.getCanonicalPath()});
-                        ioUtils.copy(uris.get(jsURI), dest);
-                    }
-                } else {
-                    for (String jsURI : uris.keySet()) {
-                        File src = new File(configuration.getDocumentRoot(), jsURI);
-                        File dest = new File(reportDir, Main.reportSrcSubDir + "/" + jsURI);
-                        logger.log(FINE, "Copying {0} to {1}", new Object[]{jsURI, dest.getCanonicalPath()});
-                        ioUtils.copy(src, dest);
-                    }
-                }
-                ioService.generateJSCoverFilesForWebServer(reportDir, configuration.getVersion());
-                sendResponse(HTTP_STATUS.HTTP_OK, MIME.TEXT_PLAIN, "Coverage data stored at " + reportDir);
-            } catch(Throwable t) {
-                logger.log(SEVERE, "Error saving coverage data", t);
-                String message = format("Error saving coverage data. Try deleting JSON file at %s",reportDir);
-                sendResponse(HTTP_STATUS.HTTP_OK, MIME.TEXT_PLAIN, message);
-            }
+            storeReport(request, uri);
         } else {
             if (configuration.isProxy())
                 proxyService.handleProxyPost(request);
             else
                 super.handlePost(request);
+        }
+    }
+
+    private void storeReport(HttpRequest request, String uri) {
+        logger.fine("Storing report");
+        File reportDir = configuration.getReportDir();
+        if (uri.length() > JSCOVERAGE_STORE.length()) {
+            reportDir = new File(reportDir, uri.substring(JSCOVERAGE_STORE.length()));
+        }
+        try {
+            List<ScriptCoverageCount> unloadJSData = null;
+            if (configuration.isIncludeUnloadedJS()) {
+                logger.fine("Searching for unloaded JavaScript");
+                unloadJSData = unloadedSourceProcessor.getEmptyCoverageData(uris.keySet());
+                for (ScriptCoverageCount scriptLinesAndSource : unloadJSData) {
+                    File src = new File(configuration.getDocumentRoot(), scriptLinesAndSource.getUri());
+                    ioUtils.copy(src, new File(reportDir, Main.reportSrcSubDir + scriptLinesAndSource.getUri()));
+                }
+            }
+            long skipped = request.getInputStream().skip(request.getPostIndex());
+            assert skipped == request.getPostIndex();
+            String data = ioUtils.toStringNoClose(request.getInputStream(), request.getContentLength());
+            logger.finest(data);
+            jsonDataSaver.saveJSONData(reportDir, data, unloadJSData);
+            if (configuration.isProxy()) {
+                for (String jsURI : uris.keySet()) {
+                    File dest = new File(reportDir, Main.reportSrcSubDir + "/" + jsURI);
+                    logger.log(FINE, "Copying {0} to {1}", new Object[]{jsURI, dest.getCanonicalPath()});
+                    ioUtils.copy(uris.get(jsURI), dest);
+                }
+            } else {
+                for (String jsURI : uris.keySet()) {
+                    File src = new File(configuration.getDocumentRoot(), jsURI);
+                    File dest = new File(reportDir, Main.reportSrcSubDir + "/" + jsURI);
+                    logger.log(FINE, "Copying {0} to {1}", new Object[]{jsURI, dest.getCanonicalPath()});
+                    ioUtils.copy(src, dest);
+                }
+            }
+            ioService.generateJSCoverFilesForWebServer(reportDir, configuration.getVersion());
+            sendResponse(HTTP_STATUS.HTTP_OK, MIME.TEXT_PLAIN, "Coverage data stored at " + reportDir);
+        } catch(Throwable t) {
+            logger.log(SEVERE, "Error saving coverage data", t);
+            String message = format("Error saving coverage data. Try deleting JSON file at %s",reportDir);
+            sendResponse(HTTP_STATUS.HTTP_OK, MIME.TEXT_PLAIN, message);
         }
     }
 
