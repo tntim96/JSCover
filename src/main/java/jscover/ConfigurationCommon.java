@@ -352,11 +352,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.PatternSyntaxException;
 
 import static java.util.logging.Level.SEVERE;
 
 public class ConfigurationCommon extends Configuration {
+    private static final Logger logger = Logger.getLogger(ConfigurationCommon.class.getName());
     public static final String REPORT_DIR_PREFIX = "--report-dir=";
     public static final String ONLY_INSTRUMENT_REG_PREFIX = "--only-instrument-reg=";
     public static final String NO_INSTRUMENT_PREFIX = "--no-instrument=";
@@ -413,8 +415,10 @@ public class ConfigurationCommon extends Configuration {
     public boolean skipInstrumentation(String uri) {
         for (PatternMatcher patternMatcher : patternMatchers) {
             Boolean instrumentIt = patternMatcher.matches(uri);
-            if (instrumentIt != null)
+            if (instrumentIt != null) {
+                logger.log(Level.FINEST, "Matched URI ''{0}'' Pattern ''{1}'' Skip {2}", new Object[]{uri, patternMatcher, instrumentIt});
                 return instrumentIt;
+            }
         }
         return defaultSkip;
     }

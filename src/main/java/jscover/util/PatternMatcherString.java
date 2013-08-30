@@ -356,4 +356,9 @@ public class PatternMatcherString extends PatternMatcher {
             return exclude;
         return null;
     }
+
+    @Override
+    public String toString() {
+        return "PatternMatcherString{pattern='" + pattern + '\'' + '}';
+    }
 }

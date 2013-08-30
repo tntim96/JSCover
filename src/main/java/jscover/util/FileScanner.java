@@ -348,8 +348,11 @@ import jscover.server.ConfigurationForServer;
 import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class FileScanner {
+    private static final Logger logger = Logger.getLogger(FileScanner.class.getName());
     private ConfigurationForServer configuration;
     private IoUtils ioUtils = IoUtils.getInstance();
     private File reportSrc;
@@ -372,9 +375,14 @@ public class FileScanner {
             for (String file : src.list())
                 searchFolder(new File(src, file), list, urisAlreadyProcessed);//recursive copy
         } else {
+            if (!src.getName().endsWith(".js"))
+                return;
             String path = ioUtils.getRelativePath(src, configuration.getDocumentRoot());
-            if (src.getName().endsWith(".js") && !urisAlreadyProcessed.contains(path) && !configuration.skipInstrumentation(path))
+            logger.log(Level.FINEST, "Checking path {0}", path);
+            if (!urisAlreadyProcessed.contains(path) && !configuration.skipInstrumentation(path)) {
+                logger.log(Level.FINE, "Adding path {0}", path);
                 list.add(src);
+            }
         }
     }
 

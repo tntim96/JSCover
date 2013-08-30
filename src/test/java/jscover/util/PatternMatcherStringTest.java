@@ -342,33 +342,28 @@ Public License instead of this License.
 
 package jscover.util;
 
-import java.util.regex.Pattern;
+import org.junit.Test;
 
-public class PatternMatcherRegEx extends PatternMatcher {
-    private Pattern regPattern;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 
-    private PatternMatcherRegEx(boolean exclude, String pattern) {
-        super(exclude);
-        regPattern = Pattern.compile(pattern);
+public class PatternMatcherStringTest {
+    private PatternMatcherString pattern = new PatternMatcherString("thePattern");
+
+    @Test
+    public void shouldMatch() {
+        assertThat(pattern.matches("thePattern/test.js"), is(true));
     }
 
-    public static PatternMatcher getIncludePatternMatcher(String pattern) {
-        return new PatternMatcherRegEx(false, pattern);
+    @Test
+    public void shouldNotMatch() {
+        assertThat(pattern.matches("theOtherPattern/test.js"), nullValue());
     }
 
-    public static PatternMatcher getExcludePatternMatcher(String pattern) {
-        return new PatternMatcherRegEx(true, pattern);
-    }
-
-    @Override
-    public Boolean matches(String uri) {
-        if (regPattern.matcher(uri).matches())
-            return exclude;
-        return null;
-    }
-
-    @Override
-    public String toString() {
-        return "PatternMatcherRegEx{regPattern=" + regPattern + ", exclude=" + exclude + '}';
+    @Test
+    public void shouldConvertToString() {
+        assertThat(pattern.toString(), equalTo("PatternMatcherString{pattern='thePattern'}"));
     }
 }
