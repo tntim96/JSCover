@@ -566,6 +566,13 @@ public class ConfigurationForFSTest {
     }
 
     @Test
+    public void shouldHandleInvalidShortOption() {
+        ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-u"});
+        assertThat(configuration.showHelp(), equalTo(true));
+        assertThat(configuration.isInvalid(), equalTo(true));
+    }
+
+    @Test
     public void shouldRetrieveHelpText() {
         String helpText = new ConfigurationForFS().getHelpText();
         assertThat(helpText, containsString("Usage: java -jar JSCover-all.jar -fs [OPTION]..."));

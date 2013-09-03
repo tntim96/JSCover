@@ -426,7 +426,7 @@ public class ConfigurationForFS extends ConfigurationCommon {
                 configuration.JSVersion = (int) (Float.valueOf(arg.substring(JS_VERSION_PREFIX.length())) * 100);
             } else if (arg.startsWith(LOG_LEVEL)) {
                 configuration.logLevel = Level.parse(arg.substring(LOG_LEVEL.length()));
-            } else  if (arg.startsWith("--")) {
+            } else  if (arg.startsWith("-")) {
                 System.err.println(format("JSCover: Unknown option '%s'", arg));
                 setInvalid(configuration);
             } else if (configuration.srcDir == null) {
