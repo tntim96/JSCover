@@ -559,6 +559,13 @@ public class ConfigurationForFSTest {
     }
 
     @Test
+    public void shouldHandleInvalidOption() {
+        ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"--unknownoption"});
+        assertThat(configuration.showHelp(), equalTo(true));
+        assertThat(configuration.isInvalid(), equalTo(true));
+    }
+
+    @Test
     public void shouldRetrieveHelpText() {
         String helpText = new ConfigurationForFS().getHelpText();
         assertThat(helpText, containsString("Usage: java -jar JSCover-all.jar -fs [OPTION]..."));

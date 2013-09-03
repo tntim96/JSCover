@@ -524,6 +524,13 @@ public class ConfigurationForServerTest {
     }
 
     @Test
+    public void shouldHandleInvalidOption() {
+        ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--unknownoption"});
+        assertThat(configuration.showHelp(), equalTo(true));
+        assertThat(configuration.isInvalid(), equalTo(true));
+    }
+
+    @Test
     public void shouldParseInstrumentAndNoInstrumentReg1() {
         ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--no-instrument=lib1", "--no-instrument-reg=lib2/production/test.*", "--only-instrument-reg=.*/production/.*"});
         assertThat(configuration.skipInstrumentation("lib1/production/test.js"), equalTo(true));

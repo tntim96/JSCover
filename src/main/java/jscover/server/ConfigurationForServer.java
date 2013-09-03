@@ -415,6 +415,8 @@ public class ConfigurationForServer extends ConfigurationCommon {
             } else if (arg.startsWith(LOG_LEVEL)) {
                 configuration.logLevel = Level.parse(arg.substring(LOG_LEVEL.length()));
             } else {
+                if (arg.startsWith("--"))
+                    System.err.println(format("JSCover: Unknown option '%s'", arg));
                 setInvalid(configuration);
             }
         }

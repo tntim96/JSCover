@@ -426,6 +426,9 @@ public class ConfigurationForFS extends ConfigurationCommon {
                 configuration.JSVersion = (int) (Float.valueOf(arg.substring(JS_VERSION_PREFIX.length())) * 100);
             } else if (arg.startsWith(LOG_LEVEL)) {
                 configuration.logLevel = Level.parse(arg.substring(LOG_LEVEL.length()));
+            } else  if (arg.startsWith("--")) {
+                System.err.println(format("JSCover: Unknown option '%s'", arg));
+                setInvalid(configuration);
             } else if (configuration.srcDir == null) {
                 configuration.srcDir = new File(arg);
             } else if (configuration.destDir == null) {
@@ -434,21 +437,23 @@ public class ConfigurationForFS extends ConfigurationCommon {
         }
 
         if (args.length < 3) {
-            configuration.invalid = true;
-            configuration.showHelp = true;
+            setInvalid(configuration);
             return configuration;
         }
         if (!configuration.validSourceDirectory()) {
             System.err.println(format("Source directory '%s' is invalid", configuration.srcDir));
-            configuration.invalid = true;
-            configuration.showHelp = true;
+            setInvalid(configuration);
         } else if (!configuration.validDestinationDirectory()) {
             System.err.println(format("Destination directory '%s' must not be in the source directory", configuration.destDir));
-            configuration.invalid = true;
-            configuration.showHelp = true;
+            setInvalid(configuration);
         }
         configuration.compilerEnvirons.setLanguageVersion(configuration.JSVersion);
         return configuration;
+    }
+
+    private static void setInvalid(ConfigurationForFS configuration) {
+        configuration.invalid = true;
+        configuration.showHelp = true;
     }
 
     private boolean validSourceDirectory() {
