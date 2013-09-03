@@ -1,5 +1,5 @@
 Usage: java -jar jscover.jar [OPTION]...
-To see sub-command options run: java -jar jscover.jar [-ws|-fs] -h
+To see sub-command options run: java -jar JSCover-all.jar [-ws|-fs] -h
 
 Options:
   -ws                       instrument via the web-server
