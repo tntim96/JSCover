@@ -1,4 +1,4 @@
-1.0.4 / 2013-??-??
+1.0.4 / 2013-09-05
 ==================
   * Support 'include-unloaded-js' in proxy mode (https://github.com/tntim96/JSCover/issues/93)
   * Fix inclusion logic for unloaded-js (https://github.com/tntim96/JSCover/issues/93)
