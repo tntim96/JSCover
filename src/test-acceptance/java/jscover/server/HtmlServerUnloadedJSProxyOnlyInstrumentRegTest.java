@@ -342,33 +342,50 @@ Public License instead of this License.
 
 package jscover.server;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertEquals;
+
 import com.gargoylesoftware.htmlunit.ProxyConfig;
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlElement;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+
 import jscover.Main;
+import jscover.util.IoUtils;
+
 import org.junit.Before;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
-public class HtmlServerUnloadedJSProxyTest extends HtmlServerUnloadedJSTest {
+//Provided by https://github.com/devangnegandhi 6 Sept 2013
+public class HtmlServerUnloadedJSProxyOnlyInstrumentRegTest {
     private static Thread webServer;
     private static Thread server;
     private static int proxyPort = 3129;
+
+    protected WebClient webClient = new WebClient();
+    protected IoUtils ioUtils = IoUtils.getInstance();
 
     private String[] args = new String[]{
             "-ws",
             "--document-root=src/test-integration/resources/jsSearch",
             "--port=" + proxyPort,
             "--proxy",
-            "--no-instrument=noInstrument",
+            "--only-instrument-reg=/level1/.*",
             "--include-unloaded-js",
             "--report-dir=" + getReportDir()
     };
 
-    @Override
     protected String getReportDir() {
-        return "target/proxy-report";
+        return "target/proxy-only-instrument-reg-report";
     }
 
     @Before
@@ -406,5 +423,54 @@ public class HtmlServerUnloadedJSProxyTest extends HtmlServerUnloadedJSTest {
         proxyConfig.addHostsToProxyBypass("127.0.0.1");
         webClient.getOptions().setProxyConfig(proxyConfig);
         webClient.getOptions().setTimeout(1000);
+    }
+
+    @Test
+    public void shouldIncludeUnloadJSInSavedReport() throws Exception {
+        File jsonFile = new File(getReportDir() + "/jscoverage.json");
+        if (jsonFile.exists())
+            jsonFile.delete();
+
+        HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?index.html");
+
+        page.getHtmlElementById("summaryTab").click();
+        webClient.waitForBackgroundJavaScript(2000);
+        assertEquals("75%", page.getElementById("summaryTotal").getTextContent());
+
+        verifyCoverage(page, "/level1/level1.js", "75%", "50%", "N/A");
+
+        page.getHtmlElementById("storeTab").click();
+        webClient.waitForBackgroundJavaScript(500);
+        HtmlElement storeButton = page.getHtmlElementById("storeButton");
+        storeButton.click();
+        webClient.waitForBackgroundJavaScript(2000);
+        String result = page.getElementById("storeDiv").getTextContent();
+
+        assertThat(result, containsString("Coverage data stored at " + new File(getReportDir()).getPath()));
+
+        String json = ioUtils.toString(jsonFile);
+        assertThat(json, not(containsString("/root.js")));
+        assertThat(json, containsString("/level1/level1.js"));
+        assertThat(json, containsString("/level1/level2/level2.js"));
+
+        String url = "file:///" + new File(getReportDir() + "/jscoverage.html").getAbsolutePath();
+        page = webClient.getPage(url);
+        webClient.waitForBackgroundJavaScript(1000);
+
+        assertEquals("37%", page.getElementById("summaryTotal").getTextContent());
+        assertEquals("25%", page.getElementById("branchSummaryTotal").getTextContent());
+        assertEquals("0%", page.getElementById("functionSummaryTotal").getTextContent());
+        verifyCoverage(page, "/level1/level1.js", "75%", "50%", "N/A");
+        verifyCoverage(page, "/level1/level2/level2.js", "0%", "0%", "0%");
+    }
+
+    private void verifyCoverage(HtmlPage page, String uri, String linePercentage, String branchPercentage, String functionPercentage) {
+        assertThat(getHtmlElement(page, "//tr[@id='row-" + uri + "']/td[8]/span").getTextContent(), equalTo(linePercentage));
+        assertThat(getHtmlElement(page, "//tr[@id='row-" + uri + "']/td[9]/span").getTextContent(), equalTo(branchPercentage));
+        assertThat(getHtmlElement(page, "//tr[@id='row-" + uri + "']/td[10]/span").getTextContent(), equalTo(functionPercentage));
+    }
+
+    private HtmlElement getHtmlElement(HtmlPage page, String xpathExpr) {
+        return (HtmlElement) ((ArrayList) page.getByXPath(xpathExpr)).get(0);
     }
 }

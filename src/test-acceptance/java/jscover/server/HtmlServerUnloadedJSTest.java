@@ -396,7 +396,7 @@ public class HtmlServerUnloadedJSTest {
 
     @Test
     public void shouldIncludeUnloadJSInSavedReport() throws Exception {
-        File jsonFile = new File(getReportDir()+"/jscoverage.json");
+        File jsonFile = new File(getReportDir() + "/jscoverage.json");
         if (jsonFile.exists())
             jsonFile.delete();
 
@@ -441,6 +441,6 @@ public class HtmlServerUnloadedJSTest {
     }
 
     private HtmlElement getHtmlElement(HtmlPage page, String xpathExpr) {
-        return (HtmlElement)((ArrayList) page.getByXPath(xpathExpr)).get(0);
+        return (HtmlElement) ((ArrayList) page.getByXPath(xpathExpr)).get(0);
     }
 }
