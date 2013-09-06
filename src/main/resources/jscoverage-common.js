@@ -1,5 +1,5 @@
 function jscoverage_quote(s) {
-    return '"' + s.replace(/[\u0000-\u001f"\\\u007f-\uffff]/g, function (c) {
+    return '"' + s.replace(':','').replace(/[\u0000-\u001f"\\\u007f-\uffff]/g, function (c) {
         switch (c) {
             case '\b':
                 return '\\b';
