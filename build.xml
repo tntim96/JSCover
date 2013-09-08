@@ -27,6 +27,7 @@
             <pom refid="maven.project"/>
             <localRepository refid="local.repository"/>
         </artifact:dependencies>
+        <taskdef classpathref="test.classpath" resource="tasks.properties" />
     </target>
 
 	<path id="classpath-main">
@@ -161,7 +162,6 @@
     </target>
 
     <target name="cobertura-setup" depends="compile">
-        <taskdef classpathref="test.classpath" resource="tasks.properties" />
 		<delete file="cobertura.ser" failonerror="false" />
 		<cobertura-instrument todir="${classes.instrumented.dir}">
 			<ignore regex="org.apache.log4j.*" />
@@ -180,11 +180,11 @@
 		</copy>
 	</target>
 
-	<target name="coverage-report">
+	<target name="coverage-report" depends="init">
 		<cobertura-report format="html" destdir="${report.coverage.dir}" srcdir="${src.main.dir}" />
 	</target>
 
-	<target name="coverage-report-all">
+	<target name="coverage-report-all" depends="init">
 		<cobertura-report format="html" destdir="${report.coverage.all.dir}" srcdir="${src.main.dir}" />
 	</target>
 

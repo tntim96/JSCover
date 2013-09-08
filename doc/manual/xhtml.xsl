@@ -71,6 +71,11 @@
 <xsl:template match="td">
   <td>
       <xsl:attribute name="class"><xsl:value-of select="@class"/></xsl:attribute>
+      <xsl:choose>
+          <xsl:when test="@nowrap!=''">
+              <xsl:attribute name="nowrap"><xsl:value-of select="@nowrap"/></xsl:attribute>
+          </xsl:when>
+      </xsl:choose>
       <xsl:apply-templates/>
   </td>
 </xsl:template>

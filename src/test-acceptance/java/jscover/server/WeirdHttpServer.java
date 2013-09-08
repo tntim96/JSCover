@@ -338,118 +338,39 @@ proprietary programs.  If your program is a subroutine library, you may
 consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
- */
+*/
 
-package jscover;
+package jscover.server;
 
-import jscover.util.IoUtils;
-import jscover.util.PatternMatcher;
-import jscover.util.PatternMatcherRegEx;
-import org.mozilla.javascript.CompilerEnvirons;
-import org.mozilla.javascript.Context;
+import jscover.util.ReflectionUtils;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.regex.PatternSyntaxException;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 
-import static java.util.logging.Level.SEVERE;
+public class WeirdHttpServer extends HttpServer {
 
-public class ConfigurationCommon extends Configuration {
-    private static final Logger logger = Logger.getLogger(ConfigurationCommon.class.getName());
-    public static final String REPORT_DIR_PREFIX = "--report-dir=";
-    public static final String ONLY_INSTRUMENT_REG_PREFIX = "--only-instrument-reg=";
-    public static final String NO_INSTRUMENT_PREFIX = "--no-instrument=";
-    public static final String NO_INSTRUMENT_REG_PREFIX = "--no-instrument-reg=";
-    public static final String JS_VERSION_PREFIX = "--js-version=";
-    public static final String BRANCH_PREFIX = "--no-branch";
-    public static final String FUNCTION_PREFIX = "--no-function";
-    public static final String LOG_LEVEL = "--log=";
-
-    protected boolean showHelp;
-    protected boolean invalid;
-    protected boolean includeBranch = true;
-    protected boolean includeFunction = true;
-    protected final List<PatternMatcher> patternMatchers = new ArrayList<PatternMatcher>();
-    protected File reportDir = new File(System.getProperty("user.dir"));
-    protected int JSVersion = Context.VERSION_1_5;
-    protected CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
-    protected boolean defaultSkip;
-    protected IoUtils ioUtils = IoUtils.getInstance();
-    protected Level logLevel = SEVERE;
-
-    public Boolean showHelp() {
-        return showHelp;
-    }
-
-    public boolean isInvalid() {
-        return invalid;
-    }
-
-    public boolean isIncludeBranch() {
-        return includeBranch;
-    }
-
-    public boolean isIncludeFunction() {
-        return includeFunction;
-    }
-
-    public File getReportDir() {
-        return reportDir;
-    }
-
-    public int getJSVersion() {
-        return JSVersion;
-    }
-
-    public CompilerEnvirons getCompilerEnvirons() {
-        return compilerEnvirons;
-    }
-
-    public Level getLogLevel() {
-        return logLevel;
-    }
-
-    public boolean skipInstrumentation(String uri) {
-        for (PatternMatcher patternMatcher : patternMatchers) {
-            Boolean instrumentIt = patternMatcher.matches(uri);
-            if (instrumentIt != null) {
-                logger.log(Level.FINEST, "Matched URI ''{0}'' Pattern ''{1}'' Skip {2}", new Object[]{uri, patternMatcher, instrumentIt});
-                return instrumentIt;
-            }
-        }
-        return defaultSkip;
-    }
-
-    protected static void setInvalid(ConfigurationCommon configuration) {
-        configuration.showHelp = true;
-        configuration.invalid = true;
-    }
-
-    protected void addOnlyInstrumentReg(String arg) {
-        String patternString = arg.substring(ONLY_INSTRUMENT_REG_PREFIX.length());
-        if (patternString.startsWith("/"))
-            patternString = patternString.substring(1);
-        defaultSkip = true;
-        try {
-            patternMatchers.add(PatternMatcherRegEx.getIncludePatternMatcher(patternString));
-        } catch (PatternSyntaxException e) {
-            e.printStackTrace(System.err);
-            setInvalid(this);
+    public static void main(String[] args) throws Exception {
+        ServerSocket Server = new ServerSocket(80);
+        File wwwRoot = new File("src/test-integration/resources/jsSearch");
+        while (true) {
+            Socket socket = Server.accept();
+            (new WeirdHttpServer(socket, wwwRoot, "testVersion")).start();
         }
     }
 
-    protected void addNoInstrumentReg(String arg) {
-        String patternString = arg.substring(NO_INSTRUMENT_REG_PREFIX.length());
-        if (patternString.startsWith("/"))
-            patternString = patternString.substring(1);
-        try {
-            patternMatchers.add(PatternMatcherRegEx.getExcludePatternMatcher(patternString));
-        } catch(PatternSyntaxException e) {
-            e.printStackTrace(System.err);
-            setInvalid(this);
+    public WeirdHttpServer(Socket socket, File wwwRoot, String version) {
+        super(socket, wwwRoot, version);
+    }
+
+    @Override
+    protected void handleGet(HttpRequest request) throws IOException {
+        if (request.getRelativePath().endsWith(".js")) {
+            String path = request.getPath();
+            path = path.substring("/exclude".length());
+            ReflectionUtils.setField(request, "path", path);
         }
+        super.handleGet(request);
     }
 }

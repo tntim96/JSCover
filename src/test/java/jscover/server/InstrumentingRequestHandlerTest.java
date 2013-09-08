@@ -347,9 +347,7 @@ import jscover.instrument.InstrumenterService;
 import jscover.instrument.UnloadedSourceProcessor;
 import jscover.report.JSONDataSaver;
 import jscover.report.ScriptCoverageCount;
-import jscover.util.IoService;
-import jscover.util.IoUtils;
-import jscover.util.ReflectionUtils;
+import jscover.util.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -362,12 +360,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import static java.lang.String.format;
 import static jscover.server.InstrumentingRequestHandler.JSCOVERAGE_STORE;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
@@ -379,6 +379,7 @@ public class InstrumentingRequestHandlerTest {
     private @Mock JSONDataSaver jsonDataSaver;
     private @Mock InstrumenterService instrumenterService;
     private @Mock UnloadedSourceProcessor unloadedSourceProcessor;
+    private @Mock UriFileTranslator uriFileTranslator;
     private @Mock ProxyService proxyService;
     private @Mock ConfigurationForServer configuration;
     private @Mock ByteArrayInputStream bais;
@@ -394,6 +395,7 @@ public class InstrumentingRequestHandlerTest {
         ReflectionUtils.setField(webServer, "jsonDataSaver", jsonDataSaver);
         ReflectionUtils.setField(webServer, "instrumenterService", instrumenterService);
         ReflectionUtils.setField(webServer, "unloadedSourceProcessor", unloadedSourceProcessor);
+        ReflectionUtils.setField(webServer, "uriFileTranslator", uriFileTranslator);
         ReflectionUtils.setField(webServer, "proxyService", proxyService);
         ReflectionUtils.setField(webServer, "configuration", configuration);
         ReflectionUtils.setField(webServer, HttpServer.class, "bais", bais);
@@ -422,7 +424,7 @@ public class InstrumentingRequestHandlerTest {
 
         webServer.handlePost(new HttpRequest(JSCOVERAGE_STORE, bais, null, 50, headers));
 
-        verify(jsonDataSaver).saveJSONData(reportDir, "data", null);
+        verify(jsonDataSaver).saveJSONData(reportDir, "data", null, uriFileTranslator);
         verify(ioService).generateJSCoverFilesForWebServer(reportDir, "theVersion");
         verify(bais).skip(50);
         verifyZeroInteractions(instrumenterService);
@@ -512,11 +514,11 @@ public class InstrumentingRequestHandlerTest {
         given(ioUtils.toStringNoClose(bais, 12)).willReturn("data");
         given(bais.skip(50)).willReturn(50L);
         RuntimeException toBeThrown = new RuntimeException("Ouch!");
-        doThrow(toBeThrown).when(jsonDataSaver).saveJSONData(reportDir, "data", null);
+        doThrow(toBeThrown).when(jsonDataSaver).saveJSONData(reportDir, "data", null, uriFileTranslator);
 
         webServer.handlePost(new HttpRequest(JSCOVERAGE_STORE, bais, null, 50, headers));
 
-        verify(jsonDataSaver).saveJSONData(reportDir, "data", null);
+        verify(jsonDataSaver).saveJSONData(reportDir, "data", null, uriFileTranslator);
         verifyZeroInteractions(ioService);
         verify(bais).skip(50);
         verifyZeroInteractions(instrumenterService);
@@ -535,7 +537,7 @@ public class InstrumentingRequestHandlerTest {
         webServer.handlePost(new HttpRequest(JSCOVERAGE_STORE + "subdirectory", bais, null, 50, headers));
 
         File subdirectory = new File(file, "subdirectory");
-        verify(jsonDataSaver).saveJSONData(subdirectory, "data", null);
+        verify(jsonDataSaver).saveJSONData(subdirectory, "data", null, uriFileTranslator);
         verify(bais).skip(50);
         verify(ioService).generateJSCoverFilesForWebServer(subdirectory, "theVersion");
         verifyZeroInteractions(instrumenterService);
@@ -555,7 +557,7 @@ public class InstrumentingRequestHandlerTest {
         webServer.handlePost(new HttpRequest(JSCOVERAGE_STORE + "subdirectory", bais, null, 50, headers));
 
         File subdirectory = new File(file, "subdirectory");
-        verify(jsonDataSaver).saveJSONData(subdirectory, "data", null);
+        verify(jsonDataSaver).saveJSONData(subdirectory, "data", null, uriFileTranslator);
         verify(ioService).generateJSCoverFilesForWebServer(subdirectory, "theVersion");
         verify(bais).skip(50);
         verify(ioUtils).copy(new File("js/util.js"), new File(configuration.getReportDir(), "subdirectory/" + Main.reportSrcSubDir + "/js/util.js"));
@@ -577,7 +579,7 @@ public class InstrumentingRequestHandlerTest {
         webServer.handlePost(new HttpRequest(JSCOVERAGE_STORE + "subdirectory", bais, null, 50, headers));
 
         File subdirectory = new File(file, "subdirectory");
-        verify(jsonDataSaver).saveJSONData(subdirectory, "data", null);
+        verify(jsonDataSaver).saveJSONData(subdirectory, "data", null, uriFileTranslator);
         verify(ioService).generateJSCoverFilesForWebServer(subdirectory, "theVersion");
         verify(bais).skip(50);
         verify(ioUtils).copy("someJavaScript", new File(configuration.getReportDir(), "subdirectory/" + Main.reportSrcSubDir + "/js/util.js"));
@@ -600,7 +602,7 @@ public class InstrumentingRequestHandlerTest {
 
         webServer.handlePost(new HttpRequest(JSCOVERAGE_STORE, bais, null, 50, headers));
 
-        verify(jsonDataSaver).saveJSONData(reportDir, "data", unloadedJS);
+        verify(jsonDataSaver).saveJSONData(reportDir, "data", unloadedJS, uriFileTranslator);
         verify(ioService).generateJSCoverFilesForWebServer(reportDir, "theVersion");
         verify(bais).skip(50);
         verify(ioUtils).copy(new File("/js/unloaded.js"), new File(configuration.getReportDir(), Main.reportSrcSubDir + "/js/unloaded.js"));
@@ -706,13 +708,14 @@ public class InstrumentingRequestHandlerTest {
         CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
         given(configuration.getCompilerEnvirons()).willReturn(compilerEnvirons);
         given(configuration.skipInstrumentation("/js/production.js")).willReturn(false);
-        String uri = "http://someserver.org/js/production.js";
+        String uri = "http://someserver.org/exclude/js/production.js";
         HttpRequest request = new HttpRequest(uri, null, null, 0, null);
         given(proxyService.getUrl(request)).willReturn("someJavaScript;");
+        given(uriFileTranslator.convertUriToFile("/exclude/js/production.js")).willReturn("/js/production.js");
 
         webServer.handleGet(request);
 
-        verify(instrumenterService).instrumentJSForProxyServer(compilerEnvirons, "someJavaScript;", "/js/production.js", false, false);
+        verify(instrumenterService).instrumentJSForProxyServer(compilerEnvirons, "someJavaScript;", "/exclude/js/production.js", false, false);
         verifyZeroInteractions(ioService);
         verifyZeroInteractions(jsonDataSaver);
         assertThat(InstrumentingRequestHandler.uris.size(), equalTo(1));

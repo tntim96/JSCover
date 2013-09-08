@@ -451,11 +451,6 @@ public class ConfigurationForFS extends ConfigurationCommon {
         return configuration;
     }
 
-    private static void setInvalid(ConfigurationForFS configuration) {
-        configuration.invalid = true;
-        configuration.showHelp = true;
-    }
-
     private boolean validSourceDirectory() {
         return srcDir.exists() && srcDir.isDirectory();
     }

@@ -367,6 +367,8 @@ public class ConfigurationForServerTest {
         assertThat(configuration.isIncludeUnloadedJS(), is(false));
         assertThat(configuration.isIncludeBranch(), is(true));
         assertThat(configuration.isIncludeFunction(), is(true));
+        assertThat(configuration.getUriToFileMatcher(), nullValue());
+        assertThat(configuration.getUriToFileReplace(), nullValue());
         assertThat(configuration.getLogLevel(), is(SEVERE));
     }
 
@@ -494,6 +496,27 @@ public class ConfigurationForServerTest {
         assertThat(configuration.skipInstrumentation("lib1/test.js"), equalTo(true));
         assertThat(configuration.skipInstrumentation("lib2/test.js"), equalTo(true));
         assertThat(configuration.skipInstrumentation("lib3/test.js"), equalTo(false));
+    }
+
+    @Test
+    public void shouldRequireBothUriToFileSwitches() {
+        assertThat(ConfigurationForServer.parse(new String[]{"--uri-to-file-matcher=src/(.*)/tests(.*)"}).isInvalid(), is(true));
+        assertThat(ConfigurationForServer.parse(new String[]{"--uri-to-file-replace=$1$2"}).isInvalid(), is(true));
+        assertThat(ConfigurationForServer.parse(new String[]{"--uri-to-file-matcher=src/(.*)/tests(.*)", "--uri-to-file-replace=$1$2"}).isInvalid(), is(false));
+    }
+
+    @Test
+    public void shouldParseUriToFileSwitches() {
+        ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--uri-to-file-matcher=src/(.*)/tests(.*)", "--uri-to-file-replace=$1$2"});
+        assertThat(configuration.getUriToFileMatcher().pattern(), equalTo("src/(.*)/tests(.*)"));
+        assertThat(configuration.getUriToFileReplace(), equalTo("$1$2"));
+    }
+
+    @Test
+    public void shouldHandleInvalidUriToFileReg() {
+        ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--uri-to-file-matcher=src/(*)/tests(.*)", "--uri-to-file-replace=$1$2"});
+        assertThat(configuration.showHelp(), equalTo(true));
+        assertThat(configuration.isInvalid(), equalTo(true));
     }
 
     @Test

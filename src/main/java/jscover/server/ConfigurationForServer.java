@@ -345,9 +345,14 @@ package jscover.server;
 import jscover.ConfigurationCommon;
 import jscover.Main;
 import jscover.util.PatternMatcherString;
+import jscover.util.UriFileTranslator;
+import jscover.util.UriFileTranslatorNoOp;
+import jscover.util.UriFileTranslatorReg;
 
 import java.io.File;
 import java.util.logging.Level;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import static java.lang.String.format;
 import static jscover.Main.HELP_PREFIX1;
@@ -358,11 +363,17 @@ public class ConfigurationForServer extends ConfigurationCommon {
     public static final String PORT_PREFIX = "--port=";
     public static final String PROXY_PREFIX = "--proxy";
     public static final String INCLUDE_UNLOADED_JS_PREFIX = "--include-unloaded-js";
+    public static final String URI_TO_FILE_MATCHER_PREFIX = "--uri-to-file-matcher=";
+    public static final String URI_TO_FILE_REPLACE_PREFIX = "--uri-to-file-replace=";
 
     private File documentRoot = new File(System.getProperty("user.dir"));
     private Integer port = 8080;
     private boolean proxy;
     private boolean includeUnloadedJS;
+    private Pattern uriToFileMatcher;
+    private String uriToFileReplace;
+    private UriFileTranslator uriFileTranslator = new UriFileTranslatorNoOp();
+
 
     public File getDocumentRoot() {
         return documentRoot;
@@ -404,6 +415,16 @@ public class ConfigurationForServer extends ConfigurationCommon {
                 configuration.patternMatchers.add(new PatternMatcherString(uri));
             } else if (arg.startsWith(NO_INSTRUMENT_REG_PREFIX)) {
                 configuration.addNoInstrumentReg(arg);
+            } else if (arg.startsWith(URI_TO_FILE_MATCHER_PREFIX)) {
+                String patternString = arg.substring(URI_TO_FILE_MATCHER_PREFIX.length());
+                try {
+                    configuration.uriToFileMatcher = Pattern.compile(patternString);
+                } catch(PatternSyntaxException e) {
+                    e.printStackTrace(System.err);
+                    setInvalid(configuration);
+                }
+            } else if (arg.startsWith(URI_TO_FILE_REPLACE_PREFIX)) {
+                configuration.uriToFileReplace = arg.substring(URI_TO_FILE_REPLACE_PREFIX.length());
             } else if (arg.startsWith(ONLY_INSTRUMENT_REG_PREFIX)) {
                 configuration.addOnlyInstrumentReg(arg);
             } else if (arg.startsWith(JS_VERSION_PREFIX)) {
@@ -420,13 +441,13 @@ public class ConfigurationForServer extends ConfigurationCommon {
                 setInvalid(configuration);
             }
         }
+        if ((configuration.uriToFileMatcher == null && configuration.uriToFileReplace != null)
+                || (configuration.uriToFileMatcher != null && configuration.uriToFileReplace == null))
+            setInvalid(configuration);
+        if (configuration.uriToFileMatcher != null)
+            configuration.uriFileTranslator = new UriFileTranslatorReg(configuration.uriToFileMatcher, configuration.uriToFileReplace);
         configuration.compilerEnvirons.setLanguageVersion(configuration.JSVersion);
         return configuration;
-    }
-
-    private static void setInvalid(ConfigurationForServer configuration) {
-        configuration.showHelp = true;
-        configuration.invalid = true;
     }
 
     public String getHelpText() {
@@ -439,5 +460,17 @@ public class ConfigurationForServer extends ConfigurationCommon {
 
     public boolean isIncludeUnloadedJS() {
         return includeUnloadedJS;
+    }
+
+    public Pattern getUriToFileMatcher() {
+        return uriToFileMatcher;
+    }
+
+    public String getUriToFileReplace() {
+        return uriToFileReplace;
+    }
+
+    public UriFileTranslator getUriFileTranslator() {
+        return uriFileTranslator;
     }
 }

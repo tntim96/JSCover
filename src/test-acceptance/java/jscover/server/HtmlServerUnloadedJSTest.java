@@ -394,20 +394,28 @@ public class HtmlServerUnloadedJSTest {
         webClient.getOptions().setTimeout(1000);
     }
 
+    protected String getIndex() {
+        return "index.html";
+    }
+
+    protected String getPrefix() {
+        return "";
+    }
+
     @Test
     public void shouldIncludeUnloadJSInSavedReport() throws Exception {
         File jsonFile = new File(getReportDir() + "/jscoverage.json");
         if (jsonFile.exists())
             jsonFile.delete();
 
-        HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?index.html");
+        HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?" + getIndex());
 
         page.getHtmlElementById("summaryTab").click();
         webClient.waitForBackgroundJavaScript(2000);
         assertEquals("77%", page.getElementById("summaryTotal").getTextContent());
 
-        verifyCoverage(page, "/root.js", "80%", "50%", "100%");
-        verifyCoverage(page, "/level1/level1.js", "75%", "50%", "N/A");
+        verifyCoverage(page, getPrefix() + "/root.js", "80%", "50%", "100%");
+        verifyCoverage(page, getPrefix() + "/level1/level1.js", "75%", "50%", "N/A");
 
 
         page.getHtmlElementById("storeTab").click();

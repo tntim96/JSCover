@@ -344,8 +344,8 @@ package jscover.report;
 
 import jscover.util.IoUtils;
 import jscover.util.ReflectionUtils;
+import jscover.util.UriFileTranslator;
 import org.hamcrest.Description;
-import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.junit.After;
 import org.junit.Before;
@@ -365,12 +365,15 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.argThat;
+import static org.mockito.Mockito.verify;
 
 //Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013
 @RunWith(MockitoJUnitRunner.class)
 public class JSONDataSaverTest {
     private JSONDataSaver jsonDataSaver = new JSONDataSaver();
     private @Mock JSONDataMerger jsonDataMerger;
+    private @Mock UriFileTranslator uriFileTranslator;
+    private @Mock FileData fileData;
     private IoUtils ioUtils = IoUtils.getInstance();
     private File destDir = new File("target");
     private File jsonFile = new File(destDir,"jscoverage.json");
@@ -387,10 +390,28 @@ public class JSONDataSaverTest {
 
     @Test
     public void shouldSaveData() {
-        jsonDataSaver.saveJSONData(destDir, "data", null);
+        jsonDataSaver.saveJSONData(destDir, "data", null, uriFileTranslator);
 
         String json = ioUtils.loadFromFileSystem(new File(destDir, "jscoverage.json"));
         assertThat(json, equalTo("data"));
+    }
+
+    @Test
+    public void shouldSaveDataWithTranslatedUris() {
+        String data = "data";
+        SortedMap<String, FileData> map = new TreeMap<String, FileData>();
+        map.put("/exclude/js/code.js", fileData);
+        SortedMap<String, FileData> mapTranslated = new TreeMap<String, FileData>();
+        mapTranslated.put("/js/code.js", fileData);
+        given(uriFileTranslator.mutates()).willReturn(true);
+        given(jsonDataMerger.jsonToMap(data)).willReturn(map);
+        given(uriFileTranslator.convertUriToFile("/exclude/js/code.js")).willReturn("/js/code.js");
+        given(jsonDataMerger.toJSON(mapTranslated)).willReturn("dataTranslated");
+
+        jsonDataSaver.saveJSONData(destDir, data, null, uriFileTranslator);
+
+        String json = ioUtils.loadFromFileSystem(new File(destDir, "jscoverage.json"));
+        assertThat(json, equalTo("dataTranslated"));
     }
 
     @Test
@@ -417,7 +438,7 @@ public class JSONDataSaverTest {
         });
         JSONDataSaver.files.add(destDir);
         thread.start();
-        jsonDataSaver.saveJSONData(destDir, "data", null);
+        jsonDataSaver.saveJSONData(destDir, "data", null, new jscover.util.UriFileTranslatorNoOp());
         sb.append("4");
         thread.join();
 
@@ -446,7 +467,7 @@ public class JSONDataSaverTest {
         });
         JSONDataSaver.files.add(destDir);
         thread.start();
-        jsonDataSaver.saveJSONData(destDir, "data", null);
+        jsonDataSaver.saveJSONData(destDir, "data", null, new jscover.util.UriFileTranslatorNoOp());
         sb.append("4");
         thread.join();
     }
@@ -458,10 +479,47 @@ public class JSONDataSaverTest {
         given(jsonDataMerger.mergeJSONCoverageStrings("json1", "json2")).willReturn(map);
         given(jsonDataMerger.toJSON(map)).willReturn("jsonMerged");
 
-        jsonDataSaver.saveJSONData(destDir, "json2", null);
+        jsonDataSaver.saveJSONData(destDir, "json2", null, uriFileTranslator);
 
         String json = ioUtils.loadFromFileSystem(jsonFile);
         assertThat(json, equalTo("jsonMerged"));
+    }
+
+    @Test
+    public void shouldSaveAndMergeDataWithTranslatedUris() {
+        ioUtils.copy("jsonExisting", jsonFile);//Force merge
+        SortedMap<String, FileData> map = new TreeMap<String, FileData>();
+        map.put("/exclude/js/code.js", fileData);
+        SortedMap<String, FileData> mapTranslated = new TreeMap<String, FileData>();
+        mapTranslated.put("/js/code.js", fileData);
+        SortedMap<String, FileData> mapExisting = new TreeMap<String, FileData>();
+        mapExisting.put("/existing", fileData);
+        SortedMap<String, FileData> mapMerged = new TreeMap<String, FileData>();
+        mapMerged.put("/merged", fileData);
+        given(uriFileTranslator.mutates()).willReturn(true);
+        given(jsonDataMerger.jsonToMap("jsonSubmitted")).willReturn(map);
+        given(uriFileTranslator.convertUriToFile("/exclude/js/code.js")).willReturn("/js/code.js");
+        given(jsonDataMerger.jsonToMap("jsonExisting")).willReturn(mapExisting);
+        given(jsonDataMerger.mergeJSONCoverageMaps(argThat(isMapWithKey("/js/code.js")), argThat(isMapWithKey("/existing")))).willReturn(mapMerged);
+        given(jsonDataMerger.toJSON(argThat(isMapWithKey("/merged")))).willReturn("jsonMerged");
+
+        jsonDataSaver.saveJSONData(destDir, "jsonSubmitted", null, uriFileTranslator);
+
+        String json = ioUtils.loadFromFileSystem(jsonFile);
+        assertThat(json, equalTo("jsonMerged"));
+    }
+
+    TypeSafeMatcher<SortedMap<String, FileData>> isMapWithKey(final String url) {
+        return new TypeSafeMatcher<SortedMap<String, FileData>>() {
+            @Override
+            protected boolean matchesSafely(SortedMap<String, FileData> map) {
+                return map.containsKey(url);
+            }
+
+            public void describeTo(Description description) {
+
+            }
+        };
     }
 
     @Test
@@ -480,20 +538,50 @@ public class JSONDataSaverTest {
 
         given(jsonDataMerger.createEmptyJSON(unloadJSData)).willReturn(emptyJsonMap);
         given(jsonDataMerger.jsonToMap("json1")).willReturn(jsonMap);
-        Matcher<SortedMap<String, FileData>> arrayMatcher = new TypeSafeMatcher<SortedMap<String,FileData>>() {
+        given(jsonDataMerger.toJSON(argThat(isMapWithKeys(loadedKey, unloadedKey)))).willReturn("jsonMerged");
+
+        jsonDataSaver.saveJSONData(destDir, "json1", unloadJSData, uriFileTranslator);
+
+        String json = ioUtils.loadFromFileSystem(jsonFile);
+        assertThat(json, equalTo("jsonMerged"));
+    }
+
+    @Test
+    public void shouldSaveAndIncludeUnloadedJSithTranslatedUris() {
+        List<ScriptCoverageCount> unloadJSData = new ArrayList<ScriptCoverageCount>();
+
+        SortedMap<String, FileData> jsonMap = new TreeMap<String, FileData>();
+        String loadedKey = "/exclude/loaded.js";
+        FileData fileData = new FileData(loadedKey, null, null, null);
+        jsonMap.put(loadedKey, fileData);
+
+        SortedMap<String, FileData> emptyJsonMap = new TreeMap<String, FileData>();
+        String unloadedKey = "/unloaded.js";
+        FileData emptyFileData = new FileData(unloadedKey, null, null, null);
+        emptyJsonMap.put(unloadedKey, emptyFileData);
+
+        given(jsonDataMerger.createEmptyJSON(unloadJSData)).willReturn(emptyJsonMap);
+        given(uriFileTranslator.mutates()).willReturn(true);
+        given(jsonDataMerger.jsonToMap("json1")).willReturn(jsonMap);
+        given(uriFileTranslator.convertUriToFile("/exclude/loaded.js")).willReturn("/loaded.js");
+        given(jsonDataMerger.toJSON(argThat(isMapWithKeys("/loaded.js", unloadedKey)))).willReturn("jsonMerged");
+
+        jsonDataSaver.saveJSONData(destDir, "json1", unloadJSData, uriFileTranslator);
+
+        String json = ioUtils.loadFromFileSystem(jsonFile);
+        assertThat(json, equalTo("jsonMerged"));
+    }
+
+    TypeSafeMatcher<SortedMap<String, FileData>> isMapWithKeys(final String url1, final String url2) {
+        return new TypeSafeMatcher<SortedMap<String, FileData>>() {
             @Override
-            public boolean matchesSafely(SortedMap<String, FileData> map) {
-                return map.size() == 2 &&  map.containsKey(loadedKey) && map.containsKey(unloadedKey);
+            protected boolean matchesSafely(SortedMap<String, FileData> map) {
+                return map.size() == 2 &&  map.containsKey(url1) && map.containsKey(url2);
             }
 
             public void describeTo(Description description) {
             }
         };
-        given(jsonDataMerger.toJSON(argThat(arrayMatcher))).willReturn("jsonMerged");
-
-        jsonDataSaver.saveJSONData(destDir, "json1", unloadJSData);
-
-        String json = ioUtils.loadFromFileSystem(jsonFile);
-        assertThat(json, equalTo("jsonMerged"));
     }
+
 }

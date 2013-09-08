@@ -366,7 +366,7 @@ public class JSONDataMerger {
         return total;
     }
 
-    private SortedMap<String, FileData> mergeJSONCoverageMaps(SortedMap<String, FileData> map1, SortedMap<String, FileData> map2) {
+    public SortedMap<String, FileData> mergeJSONCoverageMaps(SortedMap<String, FileData> map1, SortedMap<String, FileData> map2) {
         for (String scriptName : map1.keySet()) {
             if (map2.containsKey(scriptName)) {
                 FileData coverageData = map1.get(scriptName);

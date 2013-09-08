@@ -338,118 +338,90 @@ proprietary programs.  If your program is a subroutine library, you may
 consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
- */
+*/
 
-package jscover;
+package jscover.server;
 
-import jscover.util.IoUtils;
-import jscover.util.PatternMatcher;
-import jscover.util.PatternMatcherRegEx;
-import org.mozilla.javascript.CompilerEnvirons;
-import org.mozilla.javascript.Context;
+import com.gargoylesoftware.htmlunit.ProxyConfig;
+import jscover.Main;
+import org.junit.Before;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.regex.PatternSyntaxException;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 
-import static java.util.logging.Level.SEVERE;
+public class HtmlServerUnloadedJSProxyUriToFileTest extends HtmlServerUnloadedJSTest {
+    private static Thread webServer;
+    private static Thread server;
+    private static int proxyPort = 3129;
 
-public class ConfigurationCommon extends Configuration {
-    private static final Logger logger = Logger.getLogger(ConfigurationCommon.class.getName());
-    public static final String REPORT_DIR_PREFIX = "--report-dir=";
-    public static final String ONLY_INSTRUMENT_REG_PREFIX = "--only-instrument-reg=";
-    public static final String NO_INSTRUMENT_PREFIX = "--no-instrument=";
-    public static final String NO_INSTRUMENT_REG_PREFIX = "--no-instrument-reg=";
-    public static final String JS_VERSION_PREFIX = "--js-version=";
-    public static final String BRANCH_PREFIX = "--no-branch";
-    public static final String FUNCTION_PREFIX = "--no-function";
-    public static final String LOG_LEVEL = "--log=";
+    private String[] args = new String[]{
+            "-ws",
+            "--document-root=src/test-integration/resources/jsSearch",
+            "--port=" + proxyPort,
+            "--proxy",
+            "--no-instrument=noInstrument",
+            "--uri-to-file-matcher=/exclude(.*)",
+            "--uri-to-file-replace=$1",
+            "--include-unloaded-js",
+            "--report-dir=" + getReportDir()
+    };
 
-    protected boolean showHelp;
-    protected boolean invalid;
-    protected boolean includeBranch = true;
-    protected boolean includeFunction = true;
-    protected final List<PatternMatcher> patternMatchers = new ArrayList<PatternMatcher>();
-    protected File reportDir = new File(System.getProperty("user.dir"));
-    protected int JSVersion = Context.VERSION_1_5;
-    protected CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
-    protected boolean defaultSkip;
-    protected IoUtils ioUtils = IoUtils.getInstance();
-    protected Level logLevel = SEVERE;
-
-    public Boolean showHelp() {
-        return showHelp;
+    @Override
+    protected String getReportDir() {
+        return "target/proxy-report-uri-to-file";
     }
 
-    public boolean isInvalid() {
-        return invalid;
+    @Override
+    protected String getIndex() {
+        return "index-uri-to-file.html";
     }
 
-    public boolean isIncludeBranch() {
-        return includeBranch;
+    @Override
+    protected String getPrefix() {
+        return "/exclude";
     }
 
-    public boolean isIncludeFunction() {
-        return includeFunction;
-    }
-
-    public File getReportDir() {
-        return reportDir;
-    }
-
-    public int getJSVersion() {
-        return JSVersion;
-    }
-
-    public CompilerEnvirons getCompilerEnvirons() {
-        return compilerEnvirons;
-    }
-
-    public Level getLogLevel() {
-        return logLevel;
-    }
-
-    public boolean skipInstrumentation(String uri) {
-        for (PatternMatcher patternMatcher : patternMatchers) {
-            Boolean instrumentIt = patternMatcher.matches(uri);
-            if (instrumentIt != null) {
-                logger.log(Level.FINEST, "Matched URI ''{0}'' Pattern ''{1}'' Skip {2}", new Object[]{uri, patternMatcher, instrumentIt});
-                return instrumentIt;
-            }
+    @Before
+    public void setUp() throws IOException {
+        if (server == null) {
+            server = new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        Main.main(args);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
+            server.start();
         }
-        return defaultSkip;
-    }
-
-    protected static void setInvalid(ConfigurationCommon configuration) {
-        configuration.showHelp = true;
-        configuration.invalid = true;
-    }
-
-    protected void addOnlyInstrumentReg(String arg) {
-        String patternString = arg.substring(ONLY_INSTRUMENT_REG_PREFIX.length());
-        if (patternString.startsWith("/"))
-            patternString = patternString.substring(1);
-        defaultSkip = true;
-        try {
-            patternMatchers.add(PatternMatcherRegEx.getIncludePatternMatcher(patternString));
-        } catch (PatternSyntaxException e) {
-            e.printStackTrace(System.err);
-            setInvalid(this);
+        if (webServer == null) {
+            webServer = new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        ServerSocket Server = new ServerSocket(9001);
+                        File wwwRoot = new File("src/test-integration/resources/jsSearch");
+                        while (true) {
+                            Socket socket = Server.accept();
+                            (new WeirdHttpServer(socket, wwwRoot, "testVersion")).start();
+                        }
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
+            webServer.start();
         }
-    }
-
-    protected void addNoInstrumentReg(String arg) {
-        String patternString = arg.substring(NO_INSTRUMENT_REG_PREFIX.length());
-        if (patternString.startsWith("/"))
-            patternString = patternString.substring(1);
-        try {
-            patternMatchers.add(PatternMatcherRegEx.getExcludePatternMatcher(patternString));
-        } catch(PatternSyntaxException e) {
-            e.printStackTrace(System.err);
-            setInvalid(this);
-        }
+        ProxyConfig proxyConfig = new ProxyConfig("localhost", proxyPort);
+        proxyConfig.addHostsToProxyBypass("127.0.0.1");
+        webClient.getOptions().setProxyConfig(proxyConfig);
+        webClient.getOptions().setTimeout(1000);
+//        try {
+//            Thread.sleep(1000*60);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+//        }
     }
 }

@@ -347,6 +347,8 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
@@ -450,5 +452,45 @@ public class MainParsingTest {
     public void shouldRetrieveHelpText() {
         String helpText = new Main().getHelpText();
         assertThat(helpText, containsString("Usage: java -jar jscover.jar [OPTION]..."));
+    }
+
+    @Test
+    public void shouldTranslateURIToFilePath4() {
+        String uri = "/src/C:/dev/trunk/rpux_trunk/client/tests/src/form/field/TU_DateRange.js";
+        Pattern pattern = Pattern.compile("/src/C:/dev/trunk/rpux_trunk/client(.*)");
+        assertThat(convertURIToFilePath(uri, pattern), equalTo("/tests/src/form/field/TU_DateRange.js"));
+    }
+
+    @Test
+    public void shouldTranslateURIToFilePath() {
+        String uri = "/src/C:/dev/trunk/rpux_trunk/client/tests/src/form/field/TU_DateRange.js";
+        Pattern pattern = Pattern.compile("/src/(.*)");
+        assertThat(convertURIToFilePath(uri, pattern), equalTo("C:/dev/trunk/rpux_trunk/client/tests/src/form/field/TU_DateRange.js"));
+    }
+
+    @Test
+    public void shouldTranslateURIToFilePath2() {
+        String uri = "/src/C:/dev/trunk/rpux_trunk/client/tests/src/form/field/TU_DateRange.js";
+        Pattern pattern = Pattern.compile(".*/tests/(.*)");
+        assertThat(convertURIToFilePath(uri, pattern), equalTo("src/form/field/TU_DateRange.js"));
+    }
+
+    @Test
+    public void shouldTranslateURIToFilePath3() {
+        String uri = "/src/C:/dev/trunk/rpux_trunk/client/tests/src/form/field/TU_DateRange.js";
+        Pattern pattern = Pattern.compile("/src/(.*)/tests(.*)");
+        assertThat(convertURIToFilePath(uri, pattern), equalTo("C:/dev/trunk/rpux_trunk/client/src/form/field/TU_DateRange.js"));
+    }
+
+    private String convertURIToFilePath(String uri, Pattern pattern) {
+        Matcher matcher = pattern.matcher(uri);
+        StringBuilder filePath = new StringBuilder();
+        if (matcher.find()) {
+            int groups = matcher.groupCount();
+            for (int i = 1; i <= groups; i++)
+                filePath.append(matcher.group(i));
+        }
+        System.out.println("filePath = " + filePath);
+        return filePath.toString();
     }
 }

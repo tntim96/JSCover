@@ -477,7 +477,7 @@ fs.write("target/jscoverage.json", json, 'w');
                             <td>Same as '--no-instrument=PATH', except PATH is interpreted as a regular expression</td>
                         </tr>
                         <tr>
-                            <td>--only-instrument-reg=URL</td>
+                            <td nowrap="nowrap">--only-instrument-reg=URL</td>
                             <td>None</td>
                             <td>
                                 Changes the default behavior to skip instrumentation except for the specified URLs.
@@ -500,6 +500,18 @@ fs.write("target/jscoverage.json", json, 'w');
                             <td>--proxy</td>
                             <td>N/A</td>
                             <td>Run in proxy mode</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                --uri-to-file-matcher=REG<br/>
+                                --uri-to-file-replace=REP
+                            </td>
+                            <td>N/A</td>
+                            <td>
+                                For proxy mode, specify a regular expression matcher and replacement string for
+                                converting a URI to a file path.
+                                See <a href="#proxyURIToFilePathTranslation">here</a> for more details.
+                            </td>
                         </tr>
                         <tr>
                             <td>--no-branch</td>
@@ -544,6 +556,34 @@ fs.write("target/jscoverage.json", json, 'w');
                     See the <a href="#encoding">encoding section</a> above for specifying encoding.<br/>
                     See the <a href="#logging">logging section</a> for more information.
                 </text>
+                <item>
+                    <heading id="proxyMode">Proxy Mode</heading>
+                    <text>
+                        In proxy mode, JSCover operates as a HTTP proxy server and instruments the specified JavaScript
+                        served through it.
+                    </text>
+                    <item>
+                        <heading id="proxyURIToFilePathTranslation">Translating a URI to a File System Path</heading>
+                        <text>
+                            When operating as a proxy, it is possible to have a URI which doesn't match the the file
+                            system path. This is normally not a problem, as the JavaScript contents will be saved to the
+                            file-system using the URI. However, there a two potential problems to be handled:
+                            <ol>
+                                <li>The URI contains characters not compatible with the file-system</li>
+                                <li>
+                                    If the <var>--include-unloaded-js</var> option has been specified, the actual file
+                                    represented by the URI will not be detected as having already been included, and
+                                    will appear a second time with no coverage.
+                                </li>
+                            </ol>
+                        </text>
+                        <text>
+                            An example to convert '/exclude/include/code.js' to '/include/code.js' would be:
+                            <var>--uri-to-file-matcher=/exclude(.*)</var>
+                            <var>--uri-to-file-replace=$1</var>
+                        </text>
+                    </item>
+                </item>
                 <item>
                     <heading id="implementationStoreReport">Storing reports</heading>
                     <text>
@@ -629,7 +669,7 @@ fs.write("target/jscoverage.json", json, 'w');
                             <td>Same as '--no-instrument=PATH', except PATH is interpreted as a regular expression</td>
                         </tr>
                         <tr>
-                            <td>--only-instrument-reg=URL</td>
+                            <td nowrap="nowrap">--only-instrument-reg=URL</td>
                             <td>None</td>
                             <td>
                                 Changes the default behavior to skip instrumentation except for the specified URLs.
@@ -772,8 +812,8 @@ fs.write("target/jscoverage.json", json, 'w');
                     <heading id="advancedLogging">Advanced Logging</heading>
                     <text>
                         JSCover's allows finer control of logging by via the JVM option
-                        <var>-Djava.util.logging.config.file=FILE</var>. For example:
-                        <code>java -Djava.util.logging.config.file=log.properties -jar JSCover-all.jar [OPTIONS]...</code>
+                        <var>-Djava.util.logging.configuration.file=FILE</var>. For example:
+                        <code>java -Djava.util.logging.configuration.file=log.properties -jar JSCover-all.jar [OPTIONS]...</code>
                         A sample property file, <var>log.properties</var>, is included in the root directory of the
                         ZIP distribution. Specifying this JVM option will turn off the default programmatic logging.
                     </text>

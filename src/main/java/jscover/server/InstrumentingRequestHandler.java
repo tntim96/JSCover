@@ -348,7 +348,7 @@ import jscover.instrument.UnloadedSourceProcessor;
 import jscover.report.JSONDataSaver;
 import jscover.report.ScriptCoverageCount;
 import jscover.util.IoService;
-import jscover.util.LoggerUtils;
+import jscover.util.UriFileTranslator;
 
 import java.io.File;
 import java.io.IOException;
@@ -368,18 +368,19 @@ public class InstrumentingRequestHandler extends HttpServer {
     private static final Logger logger = Logger.getLogger(InstrumentingRequestHandler.class.getName());
     public static final String JSCOVERAGE_STORE = "/jscoverage-store";
     static Map<String, String> uris = new HashMap<String, String>();
-    private LoggerUtils loggerUtils = LoggerUtils.getInstance();
     private ConfigurationForServer configuration;
     private IoService ioService = new IoService();
     private JSONDataSaver jsonDataSaver = new JSONDataSaver();
     private InstrumenterService instrumenterService = new InstrumenterService();
     private ProxyService proxyService = new ProxyService();
     private UnloadedSourceProcessor unloadedSourceProcessor;
+    private UriFileTranslator uriFileTranslator;
 
     public InstrumentingRequestHandler(Socket socket, ConfigurationForServer configuration) {
         super(socket, configuration.getDocumentRoot(), configuration.getVersion());
         this.configuration = configuration;
         this.unloadedSourceProcessor = new UnloadedSourceProcessor(configuration);
+        this.uriFileTranslator = configuration.getUriFileTranslator();
     }
 
     @Override
@@ -415,7 +416,7 @@ public class InstrumentingRequestHandler extends HttpServer {
             assert skipped == request.getPostIndex();
             String data = ioUtils.toStringNoClose(request.getInputStream(), request.getContentLength());
             logger.finest(data);
-            jsonDataSaver.saveJSONData(reportDir, data, unloadJSData);
+            jsonDataSaver.saveJSONData(reportDir, data, unloadJSData, uriFileTranslator);
             if (configuration.isProxy()) {
                 for (String jsURI : uris.keySet()) {
                     File dest = new File(reportDir, Main.reportSrcSubDir + "/" + jsURI);
@@ -455,7 +456,7 @@ public class InstrumentingRequestHandler extends HttpServer {
                 if (configuration.isProxy()) {
                     String originalJS = proxyService.getUrl(request);
                     jsInstrumented = instrumenterService.instrumentJSForProxyServer(configuration.getCompilerEnvirons(), originalJS, uri, configuration.isIncludeBranch(), configuration.isIncludeFunction());
-                    uris.put(uri.substring(1), originalJS);
+                    uris.put(uriFileTranslator.convertUriToFile(uri).substring(1), originalJS);
                 } else {
                     jsInstrumented = instrumenterService.instrumentJSForWebServer(configuration.getCompilerEnvirons(), new File(wwwRoot, uri), uri, configuration.isIncludeBranch(), configuration.isIncludeFunction());
                     uris.put(uri.substring(1), null);

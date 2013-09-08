@@ -343,6 +343,7 @@ Public License instead of this License.
 package jscover.report;
 
 import jscover.util.IoUtils;
+import jscover.util.UriFileTranslator;
 
 import java.io.File;
 import java.util.*;
@@ -356,30 +357,47 @@ public class JSONDataSaver {
     private JSONDataMerger jsonDataMerger = new JSONDataMerger();
     private IoUtils ioUtils = IoUtils.getInstance();
 
-    public void saveJSONData(File reportDir, String data, List<ScriptCoverageCount> unloadJSData) {
+    public void saveJSONData(File reportDir, String data, List<ScriptCoverageCount> unloadJSData, UriFileTranslator uriFileTranslator) {
         try {
             lockOnReportDir(reportDir);
             reportDir.mkdirs();
             File jsonFile = new File(reportDir, "jscoverage.json");
-            SortedMap<String, FileData> extraData = new TreeMap<String, FileData>();
+            SortedMap<String, FileData> dataMap = new TreeMap<String, FileData>();
             if (jsonFile.exists()) {
                 logger.info("Saving/merging JSON with existing JSON");
                 String existingJSON = ioUtils.toString(jsonFile);
-                extraData.putAll(jsonDataMerger.mergeJSONCoverageStrings(existingJSON, data));
-                ioUtils.copy(jsonDataMerger.toJSON(extraData), jsonFile);
+                if (uriFileTranslator.mutates()) {
+                    translateUris(data, uriFileTranslator, dataMap);
+                    dataMap = jsonDataMerger.mergeJSONCoverageMaps(dataMap, jsonDataMerger.jsonToMap(existingJSON));
+                } else
+                    dataMap.putAll(jsonDataMerger.mergeJSONCoverageStrings(existingJSON, data));
+                ioUtils.copy(jsonDataMerger.toJSON(dataMap), jsonFile);
             } else if (unloadJSData != null) {
                 logger.info("Saving/merging JSON with unloaded JavaScript JSON");
                 //Only scan for unloaded JS if JSON not saved before
-                extraData.putAll(jsonDataMerger.createEmptyJSON(unloadJSData));
-                extraData.putAll(jsonDataMerger.jsonToMap(data));
-                ioUtils.copy(jsonDataMerger.toJSON(extraData), jsonFile);
+                dataMap.putAll(jsonDataMerger.createEmptyJSON(unloadJSData));
+                if (uriFileTranslator.mutates())
+                    translateUris(data, uriFileTranslator, dataMap);
+                else
+                    dataMap.putAll(jsonDataMerger.jsonToMap(data));
+                ioUtils.copy(jsonDataMerger.toJSON(dataMap), jsonFile);
             } else {
                 logger.info("Saving JSON");
-                ioUtils.copy(data, jsonFile);
+                if (uriFileTranslator.mutates()) {
+                    translateUris(data, uriFileTranslator, dataMap);
+                    ioUtils.copy(jsonDataMerger.toJSON(dataMap), jsonFile);
+                } else
+                    ioUtils.copy(data, jsonFile);
             }
         } finally {
             unlockOnReportDir(reportDir);
         }
+    }
+
+    private void translateUris(String data, UriFileTranslator uriFileTranslator, SortedMap<String, FileData> map) {
+        SortedMap<String, FileData> coverageData = jsonDataMerger.jsonToMap(data);
+        for (String uri : coverageData.keySet())
+            map.put(uriFileTranslator.convertUriToFile(uri), coverageData.get(uri));
     }
 
     private void lockOnReportDir(File reportDir) {
