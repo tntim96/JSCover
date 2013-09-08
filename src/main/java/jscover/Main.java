@@ -414,6 +414,14 @@ public class Main {
     public void runMain(String[] args) throws IOException {
         parse(args);
         initialize();
+        runJSCover(args);
+        if (LoggerUtils.getInstance().isExceptionThrown())
+            exitStatus = 1;
+        if (exitStatus != 0)
+            mainHelper.exit(exitStatus);
+    }
+
+    private void runJSCover(String[] args) {
         if (printVersion()) {
             System.out.println(getVersionText());
         } else if (isServer()) {
@@ -430,10 +438,6 @@ public class Main {
         } else {
             System.out.println(getHelpText());
         }
-        if (LoggerUtils.getInstance().isExceptionThrown())
-            exitStatus = 1;
-        if (exitStatus != 0)
-            mainHelper.exit(exitStatus);
     }
 
     public String getHelpText() {

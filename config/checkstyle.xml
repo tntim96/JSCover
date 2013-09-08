@@ -13,6 +13,7 @@
     <module name="FileLength">
         <property name="max" value="542"/><!-- 342 lines in GPL -->
     </module>
+    <!--<module name="StrictDuplicateCode"/>-->
     <module name="TreeWalker">
         <module name="FileContentsHolder"/>
 
