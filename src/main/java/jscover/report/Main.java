@@ -377,6 +377,10 @@ public class Main {
         initialize();
         config.setProperties(properties);
         config.parse(args);
+        runReport();
+    }
+
+    private void runReport() throws IOException {
         if (config.isInvalid()) {
             System.out.println(config.getHelpText());
             mainHelper.exit(1);
