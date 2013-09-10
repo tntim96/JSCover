@@ -76,6 +76,16 @@
                     The maven release includes the <var>JSCover-all.jar</var> JAR.
                 </text>
             </item>
+            <item>
+                <heading id="jvmRegularExpressions">Java Regular Expressions</heading>
+                <text>
+                    All regular expression functionality is provided by the JVM. Further documentation can be found at:
+                    <ul>
+                        <li><a href="http://docs.oracle.com/javase/1.5.0/docs/api/java/util/regex/Pattern.html" target="_blank">Pattern</a></li>
+                        <li><a href="http://docs.oracle.com/javase/1.5.0/docs/api/java/util/regex/Matcher.html" target="_blank">Matcher</a></li>
+                    </ul>
+                </text>
+            </item>
         </section>
     </item>
     <item>
@@ -474,13 +484,17 @@ fs.write("target/jscoverage.json", json, 'w');
                         <tr>
                             <td>--no-instrument-reg=URL</td>
                             <td>None</td>
-                            <td>Same as '--no-instrument=PATH', except PATH is interpreted as a regular expression</td>
+                            <td>
+                                Same as '--no-instrument=PATH', except PATH is interpreted as a
+                                <a href="#jvmRegularExpressions">regular expression</a>
+                            </td>
                         </tr>
                         <tr>
                             <td nowrap="nowrap">--only-instrument-reg=URL</td>
                             <td>None</td>
                             <td>
-                                Changes the default behavior to skip instrumentation except for the specified URLs.
+                                Changes the default behavior to skip instrumentation except for the specified URLs
+                                matching the <a href="#jvmRegularExpressions">regular expression</a>.
                                 This switch can be overridden if no-instrument switches are specified first.
                             </td>
                         </tr>
@@ -508,8 +522,8 @@ fs.write("target/jscoverage.json", json, 'w');
                             </td>
                             <td>N/A</td>
                             <td>
-                                For proxy mode, specify a regular expression matcher and replacement string for
-                                converting a URI to a file path.
+                                For proxy mode, specify a <a href="#jvmRegularExpressions">regular expression</a>
+                                matcher and replacement string for converting a URI to a file path.
                                 See <a href="#proxyURIToFilePathTranslation">here</a> for more details.
                             </td>
                         </tr>
@@ -528,10 +542,9 @@ fs.write("target/jscoverage.json", json, 'w');
                             <td>false</td>
                             <td>
                                 When storing report in web-server mode, search beneath the document root
-                                <br/>
                                 path for JavaScript file not served and include in the coverage report.
                                 <br/>
-                                Will respect --no-instrument(-reg).
+                                Will respect --no-instrument(-reg) and --only-instrument-reg.
                             </td>
                         </tr>
                         <tr>
@@ -563,7 +576,7 @@ fs.write("target/jscoverage.json", json, 'w');
                         served through it.
                     </text>
                     <item>
-                        <heading id="proxyURIToFilePathTranslation">Translating a URI to a File System Path</heading>
+                        <heading id="proxyURIToFilePathTranslation">Translating a URI to a File Path</heading>
                         <text>
                             When operating as a proxy, it is possible to have a URI which doesn't match the the file
                             system path. This is normally not a problem, as the JavaScript contents will be saved to the
@@ -666,13 +679,17 @@ fs.write("target/jscoverage.json", json, 'w');
                         <tr>
                             <td>--no-instrument-reg=URL</td>
                             <td>None</td>
-                            <td>Same as '--no-instrument=PATH', except PATH is interpreted as a regular expression</td>
+                            <td>
+                                Same as '--no-instrument=PATH', except PATH is interpreted as a
+                                <a href="#jvmRegularExpressions">regular expression</a>
+                            </td>
                         </tr>
                         <tr>
                             <td nowrap="nowrap">--only-instrument-reg=URL</td>
                             <td>None</td>
                             <td>
-                                Changes the default behavior to skip instrumentation except for the specified URLs.
+                                Changes the default behavior to skip instrumentation except for the specified URLs
+                                matching the <a href="#jvmRegularExpressions">regular expression</a>.
                                 This switch can be overridden if no-instrument switches are specified first.
                             </td>
                         </tr>
@@ -688,7 +705,10 @@ fs.write("target/jscoverage.json", json, 'w');
                         <tr>
                             <td>--exclude-reg=PATH</td>
                             <td>None</td>
-                            <td>Same as '--exclude=PATH', except PATH is interpreted as a regular expression</td>
+                            <td>
+                                Same as '--exclude=PATH', except PATH is interpreted as a
+                                <a href="#jvmRegularExpressions">regular expression</a>
+                            </td>
                         </tr>
                         <tr>
                             <td>--no-branch</td>
