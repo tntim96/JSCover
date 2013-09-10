@@ -1,6 +1,7 @@
 1.0.5 / 2013-??-??
 ==================
   * Provide URI to File-System Path Translation (https://github.com/tntim96/JSCover/issues/98)
+  * Fix LogFormatterTest time zone issue (https://github.com/tntim96/JSCover/issues/99)
   * Internal: Add check-style plugin to Maven POM
 
 1.0.4 / 2013-09-05
