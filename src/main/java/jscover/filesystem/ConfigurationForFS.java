@@ -387,71 +387,56 @@ public class ConfigurationForFS extends ConfigurationCommon {
     public static ConfigurationForFS parse(String[] args) {
         ConfigurationForFS configuration = new ConfigurationForFS();
         for (int i = 0; i < args.length; i++)
-            if (parsedArgInvalid(configuration, args[i]))
-                return configuration;
+            configuration.parse(args[i]);
+
+        if (configuration.showHelp)
+            return configuration;
 
         if (args.length < 3) {
-            setInvalid(configuration);
+            configuration.setInvalid();
             return configuration;
         }
         if (!configuration.validSourceDirectory()) {
             System.err.println(format("Source directory '%s' is invalid", configuration.srcDir));
-            setInvalid(configuration);
+            configuration.setInvalid();
         } else if (!configuration.validDestinationDirectory()) {
             System.err.println(format("Destination directory '%s' must not be in the source directory", configuration.destDir));
-            setInvalid(configuration);
+            configuration.setInvalid();
         }
         configuration.compilerEnvirons.setLanguageVersion(configuration.JSVersion);
         return configuration;
     }
 
-    private static boolean parsedArgInvalid(ConfigurationForFS configuration, String arg) {
+    protected void parse(String arg) {
+        if (super.parseArg(arg))
+            return;
         if (arg.startsWith(Main.FILESYSTEM_PREFIX)) {
             //Ignore this
-        } else if (arg.equals(HELP_PREFIX1) || arg.equals(HELP_PREFIX2)) {
-            configuration.showHelp = true;
-            return true;
-        } else if (arg.equals(BRANCH_PREFIX)) {
-            configuration.includeBranch = false;
-        } else if (arg.equals(FUNCTION_PREFIX)) {
-            configuration.includeFunction = false;
-        } else if (arg.startsWith(NO_INSTRUMENT_PREFIX)) {
-            String uri = arg.substring(NO_INSTRUMENT_PREFIX.length());
-            if (uri.startsWith("/"))
-                uri = uri.substring(1);
-            configuration.patternMatchers.add(new PatternMatcherString(uri));
-        } else if (arg.startsWith(NO_INSTRUMENT_REG_PREFIX)) {
-            configuration.addNoInstrumentReg(arg);
-        } else if (arg.startsWith(ONLY_INSTRUMENT_REG_PREFIX)) {
-            configuration.addOnlyInstrumentReg(arg);
         } else if (arg.startsWith(EXLCUDE_PREFIX)) {
             String uri = arg.substring(EXLCUDE_PREFIX.length());
             if (uri.startsWith("/"))
                 uri = uri.substring(1);
-            configuration.excludes.add(uri);
+            excludes.add(uri);
         } else if (arg.startsWith(EXLCUDE_REG_PREFIX)) {
             String patternString = arg.substring(EXLCUDE_REG_PREFIX.length());
             try {
-                Pattern pattern = Pattern.compile(patternString);
-                configuration.excludeRegs.add(pattern);
+                excludeRegs.add(Pattern.compile(patternString));
             } catch(PatternSyntaxException e) {
                 e.printStackTrace(System.err);
-                configuration.showHelp = true;
-                configuration.invalid = true;
+                showHelp = true;
+                invalid = true;
             }
-        } else if (arg.startsWith(JS_VERSION_PREFIX)) {
-            configuration.JSVersion = (int) (Float.valueOf(arg.substring(JS_VERSION_PREFIX.length())) * 100);
-        } else if (arg.startsWith(LOG_LEVEL)) {
-            configuration.logLevel = Level.parse(arg.substring(LOG_LEVEL.length()));
         } else  if (arg.startsWith("-")) {
             System.err.println(format("JSCover: Unknown option '%s'", arg));
-            setInvalid(configuration);
-        } else if (configuration.srcDir == null) {
-            configuration.srcDir = new File(arg);
-        } else if (configuration.destDir == null) {
-            configuration.destDir = new File(arg);
+            setInvalid();
+        } else if (srcDir == null) {
+            srcDir = new File(arg);
+        } else if (destDir == null) {
+            destDir = new File(arg);
+        } else {
+            System.err.println(format("JSCover: Extra command line argument found '%s'", arg));
+            setInvalid();
         }
-        return false;
     }
 
     private boolean validSourceDirectory() {

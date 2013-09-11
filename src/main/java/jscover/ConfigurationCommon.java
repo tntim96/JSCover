@@ -345,6 +345,7 @@ package jscover;
 import jscover.util.IoUtils;
 import jscover.util.PatternMatcher;
 import jscover.util.PatternMatcherRegEx;
+import jscover.util.PatternMatcherString;
 import org.mozilla.javascript.CompilerEnvirons;
 import org.mozilla.javascript.Context;
 
@@ -353,9 +354,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import static java.lang.String.format;
 import static java.util.logging.Level.SEVERE;
+import static jscover.Main.HELP_PREFIX1;
+import static jscover.Main.HELP_PREFIX2;
 
 public class ConfigurationCommon extends Configuration {
     private static final Logger logger = Logger.getLogger(ConfigurationCommon.class.getName());
@@ -423,12 +428,12 @@ public class ConfigurationCommon extends Configuration {
         return defaultSkip;
     }
 
-    protected static void setInvalid(ConfigurationCommon configuration) {
-        configuration.showHelp = true;
-        configuration.invalid = true;
+    protected void setInvalid() {
+        showHelp = true;
+        invalid = true;
     }
 
-    protected void addOnlyInstrumentReg(String arg) {
+    private void addOnlyInstrumentReg(String arg) {
         String patternString = arg.substring(ONLY_INSTRUMENT_REG_PREFIX.length());
         if (patternString.startsWith("/"))
             patternString = patternString.substring(1);
@@ -437,11 +442,11 @@ public class ConfigurationCommon extends Configuration {
             patternMatchers.add(PatternMatcherRegEx.getIncludePatternMatcher(patternString));
         } catch (PatternSyntaxException e) {
             e.printStackTrace(System.err);
-            setInvalid(this);
+            setInvalid();
         }
     }
 
-    protected void addNoInstrumentReg(String arg) {
+    private void addNoInstrumentReg(String arg) {
         String patternString = arg.substring(NO_INSTRUMENT_REG_PREFIX.length());
         if (patternString.startsWith("/"))
             patternString = patternString.substring(1);
@@ -449,7 +454,33 @@ public class ConfigurationCommon extends Configuration {
             patternMatchers.add(PatternMatcherRegEx.getExcludePatternMatcher(patternString));
         } catch(PatternSyntaxException e) {
             e.printStackTrace(System.err);
-            setInvalid(this);
+            setInvalid();
         }
+    }
+
+    protected boolean parseArg(String arg) {
+        if (arg.equals(HELP_PREFIX1) || arg.equals(HELP_PREFIX2)) {
+            showHelp = true;
+        } else if (arg.equals(BRANCH_PREFIX)) {
+            includeBranch = false;
+        } else if (arg.equals(FUNCTION_PREFIX)) {
+            includeFunction = false;
+        } else if (arg.startsWith(NO_INSTRUMENT_PREFIX)) {
+            String uri = arg.substring(NO_INSTRUMENT_PREFIX.length());
+            if (uri.startsWith("/"))
+                uri = uri.substring(1);
+            patternMatchers.add(new PatternMatcherString(uri));
+        } else if (arg.startsWith(NO_INSTRUMENT_REG_PREFIX)) {
+            addNoInstrumentReg(arg);
+        } else if (arg.startsWith(ONLY_INSTRUMENT_REG_PREFIX)) {
+            addOnlyInstrumentReg(arg);
+        } else if (arg.startsWith(JS_VERSION_PREFIX)) {
+            JSVersion = (int) (Float.valueOf(arg.substring(JS_VERSION_PREFIX.length())) * 100);
+        } else if (arg.startsWith(LOG_LEVEL)) {
+            logLevel = Level.parse(arg.substring(LOG_LEVEL.length()));
+        } else {
+            return false;
+        }
+        return true;
     }
 }

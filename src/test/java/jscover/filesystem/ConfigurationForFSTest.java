@@ -356,65 +356,65 @@ public class ConfigurationForFSTest {
     @Test
     public void shouldHaveDefaults() {
         ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs", "src", "doc"});
-        assertThat(configuration.showHelp(), equalTo(false));
-        assertThat(configuration.isInvalid(), equalTo(false));
+        assertThat(configuration.showHelp(), is(false));
+        assertThat(configuration.isInvalid(), is(false));
         assertThat(configuration.getJSVersion(), equalTo(150));
-        assertThat(configuration.skipInstrumentation("/"), equalTo(false));
+        assertThat(configuration.skipInstrumentation("/"), is(false));
         assertThat(configuration.getCompilerEnvirons().getLanguageVersion(), equalTo(150));
-        assertThat(configuration.isIncludeBranch(), equalTo(true));
-        assertThat(configuration.isIncludeFunction(), equalTo(true));
+        assertThat(configuration.isIncludeBranch(), is(true));
+        assertThat(configuration.isIncludeFunction(), is(true));
         assertThat(configuration.getLogLevel(), is(SEVERE));
     }
 
     @Test
     public void shouldNotAllowDestinationDirectoryToEqualSourceDirectory() {
         ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs", "src", "src"});
-        assertThat(configuration.showHelp(), equalTo(true));
-        assertThat(configuration.isInvalid(), equalTo(true));
+        assertThat(configuration.showHelp(), is(true));
+        assertThat(configuration.isInvalid(), is(true));
     }
 
     @Test
     public void shouldNotAllowDestinationDirectoryToBeSubDirectoryOfSourceDirectory() {
         ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs", "src", "src/main/java"});
-        assertThat(configuration.showHelp(), equalTo(true));
-        assertThat(configuration.isInvalid(), equalTo(true));
+        assertThat(configuration.showHelp(), is(true));
+        assertThat(configuration.isInvalid(), is(true));
     }
 
     @Test
     public void shouldNotAllowDestinationDirectoryToBeSubDirectoryOfSourceDirectorySpecifiedAsCurrentDirectory() {
         ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs", ".", "src/java"});
-        assertThat(configuration.showHelp(), equalTo(true));
-        assertThat(configuration.isInvalid(), equalTo(true));
+        assertThat(configuration.showHelp(), is(true));
+        assertThat(configuration.isInvalid(), is(true));
     }
 
     @Test
     public void shouldAllowDestinationDirectoryToBeDifferentDirectoryOfSourceDirectoryButStartingWithTheSameName() {
         ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs", "src/main/java", "src/main/java-instrumented"});
-        assertThat(configuration.showHelp(), equalTo(false));
-        assertThat(configuration.isInvalid(), equalTo(false));
+        assertThat(configuration.showHelp(), is(false));
+        assertThat(configuration.isInvalid(), is(false));
     }
 
     @Test
     public void shouldShowHelpOnError() {
         ConfigurationForFS configurationForFS = ConfigurationForFS.parse(new String[]{"-fs"});
-        assertThat(configurationForFS.showHelp(), equalTo(true));
-        assertThat(configurationForFS.isInvalid(), equalTo(true));
+        assertThat(configurationForFS.showHelp(), is(true));
+        assertThat(configurationForFS.isInvalid(), is(true));
     }
 
     @Test
     public void shouldParseHelp() {
-        assertThat(ConfigurationForFS.parse(new String[]{"-fs", "-h"}).showHelp(), equalTo(true));
-        assertThat(ConfigurationForFS.parse(new String[]{"-fs", "--help"}).showHelp(), equalTo(true));
+        assertThat(ConfigurationForFS.parse(new String[]{"-fs", "-h"}).showHelp(), is(true));
+        assertThat(ConfigurationForFS.parse(new String[]{"-fs", "--help"}).showHelp(), is(true));
     }
 
     @Test
     public void shouldParseBranch() {
-        assertThat(ConfigurationForFS.parse(new String[]{"-fs", "--no-branch", "src", "doc"}).isIncludeBranch(), equalTo(false));
+        assertThat(ConfigurationForFS.parse(new String[]{"-fs", "--no-branch", "src", "doc"}).isIncludeBranch(), is(false));
     }
 
     @Test
     public void shouldParseFunction() {
-        assertThat(ConfigurationForFS.parse(new String[]{"-fs", "--no-function"}).isIncludeFunction(), equalTo(false));
+        assertThat(ConfigurationForFS.parse(new String[]{"-fs", "--no-function"}).isIncludeFunction(), is(false));
     }
 
     @Test
@@ -422,6 +422,13 @@ public class ConfigurationForFSTest {
         ConfigurationForFS configurationForFS = ConfigurationForFS.parse(new String[]{"-fs", "src", "doc"});
         assertThat(configurationForFS.getSrcDir(), equalTo(new File("src")));
         assertThat(configurationForFS.getDestDir(), equalTo(new File("doc")));
+    }
+
+    @Test
+    public void shouldDetectedInvalidArgs() {
+        ConfigurationForFS configurationForFS = ConfigurationForFS.parse(new String[]{"-fs", "src", "doc", "config"});
+        assertThat(configurationForFS.showHelp(), is(true));
+        assertThat(configurationForFS.isInvalid(), is(true));
     }
 
     @Test
@@ -433,8 +440,8 @@ public class ConfigurationForFSTest {
 
     @Test
     public void shouldHandleNonExistingDirectory() {
-        assertThat(ConfigurationForFS.parse(new String[]{"-fs", "unknown", "doc"}).showHelp(), equalTo(true));
-        assertThat(ConfigurationForFS.parse(new String[]{"-fs", "build.xml", "doc"}).showHelp(), equalTo(true));
+        assertThat(ConfigurationForFS.parse(new String[]{"-fs", "unknown", "doc"}).showHelp(), is(true));
+        assertThat(ConfigurationForFS.parse(new String[]{"-fs", "build.xml", "doc"}).showHelp(), is(true));
     }
 
     @Test
@@ -452,124 +459,124 @@ public class ConfigurationForFSTest {
     @Test
     public void shouldParseNoInstrument() {
         ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs", "--no-instrument=lib1", "--no-instrument=/lib2", "src", "doc"});
-        assertThat(configuration.skipInstrumentation("test.js"), equalTo(false));
-        assertThat(configuration.skipInstrumentation("lib1/test.js"), equalTo(true));
-        assertThat(configuration.skipInstrumentation("lib2/test.js"), equalTo(true));
-        assertThat(configuration.skipInstrumentation("lib3/test.js"), equalTo(false));
+        assertThat(configuration.skipInstrumentation("test.js"), is(false));
+        assertThat(configuration.skipInstrumentation("lib1/test.js"), is(true));
+        assertThat(configuration.skipInstrumentation("lib2/test.js"), is(true));
+        assertThat(configuration.skipInstrumentation("lib3/test.js"), is(false));
     }
 
     @Test
     public void shouldParseNoInstrumentReg() {
         ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs", "--no-instrument-reg=.*/lib/.*", "--no-instrument-reg=.*/test/.*", "--no-instrument-reg=/.*/test2/.*", "src", "doc"});
-        assertThat(configuration.skipInstrumentation("test.js"), equalTo(false));
-        assertThat(configuration.skipInstrumentation("lib1/lib/test.js"), equalTo(true));
-        assertThat(configuration.skipInstrumentation("lib2/test/test.js"), equalTo(true));
-        assertThat(configuration.skipInstrumentation("lib3/test2/test.js"), equalTo(true));
-        assertThat(configuration.skipInstrumentation("lib4/domain/test.js"), equalTo(false));
+        assertThat(configuration.skipInstrumentation("test.js"), is(false));
+        assertThat(configuration.skipInstrumentation("lib1/lib/test.js"), is(true));
+        assertThat(configuration.skipInstrumentation("lib2/test/test.js"), is(true));
+        assertThat(configuration.skipInstrumentation("lib3/test2/test.js"), is(true));
+        assertThat(configuration.skipInstrumentation("lib4/domain/test.js"), is(false));
     }
 
     @Test
     public void shouldHandleInvalidNoInstrumentRegularExpression() {
         ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"--no-instrument-reg=*"});
-        assertThat(configuration.showHelp(), equalTo(true));
-        assertThat(configuration.isInvalid(), equalTo(true));
+        assertThat(configuration.showHelp(), is(true));
+        assertThat(configuration.isInvalid(), is(true));
     }
 
     @Test
     public void shouldParseNoInstrumentWithLeadingSlash() {
         ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs", "--no-instrument=/lib1", "--no-instrument=/lib2", "src", "doc"});
-        assertThat(configuration.skipInstrumentation("test.js"), equalTo(false));
-        assertThat(configuration.skipInstrumentation("lib1/test.js"), equalTo(true));
-        assertThat(configuration.skipInstrumentation("lib2/test.js"), equalTo(true));
-        assertThat(configuration.skipInstrumentation("lib3/test.js"), equalTo(false));
+        assertThat(configuration.skipInstrumentation("test.js"), is(false));
+        assertThat(configuration.skipInstrumentation("lib1/test.js"), is(true));
+        assertThat(configuration.skipInstrumentation("lib2/test.js"), is(true));
+        assertThat(configuration.skipInstrumentation("lib3/test.js"), is(false));
     }
 
     @Test
     public void shouldParseInstrumentReg() {
         ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"--only-instrument-reg=.*/production/.*"});
-        assertThat(configuration.skipInstrumentation("test.js"), equalTo(true));
-        assertThat(configuration.skipInstrumentation("lib1/production/code.js"), equalTo(false));
-        assertThat(configuration.skipInstrumentation("lib2/test/production.js"), equalTo(true));
+        assertThat(configuration.skipInstrumentation("test.js"), is(true));
+        assertThat(configuration.skipInstrumentation("lib1/production/code.js"), is(false));
+        assertThat(configuration.skipInstrumentation("lib2/test/production.js"), is(true));
     }
 
     @Test
     public void shouldParseInstrumentRegWithLeadingSlash() {
         ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"--only-instrument-reg=/production/.*"});
-        assertThat(configuration.skipInstrumentation("production/code.js"), equalTo(false));
+        assertThat(configuration.skipInstrumentation("production/code.js"), is(false));
     }
 
     @Test
     public void shouldHandleInvalidInstrumentRegularExpression() {
         ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"--only-instrument-reg=*"});
-        assertThat(configuration.showHelp(), equalTo(true));
-        assertThat(configuration.isInvalid(), equalTo(true));
+        assertThat(configuration.showHelp(), is(true));
+        assertThat(configuration.isInvalid(), is(true));
     }
 
     @Test
     public void shouldParseInstrumentAndNoInstrumentReg1() {
         ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"--no-instrument=lib1", "--no-instrument-reg=lib2/production/test.*", "--only-instrument-reg=.*/production/.*", "src", "doc"});
-        assertThat(configuration.skipInstrumentation("lib1/production/test.js"), equalTo(true));
-        assertThat(configuration.skipInstrumentation("lib2/production/test.js"), equalTo(true));
-        assertThat(configuration.skipInstrumentation("lib3/production/code.js"), equalTo(false));
-        assertThat(configuration.skipInstrumentation("lib4/code.js"), equalTo(true));
+        assertThat(configuration.skipInstrumentation("lib1/production/test.js"), is(true));
+        assertThat(configuration.skipInstrumentation("lib2/production/test.js"), is(true));
+        assertThat(configuration.skipInstrumentation("lib3/production/code.js"), is(false));
+        assertThat(configuration.skipInstrumentation("lib4/code.js"), is(true));
     }
 
     @Test
     public void shouldParseInstrumentAndNoInstrumentReg2() {
         ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"--no-instrument=lib1", "--only-instrument-reg=.*/production/.*", "--no-instrument-reg=lib2/production/test.*", "src", "doc"});
-        assertThat(configuration.skipInstrumentation("lib1/production/test.js"), equalTo(true));
-        assertThat(configuration.skipInstrumentation("lib2/production/test.js"), equalTo(false));
-        assertThat(configuration.skipInstrumentation("lib3/production/code.js"), equalTo(false));
-        assertThat(configuration.skipInstrumentation("lib4/code.js"), equalTo(true));
+        assertThat(configuration.skipInstrumentation("lib1/production/test.js"), is(true));
+        assertThat(configuration.skipInstrumentation("lib2/production/test.js"), is(false));
+        assertThat(configuration.skipInstrumentation("lib3/production/code.js"), is(false));
+        assertThat(configuration.skipInstrumentation("lib4/code.js"), is(true));
     }
 
     @Test
     public void shouldParseInstrumentAndNoInstrumentReg3() {
         ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"--only-instrument-reg=.*/production/.*", "--no-instrument=lib1", "--no-instrument-reg=lib2/production/test.*", "src", "doc"});
-        assertThat(configuration.skipInstrumentation("lib1/production/test.js"), equalTo(false));
-        assertThat(configuration.skipInstrumentation("lib2/production/test.js"), equalTo(false));
-        assertThat(configuration.skipInstrumentation("lib3/production/code.js"), equalTo(false));
-        assertThat(configuration.skipInstrumentation("lib4/code.js"), equalTo(true));
+        assertThat(configuration.skipInstrumentation("lib1/production/test.js"), is(false));
+        assertThat(configuration.skipInstrumentation("lib2/production/test.js"), is(false));
+        assertThat(configuration.skipInstrumentation("lib3/production/code.js"), is(false));
+        assertThat(configuration.skipInstrumentation("lib4/code.js"), is(true));
     }
 
     @Test
     public void shouldParseExclude() {
         ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs", "--exclude=lib1", "--exclude=/lib2", "src", "doc"});
-        assertThat(configuration.exclude("test.js"), equalTo(false));
-        assertThat(configuration.exclude("lib1/test.js"), equalTo(true));
-        assertThat(configuration.exclude("lib2/test.js"), equalTo(true));
-        assertThat(configuration.exclude("lib3/test.js"), equalTo(false));
+        assertThat(configuration.exclude("test.js"), is(false));
+        assertThat(configuration.exclude("lib1/test.js"), is(true));
+        assertThat(configuration.exclude("lib2/test.js"), is(true));
+        assertThat(configuration.exclude("lib3/test.js"), is(false));
     }
 
     @Test
     public void shouldParseExcludeReg() {
         ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs", "--exclude-reg=.*/lib/.*", "--exclude-reg=/.*/test/.*", "--exclude-reg=/.*/test2/.*", "src", "doc"});
-        assertThat(configuration.exclude("test.js"), equalTo(false));
-        assertThat(configuration.exclude("lib1/lib/test.js"), equalTo(true));
-        assertThat(configuration.exclude("/lib2/test/test.js"), equalTo(true));
-        assertThat(configuration.exclude("/lib3/test2/test.js"), equalTo(true));
-        assertThat(configuration.exclude("lib4/domain/test.js"), equalTo(false));
+        assertThat(configuration.exclude("test.js"), is(false));
+        assertThat(configuration.exclude("lib1/lib/test.js"), is(true));
+        assertThat(configuration.exclude("/lib2/test/test.js"), is(true));
+        assertThat(configuration.exclude("/lib3/test2/test.js"), is(true));
+        assertThat(configuration.exclude("lib4/domain/test.js"), is(false));
     }
 
     @Test
     public void shouldHandleInvalidExcludeRegularExpression() {
         ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"--exclude-reg=*"});
-        assertThat(configuration.showHelp(), equalTo(true));
-        assertThat(configuration.isInvalid(), equalTo(true));
+        assertThat(configuration.showHelp(), is(true));
+        assertThat(configuration.isInvalid(), is(true));
     }
 
     @Test
     public void shouldHandleInvalidOption() {
         ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"--unknownoption"});
-        assertThat(configuration.showHelp(), equalTo(true));
-        assertThat(configuration.isInvalid(), equalTo(true));
+        assertThat(configuration.showHelp(), is(true));
+        assertThat(configuration.isInvalid(), is(true));
     }
 
     @Test
     public void shouldHandleInvalidShortOption() {
         ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-u"});
-        assertThat(configuration.showHelp(), equalTo(true));
-        assertThat(configuration.isInvalid(), equalTo(true));
+        assertThat(configuration.showHelp(), is(true));
+        assertThat(configuration.isInvalid(), is(true));
     }
 
     @Test

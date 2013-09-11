@@ -342,6 +342,8 @@ Public License instead of this License.
 
 package jscover.server;
 
+import jscover.util.UriFileTranslatorNoOp;
+import jscover.util.UriFileTranslatorReg;
 import org.junit.Test;
 
 import java.io.File;
@@ -356,12 +358,12 @@ public class ConfigurationForServerTest {
     @Test
     public void shouldHaveDefaults() {
         ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{});
-        assertThat(configuration.showHelp(), equalTo(false));
-        assertThat(configuration.isInvalid(), equalTo(false));
+        assertThat(configuration.showHelp(), is(false));
+        assertThat(configuration.isInvalid(), is(false));
         assertThat(configuration.getDocumentRoot().toString(), equalTo(System.getProperty("user.dir")));
         assertThat(configuration.getPort(), equalTo(8080));
         assertThat(configuration.getJSVersion(), equalTo(150));
-        assertThat(configuration.skipInstrumentation("/"), equalTo(false));
+        assertThat(configuration.skipInstrumentation("/"), is(false));
         assertThat(configuration.getCompilerEnvirons().getLanguageVersion(), equalTo(150));
         assertThat(configuration.isProxy(), is(false));
         assertThat(configuration.isIncludeUnloadedJS(), is(false));
@@ -369,45 +371,46 @@ public class ConfigurationForServerTest {
         assertThat(configuration.isIncludeFunction(), is(true));
         assertThat(configuration.getUriToFileMatcher(), nullValue());
         assertThat(configuration.getUriToFileReplace(), nullValue());
+        assertThat(configuration.getUriFileTranslator(), instanceOf(UriFileTranslatorNoOp.class));
         assertThat(configuration.getLogLevel(), is(SEVERE));
     }
 
     @Test
     public void shouldIgnoreServerSwitch() {
         ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"-ws"});
-        assertThat(configuration.showHelp(), equalTo(false));
+        assertThat(configuration.showHelp(), is(false));
         assertThat(configuration.getDocumentRoot().toString(), equalTo(System.getProperty("user.dir")));
         assertThat(configuration.getPort(), equalTo(8080));
         assertThat(configuration.isProxy(), is(false));
         assertThat(configuration.getJSVersion(), equalTo(150));
-        assertThat(configuration.skipInstrumentation("/"), equalTo(false));
-        assertThat(configuration.isIncludeBranch(), equalTo(true));
+        assertThat(configuration.skipInstrumentation("/"), is(false));
+        assertThat(configuration.isIncludeBranch(), is(true));
         assertThat(configuration.isIncludeFunction(), is(true));
     }
 
     @Test
     public void shouldShowHelpOnError() {
         ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"unknown"});
-        assertThat(configuration.showHelp(), equalTo(true));
-        assertThat(configuration.isInvalid(), equalTo(true));
+        assertThat(configuration.showHelp(), is(true));
+        assertThat(configuration.isInvalid(), is(true));
     }
 
     @Test
     public void shouldParseHelp() {
-        assertThat(ConfigurationForServer.parse(new String[]{"-h"}).showHelp(), equalTo(true));
-        assertThat(ConfigurationForServer.parse(new String[]{"--help"}).showHelp(), equalTo(true));
-        assertThat(ConfigurationForServer.parse(new String[]{"-h"}).isInvalid(), equalTo(false));
-        assertThat(ConfigurationForServer.parse(new String[]{"--help"}).isInvalid(), equalTo(false));
+        assertThat(ConfigurationForServer.parse(new String[]{"-h"}).showHelp(), is(true));
+        assertThat(ConfigurationForServer.parse(new String[]{"--help"}).showHelp(), is(true));
+        assertThat(ConfigurationForServer.parse(new String[]{"-h"}).isInvalid(), is(false));
+        assertThat(ConfigurationForServer.parse(new String[]{"--help"}).isInvalid(), is(false));
     }
 
     @Test
     public void shouldParseBranch() {
-        assertThat(ConfigurationForServer.parse(new String[]{"-ws", "--no-branch"}).isIncludeBranch(), equalTo(false));
+        assertThat(ConfigurationForServer.parse(new String[]{"-ws", "--no-branch"}).isIncludeBranch(), is(false));
     }
 
     @Test
     public void shouldParseFunction() {
-        assertThat(ConfigurationForServer.parse(new String[]{"-ws", "--no-function"}).isIncludeFunction(), equalTo(false));
+        assertThat(ConfigurationForServer.parse(new String[]{"-ws", "--no-function"}).isIncludeFunction(), is(false));
     }
 
     @Test
@@ -417,12 +420,12 @@ public class ConfigurationForServerTest {
 
     @Test
     public void shouldDisallowDocumentRootThatIsNonExistent() {
-        assertThat(ConfigurationForServer.parse(new String[]{"--document-root=xxx"}).isInvalid(), equalTo(true));
+        assertThat(ConfigurationForServer.parse(new String[]{"--document-root=xxx"}).isInvalid(), is(true));
     }
 
     @Test
     public void shouldDisallowDocumentRootThatIsAFile() {
-        assertThat(ConfigurationForServer.parse(new String[]{"--document-root=build.xml"}).isInvalid(), equalTo(true));
+        assertThat(ConfigurationForServer.parse(new String[]{"--document-root=build.xml"}).isInvalid(), is(true));
     }
 
     @Test
@@ -465,37 +468,37 @@ public class ConfigurationForServerTest {
     @Test
     public void shouldParseNoInstrument() {
         ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--no-instrument=lib1", "--no-instrument=lib2", "--no-instrument=/lib3"});
-        assertThat(configuration.skipInstrumentation("test.js"), equalTo(false));
-        assertThat(configuration.skipInstrumentation("lib1/test.js"), equalTo(true));
-        assertThat(configuration.skipInstrumentation("lib2/test.js"), equalTo(true));
-        assertThat(configuration.skipInstrumentation("lib3/test.js"), equalTo(true));
-        assertThat(configuration.skipInstrumentation("lib4/test.js"), equalTo(false));
+        assertThat(configuration.skipInstrumentation("test.js"), is(false));
+        assertThat(configuration.skipInstrumentation("lib1/test.js"), is(true));
+        assertThat(configuration.skipInstrumentation("lib2/test.js"), is(true));
+        assertThat(configuration.skipInstrumentation("lib3/test.js"), is(true));
+        assertThat(configuration.skipInstrumentation("lib4/test.js"), is(false));
     }
 
     @Test
     public void shouldParseNoInstrumentReg() {
         ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--no-instrument-reg=.*/lib/.*", "--no-instrument-reg=.*/test/.*", "--no-instrument-reg=/.*/test2/.*"});
-        assertThat(configuration.skipInstrumentation("test.js"), equalTo(false));
-        assertThat(configuration.skipInstrumentation("lib1/lib/test.js"), equalTo(true));
-        assertThat(configuration.skipInstrumentation("lib2/test/test.js"), equalTo(true));
-        assertThat(configuration.skipInstrumentation("lib3/test2/test.js"), equalTo(true));
-        assertThat(configuration.skipInstrumentation("lib4/domain/test.js"), equalTo(false));
+        assertThat(configuration.skipInstrumentation("test.js"), is(false));
+        assertThat(configuration.skipInstrumentation("lib1/lib/test.js"), is(true));
+        assertThat(configuration.skipInstrumentation("lib2/test/test.js"), is(true));
+        assertThat(configuration.skipInstrumentation("lib3/test2/test.js"), is(true));
+        assertThat(configuration.skipInstrumentation("lib4/domain/test.js"), is(false));
     }
 
     @Test
     public void shouldHandleInvalidRegularExpression() {
         ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--no-instrument-reg=*"});
-        assertThat(configuration.showHelp(), equalTo(true));
-        assertThat(configuration.isInvalid(), equalTo(true));
+        assertThat(configuration.showHelp(), is(true));
+        assertThat(configuration.isInvalid(), is(true));
     }
 
     @Test
     public void shouldParseNoInstrumentWithLeadingSlash() {
         ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--no-instrument=/lib1", "--no-instrument=/lib2"});
-        assertThat(configuration.skipInstrumentation("test.js"), equalTo(false));
-        assertThat(configuration.skipInstrumentation("lib1/test.js"), equalTo(true));
-        assertThat(configuration.skipInstrumentation("lib2/test.js"), equalTo(true));
-        assertThat(configuration.skipInstrumentation("lib3/test.js"), equalTo(false));
+        assertThat(configuration.skipInstrumentation("test.js"), is(false));
+        assertThat(configuration.skipInstrumentation("lib1/test.js"), is(true));
+        assertThat(configuration.skipInstrumentation("lib2/test.js"), is(true));
+        assertThat(configuration.skipInstrumentation("lib3/test.js"), is(false));
     }
 
     @Test
@@ -510,13 +513,14 @@ public class ConfigurationForServerTest {
         ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--uri-to-file-matcher=src/(.*)/tests(.*)", "--uri-to-file-replace=$1$2"});
         assertThat(configuration.getUriToFileMatcher().pattern(), equalTo("src/(.*)/tests(.*)"));
         assertThat(configuration.getUriToFileReplace(), equalTo("$1$2"));
+        assertThat(configuration.getUriFileTranslator(), instanceOf(UriFileTranslatorReg.class));
     }
 
     @Test
     public void shouldHandleInvalidUriToFileReg() {
         ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--uri-to-file-matcher=src/(*)/tests(.*)", "--uri-to-file-replace=$1$2"});
-        assertThat(configuration.showHelp(), equalTo(true));
-        assertThat(configuration.isInvalid(), equalTo(true));
+        assertThat(configuration.showHelp(), is(true));
+        assertThat(configuration.isInvalid(), is(true));
     }
 
     @Test
@@ -528,62 +532,62 @@ public class ConfigurationForServerTest {
     @Test
     public void shouldParseInstrumentReg() {
         ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--only-instrument-reg=.*/production/.*"});
-        assertThat(configuration.skipInstrumentation("test.js"), equalTo(true));
-        assertThat(configuration.skipInstrumentation("lib1/production/code.js"), equalTo(false));
-        assertThat(configuration.skipInstrumentation("lib2/test/production.js"), equalTo(true));
+        assertThat(configuration.skipInstrumentation("test.js"), is(true));
+        assertThat(configuration.skipInstrumentation("lib1/production/code.js"), is(false));
+        assertThat(configuration.skipInstrumentation("lib2/test/production.js"), is(true));
     }
 
     @Test
     public void shouldParseInstrumentRegWithLeadingSlash() {
         ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--only-instrument-reg=/production/.*"});
-        assertThat(configuration.skipInstrumentation("production/code.js"), equalTo(false));
+        assertThat(configuration.skipInstrumentation("production/code.js"), is(false));
     }
 
     @Test
     public void shouldHandleInvalidInstrumentRegularExpression() {
         ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--only-instrument-reg=*"});
-        assertThat(configuration.showHelp(), equalTo(true));
-        assertThat(configuration.isInvalid(), equalTo(true));
+        assertThat(configuration.showHelp(), is(true));
+        assertThat(configuration.isInvalid(), is(true));
     }
 
     @Test
     public void shouldHandleInvalidOption() {
         ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--unknownoption"});
-        assertThat(configuration.showHelp(), equalTo(true));
-        assertThat(configuration.isInvalid(), equalTo(true));
+        assertThat(configuration.showHelp(), is(true));
+        assertThat(configuration.isInvalid(), is(true));
     }
 
     @Test
     public void shouldHandleInvalidShortOption() {
         ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"-u"});
-        assertThat(configuration.showHelp(), equalTo(true));
-        assertThat(configuration.isInvalid(), equalTo(true));
+        assertThat(configuration.showHelp(), is(true));
+        assertThat(configuration.isInvalid(), is(true));
     }
 
     @Test
     public void shouldParseInstrumentAndNoInstrumentReg1() {
         ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--no-instrument=lib1", "--no-instrument-reg=lib2/production/test.*", "--only-instrument-reg=.*/production/.*"});
-        assertThat(configuration.skipInstrumentation("lib1/production/test.js"), equalTo(true));
-        assertThat(configuration.skipInstrumentation("lib2/production/test.js"), equalTo(true));
-        assertThat(configuration.skipInstrumentation("lib3/production/code.js"), equalTo(false));
-        assertThat(configuration.skipInstrumentation("lib4/code.js"), equalTo(true));
+        assertThat(configuration.skipInstrumentation("lib1/production/test.js"), is(true));
+        assertThat(configuration.skipInstrumentation("lib2/production/test.js"), is(true));
+        assertThat(configuration.skipInstrumentation("lib3/production/code.js"), is(false));
+        assertThat(configuration.skipInstrumentation("lib4/code.js"), is(true));
     }
 
     @Test
     public void shouldParseInstrumentAndNoInstrumentReg2() {
         ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--no-instrument=lib1", "--only-instrument-reg=.*/production/.*", "--no-instrument-reg=lib2/production/test.*"});
-        assertThat(configuration.skipInstrumentation("lib1/production/test.js"), equalTo(true));
-        assertThat(configuration.skipInstrumentation("lib2/production/test.js"), equalTo(false));
-        assertThat(configuration.skipInstrumentation("lib3/production/code.js"), equalTo(false));
-        assertThat(configuration.skipInstrumentation("lib4/code.js"), equalTo(true));
+        assertThat(configuration.skipInstrumentation("lib1/production/test.js"), is(true));
+        assertThat(configuration.skipInstrumentation("lib2/production/test.js"), is(false));
+        assertThat(configuration.skipInstrumentation("lib3/production/code.js"), is(false));
+        assertThat(configuration.skipInstrumentation("lib4/code.js"), is(true));
     }
 
     @Test
     public void shouldParseInstrumentAndNoInstrumentReg3() {
         ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--only-instrument-reg=.*/production/.*", "--no-instrument=lib1", "--no-instrument-reg=lib2/production/test.*"});
-        assertThat(configuration.skipInstrumentation("lib1/production/test.js"), equalTo(false));
-        assertThat(configuration.skipInstrumentation("lib2/production/test.js"), equalTo(false));
-        assertThat(configuration.skipInstrumentation("lib3/production/code.js"), equalTo(false));
-        assertThat(configuration.skipInstrumentation("lib4/code.js"), equalTo(true));
+        assertThat(configuration.skipInstrumentation("lib1/production/test.js"), is(false));
+        assertThat(configuration.skipInstrumentation("lib2/production/test.js"), is(false));
+        assertThat(configuration.skipInstrumentation("lib3/production/code.js"), is(false));
+        assertThat(configuration.skipInstrumentation("lib4/code.js"), is(true));
     }
 }

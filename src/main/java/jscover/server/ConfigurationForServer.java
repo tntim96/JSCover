@@ -383,67 +383,54 @@ public class ConfigurationForServer extends ConfigurationCommon {
         return port;
     }
 
+    public void parse(String arg) {
+        if (super.parseArg(arg))
+            return;
+        if (arg.startsWith(Main.SERVER_PREFIX)) {
+            //Ignore this
+        } else if (arg.startsWith(DOC_ROOT_PREFIX)) {
+            documentRoot = new File(arg.substring(DOC_ROOT_PREFIX.length()));
+            if (!documentRoot.exists()) {
+                System.err.println(format("Document root '%s' doesn't exist", documentRoot));
+                setInvalid();
+            } else if (!documentRoot.isDirectory()) {
+                System.err.println(format("Document root '%s' can't be a file", documentRoot));
+                setInvalid();
+            }
+        } else if (arg.startsWith(PORT_PREFIX)) {
+            port = Integer.valueOf(arg.substring(PORT_PREFIX.length()));
+        } else if (arg.equals(PROXY_PREFIX)) {
+            proxy = true;
+        } else if (arg.equals(INCLUDE_UNLOADED_JS_PREFIX)) {
+            includeUnloadedJS = true;
+        } else if (arg.startsWith(REPORT_DIR_PREFIX)) {
+            reportDir = new File(arg.substring(REPORT_DIR_PREFIX.length()));
+            reportDir.mkdirs();
+        } else if (arg.startsWith(URI_TO_FILE_MATCHER_PREFIX)) {
+            String patternString = arg.substring(URI_TO_FILE_MATCHER_PREFIX.length());
+            try {
+                uriToFileMatcher = Pattern.compile(patternString);
+            } catch(PatternSyntaxException e) {
+                e.printStackTrace(System.err);
+                setInvalid();
+            }
+        } else if (arg.startsWith(URI_TO_FILE_REPLACE_PREFIX)) {
+            uriToFileReplace = arg.substring(URI_TO_FILE_REPLACE_PREFIX.length());
+        } else {
+            if (arg.startsWith("-"))
+                System.err.println(format("JSCover: Unknown option '%s'", arg));
+            setInvalid();
+        }
+    }
+
     public static ConfigurationForServer parse(String[] args) {
         ConfigurationForServer configuration = new ConfigurationForServer();
         for (String arg : args) {
-            if (arg.startsWith(Main.SERVER_PREFIX)) {
-            //Ignore this
-            } else if (arg.equals(HELP_PREFIX1) || arg.equals(HELP_PREFIX2)) {
-                configuration.showHelp = true;
-            } else if (arg.startsWith(DOC_ROOT_PREFIX)) {
-                configuration.documentRoot = new File(arg.substring(DOC_ROOT_PREFIX.length()));
-                if (!configuration.documentRoot.exists()) {
-                    System.err.println(format("Document root '%s' doesn't exist", configuration.documentRoot));
-                    setInvalid(configuration);
-                } else if (!configuration.documentRoot.isDirectory()) {
-                    System.err.println(format("Document root '%s' can't be a file", configuration.documentRoot));
-                    setInvalid(configuration);
-                }
-            } else if (arg.startsWith(PORT_PREFIX)) {
-                configuration.port = Integer.valueOf(arg.substring(PORT_PREFIX.length()));
-            } else if (arg.equals(PROXY_PREFIX)) {
-                configuration.proxy = true;
-            } else if (arg.equals(INCLUDE_UNLOADED_JS_PREFIX)) {
-                configuration.includeUnloadedJS = true;
-            } else if (arg.startsWith(REPORT_DIR_PREFIX)) {
-                configuration.reportDir = new File(arg.substring(REPORT_DIR_PREFIX.length()));
-                configuration.reportDir.mkdirs();
-            } else if (arg.startsWith(NO_INSTRUMENT_PREFIX)) {
-                String uri = arg.substring(NO_INSTRUMENT_PREFIX.length());
-                if (uri.startsWith("/"))
-                    uri = uri.substring(1);
-                configuration.patternMatchers.add(new PatternMatcherString(uri));
-            } else if (arg.startsWith(NO_INSTRUMENT_REG_PREFIX)) {
-                configuration.addNoInstrumentReg(arg);
-            } else if (arg.startsWith(URI_TO_FILE_MATCHER_PREFIX)) {
-                String patternString = arg.substring(URI_TO_FILE_MATCHER_PREFIX.length());
-                try {
-                    configuration.uriToFileMatcher = Pattern.compile(patternString);
-                } catch(PatternSyntaxException e) {
-                    e.printStackTrace(System.err);
-                    setInvalid(configuration);
-                }
-            } else if (arg.startsWith(URI_TO_FILE_REPLACE_PREFIX)) {
-                configuration.uriToFileReplace = arg.substring(URI_TO_FILE_REPLACE_PREFIX.length());
-            } else if (arg.startsWith(ONLY_INSTRUMENT_REG_PREFIX)) {
-                configuration.addOnlyInstrumentReg(arg);
-            } else if (arg.startsWith(JS_VERSION_PREFIX)) {
-                configuration.JSVersion = (int)(Float.valueOf(arg.substring(JS_VERSION_PREFIX.length()))*100);
-            } else if (arg.equals(BRANCH_PREFIX)) {
-                configuration.includeBranch = false;
-            } else if (arg.equals(FUNCTION_PREFIX)) {
-                configuration.includeFunction = false;
-            } else if (arg.startsWith(LOG_LEVEL)) {
-                configuration.logLevel = Level.parse(arg.substring(LOG_LEVEL.length()));
-            } else {
-                if (arg.startsWith("-"))
-                    System.err.println(format("JSCover: Unknown option '%s'", arg));
-                setInvalid(configuration);
-            }
+            configuration.parse(arg);
         }
         if ((configuration.uriToFileMatcher == null && configuration.uriToFileReplace != null)
                 || (configuration.uriToFileMatcher != null && configuration.uriToFileReplace == null))
-            setInvalid(configuration);
+            configuration.setInvalid();
         if (configuration.uriToFileMatcher != null)
             configuration.uriFileTranslator = new UriFileTranslatorReg(configuration.uriToFileMatcher, configuration.uriToFileReplace);
         configuration.compilerEnvirons.setLanguageVersion(configuration.JSVersion);
