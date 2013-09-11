@@ -420,9 +420,8 @@ public class ConfigurationForFS extends ConfigurationCommon {
             try {
                 excludeRegs.add(Pattern.compile(patternString));
             } catch(PatternSyntaxException e) {
+                setInvalid(format("Invalid pattern '%s'", patternString));
                 e.printStackTrace(System.err);
-                showHelp = true;
-                invalid = true;
             }
         } else  if (arg.startsWith("-")) {
             setInvalid(format("JSCover: Unknown option '%s'", arg));

@@ -442,7 +442,7 @@ public class ConfigurationCommon extends Configuration {
         try {
             patternMatchers.add(PatternMatcherRegEx.getIncludePatternMatcher(patternString));
         } catch (PatternSyntaxException e) {
-            setInvalid(format("Invalid pattern '%s'",patternString));
+            setInvalid(format("Invalid pattern '%s'", patternString));
             e.printStackTrace(System.err);
         }
     }
@@ -455,7 +455,7 @@ public class ConfigurationCommon extends Configuration {
             patternMatchers.add(PatternMatcherRegEx.getExcludePatternMatcher(patternString));
         } catch(PatternSyntaxException e) {
             e.printStackTrace(System.err);
-            setInvalid(format("Invalid pattern '%s'",patternString));
+            setInvalid(format("Invalid pattern '%s'", patternString));
         }
     }
 
