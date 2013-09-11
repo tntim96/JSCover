@@ -391,11 +391,9 @@ public class ConfigurationForServer extends ConfigurationCommon {
         } else if (arg.startsWith(DOC_ROOT_PREFIX)) {
             documentRoot = new File(arg.substring(DOC_ROOT_PREFIX.length()));
             if (!documentRoot.exists()) {
-                System.err.println(format("Document root '%s' doesn't exist", documentRoot));
-                setInvalid();
+                setInvalid(format("Document root '%s' doesn't exist", documentRoot));
             } else if (!documentRoot.isDirectory()) {
-                System.err.println(format("Document root '%s' can't be a file", documentRoot));
-                setInvalid();
+                setInvalid(format("Document root '%s' can't be a file", documentRoot));
             }
         } else if (arg.startsWith(PORT_PREFIX)) {
             port = Integer.valueOf(arg.substring(PORT_PREFIX.length()));
@@ -411,15 +409,16 @@ public class ConfigurationForServer extends ConfigurationCommon {
             try {
                 uriToFileMatcher = Pattern.compile(patternString);
             } catch(PatternSyntaxException e) {
+                setInvalid(format("Invalid pattern '%s'", patternString));
                 e.printStackTrace(System.err);
-                setInvalid();
             }
         } else if (arg.startsWith(URI_TO_FILE_REPLACE_PREFIX)) {
             uriToFileReplace = arg.substring(URI_TO_FILE_REPLACE_PREFIX.length());
         } else {
+            String message = format("JSCover: Extra command line argument '%s'", arg);
             if (arg.startsWith("-"))
-                System.err.println(format("JSCover: Unknown option '%s'", arg));
-            setInvalid();
+                message = format("JSCover: Unknown option '%s'", arg);
+            setInvalid(message);
         }
     }
 
@@ -428,9 +427,10 @@ public class ConfigurationForServer extends ConfigurationCommon {
         for (String arg : args) {
             configuration.parse(arg);
         }
-        if ((configuration.uriToFileMatcher == null && configuration.uriToFileReplace != null)
-                || (configuration.uriToFileMatcher != null && configuration.uriToFileReplace == null))
-            configuration.setInvalid();
+        if (configuration.uriToFileMatcher != null && configuration.uriToFileReplace == null)
+            configuration.setInvalid(URI_TO_FILE_MATCHER_PREFIX + " found without " + URI_TO_FILE_REPLACE_PREFIX);
+        if (configuration.uriToFileMatcher == null && configuration.uriToFileReplace != null)
+            configuration.setInvalid(URI_TO_FILE_REPLACE_PREFIX + " found without " + URI_TO_FILE_MATCHER_PREFIX);
         if (configuration.uriToFileMatcher != null)
             configuration.uriFileTranslator = new UriFileTranslatorReg(configuration.uriToFileMatcher, configuration.uriToFileReplace);
         configuration.compilerEnvirons.setLanguageVersion(configuration.JSVersion);

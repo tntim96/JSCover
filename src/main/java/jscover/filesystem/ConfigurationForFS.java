@@ -393,15 +393,13 @@ public class ConfigurationForFS extends ConfigurationCommon {
             return configuration;
 
         if (args.length < 3) {
-            configuration.setInvalid();
+            configuration.setInvalid("A minimum of 3 arguments is required");
             return configuration;
         }
         if (!configuration.validSourceDirectory()) {
-            System.err.println(format("Source directory '%s' is invalid", configuration.srcDir));
-            configuration.setInvalid();
+            configuration.setInvalid(format("Source directory '%s' is invalid", configuration.srcDir));
         } else if (!configuration.validDestinationDirectory()) {
-            System.err.println(format("Destination directory '%s' must not be in the source directory", configuration.destDir));
-            configuration.setInvalid();
+            configuration.setInvalid(format("Destination directory '%s' must not be in the source directory", configuration.destDir));
         }
         configuration.compilerEnvirons.setLanguageVersion(configuration.JSVersion);
         return configuration;
@@ -427,15 +425,13 @@ public class ConfigurationForFS extends ConfigurationCommon {
                 invalid = true;
             }
         } else  if (arg.startsWith("-")) {
-            System.err.println(format("JSCover: Unknown option '%s'", arg));
-            setInvalid();
+            setInvalid(format("JSCover: Unknown option '%s'", arg));
         } else if (srcDir == null) {
             srcDir = new File(arg);
         } else if (destDir == null) {
             destDir = new File(arg);
         } else {
-            System.err.println(format("JSCover: Extra command line argument found '%s'", arg));
-            setInvalid();
+            setInvalid(format("JSCover: Extra command line argument found '%s'", arg));
         }
     }
 
