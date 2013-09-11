@@ -348,6 +348,7 @@ import java.util.List;
 public enum MIME {
     DEFAULT("application/octet-stream"),
     CSS("text/css", "css"),
+    ICO("image/x-icon", "ico"),
     JS("application/javascript", "js"),
     JSON("application/json", "json"),
     HTML("text/html", "htm", "html"),
@@ -355,7 +356,9 @@ public enum MIME {
     GIF("image/gif", "gif"),
     JPG("image/jpeg", "jpg", "jpeg"),
     PNG("image/png", "png"),
-    TEXT_PLAIN("text/plain", "txt");
+    SVG("image/svg+xml", "svg"),
+    TEXT_PLAIN("text/plain", "txt"),
+    TTF("application/x-font-ttf", "ttf");
     private String contentType;
     private List<String> extensions;
 
