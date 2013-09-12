@@ -347,6 +347,11 @@ import java.io.InputStream;
 
 public class IoService {
     private IoUtils ioUtils = IoUtils.getInstance();
+    private boolean localStorage;
+
+    public IoService(boolean localStorage) {
+        this.localStorage = localStorage;
+    }
 
     public void generateJSCoverFilesForFileSystem(File destDir, String version) {
         generateJSCoverFiles(destDir, version, false);
@@ -356,7 +361,7 @@ public class IoService {
         generateJSCoverFiles(destDir, version, true);
     }
 
-    public void generateJSCoverFiles(File destDir, String version, boolean isServer) {
+    private void generateJSCoverFiles(File destDir, String version, boolean isServer) {
         if (!destDir.exists())
             destDir.mkdirs();
 
@@ -390,7 +395,7 @@ public class IoService {
         String mainJS = ioUtils.loadFromClassPath("/jscoverage.js");
         String branchJS = ioUtils.loadFromClassPath("/jscoverage-branch.js");
         String commonJS = ioUtils.loadFromClassPath("/jscoverage-common.js");
-        String localStorageJS = ioUtils.loadFromClassPath("/jscoverage-localStorage.js");
+        String localStorageJS = localStorage ? ioUtils.loadFromClassPath("/jscoverage-localStorage.js") : "";
         return branchJS + commonJS + localStorageJS + mainJS;
     }
 

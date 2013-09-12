@@ -351,7 +351,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
 
 public class IoServiceTest {
-    private IoService ioService = new IoService();
+    private IoService ioService = new IoService(false);
     private IoUtils ioUtils = IoUtils.getInstance();
     private File destDir = new File("target/IoService");
 
@@ -364,6 +364,7 @@ public class IoServiceTest {
 
         String js = ioUtils.loadFromFileSystem(new File(destDir,"jscoverage.js"));
         assertThat(js, not(containsString("\njscoverage_isReport = true;")));
+        assertThat(js, not(containsString("localStorage")));
     }
 
     @Test
@@ -375,11 +376,21 @@ public class IoServiceTest {
 
         String js = ioUtils.loadFromFileSystem(new File(destDir,"jscoverage.js"));
         assertThat(js, containsString("\njscoverage_isReport = true;"));
+        assertThat(js, not(containsString("localStorage")));
     }
 
     @Test
     public void shouldGenerateJSForWebServer() {
         String js = ioService.generateJSCoverageServerJS();
         assertThat(js, containsString("\njscoverage_isServer = true;"));
+        assertThat(js, not(containsString("localStorage")));
+    }
+
+    @Test
+    public void shouldGenerateJSForWebServerWithLocalStorage() {
+        IoService ioService = new IoService(true);
+        String js = ioService.generateJSCoverageServerJS();
+        assertThat(js, containsString("\njscoverage_isServer = true;"));
+        assertThat(js, containsString("localStorage"));
     }
 }

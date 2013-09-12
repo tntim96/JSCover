@@ -356,7 +356,7 @@ import static java.util.logging.Level.INFO;
 
 public class FileSystemInstrumenter {
     private static final Logger logger = Logger.getLogger(FileSystemInstrumenter.class.getName());
-    private IoService ioService = new IoService();
+    private IoService ioService;
     private InstrumenterService instrumenterService = new InstrumenterService();
     private IoUtils ioUtils = IoUtils.getInstance();
     private LoggerUtils loggerUtils = LoggerUtils.getInstance();
@@ -364,6 +364,7 @@ public class FileSystemInstrumenter {
 
     public void run(ConfigurationForFS configuration) {
         this.configuration = configuration;
+        ioService = new IoService(configuration.isLocalStorage());
         loggerUtils.configureLogger(configuration.getLogLevel(), configuration.getDestDir());
         logger.log(INFO, "Starting JSCover {0} file instrumentation", configuration.getVersion());
         ioService.generateJSCoverFilesForFileSystem(configuration.getDestDir(), configuration.getVersion());

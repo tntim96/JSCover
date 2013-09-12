@@ -369,7 +369,7 @@ public class InstrumentingRequestHandler extends HttpServer {
     public static final String JSCOVERAGE_STORE = "/jscoverage-store";
     static Map<String, String> uris = new HashMap<String, String>();
     private ConfigurationForServer configuration;
-    private IoService ioService = new IoService();
+    private IoService ioService;
     private JSONDataSaver jsonDataSaver = new JSONDataSaver();
     private InstrumenterService instrumenterService = new InstrumenterService();
     private ProxyService proxyService = new ProxyService();
@@ -381,6 +381,7 @@ public class InstrumentingRequestHandler extends HttpServer {
         this.configuration = configuration;
         this.unloadedSourceProcessor = new UnloadedSourceProcessor(configuration);
         this.uriFileTranslator = configuration.getUriFileTranslator();
+        this.ioService = new IoService(configuration.isLocalStorage());
     }
 
     @Override
