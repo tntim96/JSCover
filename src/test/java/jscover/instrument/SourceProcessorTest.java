@@ -342,6 +342,7 @@ Public License instead of this License.
 
 package jscover.instrument;
 
+import jscover.ConfigurationCommon;
 import jscover.util.IoUtils;
 import jscover.util.ReflectionUtils;
 import org.junit.Before;
@@ -368,15 +369,19 @@ import static org.mockito.Mockito.verify;
 @RunWith(MockitoJUnitRunner.class)
 public class SourceProcessorTest {
     private SourceProcessor sourceProcessor;
+    @Mock private ConfigurationCommon config;
     @Mock private CompilerEnvirons compilerEnvirons;
     @Mock private ParseTreeInstrumenter instrumenter;
     @Mock private BranchInstrumentor branchInstrumentor;
-    @Mock private Parser parser = new Parser();
-    @Mock private IoUtils ioUtils = IoUtils.getInstance();
+    @Mock private Parser parser;
+    @Mock private IoUtils ioUtils;
 
     @Before
     public void setUp() {
-        sourceProcessor = new SourceProcessor(compilerEnvirons, "test.js", false, false);
+        given(config.getCompilerEnvirons()).willReturn(compilerEnvirons);
+        given(config.isIncludeBranch()).willReturn(false);
+        given(config.isIncludeFunction()).willReturn(false);
+        sourceProcessor = new SourceProcessor(config, "test.js");
         ReflectionUtils.setField(sourceProcessor, "ioUtils", ioUtils);
         ReflectionUtils.setField(sourceProcessor, "parser", parser);
     }

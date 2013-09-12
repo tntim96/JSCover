@@ -360,15 +360,7 @@ function jscoverage_body_load() {
             if (response === '') {
               throw 404;
             }
-            var json = eval('(' + response + ')');
-            var file;
-            for (file in json) {
-              var fileCoverage = json[file];
-              _$jscoverage[file] = {};
-              _$jscoverage[file].lineData = fileCoverage.lineData;
-              _$jscoverage[file].functionData = fileCoverage.functionData;
-              _$jscoverage[file].branchData = convertBranchDataLinesFromJSON(fileCoverage.branchData);
-            }
+            _$jscoverage = jscoverage_parseCoverageJSON(response);
             jscoverage_recalculateSummaryTab();
             summaryThrobber.style.visibility = 'hidden';
           }

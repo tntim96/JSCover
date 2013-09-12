@@ -178,6 +178,19 @@ function jscoverage_serializeCoverageToJSON() {
     return '{' + json.join(',') + '}';
 }
 
+function jscoverage_parseCoverageJSON(data) {
+    var result = {};
+    var json = eval('(' + data + ')');
+    var file;
+    for (file in json) {
+        var fileCoverage = json[file];
+        result[file] = {};
+        result[file].lineData = fileCoverage.lineData;
+        result[file].functionData = fileCoverage.functionData;
+        result[file].branchData = convertBranchDataLinesFromJSON(fileCoverage.branchData);
+    }
+    return result;
+}
 
 function jscoverage_pad(s) {
     return '0000'.substr(s.length) + s;

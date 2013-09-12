@@ -347,7 +347,10 @@ import jscover.instrument.InstrumenterService;
 import jscover.instrument.UnloadedSourceProcessor;
 import jscover.report.JSONDataSaver;
 import jscover.report.ScriptCoverageCount;
-import jscover.util.*;
+import jscover.util.IoService;
+import jscover.util.IoUtils;
+import jscover.util.ReflectionUtils;
+import jscover.util.UriFileTranslator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -360,14 +363,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import static java.lang.String.format;
 import static jscover.server.InstrumentingRequestHandler.JSCOVERAGE_STORE;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.sameInstance;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
@@ -402,7 +403,9 @@ public class InstrumentingRequestHandlerTest {
         ReflectionUtils.setField(webServer, HttpServer.class, "pw", pw);
         ReflectionUtils.setField(webServer, HttpServer.class, "version", "testVersion");
         ReflectionUtils.setField(webServer, HttpServer.class, "ioUtils", ioUtils);
-        headers.put("Content-Length", new ArrayList<String>(){{add("12");}});
+        headers.put("Content-Length", new ArrayList<String>() {{
+            add("12");
+        }});
     }
 
     @Test
@@ -433,6 +436,10 @@ public class InstrumentingRequestHandlerTest {
 
     @Test//NB This test must be run with assertions enabled (i.e. JVM arg -ea)
     public void shouldThrowErrorIfBytesNotSkipped() {
+        webServer.getClass().getClassLoader().setDefaultAssertionStatus(true);
+        webServer.getClass().getClassLoader().setClassAssertionStatus(InstrumentingRequestHandler.class.getName(), true);
+        //getClass().getClassLoader().setDefaultAssertionStatus(true);
+        //Thread.currentThread().getContextClassLoader().setDefaultAssertionStatus(true);
         File reportDir = new File("target/temp");
         reportDir.deleteOnExit();
         given(configuration.getReportDir()).willReturn(reportDir);
@@ -648,7 +655,7 @@ public class InstrumentingRequestHandlerTest {
 
         webServer.handleGet(new HttpRequest("/js/production.js", null, null, 0, null));
 
-        verify(instrumenterService).instrumentJSForWebServer(compilerEnvirons, new File("wwwRoot/js/production.js"), "/js/production.js", false, false);
+        verify(instrumenterService).instrumentJSForWebServer(configuration, new File("wwwRoot/js/production.js"), "/js/production.js");
         verifyZeroInteractions(ioService);
         verifyZeroInteractions(jsonDataSaver);
         verifyZeroInteractions(proxyService);
@@ -667,7 +674,7 @@ public class InstrumentingRequestHandlerTest {
 
         webServer.handleGet(new HttpRequest("/js/production.js", null, null, 0, null));
 
-        verify(instrumenterService).instrumentJSForWebServer(compilerEnvirons, new File("wwwRoot/js/production.js"), "/js/production.js", false, false);
+        verify(instrumenterService).instrumentJSForWebServer(configuration, new File("wwwRoot/js/production.js"), "/js/production.js");
         verifyZeroInteractions(ioService);
         verifyZeroInteractions(jsonDataSaver);
         verifyZeroInteractions(proxyService);
@@ -683,7 +690,7 @@ public class InstrumentingRequestHandlerTest {
         CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
         given(configuration.getCompilerEnvirons()).willReturn(compilerEnvirons);
         given(configuration.skipInstrumentation("/js/production.js")).willReturn(false);
-        given(instrumenterService.instrumentJSForWebServer(compilerEnvirons, new File("wwwRoot/js/production.js"), "/js/production.js", false, false)).willThrow(new UriNotFound("Ouch!", null));
+        given(instrumenterService.instrumentJSForWebServer(configuration, new File("wwwRoot/js/production.js"), "/js/production.js")).willThrow(new UriNotFound("Ouch!", null));
 
         webServer.handleGet(new HttpRequest("/js/production.js", null, null, 0, null));
 
@@ -715,7 +722,7 @@ public class InstrumentingRequestHandlerTest {
 
         webServer.handleGet(request);
 
-        verify(instrumenterService).instrumentJSForProxyServer(compilerEnvirons, "someJavaScript;", "/exclude/js/production.js", false, false);
+        verify(instrumenterService).instrumentJSForProxyServer(configuration, "someJavaScript;", "/exclude/js/production.js");
         verifyZeroInteractions(ioService);
         verifyZeroInteractions(jsonDataSaver);
         assertThat(InstrumentingRequestHandler.uris.size(), equalTo(1));

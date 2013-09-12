@@ -343,16 +343,24 @@ Public License instead of this License.
 package jscover.instrument;
 
 
+import jscover.ConfigurationCommon;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.mozilla.javascript.*;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.mockito.BDDMockito.given;
 
+@RunWith(MockitoJUnitRunner.class)
 public class InMemoryCoverageTest extends ScriptableObject {
+    private @Mock ConfigurationCommon config;
     private static CompilerEnvirons compilerEnv = new CompilerEnvirons();
     static {
         // compilerEnv.setAllowMemberExprAsFunctionName(true);
@@ -360,6 +368,13 @@ public class InMemoryCoverageTest extends ScriptableObject {
         compilerEnv.setStrictMode(false);
     }
     private SourceProcessor processor;
+
+    @Before
+    public void setUp() {
+        given(config.getCompilerEnvirons()).willReturn(compilerEnv);
+        given(config.isIncludeBranch()).willReturn(true);
+        given(config.isIncludeFunction()).willReturn(true);
+    }
 
     @Test
     public void shouldExecuteJS() {
@@ -376,7 +391,7 @@ public class InMemoryCoverageTest extends ScriptableObject {
         Scriptable scope = cx.initStandardObjects();
         String source = "function isNegative(x) {\n  if (x>=0)\n    return false;\n  else\n    return true;\n}; isNegative(12);";
 
-        processor = new SourceProcessor(compilerEnv, "inMemory.js", true, true);
+        processor = new SourceProcessor(config, "inMemory.js");
         String instrumentedJS = processor.processSource("inMemory.js", source);
 
         Object expected = cx.evaluateString(scope, source, "inMemory.js", 1, null);
@@ -398,7 +413,7 @@ public class InMemoryCoverageTest extends ScriptableObject {
                 "};\n" +
                 "isNegative(12);";
 
-        processor = new SourceProcessor(compilerEnv, "inMemory.js", true, true);
+        processor = new SourceProcessor(config, "inMemory.js");
         String instrumentedJS = processor.processSource("inMemory.js", source);
         instrumentedJS += "_$jscoverage;";
 

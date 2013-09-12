@@ -342,6 +342,7 @@ Public License instead of this License.
 
 package jscover.instrument;
 
+import jscover.ConfigurationCommon;
 import jscover.server.UriNotFound;
 import jscover.util.IoUtils;
 import org.mozilla.javascript.CompilerEnvirons;
@@ -357,9 +358,9 @@ public class InstrumenterService {
     private static final Logger logger = Logger.getLogger(InstrumenterService.class.getName());
     private IoUtils ioUtils = IoUtils.getInstance();
 
-    public String instrumentJSForWebServer(CompilerEnvirons compilerEnvirons, File srcFile, String uri, boolean includeBranch, boolean includeFunction) {
+    public String instrumentJSForWebServer(ConfigurationCommon config, File srcFile, String uri) {
         logger.log(INFO, "Instrumenting {0}", uri);
-        SourceProcessor sourceProcessor = new SourceProcessor(compilerEnvirons, uri, includeBranch, includeFunction);
+        SourceProcessor sourceProcessor = new SourceProcessor(config, uri);
         try {
             String source = ioUtils.toString(new FileInputStream(srcFile));
             return sourceProcessor.processSourceForServer(source);
@@ -368,15 +369,15 @@ public class InstrumenterService {
         }
     }
 
-    public String instrumentJSForProxyServer(CompilerEnvirons compilerEnvirons, String source, String uri, boolean includeBranch, boolean includeFunction) {
+    public String instrumentJSForProxyServer(ConfigurationCommon config, String source, String uri) {
         logger.log(INFO, "Instrumenting {0}", uri);
-        SourceProcessor sourceProcessor = new SourceProcessor(compilerEnvirons, uri, includeBranch, includeFunction);
+        SourceProcessor sourceProcessor = new SourceProcessor(config, uri);
         return sourceProcessor.processSourceForServer(source);
     }
 
-    public void instrumentJSForFileSystem(CompilerEnvirons compilerEnvirons, File srcFile, File dest, String uri, boolean includeBranch, boolean includeFunction) {
+    public void instrumentJSForFileSystem(ConfigurationCommon config, File srcFile, File dest, String uri) {
         logger.log(INFO, "Instrumenting {0}", uri);
-        SourceProcessor sourceProcessor = new SourceProcessor(compilerEnvirons, "/" + uri, includeBranch, includeFunction);
+        SourceProcessor sourceProcessor = new SourceProcessor(config, "/" + uri);
         String source = ioUtils.loadFromFileSystem(srcFile);
         String jsInstrumented = sourceProcessor.processSourceForFileSystem(source);
         ioUtils.copy(jsInstrumented, dest);

@@ -342,6 +342,7 @@ Public License instead of this License.
 
 package jscover.instrument;
 
+import jscover.ConfigurationCommon;
 import jscover.util.IoUtils;
 import org.mozilla.javascript.CompilerEnvirons;
 import org.mozilla.javascript.Parser;
@@ -366,6 +367,15 @@ class SourceProcessor {
     private IoUtils ioUtils = IoUtils.getInstance();
     private boolean includeBranchCoverage;
     private boolean includeFunctionCoverage;
+
+    public SourceProcessor(ConfigurationCommon config, String uri) {
+        this.uri = uri;
+        this.instrumenter = new ParseTreeInstrumenter(uri, config.isIncludeFunction());
+        this.branchInstrumentor = new BranchInstrumentor(uri);
+        parser = new Parser(config.getCompilerEnvirons());
+        this.includeBranchCoverage = config.isIncludeBranch();
+        this.includeFunctionCoverage = config.isIncludeFunction();
+    }
 
     public SourceProcessor(CompilerEnvirons compilerEnv, String uri, boolean includeBranchCoverage, boolean includeFunctionCoverage) {
         this.uri = uri;

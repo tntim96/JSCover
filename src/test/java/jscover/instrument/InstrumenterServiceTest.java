@@ -342,17 +342,24 @@ Public License instead of this License.
 
 package jscover.instrument;
 
+import jscover.ConfigurationCommon;
 import jscover.util.IoUtils;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.mozilla.javascript.CompilerEnvirons;
 
 import java.io.File;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.mockito.BDDMockito.given;
 
+@RunWith(MockitoJUnitRunner.class)
 public class InstrumenterServiceTest {
+    @Mock private ConfigurationCommon config;
     private InstrumenterService service = new InstrumenterService();
     private CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
     private IoUtils ioUtils = IoUtils.getInstance();
@@ -362,13 +369,16 @@ public class InstrumenterServiceTest {
     public void setUp() {
         src.delete();
         ioUtils.copy("x++;", src);
+        given(config.getCompilerEnvirons()).willReturn(compilerEnvirons);
+        given(config.isIncludeBranch()).willReturn(false);
+        given(config.isIncludeFunction()).willReturn(false);
     }
 
     @Test
     public void shouldInstrumentForFileSystem() {
         File dest = new File("target/dest.js");
         dest.deleteOnExit();
-        service.instrumentJSForFileSystem(compilerEnvirons, src, dest, "src.js", false, false);
+        service.instrumentJSForFileSystem(config, src, dest, "src.js");
         String jsInstrumented = ioUtils.loadFromFileSystem(dest);
 
         assertThat(jsInstrumented, containsString("x++;"));
@@ -379,7 +389,7 @@ public class InstrumenterServiceTest {
     public void shouldInstrumentForWebServer() {
         File dest = new File("target/dest.js");
         dest.deleteOnExit();
-        String jsInstrumented = service.instrumentJSForWebServer(compilerEnvirons, src, "/src.js", false, false);
+        String jsInstrumented = service.instrumentJSForWebServer(config, src, "/src.js");
 
         assertThat(jsInstrumented, containsString("x++;"));
         assertThat(jsInstrumented, containsString("_$jscoverage['/src.js'].lineData[1]++;"));

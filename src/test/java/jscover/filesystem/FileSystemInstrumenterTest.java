@@ -403,7 +403,7 @@ public class FileSystemInstrumenterTest {
 
         fsi.copyFolder(src, dest);
 
-        verify(instrumenterService).instrumentJSForFileSystem(compilerEnvirons, src, dest, path, configuration.isIncludeBranch(), configuration.isIncludeFunction());
+        verify(instrumenterService).instrumentJSForFileSystem(configuration, src, dest, path);
         verify(destParent).mkdirs();
     }
 
@@ -419,7 +419,7 @@ public class FileSystemInstrumenterTest {
 
         fsi.copyFolder(src, dest);
 
-        verify(instrumenterService).instrumentJSForFileSystem(compilerEnvirons, src, dest, path, configuration.isIncludeBranch(), configuration.isIncludeFunction());
+        verify(instrumenterService).instrumentJSForFileSystem(configuration, src, dest, path);
         verify(destParent, times(0)).mkdirs();
     }
 

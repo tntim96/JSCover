@@ -342,9 +342,14 @@ Public License instead of this License.
 
 package jscover.instrument;
 
+import jscover.ConfigurationCommon;
 import jscover.util.IoUtils;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.mozilla.javascript.CompilerEnvirons;
 import org.mozilla.javascript.Context;
 
@@ -354,10 +359,27 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.BDDMockito.given;
 
+@RunWith(MockitoJUnitRunner.class)
 public class InstrumentAndHighlightRegressionTest {
     private static Set<String> tested = new HashSet<String>();
+    private static CompilerEnvirons compilerEnv = new CompilerEnvirons();
+    static {
+        // compilerEnv.setAllowMemberExprAsFunctionName(true);
+        compilerEnv.setLanguageVersion(Context.VERSION_1_8);
+        compilerEnv.setStrictMode(false);
+    }
+
     private IoUtils ioUtils = IoUtils.getInstance();
+    @Mock private ConfigurationCommon config;
+
+    @Before
+    public void setUp() {
+        given(config.getCompilerEnvirons()).willReturn(compilerEnv);
+        given(config.isIncludeBranch()).willReturn(false);
+        given(config.isIncludeFunction()).willReturn(true);
+    }
 
     @Test
     public void shouldInstrumentArray() {
@@ -610,16 +632,9 @@ public class InstrumentAndHighlightRegressionTest {
         }
     }
 
-    private static CompilerEnvirons compilerEnv = new CompilerEnvirons();
-    static {
-        // compilerEnv.setAllowMemberExprAsFunctionName(true);
-        compilerEnv.setLanguageVersion(Context.VERSION_1_8);
-        compilerEnv.setStrictMode(false);
-    }
-
     private void testFile(String fileName) {
         tested.add(fileName);
-        SourceProcessor instrumenter = new SourceProcessor(compilerEnv, fileName, false, true);
+        SourceProcessor instrumenter = new SourceProcessor(config, fileName);
 
         String source = ioUtils.loadFromClassPath("/data/javascript/" + fileName);
         String instrumentedSource = instrumenter.processSourceWithoutHeader(source);

@@ -342,20 +342,27 @@ Public License instead of this License.
 
 package jscover.instrument;
 
+import jscover.ConfigurationCommon;
 import jscover.util.IoUtils;
+import jscover.util.ReflectionUtils;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.mozilla.javascript.CompilerEnvirons;
 import org.mozilla.javascript.Context;
 
 import java.net.URISyntaxException;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.BDDMockito.given;
 
-@RunWith(JUnit4.class)
+@RunWith(MockitoJUnitRunner.class)
 public class InstrumenterIntegrationTest {
     private static CompilerEnvirons compilerEnv = new CompilerEnvirons();
+    @Mock private ConfigurationCommon config;
     private IoUtils ioUtils = IoUtils.getInstance();
     static {
         // compilerEnv.setAllowMemberExprAsFunctionName(true);
@@ -364,11 +371,18 @@ public class InstrumenterIntegrationTest {
     }
     private SourceProcessor instrumenter;
 
+    @Before
+    public void setUp() {
+        given(config.getCompilerEnvirons()).willReturn(compilerEnv);
+        given(config.isIncludeBranch()).willReturn(true);
+        given(config.isIncludeFunction()).willReturn(true);
+    }
+
     @Test
     public void shouldInstrumentForFileSystem() throws URISyntaxException {
         String fileName = "test-simple.js";
         String source = ioUtils.loadFromClassPath("/" + fileName);
-        instrumenter = new SourceProcessor(compilerEnv, fileName, true, true);
+        instrumenter = new SourceProcessor(config, fileName);
 
         String instrumentedSource = instrumenter.processSourceForFileSystem(source);
 
@@ -382,7 +396,7 @@ public class InstrumenterIntegrationTest {
     public void shouldInstrumentForServer() throws URISyntaxException {
         String fileName = "test-simple.js";
         String source = ioUtils.loadFromClassPath("/" + fileName);
-        instrumenter = new SourceProcessor(compilerEnv, fileName, true, true);
+        instrumenter = new SourceProcessor(config, fileName);
 
         String instrumentedSource = instrumenter.processSourceForServer(source);
 
