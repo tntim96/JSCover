@@ -342,11 +342,13 @@ Public License instead of this License.
 
 package jscover.instrument;
 
+import jscover.ConfigurationCommon;
 import jscover.util.ReflectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.mozilla.javascript.CompilerEnvirons;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Token;
@@ -356,21 +358,27 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.mockito.BDDMockito.given;
 
 //Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013, tntim96
-@RunWith(JUnit4.class)
+@RunWith(MockitoJUnitRunner.class)
 public class InstrumenterTest {
+    @Mock private ConfigurationCommon config;
     private static CompilerEnvirons compilerEnv = new CompilerEnvirons();
     static {
         // compilerEnv.setAllowMemberExprAsFunctionName(true);
         compilerEnv.setLanguageVersion(Context.VERSION_1_8);
         compilerEnv.setStrictMode(false);
     }
-    private SourceProcessor sourceProcessor = new SourceProcessor(compilerEnv, "test.js", false, true);
+    private SourceProcessor sourceProcessor;
     private ParseTreeInstrumenter instrumenter;
 
     @Before
     public void setUp() {
+        given(config.getCompilerEnvirons()).willReturn(compilerEnv);
+        given(config.isIncludeBranch()).willReturn(false);
+        given(config.isIncludeFunction()).willReturn(true);
+        sourceProcessor = new SourceProcessor(config, "test.js");
         instrumenter = (ParseTreeInstrumenter)ReflectionUtils.getField(sourceProcessor, "instrumenter");
     }
 

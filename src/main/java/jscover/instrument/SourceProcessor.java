@@ -377,15 +377,6 @@ class SourceProcessor {
         this.includeFunctionCoverage = config.isIncludeFunction();
     }
 
-    public SourceProcessor(CompilerEnvirons compilerEnv, String uri, boolean includeBranchCoverage, boolean includeFunctionCoverage) {
-        this.uri = uri;
-        this.instrumenter = new ParseTreeInstrumenter(uri, includeFunctionCoverage);
-        this.branchInstrumentor = new BranchInstrumentor(uri);
-        parser = new Parser(compilerEnv);
-        this.includeBranchCoverage = includeBranchCoverage;
-        this.includeFunctionCoverage = includeFunctionCoverage;
-    }
-
     ParseTreeInstrumenter getInstrumenter() {
         return instrumenter;
     }

@@ -371,7 +371,7 @@ public class UnloadedSourceProcessor {
         List<ScriptCoverageCount> scripts = new ArrayList<ScriptCoverageCount>();
         for (File file: fileScanner.getFiles(urisAlreadyProcessed)) {
             String uri = ioUtils.getRelativePath(file, config.getDocumentRoot());
-            SourceProcessor sourceProcessor = new SourceProcessor(config.getCompilerEnvirons(), uri, config.isIncludeFunction(), config.isIncludeBranch());
+            SourceProcessor sourceProcessor = new SourceProcessor(config, uri);
             try {
                 sourceProcessor.instrumentSource(ioUtils.loadFromFileSystem(file));
                 ScriptCoverageCount script = new ScriptCoverageCount("/"+uri, new ArrayList<Integer>(
