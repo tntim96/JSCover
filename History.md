@@ -1,5 +1,6 @@
 1.0.5 / 2013-??-??
 ==================
+  * Using HTML5 localStorage instead of an iframe (https://github.com/tntim96/JSCover/issues/92)
   * Provide URI to File-System Path Translation (https://github.com/tntim96/JSCover/issues/98)
   * Fix LogFormatterTest time zone issue (https://github.com/tntim96/JSCover/issues/99)
   * Internal: Add check-style plugin to Maven POM and code quality improvements
