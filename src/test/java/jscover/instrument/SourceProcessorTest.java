@@ -379,8 +379,6 @@ public class SourceProcessorTest {
     @Before
     public void setUp() {
         given(config.getCompilerEnvirons()).willReturn(compilerEnvirons);
-        given(config.isIncludeBranch()).willReturn(false);
-        given(config.isIncludeFunction()).willReturn(false);
         sourceProcessor = new SourceProcessor(config, "test.js");
         ReflectionUtils.setField(sourceProcessor, "ioUtils", ioUtils);
         ReflectionUtils.setField(sourceProcessor, "parser", parser);
@@ -430,5 +428,18 @@ public class SourceProcessorTest {
 
         assertThat(sourceProcessor.processSource("test.js", "x;"), startsWith("<branch><common><header>"));
         verify(ioUtils, times(1)).loadFromClassPath("/jscoverage-branch.js");
+    }
+
+    @Test
+    public void shouldIncludeLocalStorageLogicForProcessSource() throws IOException {
+        ReflectionUtils.setField(sourceProcessor, "localStorage", true);
+        given(ioUtils.loadFromClassPath("/header.js")).willReturn("<header>");
+        given(ioUtils.loadFromClassPath("/jscoverage-common.js")).willReturn("<common>");
+        given(ioUtils.loadFromClassPath("/jscoverage-branch.js")).willReturn("<branch>");
+        given(ioUtils.loadFromClassPath("/jscoverage-localstorage.js")).willReturn("<localStorage>");
+        given(parser.parse(anyString(), anyString(), anyInt())).willReturn(new AstRoot());
+
+        assertThat(sourceProcessor.processSource("test.js", "x;"), startsWith("<branch><common><localStorage><header>"));
+        verify(ioUtils, times(1)).loadFromClassPath("/jscoverage-localstorage.js");
     }
 }

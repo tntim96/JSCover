@@ -390,7 +390,8 @@ public class IoService {
         String mainJS = ioUtils.loadFromClassPath("/jscoverage.js");
         String branchJS = ioUtils.loadFromClassPath("/jscoverage-branch.js");
         String commonJS = ioUtils.loadFromClassPath("/jscoverage-common.js");
-        return mainJS + commonJS + branchJS;
+        String localStorageJS = ioUtils.loadFromClassPath("/jscoverage-localStorage.js");
+        return mainJS + commonJS + branchJS + localStorageJS;
     }
 
     public String generateJSCoverageHtml(String version) {
