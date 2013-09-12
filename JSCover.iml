@@ -49,6 +49,7 @@
         <jarDirectory url="file://$MODULE_DIR$/lib/runtime" recursive="false" />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="Maven: com.ibm.icu:icu4j:3.4.4" level="project" />
     <orderEntry type="library" name="Maven: org.mozilla:rhino:1.7R5PRE-forked" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: net.sourceforge.htmlunit:htmlunit:2.12" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: xalan:xalan:2.7.1" level="project" />
@@ -88,7 +89,6 @@
     <orderEntry type="library" scope="TEST" name="Maven: jdom:jdom:1.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: xerces:xmlParserAPIs:2.6.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: xom:xom:1.0b3" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: com.ibm.icu:icu4j:2.6.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.ccil.cowan.tagsoup:tagsoup:0.9.7" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.ant:ant:1.8.3" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.ant:ant-launcher:1.8.3" level="project" />
