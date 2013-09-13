@@ -31,13 +31,9 @@
     <script type="text/javascript">
         <!--
         function clearLocalStorage() {
-            var before = localStorage['jscover'];
-            var result = localStorage.removeItem('jscover');
-            var after = localStorage['jscover'];
+            localStorage.removeItem('jscover');
             var span = document.getElementById("deleteLocalStorage");
-            span.appendChild(document.createTextNode("Deleting localStorage['jscover'] " + result));
-            document.getElementById("deleteLocalStorageBefore").appendChild(document.createTextNode("Before" + before));
-            document.getElementById("deleteLocalStorageAfter").appendChild(document.createTextNode("After" + after));
+            span.appendChild(document.createTextNode("Deleted localStorage['jscover']"));
         }
         //-->
     </script>
@@ -50,9 +46,7 @@
     </div>
     <div class="TabPage" style="display: block;">
         <p>
-            <span id="deleteLocalStorage"></span><br/>
-            <span id="deleteLocalStorageBefore"></span><br/>
-            <span id="deleteLocalStorageAfter"></span><br/>
+            <span id="deleteLocalStorage"></span>
         </p>
 
         <p>
