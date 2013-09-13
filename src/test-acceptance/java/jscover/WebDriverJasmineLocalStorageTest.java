@@ -346,7 +346,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -424,14 +423,20 @@ public class WebDriverJasmineLocalStorageTest {
 
     @Test
     public void shouldRunTestAndStoreResultWithoutIFrame() throws IOException {
-        File jsonFile = new File(getReportDir()+"/jscoverage.json");
+        File jsonFile = new File(getReportDir() + "/jscoverage.json");
         if (jsonFile.exists())
             jsonFile.delete();
-        ((JavascriptExecutor) webClient).executeScript("localStorage['jscover'] = ''");
+//        webClient.get("http://localhost:9001/jscoverage-clear-local-storage.html");
+//        Object result = ((JavascriptExecutor) webClient).executeScript("localStorage.removeItem('jscover')");
+//        Object result = ((JavascriptExecutor) webClient).executeScript("delete localStorage['jscover']");
         webClient.get("http://localhost:9001/" + getTestUrl());
         webClient.get("http://localhost:9001/jscoverage.html");
-
         verifyTotal(webClient, 15, 0, 0);
+
+        clickItem(1, 57, 12, 33);
+        clickItem(2, 73, 37, 66);
+        clickItem(3, 84, 62, 66);
+        clickItem(4, 100, 87, 100);
 
         new WebDriverWait(webClient, 1).until(ExpectedConditions.elementToBeClickable(By.id("storeTab")));
         webClient.findElement(By.id("storeTab")).click();
@@ -439,6 +444,13 @@ public class WebDriverJasmineLocalStorageTest {
         new WebDriverWait(webClient, 1).until(ExpectedConditions.elementToBeClickable(By.id("storeButton")));
         webClient.findElement(By.id("storeButton")).click();
         new WebDriverWait(webClient, 2).until(ExpectedConditions.textToBePresentInElement(By.id("storeDiv"), "Coverage data stored at"));
+    }
+
+    private void clickItem(int id, int linePercentage, int branchPercentage, int functionPercentage) throws IOException {
+        webClient.get("http://localhost:9001/" + getTestUrl());
+        webClient.findElement(By.id("radio" + id)).click();
+        webClient.get("http://localhost:9001/jscoverage.html");
+        verifyTotal(webClient, linePercentage, branchPercentage, functionPercentage);
     }
 
     protected void verifyTotal(WebDriver webClient, int percentage, int branchPercentage, int functionPercentage) throws IOException {
