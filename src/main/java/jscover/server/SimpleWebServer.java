@@ -350,8 +350,8 @@ public class SimpleWebServer {
     private static boolean running = true;
 
     public static void main(String args[]) throws Exception {
-        ServerSocket Server = new ServerSocket(Integer.valueOf(args[0]));
-        File wwwRoot = new File(".");
+        ServerSocket Server = new ServerSocket(Integer.valueOf(args[1]));
+        File wwwRoot = new File(args[0]);
         while (running) {
             Socket socket = Server.accept();
             (new HttpServer(socket, wwwRoot, "simpleWebServer")).start();
