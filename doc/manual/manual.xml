@@ -548,6 +548,11 @@ fs.write("target/jscoverage.json", json, 'w');
                             </td>
                         </tr>
                         <tr>
+                            <td>--local-storage</td>
+                            <td>N/A</td>
+                            <td>Save and load coverage data from HTML local storage.</td>
+                        </tr>
+                        <tr>
                             <td>--js-version=VERSION</td>
                             <td>1.5</td>
                             <td>
@@ -719,6 +724,11 @@ fs.write("target/jscoverage.json", json, 'w');
                             <td>--no-function</td>
                             <td>N/A</td>
                             <td>Turn off function coverage data collection</td>
+                        </tr>
+                        <tr>
+                            <td>--local-storage</td>
+                            <td>N/A</td>
+                            <td>Save and load coverage data from HTML local storage.</td>
                         </tr>
                         <tr>
                             <td>--js-version=VERSION</td>
