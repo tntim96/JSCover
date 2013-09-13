@@ -426,9 +426,8 @@ public class WebDriverLocalStorageTest {
         File jsonFile = new File(getReportDir() + "/jscoverage.json");
         if (jsonFile.exists())
             jsonFile.delete();
-//        webClient.get("http://localhost:9001/jscoverage-clear-local-storage.html");
-//        Object result = ((JavascriptExecutor) webClient).executeScript("localStorage.removeItem('jscover')");
-//        Object result = ((JavascriptExecutor) webClient).executeScript("delete localStorage['jscover']");
+        webClient.get("http://localhost:9001/jscoverage-clear-local-storage.html");
+        new WebDriverWait(webClient, 1).until(ExpectedConditions.textToBePresentInElement(By.id("deleteLocalStorage"), "Deleted localStorage['jscover']"));
         webClient.get("http://localhost:9001/" + getTestUrl());
         webClient.get("http://localhost:9001/jscoverage.html");
         verifyTotal(webClient, 15, 0, 0);
