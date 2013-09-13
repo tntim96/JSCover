@@ -422,7 +422,7 @@ public class WebDriverLocalStorageTest {
     }
 
     @Test
-    public void shouldRunTestAndStoreResultWithoutIFrame() throws IOException {
+    public void shouldStoreCoverageDataInLocalStorage() throws IOException {
         File jsonFile = new File(getReportDir() + "/jscoverage.json");
         if (jsonFile.exists())
             jsonFile.delete();
@@ -432,6 +432,38 @@ public class WebDriverLocalStorageTest {
         webClient.get("http://localhost:9001/jscoverage.html");
         verifyTotal(webClient, 15, 0, 0);
 
+        clickItem(1, 57, 12, 33);
+        clickItem(2, 73, 37, 66);
+        clickItem(3, 84, 62, 66);
+        clickItem(4, 100, 87, 100);
+
+        new WebDriverWait(webClient, 1).until(ExpectedConditions.elementToBeClickable(By.id("storeTab")));
+        webClient.findElement(By.id("storeTab")).click();
+
+        new WebDriverWait(webClient, 1).until(ExpectedConditions.elementToBeClickable(By.id("storeButton")));
+        webClient.findElement(By.id("storeButton")).click();
+        new WebDriverWait(webClient, 2).until(ExpectedConditions.textToBePresentInElement(By.id("storeDiv"), "Coverage data stored at"));
+    }
+
+    @Test
+    public void shouldClearLocalStorage() throws IOException {
+        File jsonFile = new File(getReportDir() + "/jscoverage.json");
+        if (jsonFile.exists())
+            jsonFile.delete();
+        webClient.get("http://localhost:9001/jscoverage-clear-local-storage.html");
+        new WebDriverWait(webClient, 1).until(ExpectedConditions.textToBePresentInElement(By.id("deleteLocalStorage"), "Deleted localStorage['jscover']"));
+        webClient.get("http://localhost:9001/" + getTestUrl());
+        webClient.get("http://localhost:9001/jscoverage.html");
+        verifyTotal(webClient, 15, 0, 0);
+
+        clickItem(1, 57, 12, 33);
+        clickItem(2, 73, 37, 66);
+        webClient.get("http://localhost:9001/jscoverage-clear-local-storage.html");
+        new WebDriverWait(webClient, 1).until(ExpectedConditions.textToBePresentInElement(By.id("deleteLocalStorage"), "Deleted localStorage['jscover']"));
+
+        webClient.get("http://localhost:9001/" + getTestUrl());
+        webClient.get("http://localhost:9001/jscoverage.html");
+        verifyTotal(webClient, 15, 0, 0);
         clickItem(1, 57, 12, 33);
         clickItem(2, 73, 37, 66);
         clickItem(3, 84, 62, 66);
