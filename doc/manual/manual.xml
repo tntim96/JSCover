@@ -275,9 +275,9 @@
                 <heading id="gettingStartedFileSystem">File System</heading>
                 <text>
                     Run
-                    <var>example-filesystem.bat</var>
+                    <var>jscover-filesystem.bat</var>
                     or
-                    <var>example-filesystem.sh</var>. The contents are:
+                    <var>jscover-filesystem.sh</var>. The contents are:
                     <code>java -jar target/dist/JSCover-all.jar -fs doc/example target/example</code>
                     This will recursively copy all the resources from
                     <var>doc/example</var>
