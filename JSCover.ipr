@@ -52,6 +52,22 @@
     <entry_points version="2.0" />
   </component>
   <component name="IdProvider" IDEtalkID="F3D739D27C07C546C9EE9E91670B37A6" />
+  <component name="InspectionProjectProfileManager">
+    <profiles>
+      <profile version="1.0" is_locked="false">
+        <option name="myName" value="Project Default" />
+        <option name="myLocal" value="false" />
+        <inspection_tool class="JSLint" enabled="true" level="ERROR" enabled_by_default="true" />
+      </profile>
+    </profiles>
+    <option name="PROJECT_PROFILE" value="Project Default" />
+    <option name="USE_PROJECT_PROFILE" value="true" />
+    <version value="1.0" />
+  </component>
+  <component name="JSLintConfiguration">
+    <option indent="4" />
+    <option maxerr="50" />
+  </component>
   <component name="JavadocGenerationManager">
     <option name="OUTPUT_DIRECTORY" />
     <option name="OPTION_SCOPE" value="protected" />
