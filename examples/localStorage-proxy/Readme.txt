@@ -1,4 +1,5 @@
 To run this example:
+ - Download and install Selenium IDE from http://docs.seleniumhq.org/download/
  - Add '127.0.0.1   localhost-proxy' to your hosts file
  - Set you browser proxy to localhost:3128
  - Start the non-instrumenting web-server example-ws-for-proxy.bat/example-ws-for-proxy.sh

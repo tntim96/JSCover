@@ -550,7 +550,10 @@ fs.write("target/jscoverage.json", json, 'w');
                         <tr>
                             <td>--local-storage</td>
                             <td>N/A</td>
-                            <td>Save and load coverage data from HTML5 local storage.</td>
+                            <td>
+                                Save and load coverage data from HTML5 local storage.
+                                See the <a href="#localStorage">section on HTML5 local storage for more information</a>
+                            </td>
                         </tr>
                         <tr>
                             <td>--js-version=VERSION</td>
@@ -728,7 +731,10 @@ fs.write("target/jscoverage.json", json, 'w');
                         <tr>
                             <td>--local-storage</td>
                             <td>N/A</td>
-                            <td>Save and load coverage data from HTML5 local storage.</td>
+                            <td>
+                                Save and load coverage data from HTML5 local storage.
+                                See the <a href="#localStorage">section on HTML5 local storage for more information</a>
+                            </td>
                         </tr>
                         <tr>
                             <td>--js-version=VERSION</td>
@@ -823,6 +829,60 @@ fs.write("target/jscoverage.json", json, 'w');
                         </tbody>
                     </table>
                 </text>
+            </item>
+            <item>
+                <heading id="localStorage">HTML5 Local Storage Switch</heading>
+                <item>
+                    <heading id="localStorageIntro">Introduction</heading>
+                    <text>
+                        Specifying local storage mode <var>--local-storage</var> makes use of HTML5's local storage
+                        feature to store coverage data between page loads without the need of iframes or
+                        JavaScript-opened windows.
+                    </text>
+                    <text>
+                        This can be especially useful for existing automated tests against a web-server, as the coverage
+                        data can be collected using the existing tests via JSCover as a proxy. And an extra page or
+                        JavaScript call is then added at the end to store the coverage results.
+                    </text>
+                </item>
+                <item>
+                    <heading id="localStorageClearing">Clearing HTML5 Local Storage</heading>
+                    <text>
+                        A special URL, '/jscoverage-clear-local-storage.html', has been added to clear JSCover's local
+                        storage. Alternatively, the following JavaScript can be executed:
+                        <code>localStorage.removeItem('jscover');</code>
+                    </text>
+                </item>
+                <item>
+                    <heading id="localStorageExample">Example</heading>
+                    <text>
+                        For a full working example using a recorded Selenium IDE test, see the
+                        'examples/localStorage-server' folder of the ZIP distribution.
+                    </text>
+                    <text>
+                        The 'examples/localStorage-proxy' folder contains a similar example in proxy mode.
+                    </text>
+                </item>
+                <item>
+                    <heading id="localStorageWorkings">How does it work</heading>
+                    <text>
+                        When the local storage switch is added <var>--local-storage</var>, some
+                        <a href="https://github.com/tntim96/JSCover/blob/master/src/main/resources/jscoverage-localstorage.js"
+                                target="_blank">extra JavaScript</a>
+                        is added to the instrumented JavaScript. From the source it can be seen that the following
+                        occurs:
+                        <ul>
+                            <li>
+                                When the page and JavaScript loads, it attempts to load the coverage data from
+                                HTML5 local storage
+                            </li>
+                            <li>
+                                When the page exits, it attempts to save the coverage data to
+                                HTML5 local storage
+                            </li>
+                        </ul>
+                    </text>
+                </item>
             </item>
             <item>
                 <heading id="logging">Logging</heading>
