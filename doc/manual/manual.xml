@@ -87,7 +87,7 @@
                 <item>
                     <heading id="gettingStartedServerStartServer">Start The Server</heading>
                     <text>
-                        Run&#160;<var>example-server.bat</var>&#160;or&#160;<var>example-server.sh</var>. The contents
+                        Run&#160;<var>jscover-server.bat</var>&#160;or&#160;<var>jscover-server.sh</var>. The contents
                         are:
                         <code>java -jar target/dist/JSCover-all.jar -ws --document-root=doc/example --report-dir=target</code>
                         This will start a web server, and the JSCover interface can be loaded by going to
