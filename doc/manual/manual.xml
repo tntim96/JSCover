@@ -247,19 +247,19 @@
                     <text>
                         This is the web-server we'll be accessing via the proxy.
                         Run
-                        <var>example-ws-for-proxy.bat</var>
+                        <var>web-server.bat</var>
                         or
-                        <var>example-ws-for-proxy.sh</var>. The contents are:
-                        <code>java -cp target/dist/JSCover-all.jar jscover.server.SimpleWebServer 8080</code>
+                        <var>web-server.sh</var>. The contents are:
+                        <code>java -cp target/dist/JSCover-all.jar jscover.server.SimpleWebServer . 8080</code>
                     </text>
                 </item>
                 <item>
                     <heading id="gettingStartedProxyProxy">Start JSCover as a proxy</heading>
                     <text>
                         Run
-                        <var>example-proxy.bat</var>
+                        <var>jscover-proxy.bat</var>
                         or
-                        <var>example-proxy.sh</var>. The contents are:
+                        <var>jscover-proxy.sh</var>. The contents are:
                         <code>$ java -jar target/dist/JSCover-all.jar -ws --proxy --port=3128 --report-dir=target</code>
                     </text>
                 </item>
@@ -354,7 +354,7 @@ fs.write("target/jscoverage.json", json, 'w');
                     To avoid any file-system issues (described above),
                     JSCover comes with a simple non-instrumenting web server.
                     Run it from the distribution's root directory:
-                    <code>java -cp target/dist/JSCover-all.jar jscover.server.SimpleWebServer 8080</code>
+                    <code>java -cp target/dist/JSCover-all.jar jscover.server.SimpleWebServer . 8080</code>
                     Then point your browser at:
                     <a href="http://localhost:8080/doc/example-qunit/out/jscoverage.html?test/index.html"
                             >http://localhost:8080/doc/example-qunit/out/jscoverage.html?test/index.html</a>
