@@ -10,6 +10,6 @@ Options:
       --exclude-reg=PATH        don't copy from source/PATH if it matches regular expression
       --no-branch               turn off branch coverage data collection
       --no-function             turn off function coverage data collection
-      --local-storage           save and load coverage data from HTML local storage
+      --local-storage           save and load coverage data from HTML5 local storage
       --log=LEVEL               set logging level to: SEVERE (default), WARNING, INFO, CONFIG, FINE, FINER, FINEST
   -h, --help                    display this help and exit

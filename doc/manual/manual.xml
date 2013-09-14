@@ -550,7 +550,7 @@ fs.write("target/jscoverage.json", json, 'w');
                         <tr>
                             <td>--local-storage</td>
                             <td>N/A</td>
-                            <td>Save and load coverage data from HTML local storage.</td>
+                            <td>Save and load coverage data from HTML5 local storage.</td>
                         </tr>
                         <tr>
                             <td>--js-version=VERSION</td>
@@ -728,7 +728,7 @@ fs.write("target/jscoverage.json", json, 'w');
                         <tr>
                             <td>--local-storage</td>
                             <td>N/A</td>
-                            <td>Save and load coverage data from HTML local storage.</td>
+                            <td>Save and load coverage data from HTML5 local storage.</td>
                         </tr>
                         <tr>
                             <td>--js-version=VERSION</td>
