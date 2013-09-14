@@ -866,7 +866,7 @@ fs.write("target/jscoverage.json", json, 'w');
                 <item>
                     <heading id="localStorageWorkings">How does it work</heading>
                     <text>
-                        When the local storage switch is added <var>--local-storage</var>, some
+                        When the local storage switch, <var>--local-storage</var>, is supplied, some
                         <a href="https://github.com/tntim96/JSCover/blob/master/src/main/resources/jscoverage-localstorage.js"
                                 target="_blank">extra JavaScript</a>
                         is added to the instrumented JavaScript. From the source it can be seen that the following
