@@ -841,8 +841,12 @@ fs.write("target/jscoverage.json", json, 'w');
                     </text>
                     <text>
                         This can be especially useful for existing automated tests against a web-server, as the coverage
-                        data can be collected using the existing tests via JSCover as a proxy. And an extra page or
-                        JavaScript call is then added at the end to store the coverage results.
+                        data can be collected using the existing tests with only the following modifications:
+                        <ul>
+                            <li>the browser must use the JSCover proxy</li>
+                            <li>store the coverage results at the end of the test suite</li>
+                            <li>clear JSCover's HTML5 local storage <var>localStorage['jacover']</var></li>
+                        </ul>
                     </text>
                 </item>
                 <item>
