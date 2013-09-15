@@ -1259,6 +1259,31 @@ fs.write("target/jscoverage.json", json, 'w');
                 <text>
                     <note>* - You will need to wait for the JavaScript operation to complete</note>
                 </text>
+                <item>
+                    <heading id="automatingDomIdsWait">Waiting for JavaScript</heading>
+                    <text>
+                        <table>
+                            <tr>
+                                <th>Action</th>
+                                <th>Selenium Action</th>
+                                <th>XPath</th>
+                                <th>Vaue</th>
+                            </tr>
+                            <tr>
+                                <td>Wait for coverage data to be stored</td>
+                                <td>waitForElementPresent</td>
+                                <td>//div[@id='storeDiv' and contains(.,'Coverage data stored')]</td>
+                                <td>N/A</td>
+                            </tr>
+                            <tr>
+                                <td>Wait for HTML coverage report to render</td>
+                                <td>waitForText</td>
+                                <td>id=progressLabel</td>
+                                <td>Done</td>
+                            </tr>
+                        </table>
+                    </text>
+                </item>
             </item>
             <item>
                 <heading id="automatingHtmlUnit">HtmlUnit</heading>
