@@ -175,8 +175,8 @@ function jscoverage_endLengthyOperation() {
     jscoverage_inLengthyOperation = false;
     progressBar.style.visibility = 'hidden';
     var progressLabel = document.getElementById('progressLabel');
-    progressLabel.style.visibility = 'hidden';
-    progressLabel.innerHTML = '';
+    //progressLabel.style.visibility = 'hidden';
+    progressLabel.innerHTML = '<span class="fadeToBackground">Done</span>';
 
     var tabs = document.getElementById('tabs').getElementsByTagName('div');
     var i;
