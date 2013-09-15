@@ -1596,7 +1596,7 @@ function square(x) {
                         <table>
                             <tr>
                                 <th>Feature</th>
-                                <th>JSCover (1.0.0)</th>
+                                <th>JSCover (1.0.5)</th>
                                 <th>JSCoverage (0.5.1)</th>
                             </tr>
                             <tr>
@@ -1623,6 +1623,11 @@ function square(x) {
                                 <td>Proxy Server Instrumentation</td>
                                 <td class="tick"></td>
                                 <td class="tick"></td>
+                            </tr>
+                            <tr>
+                                <td>HTML5 Local Storage Alternative to iFrames and JavaScript-opened Windows</td>
+                                <td class="tick"></td>
+                                <td class="cross"></td>
                             </tr>
                             <tr>
                                 <td>Specify Encoding</td>
