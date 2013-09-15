@@ -843,9 +843,13 @@ fs.write("target/jscoverage.json", json, 'w');
                         This can be especially useful for existing automated tests against a web-server, as the coverage
                         data can be collected using the existing tests with only the following modifications:
                         <ul>
-                            <li>the browser must use the JSCover proxy</li>
+                            <li>
+                                either the JavaScript must be pre-instrumented using the
+                                <a href="#fileMode">file-system mode</a>
+                                or the browser can use the <a href="#proxyMode">JSCover proxy</a>
+                            </li>
                             <li>store the coverage results at the end of the test suite</li>
-                            <li>clear JSCover's HTML5 local storage <var>localStorage['jacover']</var></li>
+                            <li>clear JSCover's HTML5 local storage <var>localStorage['jscover']</var></li>
                         </ul>
                     </text>
                 </item>
