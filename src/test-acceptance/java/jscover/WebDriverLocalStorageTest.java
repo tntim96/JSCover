@@ -380,6 +380,9 @@ public class WebDriverLocalStorageTest {
 
     @Before
     public void setUp() throws IOException {
+        File jsonFile = new File(getReportDir() + "/jscoverage.json");
+        if (jsonFile.exists())
+            jsonFile.delete();
         if (server == null) {
             server = new Thread(new Runnable() {
                 public void run() {
@@ -422,10 +425,7 @@ public class WebDriverLocalStorageTest {
     }
 
     @Test
-    public void shouldStoreCoverageDataInLocalStorage() throws IOException {
-        File jsonFile = new File(getReportDir() + "/jscoverage.json");
-        if (jsonFile.exists())
-            jsonFile.delete();
+    public void shouldStoreCoverageDataInLocalStorage() throws IOException, InterruptedException {
         webClient.get("http://localhost:9001/jscoverage-clear-local-storage.html");
         new WebDriverWait(webClient, 1).until(ExpectedConditions.textToBePresentInElement(By.id("deleteLocalStorage"), "Deleted localStorage['jscover']"));
         webClient.get("http://localhost:9001/" + getTestUrl());
@@ -440,16 +440,15 @@ public class WebDriverLocalStorageTest {
         new WebDriverWait(webClient, 1).until(ExpectedConditions.elementToBeClickable(By.id("storeTab")));
         webClient.findElement(By.id("storeTab")).click();
 
+        new WebDriverWait(webClient, 1).until(ExpectedConditions.textToBePresentInElement(By.id("progressLabel"), "Done"));
         new WebDriverWait(webClient, 1).until(ExpectedConditions.elementToBeClickable(By.id("storeButton")));
+        Thread.sleep(100);
         webClient.findElement(By.id("storeButton")).click();
         new WebDriverWait(webClient, 2).until(ExpectedConditions.textToBePresentInElement(By.id("storeDiv"), "Coverage data stored at"));
     }
 
     @Test
-    public void shouldClearLocalStorage() throws IOException {
-        File jsonFile = new File(getReportDir() + "/jscoverage.json");
-        if (jsonFile.exists())
-            jsonFile.delete();
+    public void shouldClearLocalStorage() throws IOException, InterruptedException {
         webClient.get("http://localhost:9001/jscoverage-clear-local-storage.html");
         new WebDriverWait(webClient, 1).until(ExpectedConditions.textToBePresentInElement(By.id("deleteLocalStorage"), "Deleted localStorage['jscover']"));
         webClient.get("http://localhost:9001/" + getTestUrl());
@@ -472,7 +471,9 @@ public class WebDriverLocalStorageTest {
         new WebDriverWait(webClient, 1).until(ExpectedConditions.elementToBeClickable(By.id("storeTab")));
         webClient.findElement(By.id("storeTab")).click();
 
+        new WebDriverWait(webClient, 1).until(ExpectedConditions.textToBePresentInElement(By.id("progressLabel"), "Done"));
         new WebDriverWait(webClient, 1).until(ExpectedConditions.elementToBeClickable(By.id("storeButton")));
+        Thread.sleep(100);
         webClient.findElement(By.id("storeButton")).click();
         new WebDriverWait(webClient, 2).until(ExpectedConditions.textToBePresentInElement(By.id("storeDiv"), "Coverage data stored at"));
     }
