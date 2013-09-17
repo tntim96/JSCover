@@ -61,6 +61,7 @@ TH {
 TD {
     border: 1px solid #ccffff;
 	font-family: arial;
+    padding: 1px 5px 1px 5px;
 	font-size: 10pt;
 	color: #99ccff;
     vertical-align: top;

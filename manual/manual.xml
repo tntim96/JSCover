@@ -87,7 +87,7 @@
                 <item>
                     <heading id="gettingStartedServerStartServer">Start The Server</heading>
                     <text>
-                        Run&#160;<var>example-server.bat</var>&#160;or&#160;<var>example-server.sh</var>. The contents
+                        Run&#160;<var>jscover-server.bat</var>&#160;or&#160;<var>jscover-server.sh</var>. The contents
                         are:
                         <code>java -jar target/dist/JSCover-all.jar -ws --document-root=doc/example --report-dir=target</code>
                         This will start a web server, and the JSCover interface can be loaded by going to
@@ -247,19 +247,19 @@
                     <text>
                         This is the web-server we'll be accessing via the proxy.
                         Run
-                        <var>example-ws-for-proxy.bat</var>
+                        <var>web-server.bat</var>
                         or
-                        <var>example-ws-for-proxy.sh</var>. The contents are:
-                        <code>java -cp target/dist/JSCover-all.jar jscover.server.SimpleWebServer 8080</code>
+                        <var>web-server.sh</var>. The contents are:
+                        <code>java -cp target/dist/JSCover-all.jar jscover.server.SimpleWebServer . 8080</code>
                     </text>
                 </item>
                 <item>
                     <heading id="gettingStartedProxyProxy">Start JSCover as a proxy</heading>
                     <text>
                         Run
-                        <var>example-proxy.bat</var>
+                        <var>jscover-proxy.bat</var>
                         or
-                        <var>example-proxy.sh</var>. The contents are:
+                        <var>jscover-proxy.sh</var>. The contents are:
                         <code>$ java -jar target/dist/JSCover-all.jar -ws --proxy --port=3128 --report-dir=target</code>
                     </text>
                 </item>
@@ -275,9 +275,9 @@
                 <heading id="gettingStartedFileSystem">File System</heading>
                 <text>
                     Run
-                    <var>example-filesystem.bat</var>
+                    <var>jscover-filesystem.bat</var>
                     or
-                    <var>example-filesystem.sh</var>. The contents are:
+                    <var>jscover-filesystem.sh</var>. The contents are:
                     <code>java -jar target/dist/JSCover-all.jar -fs doc/example target/example</code>
                     This will recursively copy all the resources from
                     <var>doc/example</var>
@@ -354,7 +354,7 @@ fs.write("target/jscoverage.json", json, 'w');
                     To avoid any file-system issues (described above),
                     JSCover comes with a simple non-instrumenting web server.
                     Run it from the distribution's root directory:
-                    <code>java -cp target/dist/JSCover-all.jar jscover.server.SimpleWebServer 8080</code>
+                    <code>java -cp target/dist/JSCover-all.jar jscover.server.SimpleWebServer . 8080</code>
                     Then point your browser at:
                     <a href="http://localhost:8080/doc/example-qunit/out/jscoverage.html?test/index.html"
                             >http://localhost:8080/doc/example-qunit/out/jscoverage.html?test/index.html</a>
@@ -436,6 +436,16 @@ fs.write("target/jscoverage.json", json, 'w');
                     </text>
                 </item>
                 <item>
+                    <heading id="jvmRegularExpressions">Java Regular Expressions</heading>
+                    <text>
+                        All regular expression functionality is provided by the JVM. Further documentation can be found at:
+                        <ul>
+                            <li><a href="http://docs.oracle.com/javase/1.5.0/docs/api/java/util/regex/Pattern.html" target="_blank">Pattern</a></li>
+                            <li><a href="http://docs.oracle.com/javase/1.5.0/docs/api/java/util/regex/Matcher.html" target="_blank">Matcher</a></li>
+                        </ul>
+                    </text>
+                </item>
+                <item>
                     <heading id="exitStatus">Program Exit Status</heading>
                     <text>
                         If any exceptions were thrown, the program will exit with an exit status of 1.
@@ -474,13 +484,17 @@ fs.write("target/jscoverage.json", json, 'w');
                         <tr>
                             <td>--no-instrument-reg=URL</td>
                             <td>None</td>
-                            <td>Same as '--no-instrument=PATH', except PATH is interpreted as a regular expression</td>
+                            <td>
+                                Same as '--no-instrument=PATH', except PATH is interpreted as a
+                                <a href="#jvmRegularExpressions">regular expression</a>
+                            </td>
                         </tr>
                         <tr>
-                            <td>--only-instrument-reg=URL</td>
+                            <td nowrap="nowrap">--only-instrument-reg=URL</td>
                             <td>None</td>
                             <td>
-                                Changes the default behavior to skip instrumentation except for the specified URLs.
+                                Changes the default behavior to skip instrumentation except for the specified URLs
+                                matching the <a href="#jvmRegularExpressions">regular expression</a>.
                                 This switch can be overridden if no-instrument switches are specified first.
                             </td>
                         </tr>
@@ -502,6 +516,18 @@ fs.write("target/jscoverage.json", json, 'w');
                             <td>Run in proxy mode</td>
                         </tr>
                         <tr>
+                            <td>
+                                --uri-to-file-matcher=REG<br/>
+                                --uri-to-file-replace=REP
+                            </td>
+                            <td>N/A</td>
+                            <td>
+                                For proxy mode, specify a <a href="#jvmRegularExpressions">regular expression</a>
+                                matcher and replacement string for converting a URI to a file path.
+                                See <a href="#proxyURIToFilePathTranslation">here</a> for more details.
+                            </td>
+                        </tr>
+                        <tr>
                             <td>--no-branch</td>
                             <td>N/A</td>
                             <td>Turn off branch coverage data collection</td>
@@ -513,13 +539,20 @@ fs.write("target/jscoverage.json", json, 'w');
                         </tr>
                         <tr>
                             <td>--include-unloaded-js</td>
-                            <td>false</td>
+                            <td>N/A</td>
                             <td>
                                 When storing report in web-server mode, search beneath the document root
-                                <br/>
                                 path for JavaScript file not served and include in the coverage report.
                                 <br/>
-                                Will respect --no-instrument(-reg).
+                                Will respect --no-instrument(-reg) and --only-instrument-reg.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>--local-storage</td>
+                            <td>N/A</td>
+                            <td>
+                                Save and load coverage data from HTML5 local storage.
+                                See the <a href="#localStorage">section on HTML5 local storage for more information</a>
                             </td>
                         </tr>
                         <tr>
@@ -544,6 +577,34 @@ fs.write("target/jscoverage.json", json, 'w');
                     See the <a href="#encoding">encoding section</a> above for specifying encoding.<br/>
                     See the <a href="#logging">logging section</a> for more information.
                 </text>
+                <item>
+                    <heading id="proxyMode">Proxy Mode</heading>
+                    <text>
+                        In proxy mode, JSCover operates as a HTTP proxy server and instruments the specified JavaScript
+                        served through it.
+                    </text>
+                    <item>
+                        <heading id="proxyURIToFilePathTranslation">Translating a URI to a File Path</heading>
+                        <text>
+                            When operating as a proxy, it is possible to have a URI which doesn't match the the file
+                            system path. This is normally not a problem, as the JavaScript contents will be saved to the
+                            file-system using the URI. However, there a two potential problems to be handled:
+                            <ol>
+                                <li>The URI contains characters not compatible with the file-system</li>
+                                <li>
+                                    If the <var>--include-unloaded-js</var> option has been specified, the actual file
+                                    represented by the URI will not be detected as having already been included, and
+                                    will appear a second time with no coverage.
+                                </li>
+                            </ol>
+                        </text>
+                        <text>
+                            An example to convert '/exclude/include/code.js' to '/include/code.js' would be:
+                            <var>--uri-to-file-matcher=/exclude(.*)</var>
+                            <var>--uri-to-file-replace=$1</var>
+                        </text>
+                    </item>
+                </item>
                 <item>
                     <heading id="implementationStoreReport">Storing reports</heading>
                     <text>
@@ -626,13 +687,17 @@ fs.write("target/jscoverage.json", json, 'w');
                         <tr>
                             <td>--no-instrument-reg=URL</td>
                             <td>None</td>
-                            <td>Same as '--no-instrument=PATH', except PATH is interpreted as a regular expression</td>
+                            <td>
+                                Same as '--no-instrument=PATH', except PATH is interpreted as a
+                                <a href="#jvmRegularExpressions">regular expression</a>
+                            </td>
                         </tr>
                         <tr>
-                            <td>--only-instrument-reg=URL</td>
+                            <td nowrap="nowrap">--only-instrument-reg=URL</td>
                             <td>None</td>
                             <td>
-                                Changes the default behavior to skip instrumentation except for the specified URLs.
+                                Changes the default behavior to skip instrumentation except for the specified URLs
+                                matching the <a href="#jvmRegularExpressions">regular expression</a>.
                                 This switch can be overridden if no-instrument switches are specified first.
                             </td>
                         </tr>
@@ -648,7 +713,10 @@ fs.write("target/jscoverage.json", json, 'w');
                         <tr>
                             <td>--exclude-reg=PATH</td>
                             <td>None</td>
-                            <td>Same as '--exclude=PATH', except PATH is interpreted as a regular expression</td>
+                            <td>
+                                Same as '--exclude=PATH', except PATH is interpreted as a
+                                <a href="#jvmRegularExpressions">regular expression</a>
+                            </td>
                         </tr>
                         <tr>
                             <td>--no-branch</td>
@@ -659,6 +727,14 @@ fs.write("target/jscoverage.json", json, 'w');
                             <td>--no-function</td>
                             <td>N/A</td>
                             <td>Turn off function coverage data collection</td>
+                        </tr>
+                        <tr>
+                            <td>--local-storage</td>
+                            <td>N/A</td>
+                            <td>
+                                Save and load coverage data from HTML5 local storage.
+                                See the <a href="#localStorage">section on HTML5 local storage for more information</a>
+                            </td>
                         </tr>
                         <tr>
                             <td>--js-version=VERSION</td>
@@ -755,6 +831,68 @@ fs.write("target/jscoverage.json", json, 'w');
                 </text>
             </item>
             <item>
+                <heading id="localStorage">HTML5 Local Storage Switch</heading>
+                <item>
+                    <heading id="localStorageIntro">Introduction</heading>
+                    <text>
+                        Specifying local storage mode <var>--local-storage</var> makes use of HTML5's local storage
+                        feature to store coverage data between page loads without the need of iframes or
+                        JavaScript-opened windows.
+                    </text>
+                    <text>
+                        This can be especially useful for existing automated tests against a web-server, as the coverage
+                        data can be collected using the existing tests with only the following modifications:
+                        <ul>
+                            <li>
+                                either the JavaScript must be pre-instrumented using the
+                                <a href="#fileMode">file-system mode</a>
+                                or the browser can use the <a href="#proxyMode">JSCover proxy</a>
+                            </li>
+                            <li>store the coverage results at the end of the test suite</li>
+                            <li>clear JSCover's HTML5 local storage <var>localStorage['jscover']</var></li>
+                        </ul>
+                    </text>
+                </item>
+                <item>
+                    <heading id="localStorageClearing">Clearing HTML5 Local Storage</heading>
+                    <text>
+                        A special URL, '/jscoverage-clear-local-storage.html', has been added to clear JSCover's local
+                        storage. Alternatively, the following JavaScript can be executed:
+                        <code>localStorage.removeItem('jscover');</code>
+                    </text>
+                </item>
+                <item>
+                    <heading id="localStorageExample">Example</heading>
+                    <text>
+                        For a full working example using a recorded Selenium IDE test, see the
+                        'examples/localStorage-server' folder of the ZIP distribution.
+                    </text>
+                    <text>
+                        The 'examples/localStorage-proxy' folder contains a similar example in proxy mode.
+                    </text>
+                </item>
+                <item>
+                    <heading id="localStorageWorkings">How does it work</heading>
+                    <text>
+                        When the local storage switch, <var>--local-storage</var>, is supplied, some
+                        <a href="https://github.com/tntim96/JSCover/blob/master/src/main/resources/jscoverage-localstorage.js"
+                                target="_blank">extra JavaScript</a>
+                        is added to the instrumented JavaScript. From the source it can be seen that the following
+                        occurs:
+                        <ul>
+                            <li>
+                                When the page and JavaScript loads, it attempts to load the coverage data from
+                                HTML5 local storage
+                            </li>
+                            <li>
+                                When the page exits, it attempts to save the coverage data to
+                                HTML5 local storage
+                            </li>
+                        </ul>
+                    </text>
+                </item>
+            </item>
+            <item>
                 <heading id="logging">Logging</heading>
                 <item>
                     <heading id="defaultLogging">Default Logging</heading>
@@ -772,8 +910,8 @@ fs.write("target/jscoverage.json", json, 'w');
                     <heading id="advancedLogging">Advanced Logging</heading>
                     <text>
                         JSCover's allows finer control of logging by via the JVM option
-                        <var>-Djava.util.logging.config.file=FILE</var>. For example:
-                        <code>java -Djava.util.logging.config.file=log.properties -jar JSCover-all.jar [OPTIONS]...</code>
+                        <var>-Djava.util.logging.configuration.file=FILE</var>. For example:
+                        <code>java -Djava.util.logging.configuration.file=log.properties -jar JSCover-all.jar [OPTIONS]...</code>
                         A sample property file, <var>log.properties</var>, is included in the root directory of the
                         ZIP distribution. Specifying this JVM option will turn off the default programmatic logging.
                     </text>
@@ -1129,6 +1267,31 @@ fs.write("target/jscoverage.json", json, 'w');
                 <text>
                     <note>* - You will need to wait for the JavaScript operation to complete</note>
                 </text>
+                <item>
+                    <heading id="automatingDomIdsWait">Waiting for JavaScript</heading>
+                    <text>
+                        <table>
+                            <tr>
+                                <th>Action</th>
+                                <th>Selenium Action</th>
+                                <th>XPath</th>
+                                <th>Vaue</th>
+                            </tr>
+                            <tr>
+                                <td>Wait for coverage data to be stored</td>
+                                <td>waitForElementPresent</td>
+                                <td>//div[@id='storeDiv' and contains(.,'Coverage data stored')]</td>
+                                <td>N/A</td>
+                            </tr>
+                            <tr>
+                                <td>Wait for HTML coverage report to render</td>
+                                <td>waitForText</td>
+                                <td>id=progressLabel</td>
+                                <td>Done</td>
+                            </tr>
+                        </table>
+                    </text>
+                </item>
             </item>
             <item>
                 <heading id="automatingHtmlUnit">HtmlUnit</heading>
@@ -1441,7 +1604,7 @@ function square(x) {
                         <table>
                             <tr>
                                 <th>Feature</th>
-                                <th>JSCover (1.0.0)</th>
+                                <th>JSCover (1.0.5)</th>
                                 <th>JSCoverage (0.5.1)</th>
                             </tr>
                             <tr>
@@ -1468,6 +1631,11 @@ function square(x) {
                                 <td>Proxy Server Instrumentation</td>
                                 <td class="tick"></td>
                                 <td class="tick"></td>
+                            </tr>
+                            <tr>
+                                <td>HTML5 Local Storage Alternative to iFrames and JavaScript-opened Windows</td>
+                                <td class="tick"></td>
+                                <td class="cross"></td>
                             </tr>
                             <tr>
                                 <td>Specify Encoding</td>
