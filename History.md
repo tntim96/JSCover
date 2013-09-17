@@ -1,4 +1,4 @@
-1.0.5 / 2013-??-??
+1.0.5 / 2013-09-17
 ==================
   * Using HTML5 localStorage instead of an iframe (https://github.com/tntim96/JSCover/issues/92)
   * Provide URI to File-System Path Translation (https://github.com/tntim96/JSCover/issues/98)
