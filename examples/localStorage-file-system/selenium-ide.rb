@@ -24,7 +24,6 @@ describe "SeleniumIde" do
     @driver.find_element(:id, "radio2").click
     @driver.get(@base_url + "/jscoverage.html")
     coverageJSON = @driver.execute_script("return jscoverage_serializeCoverageToJSON();")
-    coverageJSON = @driver.execute_script("return jscoverage_serializeCoverageToJSON();")
     File.open '../../target/example-fs-localStorage/jscoverage.json', "w" do |f|
       f.write coverageJSON
     end
