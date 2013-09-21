@@ -326,8 +326,8 @@
 });
 fs.write("target/jscoverage.json", json, 'w');
 </code>
-                            For a working PhantomJS example, see <var>example-phantom-fs.sh</var> or
-                            <var>example-phantom-fs.bat</var>.
+                            For a working PhantomJS example, see <var>phantom-fs.sh</var> or
+                            <var>phantom-fs.bat</var>.
                         </text>
                         <text>
                             Once the JSON is available in your browser driver, it can then be saved to the file-system
