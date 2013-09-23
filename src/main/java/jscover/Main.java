@@ -344,6 +344,8 @@ package jscover;
 
 import jscover.filesystem.ConfigurationForFS;
 import jscover.filesystem.FileSystemInstrumenter;
+import jscover.stdout.ConfigurationForStdOut;
+import jscover.stdout.StdOutInstrumenter;
 import jscover.server.ConfigurationForServer;
 import jscover.server.WebDaemon;
 import jscover.util.IoUtils;
@@ -368,6 +370,7 @@ public class Main {
     public static final String VERSION_PREFIX2 = "--version";
     public static final String SERVER_PREFIX = "-ws";
     public static final String FILESYSTEM_PREFIX = "-fs";
+    public static final String STDOUT_PREFIX = "-io";
     public static final Properties properties = new Properties();
     public static String reportSrcSubDir = "original-src";
 
@@ -378,6 +381,7 @@ public class Main {
     private MainHelper mainHelper = new MainHelper();
     private WebDaemon webDaemon = new WebDaemon();
     private FileSystemInstrumenter fileSystemInstrumenter = new FileSystemInstrumenter();
+    private StdOutInstrumenter stdOutInstrumenter = new StdOutInstrumenter();
     private IoUtils ioUtils = IoUtils.getInstance();
 
     void initialize() throws IOException {
@@ -405,6 +409,7 @@ public class Main {
     private boolean printVersion;
     private boolean isServer;
     private boolean isFileSystem;
+    private boolean isStdOut;
     private int exitStatus;
 
     public static void main(String[] args) throws IOException {
@@ -420,6 +425,8 @@ public class Main {
             runServer(args);
         } else if (isFileSystem()) {
             runFileSystem(args);
+        } else if (isStdOut()) {
+            runSingleFile(args);
         } else if (showCharSets()) {
             System.out.println("Valid encodings:");
             SortedMap<String, Charset> charSet = Charset.availableCharsets();
@@ -472,6 +479,18 @@ public class Main {
         }
     }
 
+    private void runSingleFile(String[] args) {
+        ConfigurationForStdOut configuration = ConfigurationForStdOut.parse(args);
+        configuration.setProperties(properties);
+        if (configuration.isInvalid())
+            exitStatus = 1;
+        if (configuration.showHelp()) {
+            System.out.println(configuration.getHelpText());
+        } else {
+            stdOutInstrumenter.run(configuration);
+        }
+    }
+
     public Main parse(String[] args) {
         for (String arg : args) {
             if (arg.equals(HELP_PREFIX1) || arg.equals(HELP_PREFIX2)) {
@@ -482,6 +501,8 @@ public class Main {
                 isServer = true;
             } else if (arg.equals(FILESYSTEM_PREFIX)) {
                 isFileSystem = true;
+            } else if (arg.equals(STDOUT_PREFIX)) {
+                isStdOut = true;
             } else if (arg.equals(CHARSET_PREFIX)) {
                 showCharsets = true;
             }
@@ -494,10 +515,10 @@ public class Main {
     }
 
     private boolean validOptions() {
-        if (isServer && isFileSystem) {
+        if ((isServer && (isFileSystem || isStdOut)) || (isFileSystem && isStdOut)) {
             return false;
         }
-        return isServer || isFileSystem || showHelp || printVersion || showCharsets;
+        return isServer || isFileSystem || isStdOut || showHelp || printVersion || showCharsets;
     }
 
     public Boolean printVersion() {
@@ -519,6 +540,10 @@ public class Main {
 
     public boolean isFileSystem() {
         return isFileSystem;
+    }
+
+    public boolean isStdOut() {
+        return isStdOut;
     }
 
     public int getExitStatus() {

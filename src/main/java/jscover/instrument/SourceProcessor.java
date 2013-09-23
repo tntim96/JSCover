@@ -408,7 +408,7 @@ class SourceProcessor {
         String instrumentedSource = instrumentSource(sourceURI, source);
 
         String jsLineInitialization = getJsLineInitialization(uri, instrumenter.getValidLines());
-        
+
         if (includeFunctionCoverage)
             jsLineInitialization += getJsFunctionInitialization(uri, instrumenter.getNumFunctions());
 
@@ -434,6 +434,7 @@ class SourceProcessor {
     }
 
     protected String getJsLineInitialization(String fileName, SortedSet<Integer> validLines) {
+        fileName = fileName.replace("\\", "\\\\").replace("'", "\\'");
         StringBuilder sb = new StringBuilder(format("if (! _$jscoverage['%s']) {\n", fileName));
         sb.append(format("  _$jscoverage['%s'] = {};\n", fileName));
         sb.append(format("  _$jscoverage['%s'].lineData = [];\n", fileName));
@@ -443,9 +444,10 @@ class SourceProcessor {
         sb.append("}\n");
         return sb.toString();
     }
-    
+
 	// Function Coverage (HA-CA)
     protected String getJsFunctionInitialization(String fileName, int numFunction) {
+        fileName = fileName.replace("\\", "\\\\").replace("'", "\\'");
         StringBuilder sb = new StringBuilder(format("if (! _$jscoverage['%s'].functionData) {\n", fileName));
         sb.append(format("  _$jscoverage['%s'].functionData = [];\n", fileName));
         for ( int i = 0; i < numFunction; ++i) {
