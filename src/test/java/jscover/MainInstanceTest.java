@@ -346,6 +346,8 @@ import jscover.filesystem.ConfigurationForFS;
 import jscover.filesystem.FileSystemInstrumenter;
 import jscover.server.ConfigurationForServer;
 import jscover.server.WebDaemon;
+import jscover.stdout.ConfigurationForStdOut;
+import jscover.stdout.StdOutInstrumenter;
 import jscover.util.ReflectionUtils;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
@@ -370,12 +372,14 @@ public class MainInstanceTest {
     private @Mock MainHelper mainHelper;
     private @Mock WebDaemon webDaemon;
     private @Mock FileSystemInstrumenter fileSystemInstrumenter;
+    private @Mock StdOutInstrumenter stdOutInstrumenter;
 
     @Before
     public void setUp() {
         ReflectionUtils.setField(main, "mainHelper", mainHelper);
         ReflectionUtils.setField(main, "webDaemon", webDaemon);
         ReflectionUtils.setField(main, "fileSystemInstrumenter", fileSystemInstrumenter);
+        ReflectionUtils.setField(main, "stdOutInstrumenter", stdOutInstrumenter);
     }
 
     @Test
@@ -447,6 +451,24 @@ public class MainInstanceTest {
             }
         };
         verify(fileSystemInstrumenter, times(1)).run(argThat(matcher));
+        verifyZeroInteractions(mainHelper);
+    }
+
+    @Test
+    public void shouldRunStdIO() throws IOException, InterruptedException {
+        main.runMain(new String[]{"-io","--js-version=1.0","doc/example/script.js"});
+
+        TypeSafeMatcher<ConfigurationForStdOut> matcher = new TypeSafeMatcher<ConfigurationForStdOut>() {
+            @Override
+            protected boolean matchesSafely(ConfigurationForStdOut item) {
+                return item.getCompilerEnvirons().getLanguageVersion()==100;
+            }
+
+            public void describeTo(Description description) {
+
+            }
+        };
+        verify(stdOutInstrumenter, times(1)).run(argThat(matcher));
         verifyZeroInteractions(mainHelper);
     }
 

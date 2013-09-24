@@ -394,4 +394,14 @@ public class InstrumenterServiceTest {
         assertThat(jsInstrumented, containsString("x++;"));
         assertThat(jsInstrumented, containsString("_$jscoverage['/src.js'].lineData[1]++;"));
     }
+
+    @Test
+    public void shouldInstrumentForProxyServer() {
+        File dest = new File("target/dest.js");
+        dest.deleteOnExit();
+        String jsInstrumented = service.instrumentJSForProxyServer(config, "x++;", "/src.js");
+
+        assertThat(jsInstrumented, containsString("x++;"));
+        assertThat(jsInstrumented, containsString("_$jscoverage['/src.js'].lineData[1]++;"));
+    }
 }

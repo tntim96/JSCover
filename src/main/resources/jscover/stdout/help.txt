@@ -1,0 +1,9 @@
+Usage: java -jar JSCover-all.jar -io [OPTION]... SOURCE-FILE
+Instrument JavaScript with code coverage information.
+
+Options:
+      --js-version=VERSION      use the specified JavaScript version
+      --no-branch               turn off branch coverage data collection
+      --no-function             turn off function coverage data collection
+      --log=LEVEL               set logging level to: SEVERE (default), WARNING, INFO, CONFIG, FINE, FINER, FINEST
+  -h, --help                    display this help and exit

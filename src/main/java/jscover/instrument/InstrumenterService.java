@@ -345,7 +345,6 @@ package jscover.instrument;
 import jscover.ConfigurationCommon;
 import jscover.server.UriNotFound;
 import jscover.util.IoUtils;
-import org.mozilla.javascript.CompilerEnvirons;
 
 import java.io.File;
 import java.io.FileInputStream;
