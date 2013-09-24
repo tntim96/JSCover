@@ -347,8 +347,6 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
@@ -389,20 +387,28 @@ public class MainParsingTest {
 
     @Test
     public void shouldParseVersion() {
-        assertThat(main.parse(new String[]{}).printVersion(), equalTo(false));
         assertThat(main.parse(new String[]{"-V"}).printVersion(), equalTo(true));
         assertThat(main.parse(new String[]{"--version"}).printVersion(), equalTo(true));
+        assertThat(main.getExitStatus(), equalTo(0));
     }
 
     @Test
     public void shouldParseFileSystem() {
         assertThat(main.parse(new String[]{"-fs"}).isFileSystem(), equalTo(true));
         assertThat(main.parse(new String[]{"src", "doc", "-fs"}).isFileSystem(), equalTo(true));
+        assertThat(main.getExitStatus(), equalTo(0));
     }
 
     @Test
     public void shouldParseServer() {
         assertThat(main.parse(new String[]{"-ws"}).isServer(), equalTo(true));
+        assertThat(main.getExitStatus(), equalTo(0));
+    }
+
+    @Test
+    public void shouldParseStdIO() {
+        assertThat(main.parse(new String[]{"-io"}).isStdOut(), equalTo(true));
+        assertThat(main.getExitStatus(), equalTo(0));
     }
 
     @Test
@@ -422,28 +428,31 @@ public class MainParsingTest {
     public void shouldParseEncodingHelp() {
         assertThat(main.parse(new String[]{"-ws","encoding"}).showCharSets(), equalTo(false));
         assertThat(main.parse(new String[]{"-h","encoding"}).showCharSets(), equalTo(true));
-    }
-
-    @Test
-    public void shouldDetectValidOptionsForWebServer() {
-        assertThat(main.parse(new String[]{"-ws"}).showHelp(), equalTo(false));
-        assertThat(main.getExitStatus(), equalTo(0));
-    }
-
-    @Test
-    public void shouldDetectValidOptionsForFileSystem() {
-        assertThat(main.parse(new String[]{"-fs"}).showHelp(), equalTo(false));
         assertThat(main.getExitStatus(), equalTo(0));
     }
 
     @Test
     public void shouldDetectInvalidOptions1() {
-        assertThat(main.parse(new String[]{"-ws", "-fs"}).showHelp(), equalTo(true));
-        assertThat(main.getExitStatus(), equalTo(1));
+        verifyInvalid(new String[]{"-ws", "-fs"});
     }
 
     @Test
     public void shouldDetectInvalidOptions2() {
+        verifyInvalid(new String[]{"-ws", "-io"});
+    }
+
+    @Test
+    public void shouldDetectInvalidOptions3() {
+        verifyInvalid(new String[]{"-fs", "-io"});
+    }
+
+    private void verifyInvalid(String[] args) {
+        assertThat(main.parse(args).showHelp(), equalTo(true));
+        assertThat(main.getExitStatus(), equalTo(1));
+    }
+
+    @Test
+    public void shouldDetectInvalidOptionsNoArgs() {
         assertThat(main.parse(new String[]{}).showHelp(), equalTo(true));
         assertThat(main.getExitStatus(), equalTo(1));
     }

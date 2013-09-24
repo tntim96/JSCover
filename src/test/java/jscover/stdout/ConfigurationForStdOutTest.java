@@ -338,59 +338,79 @@ proprietary programs.  If your program is a subroutine library, you may
 consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
-*/
+ */
 
 package jscover.stdout;
 
-import jscover.ConfigurationCommon;
-import jscover.Main;
+import org.junit.Test;
 
 import java.io.File;
+import java.io.IOException;
 
-import static java.lang.String.format;
+import static java.util.logging.Level.SEVERE;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertThat;
 
-public class ConfigurationForStdOut extends ConfigurationCommon {
-    private File srcFile;
+public class ConfigurationForStdOutTest {
 
-    public File getSrcFile() {
-        return srcFile;
+    @Test
+    public void shouldHaveDefaults() {
+        ConfigurationForStdOut configuration = ConfigurationForStdOut.parse(new String[]{"-io", "doc/example/script.js"});
+        assertThat(configuration.showHelp(), is(false));
+        assertThat(configuration.isInvalid(), is(false));
+        assertThat(configuration.getJSVersion(), equalTo(150));
+        assertThat(configuration.skipInstrumentation("/"), is(false));
+        assertThat(configuration.getCompilerEnvirons().getLanguageVersion(), equalTo(150));
+        assertThat(configuration.isIncludeBranch(), is(true));
+        assertThat(configuration.isIncludeFunction(), is(true));
+        assertThat(configuration.getLogLevel(), is(SEVERE));
     }
 
-    public static ConfigurationForStdOut parse(String[] args) {
-        ConfigurationForStdOut configuration = new ConfigurationForStdOut();
-        for (String arg : args) {
-            configuration.parse(arg);
-        }
-
-        if (args.length < 2) {
-            configuration.invalid = true;
-            configuration.showHelp = true;
-            return configuration;
-        }
-        if (!configuration.validSourceFile()) {
-            configuration.setInvalid(format("Source file '%s' is invalid", configuration.srcFile));
-        }
-        configuration.compilerEnvirons.setLanguageVersion(configuration.JSVersion);
-        return configuration;
+    @Test
+    public void shouldGetSourceFile() throws IOException {
+        ConfigurationForStdOut configuration = ConfigurationForStdOut.parse(new String[]{"-io", "doc/example/script.js"});
+        assertThat(configuration.getSrcFile(), equalTo(new File("doc/example/script.js")));
     }
 
-    public void parse(String arg) {
-        if (super.parseArg(arg))
-            return;
-        if (arg.startsWith(Main.STDOUT_PREFIX)) {
-            //Ignore this
-        } else if (srcFile == null) {
-            srcFile = new File(arg);
-        } else {
-            setInvalid(format("JSCover: Extra command line argument found '%s'", arg));
-        }
+    @Test
+    public void shouldGetSourceFileAndCommonConfiguration() {
+        ConfigurationForStdOut configuration = ConfigurationForStdOut.parse(new String[]{"-io", "--js-version=1.8", "doc/example/script.js"});
+        assertThat(configuration.getSrcFile(), equalTo(new File("doc/example/script.js")));
+        assertThat(configuration.getJSVersion(), equalTo(180));
     }
 
-    private boolean validSourceFile() {
-        return srcFile.exists() && srcFile.isFile();
+    @Test
+    public void shouldDetectInvalidFileIfDir() {
+        ConfigurationForStdOut configuration = ConfigurationForStdOut.parse(new String[]{"-io", "doc"});
+        assertThat(configuration.showHelp(), is(true));
+        assertThat(configuration.isInvalid(), is(true));
     }
 
-    public String getHelpText() {
-        return ioUtils.toString(getClass().getResourceAsStream("help.txt"));
+    @Test
+    public void shouldDetectInvalidFileIfInvalid() {
+        ConfigurationForStdOut configuration = ConfigurationForStdOut.parse(new String[]{"-io", "not-there"});
+        assertThat(configuration.showHelp(), is(true));
+        assertThat(configuration.isInvalid(), is(true));
     }
+
+    @Test
+    public void shouldDetectTooFewArgCount() {
+        ConfigurationForStdOut configuration = ConfigurationForStdOut.parse(new String[]{"-io"});
+        assertThat(configuration.showHelp(), is(true));
+        assertThat(configuration.isInvalid(), is(true));
+    }
+
+    @Test
+    public void shouldDetectTooManyArgCount() {
+        ConfigurationForStdOut configuration = ConfigurationForStdOut.parse(new String[]{"-io", "doc/example/script.js", "extra"});
+        assertThat(configuration.showHelp(), is(true));
+        assertThat(configuration.isInvalid(), is(true));
+    }
+
+    @Test
+    public void shouldRetrieveHelpText() {
+        String helpText = new ConfigurationForStdOut().getHelpText();
+        assertThat(helpText, containsString("Usage: java -jar JSCover-all.jar -io [OPTION]... SOURCE-FILE"));
+    }
+
 }

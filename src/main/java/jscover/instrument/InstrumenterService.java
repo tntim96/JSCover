@@ -345,7 +345,6 @@ package jscover.instrument;
 import jscover.ConfigurationCommon;
 import jscover.server.UriNotFound;
 import jscover.util.IoUtils;
-import org.mozilla.javascript.CompilerEnvirons;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -381,12 +380,5 @@ public class InstrumenterService {
         String source = ioUtils.loadFromFileSystem(srcFile);
         String jsInstrumented = sourceProcessor.processSourceForFileSystem(source);
         ioUtils.copy(jsInstrumented, dest);
-    }
-
-    public void instrumentJSForStdOut(CompilerEnvirons compilerEnvirons, File srcFile, String uri, boolean includeBranch, boolean includeFunction) {
-        SourceProcessor sourceProcessor = new SourceProcessor(compilerEnvirons, srcFile.getAbsolutePath(), includeBranch, includeFunction);
-        String source = ioUtils.loadFromFileSystem(srcFile);
-        String jsInstrumented = sourceProcessor.processSourceForFileSystem(source);
-        System.out.print(jsInstrumented);
     }
 }

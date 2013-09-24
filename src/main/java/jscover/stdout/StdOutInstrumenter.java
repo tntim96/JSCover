@@ -343,31 +343,24 @@ Public License instead of this License.
 package jscover.stdout;
 
 import jscover.instrument.InstrumenterService;
-import jscover.util.IoService;
-import jscover.util.IoUtils;
 import jscover.util.LoggerUtils;
 
-import java.io.File;
+import java.io.PrintStream;
 import java.util.logging.Logger;
 
 import static java.util.logging.Level.INFO;
 
 
 public class StdOutInstrumenter {
-
-  private IoService ioService = new IoService();
     private static final Logger logger = Logger.getLogger(StdOutInstrumenter.class.getName());
     private InstrumenterService instrumenterService = new InstrumenterService();
-    private IoUtils ioUtils = IoUtils.getInstance();
     private LoggerUtils loggerUtils = LoggerUtils.getInstance();
-    private ConfigurationForStdOut configuration;
-    private File log;
+    private PrintStream dest = System.out;
 
     public void run(ConfigurationForStdOut configuration) {
-        this.configuration = configuration;
-        loggerUtils.configureLogger(configuration.getLogLevel(), configuration.getLogDir());
+        loggerUtils.configureLogger(configuration.getLogLevel(), configuration.getReportDir());
         logger.log(INFO, "Starting JSCover {0} stdio instrumentation", configuration.getVersion());
-        String path = ioUtils.getRelativePath(configuration.getSrcDir(), configuration.getSrcDir());
-        instrumenterService.instrumentJSForStdOut(configuration.getCompilerEnvirons(), configuration.getSrcDir(), path, configuration.isIncludeBranch(), configuration.isIncludeFunction());
+        String jsInstrumented = instrumenterService.instrumentJSForWebServer(configuration, configuration.getSrcFile(), configuration.getSrcFile().getName());
+        dest.print(jsInstrumented);
     }
 }

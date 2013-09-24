@@ -338,59 +338,51 @@ proprietary programs.  If your program is a subroutine library, you may
 consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
-*/
+ */
 
 package jscover.stdout;
 
-import jscover.ConfigurationCommon;
-import jscover.Main;
+import jscover.instrument.InstrumenterService;
+import jscover.util.LoggerUtils;
+import jscover.util.ReflectionUtils;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
 
-import static java.lang.String.format;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
-public class ConfigurationForStdOut extends ConfigurationCommon {
-    private File srcFile;
+@RunWith(MockitoJUnitRunner.class)
+public class StdOutInstrumenterTest {
+    private StdOutInstrumenter instrumenter = new StdOutInstrumenter();
+    private @Mock ConfigurationForStdOut configuration;
+    private @Mock InstrumenterService instrumenterService;
+    private @Mock LoggerUtils loggerUtils;
+    private @Mock File srcFile;
+    private @Mock PrintStream dest;
 
-    public File getSrcFile() {
-        return srcFile;
+
+    @Before
+    public void setUp() throws IOException {
+        ReflectionUtils.setField(instrumenter, "loggerUtils", loggerUtils);
+        ReflectionUtils.setField(instrumenter, "instrumenterService", instrumenterService);
+        ReflectionUtils.setField(instrumenter, "dest", dest);
     }
 
-    public static ConfigurationForStdOut parse(String[] args) {
-        ConfigurationForStdOut configuration = new ConfigurationForStdOut();
-        for (String arg : args) {
-            configuration.parse(arg);
-        }
+    @Test
+    public void shouldInstrumentToStream() {
+        given(configuration.getSrcFile()).willReturn(srcFile);
+        given(srcFile.getName()).willReturn("theURI");
+        given(instrumenterService.instrumentJSForWebServer(configuration, srcFile, "theURI")).willReturn("instrumentedSource");
 
-        if (args.length < 2) {
-            configuration.invalid = true;
-            configuration.showHelp = true;
-            return configuration;
-        }
-        if (!configuration.validSourceFile()) {
-            configuration.setInvalid(format("Source file '%s' is invalid", configuration.srcFile));
-        }
-        configuration.compilerEnvirons.setLanguageVersion(configuration.JSVersion);
-        return configuration;
-    }
+        instrumenter.run(configuration);
 
-    public void parse(String arg) {
-        if (super.parseArg(arg))
-            return;
-        if (arg.startsWith(Main.STDOUT_PREFIX)) {
-            //Ignore this
-        } else if (srcFile == null) {
-            srcFile = new File(arg);
-        } else {
-            setInvalid(format("JSCover: Extra command line argument found '%s'", arg));
-        }
-    }
-
-    private boolean validSourceFile() {
-        return srcFile.exists() && srcFile.isFile();
-    }
-
-    public String getHelpText() {
-        return ioUtils.toString(getClass().getResourceAsStream("help.txt"));
+        verify(dest).print("instrumentedSource");
     }
 }
