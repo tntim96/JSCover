@@ -413,7 +413,7 @@ public class MainParsingTest {
     }
 
     @Test
-    public void shouldShowHelpIfNoArgymentsProvided() {
+    public void shouldShowHelpIfNoArgumentsProvided() {
         assertThat(main.parse(new String[]{}).showHelp(), equalTo(true));
         assertThat(main.getExitStatus(), equalTo(1));
     }
