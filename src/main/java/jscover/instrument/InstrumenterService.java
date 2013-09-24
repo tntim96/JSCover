@@ -382,4 +382,11 @@ public class InstrumenterService {
         String jsInstrumented = sourceProcessor.processSourceForFileSystem(source);
         ioUtils.copy(jsInstrumented, dest);
     }
+
+    public void instrumentJSForStdOut(CompilerEnvirons compilerEnvirons, File srcFile, String uri, boolean includeBranch, boolean includeFunction) {
+        SourceProcessor sourceProcessor = new SourceProcessor(compilerEnvirons, srcFile.getAbsolutePath(), includeBranch, includeFunction);
+        String source = ioUtils.loadFromFileSystem(srcFile);
+        String jsInstrumented = sourceProcessor.processSourceForFileSystem(source);
+        System.out.print(jsInstrumented);
+    }
 }

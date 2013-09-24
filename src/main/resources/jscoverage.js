@@ -81,10 +81,10 @@ var jscoverage_inLengthyOperation = false;
 Possible states:
 			isInvertedMode	isServer	isReport	tabs
 normal			false		false		false		Browser
-inverted		true		false		false		
+inverted		true		false		false
 server, normal		false		true		false		Browser, Store
 server, inverted	true		true		false		Store
-report			false		false		true		
+report			false		false		true
 */
 var jscoverage_isInvertedMode = false;
 var jscoverage_isServer = false;
@@ -246,9 +246,13 @@ function jscoverage_getBooleanValue(s) {
 
 function jscoverage_removeTab(id) {
   var tab = document.getElementById(id + 'Tab');
-  tab.parentNode.removeChild(tab);
+  if(tab){
+      tab.parentNode.removeChild(tab);
+  }
   var tabPage = document.getElementById(id + 'TabPage');
-  tabPage.parentNode.removeChild(tabPage);
+  if(tabPage){
+      tabPage.parentNode.removeChild(tabPage);
+  }
 }
 
 function jscoverage_isValidURL(url) {
@@ -454,7 +458,7 @@ function jscoverage_createHandler(file, line) {
 
 function jscoverage_createLink(file, line) {
   var link = document.createElement("a");
-  link.href = '#';
+  link.href = '#'+file;
   link.onclick = jscoverage_createHandler(file, line);
 
   var text;
