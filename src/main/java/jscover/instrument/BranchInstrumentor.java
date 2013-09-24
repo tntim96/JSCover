@@ -501,12 +501,13 @@ public class BranchInstrumentor implements NodeVisitor {
     }
 
     protected String getJsLineInitialization() {
-        StringBuilder sb = new StringBuilder(format("if (! _$jscoverage['%s'].branchData) {\n", uri));
-        sb.append(format("  _$jscoverage['%s'].branchData = {};\n", uri));
+        String fileName = uri.replace("\\", "\\\\").replace("'", "\\'");
+        StringBuilder sb = new StringBuilder(format("if (! _$jscoverage['%s'].branchData) {\n", fileName));
+        sb.append(format("  _$jscoverage['%s'].branchData = {};\n", fileName));
         for (Integer line : lineConditionMap.keySet()) {
-            sb.append(format(initBranchLine, uri, line));
-            for (Integer condition: lineConditionMap.get(line))
-                sb.append(format(initBranchCondition, uri, line, condition));
+            sb.append(format(initBranchLine, fileName, line));
+            for (Integer condition : lineConditionMap.get(line))
+                sb.append(format(initBranchCondition, fileName, line, condition));
         }
         sb.append("}\n");
         return sb.toString();
