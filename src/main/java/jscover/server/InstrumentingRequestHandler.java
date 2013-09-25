@@ -377,7 +377,7 @@ public class InstrumentingRequestHandler extends HttpServer {
     private UriFileTranslator uriFileTranslator;
 
     public InstrumentingRequestHandler(Socket socket, ConfigurationForServer configuration) {
-        super(socket, configuration.getDocumentRoot(), configuration.getVersion());
+        super(socket, configuration.getDocumentRoot(), configuration.getVersion(), configuration.isEmbedded());
         this.configuration = configuration;
         this.unloadedSourceProcessor = new UnloadedSourceProcessor(configuration);
         this.uriFileTranslator = configuration.getUriFileTranslator();
