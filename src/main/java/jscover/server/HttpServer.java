@@ -345,6 +345,7 @@ package jscover.server;
 import jscover.util.IoUtils;
 
 import java.io.*;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.Charset;
 import java.util.*;
@@ -367,6 +368,7 @@ public class HttpServer extends Thread {
     protected OutputStream os;
     protected PrintWriter pw = null;
     protected IoUtils ioUtils = IoUtils.getInstance();
+    private ServerSocket server;
 
     public HttpServer(Socket socket, File wwwRoot, String version) {
         this.wwwRoot = wwwRoot;
@@ -375,11 +377,12 @@ public class HttpServer extends Thread {
         this.embedded = false;
     }
 
-    public HttpServer(Socket socket, File wwwRoot, String version, boolean embedded) {
+    public HttpServer(Socket socket, File wwwRoot, String version, boolean embedded, ServerSocket server) {
         this.wwwRoot = wwwRoot;
         this.socket = socket;
         this.version = version;
         this.embedded = embedded;
+        this.server = server;
     }
 
     public void run() {
@@ -435,6 +438,8 @@ public class HttpServer extends Thread {
                     ioUtils.closeQuietly(os);
                     if (!this.embedded) {
                         System.exit(0);
+                    } else {
+                        server.close();
                     }
                 }
                 handleGet(httpRequest);

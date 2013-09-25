@@ -354,6 +354,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.List;
@@ -376,8 +377,8 @@ public class InstrumentingRequestHandler extends HttpServer {
     private UnloadedSourceProcessor unloadedSourceProcessor;
     private UriFileTranslator uriFileTranslator;
 
-    public InstrumentingRequestHandler(Socket socket, ConfigurationForServer configuration) {
-        super(socket, configuration.getDocumentRoot(), configuration.getVersion(), configuration.isEmbedded());
+    public InstrumentingRequestHandler(Socket socket, ConfigurationForServer configuration, ServerSocket server) {
+        super(socket, configuration.getDocumentRoot(), configuration.getVersion(), configuration.isEmbedded(), server);
         this.configuration = configuration;
         this.unloadedSourceProcessor = new UnloadedSourceProcessor(configuration);
         this.uriFileTranslator = configuration.getUriFileTranslator();

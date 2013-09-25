@@ -359,9 +359,10 @@ public class WebDaemon {
         loggerUtils.configureLogger(configuration.getLogLevel(), configuration.getReportDir());
         logger.log(INFO, "Starting JSCover {0} HTTP Server, port {1,number,#}", new Object[]{configuration.getVersion(), configuration.getPort()});
         ServerSocket Server = new ServerSocket(configuration.getPort());
+        Server.setReuseAddress(true);
         while (true) {
             Socket socket = Server.accept();
-            (new InstrumentingRequestHandler(socket, configuration)).start();
+            (new InstrumentingRequestHandler(socket, configuration, Server)).start();
         }
     }
 }
