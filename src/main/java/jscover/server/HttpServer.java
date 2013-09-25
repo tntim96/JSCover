@@ -359,6 +359,7 @@ public class HttpServer extends Thread {
 
     private Socket socket;
     private String version;
+    private boolean embedded;
     protected File wwwRoot;
     protected InputStream is;
     protected PushbackInputStream pbis;
@@ -371,6 +372,14 @@ public class HttpServer extends Thread {
         this.wwwRoot = wwwRoot;
         this.socket = socket;
         this.version = version;
+        this.embedded = false;
+    }
+
+    public HttpServer(Socket socket, File wwwRoot, String version, boolean embedded) {
+        this.wwwRoot = wwwRoot;
+        this.socket = socket;
+        this.version = version;
+        this.embedded = embedded;
     }
 
     public void run() {
@@ -424,7 +433,9 @@ public class HttpServer extends Thread {
                     ioUtils.closeQuietly(br);
                     ioUtils.closeQuietly(pbis);
                     ioUtils.closeQuietly(os);
-                    System.exit(0);
+                    if (!this.embedded) {
+                        System.exit(0);
+                    }
                 }
                 handleGet(httpRequest);
             } else if (httpMethod.equals("HEAD")) {
