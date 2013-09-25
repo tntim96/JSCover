@@ -362,6 +362,7 @@ public class ConfigurationForServer extends ConfigurationCommon {
     public static final String DOC_ROOT_PREFIX = "--document-root=";
     public static final String PORT_PREFIX = "--port=";
     public static final String PROXY_PREFIX = "--proxy";
+    public static final String EMBEDDED_PREFIX = "--embedded";
     public static final String INCLUDE_UNLOADED_JS_PREFIX = "--include-unloaded-js";
     public static final String URI_TO_FILE_MATCHER_PREFIX = "--uri-to-file-matcher=";
     public static final String URI_TO_FILE_REPLACE_PREFIX = "--uri-to-file-replace=";
@@ -369,6 +370,7 @@ public class ConfigurationForServer extends ConfigurationCommon {
     private File documentRoot = new File(System.getProperty("user.dir"));
     private Integer port = 8080;
     private boolean proxy;
+    private boolean embedded;
     private boolean includeUnloadedJS;
     private Pattern uriToFileMatcher;
     private String uriToFileReplace;
@@ -399,6 +401,8 @@ public class ConfigurationForServer extends ConfigurationCommon {
             port = Integer.valueOf(arg.substring(PORT_PREFIX.length()));
         } else if (arg.equals(PROXY_PREFIX)) {
             proxy = true;
+        } else if (arg.equals(EMBEDDED_PREFIX)) {
+            embedded = true;
         } else if (arg.equals(INCLUDE_UNLOADED_JS_PREFIX)) {
             includeUnloadedJS = true;
         } else if (arg.startsWith(REPORT_DIR_PREFIX)) {
@@ -445,6 +449,9 @@ public class ConfigurationForServer extends ConfigurationCommon {
         return proxy;
     }
 
+    public boolean isEmbedded() {
+        return embedded;
+    }
     public boolean isIncludeUnloadedJS() {
         return includeUnloadedJS;
     }
