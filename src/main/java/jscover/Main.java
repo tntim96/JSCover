@@ -497,25 +497,29 @@ public class Main {
 
     public Main parse(String[] args) {
         for (String arg : args) {
-            if (arg.equals(HELP_PREFIX1) || arg.equals(HELP_PREFIX2)) {
-                showHelp = true;
-            } else if (arg.equals(VERSION_PREFIX1) || arg.equals(VERSION_PREFIX2)) {
-                printVersion = true;
-            } else if (arg.equals(SERVER_PREFIX)) {
-                isServer = true;
-            } else if (arg.equals(FILESYSTEM_PREFIX)) {
-                isFileSystem = true;
-            } else if (arg.equals(STDOUT_PREFIX)) {
-                isStdOut = true;
-            } else if (arg.equals(CHARSET_PREFIX)) {
-                showCharsets = true;
-            }
+            parse(arg);
         }
         if (!validOptions()) {
             exitStatus = 1;
             showHelp = true;
         }
         return this;
+    }
+
+    private void parse(String arg) {
+        if (arg.equals(HELP_PREFIX1) || arg.equals(HELP_PREFIX2)) {
+            showHelp = true;
+        } else if (arg.equals(VERSION_PREFIX1) || arg.equals(VERSION_PREFIX2)) {
+            printVersion = true;
+        } else if (arg.equals(SERVER_PREFIX)) {
+            isServer = true;
+        } else if (arg.equals(FILESYSTEM_PREFIX)) {
+            isFileSystem = true;
+        } else if (arg.equals(STDOUT_PREFIX)) {
+            isStdOut = true;
+        } else if (arg.equals(CHARSET_PREFIX)) {
+            showCharsets = true;
+        }
     }
 
     private boolean validOptions() {
@@ -528,7 +532,6 @@ public class Main {
     public Boolean printVersion() {
         return printVersion;
     }
-
 
     public Boolean showHelp() {
         return showHelp;
