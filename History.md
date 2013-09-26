@@ -1,3 +1,7 @@
+1.0.6 / 2013-??-??
+==================
+  * Adding support for single file instrumentation via stdio (https://github.com/tntim96/JSCover/pull/100)
+
 1.0.5 / 2013-09-17
 ==================
   * Using HTML5 localStorage instead of an iframe (https://github.com/tntim96/JSCover/issues/92)
