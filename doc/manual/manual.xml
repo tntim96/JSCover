@@ -1161,6 +1161,14 @@ fs.write("target/jscoverage.json", json, 'w');
                 </text>
             </item>
             <item>
+                <heading id="html5LocalStorage">LocalStorage Mode</heading>
+                <text>
+                    This mode avoids iframes and JavaScript-opened windows.
+                    See the <a href="#localStorage">HTML5 Local Storage Switch</a>
+                    section above.
+                </text>
+            </item>
+            <item>
                 <heading id="queryStringOptions">Query String Options</heading>
                 <text>
                     When accessing jscoverage.html in a web browser, you may provide a query string consisting of
