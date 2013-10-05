@@ -384,7 +384,7 @@ public class Main {
     private StdOutInstrumenter stdOutInstrumenter = new StdOutInstrumenter();
     private IoUtils ioUtils = IoUtils.getInstance();
 
-    void initialize() throws IOException {
+    public void initialize() throws IOException {
         properties.load(Main.class.getResourceAsStream("configuration.properties"));
         checkDependantClasses();
     }
@@ -416,7 +416,7 @@ public class Main {
         new Main().runMain(args);
     }
 
-    public void runMain(String[] args) throws IOException {
+    void runMain(String[] args) throws IOException {
         parse(args);
         initialize();
         runJSCover(args);
@@ -426,7 +426,7 @@ public class Main {
             mainHelper.exit(exitStatus);
     }
 
-    private void runJSCover(String[] args) {
+    public void runJSCover(String[] args) {
         if (printVersion()) {
             System.out.println(getVersionText());
         } else if (isServer()) {
@@ -456,8 +456,7 @@ public class Main {
     }
 
     private void runFileSystem(String[] args) {
-        ConfigurationForFS configuration = ConfigurationForFS.parse(args);
-        configuration.setProperties(properties);
+        ConfigurationForFS configuration = getConfigurationForFS(args);
         if (configuration.isInvalid())
             exitStatus = 1;
         if (configuration.showHelp()) {
@@ -465,6 +464,12 @@ public class Main {
         } else {
             fileSystemInstrumenter.run(configuration);
         }
+    }
+
+    private ConfigurationForFS getConfigurationForFS(String[] args) {
+        ConfigurationForFS configuration = ConfigurationForFS.parse(args);
+        configuration.setProperties(properties);
+        return configuration;
     }
 
     private void runServer(String[] args) {

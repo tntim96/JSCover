@@ -344,15 +344,42 @@ package jscover;
 
 import org.junit.Test;
 
+import java.io.File;
+
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
 
 public class ConfigurationCommonTest {
+    private ConfigurationCommon config = new ConfigurationCommon();
+
+    @Test
+    public void shouldHaveDefaults() {
+        assertThat(config.getJSVersion(), is(150));
+        assertThat(config.isIncludeBranch(), is(true));
+        assertThat(config.isIncludeFunction(), is(true));
+        assertThat(config.isLocalStorage(), is(false));
+        assertThat(config.getReportDir(), is(new File(System.getProperty("user.dir"))));
+    }
+
+    @Test
+    public void shouldSetValues() {
+        config.setJSVersion(180);
+        config.setIncludeBranch(false);
+        config.setIncludeFunction(false);
+        config.setLocalStorage(true);
+        File dir = new File("src");
+        config.setReportDir(dir);
+
+        assertThat(config.getJSVersion(), is(180));
+        assertThat(config.isIncludeBranch(), is(false));
+        assertThat(config.isIncludeFunction(), is(false));
+        assertThat(config.isLocalStorage(), is(true));
+        assertThat(config.getReportDir(), sameInstance(dir));
+    }
 
     @Test
     public void shouldParseLocalStorage() {
-        ConfigurationCommon config = new ConfigurationCommon();
-        assertThat(config.isLocalStorage(), is(false));
         assertThat(config.parseArg("--local-storage"), is(true));
         assertThat(config.isLocalStorage(), is(true));
     }

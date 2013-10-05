@@ -1,6 +1,7 @@
 1.0.6 / 2013-??-??
 ==================
   * Adding support for single file instrumentation via stdio (https://github.com/tntim96/JSCover/pull/100)
+  * Internal: Minor modifications to assist with Maven plugin (https://github.com/tntim96/JSCover/issues/103)
 
 1.0.5 / 2013-09-17
 ==================

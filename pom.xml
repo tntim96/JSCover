@@ -12,7 +12,7 @@ http://github.com/tntim96/rhino/
     <artifactId>JSCover</artifactId>
     <packaging>jar</packaging>
     <name>JSCover</name>
-    <version>1.0.6</version>
+    <version>1.0.6-SNAPSHOT</version>
     <description>JSCover is a tool that measures code coverage for JavaScript programs.</description>
     <url>http://tntim96.github.com/JSCover/</url>
     <licenses>
@@ -95,6 +95,14 @@ http://github.com/tntim96/rhino/
         	<artifactId>cobertura</artifactId>
         	<version>2.0.3</version>
             <scope>test</scope>
+            <!--
+            <exclusions>
+                <exclusion>
+                    <artifactId>tools</artifactId>
+                    <groupId>com.sun</groupId>
+                </exclusion>
+            </exclusions>
+            -->
         </dependency>
     </dependencies>
 

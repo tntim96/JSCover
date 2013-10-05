@@ -376,6 +376,19 @@ public class ConfigurationForServerTest {
     }
 
     @Test
+    public void shouldSetValues() {
+        ConfigurationForServer configuration = new ConfigurationForServer();
+        File dir = new File("src");
+        configuration.setDocumentRoot(dir);
+        configuration.setIncludeUnloadedJS(true);
+        configuration.setPort(1234);
+
+        assertThat(configuration.getDocumentRoot(), sameInstance(dir));
+        assertThat(configuration.isIncludeUnloadedJS(), is(true));
+        assertThat(configuration.getPort(), is(1234));
+    }
+
+    @Test
     public void shouldIgnoreServerSwitch() {
         ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"-ws"});
         assertThat(configuration.showHelp(), is(false));

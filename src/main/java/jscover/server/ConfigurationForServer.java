@@ -374,6 +374,17 @@ public class ConfigurationForServer extends ConfigurationCommon {
     private String uriToFileReplace;
     private UriFileTranslator uriFileTranslator = new UriFileTranslatorNoOp();
 
+    public void setDocumentRoot(File documentRoot) {
+        this.documentRoot = documentRoot;
+    }
+
+    public void setPort(Integer port) {
+        this.port = port;
+    }
+
+    public void setIncludeUnloadedJS(boolean includeUnloadedJS) {
+        this.includeUnloadedJS = includeUnloadedJS;
+    }
 
     public File getDocumentRoot() {
         return documentRoot;
@@ -381,6 +392,30 @@ public class ConfigurationForServer extends ConfigurationCommon {
 
     public Integer getPort() {
         return port;
+    }
+
+    public String getHelpText() {
+        return ioUtils.toString(getClass().getResourceAsStream("help.txt"));
+    }
+
+    public boolean isProxy() {
+        return proxy;
+    }
+
+    public boolean isIncludeUnloadedJS() {
+        return includeUnloadedJS;
+    }
+
+    public Pattern getUriToFileMatcher() {
+        return uriToFileMatcher;
+    }
+
+    public String getUriToFileReplace() {
+        return uriToFileReplace;
+    }
+
+    public UriFileTranslator getUriFileTranslator() {
+        return uriFileTranslator;
     }
 
     public void parse(String arg) {
@@ -435,29 +470,5 @@ public class ConfigurationForServer extends ConfigurationCommon {
             configuration.uriFileTranslator = new UriFileTranslatorReg(configuration.uriToFileMatcher, configuration.uriToFileReplace);
         configuration.compilerEnvirons.setLanguageVersion(configuration.JSVersion);
         return configuration;
-    }
-
-    public String getHelpText() {
-        return ioUtils.toString(getClass().getResourceAsStream("help.txt"));
-    }
-
-    public boolean isProxy() {
-        return proxy;
-    }
-
-    public boolean isIncludeUnloadedJS() {
-        return includeUnloadedJS;
-    }
-
-    public Pattern getUriToFileMatcher() {
-        return uriToFileMatcher;
-    }
-
-    public String getUriToFileReplace() {
-        return uriToFileReplace;
-    }
-
-    public UriFileTranslator getUriFileTranslator() {
-        return uriFileTranslator;
     }
 }

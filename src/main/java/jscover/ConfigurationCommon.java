@@ -387,6 +387,26 @@ public class ConfigurationCommon extends Configuration {
     protected IoUtils ioUtils = IoUtils.getInstance();
     protected Level logLevel = SEVERE;
 
+    public void setIncludeBranch(boolean includeBranch) {
+        this.includeBranch = includeBranch;
+    }
+
+    public void setIncludeFunction(boolean includeFunction) {
+        this.includeFunction = includeFunction;
+    }
+
+    public void setLocalStorage(boolean localStorage) {
+        this.localStorage = localStorage;
+    }
+
+    public void setReportDir(File reportDir) {
+        this.reportDir = reportDir;
+    }
+
+    public void setJSVersion(int JSVersion) {
+        this.JSVersion = JSVersion;
+    }
+
     public Boolean showHelp() {
         return showHelp;
     }
