@@ -354,7 +354,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import static java.lang.String.format;
@@ -460,7 +459,14 @@ public class ConfigurationCommon extends Configuration {
         invalid = true;
     }
 
-    private void addOnlyInstrumentReg(String arg) {
+    public void addNoInstrument(String arg) {
+        String uri = arg.substring(NO_INSTRUMENT_PREFIX.length());
+        if (uri.startsWith("/"))
+            uri = uri.substring(1);
+        patternMatchers.add(new PatternMatcherString(uri));
+    }
+
+    public void addOnlyInstrumentReg(String arg) {
         String patternString = arg.substring(ONLY_INSTRUMENT_REG_PREFIX.length());
         if (patternString.startsWith("/"))
             patternString = patternString.substring(1);
@@ -473,7 +479,7 @@ public class ConfigurationCommon extends Configuration {
         }
     }
 
-    private void addNoInstrumentReg(String arg) {
+    public void addNoInstrumentReg(String arg) {
         String patternString = arg.substring(NO_INSTRUMENT_REG_PREFIX.length());
         if (patternString.startsWith("/"))
             patternString = patternString.substring(1);
@@ -495,10 +501,7 @@ public class ConfigurationCommon extends Configuration {
         } else if (arg.equals(LOCAL_STORAGE_PREFIX)) {
             localStorage = true;
         } else if (arg.startsWith(NO_INSTRUMENT_PREFIX)) {
-            String uri = arg.substring(NO_INSTRUMENT_PREFIX.length());
-            if (uri.startsWith("/"))
-                uri = uri.substring(1);
-            patternMatchers.add(new PatternMatcherString(uri));
+            addNoInstrument(arg);
         } else if (arg.startsWith(NO_INSTRUMENT_REG_PREFIX)) {
             addNoInstrumentReg(arg);
         } else if (arg.startsWith(ONLY_INSTRUMENT_REG_PREFIX)) {

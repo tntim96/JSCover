@@ -430,9 +430,9 @@ public class Main {
         if (printVersion()) {
             System.out.println(getVersionText());
         } else if (isServer()) {
-            runServer(args);
+            runServer(ConfigurationForServer.parse(args));
         } else if (isFileSystem()) {
-            runFileSystem(args);
+            runFileSystem(getConfigurationForFS(args));
         } else if (isStdOut()) {
             runSingleFile(args);
         } else if (showCharSets()) {
@@ -455,8 +455,7 @@ public class Main {
         return "JSCover version: " + properties.getProperty("version");
     }
 
-    private void runFileSystem(String[] args) {
-        ConfigurationForFS configuration = getConfigurationForFS(args);
+    private void runFileSystem(ConfigurationForFS configuration) {
         if (configuration.isInvalid())
             exitStatus = 1;
         if (configuration.showHelp()) {
@@ -472,8 +471,7 @@ public class Main {
         return configuration;
     }
 
-    private void runServer(String[] args) {
-        ConfigurationForServer configuration = ConfigurationForServer.parse(args);
+    public void runServer(ConfigurationForServer configuration) {
         configuration.setProperties(properties);
         if (configuration.isInvalid())
             exitStatus = 1;
