@@ -367,6 +367,8 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.argThat;
@@ -400,6 +402,13 @@ public class MainTest {
         given(config.isInvalid()).willReturn(true);
         main.runMain(new String[]{});
         verify(mainHelper).exit(1);
+    }
+
+    @Test
+    public void shouldSetConfig() {
+        ConfigurationForReport configuration = mock(ConfigurationForReport.class);
+        main.setConfig(configuration);
+        assertThat((ConfigurationForReport)ReflectionUtils.getField(main, "config"), sameInstance(configuration));
     }
 
     @Test

@@ -345,12 +345,17 @@ package jscover.report;
 import jscover.util.IoUtils;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.File;
 
+import static jscover.report.ReportFormat.COBERTURAXML;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ConfigurationForReportTest {
     private ConfigurationForReport configuration = new ConfigurationForReport();
     private IoUtils ioUtils = IoUtils.getInstance();
@@ -360,6 +365,25 @@ public class ConfigurationForReportTest {
         new File("target").mkdirs();
     }
 
+    @Test
+    public void shouldSetJSONDirectory() {
+        File dir = mock(File.class);
+        configuration.setJsonDirectory(dir);
+        assertThat(configuration.getJsonDirectory(), sameInstance(dir));
+    }
+
+    @Test
+    public void shouldSetSourceDirectory() {
+        File dir = mock(File.class);
+        configuration.setSourceDirectory(dir);
+        assertThat(configuration.getSourceDirectory(), sameInstance(dir));
+    }
+
+    @Test
+    public void shouldSetReportFormat() {
+        configuration.setReportFormat(COBERTURAXML);
+        assertThat(configuration.getReportFormat(), is(COBERTURAXML));
+    }
 
     @Test
     public void shouldBeInvalidIfNoArgs() {
@@ -450,7 +474,7 @@ public class ConfigurationForReportTest {
         configuration.parse(new String[]{"--format=COBERTURAXML", "target", "src"});
         assertThat(configuration.showHelp(), equalTo(false));
         assertThat(configuration.isInvalid(), equalTo(false));
-        assertThat(configuration.getReportFormat(), equalTo(ReportFormat.COBERTURAXML));
+        assertThat(configuration.getReportFormat(), equalTo(COBERTURAXML));
         assertThat(configuration.getJsonDirectory(), equalTo(new File("target")));
     }
 

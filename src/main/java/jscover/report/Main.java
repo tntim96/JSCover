@@ -361,7 +361,7 @@ public class Main {
 
     public static final Properties properties = new Properties();
 
-    void initialize() throws IOException {
+    public void initialize() throws IOException {
         properties.load(jscover.Main.class.getResourceAsStream("/jscover/configuration.properties"));
     }
 
@@ -372,6 +372,10 @@ public class Main {
     private JSONDataMerger jsonDataMerger = new JSONDataMerger();
     private IoUtils ioUtils = IoUtils.getInstance();
     private ConfigurationForReport config = new ConfigurationForReport();
+
+    public void setConfig(ConfigurationForReport config) {
+        this.config = config;
+    }
 
     void runMain(String[] args) throws IOException {
         initialize();
@@ -419,20 +423,19 @@ public class Main {
             ioUtils.copyDir(new File( config.getMergeDirs().get(i), jscover.Main.reportSrcSubDir), srcDir);
     }
 
-    private void generateLCovDataFile() throws IOException {
+    public void generateLCovDataFile() throws IOException {
         String json = ioUtils.loadFromFileSystem(new File(config.getJsonDirectory(), "jscoverage.json"));
         File lcovFile = new File(config.getJsonDirectory(), "jscover.lcov");
         lCovGenerator.saveData(jsonDataMerger.jsonToMap(json).values(), config.getSourceDirectory().getCanonicalPath(), lcovFile);
     }
 
-
-    private void saveXmlSummary() {
+    public void saveXmlSummary() {
         String json = ioUtils.loadFromFileSystem(new File(config.getJsonDirectory(), "jscoverage.json"));
         SummaryData summaryData = new SummaryData(jsonDataMerger.jsonToMap(json).values());
         xmlSummary.saveSummary(summaryData, config.getJsonDirectory(), config.getVersion());
     }
 
-    private void saveCoberturaXml() throws IOException {
+    public void saveCoberturaXml() throws IOException {
         String json = ioUtils.loadFromFileSystem(new File(config.getJsonDirectory(), "jscoverage.json"));
         String xml = coberturaXmlGenerator.generateXml(new CoberturaData(jsonDataMerger.jsonToMap(json).values()), config.getSourceDirectory().getCanonicalPath(), config.getVersion());
         File dest = new File(config.getJsonDirectory(), "cobertura-coverage.xml");

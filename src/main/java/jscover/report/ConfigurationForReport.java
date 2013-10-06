@@ -370,6 +370,18 @@ public class ConfigurationForReport  extends Configuration {
     private List<File> mergeDirs = new ArrayList<File>();
     private IoUtils ioUtils = IoUtils.getInstance();
 
+    public void setReportFormat(ReportFormat reportFormat) {
+        this.reportFormat = reportFormat;
+    }
+
+    public void setJsonDirectory(File jsonDirectory) {
+        this.jsonDirectory = jsonDirectory;
+    }
+
+    public void setSourceDirectory(File sourceDirectory) {
+        this.sourceDirectory = sourceDirectory;
+    }
+
     public ReportFormat getReportFormat() {
         return reportFormat;
     }
