@@ -342,9 +342,12 @@ Public License instead of this License.
 
 package jscover.filesystem;
 
+import jscover.util.ReflectionUtils;
 import org.junit.Test;
 
 import java.io.File;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.SEVERE;
@@ -364,6 +367,35 @@ public class ConfigurationForFSTest {
         assertThat(configuration.isIncludeBranch(), is(true));
         assertThat(configuration.isIncludeFunction(), is(true));
         assertThat(configuration.getLogLevel(), is(SEVERE));
+    }
+
+    @Test
+    public void shouldHaveDefaultsViaConstructor() {
+        ConfigurationForFS configuration = new ConfigurationForFS();
+        assertThat(configuration.getSrcDir(), nullValue());
+        assertThat(configuration.getDestDir(), nullValue());
+        assertThat(((Set<String>)ReflectionUtils.getField(configuration, "excludes")).size(), is(0));
+        assertThat(((Set<String>)ReflectionUtils.getField(configuration, "excludeRegs")).size(), is(0));
+    }
+
+    @Test
+    public void shouldSetValues() {
+        ConfigurationForFS configuration = new ConfigurationForFS();
+        File src = new File("src");
+        configuration.setSrcDir(src);
+        File dest = new File("doc");
+        configuration.setDestDir(dest);
+        configuration.addExclude("/excluded");
+        configuration.addExcludeReg("/excludedReg");
+
+        assertThat(configuration.getSrcDir(), sameInstance(src));
+        assertThat(configuration.getDestDir(), sameInstance(dest));
+        Set<String> excludes = (Set<String>) ReflectionUtils.getField(configuration, "excludes");
+        assertThat(excludes.size(), is(1));
+        assertThat(excludes.iterator().next(), is("excluded"));
+        Set<Pattern> excludeRegs = (Set<Pattern>) ReflectionUtils.getField(configuration, "excludeRegs");
+        assertThat(excludeRegs.size(), is(1));
+        assertThat(excludeRegs.iterator().next().pattern(), is("/excludedReg"));
     }
 
     @Test

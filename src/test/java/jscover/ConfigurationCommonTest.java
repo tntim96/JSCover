@@ -359,7 +359,6 @@ public class ConfigurationCommonTest {
         assertThat(config.isIncludeBranch(), is(true));
         assertThat(config.isIncludeFunction(), is(true));
         assertThat(config.isLocalStorage(), is(false));
-        assertThat(config.getReportDir(), is(new File(System.getProperty("user.dir"))));
     }
 
     @Test
@@ -368,14 +367,11 @@ public class ConfigurationCommonTest {
         config.setIncludeBranch(false);
         config.setIncludeFunction(false);
         config.setLocalStorage(true);
-        File dir = new File("src");
-        config.setReportDir(dir);
 
         assertThat(config.getJSVersion(), is(180));
         assertThat(config.isIncludeBranch(), is(false));
         assertThat(config.isIncludeFunction(), is(false));
         assertThat(config.isLocalStorage(), is(true));
-        assertThat(config.getReportDir(), sameInstance(dir));
     }
 
     @Test

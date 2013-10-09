@@ -363,7 +363,6 @@ import static jscover.Main.HELP_PREFIX2;
 
 public class ConfigurationCommon extends Configuration {
     private static final Logger logger = Logger.getLogger(ConfigurationCommon.class.getName());
-    public static final String REPORT_DIR_PREFIX = "--report-dir=";
     public static final String ONLY_INSTRUMENT_REG_PREFIX = "--only-instrument-reg=";
     public static final String NO_INSTRUMENT_PREFIX = "--no-instrument=";
     public static final String NO_INSTRUMENT_REG_PREFIX = "--no-instrument-reg=";
@@ -379,7 +378,6 @@ public class ConfigurationCommon extends Configuration {
     protected boolean includeFunction = true;
     protected boolean localStorage;
     protected final List<PatternMatcher> patternMatchers = new ArrayList<PatternMatcher>();
-    protected File reportDir = new File(System.getProperty("user.dir"));
     protected int JSVersion = Context.VERSION_1_5;
     protected CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
     protected boolean defaultSkip;
@@ -396,10 +394,6 @@ public class ConfigurationCommon extends Configuration {
 
     public void setLocalStorage(boolean localStorage) {
         this.localStorage = localStorage;
-    }
-
-    public void setReportDir(File reportDir) {
-        this.reportDir = reportDir;
     }
 
     public void setJSVersion(int JSVersion) {
@@ -424,10 +418,6 @@ public class ConfigurationCommon extends Configuration {
 
     public boolean isLocalStorage() {
         return localStorage;
-    }
-
-    public File getReportDir() {
-        return reportDir;
     }
 
     public int getJSVersion() {

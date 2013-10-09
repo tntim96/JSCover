@@ -345,6 +345,7 @@ package jscover.stdout;
 import jscover.instrument.InstrumenterService;
 import jscover.util.LoggerUtils;
 
+import java.io.File;
 import java.io.PrintStream;
 import java.util.logging.Logger;
 
@@ -358,7 +359,7 @@ public class StdOutInstrumenter {
     private PrintStream dest = System.out;
 
     public void run(ConfigurationForStdOut configuration) {
-        loggerUtils.configureLogger(configuration.getLogLevel(), configuration.getReportDir());
+        loggerUtils.configureLogger(configuration.getLogLevel(), new File(System.getProperty("user.dir")));
         logger.log(INFO, "Starting JSCover {0} stdio instrumentation", configuration.getVersion());
         String jsInstrumented = instrumenterService.instrumentJSForWebServer(configuration, configuration.getSrcFile(), configuration.getSrcFile().getName());
         dest.print(jsInstrumented);

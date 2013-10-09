@@ -366,6 +366,14 @@ public class ConfigurationForFS extends ConfigurationCommon {
     private File srcDir;
     private File destDir;
 
+    public void setSrcDir(File srcDir) {
+        this.srcDir = srcDir;
+    }
+
+    public void setDestDir(File destDir) {
+        this.destDir = destDir;
+    }
+
     public File getSrcDir() {
         return srcDir;
     }
@@ -412,17 +420,10 @@ public class ConfigurationForFS extends ConfigurationCommon {
             //Ignore this
         } else if (arg.startsWith(EXLCUDE_PREFIX)) {
             String uri = arg.substring(EXLCUDE_PREFIX.length());
-            if (uri.startsWith("/"))
-                uri = uri.substring(1);
-            excludes.add(uri);
+            addExclude(uri);
         } else if (arg.startsWith(EXLCUDE_REG_PREFIX)) {
             String patternString = arg.substring(EXLCUDE_REG_PREFIX.length());
-            try {
-                excludeRegs.add(Pattern.compile(patternString));
-            } catch(PatternSyntaxException e) {
-                setInvalid(format("Invalid pattern '%s'", patternString));
-                e.printStackTrace(System.err);
-            }
+            addExcludeReg(patternString);
         } else  if (arg.startsWith("-")) {
             setInvalid(format("JSCover: Unknown option '%s'", arg));
         } else if (srcDir == null) {
@@ -431,6 +432,21 @@ public class ConfigurationForFS extends ConfigurationCommon {
             destDir = new File(arg);
         } else {
             setInvalid(format("JSCover: Extra command line argument found '%s'", arg));
+        }
+    }
+
+    public void addExclude(String uri) {
+        if (uri.startsWith("/"))
+            uri = uri.substring(1);
+        excludes.add(uri);
+    }
+
+    public void addExcludeReg(String patternString) {
+        try {
+            excludeRegs.add(Pattern.compile(patternString));
+        } catch(PatternSyntaxException e) {
+            setInvalid(format("Invalid pattern '%s'", patternString));
+            e.printStackTrace(System.err);
         }
     }
 

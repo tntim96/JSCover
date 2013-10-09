@@ -362,6 +362,7 @@ public class ConfigurationForServer extends ConfigurationCommon {
     public static final String DOC_ROOT_PREFIX = "--document-root=";
     public static final String PORT_PREFIX = "--port=";
     public static final String PROXY_PREFIX = "--proxy";
+    public static final String REPORT_DIR_PREFIX = "--report-dir=";
     public static final String INCLUDE_UNLOADED_JS_PREFIX = "--include-unloaded-js";
     public static final String URI_TO_FILE_MATCHER_PREFIX = "--uri-to-file-matcher=";
     public static final String URI_TO_FILE_REPLACE_PREFIX = "--uri-to-file-replace=";
@@ -369,6 +370,7 @@ public class ConfigurationForServer extends ConfigurationCommon {
     private File documentRoot = new File(System.getProperty("user.dir"));
     private Integer port = 8080;
     private boolean proxy;
+    private File reportDir = new File(System.getProperty("user.dir"));
     private boolean includeUnloadedJS;
     private Pattern uriToFileMatcher;
     private String uriToFileReplace;
@@ -382,6 +384,10 @@ public class ConfigurationForServer extends ConfigurationCommon {
         this.port = port;
     }
 
+    public void setReportDir(File reportDir) {
+        this.reportDir = reportDir;
+    }
+
     public void setIncludeUnloadedJS(boolean includeUnloadedJS) {
         this.includeUnloadedJS = includeUnloadedJS;
     }
@@ -392,6 +398,10 @@ public class ConfigurationForServer extends ConfigurationCommon {
 
     public Integer getPort() {
         return port;
+    }
+
+    public File getReportDir() {
+        return reportDir;
     }
 
     public String getHelpText() {

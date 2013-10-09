@@ -362,6 +362,7 @@ public class ConfigurationForServerTest {
         assertThat(configuration.isInvalid(), is(false));
         assertThat(configuration.getDocumentRoot().toString(), equalTo(System.getProperty("user.dir")));
         assertThat(configuration.getPort(), equalTo(8080));
+        assertThat(configuration.getReportDir(), is(new File(System.getProperty("user.dir"))));
         assertThat(configuration.getJSVersion(), equalTo(150));
         assertThat(configuration.skipInstrumentation("/"), is(false));
         assertThat(configuration.getCompilerEnvirons().getLanguageVersion(), equalTo(150));
@@ -382,10 +383,13 @@ public class ConfigurationForServerTest {
         configuration.setDocumentRoot(dir);
         configuration.setIncludeUnloadedJS(true);
         configuration.setPort(1234);
+        File reportDir = new File("doc");
+        configuration.setReportDir(reportDir);
 
         assertThat(configuration.getDocumentRoot(), sameInstance(dir));
         assertThat(configuration.isIncludeUnloadedJS(), is(true));
         assertThat(configuration.getPort(), is(1234));
+        assertThat(configuration.getReportDir(), sameInstance(reportDir));
     }
 
     @Test

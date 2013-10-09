@@ -455,7 +455,7 @@ public class Main {
         return "JSCover version: " + properties.getProperty("version");
     }
 
-    private void runFileSystem(ConfigurationForFS configuration) {
+    public void runFileSystem(ConfigurationForFS configuration) {
         if (configuration.isInvalid())
             exitStatus = 1;
         if (configuration.showHelp()) {
