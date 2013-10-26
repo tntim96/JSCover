@@ -1,0 +1,62 @@
+<project name="maven" basedir="." xmlns:artifact="antlib:org.apache.maven.artifact.ant">
+    <property file="build.properties" />
+    <property file="src/main/resources/jscover/configuration.properties" />
+
+    <property name="groupId" value="com.github.tntim96"/>
+    <property name="artifactId" value="JSCover"/>
+    <property name="version" value="${version}"/>
+
+    <!-- define artifacts' name, which follows the convention of Maven -->
+    <property name="mavenBundleDir" value="${build.dir}/mavenBundle"/>
+    <property name="maven-jar" value="${mavenBundleDir}/${ant.project.name}-${version}.jar"/>
+    <property name="maven-javadoc-jar" value="${mavenBundleDir}/${ant.project.name}-${version}-javadoc.jar"/>
+    <property name="maven-sources-jar" value="${mavenBundleDir}/${ant.project.name}-${version}-sources.jar"/>
+
+    <!-- defined maven snapshots and staging repository id and url -->
+    <property name="maven-snapshots-repository-id" value="sonatype-nexus-snapshots"/>
+    <property name="maven-snapshots-repository-url" value="https://oss.sonatype.org/content/repositories/snapshots/"/>
+    <property name="maven-staging-repository-id" value="sonatype-nexus-staging"/>
+    <property name="maven-staging-repository-url"
+              value="https://oss.sonatype.org/service/local/staging/deploy/maven2/"/>
+
+    <target name="generate-files" depends="jar-all" description="Maven Step 1 - Create files to be signed">
+        <mkdir dir="${mavenBundleDir}/javadoc"/>
+        <copy file="pom.xml" tofile="${mavenBundleDir}/${ant.project.name}-${version}.pom"/>
+        <copy file="${dist.dir}/${ant.project.name}-all.jar"
+              tofile="${mavenBundleDir}/${ant.project.name}-${version}.jar"/>
+        <jar jarfile="${mavenBundleDir}/${ant.project.name}-${version}-sources.jar" basedir="${src.main.dir}"
+             compress="false"/>
+        <javadoc destdir="${mavenBundleDir}/javadoc"
+                 version="true"
+                 use="true"
+                 windowtitle="${ant.project.name} API">
+            <classpath refid="compile.classpath"/>
+            <packageset dir="${src.main.dir}" defaultexcludes="yes">
+                <include name="jscover/**"/>
+            </packageset>
+
+            <doctitle><![CDATA[<h1>${ant.project.name}</h1>]]></doctitle>
+        </javadoc>
+        <jar jarfile="${mavenBundleDir}/${ant.project.name}-${version}-javadoc.jar" basedir="${mavenBundleDir}/javadoc"
+             compress="false"/>
+        <delete dir="${mavenBundleDir}/javadoc"/>
+        <!-- Automate signing -->
+    </target>
+
+    <target name="maven-bundle" description="Maven Step 2 - Bundle files after saving">
+        <!-- Add dependency when signing automated -->
+        <property name="mavenBundleDir" value="${build.dir}/mavenBundle"/>
+        <jar jarfile="${dist.dir}/${ant.project.name}-${version}-bundle.jar" basedir="${mavenBundleDir}"
+             compress="true"/>
+    </target>
+
+    <target name="deploy" depends="" description="deploy snapshot version to Maven snapshot repository">
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-deploy-plugin:2.6:deploy-file"/>
+            <arg value="-Durl=${maven-snapshots-repository-url}"/>
+            <arg value="-DrepositoryId=${maven-snapshots-repository-id}"/>
+            <arg value="-DpomFile=pom.xml"/>
+            <arg value="-Dfile=${maven-jar}"/>
+        </artifact:mvn>
+    </target>
+</project>
