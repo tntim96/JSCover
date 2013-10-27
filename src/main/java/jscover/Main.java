@@ -432,7 +432,7 @@ public class Main {
         } else if (isServer()) {
             runServer(ConfigurationForServer.parse(args));
         } else if (isFileSystem()) {
-            runFileSystem(getConfigurationForFS(args));
+            runFileSystem(ConfigurationForFS.parse(args));
         } else if (isStdOut()) {
             runSingleFile(args);
         } else if (showCharSets()) {
@@ -456,6 +456,7 @@ public class Main {
     }
 
     public void runFileSystem(ConfigurationForFS configuration) {
+        configuration.setProperties(properties);
         if (configuration.isInvalid())
             exitStatus = 1;
         if (configuration.showHelp()) {
@@ -463,12 +464,6 @@ public class Main {
         } else {
             fileSystemInstrumenter.run(configuration);
         }
-    }
-
-    private ConfigurationForFS getConfigurationForFS(String[] args) {
-        ConfigurationForFS configuration = ConfigurationForFS.parse(args);
-        configuration.setProperties(properties);
-        return configuration;
     }
 
     public void runServer(ConfigurationForServer configuration) {
