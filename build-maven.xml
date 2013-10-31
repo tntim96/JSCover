@@ -50,7 +50,7 @@
              compress="true"/>
     </target>
 
-    <target name="deploy" depends="" description="deploy snapshot version to Maven snapshot repository">
+    <target name="deploy" depends="" description="Deploy snapshot version to Maven snapshot repository">
         <artifact:mvn>
             <arg value="org.apache.maven.plugins:maven-deploy-plugin:2.6:deploy-file"/>
             <arg value="-Durl=${maven-snapshots-repository-url}"/>

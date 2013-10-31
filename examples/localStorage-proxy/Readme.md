@@ -1,3 +1,7 @@
+Demonstrates:
+ - running tests with intermediate page results stored in HTML5 local-storage (i.e. no iframes or child windows)
+ - instrumenting the JavaScript as a proxy-server and save the report
+
 To run this example:
  - Download and install Selenium IDE from http://docs.seleniumhq.org/download/
  - Add '127.0.0.1   localhost-proxy' to your hosts file

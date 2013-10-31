@@ -1,3 +1,7 @@
+Demonstrates:
+ - running tests with intermediate page results stored in HTML5 local-storage (i.e. no iframes or child windows)
+ - saving the coverage report without a server
+
 To run this example:
  - Download and install Selenium IDE from http://docs.seleniumhq.org/download/
  - Run the JSCover file-system instrumentation jscover-filesystem.bat/jscover-filesystem.sh
