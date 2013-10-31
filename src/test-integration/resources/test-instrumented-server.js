@@ -128,6 +128,8 @@ function convertBranchDataLinesToJSON(branchData) {
     }
     var json = '';
     for (var line in branchData) {
+        if (isNaN(line))
+            continue;
         if (json !== '')
             json += ','
         json += '"' + line + '":' + convertBranchDataConditionArrayToJSON(branchData[line]);

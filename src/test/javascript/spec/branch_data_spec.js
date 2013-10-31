@@ -157,5 +157,15 @@ $(document).ready(function() {
             expect(fromJSON['2'][2].nodeLength).toEqual(40);
             expect(fromJSON['2'][2].covered()).toEqual(true);
         });
+
+        it("should ignore extra object properties", function() {
+            var lines = {};
+            lines['1'] = new Array();
+            lines['1'][1] = new BranchData().init(1,10,'src1');
+            lines['weird'] = new Array();
+
+            var json = convertBranchDataLinesToJSON(lines);
+            expect(json).toEqual('{"1":[null,{"position":1,"nodeLength":10,"src":"src1","evalFalse":0,"evalTrue":0}]}');
+        });
     });
 });
