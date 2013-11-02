@@ -76,6 +76,17 @@
                     The maven release includes the <var>JSCover-all.jar</var> JAR.
                 </text>
             </item>
+            <item>
+                <heading id="mavenPlugin">Maven Plugin</heading>
+                <text>
+                    There is a maven plugin for JSCover available. See the
+                    <a href="https://github.com/tntim96/JSCover-maven-plugin" target="_blank">JSCover-maven-plugin</a>
+                    project.
+                </text>
+                <text>
+                    This is now functional and currently be enhanced.
+                </text>
+            </item>
         </section>
     </item>
     <item>
