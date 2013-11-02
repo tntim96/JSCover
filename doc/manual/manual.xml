@@ -1641,7 +1641,7 @@ function square(x) {
                                 <td class="tick"></td>
                             </tr>
                             <tr>
-                                <td>HTML5 Local Storage Alternative to iFrames and JavaScript-opened Windows</td>
+                                <td>HTML5 Local Storage alternative to iFrames and JavaScript-opened windows</td>
                                 <td class="tick"></td>
                                 <td class="cross"></td>
                             </tr>
