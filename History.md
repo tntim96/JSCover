@@ -1,6 +1,6 @@
-1.0.6 / 2013-??-??
+1.0.6 / 2013-11-03
 ==================
-  * Fix JSON construction where object may have added properties (https://github.com/tntim96/JSCover/pull/105)
+  * Fix JSON creation where object may have added properties (https://github.com/tntim96/JSCover/issues/105)
   * Adding support for single file instrumentation via stdio (https://github.com/tntim96/JSCover/pull/100)
   * Internal: Minor modifications to assist with Maven plugin (https://github.com/tntim96/JSCover/issues/103)
 
