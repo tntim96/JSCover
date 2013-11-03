@@ -76,6 +76,17 @@
                     The maven release includes the <var>JSCover-all.jar</var> JAR.
                 </text>
             </item>
+            <item>
+                <heading id="mavenPlugin">Maven Plugin</heading>
+                <text>
+                    There is a maven plugin for JSCover available. See the
+                    <a href="https://github.com/tntim96/JSCover-maven-plugin" target="_blank">JSCover-maven-plugin</a>
+                    project.
+                </text>
+                <text>
+                    This is now functional and currently be enhanced.
+                </text>
+            </item>
         </section>
     </item>
     <item>
@@ -1321,25 +1332,14 @@ fs.write("target/jscoverage.json", json, 'w');
                         It's possible to run your JavaScripts tests and collect coverage data from a simple single Java
                         class with web-driver.
                         The JSCover server can be started as a thread, and there is no need for the Selenium server.
-                        The examples use Jasmine and Jasmine's <var>HtmlReporter</var>. All implementations are based on
-                        <a href="https://github.com/tntim96/JSCover-samples/blob/master/src/main/java/jscover/webdriver/jasmine/WebDriverJasmineTestBase.java"
-                           target="_blank">WebDriverJasmineTestBase</a>.
-                        There are examples with:
-                        <ul>
-                            <li><a href="https://github.com/tntim96/JSCover-samples/blob/master/src/test/java/jscover/webdriver/jasmine/WebDriverJasmineFireFoxTest.java" target="_blank">FireFox</a></li>
-                            <li><a href="https://github.com/tntim96/JSCover-samples/blob/master/src/test/java/jscover/webdriver/jasmine/WebDriverJasminePhantomJSTest.java" target="_blank">PhantomJS</a></li>
-                            <li><a href="https://github.com/tntim96/JSCover-samples/blob/master/src/test/java/jscover/webdriver/jasmine/WebDriverJasmineIETest.java" target="_blank">Internet Explorer</a></li>
-                            <li><a href="https://github.com/tntim96/JSCover-samples/blob/master/src/test/java/jscover/webdriver/jasmine/WebDriverJasmineChromeTest.java" target="_blank">Google Chrome</a></li>
-                        </ul>
+                        See <a href="https://github.com/tntim96/JSCover-samples" target="_blank">JSCover-Samples</a>.
                     </text>
                 </item>
                 <item>
                     <heading id="automatingWebDriverProxy">Proxy Mode</heading>
                     <text>
-                        See a working example with FireFox and Underscore's online QUnit tests:
-                        <ul>
-                            <a href="https://github.com/tntim96/JSCover-samples/blob/master/src/test/java/jscover/webdriver/jasmine/WebDriverUnderscoreProxyTest.java" target="_blank">WebDriverUnderscoreProxyTest</a>
-                        </ul>
+                        Run Underscore's online QUnit tests in FireFox.
+                        See <a href="https://github.com/tntim96/JSCover-samples" target="_blank">JSCover-Samples</a>.
                     </text>
                 </item>
                 <text>
@@ -1641,7 +1641,7 @@ function square(x) {
                                 <td class="tick"></td>
                             </tr>
                             <tr>
-                                <td>HTML5 Local Storage Alternative to iFrames and JavaScript-opened Windows</td>
+                                <td>HTML5 Local Storage alternative to iFrames and JavaScript-opened windows</td>
                                 <td class="tick"></td>
                                 <td class="cross"></td>
                             </tr>

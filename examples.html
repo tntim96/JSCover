@@ -1,75 +1,15 @@
-<script type="text/javascript" src="js/util.js?v=105b"></script>
-    <p>
-        The file system example can be run online by clicking on the links below.
-        The server examples need to be downloaded and run manually.
-        For all examples see the 'examples' directory of the ZIP distribution.
-    </p>
+<script type="text/javascript" src="js/util.js?v=106"></script>
 
-    <h2>JSCover Server</h2>
+<h2>Working Examples</h2>
 
-    <p>
-        Run jscover-server.sh (see below) and then go to
-        <a href="http://localhost:8080/jscoverage.html?/index.html" target="_blank">http://localhost:8080/jscoverage.html?/index.html</a>.
-    </p>
+<p>
+    See the working examples in the
+    <a href="https://github.com/tntim96/JSCover/tree/master/examples" target="_blank">examples</a>
+    directory of the ZIP distribution.
+</p>
 
-    <div class="shell">
-        java -jar target/dist/JSCover.jar -ws --document-root=doc/example --report-dir=target
-    </div>
-    <p>
-        Manually run the command below the go to:
-        <a href="http://localhost:8080/jscoverage.html?/test/index.html" target="_blank">http://localhost:8080/jscoverage.html?/test/index.html</a>.
-    </p>
-
-    <div class="shell">
-        java -jar target/dist/JSCover.jar -ws --document-root=doc/example-qunit/src --report-dir=target
-    </div>
-
-    <p>
-        Now try again with the '--no-instrument=/test' option to remove the test scripts from the report.
-    </p>
-
-    <div class="shell">
-        java -jar target/dist/JSCover.jar -ws --document-root=doc/example-qunit/src --report-dir=target --no-instrument=/test
-    </div>
-
-    <h2>JSCover File Instrumentation</h2>
-
-    <p>
-        Run jscover-filesystem.sh (see below) and then go to
-        <a href="example-qunit/out/jscoverage.html?test/index.html" target="_blank">QUnit test suite</a>.
-    </p>
-
-    <div class="shell">
-        java -jar target/dist/JSCover.jar -fs --no-instrument=test doc/example-qunit/src doc/example-qunit/out
-    </div>
-
-    <h2>JSCover Proxy Instrumentation</h2>
-
-    <p>
-        See the <a href="manual/manual.xml#gettingStartedProxy" target="_blank">manual</a> for details.
-    </p>
-
-    <h2>PhantomJS &amp; JSCover Server</h2>
-
-    <p>
-        This example uses QUnit and
-        <a href="https://github.com/tntim96/JSCover/blob/master/src/test/javascript/lib/PhantomJS/run-jscover-qunit.js" target="_blank">run-jscover-qunit.js</a>,
-        but can easily be run with Jasmine. See the file
-        <a href="https://github.com/tntim96/JSCover/blob/master/src/test/javascript/lib/PhantomJS/run-jscover-jasmine.js" target="_blank">run-jscover-jasmine.js</a>
-        and the <a href="manual/manual.xml#automatingPhantomJS" target="_blank">manual</a> for more details.
-    </p>
-
-    <p>Download <a href="http://phantomjs.org/" target="_blank">PhantomJS</a> and put the executable on your path.</p>
-
-    <p>Run the web-server, jscover-server.sh</p>
-
-    <p>Run phantom-ws.sh</p>
-
-    <div class="shell">
-        phantomjs src/test/javascript/lib/PhantomJS/run-jscover-qunit.js http://localhost:8080/test/index.html
-    </div>
-
-    <p>
-        The QUnit test results appear in the PhantomJS console, and the coverage report should be in 'target/phantom'.
-        Don't forget to <a href="http://localhost:8080/stop" target="_blank">shutdown the server</a>.
-    </p>
+<h2>JSCover-Samples</h2>
+<p>
+    For more working examples see the
+    <a href="https://github.com/tntim96/JSCover-Samples" target="_blank">JSCover-Samples</a> project.
+</p>
