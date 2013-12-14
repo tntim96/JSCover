@@ -823,15 +823,19 @@ function getFilesSortedByCoverage(filesIn) {
       files.sort(function(file1,file2) {return file1.perc-file2.perc});
     else if (sortColumn == 'Branch')
       files.sort(function(file1,file2) {return file1.brPerc-file2.brPerc});
-    else
+    else if (sortColumn == 'Function')
       files.sort(function(file1,file2) {return file1.fnPerc-file2.fnPerc});
+    else
+      files.sort(function(file1,file2) {return file1.file>=file2.file});
   } else if (sortOrder%3===2) {
      if (sortColumn == 'Coverage')
       files.sort(function(file1,file2) {return file2.perc-file1.perc});
      else if (sortColumn == 'Branch')
        files.sort(function(file1,file2) {return file2.brPerc-file1.brPerc});
-     else
+     else if (sortColumn == 'Function')
        files.sort(function(file1,file2) {return file2.fnPerc-file1.fnPerc});
+     else
+       files.sort(function(file1,file2) {return file2.file>=file1.file});
   } else {
       return filesIn.sort();
   }
