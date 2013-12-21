@@ -355,7 +355,7 @@ import java.io.File;
 import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
-import static org.openqa.selenium.support.ui.ExpectedConditions.textToBePresentInElement;
+import static org.openqa.selenium.support.ui.ExpectedConditions.textToBePresentInElementLocated;
 
 public class WebDriverLocalStorageTest {
     private static Thread server;
@@ -427,7 +427,7 @@ public class WebDriverLocalStorageTest {
     @Test
     public void shouldStoreCoverageDataInLocalStorage() throws IOException, InterruptedException {
         webClient.get("http://localhost:9001/jscoverage-clear-local-storage.html");
-        new WebDriverWait(webClient, 1).until(ExpectedConditions.textToBePresentInElement(By.id("deleteLocalStorage"), "Deleted localStorage['jscover']"));
+        new WebDriverWait(webClient, 1).until(ExpectedConditions.textToBePresentInElementLocated(By.id("deleteLocalStorage"), "Deleted localStorage['jscover']"));
         webClient.get("http://localhost:9001/" + getTestUrl());
         webClient.get("http://localhost:9001/jscoverage.html");
         verifyTotal(webClient, 15, 0, 0);
@@ -440,17 +440,17 @@ public class WebDriverLocalStorageTest {
         new WebDriverWait(webClient, 1).until(ExpectedConditions.elementToBeClickable(By.id("storeTab")));
         webClient.findElement(By.id("storeTab")).click();
 
-        new WebDriverWait(webClient, 1).until(ExpectedConditions.textToBePresentInElement(By.id("progressLabel"), "Done"));
+        new WebDriverWait(webClient, 1).until(ExpectedConditions.textToBePresentInElementLocated(By.id("progressLabel"), "Done"));
         new WebDriverWait(webClient, 1).until(ExpectedConditions.elementToBeClickable(By.id("storeButton")));
         Thread.sleep(100);
         webClient.findElement(By.id("storeButton")).click();
-        new WebDriverWait(webClient, 2).until(ExpectedConditions.textToBePresentInElement(By.id("storeDiv"), "Coverage data stored at"));
+        new WebDriverWait(webClient, 2).until(ExpectedConditions.textToBePresentInElementLocated(By.id("storeDiv"), "Coverage data stored at"));
     }
 
     @Test
     public void shouldClearLocalStorage() throws IOException, InterruptedException {
         webClient.get("http://localhost:9001/jscoverage-clear-local-storage.html");
-        new WebDriverWait(webClient, 1).until(ExpectedConditions.textToBePresentInElement(By.id("deleteLocalStorage"), "Deleted localStorage['jscover']"));
+        new WebDriverWait(webClient, 1).until(ExpectedConditions.textToBePresentInElementLocated(By.id("deleteLocalStorage"), "Deleted localStorage['jscover']"));
         webClient.get("http://localhost:9001/" + getTestUrl());
         webClient.get("http://localhost:9001/jscoverage.html");
         verifyTotal(webClient, 15, 0, 0);
@@ -458,7 +458,7 @@ public class WebDriverLocalStorageTest {
         clickItem(1, 57, 12, 33);
         clickItem(2, 73, 37, 66);
         webClient.get("http://localhost:9001/jscoverage-clear-local-storage.html");
-        new WebDriverWait(webClient, 1).until(ExpectedConditions.textToBePresentInElement(By.id("deleteLocalStorage"), "Deleted localStorage['jscover']"));
+        new WebDriverWait(webClient, 1).until(ExpectedConditions.textToBePresentInElementLocated(By.id("deleteLocalStorage"), "Deleted localStorage['jscover']"));
 
         webClient.get("http://localhost:9001/" + getTestUrl());
         webClient.get("http://localhost:9001/jscoverage.html");
@@ -471,11 +471,11 @@ public class WebDriverLocalStorageTest {
         new WebDriverWait(webClient, 1).until(ExpectedConditions.elementToBeClickable(By.id("storeTab")));
         webClient.findElement(By.id("storeTab")).click();
 
-        new WebDriverWait(webClient, 1).until(ExpectedConditions.textToBePresentInElement(By.id("progressLabel"), "Done"));
+        new WebDriverWait(webClient, 1).until(ExpectedConditions.textToBePresentInElementLocated(By.id("progressLabel"), "Done"));
         new WebDriverWait(webClient, 1).until(ExpectedConditions.elementToBeClickable(By.id("storeButton")));
         Thread.sleep(100);
         webClient.findElement(By.id("storeButton")).click();
-        new WebDriverWait(webClient, 2).until(ExpectedConditions.textToBePresentInElement(By.id("storeDiv"), "Coverage data stored at"));
+        new WebDriverWait(webClient, 2).until(ExpectedConditions.textToBePresentInElementLocated(By.id("storeDiv"), "Coverage data stored at"));
     }
 
     private void clickItem(int id, int linePercentage, int branchPercentage, int functionPercentage) throws IOException {
@@ -492,7 +492,7 @@ public class WebDriverLocalStorageTest {
     }
 
     protected void verifyTotals(WebDriver webClient, int percentage, int branchPercentage, int functionPercentage) {
-        new WebDriverWait(webClient, 1).until(textToBePresentInElement(By.id("summaryTotal"), "%"));
+        new WebDriverWait(webClient, 1).until(textToBePresentInElementLocated(By.id("summaryTotal"), "%"));
         assertEquals(percentage + "%", webClient.findElement(By.id("summaryTotal")).getText());
         assertEquals(branchPercentage + "%", webClient.findElement(By.id("branchSummaryTotal")).getText());
         assertEquals(functionPercentage + "%", webClient.findElement(By.id("functionSummaryTotal")).getText());
