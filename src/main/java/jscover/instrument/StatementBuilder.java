@@ -373,8 +373,7 @@ class StatementBuilder {
         lineNumberLiteral.setValue("" + lineNumber);
         ElementGet indexLineNumber = new ElementGet(lineProperty, lineNumberLiteral);
 
-        boolean postFix = true;
-        UnaryExpression unaryExpression = new UnaryExpression(Token.INC, 0, indexLineNumber, postFix);
+        UnaryExpression unaryExpression = new UnaryExpression(Token.INC, 0, indexLineNumber, true);
         return new ExpressionStatement(unaryExpression);
     }
    
@@ -395,8 +394,7 @@ class StatementBuilder {
         lineNumberLiteral.setValue("" + functionNumber);
         ElementGet indexLineNumber = new ElementGet(lineProperty, lineNumberLiteral);
 
-        boolean postFix = true;
-        UnaryExpression unaryExpression = new UnaryExpression(Token.INC, 0, indexLineNumber, postFix);
+        UnaryExpression unaryExpression = new UnaryExpression(Token.INC, 0, indexLineNumber, true);
         return new ExpressionStatement(unaryExpression);
     }
 }

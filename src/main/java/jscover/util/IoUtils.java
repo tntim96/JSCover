@@ -386,7 +386,7 @@ public class IoUtils {
         BufferedReader br = null;
         try {
             br = new BufferedReader(new InputStreamReader(is, charSet));
-            for (int read = 0; (read = br.read(buf)) != -1; ) {
+            for (int read; (read = br.read(buf)) != -1; ) {
                 result.append(buf, 0, read);
             }
             return result.toString();
@@ -476,7 +476,7 @@ public class IoUtils {
         int bufSize = Math.min(1024, length);
         byte buf[] = new byte[bufSize];
         try {
-            for (int total = 0, read = 0; total < length && (read = is.read(buf, 0, Math.min(bufSize, length - total))) != -1; total += read) {
+            for (int total = 0, read; total < length && (read = is.read(buf, 0, Math.min(bufSize, length - total))) != -1; total += read) {
                 os.write(buf, 0, read);
                 os.flush();
             }
@@ -504,7 +504,7 @@ public class IoUtils {
         byte buf[] = new byte[bufSize];
         try {
             is = new FileInputStream(file);
-            for (int read = 0; (read = is.read(buf)) != -1; ) {
+            for (int read; (read = is.read(buf)) != -1; ) {
                 os.write(buf, 0, read);
                 os.flush();
             }
@@ -534,7 +534,7 @@ public class IoUtils {
         BufferedWriter bw = null;
         try {
             bw = new BufferedWriter(new OutputStreamWriter(os, charSet));
-            for (int read = 0; (read = reader.read(buf)) != -1; ) {
+            for (int read; (read = reader.read(buf)) != -1; ) {
                 bw.write(buf, 0, read);
             }
         } catch (IOException e) {

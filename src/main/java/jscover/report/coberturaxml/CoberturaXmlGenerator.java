@@ -446,26 +446,26 @@ public class CoberturaXmlGenerator {
         if (fileData.getBranchData().size() > 0)
             maxLines = Math.max(fileData.getLines().size(), Collections.max(fileData.getBranchData().keySet())+1);
         for (int i = 0; i < maxLines; i++) {
-            Element lineElement = null;
             //Add line element
-            lineElement = addLineElement(doc, linesElement, fileData, i, lineElement);
+            Element lineElement = addLineElement(doc, linesElement, fileData, i);
             //Add branch element
             addBranchElement(doc, linesElement, fileData, i, lineElement);
         }
     }
 
-    private Element addLineElement(Document doc, Element linesElement, FileData fileData, int i, Element lineElement) {
+    private Element addLineElement(Document doc, Element linesElement, FileData fileData, int i) {
         if (i < fileData.getLines().size()) {
             Integer hits = fileData.getLines().get(i);
             if (hits != null) {
-                lineElement = doc.createElement("line");
+                Element lineElement = doc.createElement("line");
                 linesElement.appendChild(lineElement);
                 lineElement.setAttribute("number", "" + i);
                 lineElement.setAttribute("hits", hits.toString());
                 lineElement.setAttribute("branch", "false");
+                return lineElement;
             }
         }
-        return lineElement;
+        return null;
     }
 
     private void addBranchElement(Document doc, Element linesElement, FileData fileData, int i, Element lineElement) {

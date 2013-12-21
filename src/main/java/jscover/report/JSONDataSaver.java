@@ -353,7 +353,7 @@ import static java.util.logging.Level.SEVERE;
 
 public class JSONDataSaver {
     private static final Logger logger = Logger.getLogger(JSONDataSaver.class.getName());
-    protected static Set<File> files = new HashSet<File>();
+    protected static final Set<File> files = new HashSet<File>();
     private JSONDataMerger jsonDataMerger = new JSONDataMerger();
     private IoUtils ioUtils = IoUtils.getInstance();
 
