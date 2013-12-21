@@ -12,7 +12,7 @@ http://github.com/tntim96/rhino/
     <artifactId>JSCover</artifactId>
     <packaging>jar</packaging>
     <name>JSCover</name>
-    <version>1.0.6</version>
+    <version>1.0.7</version>
     <description>JSCover is a tool that measures code coverage for JavaScript programs.</description>
     <url>http://tntim96.github.com/JSCover/</url>
     <licenses>
@@ -54,22 +54,31 @@ http://github.com/tntim96/rhino/
             <scope>system</scope>
             <systemPath>${basedir}/lib/runtime/js.jar</systemPath>
         </dependency>
+        <!-- HTMLUnit is part of Selenium, but is included for xml-apis -->
         <dependency>
             <groupId>net.sourceforge.htmlunit</groupId>
             <artifactId>htmlunit</artifactId>
             <version>2.13</version>
             <scope>test</scope>
         </dependency>
+        <!-- xml-apis required for HTMLUnit
+        <dependency>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+            <version>1.4.01</version>
+            <scope>test</scope>
+        </dependency>
+        -->
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
-            <version>2.37.0</version>
+            <version>2.38.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-server</artifactId>
-            <version>2.37.0</version>
+            <version>2.38.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
