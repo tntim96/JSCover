@@ -1,7 +1,7 @@
-1.0.7 / 201?-??-??
+1.0.7 / 2014-??-??
 ==================
   * Add sort by file name in the coverage report web UI (https://github.com/tntim96/JSCover/issues/108)
-  * Internal: Upgrade selenium 2.38
+  * Internal: Upgrade selenium to 2.39
 
 1.0.6 / 2013-11-03
 ==================
