@@ -30,7 +30,7 @@ http://github.com/tntim96/rhino/
         <developer>
             <id>tntim96</id>
             <name>Tim</name>
-            <email>tntim96@gamil.com</email>
+            <email>tntim96@gmail.com</email>
             <roles>
                 <role>project-lead</role>
             </roles>
@@ -48,11 +48,9 @@ http://github.com/tntim96/rhino/
             <version>3.4.4</version>
         </dependency>
         <dependency>
-            <groupId>org.mozilla</groupId>
+            <groupId>com.github.tntim96</groupId>
             <artifactId>rhino</artifactId>
-            <version>1.7R5PRE-forked</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/lib/runtime/js.jar</systemPath>
+            <version>1.7R5pre01</version>
         </dependency>
         <!-- HTMLUnit is part of Selenium, but is included for xml-apis -->
         <dependency>

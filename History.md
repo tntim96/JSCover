@@ -2,6 +2,7 @@
 ==================
   * Add sort by file name in the coverage report web UI (https://github.com/tntim96/JSCover/issues/108)
   * Internal: Upgrade selenium to 2.39
+              Use tntim96 Maven repository version of Rhino
 
 1.0.6 / 2013-11-03
 ==================

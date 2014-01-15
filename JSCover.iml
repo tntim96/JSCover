@@ -50,15 +50,7 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="Maven: com.ibm.icu:icu4j:3.4.4" level="project" />
-    <orderEntry type="module-library">
-      <library name="Maven: org.mozilla:rhino:1.7R5PRE-forked">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/runtime/js.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
+    <orderEntry type="library" name="Maven: com.github.tntim96:rhino:1.7R5pre01" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: net.sourceforge.htmlunit:htmlunit:2.13" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: xalan:xalan:2.7.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: xalan:serializer:2.7.1" level="project" />

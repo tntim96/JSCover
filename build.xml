@@ -84,7 +84,7 @@
 	</target>
 
     <target name="jar" depends="compile">
-        <copy file="lib/runtime/js.jar" todir="${dist.dir}"/>
+        <copy file="${com.github.tntim96:rhino:jar}" tofile="${dist.dir}/js.jar"/>
         <jar jarfile="${dist.dir}/${ant.project.name}.jar" basedir="${classes.main.dir}" compress="true">
             <manifest>
                 <attribute name="Implementation-Title" value="${ant.project.name}"/>
@@ -98,8 +98,8 @@
     <target name="jar-all" depends="compile">
         <property name="tmpDir" value="${build.dir}/tmp"/>
         <mkdir dir="${tmpDir}"/>
-        <unzip src="lib/runtime/js.jar" dest="${tmpDir}"/>
-        <move file="${tmpDir}/LICENSE.txt" tofile="${tmpDir}/META-INF/LICENSE-mozilla.txt"/>
+        <unzip src="${com.github.tntim96:rhino:jar}" dest="${tmpDir}"/>
+        <copy file="data/LICENSE-mozilla.txt" todir="${tmpDir}/META-INF/"/>
         <copy todir="${tmpDir}" includeemptydirs="no">
             <fileset dir="${classes.main.dir}" />
         </copy>
