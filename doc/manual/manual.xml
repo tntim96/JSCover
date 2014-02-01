@@ -126,8 +126,9 @@
                     <heading id="gettingStartedServerRunTests">Run Tests</heading>
                     <text>
                         Tests that exercise the JavaScript can now be run.
-                        <note>As long as you do not reload the jscoverage.html page, the coverage report statistics are
-                            cumulative.</note>
+                        <note>The coverage report statistics are cumulative unless you reload the jscoverage.html
+						page without using the
+							<a href="#localStorage">localStorage switch</a>).</note>
                         <imgThumb src="images/ws-3-browser.png" alt="Run Tests" width="650"/>
                     </text>
                 </item>
