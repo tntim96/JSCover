@@ -355,6 +355,7 @@ public enum MIME {
     XML("application/xml", "xml"),
     GIF("image/gif", "gif"),
     JPG("image/jpeg", "jpg", "jpeg"),
+    PDF("application/pdf", "pdf"),
     PNG("image/png", "png"),
     SVG("image/svg+xml", "svg"),
     TEXT_PLAIN("text/plain", "txt"),
