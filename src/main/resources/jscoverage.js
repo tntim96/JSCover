@@ -812,6 +812,8 @@ function getFilesSortedByCoverage(filesIn) {
   	files[i].perc = parseInt(tbody.children[i].children[7].children[1].innerHTML, 10);
   	files[i].brPerc = parseInt(tbody.children[i].children[8].children[1].innerHTML, 10);
   	files[i].fnPerc = parseInt(tbody.children[i].children[9].children[1].innerHTML, 10);
+    if (isNaN(files[i].perc))
+      files[i].perc = -1;
     if (isNaN(files[i].brPerc))
       files[i].brPerc = -1;
     if (isNaN(files[i].fnPerc))
