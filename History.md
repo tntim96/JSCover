@@ -5,6 +5,7 @@
   * Internal: Upgrade selenium to 2.39
               Use tntim96 Maven repository version of Rhino
               Add more UI tests
+              Remove need for user to add maven-ant-tasks-2.1.3.jar to ant lib directory
 
 1.0.6 / 2013-11-03
 ==================
