@@ -349,7 +349,6 @@ import jscover.util.PatternMatcherString;
 import org.mozilla.javascript.CompilerEnvirons;
 import org.mozilla.javascript.Context;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;

@@ -344,19 +344,15 @@ package jscover.server;
 
 import jscover.ConfigurationCommon;
 import jscover.Main;
-import jscover.util.PatternMatcherString;
 import jscover.util.UriFileTranslator;
 import jscover.util.UriFileTranslatorNoOp;
 import jscover.util.UriFileTranslatorReg;
 
 import java.io.File;
-import java.util.logging.Level;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import static java.lang.String.format;
-import static jscover.Main.HELP_PREFIX1;
-import static jscover.Main.HELP_PREFIX2;
 
 public class ConfigurationForServer extends ConfigurationCommon {
     public static final String DOC_ROOT_PREFIX = "--document-root=";

@@ -365,7 +365,6 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.argThat;
-import static org.mockito.Mockito.verify;
 
 //Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013
 @RunWith(MockitoJUnitRunner.class)

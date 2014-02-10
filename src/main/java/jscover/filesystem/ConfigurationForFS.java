@@ -344,18 +344,14 @@ package jscover.filesystem;
 
 import jscover.ConfigurationCommon;
 import jscover.Main;
-import jscover.util.PatternMatcherString;
 
 import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import static java.lang.String.format;
-import static jscover.Main.HELP_PREFIX1;
-import static jscover.Main.HELP_PREFIX2;
 
 public class ConfigurationForFS extends ConfigurationCommon {
     public static final String EXLCUDE_PREFIX = "--exclude=";

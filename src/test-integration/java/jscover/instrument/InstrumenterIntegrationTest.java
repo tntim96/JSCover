@@ -344,11 +344,9 @@ package jscover.instrument;
 
 import jscover.ConfigurationCommon;
 import jscover.util.IoUtils;
-import jscover.util.ReflectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mozilla.javascript.CompilerEnvirons;
