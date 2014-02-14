@@ -366,11 +366,7 @@ public class ProxyService {
         handleProxyRequest(request, os, "GET");
     }
 
-    protected void handleProxyHead(HttpRequest request, OutputStream os) {
-        handleProxyRequest(request, os, "HEAD");
-    }
-
-    private void handleProxyRequest(HttpRequest request, OutputStream os, String method) {
+    protected void handleProxyRequest(HttpRequest request, OutputStream os, String method) {
         logger.log(FINE, "handleProxyRequest for {0}", request.getUrl());
         URL url = request.getUrl();
         Socket socket;

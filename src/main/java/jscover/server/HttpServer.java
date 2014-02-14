@@ -427,12 +427,10 @@ public class HttpServer extends Thread {
                     System.exit(0);
                 }
                 handleGet(httpRequest);
-            } else if (httpMethod.equals("HEAD")) {
-                handleHead(httpRequest);
             } else if (httpMethod.equals("POST")) {
                 handlePost(httpRequest);
             } else
-              throw new UnsupportedOperationException("No support for "+httpMethod);
+                handleOther(httpMethod, httpRequest);
         } catch (Exception e) {
             logger.log(WARNING, format("Error processing request string %s", requestString),e);
         } finally {
@@ -443,8 +441,8 @@ public class HttpServer extends Thread {
         }
     }
 
-    protected void handleHead(HttpRequest httpRequest) {
-        throw new UnsupportedOperationException("No support for HEAD");
+    protected void handleOther(String method, HttpRequest httpRequest) {
+        throw new UnsupportedOperationException("No support for " + method);
     }
 
     protected void handlePost(HttpRequest request) {

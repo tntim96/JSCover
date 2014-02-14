@@ -479,10 +479,10 @@ public class InstrumentingRequestHandler extends HttpServer {
     }
 
     @Override
-    protected void handleHead(HttpRequest request) {
+    protected void handleOther(String httpMethod, HttpRequest request) {
         if (configuration.isProxy())
-            proxyService.handleProxyHead(request, os);
+            proxyService.handleProxyRequest(request, os, httpMethod);
         else
-            super.handleHead(request);
+            super.handleOther(httpMethod, request);
     }
 }

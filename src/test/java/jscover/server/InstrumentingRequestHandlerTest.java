@@ -457,7 +457,7 @@ public class InstrumentingRequestHandlerTest {
         given(configuration.isProxy()).willReturn(false);
 
         HttpRequest request = new HttpRequest("somePostUrl", null, null, 0, null);
-        webServer.handleHead(request);
+        webServer.handleOther("HEAD", request);
     }
 
     @Test
@@ -492,9 +492,9 @@ public class InstrumentingRequestHandlerTest {
         given(configuration.isProxy()).willReturn(true);
 
         HttpRequest request = new HttpRequest("somePostUrl", null, null, 0, null);
-        webServer.handleHead(request);
+        webServer.handleOther("HEAD", request);
 
-        verify(proxyService).handleProxyHead(request, null);
+        verify(proxyService).handleProxyRequest(request, null, "HEAD");
         verifyZeroInteractions(ioService);
         verifyZeroInteractions(jsonDataSaver);
         verifyZeroInteractions(instrumenterService);
