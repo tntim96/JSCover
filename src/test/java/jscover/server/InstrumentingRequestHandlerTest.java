@@ -425,7 +425,7 @@ public class InstrumentingRequestHandlerTest {
         given(ioUtils.toStringNoClose(bais, 12)).willReturn("data");
         given(bais.skip(50)).willReturn(50L);
 
-        webServer.handlePost(new HttpRequest(JSCOVERAGE_STORE, bais, null, 50, headers));
+        webServer.handlePostOrPut(new HttpRequest(JSCOVERAGE_STORE, bais, null, 50, headers));
 
         verify(jsonDataSaver).saveJSONData(reportDir, "data", null, uriFileTranslator);
         verify(ioService).generateJSCoverFilesForWebServer(reportDir, "theVersion");
@@ -447,7 +447,7 @@ public class InstrumentingRequestHandlerTest {
         given(ioUtils.toStringNoClose(bais, 12)).willReturn("data");
         given(bais.skip(50)).willReturn(40L);
 
-        webServer.handlePost(new HttpRequest(JSCOVERAGE_STORE, bais, null, 50, headers));
+        webServer.handlePostOrPut(new HttpRequest(JSCOVERAGE_STORE, bais, null, 50, headers));
 
         verifyZeroInteractions(jsonDataSaver);
     }
@@ -466,7 +466,7 @@ public class InstrumentingRequestHandlerTest {
         given(ioUtils.toStringNoClose(bais, 12)).willReturn("thePostData");
 
         HttpRequest request = new HttpRequest("somePostUrl", bais, null, 50, headers);
-        webServer.handlePost(request);
+        webServer.handlePostOrPut(request);
 
         verifyZeroInteractions(ioService);
         verifyZeroInteractions(jsonDataSaver);
@@ -505,9 +505,9 @@ public class InstrumentingRequestHandlerTest {
         given(configuration.isProxy()).willReturn(true);
 
         HttpRequest request = new HttpRequest("somePostUrl", null, null, 0, null);
-        webServer.handlePost(request);
+        webServer.handlePostOrPut(request);
 
-        verify(proxyService).handleProxyPost(request);
+        verify(proxyService).handleProxyPostOrPut(request);
         verifyZeroInteractions(ioService);
         verifyZeroInteractions(jsonDataSaver);
         verifyZeroInteractions(instrumenterService);
@@ -523,7 +523,7 @@ public class InstrumentingRequestHandlerTest {
         RuntimeException toBeThrown = new RuntimeException("Ouch!");
         doThrow(toBeThrown).when(jsonDataSaver).saveJSONData(reportDir, "data", null, uriFileTranslator);
 
-        webServer.handlePost(new HttpRequest(JSCOVERAGE_STORE, bais, null, 50, headers));
+        webServer.handlePostOrPut(new HttpRequest(JSCOVERAGE_STORE, bais, null, 50, headers));
 
         verify(jsonDataSaver).saveJSONData(reportDir, "data", null, uriFileTranslator);
         verifyZeroInteractions(ioService);
@@ -541,7 +541,7 @@ public class InstrumentingRequestHandlerTest {
         given(ioUtils.toStringNoClose(bais, 12)).willReturn("data");
         given(bais.skip(50)).willReturn(50L);
 
-        webServer.handlePost(new HttpRequest(JSCOVERAGE_STORE + "subdirectory", bais, null, 50, headers));
+        webServer.handlePostOrPut(new HttpRequest(JSCOVERAGE_STORE + "subdirectory", bais, null, 50, headers));
 
         File subdirectory = new File(file, "subdirectory");
         verify(jsonDataSaver).saveJSONData(subdirectory, "data", null, uriFileTranslator);
@@ -561,7 +561,7 @@ public class InstrumentingRequestHandlerTest {
         given(ioUtils.toStringNoClose(bais, 12)).willReturn("data");
         given(bais.skip(50)).willReturn(50L);
 
-        webServer.handlePost(new HttpRequest(JSCOVERAGE_STORE + "subdirectory", bais, null, 50, headers));
+        webServer.handlePostOrPut(new HttpRequest(JSCOVERAGE_STORE + "subdirectory", bais, null, 50, headers));
 
         File subdirectory = new File(file, "subdirectory");
         verify(jsonDataSaver).saveJSONData(subdirectory, "data", null, uriFileTranslator);
@@ -583,7 +583,7 @@ public class InstrumentingRequestHandlerTest {
         given(ioUtils.toStringNoClose(bais, 12)).willReturn("data");
         given(bais.skip(50)).willReturn(50L);
 
-        webServer.handlePost(new HttpRequest(JSCOVERAGE_STORE + "subdirectory", bais, null, 50, headers));
+        webServer.handlePostOrPut(new HttpRequest(JSCOVERAGE_STORE + "subdirectory", bais, null, 50, headers));
 
         File subdirectory = new File(file, "subdirectory");
         verify(jsonDataSaver).saveJSONData(subdirectory, "data", null, uriFileTranslator);
@@ -607,7 +607,7 @@ public class InstrumentingRequestHandlerTest {
         unloadedJS.add(new ScriptCoverageCount("/js/unloaded.js", null, 0, null));
         given(unloadedSourceProcessor.getEmptyCoverageData(anySet())).willReturn(unloadedJS);
 
-        webServer.handlePost(new HttpRequest(JSCOVERAGE_STORE, bais, null, 50, headers));
+        webServer.handlePostOrPut(new HttpRequest(JSCOVERAGE_STORE, bais, null, 50, headers));
 
         verify(jsonDataSaver).saveJSONData(reportDir, "data", unloadedJS, uriFileTranslator);
         verify(ioService).generateJSCoverFilesForWebServer(reportDir, "theVersion");

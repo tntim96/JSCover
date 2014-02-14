@@ -628,21 +628,21 @@ public class IoUtilsTest {
     public void shouldDetectPostIndexCRLF() {
         String post = "POST /data HTTP/1.1\r\nSome Header\r\n\r\nData\r\rLine 3\n\nLine 5";
         Charset charset = Charset.forName("UTF-8");
-        assertThat(ioUtils.getPostIndex(post.getBytes(charset), charset), Matchers.equalTo(36));
+        assertThat(ioUtils.getDataIndex(post.getBytes(charset), charset), Matchers.equalTo(36));
     }
 
     @Test
     public void shouldDetectPostIndexLF() {
         String post = "POST /data HTTP/1.1\nSome Header\n\nData\r\n\r\nLine 3";
         Charset charset = Charset.forName("UTF-8");
-        assertThat(ioUtils.getPostIndex(post.getBytes(charset), charset), Matchers.equalTo(33));
+        assertThat(ioUtils.getDataIndex(post.getBytes(charset), charset), Matchers.equalTo(33));
     }
 
     @Test
     public void shouldDetectPostIndexCR() {
         String post = "POST /data HTTP/1.1\rSome Header\r\rData\r\n\r\nLine 3";
         Charset charset = Charset.forName("UTF-8");
-        assertThat(ioUtils.getPostIndex(post.getBytes(charset), charset), Matchers.equalTo(33));
+        assertThat(ioUtils.getDataIndex(post.getBytes(charset), charset), Matchers.equalTo(33));
     }
 
     @Test

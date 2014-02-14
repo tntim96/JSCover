@@ -613,7 +613,7 @@ public class IoUtils {
             ioUtils.copy(src, dest);
     }
 
-    public int getPostIndex(byte[] bytes, Charset charset) {
+    public int getDataIndex(byte[] bytes, Charset charset) {
         String firstBytes = new String(bytes, charset);
         String separator = CRLFx2;
         int index = firstBytes.indexOf(CRLFx2);

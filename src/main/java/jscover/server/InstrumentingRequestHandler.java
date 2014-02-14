@@ -385,15 +385,15 @@ public class InstrumentingRequestHandler extends HttpServer {
     }
 
     @Override
-    protected void handlePost(HttpRequest request) {
+    protected void handlePostOrPut(HttpRequest request) {
         String uri = request.getPath();
         if (uri.startsWith(JSCOVERAGE_STORE)) {
             storeReport(request, uri);
         } else {
             if (configuration.isProxy())
-                proxyService.handleProxyPost(request);
+                proxyService.handleProxyPostOrPut(request);
             else
-                super.handlePost(request);
+                super.handlePostOrPut(request);
         }
     }
 

@@ -409,10 +409,10 @@ public class HttpServer extends Thread {
                 }
             }
 
-            int postIndex = 0;
-            if ("POST".equals(httpMethod))
-                postIndex = ioUtils.getPostIndex(headerBytes, Charset.defaultCharset());
-            HttpRequest httpRequest = new HttpRequest(path, pbis, os, postIndex, headers);
+            int dataIndex = 0;
+            if (httpMethod.equals("POST") || httpMethod.equals("PUT"))
+                dataIndex = ioUtils.getDataIndex(headerBytes, Charset.defaultCharset());
+            HttpRequest httpRequest = new HttpRequest(path, pbis, os, dataIndex, headers);
 
             pbis.unread(headerBytes, 0, read);
 
@@ -427,8 +427,8 @@ public class HttpServer extends Thread {
                     System.exit(0);
                 }
                 handleGet(httpRequest);
-            } else if (httpMethod.equals("POST")) {
-                handlePost(httpRequest);
+            } else if (httpMethod.equals("POST") || httpMethod.equals("PUT")) {
+                handlePostOrPut(httpRequest);
             } else
                 handleOther(httpMethod, httpRequest);
         } catch (Exception e) {
@@ -445,7 +445,7 @@ public class HttpServer extends Thread {
         throw new UnsupportedOperationException("No support for " + method);
     }
 
-    protected void handlePost(HttpRequest request) {
+    protected void handlePostOrPut(HttpRequest request) {
         try {
             request.getInputStream().skip(request.getPostIndex());
             String response = format("<html><body>Posted<pre id=\"postData\">%s</pre></body></html>", ioUtils.toStringNoClose(request.getInputStream(), request.getContentLength()));

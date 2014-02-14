@@ -391,7 +391,7 @@ public class ProxyService {
         }
     }
 
-    protected void handleProxyPost(HttpRequest request) {
+    protected void handleProxyPostOrPut(HttpRequest request) {
         URL url = request.getUrl();
         Socket socket;
         InputStream remoteInputStream = null;
