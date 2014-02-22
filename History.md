@@ -4,7 +4,7 @@
   * Fix handling of 'N/A' when sorting by line coverage (https://github.com/tntim96/JSCover/issues/115)
   * Proxy Mode: Add support for other HTTP methods (https://github.com/tntim96/JSCover/issues/117)
   * FireFox 27.0.1 Request To http://localhost:8080/ failing (https://github.com/tntim96/JSCover/issues/118)
-  * Internal: Upgrade selenium to 2.39
+  * Internal: Upgrade selenium to 2.40
               Use tntim96 Maven repository version of Rhino
               Add more UI tests
               Remove need for user to add maven-ant-tasks-2.1.3.jar to their ant lib directory
