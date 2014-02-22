@@ -126,8 +126,9 @@
                     <heading id="gettingStartedServerRunTests">Run Tests</heading>
                     <text>
                         Tests that exercise the JavaScript can now be run.
-                        <note>As long as you do not reload the jscoverage.html page, the coverage report statistics are
-                            cumulative.</note>
+                        <note>The coverage report statistics are cumulative unless you reload the jscoverage.html
+						page without using the
+							<a href="#localStorage">localStorage switch</a>).</note>
                         <imgThumb src="images/ws-3-browser.png" alt="Run Tests" width="650"/>
                     </text>
                 </item>
@@ -138,6 +139,7 @@
                         <var>Summary</var>
                         tab. Note, you can change the sorting
                         order by clicking on the
+                        <var>File</var>,
                         <var>Coverage</var>,
                         <var>Branch</var>
                         or
@@ -337,8 +339,8 @@
 });
 fs.write("target/jscoverage.json", json, 'w');
 </code>
-                            For a working PhantomJS example, see <var>phantom-fs.sh</var> or
-                            <var>phantom-fs.bat</var>.
+                            Find a working example in the <var>examples/phantomJS-file-system</var>
+                            directory of the distribution.
                         </text>
                         <text>
                             Once the JSON is available in your browser driver, it can then be saved to the file-system
@@ -1683,7 +1685,7 @@ function square(x) {
                             <li>JSCover's server mode works on Windows 7 (this was part of the incentive to write
                                 JSCover)
                             </li>
-                            <li>JSCover allows sorting of files by coverage and branch coverage</li>
+                            <li>JSCover allows sorting of files by name, line, branch and function coverage</li>
                             <li>JSCover
                                 <a href="#automating">has added hooks</a>
                                 to assist with automated testing
