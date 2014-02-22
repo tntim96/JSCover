@@ -19,10 +19,10 @@
     <property name="maven-staging-repository-url"
               value="https://oss.sonatype.org/service/local/staging/deploy/maven2/"/>
 
-    <target name="generate-files" depends="jar-all" description="Maven Step 1 - Create files to be signed">
+    <target name="generate-files" depends="jar" description="Maven Step 1 - Create files to be signed">
         <mkdir dir="${mavenBundleDir}/javadoc"/>
         <copy file="pom.xml" tofile="${mavenBundleDir}/${ant.project.name}-${version}.pom"/>
-        <copy file="${dist.dir}/${ant.project.name}-all.jar"
+        <copy file="${dist.dir}/${ant.project.name}.jar"
               tofile="${mavenBundleDir}/${ant.project.name}-${version}.jar"/>
         <jar jarfile="${mavenBundleDir}/${ant.project.name}-${version}-sources.jar" basedir="${src.main.dir}"
              compress="false"/>

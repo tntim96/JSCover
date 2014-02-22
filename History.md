@@ -1,3 +1,7 @@
+1.0.8 / 2014-??-??
+==================
+  * Internal: Exclude dependencies from Maven JSCover JAR
+
 1.0.7 / 2014-02-22
 ==================
   * Add sort by file name in the coverage report web UI (https://github.com/tntim96/JSCover/issues/108)
