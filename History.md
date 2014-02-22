@@ -3,6 +3,7 @@
   * Add sort by file name in the coverage report web UI (https://github.com/tntim96/JSCover/issues/108)
   * Fix handling of 'N/A' when sorting by line coverage (https://github.com/tntim96/JSCover/issues/115)
   * Proxy Mode: Add support for other HTTP methods (https://github.com/tntim96/JSCover/issues/117)
+  * FireFox 27.0.1 Request To http://localhost:8080/ failing (https://github.com/tntim96/JSCover/issues/118)
   * Internal: Upgrade selenium to 2.39
               Use tntim96 Maven repository version of Rhino
               Add more UI tests

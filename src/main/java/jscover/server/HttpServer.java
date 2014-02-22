@@ -395,19 +395,7 @@ public class HttpServer extends Thread {
             StringTokenizer tokenizer = new StringTokenizer(requestString);
             String httpMethod = tokenizer.nextToken();
             String path = tokenizer.nextToken();
-            String headerLine;
-            Map<String, List<String>> headers = new HashMap<String, List<String>>();
-            while (!(headerLine = br.readLine()).equals("")) {
-                logger.log(FINEST, "Header: {0}", headerLine);
-                int index = headerLine.indexOf(':');
-                if (index >= 0) {
-                    String headerField = headerLine.substring(0, index).trim();
-                    String headerValue = headerLine.substring(index + 1).trim();
-                    if (!headers.containsKey(headerField))
-                        headers.put(headerField, new ArrayList<String>());
-                    headers.get(headerField).add(headerValue);
-                }
-            }
+            Map<String, List<String>> headers = readHeaders(br);
 
             int dataIndex = 0;
             if (httpMethod.equals("POST") || httpMethod.equals("PUT"))
@@ -439,6 +427,23 @@ public class HttpServer extends Thread {
             ioUtils.closeQuietly(os);
             ioUtils.closeQuietly(socket);
         }
+    }
+
+    protected Map<String, List<String>> readHeaders(BufferedReader br) throws IOException {
+        Map<String, List<String>> headers = new HashMap<String, List<String>>();
+        String headerLine = br.readLine();
+        for (; headerLine != null && !headerLine.equals(""); headerLine = br.readLine()) {
+            logger.log(FINEST, "Header: {0}", headerLine);
+            int index = headerLine.indexOf(':');
+            if (index >= 0) {
+                String headerField = headerLine.substring(0, index).trim();
+                String headerValue = headerLine.substring(index + 1).trim();
+                if (!headers.containsKey(headerField))
+                    headers.put(headerField, new ArrayList<String>());
+                headers.get(headerField).add(headerValue);
+            }
+        }
+        return headers;
     }
 
     protected void handleOther(String method, HttpRequest httpRequest) {
