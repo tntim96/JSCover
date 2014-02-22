@@ -1,4 +1,4 @@
-1.0.7 / 2014-02-??
+1.0.7 / 2014-02-22
 ==================
   * Add sort by file name in the coverage report web UI (https://github.com/tntim96/JSCover/issues/108)
   * Fix handling of 'N/A' when sorting by line coverage (https://github.com/tntim96/JSCover/issues/115)
