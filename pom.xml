@@ -42,11 +42,13 @@ http://github.com/tntim96/rhino/
         <url>http://github.com/tntim96/JSCover/issues</url>
     </issueManagement>
     <dependencies>
-        <dependency><!-- Transitive dependency fix -->
+        <!--
+        <dependency> Transitive dependency fix
             <groupId>com.ibm.icu</groupId>
             <artifactId>icu4j</artifactId>
             <version>3.4.4</version>
         </dependency>
+        -->
         <dependency>
             <groupId>com.github.tntim96</groupId>
             <artifactId>rhino</artifactId>
