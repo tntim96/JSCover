@@ -376,6 +376,17 @@ public class IoUtilsTest {
     }
 
     @Test
+    public void shouldFlushQuietly() throws IOException {
+        doThrow(new IOException("Ouch!")).when(os).flush();
+        ioUtils.flushQuietly(os);
+    }
+
+    @Test
+    public void shouldFlushNullStreamQuietly() throws IOException {
+        ioUtils.flushQuietly(null);
+    }
+
+    @Test
     public void shouldCloseSocketQuietly() throws IOException {
         doThrow(new IOException("Ouch!")).when(socket).close();
         ioUtils.closeQuietly(socket);

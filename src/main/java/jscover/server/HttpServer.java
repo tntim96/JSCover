@@ -404,7 +404,6 @@ public class HttpServer extends Thread {
 
             pbis.unread(headerBytes, 0, read);
 
-
             if (httpMethod.equals("GET")) {
                 if (httpRequest.getPath().equals("/stop")) {
                     logger.info("Shutting down the server.");
@@ -422,10 +421,13 @@ public class HttpServer extends Thread {
         } catch (Exception e) {
             logger.log(WARNING, format("Error processing request string %s", requestString),e);
         } finally {
+            ioUtils.flushQuietly(pw);
+            ioUtils.flushQuietly(os);
             ioUtils.closeQuietly(br);
             ioUtils.closeQuietly(pbis);
             ioUtils.closeQuietly(os);
             ioUtils.closeQuietly(socket);
+            logger.log(FINEST, "Socket closed");
         }
     }
 
@@ -492,31 +494,31 @@ public class HttpServer extends Thread {
         return path.replaceAll("\\\\", "/");
     }
 
-    protected void sendResponse(HTTP_STATUS status, MIME mime, String data) {
+    private void sendPartialHeader(HTTP_STATUS status, MIME mime) {
+        logger.log(FINE, "Sending response status:{0} mime:{1}", new Object[]{status, mime.getContentType()});
         pw.print(format("HTTP/1.0 %s\n", status));
         pw.write(format("Server: JSCover/%s\n", version));
         pw.write(format("Content-Type: %s\n", mime.getContentType()));
         pw.write("Connection: close\n");
+    }
+
+    protected void sendResponse(HTTP_STATUS status, MIME mime, String data) {
+        sendPartialHeader(status, mime);
         pw.write(format("Content-Length: %d\n\n", data.length()));
         pw.write(data);
         pw.flush();
     }
 
     private void sendResponse(HTTP_STATUS status, MIME mime, File data) {
-        pw.print(format("HTTP/1.0 %s\n", status));
-        pw.write(format("Server: JSCover/%s\n", version));
-        pw.write(format("Content-Type: %s\n", mime.getContentType()));
-        pw.write("Connection: close\n");
+        sendPartialHeader(status, mime);
         pw.write(format("Content-Length: %d\n\n", data.length()));
         pw.flush();
         ioUtils.copyNoClose(data, os);
     }
 
     protected void sendResponse(HTTP_STATUS status, MIME mime, InputStream is) {
-        pw.print(format("HTTP/1.0 %s\n", status));
-        pw.write(format("Server: JSCover/%s\n", version));
-        pw.write(format("Content-Type: %s\n", mime.getContentType()));
-        pw.write("Connection: close\n\n");
+        sendPartialHeader(status, mime);
+        pw.write("\n");//No more headers
         pw.flush();
         ioUtils.copy(is, os);
     }

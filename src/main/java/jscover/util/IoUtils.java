@@ -371,6 +371,16 @@ public class IoUtils {
         }
     }
 
+    public void flushQuietly(Flushable s) {
+        if (s != null) {
+            try {
+                s.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public void closeQuietly(Socket socket) {
         try {
             socket.close();
