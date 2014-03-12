@@ -76,10 +76,9 @@ http://github.com/tntim96/rhino/
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-server</artifactId>
-            <version>2.39.0</version>
-            <scope>test</scope>
+            <groupId>com.github.detro.ghostdriver</groupId>
+            <artifactId>phantomjsdriver</artifactId>
+            <version>1.1.0</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

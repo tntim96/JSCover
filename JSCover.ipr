@@ -395,7 +395,7 @@
       </extension>
       <option name="MAIN_CLASS_NAME" value="jscover.Main" />
       <option name="VM_PARAMETERS" value="-ea -Djava.util.logging.config.file=log.properties" />
-      <option name="PROGRAM_PARAMETERS" value="-ws --report-dir=target --document-root=doc/example --include-unloaded-js" />
+      <option name="PROGRAM_PARAMETERS" value="-ws --report-dir=target/closure-library --document-root=../closure-library --include-unloaded-js" />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" value="" />
@@ -640,6 +640,17 @@
       </JAVADOC>
       <SOURCES>
         <root url="jar://$MAVEN_REPOSITORY$/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: com.github.detro.ghostdriver:phantomjsdriver:1.1.0">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/com/github/detro/ghostdriver/phantomjsdriver/1.1.0/phantomjsdriver-1.1.0.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/com/github/detro/ghostdriver/phantomjsdriver/1.1.0/phantomjsdriver-1.1.0-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/com/github/detro/ghostdriver/phantomjsdriver/1.1.0/phantomjsdriver-1.1.0-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: com.github.tntim96:rhino:1.7R5pre01">
@@ -1106,15 +1117,15 @@
         <root url="jar://$MAVEN_REPOSITORY$/org/mortbay/jetty/jetty/6.1.14/jetty-6.1.14-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.mortbay.jetty:servlet-api-2.5:6.1.9">
+    <library name="Maven: org.mortbay.jetty:servlet-api-2.5:6.1.14">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mortbay/jetty/servlet-api-2.5/6.1.9/servlet-api-2.5-6.1.9.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mortbay/jetty/servlet-api-2.5/6.1.14/servlet-api-2.5-6.1.14.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mortbay/jetty/servlet-api-2.5/6.1.9/servlet-api-2.5-6.1.9-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mortbay/jetty/servlet-api-2.5/6.1.14/servlet-api-2.5-6.1.14-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mortbay/jetty/servlet-api-2.5/6.1.9/servlet-api-2.5-6.1.9-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mortbay/jetty/servlet-api-2.5/6.1.14/servlet-api-2.5-6.1.14-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.objenesis:objenesis:1.0">
@@ -1260,15 +1271,15 @@
         <root url="jar://$MAVEN_REPOSITORY$/org/seleniumhq/selenium/selenium-java/2.40.0/selenium-java-2.40.0-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.seleniumhq.selenium:selenium-remote-driver:2.40.0">
+    <library name="Maven: org.seleniumhq.selenium:selenium-remote-driver:2.39.0">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/seleniumhq/selenium/selenium-remote-driver/2.40.0/selenium-remote-driver-2.40.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/seleniumhq/selenium/selenium-remote-driver/2.39.0/selenium-remote-driver-2.39.0.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/seleniumhq/selenium/selenium-remote-driver/2.40.0/selenium-remote-driver-2.40.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/seleniumhq/selenium/selenium-remote-driver/2.39.0/selenium-remote-driver-2.39.0-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/seleniumhq/selenium/selenium-remote-driver/2.40.0/selenium-remote-driver-2.40.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/seleniumhq/selenium/selenium-remote-driver/2.39.0/selenium-remote-driver-2.39.0-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.seleniumhq.selenium:selenium-safari-driver:2.40.0">

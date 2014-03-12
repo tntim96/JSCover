@@ -347,7 +347,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -371,7 +371,7 @@ public class WebDriverLocalStorageTest {
     };
 
     protected WebDriver getWebClient() {
-        return new FirefoxDriver();
+        return new PhantomJSDriver();
     }
 
     protected String getReportDir() {
@@ -395,11 +395,6 @@ public class WebDriverLocalStorageTest {
             });
             server.start();
         }
-//        try {
-//            Thread.sleep(1000*300);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-//        }
     }
 
     @After
