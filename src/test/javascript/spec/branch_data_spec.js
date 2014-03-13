@@ -122,7 +122,7 @@ $(document).ready(function() {
         });
 
         it("should handle undefined branch JSON data string", function() {
-            expect(convertBranchDataLinesFromJSON(undefined)).toEqual(new Array());
+            expect(convertBranchDataLinesFromJSON(undefined)).toEqual({});
         });
 
         it("should convert multiple lines to JSON and back", function() {
