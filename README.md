@@ -1,6 +1,8 @@
 [JSCover](http://tntim96.github.com/JSCover) - A JavaScript code coverage measurement tool.
 ================================
 
+[![Build Status](https://drone.io/github.com/tntim96/JSCover/status.png)](https://drone.io/github.com/tntim96/JSCover/latest)
+
 JSCover is an easy-to-use JavaScript code coverage measuring tool. It is an enhanced version of the popular
 [JSCoverage](http://siliconforks.com/jscoverage/), having added several features including **branch coverage** and
 **LCOV** reports.
