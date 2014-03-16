@@ -24,6 +24,5 @@ What you need:
 Most development has been done with IntelliJ ultimate edition, and some with Eclipse and IntelliJ community edition.
 Project files for IDEs are checked in, but any editor can be used.
 Before checking in any changes, be sure to run the build files `pre-commit`.
-NB: `pre-commit` runs the report and enforces coverage limits on unit and integration tests.
-Acceptance test coverage is collected and can be viewed by running the `coverage-report`
-target manually after `pre-commit`.
+NB: `pre-commit` runs the report and enforces coverage limits on the combined unit and integration tests and as well as
+on the combined unit, integration and acceptance tests.
