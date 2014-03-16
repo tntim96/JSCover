@@ -4,10 +4,12 @@
 [![Build Status](https://drone.io/github.com/tntim96/JSCover/status.png)](https://drone.io/github.com/tntim96/JSCover/latest)
 
 JSCover is an easy-to-use JavaScript code coverage measuring tool. It is an enhanced version of the popular
-[JSCoverage](http://siliconforks.com/jscoverage/), having added several features including **branch coverage** and
-**LCOV** reports.
-It's big distinguishing factor from other JavaScript coverage tools is that it easily runs
-in any browser (supporting JavaScript) allowing coverage measurement of tests that include DOM interaction.
+[JSCoverage](http://siliconforks.com/jscoverage/) tool, having added several features including **branch coverage**,
+**LCOV** and **Cobertura XML** reports for CI integration, hooks for automated tests and **HTML Local Storage** to
+maintain coverage data without the use of iFrames and JavaScript opened windows.
+
+It's distinguishing factor from other JavaScript coverage tools is that it easily runs in any browser (supporting JavaScript)
+allowing coverage measurement of tests that include DOM interaction.
 It can be run with most tools (e.g.
 [Jasmine](http://pivotal.github.com/jasmine/),
 [QUnit](http://qunitjs.com/), etc...).
