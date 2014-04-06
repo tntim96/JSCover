@@ -878,7 +878,8 @@ fs.write("target/jscoverage.json", json, 'w');
                     <heading id="localStorageExample">Example</heading>
                     <text>
                         For a full working example using a recorded Selenium IDE test, see the
-                        'examples/localStorage-server' folder of the ZIP distribution.
+                        'examples/localStorage-server' or 'examples/localStorage-file-system'
+                        folders of the ZIP distribution.
                     </text>
                     <text>
                         The 'examples/localStorage-proxy' folder contains a similar example in proxy mode.
