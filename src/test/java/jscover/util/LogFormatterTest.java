@@ -367,7 +367,6 @@ public class LogFormatterTest {
     public void setUp() {
         given(logRecord.getMillis()).willReturn(1375795185848L);
         given(logRecord.getThreadID()).willReturn(157);
-        given(logRecord.getSourceClassName()).willReturn("SourceClassName");
         given(logRecord.getLevel()).willReturn(FINER);
         given(logRecord.getMessage()).willReturn("Hello");
         given(logRecord.getLoggerName()).willReturn("Loggy");
@@ -383,7 +382,7 @@ public class LogFormatterTest {
     public void shouldFormatLogRecord() {
         String actual = logFormatter.format(logRecord);
 
-        assertThat(actual, equalTo("20130806 13:19:45.848,157,SourceClassName,FINER,\"Hello\",Loggy,"+System.getProperty("line.separator")));
+        assertThat(actual, equalTo("20130806 13:19:45.848,157,FINER,\"Hello\",Loggy,"+System.getProperty("line.separator")));
     }
 
     @Test
@@ -393,7 +392,7 @@ public class LogFormatterTest {
 
         String actual = logFormatter.format(logRecord);
 
-        assertThat(actual, equalTo("20130806 13:19:45.848,157,SourceClassName,FINER,\"Hello World!\",Loggy,"+System.getProperty("line.separator")));
+        assertThat(actual, equalTo("20130806 13:19:45.848,157,FINER,\"Hello World!\",Loggy,"+System.getProperty("line.separator")));
     }
 
     @Test
@@ -403,7 +402,7 @@ public class LogFormatterTest {
 
         String actual = logFormatter.format(logRecord);
 
-        assertThat(actual, equalTo("20130806 13:19:45.848,157,SourceClassName,FINER,\"Hello {0}!\",Loggy,"+System.getProperty("line.separator")));
+        assertThat(actual, equalTo("20130806 13:19:45.848,157,FINER,\"Hello {0}!\",Loggy,"+System.getProperty("line.separator")));
     }
 
     @Test
@@ -412,7 +411,7 @@ public class LogFormatterTest {
 
         String actual = logFormatter.format(logRecord);
 
-        assertThat(actual, startsWith("20130806 13:19:45.848,157,SourceClassName,FINER,\"Hello\",Loggy,"));
+        assertThat(actual, startsWith("20130806 13:19:45.848,157,FINER,\"Hello\",Loggy,"));
         assertThat(actual, containsString("java.lang.RuntimeException: Hey"));
     }
 }
