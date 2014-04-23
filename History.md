@@ -1,6 +1,7 @@
 1.0.8 / 2014-??-??
 ==================
   * Exclude dependencies from Maven JSCover JAR
+  * Log program arguments
   * Internal: Upgrade HTMLUnit to 2.14
               Swap from Selenium to HTMLUnit for localStorage test
               Add drone.io CI

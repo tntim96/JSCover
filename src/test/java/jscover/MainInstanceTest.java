@@ -359,6 +359,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
@@ -487,5 +488,15 @@ public class MainInstanceTest {
             assertThat((InterruptedException)rte.getCause(), sameInstance(toBeThrown));
         }
         verifyZeroInteractions(mainHelper);
+    }
+
+    @Test
+    public void shouldLogArguments() {
+        assertThat(main.logArgs(new String[]{"a", "b"}), equalTo("a,b"));
+    }
+
+    @Test
+    public void shouldGetArgsLogger() {
+        assertThat(main.getArgsLogger(new String[]{"a", "b"}).toString(), equalTo("a,b"));
     }
 }

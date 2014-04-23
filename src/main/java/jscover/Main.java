@@ -359,10 +359,13 @@ import java.util.Properties;
 import java.util.SortedMap;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static java.lang.String.format;
 
 public class Main {
+    private static final Logger logger = Logger.getLogger(Main.class.getName());
     public static final String HELP_PREFIX1 = "-h";
     public static final String CHARSET_PREFIX = "encoding";
     public static final String HELP_PREFIX2 = "--help";
@@ -417,6 +420,7 @@ public class Main {
     }
 
     void runMain(String[] args) throws IOException {
+        logger.log(Level.INFO, "Args: {0}", getArgsLogger(args));
         parse(args);
         initialize();
         runJSCover(args);
@@ -424,6 +428,25 @@ public class Main {
             exitStatus = 1;
         if (exitStatus != 0)
             mainHelper.exit(exitStatus);
+    }
+
+    Object getArgsLogger(final String[] args) {
+        return new Object() {
+            @Override
+            public String toString() {
+                return logArgs(args);
+            }
+        };
+    }
+
+    String logArgs(String[] args) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < args.length; i++) {
+            if (i > 0)
+                sb.append(",");
+            sb.append(args[i]);
+        }
+        return sb.toString();
     }
 
     public void runJSCover(String[] args) {
