@@ -94,6 +94,22 @@ http://github.com/tntim96/rhino/
                     <configLocation>config/checkstyle.xml</configLocation>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <index>true</index>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>jscover.Main</mainClass>
+                        </manifest>
+                        <manifestEntries>
+                            <Built-By>tntim96</Built-By>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>
