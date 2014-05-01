@@ -342,20 +342,28 @@ Public License instead of this License.
 
 package jscover.server;
 
+import jscover.util.ReflectionUtils;
+import org.junit.Before;
 import org.junit.Test;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
+import java.io.*;
 import java.util.List;
 import java.util.Map;
 
+import static jscover.server.HTTP_STATUS.HTTP_OK;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 public class HttpServerTest {
     private HttpServer httpServer = new HttpServer(null, null, null);
+    private final StringWriter stringWriter = new StringWriter();
+    private PrintWriter pw = new PrintWriter(stringWriter);
+
+    @Before
+    public void setUp() throws IOException {
+        ReflectionUtils.setField(httpServer, HttpServer.class, "pw", pw);
+    }
+
     @Test
     public void shouldReadSimpleHeader() throws IOException {
         BufferedReader br = getBufferedReader("Host: localhost:8080\n\n");
@@ -393,5 +401,20 @@ public class HttpServerTest {
         Map<String, List<String>> headers = httpServer.readHeaders(br);
 
         assertThat(headers.containsKey("Host"), is(true));
+    }
+
+    @Test
+    public void shouldSetContentLength() throws IOException {
+        httpServer.sendResponse(HTTP_OK, MIME.TEXT_PLAIN, "Hey");
+
+        assertThat(stringWriter.toString(), equalTo("HTTP/1.0 200 OK\nServer: JSCover/null\nContent-Type: text/plain\nConnection: close\nContent-Length: 3\n\nHey"));
+    }
+
+    @Test
+    public void shouldSetContentLengthForUTF8() throws IOException {
+        String data = new String("小方".getBytes("UTF-8"));
+        httpServer.sendResponse(HTTP_OK, MIME.TEXT_PLAIN, data);
+
+        assertThat(stringWriter.toString(), equalTo("HTTP/1.0 200 OK\nServer: JSCover/null\nContent-Type: text/plain\nConnection: close\nContent-Length: 6\n\n"+data));
     }
 }

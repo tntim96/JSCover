@@ -1,5 +1,6 @@
-1.0.8 / 2014-??-??
+1.0.8 / 2014-05-??
 ==================
+  * Fix Content-Length return wrong length (https://github.com/tntim96/JSCover/issues/129)
   * Exclude dependencies from Maven JSCover JAR
   * Log program arguments
   * Internal: Upgrade HTMLUnit to 2.14
