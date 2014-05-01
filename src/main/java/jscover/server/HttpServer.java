@@ -504,7 +504,7 @@ public class HttpServer extends Thread {
 
     protected void sendResponse(HTTP_STATUS status, MIME mime, String data) {
         sendPartialHeader(status, mime);
-        pw.write(format("Content-Length: %d\n\n", data.length()));
+        pw.write(format("Content-Length: %d\n\n", data.getBytes().length));
         pw.write(data);
         pw.flush();
     }
