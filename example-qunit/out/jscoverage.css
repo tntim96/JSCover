@@ -326,3 +326,20 @@ tabs
 img {
   visibility: hidden;
 }
+
+@keyframes fadeToBackgroundKF {
+    from {color: #BFBFFF;}
+    to {color: #BFFFBF;}
+}
+
+@-webkit-keyframes fadeToBackgroundKF /* Safari and Chrome */ {
+    from {color: #BFBFFF;}
+    to {color: #BFFFBF;}
+}
+
+.fadeToBackground {
+    color: #BFFFBF;
+    font-size: 8pt;
+    animation: fadeToBackgroundKF 1s;
+    -webkit-animation: fadeToBackgroundKF 1s; /* Safari and Chrome */
+}

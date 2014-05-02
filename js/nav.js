@@ -36,7 +36,7 @@ $(document).ready(function() {
     $('#container').html('<div style="position:relative"><h2>Loading...</h2></div>');
     var contentId = $(this).attr("id").replace('Link', '');
     $.ajax({
-      url: contentId + '.html?v=107',
+      url: contentId + '.html?v=108',
       dataType:'html',
       success: function(data) {
       $('#container').html(data+'<p>&nbsp;</p>');

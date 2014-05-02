@@ -1,6 +1,7 @@
-// run with
-// node test/node-test.js
-var QUnit = require("../qunit/qunit");
+/*jshint node:true, undef:false */
+/*globals QUnit:true */
+// Run with: $ narwhal test/narwhal-test.js
+var QUnit = require("../dist/qunit");
 
 QUnit.log(function(details) {
 	if (!details.result) {
@@ -12,8 +13,6 @@ QUnit.log(function(details) {
 			output += ", " + details.source;
 		}
 		print(output);
-	} else {
-		print("ok!");
 	}
 });
 
@@ -21,5 +20,8 @@ QUnit.test("fail twice with stacktrace", function(assert) {
 	/*jshint expr:true */
 	assert.equal(true, false);
 	assert.equal(true, false, "gotta fail");
-	x.y.z; // Throws ReferenceError
+	// Throws ReferenceError
+	x.y.z;
 });
+
+QUnit.load();
