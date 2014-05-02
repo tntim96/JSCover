@@ -1,4 +1,4 @@
-1.0.8 / 2014-05-??
+1.0.8 / 2014-05-02
 ==================
   * Fix Content-Length return wrong length (https://github.com/tntim96/JSCover/issues/129)
   * Exclude dependencies from Maven JSCover JAR
