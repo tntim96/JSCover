@@ -1693,8 +1693,6 @@ function square(x) {
                             </li>
                             <li>JSCover's encoding default's to that of the platform, while JSCoverage's is ISO-8859-1
                             </li>
-                            <li>JSCover's structure for <var>_$jscoverage</var> is improved, supporting for
-                                <var>JSON.stringify</var> and <var>JSON.parse</var> operations</li>
                             <li>JSCoverage has an option for code coverage for Mozilla platform applications</li>
                         </ul>
                     </text>
