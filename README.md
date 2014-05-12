@@ -19,7 +19,7 @@ Development
 Development with JSCover is simple (clean check-out and build should just work). It is an Ant build using Maven's
 dependency management. What you need:
 * Java (minimum 1.5)
-* Ant (developed with version 1.9.2/3)
+* Ant (developed with version 1.9.2/3/4)
 
 Most development has been done with IntelliJ ultimate edition, and some with Eclipse and IntelliJ community edition.
 Project files for IDEs are checked in, but any editor can be used.
