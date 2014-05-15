@@ -73,7 +73,7 @@
                     The JARs are available in the ZIP download file under the directory <var>target/dist</var>
                 </text>
                 <text>
-                    The maven release includes the <var>JSCover-all.jar</var> JAR.
+                    The maven release includes the <var>JSCover.jar</var> JAR with dependencies managed by Maven.
                 </text>
             </item>
             <item>
