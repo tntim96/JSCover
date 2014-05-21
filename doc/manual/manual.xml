@@ -1553,7 +1553,7 @@ function square(x) {
                                 <td>JSCover</td>
                                 <td>Java</td>
                                 <td>
-                                    <a href="https://github.com/tntim96/rhino">Rhino</a>
+                                    <a href="https://github.com/tntim96/rhino-jscover">Rhino</a>
                                     1.7R5pre (forked)
                                 </td>
                             </tr>
