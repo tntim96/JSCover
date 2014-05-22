@@ -451,10 +451,43 @@ public class BranchInstrumentorIntegrationTest {
     }
 
     @Test
+    public void shouldWrapIfCondition() {
+        StringBuilder script = new StringBuilder("var x = 1;\n");
+        script.append("if (x > 0)\n");
+        script.append("  x--;\n");
+        runScript(script.toString());
+        Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
+        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
+        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
+    }
+
+    @Test
+    public void shouldWrapIfConditionVariable() {
+        StringBuilder script = new StringBuilder("var x = true;\n");
+        script.append("if (x)\n");
+        script.append("  x = false;\n");
+        runScript(script.toString());
+        Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
+        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
+        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
+    }
+
+    @Test
     public void shouldWrapWhileCondition() {
         StringBuilder script = new StringBuilder("var x = 1;\n");
         script.append("while (x > 0)\n");
         script.append("  x--;\n");
+        runScript(script.toString());
+        Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
+        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
+        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(1d));
+    }
+
+    @Test
+    public void shouldWrapWhileConditionVariable() {
+        StringBuilder script = new StringBuilder("var x = true;\n");
+        script.append("while (x)\n");
+        script.append("  x = false;\n");
         runScript(script.toString());
         Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
         assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
@@ -494,6 +527,18 @@ public class BranchInstrumentorIntegrationTest {
     }
 
     @Test
+    public void shouldWrapDoConditionVariable() {
+        StringBuilder script = new StringBuilder("var x = true;\n");
+        script.append("do\n");
+        script.append("  x = false;\n");
+        script.append("while (x)\n");
+        runScript(script.toString());
+        Scriptable coverageData = getCoverageData(scope, "test.js", 4, 1);
+        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(0d));
+        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(1d));
+    }
+
+    @Test
     public void shouldWrapSwitchCondition() {
         StringBuilder script = new StringBuilder("  switch (null || 'd') {\n");
         script.append("    case 'd' : case 'D' :\n");
@@ -516,9 +561,50 @@ public class BranchInstrumentorIntegrationTest {
     }
 
     @Test
+    public void shouldWrapForConditionVariable() {
+        StringBuilder script = new StringBuilder("var x = true;\n");
+        script.append("for (var i = 0; x; i++)\n");
+        script.append("  x = false;\n");
+        runScript(script.toString());
+        Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
+        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
+        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(1d));
+    }
+
+    @Test
     public void shouldWrapTernaryCondition() {
         StringBuilder script = new StringBuilder("var x = 10;\n");
         script.append("var y = x > 0 ? 1 : 0;\n");
+        runScript(script.toString());
+        Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
+        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
+        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
+    }
+
+    @Test
+    public void shouldWrapTernaryConditionWithParentheses() {
+        StringBuilder script = new StringBuilder("var x = 10;\n");
+        script.append("var y = (x > 0) ? 1 : 0;\n");
+        runScript(script.toString());
+        Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
+        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
+        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
+    }
+
+    @Test
+    public void shouldWrapTernaryConditionVariable() {
+        StringBuilder script = new StringBuilder("var y = true;\n");
+        script.append("var x = y ? 1 : 2;\n");
+        runScript(script.toString());
+        Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
+        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
+        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
+    }
+
+    @Test
+    public void shouldWrapTernaryConditionParentheses() {
+        StringBuilder script = new StringBuilder("var y = true;\n");
+        script.append("var x = (y) ? 1 : 2;\n");
         runScript(script.toString());
         Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
         assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
@@ -575,22 +661,6 @@ public class BranchInstrumentorIntegrationTest {
         Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
         assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
         assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
-    }
-
-    @Test
-    public void shouldNotDoubleWrapSingleCondition() {
-        StringBuilder script = new StringBuilder("function test(x) {\n");
-        script.append("  if ((x < 0))\n");
-        script.append("    ;\n");
-        script.append("};\n");
-        runScript(script.toString());
-        Scriptable lineData = getLineData(scope, "test.js", 2);
-
-        assertThat((Double) lineData.get("length", lineData), equalTo(2d));
-
-        //NB currently first element in line data is always null
-        assertThat(lineData.get(1, lineData) instanceof Scriptable, equalTo(true));
-        assertThat(lineData.get(0, lineData) instanceof Scriptable, equalTo(false));
     }
 
     @Test

@@ -1,3 +1,7 @@
+1.0.9 / 2014-05-??
+==================
+  * Fix some single variable branch conditions (https://github.com/tntim96/JSCover/issues/132)
+
 1.0.8 / 2014-05-02
 ==================
   * Fix Content-Length return wrong length (https://github.com/tntim96/JSCover/issues/129)

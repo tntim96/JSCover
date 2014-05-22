@@ -344,9 +344,8 @@ Public License instead of this License.
 package jscover.instrument;
 
 import org.mozilla.javascript.Token;
-import org.mozilla.javascript.ast.AstNode;
-import org.mozilla.javascript.ast.IfStatement;
-import org.mozilla.javascript.ast.ParenthesizedExpression;
+import org.mozilla.javascript.ast.*;
+
 
 class BranchHelper {
     private static BranchHelper branchHelper = new BranchHelper();
@@ -370,17 +369,20 @@ class BranchHelper {
                 return true;
         }
         if (node.getParent() instanceof IfStatement) {
-            return wrapNonInfixIfCondition((IfStatement)node.getParent(), node);
+            return ((IfStatement)node.getParent()).getCondition() == node;
+        }
+        if (node.getParent() instanceof ConditionalExpression) {
+            return ((ConditionalExpression)node.getParent()).getTestExpression() == node;
+        }
+        if (node.getParent() instanceof WhileLoop) {
+            return ((WhileLoop)node.getParent()).getCondition() == node;
+        }
+        if (node.getParent() instanceof DoLoop) {
+            return ((DoLoop)node.getParent()).getCondition() == node;
+        }
+        if (node.getParent() instanceof ForLoop) {
+            return ((ForLoop)node.getParent()).getCondition() == node;
         }
         return false;
-    }
-
-    private boolean wrapNonInfixIfCondition(IfStatement parent, AstNode node) {
-        if (parent.getCondition() != node)
-            return false;
-        else if (node instanceof ParenthesizedExpression)
-            return false;
-        else
-            return true;
     }
 }
