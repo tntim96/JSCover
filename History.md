@@ -1,4 +1,4 @@
-1.0.9 / 2014-05-??
+1.0.9 / 2014-05-23
 ==================
   * Fix some single variable branch conditions (https://github.com/tntim96/JSCover/issues/132)
 
