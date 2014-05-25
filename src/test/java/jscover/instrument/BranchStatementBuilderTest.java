@@ -343,8 +343,8 @@ Public License instead of this License.
 package jscover.instrument;
 
 import org.junit.Test;
-import org.mozilla.javascript.ast.ExpressionStatement;
-import org.mozilla.javascript.ast.FunctionNode;
+import jscover.mozilla.javascript.ast.ExpressionStatement;
+import jscover.mozilla.javascript.ast.FunctionNode;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;

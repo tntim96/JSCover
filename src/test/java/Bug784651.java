@@ -1,7 +1,7 @@
-import org.mozilla.javascript.CompilerEnvirons;
-import org.mozilla.javascript.Parser;
-import org.mozilla.javascript.Token;
-import org.mozilla.javascript.ast.*;
+import jscover.mozilla.javascript.CompilerEnvirons;
+import jscover.mozilla.javascript.Parser;
+import jscover.mozilla.javascript.Token;
+import jscover.mozilla.javascript.ast.*;
 
 import java.io.IOException;
 import java.io.StringReader;

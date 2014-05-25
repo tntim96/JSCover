@@ -344,8 +344,8 @@ package jscover.instrument;
 
 import jscover.ConfigurationCommon;
 import jscover.util.IoUtils;
-import org.mozilla.javascript.Parser;
-import org.mozilla.javascript.ast.AstRoot;
+import jscover.mozilla.javascript.Parser;
+import jscover.mozilla.javascript.ast.AstRoot;
 
 import java.util.SortedSet;
 

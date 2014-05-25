@@ -341,11 +341,11 @@ Public License instead of this License. */
 
 package jscover.report;
 
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.NativeArray;
-import org.mozilla.javascript.NativeObject;
-import org.mozilla.javascript.ScriptRuntime;
-import org.mozilla.javascript.json.JsonParser;
+import jscover.mozilla.javascript.Context;
+import jscover.mozilla.javascript.NativeArray;
+import jscover.mozilla.javascript.NativeObject;
+import jscover.mozilla.javascript.ScriptRuntime;
+import jscover.mozilla.javascript.json.JsonParser;
 
 import java.util.*;
 

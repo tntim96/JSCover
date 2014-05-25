@@ -342,8 +342,8 @@ Public License instead of this License.
 
 package jscover.instrument;
 
-import org.mozilla.javascript.ast.AstNode;
-import org.mozilla.javascript.ast.FunctionCall;
+import jscover.mozilla.javascript.ast.AstNode;
+import jscover.mozilla.javascript.ast.FunctionCall;
 
 public abstract class PostProcess {
     private AstNode parent;

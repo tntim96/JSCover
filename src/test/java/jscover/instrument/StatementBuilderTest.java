@@ -342,7 +342,7 @@ Public License instead of this License.
 package jscover.instrument;
 
 import org.junit.Test;
-import org.mozilla.javascript.ast.ExpressionStatement;
+import jscover.mozilla.javascript.ast.ExpressionStatement;
 
 import java.util.SortedSet;
 import java.util.TreeSet;

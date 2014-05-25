@@ -348,7 +348,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.mozilla.javascript.ast.AstNode;
+import jscover.mozilla.javascript.ast.AstNode;
 
 import java.io.IOException;
 import java.util.logging.Logger;

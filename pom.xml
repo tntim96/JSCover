@@ -53,7 +53,7 @@ http://github.com/tntim96/rhino/
         <dependency>
             <groupId>com.github.tntim96</groupId>
             <artifactId>rhino</artifactId>
-            <version>1.7R5pre01</version>
+            <version>1.7R5pre02-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.sourceforge.htmlunit</groupId>
