@@ -415,11 +415,9 @@ public class ConfigurationForFS extends ConfigurationCommon {
         if (arg.startsWith(Main.FILESYSTEM_PREFIX)) {
             //Ignore this
         } else if (arg.startsWith(EXLCUDE_PREFIX)) {
-            String uri = arg.substring(EXLCUDE_PREFIX.length());
-            addExclude(uri);
+            addExclude(arg);
         } else if (arg.startsWith(EXLCUDE_REG_PREFIX)) {
-            String patternString = arg.substring(EXLCUDE_REG_PREFIX.length());
-            addExcludeReg(patternString);
+            addExcludeReg(arg);
         } else  if (arg.startsWith("-")) {
             setInvalid(format("JSCover: Unknown option '%s'", arg));
         } else if (srcDir == null) {
@@ -431,13 +429,15 @@ public class ConfigurationForFS extends ConfigurationCommon {
         }
     }
 
-    public void addExclude(String uri) {
+    public void addExclude(String arg) {
+        String uri = arg.substring(EXLCUDE_PREFIX.length());
         if (uri.startsWith("/"))
             uri = uri.substring(1);
         excludes.add(uri);
     }
 
-    public void addExcludeReg(String patternString) {
+    public void addExcludeReg(String arg) {
+        String patternString = arg.substring(EXLCUDE_REG_PREFIX.length());
         try {
             excludeRegs.add(Pattern.compile(patternString));
         } catch(PatternSyntaxException e) {
