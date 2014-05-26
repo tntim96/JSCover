@@ -1,3 +1,7 @@
+1.0.10 / 2014-??-??
+==================
+  * Re-package forked Rhino for cleaner packaging (https://github.com/tntim96/JSCover/issues/130)
+
 1.0.9 / 2014-05-23
 ==================
   * Fix some single variable branch conditions (https://github.com/tntim96/JSCover/issues/132)
