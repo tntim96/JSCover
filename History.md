@@ -1,6 +1,7 @@
 1.0.10 / 2014-??-??
 ==================
   * Re-package forked Rhino for cleaner packaging (https://github.com/tntim96/JSCover/issues/130)
+  * Add shutdown hook
   * Internal: Minor modifications to assist with Maven plugin
 
 1.0.9 / 2014-05-23

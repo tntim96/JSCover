@@ -352,6 +352,7 @@ import jscover.util.IoUtils;
 import jscover.util.LoggerUtils;
 
 import java.io.IOException;
+import java.net.SocketException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -419,7 +420,11 @@ public class Main {
         new Main().runMain(args);
     }
 
-    void runMain(String[] args) throws IOException {
+    public void stop() {
+        webDaemon.stop();
+    }
+
+    public void runMain(String[] args) throws IOException {
         logger.log(Level.INFO, "Args: {0}", getArgsLogger(args));
         parse(args);
         initialize();
@@ -498,6 +503,9 @@ public class Main {
         } else {
             try {
                 webDaemon.start(configuration);
+            } catch (SocketException e) {
+                if (webDaemon.running)
+                    throw new RuntimeException(e);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

@@ -347,21 +347,35 @@ import jscover.util.LoggerUtils;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.logging.Logger;
 
 import static java.util.logging.Level.INFO;
+import static java.util.logging.Level.WARNING;
 
 public class WebDaemon {
     private static final Logger logger = Logger.getLogger(WebDaemon.class.getName());
     private LoggerUtils loggerUtils = LoggerUtils.getInstance();
+    private ServerSocket serverSocket;
+    public boolean running = true;
 
     public void start(ConfigurationForServer configuration) throws IOException, InterruptedException {
         loggerUtils.configureLogger(configuration.getLogLevel(), configuration.getReportDir());
         logger.log(INFO, "Starting JSCover {0} HTTP Server, port {1,number,#}", new Object[]{configuration.getVersion(), configuration.getPort()});
-        ServerSocket Server = new ServerSocket(configuration.getPort());
-        while (true) {
-            Socket socket = Server.accept();
+        serverSocket = new ServerSocket(configuration.getPort());
+        while (running) {
+            Socket socket = serverSocket.accept();
             (new InstrumentingRequestHandler(socket, configuration)).start();
+        }
+    }
+
+    public void stop() {
+        running = false;
+        logger.log(WARNING, "Stopping JSCover");
+        try {
+            serverSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
