@@ -788,13 +788,13 @@
     </library>
     <library name="Maven: net.sourceforge.htmlunit:htmlunit:2.15-SNAPSHOT">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit/2.15-SNAPSHOT/htmlunit-2.15-20140525.120657-17.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit/2.15-SNAPSHOT/htmlunit-2.15-20140528.052749-18.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit/2.15-SNAPSHOT/htmlunit-2.15-20140525.120657-17-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit/2.15-SNAPSHOT/htmlunit-2.15-20140528.052749-18-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit/2.15-SNAPSHOT/htmlunit-2.15-20140525.120657-17-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit/2.15-SNAPSHOT/htmlunit-2.15-20140528.052749-18-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: net.sourceforge.nekohtml:nekohtml:1.9.21-SNAPSHOT">
