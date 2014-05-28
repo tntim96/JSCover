@@ -342,14 +342,18 @@ Public License instead of this License.
 
 package jscover.server;
 
+import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.ScriptResult;
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlSpan;
 import jscover.Main;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -392,9 +396,12 @@ public class HtmlUnitJSTest {
         webClient.waitForBackgroundJavaScript(2000);
 
         //Verify Jasmine test result
-        String jasmineResultXPath = "//span[contains(@class,'failingAlert')]";
         HtmlPage frame = (HtmlPage)page.getFrameByName("browserIframe").getEnclosedPage();
-        assertThat(frame.getByXPath(jasmineResultXPath).size(), equalTo(0));
+        List<HtmlSpan> passed = (List<HtmlSpan>) frame.getByXPath("//span[contains(@class,'passed')]");
+        assertThat(passed.size(), equalTo(1));
+        assertThat(frame.getByXPath("//span[contains(@class,'failed')]").size(), equalTo(0));
+        assertThat(frame.getByXPath("//span[contains(@class,'skipped')]").size(), equalTo(0));
+        assertThat(passed.get(0).asText(), equalTo("16 specs, 0 failures"));
 
         //Store Report
         ScriptResult result = frame.executeJavaScript("jscoverage_report();");
@@ -404,5 +411,4 @@ public class HtmlUnitJSTest {
         webClient.waitForBackgroundJavaScript(2000);
         assertEquals("100%", page.getElementById("summaryTotal").getTextContent());
     }
-
 }

@@ -1,4 +1,4 @@
-$(document).ready(function() {
+describe('JSCover', function() {
     describe('Common Utils', function() {
         it("should convert JavaScript Source To Html", function() {
             expect(jscoverage_html_escape("x > y")).toEqual("x &#62; y");
