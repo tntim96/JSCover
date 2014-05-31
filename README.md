@@ -11,7 +11,7 @@ maintain coverage data without the use of iFrames or JavaScript opened windows.
 It's distinguishing factor from other JavaScript coverage tools is that it easily runs in any browser
 (supporting JavaScript) allowing coverage measurement of tests that include DOM interaction.
 It can be run with most tools (e.g.
-[Jasmine](http://pivotal.github.com/jasmine/),
+[Jasmine](http://jasmine.github.io/),
 [QUnit](http://qunitjs.com/), etc...).
 
 Development
