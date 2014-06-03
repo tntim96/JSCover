@@ -402,9 +402,14 @@ public class Main {
             Manifest mf = new Manifest(getClass().getResourceAsStream("/META-INF/" + manifestName));
             Attributes mainAttributes = mf.getMainAttributes();
             String name = mainAttributes.get(Attributes.Name.IMPLEMENTATION_TITLE).toString();
-            String classPathJARs = mainAttributes.get(Attributes.Name.CLASS_PATH).toString();
-            String message = "%nEnsure these JARs are in the same directory as %s.jar:%n%s";
-            throw new IllegalStateException(format(message, name , classPathJARs), e);
+            if (mainAttributes.containsKey(Attributes.Name.CLASS_PATH)) {
+                String classPathJARs = mainAttributes.get(Attributes.Name.CLASS_PATH).toString();
+                String message = "%nEnsure these JARs are in the same directory as %s.jar:%n%s";
+                throw new IllegalStateException(format(message, name , classPathJARs), e);
+            } else {
+                String message = "Could not find the CLASS_PATH attribute in the manifest '%s'";
+                throw new IllegalStateException(format(message, manifestName), e);
+            }
         }
     }
 
