@@ -344,8 +344,8 @@ package jscover.instrument;
 
 import jscover.util.IoUtils;
 import org.junit.Test;
-import jscover.mozilla.javascript.*;
-import jscover.mozilla.javascript.ast.AstRoot;
+import org.mozilla.javascript.*;
+import org.mozilla.javascript.ast.AstRoot;
 
 import java.util.ArrayList;
 

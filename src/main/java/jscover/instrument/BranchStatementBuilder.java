@@ -342,7 +342,7 @@ Public License instead of this License.
 
 package jscover.instrument;
 
-import jscover.mozilla.javascript.ast.*;
+import org.mozilla.javascript.ast.*;
 
 import java.util.ArrayList;
 import java.util.List;

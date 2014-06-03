@@ -380,7 +380,7 @@ public class Main {
 
     private String manifestName = "MANIFEST.MF";
     private List<String> dependantClasses = new ArrayList<String>() {{
-        add("jscover.mozilla.javascript.ast.AstNode");
+        add("org.mozilla.javascript.ast.AstNode");
     }};
     private MainHelper mainHelper = new MainHelper();
     private WebDaemon webDaemon = new WebDaemon();

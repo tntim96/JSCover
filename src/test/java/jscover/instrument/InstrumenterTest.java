@@ -349,10 +349,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import jscover.mozilla.javascript.CompilerEnvirons;
-import jscover.mozilla.javascript.Context;
-import jscover.mozilla.javascript.Token;
-import jscover.mozilla.javascript.ast.*;
+import org.mozilla.javascript.CompilerEnvirons;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Token;
+import org.mozilla.javascript.ast.*;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;

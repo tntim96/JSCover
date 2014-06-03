@@ -1,9 +1,9 @@
 import jscover.util.IoUtils;
-import jscover.mozilla.javascript.CompilerEnvirons;
-import jscover.mozilla.javascript.Parser;
-import jscover.mozilla.javascript.ast.AstNode;
-import jscover.mozilla.javascript.ast.AstRoot;
-import jscover.mozilla.javascript.ast.NodeVisitor;
+import org.mozilla.javascript.CompilerEnvirons;
+import org.mozilla.javascript.Parser;
+import org.mozilla.javascript.ast.AstNode;
+import org.mozilla.javascript.ast.AstRoot;
+import org.mozilla.javascript.ast.NodeVisitor;
 
 import java.io.StringReader;
 

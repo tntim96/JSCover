@@ -350,8 +350,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import jscover.mozilla.javascript.CompilerEnvirons;
-import jscover.mozilla.javascript.Context;
+import org.mozilla.javascript.CompilerEnvirons;
+import org.mozilla.javascript.Context;
 
 import java.io.File;
 import java.io.FilenameFilter;

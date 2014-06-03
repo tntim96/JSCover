@@ -343,8 +343,8 @@ Public License instead of this License.
 
 package jscover.instrument;
 
-import jscover.mozilla.javascript.Token;
-import jscover.mozilla.javascript.ast.*;
+import org.mozilla.javascript.Token;
+import org.mozilla.javascript.ast.*;
 
 
 class BranchHelper {

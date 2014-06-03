@@ -1,6 +1,5 @@
-1.0.10 / 2014-??-??
+1.0.10 / 2014-06-03
 ==================
-  * Re-package forked Rhino for cleaner packaging (https://github.com/tntim96/JSCover/issues/130)
   * Add shutdown hook
   * Upgrade to Jasmine 2, HtmlUnit 2.15 (https://github.com/HtmlUnit/htmlunit-rhino-fork/pull/2)
   * Internal: Minor modifications to assist with Maven plugin

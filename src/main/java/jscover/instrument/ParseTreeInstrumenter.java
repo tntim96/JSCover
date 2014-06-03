@@ -342,8 +342,8 @@ Public License instead of this License.
 
 package jscover.instrument;
 
-import jscover.mozilla.javascript.ast.AstNode;
-import jscover.mozilla.javascript.ast.NodeVisitor;
+import org.mozilla.javascript.ast.AstNode;
+import org.mozilla.javascript.ast.NodeVisitor;
 
 import java.util.SortedSet;
 import java.util.logging.Logger;

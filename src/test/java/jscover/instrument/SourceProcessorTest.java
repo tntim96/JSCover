@@ -350,9 +350,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import jscover.mozilla.javascript.CompilerEnvirons;
-import jscover.mozilla.javascript.Parser;
-import jscover.mozilla.javascript.ast.AstRoot;
+import org.mozilla.javascript.CompilerEnvirons;
+import org.mozilla.javascript.Parser;
+import org.mozilla.javascript.ast.AstRoot;
 
 import java.io.IOException;
 import java.util.TreeSet;
