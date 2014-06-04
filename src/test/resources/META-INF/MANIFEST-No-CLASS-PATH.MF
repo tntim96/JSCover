@@ -4,5 +4,4 @@ Created-By: 1.6.0_11-b03 (Sun Microsystems Inc.)
 Implementation-Title: JSCover
 Implementation-Version: x.y.z
 Main-Class: jscover.Main
-Class-Path: js.jar
 

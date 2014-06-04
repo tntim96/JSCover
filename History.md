@@ -1,3 +1,7 @@
+1.0.11 / 2014-??-??
+==================
+  * Improve error when 'Class-Path' not in manifest (https://github.com/tntim96/JSCover/pull/135)
+
 1.0.10 / 2014-06-03
 ==================
   * Add shutdown hook

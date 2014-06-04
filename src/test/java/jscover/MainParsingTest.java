@@ -348,6 +348,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -377,11 +378,28 @@ public class MainParsingTest {
         ReflectionUtils.setField(main, "dependantClasses", dependantClasses);
         try {
             main.initialize();
-            fail("Should have thrwn exception");
+            fail("Should have thrown exception");
         } catch(IllegalStateException e) {
             String message = e.getMessage();
             assertThat(message, containsString("Ensure these JARs are in the same directory as JSCover.jar:"));
             assertThat(message, containsString("js.jar"));
+        }
+    }
+
+    @Test
+    public void shouldDetectMissingClassPath() throws IOException {
+        main.parse(new String[]{});
+        ArrayList<String> dependantClasses = new ArrayList<String>() {{
+            add("this.shouldn't.Exist");
+        }};
+        ReflectionUtils.setField(main, "manifestName", "MANIFEST-NO-CLASS-PATH.MF");
+        ReflectionUtils.setField(main, "dependantClasses", dependantClasses);
+        try {
+            main.initialize();
+            fail("Should have thrown exception");
+        } catch(IllegalStateException e) {
+            String message = e.getMessage();
+            assertThat(message, equalTo("Could not find the 'Class-Path' attribute in the manifest 'MANIFEST-NO-CLASS-PATH.MF'"));
         }
     }
 

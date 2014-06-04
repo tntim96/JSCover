@@ -407,8 +407,8 @@ public class Main {
                 String message = "%nEnsure these JARs are in the same directory as %s.jar:%n%s";
                 throw new IllegalStateException(format(message, name , classPathJARs), e);
             } else {
-                String message = "Could not find the CLASS_PATH attribute in the manifest '%s'";
-                throw new IllegalStateException(format(message, manifestName), e);
+                String message = "Could not find the '%s' attribute in the manifest '%s'";
+                throw new IllegalStateException(format(message, Attributes.Name.CLASS_PATH, manifestName), e);
             }
         }
     }
