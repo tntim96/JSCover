@@ -38,6 +38,9 @@
         <module name="JSCover" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="JSCover" target="1.5" />
+    </bytecodeTargetLevel>
   </component>
   <component name="CopyrightManager" default="" />
   <component name="DependencyValidationManager">
