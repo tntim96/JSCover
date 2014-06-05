@@ -355,6 +355,8 @@ class BranchHelper {
     }
 
     boolean isBoolean(AstNode node) {
+        if (node instanceof EmptyExpression)
+            return false;
         switch (node.getType()) {
             case Token.EQ:
             case Token.NE:

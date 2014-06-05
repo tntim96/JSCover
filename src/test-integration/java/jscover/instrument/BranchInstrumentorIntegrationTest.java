@@ -561,6 +561,14 @@ public class BranchInstrumentorIntegrationTest {
     }
 
     @Test
+    public void shouldNotWrapInfiniteForCondition() {
+        StringBuilder script = new StringBuilder("for (;;)\n");
+        script.append("  break;\n");
+        runScript(script.toString());
+        assertThat(getBranchData(scope, "test.js").size(), equalTo(0));
+    }
+
+    @Test
     public void shouldWrapForConditionVariable() {
         StringBuilder script = new StringBuilder("var x = true;\n");
         script.append("for (var i = 0; x; i++)\n");
@@ -854,9 +862,12 @@ public class BranchInstrumentorIntegrationTest {
     }
 
     private Scriptable getLineData(Scriptable scope, String uri, int lineNo) {
+        return (Scriptable) getBranchData(scope, uri).get(lineNo, getBranchData(scope, uri));
+    }
+
+    private NativeObject getBranchData(Scriptable scope, String uri) {
         Scriptable jscoverage = (Scriptable) scope.get("_$jscoverage", scope);
         Scriptable scriptData = (Scriptable) jscoverage.get(uri, jscoverage);
-        Scriptable branchData = (Scriptable) scriptData.get("branchData", scriptData);
-        return (Scriptable) branchData.get(lineNo, branchData);
+        return (NativeObject) scriptData.get("branchData", scriptData);
     }
 }

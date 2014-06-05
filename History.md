@@ -1,6 +1,7 @@
 1.0.11 / 2014-??-??
 ==================
   * Improve error when 'Class-Path' not in manifest (https://github.com/tntim96/JSCover/pull/135)
+  * Don't try to cover empty condition in loop (https://github.com/tntim96/JSCover/issues/137)
 
 1.0.10 / 2014-06-03
 ==================
