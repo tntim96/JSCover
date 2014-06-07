@@ -353,6 +353,7 @@ import jscover.Main;
 import jscover.util.IoUtils;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
@@ -366,38 +367,35 @@ import static org.junit.Assert.assertEquals;
 public class HtmlUnitServerTest {
     private static Thread server;
     private static Main main = new Main();
-
-    protected WebClient webClient = new WebClient();
-    protected IoUtils ioUtils = IoUtils.getInstance();
-    private String[] args = new String[]{
+    private static String reportDir = "target/ws-report";
+    private static String[] args = new String[]{
             "-ws",
             "--document-root=src/test-acceptance/resources",
             "--port=9001",
             "--no-branch",
             "--no-function",
             "--no-instrument=example/lib",
-            "--report-dir=" + getReportDir()
+            "--report-dir=" + reportDir
     };
 
+    protected WebClient webClient = new WebClient();
+    protected IoUtils ioUtils = IoUtils.getInstance();
     protected String getReportDir() {
-        return "target/ws-report";
+        return reportDir;
     }
 
-    @Before
-    public void setUp() throws IOException {
-        if (server == null) {
-            server = new Thread(new Runnable() {
-                public void run() {
-                    try {
-                        main.runMain(getArgs());
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+    @BeforeClass
+    public static void setUpOnce() throws IOException {
+        server = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    main.runMain(args);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
-            });
-            server.start();
-        }
-        webClient.getOptions().setTimeout(1000);
+            }
+        });
+        server.start();
     }
 
     @AfterClass
@@ -405,8 +403,9 @@ public class HtmlUnitServerTest {
         main.stop();
     }
 
-    protected String[] getArgs() {
-        return args;
+    @Before
+    public void setUp() {
+        webClient.getOptions().setTimeout(1000);
     }
 
     protected String getTestUrl() {

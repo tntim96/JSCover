@@ -347,6 +347,7 @@ import jscover.Main;
 import jscover.util.IoUtils;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 
 import java.io.File;
 import java.io.IOException;
@@ -359,57 +360,50 @@ public class HtmlServerUnloadedJSProxyTest extends HtmlServerUnloadedJSTest {
     private static Main main = new Main();
     private static ServerSocket serverSocket;
     private static int proxyPort = 3129;
+    private static String reportDir = "target/proxy-unloaded-report";
 
-    private String[] args = new String[]{
+    private static String[] args = new String[]{
             "-ws",
             "--document-root=src/test-integration/resources/jsSearch",
             "--port=" + proxyPort,
             "--proxy",
             "--no-instrument=noInstrument",
             "--include-unloaded-js",
-            "--report-dir=" + getReportDir()
+            "--report-dir=" + reportDir
     };
 
     @Override
     protected String getReportDir() {
-        return "target/proxy-unloaded-report";
+        return reportDir;
     }
 
-    @Before
-    public void setUp() throws IOException {
-        if (proxyServer == null) {
-            proxyServer = new Thread(new Runnable() {
-                public void run() {
-                    try {
-                        main.runMain(args);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+    @BeforeClass
+    public static void setUpOnce() throws IOException {
+        proxyServer = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    main.runMain(args);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
-            });
-            proxyServer.start();
-        }
-        if (webServer == null) {
-            webServer = new Thread(new Runnable() {
-                public void run() {
-                    try {
-                        serverSocket = new ServerSocket(9001);
-                        File wwwRoot = new File("src/test-integration/resources/jsSearch");
-                        while (true) {
-                            Socket socket = serverSocket.accept();
-                            (new HttpServer(socket, wwwRoot, "testVersion")).start();
-                        }
-                    } catch (IOException e) {
-                        //throw new RuntimeException(e);
+            }
+        });
+        proxyServer.start();
+        webServer = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    serverSocket = new ServerSocket(9001);
+                    File wwwRoot = new File("src/test-integration/resources/jsSearch");
+                    while (true) {
+                        Socket socket = serverSocket.accept();
+                        (new HttpServer(socket, wwwRoot, "testVersion")).start();
                     }
+                } catch (IOException e) {
+                    //throw new RuntimeException(e);
                 }
-            });
-            webServer.start();
-        }
-        ProxyConfig proxyConfig = new ProxyConfig("localhost", proxyPort);
-        proxyConfig.addHostsToProxyBypass("127.0.0.1");
-        webClient.getOptions().setProxyConfig(proxyConfig);
-        webClient.getOptions().setTimeout(1000);
+            }
+        });
+        webServer.start();
     }
 
     @AfterClass
@@ -418,4 +412,11 @@ public class HtmlServerUnloadedJSProxyTest extends HtmlServerUnloadedJSTest {
         IoUtils.getInstance().closeQuietly(serverSocket);
     }
 
+    @Before
+    public void setUp() {
+        ProxyConfig proxyConfig = new ProxyConfig("localhost", proxyPort);
+        proxyConfig.addHostsToProxyBypass("127.0.0.1");
+        webClient.getOptions().setProxyConfig(proxyConfig);
+        webClient.getOptions().setTimeout(1000);
+    }
 }

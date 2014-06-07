@@ -358,6 +358,7 @@ import jscover.util.IoUtils;
 
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
@@ -373,59 +374,48 @@ public class HtmlServerUnloadedJSProxyOnlyInstrumentRegTest {
     private static Main main = new Main();
     private static ServerSocket serverSocket;
     private static int proxyPort = 3129;
+    private static String reportDir = "target/proxy-only-instrument-reg-report";
 
     protected WebClient webClient = new WebClient();
     protected IoUtils ioUtils = IoUtils.getInstance();
 
-    private String[] args = new String[]{
+    private static String[] args = new String[]{
             "-ws",
             "--document-root=src/test-integration/resources/jsSearch",
             "--port=" + proxyPort,
             "--proxy",
             "--only-instrument-reg=/level1/.*",
             "--include-unloaded-js",
-            "--report-dir=" + getReportDir()
+            "--report-dir=" + reportDir
     };
 
-    protected String getReportDir() {
-        return "target/proxy-only-instrument-reg-report";
-    }
-
-    @Before
-    public void setUp() throws IOException {
-        if (proxyServer == null) {
-            proxyServer = new Thread(new Runnable() {
-                public void run() {
-                    try {
-                        main.runMain(args);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+    @BeforeClass
+    public static void setUpOnce() throws IOException {
+        proxyServer = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    main.runMain(args);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
-            });
-            proxyServer.start();
-        }
-        if (webServer == null) {
-            webServer = new Thread(new Runnable() {
-                public void run() {
-                    try {
-                        serverSocket = new ServerSocket(9001);
-                        File wwwRoot = new File("src/test-integration/resources/jsSearch");
-                        while (true) {
-                            Socket socket = serverSocket.accept();
-                            (new HttpServer(socket, wwwRoot, "testVersion")).start();
-                        }
-                    } catch (IOException e) {
-                        //throw new RuntimeException(e);
+            }
+        });
+        proxyServer.start();
+        webServer = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    serverSocket = new ServerSocket(9001);
+                    File wwwRoot = new File("src/test-integration/resources/jsSearch");
+                    while (true) {
+                        Socket socket = serverSocket.accept();
+                        (new HttpServer(socket, wwwRoot, "testVersion")).start();
                     }
+                } catch (IOException e) {
+                    //throw new RuntimeException(e);
                 }
-            });
-            webServer.start();
-        }
-        ProxyConfig proxyConfig = new ProxyConfig("localhost", proxyPort);
-        proxyConfig.addHostsToProxyBypass("127.0.0.1");
-        webClient.getOptions().setProxyConfig(proxyConfig);
-        webClient.getOptions().setTimeout(1000);
+            }
+        });
+        webServer.start();
     }
 
     @AfterClass
@@ -434,9 +424,17 @@ public class HtmlServerUnloadedJSProxyOnlyInstrumentRegTest {
         IoUtils.getInstance().closeQuietly(serverSocket);
     }
 
+    @Before
+    public void setUp() throws IOException {
+        ProxyConfig proxyConfig = new ProxyConfig("localhost", proxyPort);
+        proxyConfig.addHostsToProxyBypass("127.0.0.1");
+        webClient.getOptions().setProxyConfig(proxyConfig);
+        webClient.getOptions().setTimeout(1000);
+    }
+
     @Test
     public void shouldIncludeUnloadJSInSavedReport() throws Exception {
-        File jsonFile = new File(getReportDir() + "/jscoverage.json");
+        File jsonFile = new File(reportDir + "/jscoverage.json");
         if (jsonFile.exists())
             jsonFile.delete();
 
@@ -455,14 +453,14 @@ public class HtmlServerUnloadedJSProxyOnlyInstrumentRegTest {
         webClient.waitForBackgroundJavaScript(2000);
         String result = page.getElementById("storeDiv").getTextContent();
 
-        assertThat(result, containsString("Coverage data stored at " + new File(getReportDir()).getPath()));
+        assertThat(result, containsString("Coverage data stored at " + new File(reportDir).getPath()));
 
         String json = ioUtils.toString(jsonFile);
         assertThat(json, not(containsString("/root.js")));
         assertThat(json, containsString("/level1/level1.js"));
         assertThat(json, containsString("/level1/level2/level2.js"));
 
-        String url = "file:///" + new File(getReportDir() + "/jscoverage.html").getAbsolutePath();
+        String url = "file:///" + new File(reportDir + "/jscoverage.html").getAbsolutePath();
         page = webClient.getPage(url);
         webClient.waitForBackgroundJavaScript(1000);
 

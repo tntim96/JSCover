@@ -351,7 +351,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import jscover.Main;
 import jscover.util.IoUtils;
 import org.junit.AfterClass;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
@@ -366,10 +366,8 @@ import static org.junit.Assert.assertEquals;
 public class HtmlUnitMergeTest {
     private static Thread server;
     private static Main main = new Main();
-
-    private IoUtils ioUtils = IoUtils.getInstance();
-    private String reportDir = "target/ws-merge-report";
-    private String[] args = new String[]{
+    private static String reportDir = "target/ws-merge-report";
+    private static String[] args = new String[]{
             "-ws",
             "--document-root=src/test-integration/resources/jsSearch",
             "--port=9001",
@@ -378,20 +376,20 @@ public class HtmlUnitMergeTest {
             "--report-dir=" + reportDir
     };
 
-    @Before
-    public void setUp() throws IOException {
-        if (server == null) {
-            server = new Thread(new Runnable() {
-                public void run() {
-                    try {
-                        main.runMain(args);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+    private IoUtils ioUtils = IoUtils.getInstance();
+
+    @BeforeClass
+    public static void setUpOnce() throws IOException {
+        server = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    main.runMain(args);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
-            });
-            server.start();
-        }
+            }
+        });
+        server.start();
     }
 
     @AfterClass

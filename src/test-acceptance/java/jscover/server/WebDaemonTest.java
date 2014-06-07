@@ -23,18 +23,16 @@ public class WebDaemonTest {
 
     @Before
     public void setUp() throws IOException {
-        if (server == null) {
-            server = new Thread(new Runnable() {
-                public void run() {
-                    try {
-                        main.runMain(args);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+        server = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    main.runMain(args);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
-            });
-            server.start();
-        }
+            }
+        });
+        server.start();
     }
 
     @Test
@@ -45,5 +43,4 @@ public class WebDaemonTest {
         server.join(1000);
         assertThat(server.getState(), equalTo(Thread.State.TERMINATED));
     }
-
 }

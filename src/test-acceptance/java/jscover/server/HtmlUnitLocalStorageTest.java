@@ -349,6 +349,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import jscover.Main;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
@@ -359,38 +360,34 @@ import static org.junit.Assert.assertEquals;
 public class HtmlUnitLocalStorageTest {
     private static Thread server;
     private static Main main = new Main();
+    private static String reportDir = "target/localStorage";
 
     protected WebClient webClient = new WebClient(BrowserVersion.FIREFOX_24);
-    private String[] args = new String[]{
+    private static String[] args = new String[]{
             "-ws",
             "--document-root=src/test-acceptance/resources",
             "--port=9001",
             "--no-instrument=example/lib",
             "--local-storage",
-            "--report-dir=" + getReportDir()
+            "--report-dir=" + reportDir
     };
 
     protected String getReportDir() {
-        return "target/localStorage";
+        return reportDir;
     }
 
-    @Before
-    public void setUp() throws IOException {
-        File jsonFile = new File(getReportDir() + "/jscoverage.json");
-        if (jsonFile.exists())
-            jsonFile.delete();
-        if (server == null) {
-            server = new Thread(new Runnable() {
-                public void run() {
-                    try {
-                        main.runMain(getArgs());
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+    @BeforeClass
+    public static void setUpOnce() throws IOException {
+        server = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    main.runMain(args);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
-            });
-            server.start();
-        }
+            }
+        });
+        server.start();
     }
 
     @AfterClass
@@ -398,8 +395,11 @@ public class HtmlUnitLocalStorageTest {
         main.stop();
     }
 
-    protected String[] getArgs() {
-        return args;
+    @Before
+    public void setUp() {
+        File jsonFile = new File(getReportDir() + "/jscoverage.json");
+        if (jsonFile.exists())
+            jsonFile.delete();
     }
 
     protected String getTestUrl() {

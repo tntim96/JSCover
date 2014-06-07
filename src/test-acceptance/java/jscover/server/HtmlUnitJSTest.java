@@ -348,7 +348,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSpan;
 import jscover.Main;
 import org.junit.AfterClass;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -363,7 +363,7 @@ public class HtmlUnitJSTest {
     private static Main main = new Main();
 
     protected WebClient webClient = new WebClient();
-    private String[] args = new String[]{
+    private static String[] args = new String[]{
             "-ws",
             "--port=8081",
             "--no-branch",
@@ -374,20 +374,18 @@ public class HtmlUnitJSTest {
             "--report-dir=target/reports/jscover"
     };
 
-    @Before
-    public void setUp() throws IOException {
-        if (server == null) {
-            server = new Thread(new Runnable() {
-                public void run() {
-                    try {
-                        main.runMain(args);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+    @BeforeClass
+    public static void setUpOnce() throws IOException {
+        server = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    main.runMain(args);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
-            });
-            server.start();
-        }
+            }
+        });
+        server.start();
     }
 
     @AfterClass

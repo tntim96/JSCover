@@ -349,6 +349,7 @@ import jscover.Main;
 import jscover.util.IoUtils;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
@@ -363,42 +364,45 @@ import static org.junit.Assert.assertEquals;
 public class HtmlServerUnloadedJSTest {
     private static Thread server;
     private static Main main = new Main();
+    private static String reportDir = "target/ws-unloaded-report";
 
-    protected WebClient webClient = new WebClient();
-    protected IoUtils ioUtils = IoUtils.getInstance();
-    private String[] args = new String[]{
+    private static String[] args = new String[]{
             "-ws",
             "--document-root=src/test-integration/resources/jsSearch",
             "--port=9001",
             "--no-instrument=noInstrument",
             "--include-unloaded-js",
-            "--report-dir=" + getReportDir()
+            "--report-dir=" + reportDir
     };
+    protected WebClient webClient = new WebClient();
+    protected IoUtils ioUtils = IoUtils.getInstance();
 
     protected String getReportDir() {
         return "target/ws-unloaded-report";
     }
 
-    @Before
-    public void setUp() throws IOException {
-        if (server == null) {
-            server = new Thread(new Runnable() {
-                public void run() {
-                    try {
-                        main.runMain(args);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+    @BeforeClass
+    public static void setUpOnce() throws IOException {
+        server = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    main.runMain(args);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
-            });
-            server.start();
-        }
-        webClient.getOptions().setTimeout(1000);
+            }
+        });
+        server.start();
     }
 
     @AfterClass
     public static void tearDown() throws InterruptedException {
         main.stop();
+    }
+
+    @Before
+    public void setUp() {
+        webClient.getOptions().setTimeout(1000);
     }
 
     protected String getIndex() {

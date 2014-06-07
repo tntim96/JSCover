@@ -347,6 +347,7 @@ import jscover.Main;
 import jscover.util.IoUtils;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 
 import java.io.File;
 import java.io.IOException;
@@ -359,8 +360,9 @@ public class HtmlServerUnloadedJSProxyUriToFileTest extends HtmlServerUnloadedJS
     private static Main main = new Main();
     private static ServerSocket serverSocket;
     private static int proxyPort = 3129;
+    private static String reportDir = "target/proxy-report-uri-to-file";
 
-    private String[] args = new String[]{
+    private static String[] args = new String[]{
             "-ws",
             "--document-root=src/test-integration/resources/jsSearch",
             "--port=" + proxyPort,
@@ -369,12 +371,12 @@ public class HtmlServerUnloadedJSProxyUriToFileTest extends HtmlServerUnloadedJS
             "--uri-to-file-matcher=/exclude(.*)",
             "--uri-to-file-replace=$1",
             "--include-unloaded-js",
-            "--report-dir=" + getReportDir()
+            "--report-dir=" + reportDir
     };
 
     @Override
     protected String getReportDir() {
-        return "target/proxy-report-uri-to-file";
+        return reportDir;
     }
 
     @Override
@@ -387,46 +389,46 @@ public class HtmlServerUnloadedJSProxyUriToFileTest extends HtmlServerUnloadedJS
         return "/exclude";
     }
 
-    @Before
-    public void setUp() throws IOException {
-        if (server == null) {
-            server = new Thread(new Runnable() {
-                public void run() {
-                    try {
-                        main.runMain(args);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+    @BeforeClass
+    public static void setUpOnce() throws IOException {
+        server = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    main.runMain(args);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
-            });
-            server.start();
-        }
-        if (webServer == null) {
-            webServer = new Thread(new Runnable() {
-                public void run() {
-                    try {
-                        serverSocket = new ServerSocket(9001);
-                        File wwwRoot = new File("src/test-integration/resources/jsSearch");
-                        while (true) {
-                            Socket socket = serverSocket.accept();
-                            (new WeirdHttpServer(socket, wwwRoot, "testVersion")).start();
-                        }
-                    } catch (IOException e) {
-                        //throw new RuntimeException(e);
+            }
+        });
+        server.start();
+        webServer = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    serverSocket = new ServerSocket(9001);
+                    File wwwRoot = new File("src/test-integration/resources/jsSearch");
+                    while (true) {
+                        Socket socket = serverSocket.accept();
+                        (new WeirdHttpServer(socket, wwwRoot, "testVersion")).start();
                     }
+                } catch (IOException e) {
+                    //throw new RuntimeException(e);
                 }
-            });
-            webServer.start();
-        }
-        ProxyConfig proxyConfig = new ProxyConfig("localhost", proxyPort);
-        proxyConfig.addHostsToProxyBypass("127.0.0.1");
-        webClient.getOptions().setProxyConfig(proxyConfig);
-        webClient.getOptions().setTimeout(1000);
+            }
+        });
+        webServer.start();
     }
 
     @AfterClass
     public static void tearDown() {
         main.stop();
         IoUtils.getInstance().closeQuietly(serverSocket);
+    }
+
+    @Before
+    public void setUp() {
+        ProxyConfig proxyConfig = new ProxyConfig("localhost", proxyPort);
+        proxyConfig.addHostsToProxyBypass("127.0.0.1");
+        webClient.getOptions().setProxyConfig(proxyConfig);
+        webClient.getOptions().setTimeout(1000);
     }
 }
