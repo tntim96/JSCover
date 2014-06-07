@@ -346,11 +346,14 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlTableRow;
 import jscover.Main;
+import jscover.util.IoUtils;
 import jscover.util.ReflectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
@@ -364,6 +367,7 @@ import static org.junit.Assert.assertThat;
 
 public class HtmlUnitUITest {
     private static Thread server;
+    private static Main main = new Main();
     private static HTMLCoverageData scriptA = new HTMLCoverageData("/scripts/script-a.js", "33%", "0%", "33%");
     private static HTMLCoverageData scriptB = new HTMLCoverageData("/scripts/script-b.js", "50%", "0%", "66%");
     private static HTMLCoverageData scriptC = new HTMLCoverageData("/scripts/script-c.js", "72%", "25%", "100%");
@@ -380,11 +384,11 @@ public class HtmlUnitUITest {
         data.add(scriptEmpty);
         data.add(scriptLine);
     }
+    private static File reportDir = new File("target/UI-testing");
 
     private WebClient webClient = new WebClient();
-    private File reportDir = new File("target/UI-testing");
 
-    protected String[] args = new String[]{
+    protected static String[] args = new String[]{
             "-ws",
             "--document-root=src/test-acceptance/resources/jscover/ui",
             "--port=9001",
@@ -392,26 +396,35 @@ public class HtmlUnitUITest {
             "--report-dir=" + reportDir
     };
 
+    @BeforeClass
+    public static void setUpOnce() throws IOException {
+        FileUtils.deleteDirectory(reportDir);
+        server = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    main.runMain(args);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        server.start();
+        storeResult();
+    }
+
+    @AfterClass
+    public static void tearDown() {
+        main.stop();
+    }
+
     @Before
     public void setUp() throws IOException {
-        if (server == null) {
-            FileUtils.deleteDirectory(reportDir);
-            server = new Thread(new Runnable() {
-                public void run() {
-                    try {
-                        Main.main(args);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            });
-            server.start();
-            storeResult();
-        }
         webClient.getOptions().setTimeout(1000);
     }
 
-    private void storeResult() throws IOException {
+    private static void storeResult() throws IOException {
+        WebClient webClient = new WebClient();
+        webClient.getOptions().setTimeout(1000);
         HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?index.html");
 
         page.getHtmlElementById("storeTab").click();
