@@ -356,6 +356,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import jscover.Main;
 import jscover.util.IoUtils;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -368,7 +369,9 @@ import java.util.ArrayList;
 //Provided by https://github.com/devangnegandhi 6 Sept 2013
 public class HtmlServerUnloadedJSProxyOnlyInstrumentRegTest {
     private static Thread webServer;
-    private static Thread server;
+    private static Thread proxyServer;
+    private static Main main = new Main();
+    private static ServerSocket serverSocket;
     private static int proxyPort = 3129;
 
     protected WebClient webClient = new WebClient();
@@ -390,33 +393,30 @@ public class HtmlServerUnloadedJSProxyOnlyInstrumentRegTest {
 
     @Before
     public void setUp() throws IOException {
-        if (server == null) {
-            server = new Thread(new Runnable() {
+        if (proxyServer == null) {
+            proxyServer = new Thread(new Runnable() {
                 public void run() {
                     try {
-                        Main.main(args);
+                        main.runMain(args);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
                 }
             });
-            server.start();
+            proxyServer.start();
         }
         if (webServer == null) {
             webServer = new Thread(new Runnable() {
                 public void run() {
-                    ServerSocket server = null;
                     try {
-                        server = new ServerSocket(9001);
+                        serverSocket = new ServerSocket(9001);
                         File wwwRoot = new File("src/test-integration/resources/jsSearch");
                         while (true) {
-                            Socket socket = server.accept();
+                            Socket socket = serverSocket.accept();
                             (new HttpServer(socket, wwwRoot, "testVersion")).start();
                         }
                     } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    } finally {
-                        ioUtils.closeQuietly(server);
+                        //throw new RuntimeException(e);
                     }
                 }
             });
@@ -426,6 +426,12 @@ public class HtmlServerUnloadedJSProxyOnlyInstrumentRegTest {
         proxyConfig.addHostsToProxyBypass("127.0.0.1");
         webClient.getOptions().setProxyConfig(proxyConfig);
         webClient.getOptions().setTimeout(1000);
+    }
+
+    @AfterClass
+    public static void tearDown() {
+        main.stop();
+        IoUtils.getInstance().closeQuietly(serverSocket);
     }
 
     @Test

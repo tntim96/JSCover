@@ -344,6 +344,8 @@ package jscover.server;
 
 import com.gargoylesoftware.htmlunit.ProxyConfig;
 import jscover.Main;
+import jscover.util.IoUtils;
+import org.junit.AfterClass;
 import org.junit.Before;
 
 import java.io.File;
@@ -354,6 +356,8 @@ import java.net.Socket;
 public class HtmlServerUnloadedJSProxyUriToFileTest extends HtmlServerUnloadedJSTest {
     private static Thread webServer;
     private static Thread server;
+    private static Main main = new Main();
+    private static ServerSocket serverSocket;
     private static int proxyPort = 3129;
 
     private String[] args = new String[]{
@@ -389,7 +393,7 @@ public class HtmlServerUnloadedJSProxyUriToFileTest extends HtmlServerUnloadedJS
             server = new Thread(new Runnable() {
                 public void run() {
                     try {
-                        Main.main(args);
+                        main.runMain(args);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -400,18 +404,15 @@ public class HtmlServerUnloadedJSProxyUriToFileTest extends HtmlServerUnloadedJS
         if (webServer == null) {
             webServer = new Thread(new Runnable() {
                 public void run() {
-                    ServerSocket server = null;
                     try {
-                        server = new ServerSocket(9001);
+                        serverSocket = new ServerSocket(9001);
                         File wwwRoot = new File("src/test-integration/resources/jsSearch");
                         while (true) {
-                            Socket socket = server.accept();
+                            Socket socket = serverSocket.accept();
                             (new WeirdHttpServer(socket, wwwRoot, "testVersion")).start();
                         }
                     } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    } finally {
-                        ioUtils.closeQuietly(server);
+                        //throw new RuntimeException(e);
                     }
                 }
             });
@@ -421,10 +422,11 @@ public class HtmlServerUnloadedJSProxyUriToFileTest extends HtmlServerUnloadedJS
         proxyConfig.addHostsToProxyBypass("127.0.0.1");
         webClient.getOptions().setProxyConfig(proxyConfig);
         webClient.getOptions().setTimeout(1000);
-//        try {
-//            Thread.sleep(1000*60);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-//        }
+    }
+
+    @AfterClass
+    public static void tearDown() {
+        main.stop();
+        IoUtils.getInstance().closeQuietly(serverSocket);
     }
 }

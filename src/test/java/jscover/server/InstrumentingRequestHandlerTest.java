@@ -390,7 +390,7 @@ public class InstrumentingRequestHandlerTest {
 
     @Before
     public void setUp() throws IOException {
-        InstrumentingRequestHandler.uris = new HashMap<String, String>();
+        InstrumentingRequestHandler.uris.clear();
         webServer = new InstrumentingRequestHandler(null, configuration);
         ReflectionUtils.setField(webServer, "ioService", ioService);
         ReflectionUtils.setField(webServer, "jsonDataSaver", jsonDataSaver);

@@ -351,6 +351,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlTable;
 import jscover.Main;
 import jscover.util.IoUtils;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -364,6 +365,7 @@ import static org.junit.Assert.assertEquals;
 
 public class HtmlUnitServerTest {
     private static Thread server;
+    private static Main main = new Main();
 
     protected WebClient webClient = new WebClient();
     protected IoUtils ioUtils = IoUtils.getInstance();
@@ -387,7 +389,7 @@ public class HtmlUnitServerTest {
             server = new Thread(new Runnable() {
                 public void run() {
                     try {
-                        Main.main(getArgs());
+                        main.runMain(getArgs());
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -396,6 +398,11 @@ public class HtmlUnitServerTest {
             server.start();
         }
         webClient.getOptions().setTimeout(1000);
+    }
+
+    @AfterClass
+    public static void tearDown() throws Exception {
+        main.stop();
     }
 
     protected String[] getArgs() {

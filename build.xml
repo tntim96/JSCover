@@ -244,7 +244,7 @@
 
     <target name="run-acceptance-tests" depends="compile-acceptance-tests">
         <property name="tests" value="*Test" />
-        <junit forkmode="perTest" haltonfailure="no" haltonerror="no" failureProperty="test.failure" errorproperty="test.failure">
+        <junit haltonfailure="no" haltonerror="no" failureProperty="test.failure" errorproperty="test.failure">
             <jvmarg value="-ea"/>
             <classpath>
                 <path refid="classpath-cobertura" />

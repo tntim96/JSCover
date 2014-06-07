@@ -350,6 +350,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import jscover.Main;
 import jscover.util.IoUtils;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -364,9 +365,10 @@ import static org.junit.Assert.assertEquals;
 
 public class HtmlUnitMergeTest {
     private static Thread server;
+    private static Main main = new Main();
 
     private IoUtils ioUtils = IoUtils.getInstance();
-    private String reportDir = "target/ws-report";
+    private String reportDir = "target/ws-merge-report";
     private String[] args = new String[]{
             "-ws",
             "--document-root=src/test-integration/resources/jsSearch",
@@ -382,7 +384,7 @@ public class HtmlUnitMergeTest {
             server = new Thread(new Runnable() {
                 public void run() {
                     try {
-                        Main.main(args);
+                        main.runMain(args);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -390,6 +392,11 @@ public class HtmlUnitMergeTest {
             });
             server.start();
         }
+    }
+
+    @AfterClass
+    public static void tearDown() throws InterruptedException {
+        main.stop();
     }
 
     @Test

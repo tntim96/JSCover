@@ -348,6 +348,9 @@ import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlTable;
 import com.gargoylesoftware.htmlunit.html.HtmlTableCell;
+import jscover.Main;
+import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -357,6 +360,9 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 
 public class HtmlUnitServerBranchAndFunctionTest extends HtmlUnitServerTest {
+    private static Thread server;
+    private static Main main = new Main();
+
     protected String[] args = new String[]{
             "-ws",
             "--document-root=src/test-acceptance/resources",
@@ -364,6 +370,28 @@ public class HtmlUnitServerBranchAndFunctionTest extends HtmlUnitServerTest {
             "--no-instrument=example/lib",
             "--report-dir=" + getReportDir()
     };
+
+    @Before
+    public void setUp() throws IOException {
+        if (server == null) {
+            server = new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        main.runMain(getArgs());
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
+            server.start();
+        }
+        webClient.getOptions().setTimeout(1000);
+    }
+
+    @AfterClass
+    public static void tearDown() throws InterruptedException {
+        main.stop();
+    }
 
     @Override
     protected String[] getArgs() {

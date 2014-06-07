@@ -347,6 +347,7 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import jscover.Main;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -357,6 +358,7 @@ import static org.junit.Assert.assertEquals;
 
 public class HtmlUnitLocalStorageTest {
     private static Thread server;
+    private static Main main = new Main();
 
     protected WebClient webClient = new WebClient(BrowserVersion.FIREFOX_24);
     private String[] args = new String[]{
@@ -381,7 +383,7 @@ public class HtmlUnitLocalStorageTest {
             server = new Thread(new Runnable() {
                 public void run() {
                     try {
-                        Main.main(getArgs());
+                        main.runMain(getArgs());
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -389,6 +391,11 @@ public class HtmlUnitLocalStorageTest {
             });
             server.start();
         }
+    }
+
+    @AfterClass
+    public static void tearDown() {
+        main.stop();
     }
 
     protected String[] getArgs() {

@@ -344,6 +344,8 @@ package jscover.server;
 
 import com.gargoylesoftware.htmlunit.ProxyConfig;
 import jscover.Main;
+import jscover.util.IoUtils;
+import org.junit.AfterClass;
 import org.junit.Before;
 
 import java.io.File;
@@ -353,7 +355,9 @@ import java.net.Socket;
 
 public class HtmlServerUnloadedJSProxyTest extends HtmlServerUnloadedJSTest {
     private static Thread webServer;
-    private static Thread server;
+    private static Thread proxyServer;
+    private static Main main = new Main();
+    private static ServerSocket serverSocket;
     private static int proxyPort = 3129;
 
     private String[] args = new String[]{
@@ -368,38 +372,35 @@ public class HtmlServerUnloadedJSProxyTest extends HtmlServerUnloadedJSTest {
 
     @Override
     protected String getReportDir() {
-        return "target/proxy-report";
+        return "target/proxy-unloaded-report";
     }
 
     @Before
     public void setUp() throws IOException {
-        if (server == null) {
-            server = new Thread(new Runnable() {
+        if (proxyServer == null) {
+            proxyServer = new Thread(new Runnable() {
                 public void run() {
                     try {
-                        Main.main(args);
+                        main.runMain(args);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
                 }
             });
-            server.start();
+            proxyServer.start();
         }
         if (webServer == null) {
             webServer = new Thread(new Runnable() {
                 public void run() {
-                    ServerSocket server = null;
                     try {
-                        server = new ServerSocket(9001);
+                        serverSocket = new ServerSocket(9001);
                         File wwwRoot = new File("src/test-integration/resources/jsSearch");
                         while (true) {
-                            Socket socket = server.accept();
+                            Socket socket = serverSocket.accept();
                             (new HttpServer(socket, wwwRoot, "testVersion")).start();
                         }
                     } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    } finally {
-                        ioUtils.closeQuietly(server);
+                        //throw new RuntimeException(e);
                     }
                 }
             });
@@ -410,4 +411,11 @@ public class HtmlServerUnloadedJSProxyTest extends HtmlServerUnloadedJSTest {
         webClient.getOptions().setProxyConfig(proxyConfig);
         webClient.getOptions().setTimeout(1000);
     }
+
+    @AfterClass
+    public static void tearDown() {
+        main.stop();
+        IoUtils.getInstance().closeQuietly(serverSocket);
+    }
+
 }

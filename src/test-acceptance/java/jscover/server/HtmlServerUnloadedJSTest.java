@@ -347,6 +347,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import jscover.Main;
 import jscover.util.IoUtils;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -361,6 +362,7 @@ import static org.junit.Assert.assertEquals;
 
 public class HtmlServerUnloadedJSTest {
     private static Thread server;
+    private static Main main = new Main();
 
     protected WebClient webClient = new WebClient();
     protected IoUtils ioUtils = IoUtils.getInstance();
@@ -374,7 +376,7 @@ public class HtmlServerUnloadedJSTest {
     };
 
     protected String getReportDir() {
-        return "target/ws-report";
+        return "target/ws-unloaded-report";
     }
 
     @Before
@@ -383,7 +385,7 @@ public class HtmlServerUnloadedJSTest {
             server = new Thread(new Runnable() {
                 public void run() {
                     try {
-                        Main.main(args);
+                        main.runMain(args);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -392,6 +394,11 @@ public class HtmlServerUnloadedJSTest {
             server.start();
         }
         webClient.getOptions().setTimeout(1000);
+    }
+
+    @AfterClass
+    public static void tearDown() throws InterruptedException {
+        main.stop();
     }
 
     protected String getIndex() {
