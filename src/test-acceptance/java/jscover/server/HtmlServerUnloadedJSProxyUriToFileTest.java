@@ -400,15 +400,18 @@ public class HtmlServerUnloadedJSProxyUriToFileTest extends HtmlServerUnloadedJS
         if (webServer == null) {
             webServer = new Thread(new Runnable() {
                 public void run() {
+                    ServerSocket server = null;
                     try {
-                        ServerSocket Server = new ServerSocket(9001);
+                        server = new ServerSocket(9001);
                         File wwwRoot = new File("src/test-integration/resources/jsSearch");
                         while (true) {
-                            Socket socket = Server.accept();
+                            Socket socket = server.accept();
                             (new WeirdHttpServer(socket, wwwRoot, "testVersion")).start();
                         }
                     } catch (IOException e) {
                         throw new RuntimeException(e);
+                    } finally {
+                        ioUtils.closeQuietly(server);
                     }
                 }
             });

@@ -350,11 +350,16 @@ public class HttpServerDriver {
     private static boolean running = true;
 
     public static void main(String args[]) throws Exception {
-        ServerSocket Server = new ServerSocket(80);
-        File wwwRoot = new File(".");
-        while (running) {
-            Socket socket = Server.accept();
-            (new HttpServer(socket, wwwRoot, "testVersion")).start();
+        ServerSocket server = null;
+        try {
+            server = new ServerSocket(80);
+            File wwwRoot = new File(".");
+            while (running) {
+                Socket socket = server.accept();
+                (new HttpServer(socket, wwwRoot, "testVersion")).start();
+            }
+        } finally {
+            server.close();
         }
     }
 }

@@ -342,12 +342,12 @@ Public License instead of this License.
 
 package jscover.server;
 
+import jscover.util.IoUtils;
 import jscover.util.LoggerUtils;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
 import java.util.logging.Logger;
 
 import static java.util.logging.Level.INFO;
@@ -356,6 +356,7 @@ import static java.util.logging.Level.WARNING;
 public class WebDaemon {
     private static final Logger logger = Logger.getLogger(WebDaemon.class.getName());
     private LoggerUtils loggerUtils = LoggerUtils.getInstance();
+    private IoUtils ioUtils = IoUtils.getInstance();
     private ServerSocket serverSocket;
     public boolean running = true;
 
@@ -372,10 +373,6 @@ public class WebDaemon {
     public void stop() {
         running = false;
         logger.log(WARNING, "Stopping JSCover");
-        try {
-            serverSocket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        ioUtils.closeQuietly(serverSocket);
     }
 }

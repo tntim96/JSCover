@@ -352,11 +352,16 @@ import java.net.Socket;
 public class WeirdHttpServer extends HttpServer {
 
     public static void main(String[] args) throws Exception {
-        ServerSocket Server = new ServerSocket(80);
-        File wwwRoot = new File("src/test-integration/resources/jsSearch");
-        while (true) {
-            Socket socket = Server.accept();
-            (new WeirdHttpServer(socket, wwwRoot, "testVersion")).start();
+        ServerSocket server = null;
+        try {
+            server = new ServerSocket(80);
+            File wwwRoot = new File("src/test-integration/resources/jsSearch");
+            while (true) {
+                Socket socket = server.accept();
+                (new WeirdHttpServer(socket, wwwRoot, "testVersion")).start();
+            }
+        } finally {
+            server.close();
         }
     }
 

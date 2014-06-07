@@ -360,10 +360,15 @@ public class InstrumentingRequestHandlerDriver {
         properties.put("version", "test");
         configuration.setProperties(properties);
         boolean running = true;
-        ServerSocket Server = new ServerSocket(configuration.getPort());
-        while (running) {
-            Socket socket = Server.accept();
-            (new InstrumentingRequestHandler(socket, configuration)).start();
+        ServerSocket server = null;
+        try {
+            server = new ServerSocket(configuration.getPort());
+            while (running) {
+                Socket socket = server.accept();
+                (new InstrumentingRequestHandler(socket, configuration)).start();
+            }
+        } finally {
+            server.close();
         }
     }
 
