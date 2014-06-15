@@ -435,7 +435,7 @@ class NodeProcessor {
                     parent.addChildBefore(buildInstrumentationStatement(node.getLineno()), node);
                 }
             }
-        } else if (node instanceof SwitchStatement || node instanceof WithStatement) {
+        } else if (node instanceof WithStatement) {
             parent.addChildBefore(buildInstrumentationStatement(node.getLineno()), node);
         } else if (node instanceof SwitchCase) {
             List<AstNode> statements = ((SwitchCase) node).getStatements();

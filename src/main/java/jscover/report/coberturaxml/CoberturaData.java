@@ -351,6 +351,7 @@ public class CoberturaData extends SummaryData {
     private Map<String, Set<? extends Coverable>> packageMap = new HashMap<String, Set<? extends Coverable>>();
     private Collection<? extends Coverable> files;
 
+    @SuppressWarnings(value = "unchecked")
     public CoberturaData(Collection<? extends Coverable> files) {
         super(files);
         this.files = files;
@@ -364,7 +365,7 @@ public class CoberturaData extends SummaryData {
     }
 
     protected String getPackage(String uri) {
-        if (uri == null || uri.indexOf("/") == -1)
+        if (uri == null || !uri.contains("/"))
             return "";
         return uri.substring(0, uri.lastIndexOf("/"));
     }

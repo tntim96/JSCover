@@ -538,7 +538,7 @@ public class MainTest {
         given(ioUtils.loadFromFileSystem(new File(dir1, "jscoverage.json"))).willReturn("json1");
         given(ioUtils.loadFromFileSystem(new File(dir2,"jscoverage.json"))).willReturn("json2");
         SortedMap<String, FileData> mergedMap = new TreeMap<String, FileData>();
-        given(jsonDataMerger.mergeJSONCoverageStrings(new String[]{"json1","json2"})).willReturn(mergedMap);
+        given(jsonDataMerger.mergeJSONCoverageStrings("json1","json2")).willReturn(mergedMap);
         given(jsonDataMerger.toJSON(mergedMap)).willReturn("mergedJSON");
 
         main.runMain(new String[]{});

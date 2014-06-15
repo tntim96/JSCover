@@ -354,8 +354,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class BranchInstrumentorIntegrationTest {
     private static IoUtils ioUtils = IoUtils.getInstance();
-    private static String branchObjectHeader = ioUtils.loadFromClassPath("/jscoverage-branch.js");
-    private static String header = "var _$jscoverage = {};\n" +
+    private static final String branchObjectHeader = ioUtils.loadFromClassPath("/jscoverage-branch.js");
+    private static final String header = "var _$jscoverage = {};\n" +
             "_$jscoverage['test.js'] = {};\n";
 
     private BranchInstrumentor branchInstrumentor = new BranchInstrumentor("test.js");
