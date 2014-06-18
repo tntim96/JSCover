@@ -27,3 +27,7 @@ Project files for IDEs are checked in, but any editor can be used.
 Before checking in any changes, be sure to run `ant pre-commit` which runs the full build and test suite,
 and enforces coverage limits on the combined unit and integration tests as well as on the combined unit,
 integration and acceptance tests.
+
+For eclipse you may need to install the tools.jar file with something like:
+
+`mvn install:install-file -DgroupId=com.sun -DartifactId=tools -Dpackaging=jar -Dversion=0 -Dfile=tools.jar -DgeneratePom=true`
