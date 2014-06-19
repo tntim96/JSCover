@@ -1142,9 +1142,21 @@ fs.write("target/jscoverage.json", json, 'w');
         <heading id="execModes">Execution Modes</heading>
         <section>
             <item>
+                <heading id="html5LocalStorage">LocalStorage Mode</heading>
+                <text>
+                    This mode avoids iframes and JavaScript-opened windows.
+                    See the <a href="#localStorage">HTML5 Local Storage Switch</a>
+                    section above.
+                </text>
+                <text>
+                    Whilst this mode adds some overhead serializing and deserializing the coverage data
+                    between page loads, it is the least intrusive in terms of affecting existing tests.
+                </text>
+            </item>
+            <item>
                 <heading id="iframeMode">IFrame Mode</heading>
                 <text>
-                    This is the most commonly used mode, and is described in the
+                    After LocalStorage, this is the most commonly used mode, and is described in the
                     <a href="#gettingStarted">Getting Started</a>
                     section above.
                 </text>
@@ -1192,14 +1204,6 @@ fs.write("target/jscoverage.json", json, 'w');
                 </text>
                 <text>Note that you must use a window.open call; simply making a link to jscoverage.html is not
                     sufficient.
-                </text>
-            </item>
-            <item>
-                <heading id="html5LocalStorage">LocalStorage Mode</heading>
-                <text>
-                    This mode avoids iframes and JavaScript-opened windows.
-                    See the <a href="#localStorage">HTML5 Local Storage Switch</a>
-                    section above.
                 </text>
             </item>
             <item>
