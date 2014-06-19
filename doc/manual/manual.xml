@@ -1,13 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="manual.xsl"?>
-<!DOCTYPE document-root [
+<!DOCTYPE document [
         <!ELEMENT document (title, item+)>
-        <!ELEMENT item ((item | (heading, (section? | text?)))+)>
+        <!ELEMENT item ((item? | (heading?, (section? | text?)))+)>
         <!ELEMENT section ((item | text))+>
         <!ELEMENT title (#PCDATA)>
         <!ELEMENT heading (#PCDATA)>
-        <!ELEMENT text (#PCDATA)>
+        <!ELEMENT table (tr)+>
+        <!ELEMENT tr (th|td)+>
+        <!ELEMENT th (#PCDATA)>
+        <!ELEMENT td (#PCDATA|a|b|br|code|note)*>
+        <!ELEMENT br (#PCDATA)>
+        <!ELEMENT var (#PCDATA)>
+        <!ELEMENT code (#PCDATA|var)*>
+        <!ELEMENT note (#PCDATA|a|var|code)*>
+        <!ELEMENT img (#PCDATA)>
+        <!ELEMENT imgThumb (#PCDATA)>
+        <!ELEMENT a (#PCDATA)>
+        <!ELEMENT text (#PCDATA|table|a|ul|ol|br|var|code|note|img|imgThumb)*>
+        <!ELEMENT b (#PCDATA)>
+        <!ELEMENT ul (li)+>
+        <!ELEMENT ol (li)+>
+        <!ELEMENT li (#PCDATA|a|var)*>
         <!ATTLIST heading id ID #REQUIRED>
+        <!ATTLIST a href CDATA #IMPLIED>
+        <!ATTLIST a target CDATA #IMPLIED>
+        <!ATTLIST img src CDATA #REQUIRED>
+        <!ATTLIST table class CDATA #IMPLIED>
+        <!ATTLIST td class CDATA #IMPLIED>
+        <!ATTLIST td nowrap CDATA #FIXED "nowrap">
+        <!ATTLIST imgThumb src CDATA #REQUIRED>
+        <!ATTLIST imgThumb alt CDATA #IMPLIED>
+        <!ATTLIST imgThumb width CDATA #IMPLIED>
         ]>
 <document>
     <title>JSCover User Manual</title>
@@ -382,7 +406,7 @@ fs.write("target/jscoverage.json", json, 'w');
         <heading id="usage">Usage</heading>
         <section>
             <item>
-                <heading id="usage">General</heading>
+                <heading id="usageGeneral">General</heading>
                 <text>
                     <code>java -jar JSCover-all.jar [OPTIONS]...</code>
                     <code>java -jar JSCover.jar [OPTIONS]...</code>
@@ -793,24 +817,22 @@ fs.write("target/jscoverage.json", json, 'w');
                 </text>
                 <text>
                     <table class="noBorder">
-                        <tbody>
-                            <tr>
-                                <td>
+                        <tr>
+                            <td>
 <code><var>SOURCE-DIRECTORY</var>/
     dir/
         index.html
         script.js</code>
-                                </td>
-                                <td class="arrow">&#8594;</td>
-                                <td>
+                            </td>
+                            <td class="arrow">&#8594;</td>
+                            <td>
 <code><var>DESTINATION-DIRECTORY</var>/
     dir/
     index.html
     script.js [instrumented]
     jscoverage.html</code>
-                                </td>
-                            </tr>
-                        </tbody>
+                            </td>
+                        </tr>
                     </table>
                 </text>
                 <text>
@@ -824,22 +846,20 @@ fs.write("target/jscoverage.json", json, 'w');
                 </text>
                 <text>
                     <table class="noBorder">
-                        <tbody>
-                            <tr>
-                                <td>
+                        <tr>
+                            <td>
 <code>doc/example/
     index.html
     script.js</code>
-                                </td>
-                                <td class="arrow">&#8594;</td>
-                                <td>
+                            </td>
+                            <td class="arrow">&#8594;</td>
+                            <td>
 <code>doc/instrumented/
     index.html
     script.js [instrumented]
     jscoverage.html</code>
-                                </td>
-                            </tr>
-                        </tbody>
+                            </td>
+                        </tr>
                     </table>
                 </text>
             </item>
