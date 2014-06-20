@@ -343,6 +343,7 @@ Public License instead of this License.
 package jscover.report.xml;
 
 import jscover.report.Coverable;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -355,6 +356,7 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 import java.io.ByteArrayInputStream;
+import java.util.Locale;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -364,6 +366,11 @@ import static org.mockito.BDDMockito.given;
 public class XMLSummaryTest {
     private XMLSummary xmlSummary = new XMLSummary();
     @Mock Coverable data;
+
+    @BeforeClass
+    public static void setUpOnce() {
+        Locale.setDefault(Locale.ENGLISH);
+    }
 
     @Test
     public void shouldGenerateSummaryXML() throws Exception {

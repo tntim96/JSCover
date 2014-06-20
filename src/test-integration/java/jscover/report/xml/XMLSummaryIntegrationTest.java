@@ -346,6 +346,7 @@ import jscover.report.JSONDataMerger;
 import jscover.report.SummaryData;
 import jscover.util.IoUtils;
 import org.junit.After;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.w3c.dom.Document;
 
@@ -355,6 +356,7 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 import java.io.File;
+import java.util.Locale;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -363,6 +365,11 @@ public class XMLSummaryIntegrationTest {
     private XMLSummary xmlSummary = new XMLSummary();
     private JSONDataMerger jsonDataMerger = new JSONDataMerger();
     private File dest;
+
+    @BeforeClass
+    public static void setUpOnce() {
+        Locale.setDefault(Locale.ENGLISH);
+    }
 
     @After
     public void tearDown() {

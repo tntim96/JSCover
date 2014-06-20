@@ -1,3 +1,7 @@
+1.0.12 / 2014-??-??
+==================
+  * Internal: Fix tests failing with non-english locale (https://github.com/tntim96/JSCover/issues/141)
+
 1.0.11 / 2014-06-05
 ==================
   * Improve error when 'Class-Path' not in manifest (https://github.com/tntim96/JSCover/pull/135)
