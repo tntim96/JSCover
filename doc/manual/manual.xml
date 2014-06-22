@@ -553,6 +553,11 @@ fs.write("target/jscoverage.json", json, 'w');
                             <td>Run in proxy mode</td>
                         </tr>
                         <tr>
+                            <td>--save-json-only</td>
+                            <td>N/A</td>
+                            <td>Save only the coverage data, jscoverage.json</td>
+                        </tr>
+                        <tr>
                             <td>
                                 --uri-to-file-matcher=REG<br/>
                                 --uri-to-file-replace=REP

@@ -9,6 +9,7 @@ Options:
       --report-dir=DIR          store report to DIR (default: current directory)
       --port=PORT               use PORT for TCP port (default: 8080)
       --proxy                   run as a proxy
+      --save-json-only          save only the coverage data, jscoverage.json
       --uri-to-file-matcher=REG for proxy mode, regular expression matcher for converting a URI to a file path
       --uri-to-file-replace=REP for proxy mode, regular expression replacement for converting a URI to a file path
       --js-version=VERSION      JavaScript version 1.0, 1.2, ..., 1.8 (default: 1.3)
