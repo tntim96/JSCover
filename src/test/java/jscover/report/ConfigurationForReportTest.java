@@ -538,8 +538,6 @@ public class ConfigurationForReportTest {
 
     private File createValidReportDir(String dir) {
         File reportDir = new File(dir);
-        File srcDir = new File(reportDir, jscover.Main.reportSrcSubDir);
-        srcDir.mkdirs();
         File jsonFile = new File(reportDir, "jscoverage.json");
         ioUtils.copy("dummy", jsonFile);
         return reportDir;

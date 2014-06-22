@@ -484,8 +484,7 @@ public class ConfigurationForReport  extends Configuration {
 
     boolean isValidReportDirectory(File dir) {
         File jsonFile = new File(dir, "jscoverage.json");
-        File srcDir = new File(dir, Main.reportSrcSubDir);
-        return isValidDirectory(dir) && isValidFile(jsonFile) && isValidDirectory(srcDir);
+        return isValidDirectory(dir) && isValidFile(jsonFile);
     }
 
     boolean isValidFile(File file) {

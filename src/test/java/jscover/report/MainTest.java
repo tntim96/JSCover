@@ -349,6 +349,7 @@ import jscover.report.lcov.LCovGenerator;
 import jscover.report.xml.XMLSummary;
 import jscover.util.IoUtils;
 import jscover.util.ReflectionUtils;
+import org.apache.commons.io.FileUtils;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 import org.junit.Before;
@@ -366,6 +367,7 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import static jscover.Main.reportSrcSubDir;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -408,7 +410,7 @@ public class MainTest {
     public void shouldSetConfig() {
         ConfigurationForReport configuration = mock(ConfigurationForReport.class);
         main.setConfig(configuration);
-        assertThat((ConfigurationForReport)ReflectionUtils.getField(main, "config"), sameInstance(configuration));
+        assertThat((ConfigurationForReport) ReflectionUtils.getField(main, "config"), sameInstance(configuration));
     }
 
     @Test
@@ -525,18 +527,32 @@ public class MainTest {
 
     @Test
     public void shouldMergeReports() throws IOException {
+        testMergeLogic(true);
+    }
+
+    @Test
+    public void shouldMergeReportsWithoutOriginalSrc() throws IOException {
+        testMergeLogic(false);
+    }
+
+    private void testMergeLogic(boolean hasOriginalSrc) throws IOException {
         List<File> mergeDirs = new ArrayList<File>();
         File dir1 = new File("target/dir1");
         mergeDirs.add(dir1);
         File dir2 = new File("target/dir2");
         mergeDirs.add(dir2);
         File destDir = new File("target/dest-dir");
+        File origSrc = new File(dir2, reportSrcSubDir);
+        if (hasOriginalSrc)
+            origSrc.mkdirs();
+        else
+            FileUtils.deleteDirectory(origSrc);
 
         given(config.isMerge()).willReturn(true);
         given(config.getMergeDestDir()).willReturn(destDir);
         given(config.getMergeDirs()).willReturn(mergeDirs);
         given(ioUtils.loadFromFileSystem(new File(dir1, "jscoverage.json"))).willReturn("json1");
-        given(ioUtils.loadFromFileSystem(new File(dir2,"jscoverage.json"))).willReturn("json2");
+        given(ioUtils.loadFromFileSystem(new File(dir2, "jscoverage.json"))).willReturn("json2");
         SortedMap<String, FileData> mergedMap = new TreeMap<String, FileData>();
         given(jsonDataMerger.mergeJSONCoverageStrings("json1","json2")).willReturn(mergedMap);
         given(jsonDataMerger.toJSON(mergedMap)).willReturn("mergedJSON");
@@ -554,9 +570,11 @@ public class MainTest {
         inOrder.verify(ioUtils).copy("mergedJSON", mergedJson);
 
         //Verify src copying
-        File src2 = new File(dir2, jscover.Main.reportSrcSubDir);
-        File srcDest = new File(destDir, jscover.Main.reportSrcSubDir);
-        verify(ioUtils).copyDir(src2, srcDest);
+        if (hasOriginalSrc) {
+            File src2 = new File(dir2, reportSrcSubDir);
+            File srcDest = new File(destDir, reportSrcSubDir);
+            verify(ioUtils).copyDir(src2, srcDest);
+        }
         verifyZeroInteractions(mainHelper);
     }
 }

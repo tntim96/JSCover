@@ -1,5 +1,6 @@
 1.0.12 / 2014-??-??
 ==================
+  * Allow merging if no `original-src` directory exists (https://github.com/tntim96/JSCover/issues/142)
   * Internal: Fix tests failing with non-english locale (https://github.com/tntim96/JSCover/issues/141)
 
 1.0.11 / 2014-06-05
