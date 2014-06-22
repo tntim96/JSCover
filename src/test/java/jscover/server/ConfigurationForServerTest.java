@@ -367,6 +367,7 @@ public class ConfigurationForServerTest {
         assertThat(configuration.skipInstrumentation("/"), is(false));
         assertThat(configuration.getCompilerEnvirons().getLanguageVersion(), equalTo(150));
         assertThat(configuration.isProxy(), is(false));
+        assertThat(configuration.isSaveJSONOnly(), is(false));
         assertThat(configuration.isIncludeUnloadedJS(), is(false));
         assertThat(configuration.isIncludeBranch(), is(true));
         assertThat(configuration.isIncludeFunction(), is(true));
@@ -453,6 +454,11 @@ public class ConfigurationForServerTest {
     @Test
     public void shouldParseProxy() {
         assertThat(ConfigurationForServer.parse(new String[]{"--proxy"}).isProxy(), is(true));
+    }
+
+    @Test
+    public void shouldParseSaveJSONOnly() {
+        assertThat(ConfigurationForServer.parse(new String[]{"--save-json-only"}).isSaveJSONOnly(), is(true));
     }
 
     @Test

@@ -1,5 +1,6 @@
 1.0.12 / 2014-??-??
 ==================
+  * Add `--save-json-only` to only save coverage data (https://github.com/tntim96/JSCover/issues/142)
   * Allow merging if no `original-src` directory exists (https://github.com/tntim96/JSCover/issues/142)
   * Internal: Fix tests failing with non-english locale (https://github.com/tntim96/JSCover/issues/141)
 

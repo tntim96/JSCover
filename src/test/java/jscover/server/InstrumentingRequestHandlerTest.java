@@ -371,6 +371,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verifyZeroInteractions;
 
 @RunWith(MockitoJUnitRunner.class)
 public class InstrumentingRequestHandlerTest {
@@ -553,10 +554,15 @@ public class InstrumentingRequestHandlerTest {
 
     @Test
     public void shouldStoreJSCoverageJSONInSpecifiedSubDirectoryAndCopySourceForReport() {
+        testStoreJSCoverageJSONInSpecifiedSubDirectory(false);
+    }
+
+    private void testStoreJSCoverageJSONInSpecifiedSubDirectory(boolean saveJSONOnly) {
         InstrumentingRequestHandler.uris = new HashMap<String, String>(){{put("js/util.js",null);}};
         File file = new File("target/temp");
         file.deleteOnExit();
         given(configuration.getReportDir()).willReturn(file);
+        given(configuration.isSaveJSONOnly()).willReturn(saveJSONOnly);
         given(configuration.getVersion()).willReturn("theVersion");
         given(ioUtils.toStringNoClose(bais, 12)).willReturn("data");
         given(bais.skip(50)).willReturn(50L);
@@ -565,19 +571,32 @@ public class InstrumentingRequestHandlerTest {
 
         File subdirectory = new File(file, "subdirectory");
         verify(jsonDataSaver).saveJSONData(subdirectory, "data", null, uriFileTranslator);
-        verify(ioService).generateJSCoverFilesForWebServer(subdirectory, "theVersion");
+        if (saveJSONOnly)
+            verifyZeroInteractions(ioService);
+        else
+            verify(ioService).generateJSCoverFilesForWebServer(subdirectory, "theVersion");
         verify(bais).skip(50);
-        verify(ioUtils).copy(new File("js/util.js"), new File(configuration.getReportDir(), "subdirectory/" + Main.reportSrcSubDir + "/js/util.js"));
+        verify(ioUtils, times(saveJSONOnly ? 0 : 1)).copy(new File("js/util.js"), new File(configuration.getReportDir(), "subdirectory/" + Main.reportSrcSubDir + "/js/util.js"));
         verifyZeroInteractions(instrumenterService);
         assertThat(stringWriter.toString(), containsString(format("Coverage data stored at %s", subdirectory)));
     }
 
     @Test
     public void shouldStoreJSCoverageJSONInSpecifiedSubDirectoryAndCopySourceForReportForProxy() {
+        testStoreJSCoverageJSONInSpecifiedSubDirectoryForProxy(false);
+    }
+
+    @Test
+    public void shouldStoreJSCoverageJSONInSpecifiedSubDirectoryAndNotCopySourceForReportForProxy() {
+        testStoreJSCoverageJSONInSpecifiedSubDirectoryForProxy(true);
+    }
+
+    private void testStoreJSCoverageJSONInSpecifiedSubDirectoryForProxy(boolean saveJSONOnly) {
         InstrumentingRequestHandler.uris = new HashMap<String, String>(){{put("js/util.js","someJavaScript");}};
         File file = new File("target/temp");
         file.deleteOnExit();
         given(configuration.isProxy()).willReturn(true);
+        given(configuration.isSaveJSONOnly()).willReturn(saveJSONOnly);
         given(configuration.getReportDir()).willReturn(file);
         given(configuration.getVersion()).willReturn("theVersion");
         given(ioUtils.toStringNoClose(bais, 12)).willReturn("data");
@@ -587,18 +606,31 @@ public class InstrumentingRequestHandlerTest {
 
         File subdirectory = new File(file, "subdirectory");
         verify(jsonDataSaver).saveJSONData(subdirectory, "data", null, uriFileTranslator);
-        verify(ioService).generateJSCoverFilesForWebServer(subdirectory, "theVersion");
+        if (saveJSONOnly)
+            verifyZeroInteractions(ioService);
+        else
+            verify(ioService).generateJSCoverFilesForWebServer(subdirectory, "theVersion");
         verify(bais).skip(50);
-        verify(ioUtils).copy("someJavaScript", new File(configuration.getReportDir(), "subdirectory/" + Main.reportSrcSubDir + "/js/util.js"));
+        verify(ioUtils, times(saveJSONOnly ? 0 : 1)).copy("someJavaScript", new File(configuration.getReportDir(), "subdirectory/" + Main.reportSrcSubDir + "/js/util.js"));
         verifyZeroInteractions(instrumenterService);
         assertThat(stringWriter.toString(), containsString(format("Coverage data stored at %s", subdirectory)));
     }
 
     @Test
     public void shouldStoreJSCoverageJSONWithUnloadedJSAndCopySourceForReport() {
+        testStoreJSCoverageJSONWithUnloadedJS(false);
+    }
+
+    @Test
+    public void shouldStoreJSCoverageJSONWithUnloadedJSAndNotCopySourceForReport() {
+        testStoreJSCoverageJSONWithUnloadedJS(true);
+    }
+
+    private void testStoreJSCoverageJSONWithUnloadedJS(boolean saveJSONOnly) {
         File reportDir = new File("target/temp");
         reportDir.deleteOnExit();
         given(configuration.isIncludeUnloadedJS()).willReturn(true);
+        given(configuration.isSaveJSONOnly()).willReturn(saveJSONOnly);
         given(configuration.getReportDir()).willReturn(reportDir);
         given(configuration.getVersion()).willReturn("theVersion");
         given(ioUtils.toStringNoClose(bais, 12)).willReturn("data");
@@ -610,9 +642,12 @@ public class InstrumentingRequestHandlerTest {
         webServer.handlePostOrPut(new HttpRequest(JSCOVERAGE_STORE, bais, null, 50, headers));
 
         verify(jsonDataSaver).saveJSONData(reportDir, "data", unloadedJS, uriFileTranslator);
-        verify(ioService).generateJSCoverFilesForWebServer(reportDir, "theVersion");
+        if (saveJSONOnly)
+            verifyZeroInteractions(ioService);
+        else
+            verify(ioService).generateJSCoverFilesForWebServer(reportDir, "theVersion");
         verify(bais).skip(50);
-        verify(ioUtils).copy(new File("/js/unloaded.js"), new File(configuration.getReportDir(), Main.reportSrcSubDir + "/js/unloaded.js"));
+        verify(ioUtils, times(saveJSONOnly ? 0 : 1)).copy(new File("/js/unloaded.js"), new File(configuration.getReportDir(), Main.reportSrcSubDir + "/js/unloaded.js"));
         verifyZeroInteractions(instrumenterService);
         assertThat(stringWriter.toString(), containsString(format("Coverage data stored at %s", reportDir)));
     }
