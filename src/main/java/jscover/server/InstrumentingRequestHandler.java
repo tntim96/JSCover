@@ -408,11 +408,11 @@ public class InstrumentingRequestHandler extends HttpServer {
             if (configuration.isIncludeUnloadedJS()) {
                 logger.fine("Searching for unloaded JavaScript");
                 unloadJSData = unloadedSourceProcessor.getEmptyCoverageData(uris.keySet());
-                for (ScriptCoverageCount scriptLinesAndSource : unloadJSData) {
-                    File src = new File(configuration.getDocumentRoot(), scriptLinesAndSource.getUri());
-                    if (!configuration.isSaveJSONOnly())
+                if (!configuration.isSaveJSONOnly())
+                    for (ScriptCoverageCount scriptLinesAndSource : unloadJSData) {
+                        File src = new File(configuration.getDocumentRoot(), scriptLinesAndSource.getUri());
                         ioUtils.copy(src, new File(reportDir, Main.reportSrcSubDir + scriptLinesAndSource.getUri()));
-                }
+                    }
             }
             long skipped = request.getInputStream().skip(request.getPostIndex());
             assert skipped == request.getPostIndex();
