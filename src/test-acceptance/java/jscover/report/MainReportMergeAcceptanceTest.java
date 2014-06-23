@@ -358,8 +358,8 @@ public class MainReportMergeAcceptanceTest {
     private File reportDir1 = new File("target/report1");
     private File reportDir2 = new File("target/report2");
     private File reportDir12 = new File("target/report12");
-    String data1 = ioUtils.loadFromClassPath("/jscover/report/jscoverage-select-1.json");
-    String data2 = ioUtils.loadFromClassPath("/jscover/report/jscoverage-select-3.json");
+    private String data1 = ioUtils.loadFromClassPath("/jscover/report/jscoverage-select-1.json");
+    private String data2 = ioUtils.loadFromClassPath("/jscover/report/jscoverage-select-3.json");
     private String[] args = new String[]{
             "--merge",
             "target/report1",
