@@ -1,5 +1,5 @@
 Demonstrates:
-- running existing tests with minimal changes (i.e. no iframes or child windows - intermediate page results stored in HTML5 local-storage)
+- running existing tests with minimal changes (i.e. no iframes or child windows - using HTML5 local-storage)
 - running existing tests without a proxy
 - saving the coverage report without a server
 
