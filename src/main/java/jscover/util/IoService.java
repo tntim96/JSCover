@@ -376,6 +376,8 @@ public class IoService {
         } else {
             String jsCoverageJS = generateJSCoverageJs();
             ioUtils.copy(jsCoverageJS, new File(destDir, "jscoverage.js"));
+            if (localStorage)
+                copyResourceToDir("jscoverage-clear-local-storage.html", destDir);
         }
 
         copyResourceToDir("jscoverage-highlight.css", destDir);

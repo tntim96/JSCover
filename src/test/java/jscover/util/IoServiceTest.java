@@ -342,18 +342,25 @@ Public License instead of this License.
 
 package jscover.util;
 
+import org.apache.commons.io.FileUtils;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.IOException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.*;
 
 public class IoServiceTest {
     private IoService ioService = new IoService(false);
     private IoUtils ioUtils = IoUtils.getInstance();
     private File destDir = new File("target/IoService");
+
+    @Before
+    public void before() throws IOException {
+        FileUtils.deleteDirectory(destDir);
+    }
 
     @Test
     public void shouldGenerateReportForFileSystem() {
@@ -365,6 +372,21 @@ public class IoServiceTest {
         String js = ioUtils.loadFromFileSystem(new File(destDir,"jscoverage.js"));
         assertThat(js, not(containsString("\njscoverage_isReport = true;")));
         assertThat(js, not(containsString("localStorage")));
+        assertThat(new File(destDir,"jscoverage-clear-local-storage.html").exists(), is(false));
+    }
+
+    @Test
+    public void shouldGenerateJSForFileSystemWithLocalStorage() {
+        IoService ioService = new IoService(true);
+        ioService.generateJSCoverFilesForFileSystem(destDir, "theVersion");
+
+        String html = ioUtils.loadFromFileSystem(new File(destDir,"jscoverage.html"));
+        assertThat(html, containsString("This is version theVersion of JSCover"));
+
+        String js = ioUtils.loadFromFileSystem(new File(destDir, "jscoverage.js"));
+        assertThat(js, not(containsString("\njscoverage_isReport = true;")));
+        assertThat(js, containsString("localStorage"));
+        assertThat(new File(destDir,"jscoverage-clear-local-storage.html").exists(), is(true));
     }
 
     @Test

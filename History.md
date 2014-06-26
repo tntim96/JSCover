@@ -2,6 +2,7 @@
 ==================
   * Add `--save-json-only` to only save coverage data (https://github.com/tntim96/JSCover/issues/142)
   * Allow merging if no `original-src` directory exists (https://github.com/tntim96/JSCover/issues/142)
+  * Include `jscoverage-clear-local-storage.html` in file-system output if using HTML5 localStorage
   * Internal: Fix tests failing with non-english locale (https://github.com/tntim96/JSCover/issues/141)
 
 1.0.11 / 2014-06-05
