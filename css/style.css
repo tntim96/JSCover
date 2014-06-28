@@ -8,6 +8,12 @@ body {
     background-color: #222;
     font-family: helvetica, arial, sans-serif;
     min-width: 900px;
+    height:100%;
+}
+
+#wrapper {
+    min-height:100%;
+    position:relative;
 }
 
 table {
@@ -59,15 +65,17 @@ ul{
     padding: 20px 80px;
 }
 
-.navPanel{
-    position: relative;
-    display: block;
-
+.gradedBackground {
     background-color: #023550;
     background-image: -moz-linear-gradient(top, #024366 0%, #023550 100%);
     background-image: -webkit-linear-gradient(top, #024366 0%,#023550 100%);
     background-image: -ms-linear-gradient(top, #024366 0%,#023550 100%);
-    background-image: linear-gradient(to bottom, #024366 0%,#023550 100%);
+    background-image: linear-gradient(top bottom, #024366 0%,#023550 100%);
+}
+
+.navPanel{
+    position: relative;
+    display: block;
 
     font-family: "Titillium Web", Arial, serif;
     padding: 10px 50px;
@@ -148,6 +156,14 @@ ul{
 .selected {
     font-weight: bold;
     background: #a0b8ff;
+}
+
+#footer {
+    width:100%;
+    height:36px;
+    position:absolute;
+    bottom:0;
+    left:0;
 }
 
 .shell {

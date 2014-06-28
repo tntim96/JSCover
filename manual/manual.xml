@@ -1,13 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="manual.xsl"?>
-<!DOCTYPE document-root [
+<!DOCTYPE document [
         <!ELEMENT document (title, item+)>
-        <!ELEMENT item ((item | (heading, (section? | text?)))+)>
+        <!ELEMENT item ((item? | (heading?, (section? | text?)))+)>
         <!ELEMENT section ((item | text))+>
         <!ELEMENT title (#PCDATA)>
         <!ELEMENT heading (#PCDATA)>
-        <!ELEMENT text (#PCDATA)>
+        <!ELEMENT table (tr)+>
+        <!ELEMENT tr (th|td)+>
+        <!ELEMENT th (#PCDATA)>
+        <!ELEMENT td (#PCDATA|a|b|br|code|note)*>
+        <!ELEMENT br (#PCDATA)>
+        <!ELEMENT var (#PCDATA)>
+        <!ELEMENT code (#PCDATA|var)*>
+        <!ELEMENT note (#PCDATA|a|var|code)*>
+        <!ELEMENT img (#PCDATA)>
+        <!ELEMENT imgThumb (#PCDATA)>
+        <!ELEMENT a (#PCDATA)>
+        <!ELEMENT text (#PCDATA|table|a|ul|ol|br|var|code|note|img|imgThumb)*>
+        <!ELEMENT b (#PCDATA)>
+        <!ELEMENT ul (li)+>
+        <!ELEMENT ol (li)+>
+        <!ELEMENT li (#PCDATA|a|var)*>
         <!ATTLIST heading id ID #REQUIRED>
+        <!ATTLIST a href CDATA #IMPLIED>
+        <!ATTLIST a target CDATA #IMPLIED>
+        <!ATTLIST img src CDATA #REQUIRED>
+        <!ATTLIST table class CDATA #IMPLIED>
+        <!ATTLIST td class CDATA #IMPLIED>
+        <!ATTLIST td nowrap CDATA #FIXED "nowrap">
+        <!ATTLIST imgThumb src CDATA #REQUIRED>
+        <!ATTLIST imgThumb alt CDATA #IMPLIED>
+        <!ATTLIST imgThumb width CDATA #IMPLIED>
         ]>
 <document>
     <title>JSCover User Manual</title>
@@ -382,7 +406,7 @@ fs.write("target/jscoverage.json", json, 'w');
         <heading id="usage">Usage</heading>
         <section>
             <item>
-                <heading id="usage">General</heading>
+                <heading id="usageGeneral">General</heading>
                 <text>
                     <code>java -jar JSCover-all.jar [OPTIONS]...</code>
                     <code>java -jar JSCover.jar [OPTIONS]...</code>
@@ -527,6 +551,11 @@ fs.write("target/jscoverage.json", json, 'w');
                             <td>--proxy</td>
                             <td>N/A</td>
                             <td>Run in proxy mode</td>
+                        </tr>
+                        <tr>
+                            <td>--save-json-only</td>
+                            <td>N/A</td>
+                            <td>Save only the coverage data, jscoverage.json</td>
                         </tr>
                         <tr>
                             <td>
@@ -793,24 +822,22 @@ fs.write("target/jscoverage.json", json, 'w');
                 </text>
                 <text>
                     <table class="noBorder">
-                        <tbody>
-                            <tr>
-                                <td>
+                        <tr>
+                            <td>
 <code><var>SOURCE-DIRECTORY</var>/
     dir/
         index.html
         script.js</code>
-                                </td>
-                                <td class="arrow">&#8594;</td>
-                                <td>
+                            </td>
+                            <td class="arrow">&#8594;</td>
+                            <td>
 <code><var>DESTINATION-DIRECTORY</var>/
     dir/
     index.html
     script.js [instrumented]
     jscoverage.html</code>
-                                </td>
-                            </tr>
-                        </tbody>
+                            </td>
+                        </tr>
                     </table>
                 </text>
                 <text>
@@ -824,22 +851,20 @@ fs.write("target/jscoverage.json", json, 'w');
                 </text>
                 <text>
                     <table class="noBorder">
-                        <tbody>
-                            <tr>
-                                <td>
+                        <tr>
+                            <td>
 <code>doc/example/
     index.html
     script.js</code>
-                                </td>
-                                <td class="arrow">&#8594;</td>
-                                <td>
+                            </td>
+                            <td class="arrow">&#8594;</td>
+                            <td>
 <code>doc/instrumented/
     index.html
     script.js [instrumented]
     jscoverage.html</code>
-                                </td>
-                            </tr>
-                        </tbody>
+                            </td>
+                        </tr>
                     </table>
                 </text>
             </item>
@@ -1122,9 +1147,21 @@ fs.write("target/jscoverage.json", json, 'w');
         <heading id="execModes">Execution Modes</heading>
         <section>
             <item>
+                <heading id="html5LocalStorage">LocalStorage Mode</heading>
+                <text>
+                    This mode avoids iframes and JavaScript-opened windows.
+                    See the <a href="#localStorage">HTML5 Local Storage Switch</a>
+                    section above.
+                </text>
+                <text>
+                    Whilst this mode adds some overhead serializing and deserializing the coverage data
+                    between page loads, it is the least intrusive in terms of affecting existing tests.
+                </text>
+            </item>
+            <item>
                 <heading id="iframeMode">IFrame Mode</heading>
                 <text>
-                    This is the most commonly used mode, and is described in the
+                    After LocalStorage, this is the most commonly used mode, and is described in the
                     <a href="#gettingStarted">Getting Started</a>
                     section above.
                 </text>
@@ -1172,14 +1209,6 @@ fs.write("target/jscoverage.json", json, 'w');
                 </text>
                 <text>Note that you must use a window.open call; simply making a link to jscoverage.html is not
                     sufficient.
-                </text>
-            </item>
-            <item>
-                <heading id="html5LocalStorage">LocalStorage Mode</heading>
-                <text>
-                    This mode avoids iframes and JavaScript-opened windows.
-                    See the <a href="#localStorage">HTML5 Local Storage Switch</a>
-                    section above.
                 </text>
             </item>
             <item>
