@@ -593,6 +593,7 @@ public class IoUtils {
     }
 
     public String getRelativePath(File file1, File file2) {
+        logger.log(Level.FINEST, "Get path ''{0}'' relative to ''{1}''", new Object[]{file1, file2});
         if (file1.equals(file2))
             return "";
         return file1.getAbsolutePath().substring(file2.getAbsolutePath().length()+File.separator.length()).replaceAll("\\\\","/");
