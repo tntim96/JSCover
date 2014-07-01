@@ -3,7 +3,9 @@
   * Add `--save-json-only` to only save coverage data (https://github.com/tntim96/JSCover/issues/142)
   * Allow merging if no `original-src` directory exists (https://github.com/tntim96/JSCover/issues/142)
   * Include `jscoverage-clear-local-storage.html` in file-system output if using HTML5 localStorage
-  * Internal: Fix tests failing with non-english locale (https://github.com/tntim96/JSCover/issues/141)
+  * Internal:
+    * Fix tests failing with non-english locale (https://github.com/tntim96/JSCover/issues/141)
+    * Remove checked exception from public API
 
 1.0.11 / 2014-06-05
 ==================
@@ -25,9 +27,10 @@
   * Fix Content-Length return wrong length (https://github.com/tntim96/JSCover/issues/129)
   * Exclude dependencies from Maven JSCover JAR
   * Log program arguments
-  * Internal: Upgrade HTMLUnit to 2.14
-              Swap from Selenium to HTMLUnit for localStorage test
-              Add drone.io CI
+  * Internal:
+    * Upgrade HTMLUnit to 2.14
+    * Swap from Selenium to HTMLUnit for localStorage test
+    * Add drone.io CI
 
 1.0.7 / 2014-02-22
 ==================
@@ -35,10 +38,11 @@
   * Fix handling of 'N/A' when sorting by line coverage (https://github.com/tntim96/JSCover/issues/115)
   * Proxy Mode: Add support for other HTTP methods (https://github.com/tntim96/JSCover/issues/117)
   * FireFox 27.0.1 Request To http://localhost:8080/ failing (https://github.com/tntim96/JSCover/issues/118)
-  * Internal: Upgrade selenium to 2.40
-              Use tntim96 Maven repository version of Rhino
-              Add more UI tests
-              Remove need for user to add maven-ant-tasks-2.1.3.jar to their ant lib directory
+  * Internal:
+    * Upgrade selenium to 2.40
+    * Use tntim96 Maven repository version of Rhino
+    * Add more UI tests
+    * Remove need for user to add maven-ant-tasks-2.1.3.jar to their ant lib directory
 
 1.0.6 / 2013-11-03
 ==================
@@ -64,8 +68,9 @@
   * Add enhanced logging using JUL (https://github.com/tntim96/JSCover/issues/88)
   * Add '--only-instrument-reg=URL' switch (https://github.com/tntim96/JSCover/pull/89)
   * Fix POSTs hanging due to persistent connections (https://github.com/tntim96/JSCover/issues/91)
-  * Internal: Move WebDriver samples to a separate project
-              Set up infrastructure to remove some code duplication
+  * Internal:
+    * Move WebDriver samples to a separate project
+    * Set up infrastructure to remove some code duplication
 
 1.0.2 / 2013-07-27
 ==================
@@ -86,8 +91,9 @@
   * Reduce branch data JSON size (https://github.com/tntim96/JSCover/issues/73)
   * Add 'Stop Server' Button to UI (https://github.com/tntim96/JSCover/issues/74)
   * Allow `-fs` to be last option (https://github.com/tntim96/JSCover/issues/71)
-  * Internal: Move common JavaScript functions to common JavaScript file
-              Remove unused JavaScript functions
+  * Internal:
+    * Move common JavaScript functions to common JavaScript file
+    * Remove unused JavaScript functions
 
 0.3.1 / 2013-06-28
 ==================
@@ -120,9 +126,10 @@
   * Fix MIME image mappings
   * Fix proxy report for viewing source (https://github.com/tntim96/JSCover/issues/53)
   * Fix "Refused to set unsafe header 'Content-Length'" (https://github.com/tntim96/JSCover/issues/54)
-  * Internal: Upgrade to HTMLUnit 2.12
-              Add tests for headers in proxy for '.js' files (https://github.com/tntim96/JSCover/issues/49)
-              Add PhantomJS samples
+  * Internal:
+    * Upgrade to HTMLUnit 2.12
+    * Add tests for headers in proxy for '.js' files (https://github.com/tntim96/JSCover/issues/49)
+    * Add PhantomJS samples
 
 0.2.5 / 2013-03-04
 ==================
@@ -158,10 +165,10 @@
   * Add report merging command line interface
   * Improve unloaded JavaScript parsing error logging issue https://github.com/tntim96/JSCover/issues/27
   * Internal:
-        Load original JS source from file-system instead of JSON for report viewing
-        Remove source from JSON
-        Alter _$jscoverage object and JSON to elegantly accommodate branch (and other) properties
-        Alter JSONDataMerger.mergeJSONCoverageStrings to accept and array of coverage strings to merge
+    * Load original JS source from file-system instead of JSON for report viewing
+    * Remove source from JSON
+    * Alter _$jscoverage object and JSON to elegantly accommodate branch (and other) properties
+    * Alter JSONDataMerger.mergeJSONCoverageStrings to accept and array of coverage strings to merge
 
 0.1.1 / 2012-12-02
 ==================
@@ -172,7 +179,10 @@
 ==================
   * Add infrastructure to generate other report formats with XML Summary
   * Add JSON to LCov coverage data conversion
-  * Minor - Update examples with v0.1.0-RC3. Update help text to use 'JSCover-all.jar'. Update YUI3/QUnit examples.
+  * Internal: 
+    * Update examples with v0.1.0-RC3
+    * Update help text to use 'JSCover-all.jar'
+    * Update YUI3/QUnit examples
 
 0.1.0-RC3 / 2012-11-23
 ==================
@@ -228,7 +238,9 @@
   * Add '--include-unloaded-js', only for non-proxy web-server, to scan beneath www-root for unloaded/untested JS files
   * Leading slash in --no-instrument and --exclude are ignored for consistent internal handling.
   * Double forward slashes in URLs replaced with single forward slashes
-  * Internal - Replace URL based proxy with sockets. All headers now forwarded as received.
+  * Internal:
+    * Replace URL based proxy with sockets
+    * All headers now forwarded as received.
 
 0.0.6 / 2012-10-17
 ==================
@@ -239,13 +251,18 @@
 ==================
   * Add proxy support (flawed and download has been replaced with 0.0.6)
   * Message 'Report stored at' changed to 'Coverage data stored at' (important for HtmlUnit/Selenium)
-  * Internal - Swap from NanoHTTPD to JSCover's own web-server - index.htm(l) no longer served automatically
+  * Internal:
+    * Swap from NanoHTTPD to JSCover's own web-server
+    * index.htm(l) no longer served automatically
 
 0.0.4 / 2012-10-12
 ==================
   * Include JSCover-all.jar, containing all JAR dependencies, in distribution
   * Fix https://github.com/tntim96/JSCover/issues/2, https://bugzilla.mozilla.org/show_bug.cgi?id=800616
-  * Internal - More tests, remove Apache commons JARs, upgrade Mockito, Inverted mode test
+  * Internal:
+    * More tests. Inverted mode test
+    * Remove Apache commons JARs
+    * Upgrade Mockito
 
 0.0.3 / 2012-10-09
 ==================
