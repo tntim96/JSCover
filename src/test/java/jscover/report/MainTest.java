@@ -342,7 +342,7 @@ Public License instead of this License.
 
 package jscover.report;
 
-import jscover.MainHelper;
+import jscover.ExitHelper;
 import jscover.report.coberturaxml.CoberturaData;
 import jscover.report.coberturaxml.CoberturaXmlGenerator;
 import jscover.report.lcov.LCovGenerator;
@@ -380,7 +380,7 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class MainTest {
     private Main main = new Main();
-    private @Mock MainHelper mainHelper;
+    private @Mock ExitHelper exitHelper;
     private @Mock XMLSummary xmlSummary;
     private @Mock CoberturaXmlGenerator coberturaXmlGenerator;
     private @Mock LCovGenerator lCovGenerator;
@@ -390,7 +390,7 @@ public class MainTest {
 
     @Before
     public void setUp() {
-        ReflectionUtils.setField(main, "mainHelper", mainHelper);
+        ReflectionUtils.setField(main, "exitHelper", exitHelper);
         ReflectionUtils.setField(main, "xmlSummary", xmlSummary);
         ReflectionUtils.setField(main, "coberturaXmlGenerator", coberturaXmlGenerator);
         ReflectionUtils.setField(main, "lCovGenerator", lCovGenerator);
@@ -403,7 +403,7 @@ public class MainTest {
     public void shouldExitIfInvalid() throws IOException {
         given(config.isInvalid()).willReturn(true);
         main.runMain(new String[]{});
-        verify(mainHelper).exit(1);
+        verify(exitHelper).exit(1);
     }
 
     @Test
@@ -416,7 +416,7 @@ public class MainTest {
     @Test
     public void shouldExitUnknown() throws IOException {
         main.runMain(new String[]{});
-        verify(mainHelper).exit(1);
+        verify(exitHelper).exit(1);
     }
 
     @Test
@@ -424,7 +424,7 @@ public class MainTest {
         given(config.showHelp()).willReturn(true);
         main.runMain(new String[]{});
         verify(config).getHelpText();
-        verifyZeroInteractions(mainHelper);
+        verifyZeroInteractions(exitHelper);
     }
 
     @Test
@@ -443,7 +443,7 @@ public class MainTest {
 
         File lcovFile = new File(jsonDirectory, "jscover.lcov");
         verify(lCovGenerator).saveData(list.values(), srcDir.getCanonicalPath(), lcovFile);
-        verifyZeroInteractions(mainHelper);
+        verifyZeroInteractions(exitHelper);
     }
 
     @Test
@@ -477,7 +477,7 @@ public class MainTest {
         File xmlFile = new File(jsonDirectory, "cobertura-coverage.xml");
         verify(coberturaXmlGenerator).generateXml(argThat(coberturaDataMatcher), argThat(is(srcDir.getCanonicalPath())), argThat(is("version")));
         verify(ioUtils).copy("<xml/>", xmlFile);
-        verifyZeroInteractions(mainHelper);
+        verifyZeroInteractions(exitHelper);
     }
 
     @Test
@@ -522,7 +522,7 @@ public class MainTest {
         };
 
         verify(xmlSummary).saveSummary(argThat(coverableMatcher), argThat(fileMatcher), argThat(is("version")));
-        verifyZeroInteractions(mainHelper);
+        verifyZeroInteractions(exitHelper);
     }
 
     @Test
@@ -575,6 +575,6 @@ public class MainTest {
             File srcDest = new File(destDir, reportSrcSubDir);
             verify(ioUtils).copyDir(src2, srcDest);
         }
-        verifyZeroInteractions(mainHelper);
+        verifyZeroInteractions(exitHelper);
     }
 }

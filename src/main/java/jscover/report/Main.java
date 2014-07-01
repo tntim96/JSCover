@@ -342,7 +342,7 @@ Public License instead of this License.
 
 package jscover.report;
 
-import jscover.MainHelper;
+import jscover.ExitHelper;
 import jscover.report.coberturaxml.CoberturaData;
 import jscover.report.coberturaxml.CoberturaXmlGenerator;
 import jscover.report.lcov.LCovGenerator;
@@ -368,7 +368,7 @@ public class Main {
         properties.load(jscover.Main.class.getResourceAsStream("/jscover/configuration.properties"));
     }
 
-    private MainHelper mainHelper = new MainHelper();
+    private ExitHelper exitHelper = new ExitHelper();
     private XMLSummary xmlSummary = new XMLSummary();
     private CoberturaXmlGenerator coberturaXmlGenerator = new CoberturaXmlGenerator();
     private LCovGenerator lCovGenerator = new LCovGenerator();
@@ -390,7 +390,7 @@ public class Main {
     private void runReport() throws IOException {
         if (config.isInvalid()) {
             System.out.println(config.getHelpText());
-            mainHelper.exit(1);
+            exitHelper.exit(1);
         } else if (config.showHelp()) {
             System.out.println(config.getHelpText());
         } else if (config.getReportFormat() == ReportFormat.LCOV) {
@@ -403,7 +403,7 @@ public class Main {
             mergeReports();
         } else {
             System.out.println(config.getHelpText());
-            mainHelper.exit(1);
+            exitHelper.exit(1);
         }
     }
 

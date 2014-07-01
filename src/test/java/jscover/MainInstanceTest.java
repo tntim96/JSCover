@@ -358,6 +358,8 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.sameInstance;
@@ -366,10 +368,12 @@ import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verifyZeroInteractions;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MainInstanceTest {
     private Main main = new Main();
+    private @Mock ExitHelper exitHelper;
     private @Mock MainHelper mainHelper;
     private @Mock WebDaemon webDaemon;
     private @Mock FileSystemInstrumenter fileSystemInstrumenter;
@@ -377,6 +381,7 @@ public class MainInstanceTest {
 
     @Before
     public void setUp() {
+        ReflectionUtils.setField(main, "exitHelper", exitHelper);
         ReflectionUtils.setField(main, "mainHelper", mainHelper);
         ReflectionUtils.setField(main, "webDaemon", webDaemon);
         ReflectionUtils.setField(main, "fileSystemInstrumenter", fileSystemInstrumenter);
@@ -384,39 +389,50 @@ public class MainInstanceTest {
     }
 
     @Test
+    public void shouldWrapIoException() throws IOException {
+        doThrow(new IOException("Ouch!")).when(mainHelper).checkDependantClasses(anyList(), any(String.class));
+
+        try {
+            main.initialize();
+        } catch(RuntimeException e) {
+            assertThat(e.getMessage(), equalTo("java.io.IOException: Ouch!"));
+        }
+    }
+
+    @Test
     public void shouldExitWithError() throws IOException, InterruptedException {
         main.runMain(new String[]{"--unknown"});
         verifyZeroInteractions(webDaemon);
         verifyZeroInteractions(fileSystemInstrumenter);
-        verify(mainHelper).exit(1);
+        verify(exitHelper).exit(1);
     }
 
     @Test
     public void shouldPrintVersion() throws IOException, InterruptedException {
         main.runMain(new String[]{"-V"});
         verifyZeroInteractions(webDaemon);
-        verifyZeroInteractions(mainHelper);
+        verifyZeroInteractions(exitHelper);
     }
 
     @Test
     public void shouldPrintCharSets() throws IOException, InterruptedException {
         main.runMain(new String[]{"-h","encoding"});
         verifyZeroInteractions(webDaemon);
-        verifyZeroInteractions(mainHelper);
+        verifyZeroInteractions(exitHelper);
     }
 
     @Test
     public void shouldShowWebServerHelp() throws IOException, InterruptedException {
         main.runMain(new String[]{"-ws", "-h"});
         verifyZeroInteractions(webDaemon);
-        verifyZeroInteractions(mainHelper);
+        verifyZeroInteractions(exitHelper);
     }
 
     @Test
     public void shouldShowFileSystemHelp() throws IOException, InterruptedException {
         main.runMain(new String[]{"-ws", "-h"});
         verifyZeroInteractions(fileSystemInstrumenter);
-        verifyZeroInteractions(mainHelper);
+        verifyZeroInteractions(exitHelper);
     }
 
     @Test
@@ -434,7 +450,7 @@ public class MainInstanceTest {
             }
         };
         verify(webDaemon, times(1)).start(argThat(matcher));
-        verifyZeroInteractions(mainHelper);
+        verifyZeroInteractions(exitHelper);
     }
 
     @Test
@@ -452,7 +468,7 @@ public class MainInstanceTest {
             }
         };
         verify(fileSystemInstrumenter, times(1)).run(argThat(matcher));
-        verifyZeroInteractions(mainHelper);
+        verifyZeroInteractions(exitHelper);
     }
 
     @Test
@@ -470,7 +486,7 @@ public class MainInstanceTest {
             }
         };
         verify(stdOutInstrumenter, times(1)).run(argThat(matcher));
-        verifyZeroInteractions(mainHelper);
+        verifyZeroInteractions(exitHelper);
     }
 
     @Test
@@ -487,7 +503,7 @@ public class MainInstanceTest {
         } catch(RuntimeException rte) {
             assertThat((InterruptedException)rte.getCause(), sameInstance(toBeThrown));
         }
-        verifyZeroInteractions(mainHelper);
+        verifyZeroInteractions(exitHelper);
     }
 
     @Test

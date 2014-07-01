@@ -342,8 +342,31 @@
 
 package jscover;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
+
+import static java.lang.String.format;
+
 public class MainHelper {
-    public void exit(int statusCode) {
-        System.exit(statusCode);
+    public void checkDependantClasses(List<String> dependantClasses, String manifestName) throws IOException {
+        try {
+            for (String dependantClass : dependantClasses) {
+                Class.forName(dependantClass);
+            }
+        } catch (ClassNotFoundException e) {
+            Manifest mf = new Manifest(getClass().getResourceAsStream("/META-INF/" + manifestName));
+            Attributes mainAttributes = mf.getMainAttributes();
+            String name = mainAttributes.get(Attributes.Name.IMPLEMENTATION_TITLE).toString();
+            if (mainAttributes.containsKey(Attributes.Name.CLASS_PATH)) {
+                String classPathJARs = mainAttributes.get(Attributes.Name.CLASS_PATH).toString();
+                String message = "%nEnsure these JARs are in the same directory as %s.jar:%n%s";
+                throw new IllegalStateException(format(message, name , classPathJARs), e);
+            } else {
+                String message = "Could not find the '%s' attribute in the manifest '%s'";
+                throw new IllegalStateException(format(message, Attributes.Name.CLASS_PATH, manifestName), e);
+            }
+        }
     }
 }

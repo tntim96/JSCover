@@ -145,7 +145,7 @@
 			<ignore regex="org.apache.log4j.*" />
 			<fileset dir="${classes.main.dir}">
 				<include name="**/*.class" />
-				<exclude name="jscover/MainHelper.class" />
+				<exclude name="jscover/ExitHelper.class" />
                 <exclude name="**/SimpleWebServer.class" />
 			</fileset>
 			<classpath>

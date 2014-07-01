@@ -382,11 +382,7 @@ public class HtmlUnitProxyTest extends HtmlUnitServerTest {
     public static void setUpOnce() throws IOException {
         proxyServer = new Thread(new Runnable() {
             public void run() {
-                try {
-                    main.runMain(args);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                main.runMain(args);
             }
         });
         proxyServer.start();

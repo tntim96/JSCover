@@ -358,12 +358,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.SortedMap;
-import java.util.jar.Attributes;
-import java.util.jar.Manifest;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static java.lang.String.format;
 
 public class Main {
     private static final Logger logger = Logger.getLogger(Main.class.getName());
@@ -382,34 +378,19 @@ public class Main {
     private List<String> dependantClasses = new ArrayList<String>() {{
         add("org.mozilla.javascript.ast.AstNode");
     }};
+    private ExitHelper exitHelper = new ExitHelper();
     private MainHelper mainHelper = new MainHelper();
     private WebDaemon webDaemon = new WebDaemon();
     private FileSystemInstrumenter fileSystemInstrumenter = new FileSystemInstrumenter();
     private StdOutInstrumenter stdOutInstrumenter = new StdOutInstrumenter();
     private IoUtils ioUtils = IoUtils.getInstance();
 
-    public void initialize() throws IOException {
-        properties.load(Main.class.getResourceAsStream("configuration.properties"));
-        checkDependantClasses();
-    }
-
-    private void checkDependantClasses() throws IOException {
+    public void initialize() {
         try {
-            for (String dependantClass : dependantClasses) {
-                Class.forName(dependantClass);
-            }
-        } catch (ClassNotFoundException e) {
-            Manifest mf = new Manifest(getClass().getResourceAsStream("/META-INF/" + manifestName));
-            Attributes mainAttributes = mf.getMainAttributes();
-            String name = mainAttributes.get(Attributes.Name.IMPLEMENTATION_TITLE).toString();
-            if (mainAttributes.containsKey(Attributes.Name.CLASS_PATH)) {
-                String classPathJARs = mainAttributes.get(Attributes.Name.CLASS_PATH).toString();
-                String message = "%nEnsure these JARs are in the same directory as %s.jar:%n%s";
-                throw new IllegalStateException(format(message, name , classPathJARs), e);
-            } else {
-                String message = "Could not find the '%s' attribute in the manifest '%s'";
-                throw new IllegalStateException(format(message, Attributes.Name.CLASS_PATH, manifestName), e);
-            }
+            properties.load(Main.class.getResourceAsStream("configuration.properties"));
+            mainHelper.checkDependantClasses(dependantClasses, manifestName);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -429,7 +410,7 @@ public class Main {
         webDaemon.stop();
     }
 
-    public void runMain(String[] args) throws IOException {
+    public void runMain(String[] args) {
         logger.log(Level.INFO, "Args: {0}", getArgsLogger(args));
         parse(args);
         initialize();
@@ -437,7 +418,7 @@ public class Main {
         if (LoggerUtils.getInstance().isExceptionThrown())
             exitStatus = 1;
         if (exitStatus != 0)
-            mainHelper.exit(exitStatus);
+            exitHelper.exit(exitStatus);
     }
 
     Object getArgsLogger(final String[] args) {

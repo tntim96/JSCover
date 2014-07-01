@@ -401,11 +401,7 @@ public class HtmlUnitUITest {
         FileUtils.deleteDirectory(reportDir);
         server = new Thread(new Runnable() {
             public void run() {
-                try {
-                    main.runMain(args);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                main.runMain(args);
             }
         });
         server.start();
