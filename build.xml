@@ -267,6 +267,9 @@
         <java jar="${dist.dir}/${ant.project.name}.jar" fork="true" spawn="true">
             <arg line="-ws --port=9080"/>
         </java>
+        <waitfor maxwait="5" maxwaitunit="second" checkevery="100" checkeveryunit="millisecond" timeoutproperty="failed">
+            <http url="http://localhost:9080/jscoverage.html"/>
+        </waitfor>
         <get maxtime="2" src="http://localhost:9080/stop" dest="${build.dir}/stop.txt"/>
     </target>
 
@@ -274,6 +277,9 @@
         <java jar="${dist.dir}/${ant.project.name}-all.jar" fork="true" spawn="true">
             <arg line="-ws --port=9080"/>
         </java>
+        <waitfor maxwait="5" maxwaitunit="second" checkevery="100" checkeveryunit="millisecond" timeoutproperty="failed">
+            <http url="http://localhost:9080/jscoverage.html"/>
+        </waitfor>
         <get maxtime="2" src="http://localhost:9080/stop" dest="${build.dir}/stop.txt"/>
     </target>
 
