@@ -91,5 +91,22 @@ document.write('<a href="'+link+'" target="_blank">All Downloads</a><br/>');
 //-->
 </script>
 
+<h1>Release Steps</h1>
+<ol>
+    <li>Update release version (i.e. no `-SNAPSHOT`) in configuration.properties and pom.xml</li>
+    <li>Update version in web pages and download links and labels</li>
+    <li>Update release date in History.md</li>
+    <li>Make sure working directory is clear of changes</li>
+    <li>Make sure all tests pass and build sourceforge release (ant release)</li>
+    <li>Tag with version</li>
+    <li>Upload sourceforge release</li>
+    <li>Build Maven files (ant generate-files)</li>
+    <li>Sign files (gpg -ab filename)</li>
+    <li>Build Maven bundle (ant maven-bundle), test and release</li>
+    <li>Upload websites</li>
+    <li>Update snapshot version in configuration.properties and pom.xml</li>
+    <li>Update JSCover-maven-plugin</li>
+</ol>
+
 </body>
 </html>

@@ -1,4 +1,4 @@
-1.0.12 / 2014-??-??
+1.0.12 / 2014-07-02
 ==================
   * Add `--save-json-only` to only save coverage data (https://github.com/tntim96/JSCover/issues/142)
   * Allow merging if no `original-src` directory exists (https://github.com/tntim96/JSCover/issues/142)
