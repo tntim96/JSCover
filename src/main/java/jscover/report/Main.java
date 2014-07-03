@@ -364,8 +364,8 @@ public class Main {
 
     public static final Properties properties = new Properties();
 
-    public void initialize() throws IOException {
-        properties.load(jscover.Main.class.getResourceAsStream("/jscover/configuration.properties"));
+    public void initialize() {
+        ioUtils.loadProperties(properties, jscover.Main.class.getResourceAsStream("/jscover/configuration.properties"));
     }
 
     private ExitHelper exitHelper = new ExitHelper();
@@ -437,10 +437,10 @@ public class Main {
         ioUtils.copy(jsonDataMerger.toJSON(mergedMap), mergedJson);
     }
 
-    public void generateLCovDataFile() throws IOException {
+    public void generateLCovDataFile() {
         String json = ioUtils.loadFromFileSystem(new File(config.getJsonDirectory(), "jscoverage.json"));
         File lcovFile = new File(config.getJsonDirectory(), "jscover.lcov");
-        lCovGenerator.saveData(jsonDataMerger.jsonToMap(json).values(), config.getSourceDirectory().getCanonicalPath(), lcovFile);
+        lCovGenerator.saveData(jsonDataMerger.jsonToMap(json).values(), ioUtils.getCanonicalPath(config.getSourceDirectory()), lcovFile);
     }
 
     public void saveXmlSummary() {
@@ -449,9 +449,9 @@ public class Main {
         xmlSummary.saveSummary(summaryData, config.getJsonDirectory(), config.getVersion());
     }
 
-    public void saveCoberturaXml() throws IOException {
+    public void saveCoberturaXml() {
         String json = ioUtils.loadFromFileSystem(new File(config.getJsonDirectory(), "jscoverage.json"));
-        String xml = coberturaXmlGenerator.generateXml(new CoberturaData(jsonDataMerger.jsonToMap(json).values()), config.getSourceDirectory().getCanonicalPath(), config.getVersion());
+        String xml = coberturaXmlGenerator.generateXml(new CoberturaData(jsonDataMerger.jsonToMap(json).values()), ioUtils.getCanonicalPath(config.getSourceDirectory()), config.getVersion());
         File dest = new File(config.getJsonDirectory(), "cobertura-coverage.xml");
         ioUtils.copy(xml, dest);
     }

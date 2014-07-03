@@ -345,6 +345,7 @@ package jscover.util;
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.Charset;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -622,6 +623,22 @@ public class IoUtils {
                 copyDir(new File(src, file), new File(dest, file));
         else
             ioUtils.copy(src, dest);
+    }
+
+    public String getCanonicalPath(File file) {
+        try {
+            return file.getCanonicalPath();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void loadProperties(Properties properties, InputStream is) {
+        try {
+            properties.load(is);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public int getDataIndex(byte[] bytes, Charset charset) {

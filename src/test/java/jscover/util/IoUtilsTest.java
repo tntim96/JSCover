@@ -352,6 +352,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.Charset;
+import java.util.Properties;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.*;
@@ -621,6 +622,45 @@ public class IoUtilsTest {
         assertThat(ioUtils.getRelativePath(new File("target/level1/test.txt"), new File("target")), equalTo("level1/test.txt"));
         assertThat(ioUtils.getRelativePath(new File("target\\test.txt"), new File("target")), equalTo("test.txt"));
         assertThat(ioUtils.getRelativePath(new File("target"), new File("target")), equalTo(""));
+    }
+
+    @Test
+    public void shouldGetCanonicalPath() throws IOException {
+        File file = new File("target/test.txt");
+        assertThat(ioUtils.getCanonicalPath(file), equalTo(file.getCanonicalPath()));
+    }
+
+    @Test
+    public void shouldWrapCanonicalPathException() throws IOException {
+        File file = mock(File.class);
+        given(file.getCanonicalPath()).willThrow(new IOException("Ouch!"));
+        try {
+            ioUtils.getCanonicalPath(file);
+            fail("Expected exception");
+        } catch (RuntimeException e) {
+            assertThat(e.getMessage(), equalTo("java.io.IOException: Ouch!"));
+        }
+    }
+
+    @Test
+    public void shouldLoadProperties() throws IOException {
+        Properties properties = mock(Properties.class);
+        InputStream is = mock(InputStream.class);
+        ioUtils.loadProperties(properties, is);
+        verify(properties).load(is);
+    }
+
+    @Test
+    public void shouldWrapLoadPropertiesException() throws IOException {
+        Properties properties = mock(Properties.class);
+        InputStream is = mock(InputStream.class);
+        doThrow(new IOException("Ouch!")).when(properties).load(is);
+        try {
+            ioUtils.loadProperties(properties, is);
+            fail("Expected exception");
+        } catch (RuntimeException e) {
+            assertThat(e.getMessage(), equalTo("java.io.IOException: Ouch!"));
+        }
     }
 
     @Test

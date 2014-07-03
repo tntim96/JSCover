@@ -362,10 +362,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.io.InputStream;
+import java.util.*;
 
 import static jscover.Main.reportSrcSubDir;
 import static org.hamcrest.CoreMatchers.is;
@@ -436,6 +434,7 @@ public class MainTest {
         given(config.getSourceDirectory()).willReturn(srcDir);
         String json = "json";
         given(ioUtils.loadFromFileSystem(new File(jsonDirectory, "jscoverage.json"))).willReturn(json);
+        doReturn(srcDir.getCanonicalPath()).when(ioUtils).getCanonicalPath(srcDir);
         SortedMap<String, FileData> list = new TreeMap<String, FileData>();
         given(jsonDataMerger.jsonToMap(json)).willReturn(list);
 
@@ -456,6 +455,7 @@ public class MainTest {
         given(config.getSourceDirectory()).willReturn(srcDir);
         String json = "json";
         given(ioUtils.loadFromFileSystem(new File(jsonDirectory, "jscoverage.json"))).willReturn(json);
+        doReturn(srcDir.getCanonicalPath()).when(ioUtils).getCanonicalPath(srcDir);
         SortedMap<String, FileData> list = new TreeMap<String, FileData>();
         given(jsonDataMerger.jsonToMap(json)).willReturn(list);
         given(coberturaXmlGenerator.generateXml(Matchers.<CoberturaData>any(), anyString(), anyString())).willReturn("<xml/>");

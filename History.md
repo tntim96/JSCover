@@ -1,3 +1,7 @@
+1.0.13 / 2014-??-??
+==================
+  * Internal: Remove checked exception from public API
+
 1.0.12 / 2014-07-02
 ==================
   * Add `--save-json-only` to only save coverage data (https://github.com/tntim96/JSCover/issues/142)
