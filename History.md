@@ -1,5 +1,6 @@
 1.0.13 / 2014-??-??
 ==================
+  * Don't copy non-report files (https://github.com/tntim96/JSCover/issues/149)
   * Internal: Remove checked exception from public API
 
 1.0.12 / 2014-07-02

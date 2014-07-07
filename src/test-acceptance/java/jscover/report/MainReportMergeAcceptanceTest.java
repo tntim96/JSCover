@@ -344,14 +344,18 @@ package jscover.report;
 
 import jscover.util.IoUtils;
 import org.apache.commons.io.FileUtils;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Properties;
 
+import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 public class MainReportMergeAcceptanceTest {
     private IoUtils ioUtils = IoUtils.getInstance();
@@ -377,11 +381,30 @@ public class MainReportMergeAcceptanceTest {
     }
 
     @Test
+    public void shouldGenerateReportFiles() throws IOException {
+        Properties properties = new Properties();
+        properties.load(jscover.Main.class.getResourceAsStream("/jscover/configuration.properties"));
+        Main.main(args);
+        File jsCoverHtml = new File(reportDir12, "jscoverage.html");
+        assertThat(jsCoverHtml.exists(), is(true));
+        File jsCoverJS = new File(reportDir12, "jscoverage.js");
+        assertThat(jsCoverJS.exists(), is(true));
+        assertThat(ioUtils.loadFromFileSystem(jsCoverHtml), Matchers.containsString(properties.getProperty("version")));
+        assertThat(ioUtils.loadFromFileSystem(jsCoverJS), endsWith("\njscoverage_isReport = true;"));
+    }
+
+    @Test
+    public void shouldNotCopyExtraFiles() throws IOException {
+        ioUtils.copy(data1, new File(reportDir1, "dummy.html"));
+        Main.main(args);
+        assertThat(new File(reportDir12, "dummy.html").exists(), is(false));
+    }
+
+    @Test
     public void shouldMergeDataWithoutSource() throws IOException {
         String expected = ioUtils.loadFromClassPath("/jscover/report/jscoverage-select-1-3.json");
         Main.main(args);
         String merged = ioUtils.loadFromFileSystem(new File(reportDir12, "jscoverage.json"));
         assertThat(merged, equalTo(expected));
     }
-
 }

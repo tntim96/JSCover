@@ -347,6 +347,7 @@ import jscover.report.coberturaxml.CoberturaData;
 import jscover.report.coberturaxml.CoberturaXmlGenerator;
 import jscover.report.lcov.LCovGenerator;
 import jscover.report.xml.XMLSummary;
+import jscover.util.IoService;
 import jscover.util.IoUtils;
 
 import java.io.File;
@@ -374,6 +375,7 @@ public class Main {
     private LCovGenerator lCovGenerator = new LCovGenerator();
     private JSONDataMerger jsonDataMerger = new JSONDataMerger();
     private IoUtils ioUtils = IoUtils.getInstance();
+    private IoService ioService = new IoService(false);
     private ConfigurationForReport config = new ConfigurationForReport();
 
     public void setConfig(ConfigurationForReport config) {
@@ -408,15 +410,15 @@ public class Main {
     }
 
     private void mergeReports() {
-        File firstReportDir = config.getMergeDirs().get(0);
-        ioUtils.copyDir(firstReportDir, config.getMergeDestDir());
+        config.getMergeDestDir().mkdirs();
+        ioService.generateJSCoverFilesForWebServer(config.getMergeDestDir(), properties.getProperty("version"));
         mergeJSON();
         mergeOriginalSource();
     }
 
     private void mergeOriginalSource() {
         File srcDir = new File(config.getMergeDestDir(), jscover.Main.reportSrcSubDir);
-        for (int i = 1; i < config.getMergeDirs().size(); i++) {
+        for (int i = 0; i < config.getMergeDirs().size(); i++) {
             File jsOriginalSrc = new File(config.getMergeDirs().get(i), jscover.Main.reportSrcSubDir);
             if (jsOriginalSrc.exists())
                 ioUtils.copyDir(jsOriginalSrc, srcDir);

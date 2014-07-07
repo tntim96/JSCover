@@ -347,6 +347,7 @@ import jscover.report.coberturaxml.CoberturaData;
 import jscover.report.coberturaxml.CoberturaXmlGenerator;
 import jscover.report.lcov.LCovGenerator;
 import jscover.report.xml.XMLSummary;
+import jscover.util.IoService;
 import jscover.util.IoUtils;
 import jscover.util.ReflectionUtils;
 import org.apache.commons.io.FileUtils;
@@ -384,16 +385,19 @@ public class MainTest {
     private @Mock LCovGenerator lCovGenerator;
     private @Mock JSONDataMerger jsonDataMerger;
     private @Mock IoUtils ioUtils;
+    private @Mock IoService ioService;
     private @Mock ConfigurationForReport config;
 
     @Before
     public void setUp() {
+        Main.properties.setProperty("version", "theVersion");
         ReflectionUtils.setField(main, "exitHelper", exitHelper);
         ReflectionUtils.setField(main, "xmlSummary", xmlSummary);
         ReflectionUtils.setField(main, "coberturaXmlGenerator", coberturaXmlGenerator);
         ReflectionUtils.setField(main, "lCovGenerator", lCovGenerator);
         ReflectionUtils.setField(main, "jsonDataMerger", jsonDataMerger);
         ReflectionUtils.setField(main, "ioUtils", ioUtils);
+        ReflectionUtils.setField(main, "ioService", ioService);
         ReflectionUtils.setField(main, "config", config);
     }
 
@@ -542,11 +546,15 @@ public class MainTest {
         File dir2 = new File("target/dir2");
         mergeDirs.add(dir2);
         File destDir = new File("target/dest-dir");
-        File origSrc = new File(dir2, reportSrcSubDir);
-        if (hasOriginalSrc)
-            origSrc.mkdirs();
-        else
-            FileUtils.deleteDirectory(origSrc);
+        File origSrc1 = new File(dir1, reportSrcSubDir);
+        File origSrc2 = new File(dir2, reportSrcSubDir);
+        if (hasOriginalSrc) {
+            origSrc1.mkdirs();
+            origSrc2.mkdirs();
+        } else {
+            FileUtils.deleteDirectory(origSrc1);
+            FileUtils.deleteDirectory(origSrc2);
+        }
 
         given(config.isMerge()).willReturn(true);
         given(config.getMergeDestDir()).willReturn(destDir);
@@ -555,26 +563,27 @@ public class MainTest {
         given(ioUtils.loadFromFileSystem(new File(dir2, "jscoverage.json"))).willReturn("json2");
         SortedMap<String, FileData> mergedMap = new TreeMap<String, FileData>();
         given(jsonDataMerger.mergeJSONCoverageStrings("json1","json2")).willReturn(mergedMap);
-        given(jsonDataMerger.toJSON(mergedMap)).willReturn("mergedJSON");
+        given(jsonDataMerger.toJSON(argThat(sameInstance(mergedMap)))).willReturn("mergedJSON");
 
         main.runMain(new String[]{});
 
-        InOrder inOrder = inOrder(ioUtils);
+        InOrder inOrder = inOrder(ioService, ioUtils);
 
         //Verify JSON merging
         File mergedJson = new File(config.getMergeDestDir(), "jscoverage.json");
-        verify(ioUtils).copy("mergedJSON", mergedJson);
-
-        //Verify the merged JSON is copied after 1st directory is copied across
-        inOrder.verify(ioUtils).copyDir(dir1, destDir);
+        //Verify report files generated
+        inOrder.verify(ioService).generateJSCoverFilesForWebServer(config.getMergeDestDir(), "theVersion");
+        //Verify JSON copied
         inOrder.verify(ioUtils).copy("mergedJSON", mergedJson);
-
         //Verify src copying
         if (hasOriginalSrc) {
+            File src1 = new File(dir1, reportSrcSubDir);
             File src2 = new File(dir2, reportSrcSubDir);
             File srcDest = new File(destDir, reportSrcSubDir);
-            verify(ioUtils).copyDir(src2, srcDest);
+            inOrder.verify(ioUtils).copyDir(src1, srcDest);
+            inOrder.verify(ioUtils).copyDir(src2, srcDest);
         }
+
         verifyZeroInteractions(exitHelper);
     }
 }
