@@ -704,15 +704,15 @@
   </component>
   <component name="WebServicesPlugin" addRequiredLibraries="true" />
   <component name="libraryTable">
-    <library name="Maven: com.github.tntim96:rhino:1.7R5pre03">
+    <library name="Maven: com.github.tntim96:rhino:1.7R5pre04">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/github/tntim96/rhino/1.7R5pre03/rhino-1.7R5pre03.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/github/tntim96/rhino/1.7R5pre04/rhino-1.7R5pre04.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/com/github/tntim96/rhino/1.7R5pre03/rhino-1.7R5pre03-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/github/tntim96/rhino/1.7R5pre04/rhino-1.7R5pre04-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/github/tntim96/rhino/1.7R5pre03/rhino-1.7R5pre03-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/github/tntim96/rhino/1.7R5pre04/rhino-1.7R5pre04-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: com.ibm.icu:icu4j:2.6.1">

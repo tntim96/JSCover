@@ -28,7 +28,7 @@
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="jdk" jdkName="1.7" jdkType="JavaSDK" />
-    <orderEntry type="library" name="Maven: com.github.tntim96:rhino:1.7R5pre03" level="project" />
+    <orderEntry type="library" name="Maven: com.github.tntim96:rhino:1.7R5pre04" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: net.sourceforge.htmlunit:htmlunit:2.15" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: xalan:xalan:2.7.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: xalan:serializer:2.7.1" level="project" />
@@ -77,7 +77,7 @@
     <orderEntry type="module-library">
       <library name="Maven: com.sun:tools:0">
         <CLASSES>
-          <root url="jar://$APPLICATION_HOME_DIR$/jre/lib/tools.jar!/" />
+          <root url="jar:///usr/lib/jvm/java-7-openjdk-amd64/lib/tools.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

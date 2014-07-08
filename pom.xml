@@ -20,7 +20,7 @@ http://github.com/tntim96/rhino/
     <artifactId>JSCover</artifactId>
     <packaging>jar</packaging>
     <name>JSCover</name>
-    <version>1.0.13-SNAPSHOT</version>
+    <version>1.0.13</version>
     <description>JSCover is a tool that measures code coverage for JavaScript programs.</description>
     <url>http://tntim96.github.com/JSCover/</url>
     <licenses>
@@ -50,7 +50,7 @@ http://github.com/tntim96/rhino/
         <repository>
             <id>sonatype</id>
             <name>sonatype staging</name>
-            <url>https://oss.sonatype.org/content/repositories/comgithubtntim96-1047</url>
+            <url>https://oss.sonatype.org/content/repositories/comgithubtntim96-1059</url>
         </repository>
         -->
      </repositories>
@@ -73,7 +73,7 @@ http://github.com/tntim96/rhino/
         <dependency>
             <groupId>com.github.tntim96</groupId>
             <artifactId>rhino</artifactId>
-            <version>1.7R5pre03</version>
+            <version>1.7R5pre04</version>
         </dependency>
         <dependency>
             <groupId>net.sourceforge.htmlunit</groupId>
