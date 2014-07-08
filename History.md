@@ -1,5 +1,6 @@
 1.0.13 / 2014-??-??
 ==================
+  * Fix Java 5 compatibility (https://github.com/tntim96/JSCover/issues/150)
   * Don't copy non-report files (https://github.com/tntim96/JSCover/issues/149)
   * Internal: Remove checked exception from public API
 

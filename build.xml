@@ -95,7 +95,7 @@
         </jar>
     </target>
 
-    <target name="jar-all" depends="compile">
+    <target name="jar-all" depends="compile-acceptance-tests">
         <property name="tmpDir" value="${build.dir}/tmp"/>
         <mkdir dir="${tmpDir}"/>
         <unzip src="${com.github.tntim96:rhino:jar}" dest="${tmpDir}"/>
@@ -110,6 +110,22 @@
                 <attribute name="Main-Class" value="jscover.Main"/>
             </manifest>
         </jar>
+        <junit haltonfailure="yes" haltonerror="yes" failureProperty="test.failure" errorproperty="test.failure">
+            <classpath>
+                <path refid="classpath-main" />
+                <path refid="compile.classpath" />
+                <path refid="test.classpath" />
+            </classpath>
+            <formatter type="xml" />
+            <formatter type="brief" usefile="no" />
+            <batchtest fork="yes" todir="${report.test.dir}">
+                <fileset dir="${classes.test-acceptance.dir}">
+                    <include name="**/ClassVersionChecker.class" />
+                </fileset>
+            </batchtest>
+        </junit>
+        <antcall target="report-if-failed"/>
+        <fail if="test.failure"/>
     </target>
 
     <target name="mvn-install-local" depends="jar-all">
