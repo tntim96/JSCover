@@ -14,7 +14,7 @@ describe "SeleniumIde" do
 
   after(:each) do
     @driver.quit
-    @verification_errors.should == []
+    expect(@verification_errors).to eq([])
   end
 
   it "test_selenium_ide" do
