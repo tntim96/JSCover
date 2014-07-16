@@ -402,7 +402,7 @@ public class Main {
     private boolean isStdOut;
     private int exitStatus;
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         new Main().runMain(args);
     }
 
