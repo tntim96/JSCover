@@ -115,6 +115,12 @@
     </item>
     <item>
         <heading id="gettingStarted">Getting started</heading>
+        <text>
+            <note>
+                While these examples use iframes, this can be avoided by using the
+                <a href="#localStorage">HTML5 localStorage</a> switch.
+            </note>
+        </text>
         <section>
             <item>
                 <text>The best way to get started is to run the the examples included in the distribution.</text>
