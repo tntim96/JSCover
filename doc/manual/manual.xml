@@ -803,7 +803,6 @@ fs.write("target/jscoverage.json", json, 'w');
                             </td>
                         </tr>
                     </table>
-                    See the
                     See the <a href="#encoding">encoding section</a> above for specifying encoding.<br/>
                     See the <a href="#logging">logging section</a> for more information.
                 </text>
