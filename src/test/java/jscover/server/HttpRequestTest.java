@@ -404,6 +404,11 @@ public class HttpRequestTest {
         assertThat(new HttpRequest("/test%20space.html", null, null, 0, null).getPath(), equalTo("/test space.html"));
     }
 
+     @Test
+    public void shouldHandleSpecialCharsWithFullURL() {
+        assertThat(new HttpRequest("http://localhost/test%20space.html", null, null, 0, null).getPath(), equalTo("/test space.html"));
+    }
+
     @Test
     public void shouldNotSkipInstrumentationIfNoHeaders() {
         HttpRequest httpRequest = new HttpRequest("/test.js", null, null, 0, null);
@@ -431,8 +436,6 @@ public class HttpRequestTest {
         assertThat(new HttpRequest("test.js", null, null, 0, null).getRelativePath(), equalTo("test.js"));
         assertThat(new HttpRequest("/test.js", null, null, 0, null).getRelativePath(), equalTo("test.js"));
         assertThat(new HttpRequest("/js/test.js", null, null, 0, null).getRelativePath(), equalTo("js/test.js"));
-        assertThat(new HttpRequest("/js/a%20b.js", null, null, 0, null).getRelativePath(), equalTo("js/a b.js"));
-        assertThat(new HttpRequest("http://localhost/js/a%20b.js", null, null, 0, null).getRelativePath(), equalTo("js/a b.js"));
     }
 
     @Test
