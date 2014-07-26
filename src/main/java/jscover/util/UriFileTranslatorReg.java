@@ -360,10 +360,6 @@ public class UriFileTranslatorReg implements UriFileTranslator {
         return pattern;
     }
 
-    public String getReplacement() {
-        return replacement;
-    }
-
     public String convertUriToFile(String uri) {
         String filePath = pattern.matcher(uri).replaceAll(replacement);
         logger.log(Level.FINE, "Translated path from ''{0}'' to ''{1}''", new Object[]{uri, filePath});

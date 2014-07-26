@@ -367,17 +367,21 @@ public class HttpRequest {
         this.headers = headers;
         try {
             this.url = new URL(path);
-            this.path = url.getPath();
+            this.path = urlDecode(url.getPath());
         } catch (MalformedURLException e) {
-            try {
-                path = URLDecoder.decode(path, Charset.defaultCharset().name());
-            } catch (UnsupportedEncodingException e1) {
-                throw new RuntimeException(e1);
-            }
+            path = urlDecode(path);
             int index = path.indexOf("?");
             if (index > 0)
                 path = path.substring(0, index);
             this.path = path.replaceAll("//","/");
+        }
+    }
+
+    public static String urlDecode(String path) {
+        try {
+            return URLDecoder.decode(path, Charset.defaultCharset().name());
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
         }
     }
 

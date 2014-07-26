@@ -1,3 +1,7 @@
+1.0.14 / 2014-??-??
+==================
+  * Decode URI in proxy mode
+
 1.0.13 / 2014-07-08
 ==================
   * Fix Java 5 compatibility (https://github.com/tntim96/JSCover/issues/150)
