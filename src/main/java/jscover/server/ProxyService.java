@@ -369,7 +369,7 @@ public class ProxyService {
     protected void handleProxyRequest(HttpRequest request, OutputStream os, String method) {
         logger.log(FINE, "handleProxyRequest for {0}", request.getUrl());
         URL url = request.getUrl();
-        Socket socket;
+        Socket socket = null;
         InputStream remoteInputStream = null;
         OutputStream remoteOutputStream = null;
         try {
@@ -388,12 +388,13 @@ public class ProxyService {
         } finally {
             ioUtils.closeQuietly(remoteOutputStream);
             ioUtils.closeQuietly(remoteInputStream);
+            ioUtils.closeQuietly(socket);
         }
     }
 
     protected void handleProxyPostOrPut(HttpRequest request) {
         URL url = request.getUrl();
-        Socket socket;
+        Socket socket = null;
         InputStream remoteInputStream = null;
         OutputStream remoteOutputStream = null;
         try {
@@ -408,6 +409,7 @@ public class ProxyService {
         } finally {
             ioUtils.closeQuietly(remoteOutputStream);
             ioUtils.closeQuietly(remoteInputStream);
+            ioUtils.closeQuietly(socket);
         }
     }
 

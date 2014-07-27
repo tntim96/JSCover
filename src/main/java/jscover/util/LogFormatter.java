@@ -362,12 +362,14 @@ public class LogFormatter extends Formatter {
             pw.close();
             throwable = sw.toString();
         }
-
         String message = record.getMessage();
         if (record.getParameters() != null && record.getParameters().length > 0) {
             message = MessageFormat.format(record.getMessage(), record.getParameters());
         }
+        return getFormat(record, throwable, message);
+    }
 
+    private String getFormat(LogRecord record, String throwable, String message) {
         return String.format("%1$tY%1$tm%1$td %1$tk:%1$tM:%1$tS.%1$tL,%2$d,%3$s,\"%4$s\",%5$s,%6$s%n"
                 , new Date(record.getMillis())
                 , record.getThreadID()

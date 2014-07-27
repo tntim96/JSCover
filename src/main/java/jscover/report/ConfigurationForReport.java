@@ -423,11 +423,66 @@ public class ConfigurationForReport  extends Configuration {
     }
 
     public ConfigurationForReport parse(String[] args) {
+        if (parseArgs(args)) return this;
+
+        if (format && merge || (!format && !merge)) {
+            invalid = true;
+            showHelp = true;
+            return this;
+        }
+        if (merge) {
+            if (parseForMerge()) return this;
+        } else {//Must be format
+            if (parseForFormat(args)) return this;
+        }
+        return this;
+    }
+
+    private boolean parseForFormat(String[] args) {
+        if (reportFormat == LCOV || reportFormat == COBERTURAXML) {
+            if (args.length != 3) {
+                invalid = true;
+                showHelp = true;
+                return true;
+            }
+            jsonDirectory = getDirectory(args[args.length - 2]);
+            sourceDirectory = getDirectory(args[args.length - 1]);
+        } else {
+            if (args.length != 2) {
+                invalid = true;
+                showHelp = true;
+                return true;
+            }
+            jsonDirectory = getDirectory(args[args.length - 1]);
+        }
+        return false;
+    }
+
+    private boolean parseForMerge() {
+        if (mergeDirs.size() < 3) {
+            System.err.println("Must specify more than one directory to merge");
+            invalid = true;
+            showHelp = true;
+            return true;
+        }
+        mergeDestDir = mergeDirs.get(mergeDirs.size()-1);
+        mergeDirs.remove(mergeDestDir);
+        for (File mergeDir : mergeDirs) {
+            if (!isValidReportDirectory(mergeDir)) {
+                invalid = true;
+                showHelp = true;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean parseArgs(String[] args) {
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];
             if (arg.equals(HELP_PREFIX1) || arg.equals(HELP_PREFIX2)) {
                 showHelp = true;
-                return this;
+                return true;
             } else if (arg.startsWith(FORMAT_PREFIX)) {
                 format = true;
                 reportFormat = ReportFormat.valueOf(arg.substring(FORMAT_PREFIX.length()));
@@ -439,47 +494,7 @@ public class ConfigurationForReport  extends Configuration {
                 }
             }
         }
-
-        if (format && merge || (!format && !merge)) {
-            invalid = true;
-            showHelp = true;
-            return this;
-        }
-        if (merge) {
-            if (mergeDirs.size() < 3) {
-                System.err.println("Must specify more than one directory to merge");
-                invalid = true;
-                showHelp = true;
-                return this;
-            }
-            mergeDestDir = mergeDirs.get(mergeDirs.size()-1);
-            mergeDirs.remove(mergeDestDir);
-            for (File mergeDir : mergeDirs) {
-                if (!isValidReportDirectory(mergeDir)) {
-                    invalid = true;
-                    showHelp = true;
-                    return this;
-                }
-            }
-        } else {//Must be format
-            if (reportFormat == LCOV || reportFormat == COBERTURAXML) {
-                if (args.length != 3) {
-                    invalid = true;
-                    showHelp = true;
-                    return this;
-                }
-                jsonDirectory = getDirectory(args[args.length - 2]);
-                sourceDirectory = getDirectory(args[args.length - 1]);
-            } else {
-                if (args.length != 2) {
-                    invalid = true;
-                    showHelp = true;
-                    return this;
-                }
-                jsonDirectory = getDirectory(args[args.length - 1]);
-            }
-        }
-        return this;
+        return false;
     }
 
     boolean isValidReportDirectory(File dir) {

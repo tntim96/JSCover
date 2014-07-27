@@ -374,21 +374,25 @@ public class LoggerUtils {
             File file = new File(dir, "jscover.log");
             if (file.exists())
                 file.delete();
-            FileHandler fileTxt = new FileHandler(file.getAbsolutePath(), true);
-            Enumeration<String> names = LogManager.getLogManager().getLoggerNames();
-            while (names.hasMoreElements()) {
-                String loggerName = names.nextElement();
-                Logger logger = LogManager.getLogManager().getLogger(loggerName);
-                logger.setLevel(level);
-                logger.addHandler(fileTxt);
-                Handler[] handlers = logger.getHandlers();
-                for (int index = 0; index < handlers.length; index++) {
-                    handlers[index].setLevel(level);
-                    handlers[index].setFormatter(logFormatter);
-                }
-            }
+            alterLoggers(level, file);
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void alterLoggers(Level level, File file) throws IOException {
+        FileHandler fileTxt = new FileHandler(file.getAbsolutePath(), true);
+        Enumeration<String> names = LogManager.getLogManager().getLoggerNames();
+        while (names.hasMoreElements()) {
+            String loggerName = names.nextElement();
+            Logger logger = LogManager.getLogManager().getLogger(loggerName);
+            logger.setLevel(level);
+            logger.addHandler(fileTxt);
+            Handler[] handlers = logger.getHandlers();
+            for (int index = 0; index < handlers.length; index++) {
+                handlers[index].setLevel(level);
+                handlers[index].setFormatter(logFormatter);
+            }
         }
     }
 
