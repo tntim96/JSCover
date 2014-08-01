@@ -284,8 +284,8 @@
     <configuration default="false" name="Main - merge" type="Application" factoryName="Application">
       <extension name="coverage" enabled="false" merge="false" runner="idea" />
       <option name="MAIN_CLASS_NAME" value="jscover.report.Main" />
-      <option name="VM_PARAMETERS" value="" />
-      <option name="PROGRAM_PARAMETERS" value=" --merge target/0 target/2 target/4 target/dest" />
+      <option name="VM_PARAMETERS" value="-Djava.util.logging.config.file=log.properties" />
+      <option name="PROGRAM_PARAMETERS" value="--merge doc/example-report-yui3 doc/example-report-yui3 target/dest-yui3" />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" value="" />

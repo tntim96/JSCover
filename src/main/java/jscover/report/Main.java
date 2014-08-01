@@ -354,7 +354,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.SortedMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static java.util.logging.Level.INFO;
 
 public class Main {
     private static final Logger logger = Logger.getLogger(Main.class.getName());
@@ -383,10 +386,13 @@ public class Main {
     }
 
     void runMain(String[] args) throws IOException {
+        logger.log(INFO, "Args: {0}", new jscover.Main().getArgsLogger(args));
         initialize();
         config.setProperties(properties);
+        logger.log(INFO, "Starting JSCover {0} merge", config.getVersion());
         config.parse(args);
         runReport();
+        logger.log(INFO, "Finished");
     }
 
     private void runReport() throws IOException {
@@ -420,9 +426,10 @@ public class Main {
         File srcDir = new File(config.getMergeDestDir(), jscover.Main.reportSrcSubDir);
         for (int i = 0; i < config.getMergeDirs().size(); i++) {
             File jsOriginalSrc = new File(config.getMergeDirs().get(i), jscover.Main.reportSrcSubDir);
-            if (jsOriginalSrc.exists())
+            if (jsOriginalSrc.exists()) {
+                logger.log(INFO, "Merging source from '%s'", jsOriginalSrc.getPath());
                 ioUtils.copyDir(jsOriginalSrc, srcDir);
-            else
+            } else
                 logger.info(String.format("Couldn't find directory '%s' to merge", jsOriginalSrc));
         }
     }
@@ -431,6 +438,7 @@ public class Main {
         String[] data = new String[config.getMergeDirs().size()];
         for (int i = 0; i < data.length; i++) {
             File dataFile = new File(config.getMergeDirs().get(i), "jscoverage.json");
+            logger.log(INFO, "Merging JSON from '%s'", dataFile.getPath());
             data[i] = ioUtils.loadFromFileSystem(dataFile);
         }
         SortedMap<String, FileData> mergedMap = jsonDataMerger.mergeJSONCoverageStrings(data);

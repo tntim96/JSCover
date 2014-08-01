@@ -1,6 +1,7 @@
 1.0.14 / 2014-??-??
 ==================
   * Decode URI in proxy mode
+  * Add logging to merge and report code
   * Internal: Upgrade to Jasmine 2.0.1
 
 1.0.13 / 2014-07-08

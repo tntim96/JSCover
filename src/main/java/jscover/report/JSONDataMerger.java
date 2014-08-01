@@ -348,11 +348,15 @@ import org.mozilla.javascript.ScriptRuntime;
 import org.mozilla.javascript.json.JsonParser;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 import static java.lang.String.format;
+import static java.util.logging.Level.FINE;
+import static java.util.logging.Level.FINEST;
 
 //Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013, tntim96
 public class JSONDataMerger {
+    private static final Logger logger = Logger.getLogger(FileData.class.getName());
     public static final String NO_CONDITIONS_ARE_COVERED = "No conditions are covered";
     private Context cx = Context.enter();
     private JsonParser parser = new JsonParser(cx, cx.initStandardObjects());
@@ -368,26 +372,34 @@ public class JSONDataMerger {
 
     public SortedMap<String, FileData> mergeJSONCoverageMaps(SortedMap<String, FileData> map1, SortedMap<String, FileData> map2) {
         for (String scriptName : map1.keySet()) {
+            logger.log(FINE, "Processing {0}", scriptName);
             if (map2.containsKey(scriptName)) {
                 FileData coverageData = map1.get(scriptName);
                 for (int i = 0; i < coverageData.getLines().size(); i++)
-                    if (coverageData.getLines().get(i) != null)
+                    if (coverageData.getLines().get(i) != null) {
+                        logger.log(FINEST, "Add line coverage from {0} line {1}", new Object[]{scriptName, i});
                         coverageData.addCoverage(map2.get(scriptName).getLines().get(i), i);
+                    }
 
                 // Function Coverage (HA-CA), tntim96
-                for (int i = 0; i < coverageData.getFunctions().size(); i++)
+                for (int i = 0; i < coverageData.getFunctions().size(); i++) {
+                    logger.log(FINEST, "Add function coverage from {0} function number {1}", new Object[]{scriptName, i+1});
                     coverageData.addFunctionCoverage(map2.get(scriptName).getFunctions().get(i), i);
+                }
 
                 for (int i : coverageData.getBranchData().keySet()) {
                     List<BranchData> conditions = coverageData.getBranchData().get(i);
                     for (int j = 0; j < conditions.size(); j++)
-                        if (conditions.get(j) != null)
+                        if (conditions.get(j) != null) {
+                            logger.log(FINEST, "Add branch coverage from {0} line {1} condition {2}", new Object[]{scriptName, i+1, j});
                             conditions.get(j).addCoverage(map2.get(scriptName).getBranchData().get(i).get(j));
+                        }
                 }
             }
         }
         for (String scriptName : map2.keySet()) {
             if (!map1.containsKey(scriptName)) {
+                logger.log(FINE, "Add script {0}", scriptName);
                 map1.put(scriptName, map2.get(scriptName));
             }
         }

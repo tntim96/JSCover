@@ -421,7 +421,7 @@ public class Main {
             exitHelper.exit(exitStatus);
     }
 
-    Object getArgsLogger(final String[] args) {
+    public Object getArgsLogger(final String[] args) {
         return new Object() {
             @Override
             public String toString() {
