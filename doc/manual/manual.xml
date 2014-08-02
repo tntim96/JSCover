@@ -70,8 +70,8 @@
                         <li>can store coverage reports to the filesystem*</li>
                         <li>can include unloaded/untested JavaScript in the report</li>
                     </ol>
-                    * It's possible to store a report to the file-system as described
-                    <a href="#fileSystemSave">below</a>.
+                    * It's possible to store a report on the file-system in file-system mode
+                    as described <a href="#fileSystemSave">below</a>.
                 </text>
             </item>
             <item>
