@@ -352,15 +352,21 @@ import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static java.lang.String.format;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.FINEST;
 import static java.util.logging.Level.SEVERE;
+import static java.util.logging.Level.WARNING;
 
 public class ProxyService {
     private static final Logger logger = Logger.getLogger(ProxyService.class.getName());
     private IoUtils ioUtils = IoUtils.getInstance();
+    private static final Charset UTF8 = Charset.forName("UTF-8");
+    private static final Pattern getContentLength = 
+        Pattern.compile("Content-Length:\\s+(\\d+)", Pattern.CASE_INSENSITIVE);
 
     protected void handleProxyGet(HttpRequest request, OutputStream os) {
         handleProxyRequest(request, os, "GET");
@@ -382,7 +388,7 @@ public class ProxyService {
             String uri = getRawURI(url);
             remotePrintWriter.print(method + " " + uri + " HTTP/1.0\n");
             sendHeaders(request, remotePrintWriter);
-            ioUtils.copyNoClose(remoteInputStream, os);
+            copyResponse(remoteInputStream, os);
         } catch (IOException e) {
             logger.log(SEVERE, request.getPath(), e);
         } finally {
@@ -403,7 +409,7 @@ public class ProxyService {
             remoteInputStream = socket.getInputStream();
             remoteOutputStream = socket.getOutputStream();
             ioUtils.copyNoClose(setHttp10(request.getInputStream()), remoteOutputStream, request.getPostIndex() + request.getContentLength());
-            ioUtils.copyNoClose(remoteInputStream, request.getOutputStream());
+            copyResponse(remoteInputStream, request.getOutputStream());
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -431,6 +437,44 @@ public class ProxyService {
             return pbis;
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+    
+    protected void copyResponse(InputStream remoteInputStream, OutputStream requestOutputStream) {
+        PushbackInputStream pbis = new PushbackInputStream(remoteInputStream, HttpServer.HEADER_SIZE);
+        try {
+            byte[] headerBytes = new byte[HttpServer.HEADER_SIZE];
+            int read = pbis.read(headerBytes);
+            
+            int dataIndex = ioUtils.getDataIndex(headerBytes, UTF8);
+            int contentLength = -1;
+            
+            // scan for content length so we can close the connection after the response
+            ByteArrayInputStream bais = new ByteArrayInputStream(headerBytes, 0, read);
+            BufferedReader br = new BufferedReader(new InputStreamReader(bais, UTF8));
+            String line = null;
+            while( null != (line = br.readLine()) ) {
+                Matcher match = getContentLength.matcher(line);
+                if( match.matches() ) {
+                    contentLength = Integer.parseInt(match.group(1), 10);
+                    break;
+                }
+            }
+            
+            pbis.unread(headerBytes, 0, read);
+            
+            if( contentLength >= 0 ) {
+                ioUtils.copyNoClose(pbis, requestOutputStream, dataIndex + contentLength);
+            } else {
+                logger.log(WARNING, "No content length in proxy response, connection may hang.");
+                ioUtils.copyNoClose(pbis, requestOutputStream);
+            }
+        } catch( IOException e ) {
+            logger.log(WARNING, "Error processing remote response.", e);
+            throw new RuntimeException(e);
+        } finally {
+            ioUtils.flushQuietly(requestOutputStream);
+            ioUtils.closeQuietly(pbis);
         }
     }
 
