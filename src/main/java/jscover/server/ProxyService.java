@@ -445,6 +445,8 @@ public class ProxyService {
     private void sendHeaders(HttpRequest request, PrintWriter remotePrintWriter) {
         Map<String, List<String>> clientHeaders = request.getHeaders();
         for (String header : clientHeaders.keySet()) {
+            if (!shouldSendHeader(header))
+                continue;
             List<String> values = clientHeaders.get(header);
             for (String value : values) {
                 remotePrintWriter.print(format("%s: %s\n", header, value));
@@ -452,6 +454,13 @@ public class ProxyService {
         }
         remotePrintWriter.print("\n");
         remotePrintWriter.flush();
+    }
+    
+    protected boolean shouldSendHeader(String header) {
+        header = header.toLowerCase();
+        if ("proxy-connection".equals(header) || "accept-encoding".equals(header) || "connection".equals(header))
+            return false;
+        return true;
     }
 
     public String getUrl(HttpRequest request) throws IOException {
