@@ -458,7 +458,11 @@ public class ProxyService {
     
     protected boolean shouldSendHeader(String header) {
         header = header.toLowerCase();
-        if ("proxy-connection".equals(header) || "accept-encoding".equals(header) || "connection".equals(header))
+        // don't allow keep-alive headers to override HTTP/1.0 default of non-persistent
+        if ("proxy-connection".equals(header) || "connection".equals(header))
+            return false;
+        //Don't want to allow GZIP header
+        if ("accept-encoding".equals(header))
             return false;
         return true;
     }
@@ -474,12 +478,7 @@ public class ProxyService {
         Map<String, List<String>> clientHeaders = request.getHeaders();
         if (clientHeaders != null) {
             for (String header : clientHeaders.keySet()) {
-                if (header.equalsIgnoreCase("accept-encoding")) {
-                    //Don't want to allow GZIP header
-                    continue;
-                }
-                if (header.equalsIgnoreCase("proxy-connection")) {
-                    //Should be ignored when using HTTP 1.0, but exclude anyway
+                if (!shouldSendHeader(header)) {
                     continue;
                 }
                 List<String> values = clientHeaders.get(header);
