@@ -352,6 +352,7 @@ import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import static java.lang.String.format;
 import static java.util.logging.Level.FINE;
@@ -359,6 +360,7 @@ import static java.util.logging.Level.FINEST;
 import static java.util.logging.Level.SEVERE;
 
 public class ProxyService {
+    private static final Charset UTF8 = Charset.forName("UTF-8");
     private static final Logger logger = Logger.getLogger(ProxyService.class.getName());
     private IoUtils ioUtils = IoUtils.getInstance();
 
@@ -402,7 +404,7 @@ public class ProxyService {
             socket = new Socket(url.getHost(), port == -1 ? 80 : port);
             remoteInputStream = socket.getInputStream();
             remoteOutputStream = socket.getOutputStream();
-            ioUtils.copyNoClose(setHttp10(request.getInputStream()), remoteOutputStream, request.getPostIndex() + request.getContentLength());
+            sendMethodAndHeaders(request, request.getInputStream(), remoteOutputStream);
             ioUtils.copyNoClose(remoteInputStream, request.getOutputStream());
         } catch (IOException e) {
             e.printStackTrace();
@@ -412,26 +414,44 @@ public class ProxyService {
             ioUtils.closeQuietly(socket);
         }
     }
+    
+    protected void sendMethodAndHeaders(HttpRequest request, InputStream is, OutputStream remoteOutputStream) throws IOException {
+        
+        // read ahead to see the method and headers
+        logger.log(FINE, "Bytes available on stream {0}", is.available());
+        int bufSize = Math.min(is.available(), HttpServer.HEADER_SIZE);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream(bufSize);
+        PushbackInputStream pbis = new PushbackInputStream(is, bufSize);
+        byte headerBytes[] = new byte[bufSize];
+        int read = pbis.read(headerBytes);
+        int firstLineIndex = ioUtils.getNewLineIndex(headerBytes, UTF8);
+        int dataIndex = ioUtils.getDataIndex(headerBytes, UTF8);
+        
+        // back up to the start of data
+        pbis.unread(headerBytes, dataIndex, read - dataIndex);
 
-    protected InputStream setHttp10(InputStream is) {
-        try {
-            logger.log(FINE, "Bytes available on stream {0}", is.available());
-            int bufSize = Math.min(is.available(), 2046);
-            PushbackInputStream pbis = new PushbackInputStream(is, bufSize);
-            byte headerBytes[] = new byte[bufSize];
-            int read = pbis.read(headerBytes);
-            int firstLineIndex = ioUtils.getNewLineIndex(headerBytes, Charset.defaultCharset());
-            pbis.unread(headerBytes, firstLineIndex, read - firstLineIndex);
-            String header = new String(headerBytes, 0, firstLineIndex);
-
-            logger.log(FINEST, "Header before {0}", header);
-            header = header.replaceFirst("HTTP/1.1", "HTTP/1.0");
-            logger.log(FINEST, "Header after {0}", header);
-            pbis.unread(header.getBytes());
-            return pbis;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        // read the header, drop the remote host part and change protocol to HTTP/1.0
+        String header = new String(headerBytes, 0, firstLineIndex, UTF8);
+        logger.log(FINEST, "Header before {0}", header);
+        final URL url = request.getUrl();
+        header = header.replaceFirst(Pattern.quote(url.toExternalForm()), getRawURI(url));
+        header = header.replaceFirst("HTTP/1.1", "HTTP/1.0");
+        logger.log(FINEST, "Header after {0}", header);
+        
+        // write method and filtered headers to intermediate buffer
+        PrintWriter remotePrintWriter = new PrintWriter(new OutputStreamWriter(baos, UTF8));
+        remotePrintWriter.write(header);
+        remotePrintWriter.write("\r\n");
+        sendHeaders(request, remotePrintWriter);
+        byte[] methodAndHeaderBytes = baos.toByteArray();
+        
+        // push method and headers in front of response data
+        PushbackInputStream requestInputStream = new PushbackInputStream(pbis, methodAndHeaderBytes.length);
+        requestInputStream.unread(methodAndHeaderBytes);
+        
+        // now copy the whole thing
+        int toSend = methodAndHeaderBytes.length + request.getContentLength();
+        ioUtils.copyNoClose(requestInputStream, remoteOutputStream, toSend);
     }
 
     String getRawURI(URL url) {
@@ -441,7 +461,7 @@ public class ProxyService {
         }
         return uri;
     }
-
+    
     private void sendHeaders(HttpRequest request, PrintWriter remotePrintWriter) {
         Map<String, List<String>> clientHeaders = request.getHeaders();
         for (String header : clientHeaders.keySet()) {
@@ -449,10 +469,10 @@ public class ProxyService {
                 continue;
             List<String> values = clientHeaders.get(header);
             for (String value : values) {
-                remotePrintWriter.print(format("%s: %s\n", header, value));
+                remotePrintWriter.print(format("%s: %s\r\n", header, value));
             }
         }
-        remotePrintWriter.print("\n");
+        remotePrintWriter.print("\r\n");
         remotePrintWriter.flush();
     }
     

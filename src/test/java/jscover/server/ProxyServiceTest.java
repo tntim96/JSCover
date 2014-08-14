@@ -343,6 +343,8 @@ Public License instead of this License.
  package jscover.server;
 
 import jscover.util.IoUtils;
+
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -350,20 +352,24 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.startsWith;
 import static org.mockito.Mockito.*;
 
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProxyServiceTest {
+    private static final Charset UTF8 = Charset.forName("UTF-8");
     private ProxyService proxyService = new ProxyService();
     private HttpRequest request = new HttpRequest("test.js", null, null, 0, null);
     @Mock private HttpURLConnection conn;
@@ -417,11 +423,51 @@ public class ProxyServiceTest {
     }
 
     @Test
-    public void shouldConvertToHTTP10() {
-        String requestString = "POST /someURL HTTP/1.1\r\nHeaders";
+    public void shouldConvertToHTTP10() throws Exception {
+        Map<String, List<String>> headers = new HashMap<String, List<String>>();
+        headers.put("Content-Length", Collections.singletonList("0"));
+        String url = "http://somehost/someURL";
+        String requestString = "POST " + url + " HTTP/1.1\r\nContent-Length: 0\r\n\r\n";
+        
+        String result = sendMethodAndHeaders(url, requestString, headers).toString("UTF-8");
+        assertThat(result, startsWith("POST /someURL HTTP/1.0"));
+    }
+    
+    @Test
+    public void shouldChangeURLToPath() throws Exception {
+        Map<String, List<String>> headers = new HashMap<String, List<String>>();
+        headers.put("Content-Length", Collections.singletonList("0"));
+        String url = "http://somehost/someURL";
+        String requestString = "POST " + url + " HTTP/1.1\r\nContent-Length: 0\r\n\r\n";
+        
+        String result = sendMethodAndHeaders(url, requestString, headers).toString("UTF-8");
+        assertThat(result, startsWith("POST /someURL"));
+    }
+    
+    @Test
+    public void shouldNotAddKeepAliveHeadersPost() throws Exception {
+        Map<String, List<String>> headers = new HashMap<String, List<String>>();
+        headers.put("Proxy-Connection", Collections.singletonList("keep-alive"));
+        headers.put("Connection", Collections.singletonList("keep-alive"));
+        headers.put("Content-Length", Collections.singletonList("0"));
 
-        InputStream is = proxyService.setHttp10(new ByteArrayInputStream(requestString.getBytes()));
-
-        assertThat(ioUtils.toString(is), equalTo("POST /someURL HTTP/1.0\r\nHeaders"));
+        String url = "http://somehost/someURL";
+        String requestString = "POST " + url + " HTTP/1.1\r\nProxy-Connection: keep-alive\r\nConnection: keep-alive\r\nContent-Length: 0\r\n\r\n";
+        String result = sendMethodAndHeaders(url, requestString, headers).toString("UTF-8");
+        
+        assertThat(result, Matchers.not(Matchers.containsString("Connection")));
+        assertThat(result, Matchers.not(Matchers.containsString("keep-alive")));
+    }
+    
+    private ByteArrayOutputStream sendMethodAndHeaders(String path, String requestString, Map<String, List<String>> headers) throws IOException {
+        if (headers == null )
+            headers = Collections.emptyMap();
+        
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ByteArrayInputStream in =  new ByteArrayInputStream(requestString.getBytes(UTF8));
+        HttpRequest request = new HttpRequest(path, new ByteArrayInputStream(requestString.getBytes(UTF8)), out, 0, headers);
+        
+        proxyService.sendMethodAndHeaders(request, in, out);
+        return out;
     }
 }
