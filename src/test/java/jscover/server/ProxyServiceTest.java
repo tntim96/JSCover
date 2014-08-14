@@ -402,7 +402,18 @@ public class ProxyServiceTest {
 
         proxyService.copyHeadersExceptEncoding(request, conn);
 
-        verify(conn, times(0)).addRequestProperty("Accept-Encoding", "456");
+        verify(conn, times(0)).addRequestProperty("Accept-Encoding", "GZIP");
+    }
+
+    @Test
+    public void shouldNotAddKeepAliveHeaders() {
+        headers.put("Proxy-Connection", new ArrayList<String>() {{
+            add("keep-alive");
+        }});
+
+        proxyService.copyHeadersExceptEncoding(request, conn);
+
+        verify(conn, times(0)).addRequestProperty("Proxy-Connection", "keep-alive");
     }
 
     @Test

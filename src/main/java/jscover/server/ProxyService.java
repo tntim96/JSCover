@@ -469,6 +469,10 @@ public class ProxyService {
                     //Don't want to allow GZIP header
                     continue;
                 }
+                if (header.equalsIgnoreCase("proxy-connection")) {
+                    //Should be ignored when using HTTP 1.0, but exclude anyway
+                    continue;
+                }
                 List<String> values = clientHeaders.get(header);
                 for (String value : values) {
                     conn.addRequestProperty(header, value);
