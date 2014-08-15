@@ -1,6 +1,6 @@
 1.0.14 / 2014-??-??
 ==================
-  * Remove 'Proxy-Connection' header to avoid persistent connections (https://github.com/tntim96/JSCover/pull/158)
+  * Remove proxy headers to avoid persistent connections (https://github.com/tntim96/JSCover/pull/159)
   * Decode URI in proxy mode
   * Add logging to merge and report code
   * Internal: Upgrade to Jasmine 2.0.1
