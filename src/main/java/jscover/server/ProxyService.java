@@ -414,9 +414,9 @@ public class ProxyService {
             ioUtils.closeQuietly(socket);
         }
     }
-    
+
     protected void sendMethodAndHeaders(HttpRequest request, InputStream is, OutputStream remoteOutputStream) throws IOException {
-        
+
         // read ahead to see the method and headers
         logger.log(FINE, "Bytes available on stream {0}", is.available());
         int bufSize = Math.min(is.available(), HttpServer.HEADER_SIZE);
@@ -426,7 +426,7 @@ public class ProxyService {
         int read = pbis.read(headerBytes);
         int firstLineIndex = ioUtils.getNewLineIndex(headerBytes, UTF8);
         int dataIndex = ioUtils.getDataIndex(headerBytes, UTF8);
-        
+
         // back up to the start of data
         pbis.unread(headerBytes, dataIndex, read - dataIndex);
 
@@ -437,18 +437,18 @@ public class ProxyService {
         header = header.replaceFirst(Pattern.quote(url.toExternalForm()), getRawURI(url));
         header = header.replaceFirst("HTTP/1.1", "HTTP/1.0");
         logger.log(FINEST, "Header after {0}", header);
-        
+
         // write method and filtered headers to intermediate buffer
         PrintWriter remotePrintWriter = new PrintWriter(new OutputStreamWriter(baos, UTF8));
         remotePrintWriter.write(header);
         remotePrintWriter.write("\r\n");
         sendHeaders(request, remotePrintWriter);
         byte[] methodAndHeaderBytes = baos.toByteArray();
-        
+
         // push method and headers in front of response data
         PushbackInputStream requestInputStream = new PushbackInputStream(pbis, methodAndHeaderBytes.length);
         requestInputStream.unread(methodAndHeaderBytes);
-        
+
         // now copy the whole thing
         int toSend = methodAndHeaderBytes.length + request.getContentLength();
         ioUtils.copyNoClose(requestInputStream, remoteOutputStream, toSend);
@@ -461,7 +461,7 @@ public class ProxyService {
         }
         return uri;
     }
-    
+
     private void sendHeaders(HttpRequest request, PrintWriter remotePrintWriter) {
         Map<String, List<String>> clientHeaders = request.getHeaders();
         for (String header : clientHeaders.keySet()) {
@@ -475,7 +475,7 @@ public class ProxyService {
         remotePrintWriter.print("\r\n");
         remotePrintWriter.flush();
     }
-    
+
     protected boolean shouldSendHeader(String header) {
         header = header.toLowerCase();
         // don't allow keep-alive headers to override HTTP/1.0 default of non-persistent

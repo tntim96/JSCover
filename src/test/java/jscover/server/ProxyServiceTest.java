@@ -340,7 +340,7 @@ library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
  */
 
- package jscover.server;
+package jscover.server;
 
 import jscover.util.IoUtils;
 
@@ -387,7 +387,7 @@ public class ProxyServiceTest {
 
         proxyService.copyHeadersExceptEncoding(request, conn);
 
-        verify(conn).addRequestProperty("Cookie","123");
+        verify(conn).addRequestProperty("Cookie", "123");
         verify(conn).addRequestProperty("Cookie", "456");
     }
 
@@ -428,22 +428,22 @@ public class ProxyServiceTest {
         headers.put("Content-Length", Collections.singletonList("0"));
         String url = "http://somehost/someURL";
         String requestString = "POST " + url + " HTTP/1.1\r\nContent-Length: 0\r\n\r\n";
-        
+
         String result = sendMethodAndHeaders(url, requestString, headers).toString("UTF-8");
         assertThat(result, startsWith("POST /someURL HTTP/1.0"));
     }
-    
+
     @Test
     public void shouldChangeURLToPath() throws Exception {
         Map<String, List<String>> headers = new HashMap<String, List<String>>();
         headers.put("Content-Length", Collections.singletonList("0"));
         String url = "http://somehost/someURL";
         String requestString = "POST " + url + " HTTP/1.1\r\nContent-Length: 0\r\n\r\n";
-        
+
         String result = sendMethodAndHeaders(url, requestString, headers).toString("UTF-8");
         assertThat(result, startsWith("POST /someURL"));
     }
-    
+
     @Test
     public void shouldNotAddKeepAliveHeadersPost() throws Exception {
         Map<String, List<String>> headers = new HashMap<String, List<String>>();
@@ -454,19 +454,19 @@ public class ProxyServiceTest {
         String url = "http://somehost/someURL";
         String requestString = "POST " + url + " HTTP/1.1\r\nProxy-Connection: keep-alive\r\nConnection: keep-alive\r\nContent-Length: 0\r\n\r\n";
         String result = sendMethodAndHeaders(url, requestString, headers).toString("UTF-8");
-        
+
         assertThat(result, Matchers.not(Matchers.containsString("Connection")));
         assertThat(result, Matchers.not(Matchers.containsString("keep-alive")));
     }
-    
+
     private ByteArrayOutputStream sendMethodAndHeaders(String path, String requestString, Map<String, List<String>> headers) throws IOException {
-        if (headers == null )
+        if (headers == null)
             headers = Collections.emptyMap();
-        
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ByteArrayInputStream in =  new ByteArrayInputStream(requestString.getBytes(UTF8));
+        ByteArrayInputStream in = new ByteArrayInputStream(requestString.getBytes(UTF8));
         HttpRequest request = new HttpRequest(path, new ByteArrayInputStream(requestString.getBytes(UTF8)), out, 0, headers);
-        
+
         proxyService.sendMethodAndHeaders(request, in, out);
         return out;
     }

@@ -374,18 +374,11 @@ public class PersistentStaticHttpServer implements Runnable {
     
     protected final Socket socket;
     protected String content;
-    /** To force the connection to be persistent regardless of headers. */
-    protected boolean forceKeepAlive;
-    
-    public PersistentStaticHttpServer(Socket socket) {
-        this(socket, "Some content", false);
-    }
-    
-    public PersistentStaticHttpServer(Socket socket, String content, boolean forceKeepAlive) {
+
+    public PersistentStaticHttpServer(Socket socket, String content) {
         if( socket == null ) throw new NullPointerException("socket is null");
         this.socket = socket;
         this.content = content;
-        this.forceKeepAlive = forceKeepAlive;
     }
     
     public void run() {
@@ -398,7 +391,7 @@ public class PersistentStaticHttpServer implements Runnable {
                     // fully read the request, whatever it is
                     HttpRequest request = conn.receiveRequestHeader();
                     logger.log(FINE, "Received request: {0}", request);
-                    keepAlive = forceKeepAlive || isKeepAlive(request);
+                    keepAlive = isKeepAlive(request);
                     
                     if (request instanceof HttpEntityEnclosingRequest) {
                         conn.receiveRequestEntity((HttpEntityEnclosingRequest) request);
@@ -467,25 +460,5 @@ public class PersistentStaticHttpServer implements Runnable {
         conn.sendResponseHeader(response);
         conn.flush();
         logger.log(FINE, "Sent 405 Method Not Allowed");
-    }
-    
-    public String getContent() {
-        return content;
-    }
-    
-    public void setContent(String content) {
-        this.content = content;
-    }
-    
-    public Socket getSocket() {
-        return socket;
-    }
-    
-    public void setForceKeepAlive(boolean forceKeepAlive) {
-        this.forceKeepAlive = forceKeepAlive;
-    }
-    
-    public boolean isForceKeepAlive() {
-        return forceKeepAlive;
     }
 }

@@ -339,8 +339,8 @@ consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
  */
- 
- package jscover.server;
+
+package jscover.server;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -351,10 +351,8 @@ import jscover.Main;
 import jscover.util.IoUtils;
 
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.gargoylesoftware.htmlunit.HttpMethod;
@@ -363,23 +361,23 @@ import com.gargoylesoftware.htmlunit.ProxyConfig;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebRequest;
 
-public class PersistentProxyTest  {
+import static org.junit.Assert.assertEquals;
+
+public class PersistentProxyTest {
     private static Thread webServer;
     private static Thread proxyServer;
     private static Main main = new Main();
     private static ServerSocket serverSocket;
     private static int proxyPort = 3129;
-    
-    private static boolean forceKeepAlive;
-    
+
     protected WebClient webClient = new WebClient();
     protected IoUtils ioUtils = IoUtils.getInstance();
-    
+
     private static String CONTENT = "Some content";
 
     private static String[] args = new String[]{
             "-ws",
-            "--port="+proxyPort,
+            "--port=" + proxyPort,
             "--proxy",
             "--no-branch",
             "--no-function",
@@ -400,7 +398,7 @@ public class PersistentProxyTest  {
                     serverSocket = new ServerSocket(9001);
                     while (true) {
                         final Socket socket = serverSocket.accept();
-                        new Thread(new PersistentStaticHttpServer(socket, CONTENT, forceKeepAlive)).start();
+                        new Thread(new PersistentStaticHttpServer(socket, CONTENT)).start();
                     }
                 } catch (IOException e) {
                     //throw new RuntimeException(e);
@@ -427,65 +425,33 @@ public class PersistentProxyTest  {
     protected String getTestUrl() {
         return "http://localhost:9001/anything";
     }
-    
+
     protected void doTestRequests(HttpMethod... methods) throws Exception {
         URL testURL = new URL(getTestUrl());
-        for( HttpMethod method: methods ) {
+        for (HttpMethod method : methods) {
             WebRequest request = new WebRequest(testURL, method);
             Page page = webClient.getPage(request);
-            Assert.assertEquals("Unexpected response", CONTENT, page.getWebResponse().getContentAsString());
+            assertEquals("Unexpected response", CONTENT, page.getWebResponse().getContentAsString());
         }
     }
-    
+
     @Test
     public void testSingleGet() throws Exception {
-        forceKeepAlive = false;
         doTestRequests(HttpMethod.GET);
     }
-    
-    @Test
-    @Ignore("No forced keep-alives")
-    public void testSingleGetKeepAlive() throws Exception {
-        forceKeepAlive = true;
-        doTestRequests(HttpMethod.GET);
-    }
-    
+
     @Test
     public void testSinglePost() throws Exception {
-        forceKeepAlive = false;
         doTestRequests(HttpMethod.POST);
     }
-    
-    @Test
-    @Ignore("No forced keep-alives")
-    public void testSinglePostKeepAlive() throws Exception {
-        forceKeepAlive = true;
-        doTestRequests(HttpMethod.POST);
-    }
-    
+
     @Test
     public void testConsecutiveGets() throws Exception {
-        forceKeepAlive = false;
         doTestRequests(HttpMethod.GET, HttpMethod.GET);
     }
-    
-    @Test
-    @Ignore("No forced keep-alives")
-    public void testConsecutiveGetsKeepAlive() throws Exception {
-        forceKeepAlive = true;
-        doTestRequests(HttpMethod.GET, HttpMethod.GET);
-    }
-    
+
     @Test
     public void testConsecutivePosts() throws Exception {
-        forceKeepAlive = false;
-        doTestRequests(HttpMethod.POST, HttpMethod.POST);
-    }
-    
-    @Test
-    @Ignore("No forced keep-alives")
-    public void testConsecutivePostsKeepAlive() throws Exception {
-        forceKeepAlive = true;
         doTestRequests(HttpMethod.POST, HttpMethod.POST);
     }
 }
