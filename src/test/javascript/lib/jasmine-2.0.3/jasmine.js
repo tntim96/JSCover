@@ -1352,11 +1352,26 @@ getJasmineRequireObj().MockDate = function() {
     return self;
 
     function FakeDate() {
-      if (arguments.length === 0) {
-        return new GlobalDate(currentTime);
-      } else {
-        return new GlobalDate(arguments[0], arguments[1], arguments[2],
-          arguments[3], arguments[4], arguments[5], arguments[6]);
+      switch(arguments.length) {
+        case 0:
+          return new GlobalDate(currentTime);
+        case 1:
+          return new GlobalDate(arguments[0]);
+        case 2:
+          return new GlobalDate(arguments[0], arguments[1]);
+        case 3:
+          return new GlobalDate(arguments[0], arguments[1], arguments[2]);
+        case 4:
+          return new GlobalDate(arguments[0], arguments[1], arguments[2], arguments[3]);
+        case 5:
+          return new GlobalDate(arguments[0], arguments[1], arguments[2], arguments[3],
+                                arguments[4]);
+        case 6:
+          return new GlobalDate(arguments[0], arguments[1], arguments[2], arguments[3],
+                                arguments[4], arguments[5]);
+        case 7:
+          return new GlobalDate(arguments[0], arguments[1], arguments[2], arguments[3],
+                                arguments[4], arguments[5], arguments[6]);
       }
     }
 
@@ -1771,6 +1786,7 @@ getJasmineRequireObj().Suite = function() {
 
   Suite.prototype.disable = function() {
     this.disabled = true;
+    this.result.status = 'disabled';
   };
 
   Suite.prototype.beforeEach = function(fn) {
@@ -1787,6 +1803,9 @@ getJasmineRequireObj().Suite = function() {
 
   Suite.prototype.execute = function(onComplete) {
     var self = this;
+
+    this.onStart(this);
+
     if (this.disabled) {
       complete();
       return;
@@ -1797,8 +1816,6 @@ getJasmineRequireObj().Suite = function() {
     for (var i = 0; i < this.children.length; i++) {
       allFns.push(wrapChildAsAsync(this.children[i]));
     }
-
-    this.onStart(this);
 
     this.queueRunner({
       fns: allFns,
@@ -2511,6 +2528,66 @@ getJasmineRequireObj().toThrowError = function(j$) {
   return toThrowError;
 };
 
+getJasmineRequireObj().interface = function(jasmine, env) {
+  var jasmineInterface = {
+    describe: function(description, specDefinitions) {
+      return env.describe(description, specDefinitions);
+    },
+
+    xdescribe: function(description, specDefinitions) {
+      return env.xdescribe(description, specDefinitions);
+    },
+
+    it: function(desc, func) {
+      return env.it(desc, func);
+    },
+
+    xit: function(desc, func) {
+      return env.xit(desc, func);
+    },
+
+    beforeEach: function(beforeEachFunction) {
+      return env.beforeEach(beforeEachFunction);
+    },
+
+    afterEach: function(afterEachFunction) {
+      return env.afterEach(afterEachFunction);
+    },
+
+    expect: function(actual) {
+      return env.expect(actual);
+    },
+
+    pending: function() {
+      return env.pending();
+    },
+
+    spyOn: function(obj, methodName) {
+      return env.spyOn(obj, methodName);
+    },
+
+    jsApiReporter: new jasmine.JsApiReporter({
+      timer: new jasmine.Timer()
+    }),
+
+    jasmine: jasmine
+  };
+
+  jasmine.addCustomEqualityTester = function(tester) {
+    env.addCustomEqualityTester(tester);
+  };
+
+  jasmine.addMatchers = function(matchers) {
+    return env.addMatchers(matchers);
+  };
+
+  jasmine.clock = function() {
+    return env.clock;
+  };
+
+  return jasmineInterface;
+};
+
 getJasmineRequireObj().version = function() {
-  return '2.0.1';
+  return '2.0.3';
 };
