@@ -1,5 +1,4 @@
 $(document).ready(function() {
-  var buttonColour = {};
   $(".navButton").fadeTo("fast", 0.7);
   $(".brand").fadeTo("fast", 1);
   $(".navButton").mousedown(function() {
