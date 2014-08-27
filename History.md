@@ -3,7 +3,7 @@
   * Remove proxy headers to avoid persistent connections (https://github.com/tntim96/JSCover/pull/159)
   * Decode URI in proxy mode
   * Add logging to merge and report code
-  * Internal: Upgrade to Jasmine 2.0.1
+  * Internal: Upgrade to Jasmine 2.0.3
 
 1.0.13 / 2014-07-08
 ==================
