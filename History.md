@@ -1,5 +1,6 @@
 1.0.14 / 2014-??-??
 ==================
+  * Fix instrumentation for some cases without braces (https://github.com/tntim96/JSCover/issues/160)
   * Remove proxy headers to avoid persistent connections (https://github.com/tntim96/JSCover/pull/159)
   * Decode URI in proxy mode
   * Add logging to merge and report code
