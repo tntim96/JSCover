@@ -672,4 +672,143 @@ public class InstrumenterTest {
                 "  }\n";
         assertEquals(expectedSource, instrumentedSource);
     }
+    
+    @Test
+    public void shouldInstrumentIfElseNoBraceTry() {
+        String source = "" + 
+                "if (condition)\n" +
+                "  f1()\n" +
+                "else try {\n" +
+                "  f2()\n" +
+                "} catch (ex) {\n" +
+                "  f3(ex);\n" +
+                "}";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "if (condition) {\n" +
+                "  _$jscoverage['test.js'].lineData[2]++;\n" +
+                "  f1();\n" +
+                "} else {\n" +
+                "  _$jscoverage['test.js'].lineData[3]++;\n" +
+                "  try {\n" +
+                "    _$jscoverage['test.js'].lineData[4]++;\n" +
+                "    f2();\n" +
+                "  }  catch (ex) {\n" +
+                "  _$jscoverage['test.js'].lineData[6]++;\n" +
+                "  f3(ex);\n" +
+                "}\n" +
+                "}\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+    
+    @Test
+    public void shouldInstrumentIfElseTry() {
+        String source = "" + 
+                "if (condition)\n" +
+                "  f1()\n" +
+                "else { try {\n" +
+                "  f2()\n" +
+                "} catch (ex) {\n" +
+                "  f3(ex);\n" +
+                "} }";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "if (condition) {\n" +
+                "  _$jscoverage['test.js'].lineData[2]++;\n" +
+                "  f1();\n" +
+                "} else {\n" +
+                "  _$jscoverage['test.js'].lineData[3]++;\n" +
+                "  try {\n" +
+                "    _$jscoverage['test.js'].lineData[4]++;\n" +
+                "    f2();\n" +
+                "  }  catch (ex) {\n" +
+                "  _$jscoverage['test.js'].lineData[6]++;\n" +
+                "  f3(ex);\n" +
+                "}\n" +
+                "}\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+    
+    @Test
+    public void shouldInstrumentWhileNoBraceTry() {
+        String source = "" + 
+                "while (condition)\n" +
+                "  try {\n" +
+                "    f2()\n" +
+                "  } catch (ex) {\n" +
+                "    f3(ex);\n" +
+                "  }";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "while (condition) {\n" +
+                "  _$jscoverage['test.js'].lineData[2]++;\n" +
+                "  try {\n" +
+                "    _$jscoverage['test.js'].lineData[3]++;\n" +
+                "    f2();\n" +
+                "  }  catch (ex) {\n" +
+                "  _$jscoverage['test.js'].lineData[5]++;\n" +
+                "  f3(ex);\n" +
+                "}\n" +
+                "}\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+    
+    @Test
+    public void shouldInstrumentIfNoBraceWith() {
+        String source = "if (c)\n with(o) {\n f();\n}";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "if (c) {\n" +
+                "  _$jscoverage['test.js'].lineData[2]++;\n" +
+                "  with (o) {\n" +
+                "    _$jscoverage['test.js'].lineData[3]++;\n" +
+                "    f();\n" +
+                "  }\n" +
+                "}\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+    
+    @Test
+    public void shouldInstrumentIfNoBraceFunction() {
+        String source = "if (c)\n function() { }";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "if (c) {\n" +
+                "  _$jscoverage['test.js'].lineData[2]++;\n" +
+                "  function() {\n" +
+                "    _$jscoverage['test.js'].functionData[0]++;\n" +
+                "  }}\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+    
+    @Test
+    public void shouldInstrumentIfNoBraceWhile() {
+        String source = "if (c)\n while(c2) {\n f()\n }";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "if (c) {\n" +
+                "  _$jscoverage['test.js'].lineData[2]++;\n" +
+                "  while (c2) {\n" +
+                "    _$jscoverage['test.js'].lineData[3]++;\n" +
+                "    f();\n" +
+                "  }\n" +
+                "}\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+    
+    @Test
+    public void shouldInstrumentWhileNoBraceReturn() {
+        String source = "function f() {\nwhile (c)\n return f()\n}";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "function f() {\n" +
+                "  _$jscoverage['test.js'].functionData[0]++;\n" +
+                "  _$jscoverage['test.js'].lineData[2]++;\n" +
+                "  while (c) {\n" +
+                "    _$jscoverage['test.js'].lineData[3]++;\n" +
+                "    return f();\n" +
+                "  }\n" +
+                "}\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
 }

@@ -405,38 +405,15 @@ class NodeProcessor {
                 //Must be a case expression
                 return true;
             }
-            if (parent instanceof IfStatement) {
-                IfStatement parentIf = (IfStatement) parent;
-                Scope scope = new Scope();
-                scope.addChild(buildInstrumentationStatement(node.getLineno()));
-                scope.addChild(node);
-                if (parentIf.getThenPart() == node) {
-                    parentIf.setThenPart(scope);
-                } else if (parentIf.getElsePart() == node) {
-                    parentIf.setElsePart(scope);
-                }
-            } else if (parent instanceof Loop) {
-                Loop parentLoop = (Loop) parent;
-                Scope scope = new Scope();
-                scope.addChild(buildInstrumentationStatement(node.getLineno()));
-                scope.addChild(node);
-                parentLoop.setBody(scope);
-            } else if (parent instanceof WithStatement) {
-                Scope scope = new Scope();
-                scope.addChild(buildInstrumentationStatement(node.getLineno()));
-                scope.addChild(node);
-                ((WithStatement)parent).setStatement(scope);
-            } else if (parent instanceof SwitchCase) {
+            if (parent instanceof SwitchCase) {
                 //Don't do anything here. Direct modification of statements will result in concurrent modification exception.
             } else if (parent instanceof LabeledStatement) {
                 //Don't do anything here.
-            } else {
-                if (parent != null) {
-                    parent.addChildBefore(buildInstrumentationStatement(node.getLineno()), node);
-                }
+            } else if (parent != null) {
+                addInstrumentationBefore(node);
             }
         } else if (node instanceof WithStatement) {
-            parent.addChildBefore(buildInstrumentationStatement(node.getLineno()), node);
+            addInstrumentationBefore(node);
         } else if (node instanceof SwitchCase) {
             List<AstNode> statements = ((SwitchCase) node).getStatements();
             if (statements == null) {
@@ -450,25 +427,10 @@ class NodeProcessor {
             if (!(parent instanceof InfixExpression) && !(parent instanceof VariableInitializer)
                     && !(parent instanceof ConditionalExpression) && !(parent instanceof ArrayLiteral)
                     && !(parent instanceof ParenthesizedExpression)) {
-                parent.addChildBefore(buildInstrumentationStatement(node.getLineno()), node);
+                addInstrumentationBefore(node);
             }
         } else if (node instanceof ReturnStatement) {
-            ExpressionStatement newChild = buildInstrumentationStatement(node.getLineno());
-            if (parent instanceof Block) {
-                parent.addChildBefore(newChild, node);
-            } else if (parent instanceof IfStatement) {
-                IfStatement parentIf = (IfStatement) parent;
-                Scope scope = new Scope();
-                scope.addChild(newChild);
-                scope.addChild(node);
-                if (parentIf.getThenPart() == node) {
-                    parentIf.setThenPart(scope);
-                } else if (parentIf.getElsePart() == node) {
-                    parentIf.setElsePart(scope);
-                }
-            } else {
-                parent.addChildBefore(newChild, node);
-            }
+            addInstrumentationBefore(node);
         } else if (node instanceof VariableDeclaration || node instanceof LetNode) {
             if (!(parent instanceof LetNode)) {// TODO this is a bit specific
                 parent.addChildBefore(buildInstrumentationStatement(node.getLineno()), node);
@@ -480,26 +442,48 @@ class NodeProcessor {
             ExpressionStatement newChild = buildInstrumentationStatement(labeledStatement.getLineno());
             parent.addChildBefore(newChild, node);
         } else if (node instanceof IfStatement) {
-            ExpressionStatement newChild = buildInstrumentationStatement(node.getLineno());
-            if (parent instanceof IfStatement) {
-                IfStatement parentIf = (IfStatement) parent;
-                Scope scope = new Scope();
-                scope.addChild(newChild);
-                scope.addChild(node);
-                if (parentIf.getElsePart() == node) {
-                    parentIf.setElsePart(scope);
-                }
-            } else if (parent instanceof Loop) {
-                Loop parentLoop = (Loop) parent;
-                Scope scope = new Scope();
-                scope.addChild(newChild);
-                scope.addChild(node);
-                parentLoop.setBody(scope);
-            } else {
-                parent.addChildBefore(newChild, node);
-            }
+            addInstrumentationBefore(node);
         }
         return true;
+    }
+    
+    private void addInstrumentationBefore(AstNode node) {
+        AstNode parent = node.getParent();
+        if (parent instanceof IfStatement) {
+            addIfScope(node, (IfStatement) parent);
+        } else if (parent instanceof Loop) {
+            addLoopScope(node, (Loop) parent);
+        } else if (parent instanceof WithStatement) {
+            addWithScope(node, (WithStatement) parent);
+        } else {
+            parent.addChildBefore(buildInstrumentationStatement(node.getLineno()), node);
+        }
+    }
+    
+    private Scope makeReplacementScope(AstNode node) {
+        Scope scope = new Scope();
+        scope.addChild(buildInstrumentationStatement(node.getLineno()));
+        scope.addChild(node);
+        return scope;
+    }
+
+    private void addWithScope(AstNode node, WithStatement with) {
+        Scope scope = makeReplacementScope(node);
+        with.setStatement(scope);
+    }
+
+    private void addLoopScope(AstNode node, Loop parentLoop) {
+        Scope scope = makeReplacementScope(node);
+        parentLoop.setBody(scope);
+    }
+
+    private void addIfScope(AstNode node, IfStatement parentIf) {
+        Scope scope = makeReplacementScope(node);
+        if (parentIf.getThenPart() == node) {
+            parentIf.setThenPart(scope);
+        } else if (parentIf.getElsePart() == node) {
+            parentIf.setElsePart(scope);
+        }
     }
 
     private boolean isDebugStatement(AstNode node) {
