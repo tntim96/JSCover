@@ -1,4 +1,4 @@
-1.0.14 / 2014-??-??
+1.0.14 / 2014-08-29
 ==================
   * Fix instrumentation for some cases without braces (https://github.com/tntim96/JSCover/issues/160)
   * Remove proxy headers to avoid persistent connections (https://github.com/tntim96/JSCover/pull/159)
