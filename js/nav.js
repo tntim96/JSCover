@@ -1,5 +1,4 @@
 $(document).ready(function() {
-  var buttonColour = {};
   $(".navButton").fadeTo("fast", 0.7);
   $(".brand").fadeTo("fast", 1);
   $(".navButton").mousedown(function() {
@@ -36,7 +35,7 @@ $(document).ready(function() {
     $('#container').html('<div style="position:relative"><h2>Loading...</h2></div>');
     var contentId = $(this).attr("id").replace('Link', '');
     $.ajax({
-      url: contentId + '.html?v=1013c',
+      url: contentId + '.html?v=1014',
       dataType:'html',
       success: function(data) {
       $('#container').html(data+'<p>&nbsp;</p>');
