@@ -546,7 +546,7 @@ public class JSONDataSaverTest {
     }
 
     @Test
-    public void shouldSaveAndIncludeUnloadedJSithTranslatedUris() {
+    public void shouldSaveAndIncludeUnloadedJSWithTranslatedUris() {
         List<ScriptCoverageCount> unloadJSData = new ArrayList<ScriptCoverageCount>();
 
         SortedMap<String, FileData> jsonMap = new TreeMap<String, FileData>();
