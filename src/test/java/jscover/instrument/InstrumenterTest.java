@@ -635,11 +635,14 @@ public class InstrumenterTest {
         String instrumentedSource = sourceProcessor.instrumentSource(source);
         String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
                 "labelmark:\n" +
-                "  for (x = 0; x < 5; x++) {\n" +
-                "    _$jscoverage['test.js'].lineData[3]++;\n" +
-                "    if (x) {\n" +
-                "      _$jscoverage['test.js'].lineData[4]++;\n" +
-                "      continue labelmark;\n" +
+                "  {\n" +
+                "    _$jscoverage['test.js'].lineData[2]++;\n" +
+                "    for (x = 0; x < 5; x++) {\n" +
+                "      _$jscoverage['test.js'].lineData[3]++;\n" +
+                "      if (x) {\n" +
+                "        _$jscoverage['test.js'].lineData[4]++;\n" +
+                "        continue labelmark;\n" +
+                "      }\n" +
                 "    }\n" +
                 "  }\n";
         assertEquals(expectedSource, instrumentedSource);
@@ -672,7 +675,47 @@ public class InstrumenterTest {
                 "  }\n";
         assertEquals(expectedSource, instrumentedSource);
     }
-    
+
+    @Test
+    public void shouldInstrumentLabelWithBraces() {
+        String source = "outloop:\n" +
+                "  {\n" +
+                "    for (var j = 0; j < 10; j++) {\n" +
+                "        break outloop;\n" +
+                "    }" +
+                "  }";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "outloop:\n" +
+                "  {\n" +
+                "    _$jscoverage['test.js'].lineData[3]++;\n" +
+                "    for (var j = 0; j < 10; j++) {\n" +
+                "      _$jscoverage['test.js'].lineData[4]++;\n" +
+                "      break outloop;\n" +
+                "    }\n" +
+                "  }\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+    @Test
+    public void shouldInstrumentLabelWithoutBraces() {
+        String source = "outloop:\n" +
+                "    for (var j = 0; j < 10; j++) {\n" +
+                "        break outloop;\n" +
+                "    }";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "outloop:\n" +
+                "  {\n" +
+                "    _$jscoverage['test.js'].lineData[2]++;\n" +
+                "    for (var j = 0; j < 10; j++) {\n" +
+                "      _$jscoverage['test.js'].lineData[3]++;\n" +
+                "      break outloop;\n" +
+                "    }\n" +
+                "  }\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
     @Test
     public void shouldInstrumentIfElseNoBraceTry() {
         String source = "" + 

@@ -1,3 +1,7 @@
+1.0.15 / 2014-??-??
+==================
+  * Fix instrumentation for label without braces (https://github.com/tntim96/JSCover/issues/165)
+
 1.0.14 / 2014-08-29
 ==================
   * Fix instrumentation for some cases without braces (https://github.com/tntim96/JSCover/issues/160)

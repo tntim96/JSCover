@@ -441,6 +441,11 @@ class NodeProcessor {
             LabeledStatement labeledStatement = (LabeledStatement)node;
             ExpressionStatement newChild = buildInstrumentationStatement(labeledStatement.getLineno());
             parent.addChildBefore(newChild, node);
+            if (labeledStatement.getStatement().getType() != Token.BLOCK) {
+                Block block = new Block();
+                block.addStatement(labeledStatement.getStatement());
+                labeledStatement.setStatement(block);
+            }
         } else if (node instanceof IfStatement) {
             addInstrumentationBefore(node);
         }
