@@ -1,4 +1,4 @@
-1.0.15 / 2014-??-??
+1.0.15 / 2014-10-17
 ==================
   * Fix instrumentation for label without braces (https://github.com/tntim96/JSCover/issues/165)
 
