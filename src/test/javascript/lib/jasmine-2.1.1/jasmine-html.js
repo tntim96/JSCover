@@ -46,7 +46,8 @@ jasmineRequire.HtmlReporter = function(j$) {
       failureCount = 0,
       pendingSpecCount = 0,
       htmlReporterMain,
-      symbols;
+      symbols,
+      failedSuites = [];
 
     this.initialize = function() {
       clearPrior();
@@ -83,6 +84,10 @@ jasmineRequire.HtmlReporter = function(j$) {
     };
 
     this.suiteDone = function(result) {
+      if (result.status == 'failed') {
+        failedSuites.push(result);
+      }
+
       if (currentParent == topResults) {
         return;
       }
@@ -96,7 +101,7 @@ jasmineRequire.HtmlReporter = function(j$) {
 
     var failures = [];
     this.specDone = function(result) {
-      if(noExpectations(result) && console && console.error) {
+      if(noExpectations(result) && typeof console !== 'undefined' && typeof console.error !== 'undefined') {
         console.error('Spec \'' + result.fullName + '\' has no expectations.');
       }
 
@@ -177,6 +182,15 @@ jasmineRequire.HtmlReporter = function(j$) {
       }
 
       alert.appendChild(createDom('span', {className: statusBarClassName}, statusBarMessage));
+
+      for(i = 0; i < failedSuites.length; i++) {
+        var failedSuite = failedSuites[i];
+        for(var j = 0; j < failedSuite.failedExpectations.length; j++) {
+          var errorBarMessage = 'AfterAll ' + failedSuite.failedExpectations[j].message;
+          var errorBarClassName = 'bar errored';
+          alert.appendChild(createDom('span', {className: errorBarClassName}, errorBarMessage));
+        }
+      }
 
       var results = find('.results');
       results.appendChild(summary);
