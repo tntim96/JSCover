@@ -2044,13 +2044,12 @@ getJasmineRequireObj().Suite = function() {
 
     var allFns = [];
 
+    for (var i = 0; i < this.children.length; i++) {
+      allFns.push(wrapChildAsAsync(this.children[i]));
+    }
+
     if (this.isExecutable()) {
-      allFns = allFns.concat(this.beforeAllFns);
-
-      for (var i = 0; i < this.children.length; i++) {
-        allFns.push(wrapChildAsAsync(this.children[i]));
-      }
-
+      allFns = this.beforeAllFns.concat(allFns);
       allFns = allFns.concat(this.afterAllFns);
     }
 
@@ -2906,5 +2905,5 @@ getJasmineRequireObj().interface = function(jasmine, env) {
 };
 
 getJasmineRequireObj().version = function() {
-  return '2.1.1';
+  return '2.1.2';
 };
