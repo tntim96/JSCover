@@ -354,6 +354,8 @@ function jscoverage_body_load() {
     var request = jscoverage_createRequest();
     try {
       request.open('GET', 'jscoverage.json', true);
+      // disable cache in IE
+      request.setRequestHeader("If-Modified-Since", "Thu, 01 Jun 1970 00:00:00 GMT");
       request.onreadystatechange = function (event) {
         if (request.readyState === 4) {
           try {
@@ -1060,6 +1062,8 @@ function jscoverage_recalculateSourceTab() {
       relativeUrl = 'original-src' + relativeUrl;
     request.open('GET', relativeUrl, true);
     request.setRequestHeader("NoInstrument", "true");
+    // disable cache in IE
+    request.setRequestHeader("If-Modified-Since", "Thu, 01 Jun 1970 00:00:00 GMT");
     request.onreadystatechange = function (event) {
       if (request.readyState === 4) {
         try {
@@ -1068,7 +1072,7 @@ function jscoverage_recalculateSourceTab() {
           }
           var response = request.responseText;
           var displaySource = function() {
-              var lines = response.split(/\n/);
+              var lines = response.split("\n");
               for (var i = 0; i < lines.length; i++)
                   lines[i] = jscoverage_html_escape(lines[i]);
               jscoverage_makeTable(lines);
