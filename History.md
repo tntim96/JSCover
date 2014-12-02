@@ -1,3 +1,7 @@
+1.0.16 / 2014-12-??
+==================
+  * Fix view source failures in Internet Explorer (https://github.com/tntim96/JSCover/pull/171)
+
 1.0.15 / 2014-10-17
 ==================
   * Fix instrumentation for label without braces (https://github.com/tntim96/JSCover/issues/165)
