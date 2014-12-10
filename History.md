@@ -1,6 +1,7 @@
 1.0.16 / 2014-12-??
 ==================
   * Fix view source failures in Internet Explorer (https://github.com/tntim96/JSCover/pull/171)
+  * Internal: Upgrade to JUnit 4.12, Jasmine 2.1.3
 
 1.0.15 / 2014-10-17
 ==================
