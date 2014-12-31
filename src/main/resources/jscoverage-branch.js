@@ -10,7 +10,7 @@ function BranchData() {
         this.nodeLength = nodeLength;
         this.src = src;
         return this;
-    }
+    };
 
     this.ranCondition = function(result) {
         if (result)
@@ -76,12 +76,13 @@ function buildBranchMessage(conditions) {
           message += '\n- '+ conditions[i].message();
     }
     return message;
-};
+}
 
 function convertBranchDataConditionArrayToJSON(branchDataConditionArray) {
+    var condition, value;
     var array = [];
     var length = branchDataConditionArray.length;
-    for (var condition = 0; condition < length; condition++) {
+    for (condition = 0; condition < length; condition++) {
         var branchDataObject = branchDataConditionArray[condition];
         if (branchDataObject === undefined || branchDataObject === null) {
             value = 'null';
@@ -97,12 +98,13 @@ function convertBranchDataLinesToJSON(branchData) {
     if (branchData === undefined) {
         return '{}'
     }
+    var line;
     var json = '';
-    for (var line in branchData) {
+    for (line in branchData) {
         if (isNaN(line))
             continue;
         if (json !== '')
-            json += ','
+            json += ',';
         json += '"' + line + '":' + convertBranchDataConditionArrayToJSON(branchData[line]);
     }
     return '{' + json + '}';
@@ -112,7 +114,8 @@ function convertBranchDataLinesFromJSON(jsonObject) {
     if (jsonObject === undefined) {
         return {};
     }
-    for (var line in jsonObject) {
+    var line;
+    for (line in jsonObject) {
         var branchDataJSON = jsonObject[line];
         if (branchDataJSON !== null) {
             for (var conditionIndex = 0; conditionIndex < branchDataJSON.length; conditionIndex ++) {
