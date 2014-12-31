@@ -1,6 +1,7 @@
 1.0.16 / 2015-01-??
 ==================
   * Fix view source failures in Internet Explorer (https://github.com/tntim96/JSCover/pull/171)
+  * Add option to exclude coalesce from conditional coverage (https://github.com/tntim96/JSCover/issues/86)
   * Internal: Upgrade to JUnit 4.12, Jasmine 2.1.3, Mockito 1.10.17
 
 1.0.15 / 2014-10-17

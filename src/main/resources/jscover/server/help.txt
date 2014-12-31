@@ -17,5 +17,6 @@ Options:
       --no-function             turn off function coverage data collection
       --include-unloaded-js     include unloaded JavaScript under <document-root> in the report
       --local-storage           save and load coverage data from HTML5 local storage
+      --detect-coalesce         try to exclude coalesce assignments from conditional coverage
       --log=LEVEL               set logging level to: SEVERE (default), WARNING, INFO, CONFIG, FINE, FINER, FINEST
   -h, --help                    display this help and exit

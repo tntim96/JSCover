@@ -358,7 +358,7 @@ public class BranchInstrumentorIntegrationTest {
     private static final String header = "var _$jscoverage = {};\n" +
             "_$jscoverage['test.js'] = {};\n";
 
-    private BranchInstrumentor branchInstrumentor = new BranchInstrumentor("test.js");
+    private BranchInstrumentor branchInstrumentor = new BranchInstrumentor("test.js", false);
     private Parser parser = new Parser();
     private Context context;
     private Scriptable scope;
@@ -415,6 +415,33 @@ public class BranchInstrumentorIntegrationTest {
         Scriptable coverageData = getCoverageData(scope, "test.js", 1, 1);
         assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
         assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
+    }
+
+    @Test
+    public void shouldWrapCoalesce() {
+        StringBuilder script = new StringBuilder("function test(a) {\n  var x = a || {};\n  }\ntest();");
+        runScript(script.toString());
+        Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
+        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
+        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
+    }
+
+    @Test
+    public void shouldNotWrapCoalesceIfConfiguredNotTo() {
+        branchInstrumentor = new BranchInstrumentor("test.js", true);
+        StringBuilder script = new StringBuilder("function test(a) {\n  var x = a || {};\n  }\ntest();");
+        runScript(script.toString());
+        assertThat(getBranchData(scope, "test.js").size(), equalTo(0));
+    }
+
+    @Test
+    public void shouldWrapNonCoalesce() {
+        branchInstrumentor = new BranchInstrumentor("test.js", true);
+        StringBuilder script = new StringBuilder("function test(a) {\n  var x = a > 7;\n  }\ntest(3);");
+        runScript(script.toString());
+        Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
+        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(0d));
+        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(1d));
     }
 
     @Test

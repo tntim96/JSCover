@@ -366,14 +366,16 @@ public class ConfigurationCommon extends Configuration {
     public static final String NO_INSTRUMENT_PREFIX = "--no-instrument=";
     public static final String NO_INSTRUMENT_REG_PREFIX = "--no-instrument-reg=";
     public static final String JS_VERSION_PREFIX = "--js-version=";
-    public static final String BRANCH_PREFIX = "--no-branch";
-    public static final String FUNCTION_PREFIX = "--no-function";
+    public static final String NO_BRANCH_PREFIX = "--no-branch";
+    public static final String DETECT_COALESCE_PREFIX = "--detect-coalesce";
+    public static final String NO_FUNCTION_PREFIX = "--no-function";
     public static final String LOCAL_STORAGE_PREFIX = "--local-storage";
     public static final String LOG_LEVEL = "--log=";
 
     protected boolean showHelp;
     protected boolean invalid;
     protected boolean includeBranch = true;
+    protected boolean detectCoalesce;
     protected boolean includeFunction = true;
     protected boolean localStorage;
     protected final List<PatternMatcher> patternMatchers = new ArrayList<PatternMatcher>();
@@ -385,6 +387,10 @@ public class ConfigurationCommon extends Configuration {
 
     public void setIncludeBranch(boolean includeBranch) {
         this.includeBranch = includeBranch;
+    }
+
+    public void setDetectCoalesce(boolean detectCoalesce) {
+        this.detectCoalesce = detectCoalesce;
     }
 
     public void setIncludeFunction(boolean includeFunction) {
@@ -409,6 +415,10 @@ public class ConfigurationCommon extends Configuration {
 
     public boolean isIncludeBranch() {
         return includeBranch;
+    }
+
+    public boolean isDetectCoalesce() {
+        return detectCoalesce;
     }
 
     public boolean isIncludeFunction() {
@@ -483,9 +493,13 @@ public class ConfigurationCommon extends Configuration {
     protected boolean parseArg(String arg) {
         if (arg.equals(HELP_PREFIX1) || arg.equals(HELP_PREFIX2)) {
             showHelp = true;
-        } else if (arg.equals(BRANCH_PREFIX)) {
+        } else if (arg.equals(NO_BRANCH_PREFIX)) {
             includeBranch = false;
-        } else if (arg.equals(FUNCTION_PREFIX)) {
+        } else if (arg.equals(NO_BRANCH_PREFIX)) {
+            includeBranch = false;
+        } else if (arg.equals(DETECT_COALESCE_PREFIX)) {
+            detectCoalesce = true;
+        } else if (arg.equals(NO_FUNCTION_PREFIX)) {
             includeFunction = false;
         } else if (arg.equals(LOCAL_STORAGE_PREFIX)) {
             localStorage = true;

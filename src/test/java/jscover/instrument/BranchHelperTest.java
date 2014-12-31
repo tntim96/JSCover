@@ -7,9 +7,9 @@ import org.junit.Test;
 import org.mozilla.javascript.CompilerEnvirons;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Parser;
+import org.mozilla.javascript.Token;
 import org.mozilla.javascript.ast.AstNode;
 import org.mozilla.javascript.ast.AstRoot;
-import sun.org.mozilla.javascript.Token;
 
 
 public class BranchHelperTest {
@@ -42,7 +42,16 @@ public class BranchHelperTest {
     String script = "x = y || {};";
     AstRoot astRoot = parser.parse(script, null, 1);
     AstNode orNode = NodeTestHelper.findNode(astRoot, Token.OR);
-    assertThat(helper.possibleCoalesce(orNode), is(true));
+    assertThat(helper.isCoalesce(orNode), is(true));
+  }
+
+
+  @Test
+  public void shouldDetectCoalesceWithVariableDeclaration() {
+    String script = "var x = y || {};";
+    AstRoot astRoot = parser.parse(script, null, 1);
+    AstNode orNode = NodeTestHelper.findNode(astRoot, Token.OR);
+    assertThat(helper.isCoalesce(orNode), is(true));
   }
 
 
@@ -51,16 +60,16 @@ public class BranchHelperTest {
     String script = "if (a || b) ;";
     AstRoot astRoot = parser.parse(script, null, 1);
     AstNode orNode = NodeTestHelper.findNode(astRoot, Token.OR);
-    assertThat(helper.possibleCoalesce(orNode), is(false));
+    assertThat(helper.isCoalesce(orNode), is(false));
   }
 
 
   @Test
   public void shouldNotDetectAndAsCoalesce() {
-    String script = "x = y && 7;";
+    String script = "x = y > 7;";
     AstRoot astRoot = parser.parse(script, null, 1);
-    AstNode andNode = NodeTestHelper.findNode(astRoot, Token.AND);
-    assertThat(helper.possibleCoalesce(andNode), is(false));
+    AstNode node = NodeTestHelper.findNode(astRoot, Token.GT);
+    assertThat(helper.isCoalesce(node), is(false));
   }
 
 }

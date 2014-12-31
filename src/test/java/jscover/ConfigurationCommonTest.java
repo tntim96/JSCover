@@ -356,6 +356,7 @@ public class ConfigurationCommonTest {
         assertThat(config.isIncludeBranch(), is(true));
         assertThat(config.isIncludeFunction(), is(true));
         assertThat(config.isLocalStorage(), is(false));
+        assertThat(config.isDetectCoalesce(), is(false));
     }
 
     @Test
@@ -364,16 +365,24 @@ public class ConfigurationCommonTest {
         config.setIncludeBranch(false);
         config.setIncludeFunction(false);
         config.setLocalStorage(true);
+        config.setDetectCoalesce(true);
 
         assertThat(config.getJSVersion(), is(180));
         assertThat(config.isIncludeBranch(), is(false));
         assertThat(config.isIncludeFunction(), is(false));
         assertThat(config.isLocalStorage(), is(true));
+        assertThat(config.isDetectCoalesce(), is(true));
     }
 
     @Test
     public void shouldParseLocalStorage() {
         assertThat(config.parseArg("--local-storage"), is(true));
         assertThat(config.isLocalStorage(), is(true));
+    }
+
+    @Test
+    public void shouldParseDetectCoalesce() {
+        assertThat(config.parseArg("--detect-coalesce"), is(true));
+        assertThat(config.isDetectCoalesce(), is(true));
     }
 }

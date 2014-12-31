@@ -389,7 +389,7 @@ class BranchHelper {
     }
 
 
-  public boolean possibleCoalesce(AstNode node) {
-    return node.getType() == Token.OR && node.getParent().getType() == Token.ASSIGN;
+  public boolean isCoalesce(AstNode node) {
+    return node.getType() == Token.OR && (node.getParent().getType() == Token.ASSIGN || node.getParent().getType() == Token.VAR);
   }
 }

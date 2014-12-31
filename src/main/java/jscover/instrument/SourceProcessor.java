@@ -371,7 +371,7 @@ class SourceProcessor {
     public SourceProcessor(ConfigurationCommon config, String uri) {
         this.uri = uri;
         this.instrumenter = new ParseTreeInstrumenter(uri, config.isIncludeFunction());
-        this.branchInstrumentor = new BranchInstrumentor(uri);
+        this.branchInstrumentor = new BranchInstrumentor(uri, config.isDetectCoalesce());
         parser = new Parser(config.getCompilerEnvirons());
         this.includeBranchCoverage = config.isIncludeBranch();
         this.includeFunctionCoverage = config.isIncludeFunction();

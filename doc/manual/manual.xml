@@ -604,6 +604,11 @@ fs.write("target/jscoverage.json", json, 'w');
                             </td>
                         </tr>
                         <tr>
+                            <td>--detect-coalesce</td>
+                            <td>false</td>
+                            <td>Try to exclude coalesce assignments from conditional coverage</td>
+                        </tr>
+                        <tr>
                             <td>--js-version=VERSION</td>
                             <td>1.5</td>
                             <td>
