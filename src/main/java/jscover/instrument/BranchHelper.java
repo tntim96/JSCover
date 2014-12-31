@@ -390,6 +390,6 @@ class BranchHelper {
 
 
   public boolean possibleCoalesce(AstNode node) {
-    return node.getType() == Token.OR;
+    return node.getType() == Token.OR && node.getParent().getType() == Token.ASSIGN;
   }
 }

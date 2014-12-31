@@ -3,7 +3,6 @@ package jscover.instrument;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mozilla.javascript.CompilerEnvirons;
 import org.mozilla.javascript.Context;
@@ -47,7 +46,6 @@ public class BranchHelperTest {
   }
 
 
-  @Ignore
   @Test
   public void shouldNotDetectCoalesce() {
     String script = "if (a || b) ;";
@@ -61,8 +59,8 @@ public class BranchHelperTest {
   public void shouldNotDetectAndAsCoalesce() {
     String script = "x = y && 7;";
     AstRoot astRoot = parser.parse(script, null, 1);
-    AstNode orNode = NodeTestHelper.findNode(astRoot, Token.AND);
-    assertThat(helper.possibleCoalesce(orNode), is(false));
+    AstNode andNode = NodeTestHelper.findNode(astRoot, Token.AND);
+    assertThat(helper.possibleCoalesce(andNode), is(false));
   }
 
 }
