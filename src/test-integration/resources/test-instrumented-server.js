@@ -39,7 +39,7 @@ function BranchData() {
         this.nodeLength = nodeLength;
         this.src = src;
         return this;
-    }
+    };
 
     this.ranCondition = function(result) {
         if (result)
@@ -100,18 +100,20 @@ BranchData.fromJsonObject = function(json) {
 
 function buildBranchMessage(conditions) {
     var message = 'The following was not covered:';
-    for (var i = 0; i < conditions.length; i++) {
+    var i;
+    for (i = 0; i < conditions.length; i++) {
         if (conditions[i] !== undefined && conditions[i] !== null && !conditions[i].covered())
-          message += '\n- '+ conditions[i].message();
+            message += '\n- '+ conditions[i].message();
     }
     return message;
-};
+}
 
 function convertBranchDataConditionArrayToJSON(branchDataConditionArray) {
+    var condition, branchDataObject, value;
     var array = [];
     var length = branchDataConditionArray.length;
-    for (var condition = 0; condition < length; condition++) {
-        var branchDataObject = branchDataConditionArray[condition];
+    for (condition = 0; condition < length; condition++) {
+        branchDataObject = branchDataConditionArray[condition];
         if (branchDataObject === undefined || branchDataObject === null) {
             value = 'null';
         } else {
@@ -126,12 +128,13 @@ function convertBranchDataLinesToJSON(branchData) {
     if (branchData === undefined) {
         return '{}'
     }
+    var line;
     var json = '';
-    for (var line in branchData) {
+    for (line in branchData) {
         if (isNaN(line))
             continue;
         if (json !== '')
-            json += ','
+            json += ',';
         json += '"' + line + '":' + convertBranchDataConditionArrayToJSON(branchData[line]);
     }
     return '{' + json + '}';
@@ -141,11 +144,12 @@ function convertBranchDataLinesFromJSON(jsonObject) {
     if (jsonObject === undefined) {
         return {};
     }
-    for (var line in jsonObject) {
-        var branchDataJSON = jsonObject[line];
+    var line, branchDataJSON, conditionIndex, condition;
+    for (line in jsonObject) {
+        branchDataJSON = jsonObject[line];
         if (branchDataJSON !== null) {
-            for (var conditionIndex = 0; conditionIndex < branchDataJSON.length; conditionIndex ++) {
-                var condition = branchDataJSON[conditionIndex];
+            for (conditionIndex = 0; conditionIndex < branchDataJSON.length; conditionIndex ++) {
+                condition = branchDataJSON[conditionIndex];
                 if (condition !== null) {
                     branchDataJSON[conditionIndex] = BranchData.fromJsonObject(condition);
                 }

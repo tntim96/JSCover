@@ -71,19 +71,20 @@ BranchData.fromJsonObject = function(json) {
 
 function buildBranchMessage(conditions) {
     var message = 'The following was not covered:';
-    for (var i = 0; i < conditions.length; i++) {
+    var i;
+    for (i = 0; i < conditions.length; i++) {
         if (conditions[i] !== undefined && conditions[i] !== null && !conditions[i].covered())
-          message += '\n- '+ conditions[i].message();
+            message += '\n- '+ conditions[i].message();
     }
     return message;
 }
 
 function convertBranchDataConditionArrayToJSON(branchDataConditionArray) {
-    var condition, value;
+    var condition, branchDataObject, value;
     var array = [];
     var length = branchDataConditionArray.length;
     for (condition = 0; condition < length; condition++) {
-        var branchDataObject = branchDataConditionArray[condition];
+        branchDataObject = branchDataConditionArray[condition];
         if (branchDataObject === undefined || branchDataObject === null) {
             value = 'null';
         } else {
@@ -114,12 +115,12 @@ function convertBranchDataLinesFromJSON(jsonObject) {
     if (jsonObject === undefined) {
         return {};
     }
-    var line;
+    var line, branchDataJSON, conditionIndex, condition;
     for (line in jsonObject) {
-        var branchDataJSON = jsonObject[line];
+        branchDataJSON = jsonObject[line];
         if (branchDataJSON !== null) {
-            for (var conditionIndex = 0; conditionIndex < branchDataJSON.length; conditionIndex ++) {
-                var condition = branchDataJSON[conditionIndex];
+            for (conditionIndex = 0; conditionIndex < branchDataJSON.length; conditionIndex ++) {
+                condition = branchDataJSON[conditionIndex];
                 if (condition !== null) {
                     branchDataJSON[conditionIndex] = BranchData.fromJsonObject(condition);
                 }
