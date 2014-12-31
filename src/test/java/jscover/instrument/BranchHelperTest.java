@@ -1,0 +1,68 @@
+package jscover.instrument;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
+import org.junit.Ignore;
+import org.junit.Test;
+import org.mozilla.javascript.CompilerEnvirons;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Parser;
+import org.mozilla.javascript.ast.AstNode;
+import org.mozilla.javascript.ast.AstRoot;
+import sun.org.mozilla.javascript.Token;
+
+
+public class BranchHelperTest {
+
+  private static CompilerEnvirons compilerEnv = new CompilerEnvirons();
+  private BranchHelper helper = new BranchHelper();
+  private Parser parser = new Parser();
+
+
+  static {
+    // compilerEnv.setAllowMemberExprAsFunctionName(true);
+    compilerEnv.setLanguageVersion(Context.VERSION_1_8);
+    compilerEnv.setStrictMode(false);
+  }
+
+
+  @Test
+  public void shouldDetectBoolean() {
+    String script = "x = y || 7;";
+    AstRoot astRoot = parser.parse(script, null, 1);
+    AstNode orNode = NodeTestHelper.findNode(astRoot, Token.OR);
+    AstNode assignNode = NodeTestHelper.findNode(astRoot, Token.ASSIGN);
+    assertThat(helper.isBoolean(orNode), is(true));
+    assertThat(helper.isBoolean(assignNode), is(false));
+  }
+
+
+  @Test
+  public void shouldDetectCoalesce() {
+    String script = "x = y || {};";
+    AstRoot astRoot = parser.parse(script, null, 1);
+    AstNode orNode = NodeTestHelper.findNode(astRoot, Token.OR);
+    assertThat(helper.possibleCoalesce(orNode), is(true));
+  }
+
+
+  @Ignore
+  @Test
+  public void shouldNotDetectCoalesce() {
+    String script = "if (a || b) ;";
+    AstRoot astRoot = parser.parse(script, null, 1);
+    AstNode orNode = NodeTestHelper.findNode(astRoot, Token.OR);
+    assertThat(helper.possibleCoalesce(orNode), is(false));
+  }
+
+
+  @Test
+  public void shouldNotDetectAndAsCoalesce() {
+    String script = "x = y && 7;";
+    AstRoot astRoot = parser.parse(script, null, 1);
+    AstNode orNode = NodeTestHelper.findNode(astRoot, Token.AND);
+    assertThat(helper.possibleCoalesce(orNode), is(false));
+  }
+
+}

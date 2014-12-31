@@ -387,4 +387,9 @@ class BranchHelper {
         }
         return false;
     }
+
+
+  public boolean possibleCoalesce(AstNode node) {
+    return node.getType() == Token.OR;
+  }
 }
