@@ -372,7 +372,7 @@ class NodeProcessor {
     }
 
     boolean processNode(AstNode node) {
-		// Function Coverage (HA-CA), tntim96
+        // Function Coverage (HA-CA), tntim96
         if (includeFunctionCoverage && node instanceof FunctionNode) {
             AstNode block = ((FunctionNode) node).getBody();
             if (block instanceof Block) {
@@ -441,11 +441,6 @@ class NodeProcessor {
             LabeledStatement labeledStatement = (LabeledStatement)node;
             ExpressionStatement newChild = buildInstrumentationStatement(labeledStatement.getLineno());
             parent.addChildBefore(newChild, node);
-            if (labeledStatement.getStatement().getType() != Token.BLOCK) {
-                Block block = new Block();
-                block.addStatement(labeledStatement.getStatement());
-                labeledStatement.setStatement(block);
-            }
         } else if (node instanceof IfStatement) {
             addInstrumentationBefore(node);
         }
