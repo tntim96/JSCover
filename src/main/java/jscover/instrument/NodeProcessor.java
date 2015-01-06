@@ -398,8 +398,9 @@ class NodeProcessor {
             return true;
         }
         if (node instanceof ExpressionStatement || node instanceof EmptyExpression || node instanceof Loop
-                || node instanceof ContinueStatement || node instanceof VariableDeclaration || node instanceof SwitchStatement
-                || node instanceof BreakStatement || node instanceof EmptyStatement || node instanceof ThrowStatement) {
+                || node instanceof ContinueStatement || node instanceof VariableDeclaration || node instanceof LetNode
+                || node instanceof SwitchStatement || node instanceof BreakStatement
+                || node instanceof EmptyStatement || node instanceof ThrowStatement) {
 
             if (node.getLineno() < 1) {
                 //Must be a case expression
@@ -408,6 +409,8 @@ class NodeProcessor {
             if (parent instanceof SwitchCase) {
                 //Don't do anything here. Direct modification of statements will result in concurrent modification exception.
             } else if (parent instanceof LabeledStatement) {
+                //Don't do anything here.
+            } else if (isLoopInitializer(node)) {
                 //Don't do anything here.
             } else if (parent != null) {
                 addInstrumentationBefore(node);
@@ -431,12 +434,6 @@ class NodeProcessor {
             }
         } else if (node instanceof ReturnStatement) {
             addInstrumentationBefore(node);
-        } else if (node instanceof VariableDeclaration || node instanceof LetNode) {
-            if (!(parent instanceof LetNode)) {// TODO this is a bit specific
-                parent.addChildBefore(buildInstrumentationStatement(node.getLineno()), node);
-            }
-        } else if (node instanceof Loop) {
-            parent.addChildBefore(buildInstrumentationStatement(node.getLineno()), node);
         } else if (node instanceof LabeledStatement) {
             LabeledStatement labeledStatement = (LabeledStatement)node;
             ExpressionStatement newChild = buildInstrumentationStatement(labeledStatement.getLineno());
@@ -446,7 +443,16 @@ class NodeProcessor {
         }
         return true;
     }
-    
+
+    private boolean isLoopInitializer(AstNode node) {
+        if (node.getParent() instanceof ForLoop) {
+            ForLoop forLoop = (ForLoop)node.getParent();
+            if (forLoop.getInitializer() == node)
+                return true;
+        }
+        return false;
+    }
+
     private void addInstrumentationBefore(AstNode node) {
         AstNode parent = node.getParent();
         if (parent instanceof IfStatement) {

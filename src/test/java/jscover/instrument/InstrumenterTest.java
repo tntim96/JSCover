@@ -345,7 +345,6 @@ package jscover.instrument;
 import jscover.ConfigurationCommon;
 import jscover.util.ReflectionUtils;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -434,6 +433,19 @@ public class InstrumenterTest {
                 "    _$jscoverage['test.js'].lineData[3]++;\n" +
                 "    i++;\n" +
                 "  }\n" +
+                "}\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+    @Test
+    public void shouldInstrumentLoopWithLet() {
+        String source = "for ( let i = 0; i < 2; i++ )\n" +
+                "  i++";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "for (let i = 0; i < 2; i++) {\n" +
+                "  _$jscoverage['test.js'].lineData[2]++;\n" +
+                "  i++;\n" +
                 "}\n";
         assertEquals(expectedSource, instrumentedSource);
     }
@@ -680,7 +692,7 @@ public class InstrumenterTest {
                 "  {\n" +
                 "    for (var j = 0; j < 10; j++) {\n" +
                 "        break outloop;\n" +
-                "    }" +
+                "    }\n" +
                 "  }";
         String instrumentedSource = sourceProcessor.instrumentSource(source);
         String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
@@ -696,7 +708,6 @@ public class InstrumenterTest {
     }
 
     @Test
-    @Ignore
     public void shouldInstrumentLabelWithoutBraces() {
         String source = "outloop:\n" +
                 "    for (var j = 0; j < 10; j++) {\n" +
@@ -711,7 +722,7 @@ public class InstrumenterTest {
                 "  }\n";
         assertEquals(expectedSource, instrumentedSource);
     }
-    
+
     @Test
     public void shouldInstrumentIfElseNoBraceTry() {
         String source = "" + 
