@@ -1,4 +1,4 @@
-1.0.16 / 2015-01-??
+1.0.16 / 2015-01-06
 ==================
   * Fix view source failures in Internet Explorer (https://github.com/tntim96/JSCover/pull/171)
   * Add option to exclude coalesce from conditional coverage (https://github.com/tntim96/JSCover/issues/86)
