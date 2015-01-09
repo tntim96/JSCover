@@ -1,3 +1,7 @@
+1.0.17 / 2015-??-??
+==================
+  * Sort files in web-server (https://github.com/tntim96/JSCover/issues/177)
+
 1.0.16 / 2015-01-06
 ==================
   * Fix view source failures in Internet Explorer (https://github.com/tntim96/JSCover/pull/171)

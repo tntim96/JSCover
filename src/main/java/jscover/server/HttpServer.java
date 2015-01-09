@@ -481,7 +481,9 @@ public class HttpServer extends Thread {
                 else
                     data.append(format("<a href=\"%s\">..</a><br/>\n", getRelativePath(parentDir)));
             }
-            for (File linkTo : file.listFiles()) {
+            File[] files = file.listFiles();
+            Arrays.sort(files);
+            for (File linkTo : files) {
                 data.append(format("<a href=\"%s\">%s</a><br/>\n", getRelativePath(linkTo), linkTo.getName()));
             }
             data.append("</body>\n</html>");
