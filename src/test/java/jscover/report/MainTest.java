@@ -363,8 +363,10 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import static jscover.Main.reportSrcSubDir;
 import static org.hamcrest.CoreMatchers.is;
@@ -561,8 +563,14 @@ public class MainTest {
         given(config.getMergeDirs()).willReturn(mergeDirs);
         given(ioUtils.loadFromFileSystem(new File(dir1, "jscoverage.json"))).willReturn("json1");
         given(ioUtils.loadFromFileSystem(new File(dir2, "jscoverage.json"))).willReturn("json2");
+        SortedMap<String, FileData> mergedMapTemp = new TreeMap<String, FileData>();
         SortedMap<String, FileData> mergedMap = new TreeMap<String, FileData>();
-        given(jsonDataMerger.mergeJSONCoverageStrings("json1","json2")).willReturn(mergedMap);
+        SortedMap<String, FileData> map1 = new TreeMap<String, FileData>();
+        SortedMap<String, FileData> map2 = new TreeMap<String, FileData>();
+        given(jsonDataMerger.jsonToMap("json1")).willReturn(map1);
+        given(jsonDataMerger.jsonToMap("json2")).willReturn(map2);
+        given(jsonDataMerger.mergeJSONCoverageMaps(argThat(getTypeSafeMatcher()), argThat(sameInstance(map2)))).willReturn(mergedMapTemp);
+        given(jsonDataMerger.mergeJSONCoverageMaps(mergedMapTemp, map2)).willReturn(mergedMap);
         given(jsonDataMerger.toJSON(argThat(sameInstance(mergedMap)))).willReturn("mergedJSON");
 
         main.runMain(new String[]{});
@@ -585,5 +593,18 @@ public class MainTest {
         }
 
         verifyZeroInteractions(exitHelper);
+    }
+
+    private TypeSafeMatcher<SortedMap<String, FileData>> getTypeSafeMatcher() {
+        return new TypeSafeMatcher<SortedMap<String, FileData>>() {
+            public void describeTo(Description description) {
+
+            }
+
+            @Override
+            protected boolean matchesSafely(SortedMap<String, FileData> item) {
+                return true;
+            }
+        };
     }
 }

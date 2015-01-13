@@ -1,5 +1,6 @@
 1.0.17 / 2015-??-??
 ==================
+  * Improve memory usage when merging (https://github.com/tntim96/JSCover/issues/178)
   * Sort files in web-server (https://github.com/tntim96/JSCover/issues/177)
 
 1.0.16 / 2015-01-06

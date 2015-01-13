@@ -354,6 +354,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.logging.Logger;
 
 import static java.util.logging.Level.INFO;
@@ -434,16 +435,16 @@ public class Main {
     }
 
     private void mergeJSON() {
-        String[] data = new String[config.getMergeDirs().size()];
-        for (int i = 0; i < data.length; i++) {
+        SortedMap<String, FileData> total = new TreeMap<String, FileData>();
+        for (int i = 0; i < config.getMergeDirs().size(); i++) {
             File dataFile = new File(config.getMergeDirs().get(i), "jscoverage.json");
             logger.log(INFO, "Merging JSON from ''{0}''", dataFile.getPath());
-            data[i] = ioUtils.loadFromFileSystem(dataFile);
+            String json = ioUtils.loadFromFileSystem(dataFile);
+            total = jsonDataMerger.mergeJSONCoverageMaps(total, jsonDataMerger.jsonToMap(json));
         }
-        SortedMap<String, FileData> mergedMap = jsonDataMerger.mergeJSONCoverageStrings(data);
         config.getMergeDestDir().mkdirs();
         File mergedJson = new File(config.getMergeDestDir(), "jscoverage.json");
-        ioUtils.copy(jsonDataMerger.toJSON(mergedMap), mergedJson);
+        ioUtils.copy(jsonDataMerger.toJSON(total), mergedJson);
     }
 
     public void generateLCovDataFile() {
