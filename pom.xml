@@ -39,13 +39,12 @@ http://github.com/tntim96/rhino/
             <id>central</id>
             <url>http://repo1.maven.org/maven2/</url>
         </repository>
-        <!-- Testing snapshot development
+        <!-- Testing snapshot development -->
         <repository>
             <id>Sonatype repository</id>
             <name>Sonatype's Maven repository</name>
             <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
         </repository>
-        -->
         <!-- Testing staged release
         <repository>
             <id>sonatype</id>
@@ -73,7 +72,7 @@ http://github.com/tntim96/rhino/
         <dependency>
             <groupId>com.github.tntim96</groupId>
             <artifactId>rhino</artifactId>
-            <version>1.7R5pre04</version>
+            <version>1.7R5pre05-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.sourceforge.htmlunit</groupId>

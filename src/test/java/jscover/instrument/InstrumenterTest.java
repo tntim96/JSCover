@@ -351,6 +351,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mozilla.javascript.CompilerEnvirons;
 import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Parser;
 import org.mozilla.javascript.Token;
 import org.mozilla.javascript.ast.*;
 
@@ -390,6 +391,13 @@ public class InstrumenterTest {
     @Test
     public void shouldPatchRhinoBugVoid() {
         assertEquals("void", AstNode.operatorToString(126));
+    }
+
+    @Test
+    public void shouldHandleEmptySwitch() {//Bug 179
+        Parser parser = new Parser(compilerEnv);
+        AstNode astNode = parser.parse("switch(1){}", null, 1);
+        assertEquals("switch (1) {\n}\n", astNode.toSource());
     }
 
     @Test
