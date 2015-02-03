@@ -344,9 +344,12 @@ package jscover.util;
 
 import java.io.File;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class IoService {
     private IoUtils ioUtils = IoUtils.getInstance();
+    private DateTime dateTime = new DateTimeImpl();
     private boolean localStorage;
 
     public IoService(boolean localStorage) {
@@ -402,7 +405,8 @@ public class IoService {
     }
 
     public String generateJSCoverageHtml(String version) {
-        return ioUtils.loadFromClassPath("/jscoverage.html").replaceAll("@@version@@", version);
+        String timeStamp = new SimpleDateFormat("HH:mm:ss dd MMM yyyy").format(dateTime.getDate());
+        return ioUtils.loadFromClassPath("/jscoverage.html").replaceAll("@@version@@", version).replaceAll("@@timestamp@@", timeStamp);
     }
 
     private void copyResourceToDir(String resource, File parent) {

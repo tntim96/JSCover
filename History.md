@@ -1,5 +1,6 @@
 1.0.17 / 2015-??-??
 ==================
+  * Add time-stamp to report (https://github.com/tntim96/JSCover/issues/184)
   * Include Rhino fix for empty switch statements (https://github.com/tntim96/JSCover/issues/179)
   * Improve memory usage when merging (https://github.com/tntim96/JSCover/issues/178)
   * Sort files in web-server (https://github.com/tntim96/JSCover/issues/177)

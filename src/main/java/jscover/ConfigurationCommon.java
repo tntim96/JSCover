@@ -495,12 +495,10 @@ public class ConfigurationCommon extends Configuration {
             showHelp = true;
         } else if (arg.equals(NO_BRANCH_PREFIX)) {
             includeBranch = false;
-        } else if (arg.equals(NO_BRANCH_PREFIX)) {
-            includeBranch = false;
-        } else if (arg.equals(DETECT_COALESCE_PREFIX)) {
-            detectCoalesce = true;
         } else if (arg.equals(NO_FUNCTION_PREFIX)) {
             includeFunction = false;
+        } else if (arg.equals(DETECT_COALESCE_PREFIX)) {
+            detectCoalesce = true;
         } else if (arg.equals(LOCAL_STORAGE_PREFIX)) {
             localStorage = true;
         } else if (arg.startsWith(NO_INSTRUMENT_PREFIX)) {

@@ -345,21 +345,50 @@ package jscover.util;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.mockito.BDDMockito.given;
 
+@RunWith(MockitoJUnitRunner.class)
 public class IoServiceTest {
     private IoService ioService = new IoService(false);
     private IoUtils ioUtils = IoUtils.getInstance();
     private File destDir = new File("target/IoService");
+    @Mock
+    private DateTime dateTime;
 
     @Before
     public void before() throws IOException {
         FileUtils.deleteDirectory(destDir);
+
+    }
+
+    @Test
+    public void shouldGenerateReportVersionAndDate() {
+        ReflectionUtils.setField(ioService, "dateTime", dateTime);
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 15);
+        calendar.set(Calendar.MINUTE, 12);
+        calendar.set(Calendar.SECOND, 55);
+        calendar.set(Calendar.DAY_OF_MONTH, 25);
+        calendar.set(Calendar.MONTH, Calendar.FEBRUARY);
+        calendar.set(Calendar.YEAR, 2015);
+        Date date = calendar.getTime();
+        given(dateTime.getDate()).willReturn(date);
+
+        String html = ioService.generateJSCoverageHtml("1.0.17-SNAPSHOT");
+
+        assertThat(html, containsString("This is version 1.0.17-SNAPSHOT of JSCover"));
+        assertThat(html, containsString("Report generated at 15:12:55 25 Feb 2015"));
     }
 
     @Test
