@@ -1,4 +1,4 @@
-1.0.17 / 2015-??-??
+1.0.17 / 2015-02-07
 ==================
   * Add time-stamp to report (https://github.com/tntim96/JSCover/issues/184)
   * Include Rhino fix for empty switch statements (https://github.com/tntim96/JSCover/issues/179)
