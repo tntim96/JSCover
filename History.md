@@ -1,3 +1,7 @@
+1.0.18 / 2015-??-??
+==================
+  * Fix web-server generated paths (https://github.com/tntim96/JSCover/issues/186)
+
 1.0.17 / 2015-02-07
 ==================
   * Add time-stamp to report (https://github.com/tntim96/JSCover/issues/184)

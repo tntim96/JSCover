@@ -479,20 +479,20 @@ public class HttpServer extends Thread {
                 if (parentDir.equals(wwwRoot))
                     data.append("<a href=\"/\">..</a><br/>\n");
                 else
-                    data.append(format("<a href=\"%s\">..</a><br/>\n", getRelativePath(parentDir)));
+                    data.append("<a href=\"..\">..</a><br/>\n");
             }
             File[] files = file.listFiles();
             Arrays.sort(files);
             for (File linkTo : files) {
-                data.append(format("<a href=\"%s\">%s</a><br/>\n", getRelativePath(linkTo), linkTo.getName()));
+                data.append(format("<a href=\"%s\">%s</a><br/>\n", getRelativePath(file, linkTo), linkTo.getName()));
             }
             data.append("</body>\n</html>");
             sendResponse(HTTP_STATUS.HTTP_OK, MIME.HTML, data.toString());
         }
     }
 
-    private String getRelativePath(File linkTo) {
-        String path = linkTo.getAbsolutePath().substring(wwwRoot.getAbsolutePath().length());
+    private String getRelativePath(File base, File linkTo) {
+        String path = base.toURI().relativize(linkTo.toURI()).getPath();
         return path.replaceAll("\\\\", "/");
     }
 
