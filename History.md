@@ -1,6 +1,7 @@
 1.0.18 / 2015-??-??
 ==================
   * Fix web-server generated paths (https://github.com/tntim96/JSCover/issues/186)
+  * Internal: Upgrade to Cobertura 2.0.3->2.1.1
 
 1.0.17 / 2015-02-07
 ==================
