@@ -305,14 +305,25 @@
                         <var>jscover-proxy.sh</var>. The contents are:
                         <code>$ java -jar target/dist/JSCover-all.jar -ws --proxy --port=3128 --report-dir=target</code>
                     </text>
+                    <text>
+                        Point your browser to:
+                        <a href="http://localhost-proxy:8080/jscoverage.html?doc/example/index.html">http://localhost-proxy:8080/jscoverage.html?doc/example/index.html</a>.
+                    </text>
+                    <text>
+                        The site can now be instrumented in a similar way to the server mode in the previous section.
+                    </text>
                 </item>
-                <text>
-                    Point your browser to:
-                    <a href="http://localhost-proxy:8080/jscoverage.html?doc/example/index.html">http://localhost-proxy:8080/jscoverage.html?doc/example/index.html</a>.
-                </text>
-                <text>
-                    The site can now be instrumented in a similar way to the server mode in the previous section.
-                </text>
+                <item>
+                    <heading id="gettingStartedProxySave">Save the report in proxy mode</heading>
+                    <text>
+                        If you loaded your site in the proxy i-frame, you can use the JSCover UI to save the report.
+                    </text>
+                    <text>
+                        If you are using <code>--local-storage</code> without i-frames, you can point your browser to:
+                        <a href="http://localhost-proxy:8080/jscoverage.html">http://localhost-proxy:8080/jscoverage.html</a>
+                        and save the report via the JSCover UI.
+                    </text>
+                </item>
             </item>
             <item>
                 <heading id="gettingStartedFileSystem">File System</heading>
@@ -1368,6 +1379,14 @@ fs.write("target/jscoverage.json", json, 'w');
             </item>
             <item>
                 <heading id="automatingWebDriver">WebDriver</heading>
+                <text>
+                    Example of JavaScript to store the report:
+                    <code>((JavascriptExecutor) webClient).executeScript("jscoverage_report();");</code>
+                </text>
+                <text>
+                    Example of JavaScript to retrieve the JSON coverage data:
+                    <code>String jscoverageJson = (String)((JavascriptExecutor) webClient).executeScript("return jscoverage_serializeCoverageToJSON();");</code>
+                </text>
                 <item>
                     <heading id="automatingWebDriverServer">Server Mode</heading>
                     <text>
@@ -1659,63 +1678,63 @@ function square(x) {
                             </tr>
                             <tr>
                                 <td>Branch Coverage</td>
-                                <td class="tick"></td>
-                                <td class="cross"></td>
+                                <td class="tick"/>
+                                <td class="cross"/>
                             </tr>
                             <tr>
                                 <td>Function Coverage</td>
-                                <td class="tick"></td>
-                                <td class="cross"></td>
+                                <td class="tick"/>
+                                <td class="cross"/>
                             </tr>
                             <tr>
                                 <td>File Instrumentation</td>
-                                <td class="tick"></td>
-                                <td class="tick"></td>
+                                <td class="tick"/>
+                                <td class="tick"/>
                             </tr>
                             <tr>
                                 <td>Web Server Instrumentation</td>
-                                <td class="tick"></td>
-                                <td class="tick"></td>
+                                <td class="tick"/>
+                                <td class="tick"/>
                             </tr>
                             <tr>
                                 <td>Proxy Server Instrumentation</td>
-                                <td class="tick"></td>
-                                <td class="tick"></td>
+                                <td class="tick"/>
+                                <td class="tick"/>
                             </tr>
                             <tr>
                                 <td>HTML5 Local Storage alternative to iFrames and JavaScript-opened windows</td>
-                                <td class="tick"></td>
-                                <td class="cross"></td>
+                                <td class="tick"/>
+                                <td class="cross"/>
                             </tr>
                             <tr>
                                 <td>Specify Encoding</td>
-                                <td class="tick"></td>
-                                <td class="tick"></td>
+                                <td class="tick"/>
+                                <td class="tick"/>
                             </tr>
                             <tr>
                                 <td>Inclusion of Uncovered/Unloaded JavaScript</td>
-                                <td class="tick"></td>
-                                <td class="cross"></td>
+                                <td class="tick"/>
+                                <td class="cross"/>
                             </tr>
                             <tr>
                                 <td>Multiple Report Formats</td>
-                                <td class="tick"></td>
-                                <td class="cross"></td>
+                                <td class="tick"/>
+                                <td class="cross"/>
                             </tr>
                             <tr>
                                 <td>Regular Expression Path Support</td>
-                                <td class="tick"></td>
-                                <td class="cross"></td>
+                                <td class="tick"/>
+                                <td class="cross"/>
                             </tr>
                             <tr>
                                 <td>JavaScript Syntax Highlighting</td>
-                                <td class="cross"></td>
-                                <td class="tick"></td>
+                                <td class="cross"/>
+                                <td class="tick"/>
                             </tr>
                             <tr>
                                 <td>Ignoring certain lines of code</td>
-                                <td class="cross"></td>
-                                <td class="tick"></td>
+                                <td class="cross"/>
+                                <td class="tick"/>
                             </tr>
                         </table>
                     </text>
