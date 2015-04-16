@@ -73,7 +73,7 @@
 
 	<target name="compile" depends="init, dirsetup">
 		<javac includeantruntime="false" debug="true" srcdir="${src.main.dir}" destdir="${classes.main.dir}"
-               classpathref="compile.classpath" source="1.5" target="1.5"/>
+               classpathref="compile.classpath" source="1.6" target="1.6"/>
 		<copy todir="${classes.main.dir}" includeemptydirs="no">
 			<fileset dir="${src.resources.dir}" />
 		</copy>
@@ -84,7 +84,7 @@
 	</target>
 
     <target name="jar" depends="compile">
-        <copy file="${com.github.tntim96:rhino:jar}" tofile="${dist.dir}/js.jar"/>
+        <copy file="${org.mozilla:rhino:jar}" tofile="${dist.dir}/js.jar"/>
         <jar jarfile="${dist.dir}/${ant.project.name}.jar" basedir="${classes.main.dir}" compress="true">
             <manifest>
                 <attribute name="Implementation-Title" value="${ant.project.name}"/>
@@ -98,7 +98,7 @@
     <target name="jar-all" depends="compile-acceptance-tests">
         <property name="tmpDir" value="${build.dir}/tmp"/>
         <mkdir dir="${tmpDir}"/>
-        <unzip src="${com.github.tntim96:rhino:jar}" dest="${tmpDir}"/>
+        <unzip src="${org.mozilla:rhino:jar}" dest="${tmpDir}"/>
         <copy file="data/LICENSE-mozilla.txt" todir="${tmpDir}/META-INF/"/>
         <copy todir="${tmpDir}" includeemptydirs="no">
             <fileset dir="${classes.main.dir}" />
@@ -192,7 +192,7 @@
 
 	<target name="compile-tests" depends="compile">
 		<javac includeantruntime="false" debug="true" srcdir="${src.test-unit.dir}"
-			destdir="${classes.test-unit.dir}" source="1.5" target="1.5" encoding="UTF-8">
+			destdir="${classes.test-unit.dir}" source="1.6" target="1.6" encoding="UTF-8">
             <classpath>
                 <path refid="classpath-main" />
                 <path refid="compile.classpath" />
@@ -206,7 +206,7 @@
 
 	<target name="compile-integration-tests" depends="compile-tests">
 		<javac includeantruntime="false" debug="true" srcdir="${src.test-integration.dir}"
-			destdir="${classes.test-integration.dir}" source="1.5" target="1.5">
+			destdir="${classes.test-integration.dir}" source="1.6" target="1.6">
             <classpath>
                 <path refid="classpath-main" />
                 <path refid="compile.classpath" />
@@ -220,7 +220,7 @@
 
 	<target name="compile-acceptance-tests" depends="compile-integration-tests">
 		<javac includeantruntime="false" debug="true" srcdir="${src.test-acceptance.dir}"
-			destdir="${classes.test-acceptance.dir}" source="1.5" target="1.5">
+			destdir="${classes.test-acceptance.dir}" source="1.6" target="1.6">
             <classpath>
                 <path refid="classpath-main" />
                 <path refid="compile.classpath" />

@@ -1,5 +1,7 @@
 1.0.18 / 2015-??-??
 ==================
+  * Swap back to official Rhino release 1.7.6 with merged fixes
+  * Set minimum Java version to 1.6
   * Fix web-server generated paths (https://github.com/tntim96/JSCover/issues/186)
   * Internal: Upgrade to Cobertura 2.0.3->2.1.1
 

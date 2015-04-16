@@ -394,6 +394,20 @@ public class InstrumenterTest {
     }
 
     @Test
+    public void shouldPatchRhinoOctLiteral() {
+        Parser parser = new Parser(compilerEnv);
+        AstNode astNode = parser.parse("var x = 010", null, 1);
+        assertEquals("var x = 010;\n", astNode.toSource());
+    }
+
+    @Test
+    public void shouldPatchRhinoHexLiteral() {
+        Parser parser = new Parser(compilerEnv);
+        AstNode astNode = parser.parse("var x = 0xff", null, 1);
+        assertEquals("var x = 0xff;\n", astNode.toSource());
+    }
+
+    @Test
     public void shouldHandleEmptySwitch() {//Bug 179
         Parser parser = new Parser(compilerEnv);
         AstNode astNode = parser.parse("switch(1){}", null, 1);

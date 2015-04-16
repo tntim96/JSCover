@@ -34,6 +34,6 @@ public class ClassVersionChecker {
 
         int majorVersion = buffer[6] << 8 | buffer[7];
         //int minorVersion = buffer[4] << 8 | buffer[5];
-        assertThat(file + " is not a 1.5 class!", majorVersion, equalTo(49));
+        assertThat(file + " is not a 1.6 class!", majorVersion, equalTo(50));
     }
 }
