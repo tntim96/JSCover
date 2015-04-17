@@ -385,9 +385,9 @@ public class IoServiceTest {
         Date date = calendar.getTime();
         given(dateTime.getDate()).willReturn(date);
 
-        String html = ioService.generateJSCoverageHtml("1.0.17-SNAPSHOT");
+        String html = ioService.generateJSCoverageHtml("1.0.18-SNAPSHOT");
 
-        assertThat(html, containsString("This is version 1.0.17-SNAPSHOT of JSCover"));
+        assertThat(html, containsString("This is version 1.0.18-SNAPSHOT of JSCover"));
         assertThat(html, containsString("Report generated at 15:12:55 25 Feb 2015"));
     }
 

@@ -1,4 +1,4 @@
-1.0.18 / 2015-??-??
+1.0.18 / 2015-04-18
 ==================
   * Swap back to official Rhino release 1.7.6 with merged fixes
   * Set minimum Java version to 1.6
