@@ -345,7 +345,6 @@ package jscover.util;
 import java.io.File;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class IoService {
     private IoUtils ioUtils = IoUtils.getInstance();

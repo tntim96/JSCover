@@ -342,17 +342,11 @@ Public License instead of this License.
 
 package jscover;
 
-import jscover.util.ReflectionUtils;
 import org.junit.Test;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 
 public class MainParsingTest {
     private Main main = new Main();

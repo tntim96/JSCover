@@ -343,7 +343,6 @@ Public License instead of this License.
 package jscover.report;
 
 import jscover.Configuration;
-import jscover.Main;
 import jscover.util.IoUtils;
 
 import java.io.File;

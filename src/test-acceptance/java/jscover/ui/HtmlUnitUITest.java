@@ -346,7 +346,6 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlTableRow;
 import jscover.Main;
-import jscover.util.IoUtils;
 import jscover.util.ReflectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.hamcrest.Description;

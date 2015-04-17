@@ -342,8 +342,6 @@ Public License instead of this License.
 
 package jscover.server;
 
-import jscover.util.IoUtils;
-
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -356,11 +354,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.startsWith;
@@ -374,7 +368,6 @@ public class ProxyServiceTest {
     private HttpRequest request = new HttpRequest("test.js", null, null, 0, null);
     @Mock private HttpURLConnection conn;
     private Map<String, List<String>> headers = new HashMap<String, List<String>>();
-    private IoUtils ioUtils = IoUtils.getInstance();
 
     @Before
     public void setUp() {
