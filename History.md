@@ -1,3 +1,7 @@
+1.0.19 / 2015-??-??
+==================
+  * Internal: Upgrade to Jasmine 2.3.0
+
 1.0.18 / 2015-04-18
 ==================
   * Swap back to official Rhino release 1.7.6 with merged fixes
