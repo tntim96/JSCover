@@ -342,7 +342,7 @@ getJasmineRequireObj().Spec = function(j$) {
 
     this.onStart(this);
 
-    if (!this.isExecutable() || enabled === false) {
+    if (!this.isExecutable() || this.markedPending || enabled === false) {
       complete(enabled);
       return;
     }
@@ -419,7 +419,7 @@ getJasmineRequireObj().Spec = function(j$) {
   };
 
   Spec.prototype.isExecutable = function() {
-    return !this.disabled && !this.markedPending;
+    return !this.disabled;
   };
 
   Spec.prototype.getFullName = function() {
@@ -3294,5 +3294,5 @@ getJasmineRequireObj().interface = function(jasmine, env) {
 };
 
 getJasmineRequireObj().version = function() {
-  return '2.3.0';
+  return '2.3.2';
 };
