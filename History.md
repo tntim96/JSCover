@@ -1,6 +1,6 @@
 1.0.19 / 2015-??-??
 ==================
-  * Internal: Upgrade to Jasmine 2.3.2
+  * Internal: Upgrade to Jasmine 2.3.4, HtmlUnit 2.16
 
 1.0.18 / 2015-04-18
 ==================
