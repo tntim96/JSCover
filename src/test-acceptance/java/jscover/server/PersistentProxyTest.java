@@ -347,6 +347,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URL;
 
+import com.gargoylesoftware.htmlunit.*;
 import jscover.Main;
 import jscover.util.IoUtils;
 
@@ -355,13 +356,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.gargoylesoftware.htmlunit.HttpMethod;
-import com.gargoylesoftware.htmlunit.Page;
-import com.gargoylesoftware.htmlunit.ProxyConfig;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.WebRequest;
-
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class PersistentProxyTest {
     private static Thread webServer;
@@ -428,10 +424,17 @@ public class PersistentProxyTest {
 
     protected void doTestRequests(HttpMethod... methods) throws Exception {
         URL testURL = new URL(getTestUrl());
+        int count = 0;
         for (HttpMethod method : methods) {
+            count++;
             WebRequest request = new WebRequest(testURL, method);
-            Page page = webClient.getPage(request);
-            assertEquals("Unexpected response", CONTENT, page.getWebResponse().getContentAsString());
+            try {
+                Page page = webClient.getPage(request);
+                assertEquals("Unexpected response", CONTENT, page.getWebResponse().getContentAsString());
+            } catch (FailingHttpStatusCodeException e) {
+                if (method != HttpMethod.POST || count != 2)
+                    fail("Expected a response");
+            }
         }
     }
 

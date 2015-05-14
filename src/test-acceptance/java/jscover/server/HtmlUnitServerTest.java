@@ -468,8 +468,8 @@ public class HtmlUnitServerTest {
         page.getAnchorByText("/example/script.js").click();
         webClient.waitForBackgroundJavaScript(2000);
         HtmlTable sourceTable = (HtmlTable)page.getElementById("sourceTable");
-        verifySource(sourceTable, 11, 0, "else if (element.id === 'radio2') {");
-        verifySource(sourceTable, 12, 0, "message = getMessage(2);");
+        verifySource(sourceTable, 11, 0, "  else if (element.id === 'radio2') {");
+        verifySource(sourceTable, 12, 0, "    message = getMessage(2);");
 
         frame.getHtmlElementById("radio2").click();
         webClient.waitForBackgroundJavaScript(500);
@@ -478,8 +478,8 @@ public class HtmlUnitServerTest {
         page.getAnchorByText("/example/script.js").click();
         webClient.waitForBackgroundJavaScript(2000);
         sourceTable = (HtmlTable)page.getElementById("sourceTable");
-        verifySource(sourceTable, 11, 1, "else if (element.id === 'radio2') {");
-        verifySource(sourceTable, 12, 1, "message = getMessage(2);");
+        verifySource(sourceTable, 11, 1, "  else if (element.id === 'radio2') {");
+        verifySource(sourceTable, 12, 1, "    message = getMessage(2);");
     }
 
     private void verifySource(HtmlTable sourceTable, int row, int coverageCount, String source) {
