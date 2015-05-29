@@ -342,19 +342,18 @@ Public License instead of this License.
 
 package jscover.server;
 
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.URL;
-
 import com.gargoylesoftware.htmlunit.*;
 import jscover.Main;
 import jscover.util.IoUtils;
-
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.URL;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -431,7 +430,7 @@ public class PersistentProxyTest {
             try {
                 Page page = webClient.getPage(request);
                 assertEquals("Unexpected response", CONTENT, page.getWebResponse().getContentAsString());
-            } catch (FailingHttpStatusCodeException e) {
+            } catch (Exception e) {
                 if (method != HttpMethod.POST || count != 2)
                     fail("Expected a response");
             }
