@@ -624,8 +624,8 @@ fs.write("target/jscoverage.json", json, 'w');
                             <td>1.5</td>
                             <td>
                                 Use the specified JavaScript version; valid values for VERSION are
-                                <a href="http://en.wikipedia.org/wiki/JavaScript#Versions" target="_blank">1.0, 1.1,
-                                    1.2, ..., 1.8</a>.
+                                <a href="https://en.wikipedia.org/wiki/ECMAScript#Version_correspondence" target="_blank">1.0, 1.1,
+                                    1.2, ..., 1.8, 2.0</a> (2.0 for ES6).
                             </td>
                         </tr>
                         <tr>
@@ -1612,7 +1612,7 @@ function square(x) {
                                 <td>Java</td>
                                 <td>
                                     <a href="https://github.com/mozilla/rhino">Rhino</a>
-                                    1.7.6
+                                    1.7.7
                                 </td>
                             </tr>
                             <tr>
@@ -1623,6 +1623,28 @@ function square(x) {
                                 </td>
                             </tr>
                         </table>
+                    </text>
+                </item>
+                <item>
+                    <heading id="branchCondition">Branch/Condition Coverage</heading>
+                    <text>
+                        JSCover records condition evaluation to determine branch coverage. It is technically possible to
+                        cover both branch paths and have JSCover record the branch as uncovered if all conditions
+                        are not evaluated.
+                    </text>
+                    <text>
+                        If there are multiple paths, for example:
+                        <code>if (code !== undefined &amp;&amp; code !== null &amp;&amp; code !== '') {</code>
+                        The uncovered information may be:
+                        <br/>
+                        <img src="images/ws-8-source.png"/>
+                        <br/>
+                        Even if the outer-most condition evaluates to both true and false, the branch will be marked as
+                        not covered until all sub-conditions are evaluated as both true and false.
+                    </text>
+                    <text>
+                        While this is technically more strict than branch coverage, it is usually desirable.
+                        A switch to swap to pure branch coverage can be added if there is demand and time.
                     </text>
                 </item>
                 <item>
