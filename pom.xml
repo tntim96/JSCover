@@ -16,7 +16,7 @@
     <artifactId>JSCover</artifactId>
     <packaging>jar</packaging>
     <name>JSCover</name>
-    <version>1.0.19-SNAPSHOT</version>
+    <version>1.0.19</version>
     <description>JSCover is a tool that measures code coverage for JavaScript programs.</description>
     <url>http://tntim96.github.com/JSCover/</url>
     <licenses>
@@ -69,7 +69,7 @@
         <dependency>
             <groupId>org.mozilla</groupId>
             <artifactId>rhino</artifactId>
-            <version>1.7.6</version>
+            <version>1.7.7</version>
         </dependency>
         <dependency>
             <groupId>net.sourceforge.htmlunit</groupId>

@@ -345,6 +345,7 @@ package jscover.instrument;
 import jscover.ConfigurationCommon;
 import jscover.util.ReflectionUtils;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -368,6 +369,7 @@ public class InstrumenterTest {
     private static CompilerEnvirons compilerEnv = new CompilerEnvirons();
     static {
         // compilerEnv.setAllowMemberExprAsFunctionName(true);
+//        compilerEnv.setLanguageVersion(Context.VERSION_ES6);
         compilerEnv.setLanguageVersion(Context.VERSION_1_8);
         compilerEnv.setStrictMode(false);
     }
@@ -852,7 +854,7 @@ public class InstrumenterTest {
                 "  }}\n";
         assertEquals(expectedSource, instrumentedSource);
     }
-    
+
     @Test
     public void shouldInstrumentIfNoBraceWhile() {
         String source = "if (c)\n while(c2) {\n f()\n }";
@@ -881,6 +883,25 @@ public class InstrumenterTest {
                 "    return f();\n" +
                 "  }\n" +
                 "}\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+    @Test
+    public void shouldInstrumentES6StringStartsWith() {
+        String source = "var x = 'abc'.startsWith('a');";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "var x = 'abc'.startsWith('a');\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+    @Test
+    @Ignore
+    public void shouldInstrumentES6ArrowFunction() {
+        String source = "var a3 = a.map( s => s.length );";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "var a3 = a.map( s => s.length );\n";
         assertEquals(expectedSource, instrumentedSource);
     }
 }

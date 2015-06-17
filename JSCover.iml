@@ -37,7 +37,7 @@
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="jdk" jdkName="1.7" jdkType="JavaSDK" />
-    <orderEntry type="library" name="Maven: org.mozilla:rhino:1.7.6" level="project" />
+    <orderEntry type="library" name="Maven: org.mozilla:rhino:1.7.7" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: net.sourceforge.htmlunit:htmlunit:2.16" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: xalan:xalan:2.7.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: xalan:serializer:2.7.1" level="project" />
