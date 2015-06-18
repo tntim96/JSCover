@@ -1,3 +1,7 @@
+1.0.20 / 2015-??-??
+==================
+  *
+
 1.0.19 / 2015-06-18
 ==================
   * Upgrade to Rhino 1.7.7 with initial ES6 support (https://github.com/mozilla/rhino/issues?q=milestone%3A%22Release+1.7.7%22+is%3Aclosed)
