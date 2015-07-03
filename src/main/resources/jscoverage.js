@@ -24,12 +24,9 @@ function called in the page.
 */
 function jscoverage_init(w) {
   try {
-    // in Safari, "import" is a syntax error
-    Components.utils['import']('resource://app/modules/jscoverage.jsm');
     jscoverage_isInvertedMode = true;
     return;
-  }
-  catch (e) {}
+  } catch (e) {}
 
   // check if we are in inverted mode
   if (w.opener) {
@@ -39,29 +36,24 @@ function jscoverage_init(w) {
         if (! w._$jscoverage) {
           w._$jscoverage = w.opener.top._$jscoverage;
         }
-      }
-      else {
+      } else {
         jscoverage_isInvertedMode = false;
       }
-    }
-    catch (e) {
+    } catch (e) {
       try {
         if (w.opener._$jscoverage) {
           jscoverage_isInvertedMode = true;
           if (! w._$jscoverage) {
             w._$jscoverage = w.opener._$jscoverage;
           }
-        }
-        else {
+        } else {
           jscoverage_isInvertedMode = false;
         }
-      }
-      catch (e2) {
+      } catch (e2) {
         jscoverage_isInvertedMode = false;
       }
     }
-  }
-  else {
+  } else {
     jscoverage_isInvertedMode = false;
   }
 
