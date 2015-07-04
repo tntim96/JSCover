@@ -1,5 +1,6 @@
 1.0.20 / 2015-??-??
 ==================
+  * Update documentation for '-io' option
   * Internal: Upgrade HtmlUnit 2.17
 
 1.0.19 / 2015-06-18

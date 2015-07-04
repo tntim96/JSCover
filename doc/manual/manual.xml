@@ -453,6 +453,11 @@ fs.write("target/jscoverage.json", json, 'w');
                             </td>
                         </tr>
                         <tr>
+                            <td>-io</td>
+                            <td>N/A</td>
+                            <td>Instrument single file to instrument single file to stdout <b>I/O</b> stream</td>
+                        </tr>
+                        <tr>
                             <td>-h,--help</td>
                             <td>N/A</td>
                             <td>Display command line help</td>

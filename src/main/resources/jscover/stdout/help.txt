@@ -5,5 +5,7 @@ Options:
       --js-version=VERSION      use the specified JavaScript version
       --no-branch               turn off branch coverage data collection
       --no-function             turn off function coverage data collection
+      --local-storage           save and load coverage data from HTML5 local storage
+      --detect-coalesce         try to exclude coalesce assignments from conditional coverage
       --log=LEVEL               set logging level to: SEVERE (default), WARNING, INFO, CONFIG, FINE, FINER, FINEST
   -h, --help                    display this help and exit
