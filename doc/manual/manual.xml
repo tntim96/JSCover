@@ -1798,7 +1798,7 @@ function square(x) {
                             no code coverage data will be collected.
                         </li>
                         <li>JSCover line coverage instruments physical lines of code rather than logical JavaScript
-                            statements; it works bests with code that has exactly one statement per line. If you put
+                            statements; it works best with code that has exactly one statement per line. If you put
                             multiple statements on a line, or split a line across two or more statements, you may get
                             strange results.
                         </li>
