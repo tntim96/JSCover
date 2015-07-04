@@ -23,11 +23,6 @@ function called in the page.
 @param  w  this should always be the global window object
 */
 function jscoverage_init(w) {
-  try {
-    jscoverage_isInvertedMode = true;
-    return;
-  } catch (e) {}
-
   // check if we are in inverted mode
   if (w.opener) {
     try {
