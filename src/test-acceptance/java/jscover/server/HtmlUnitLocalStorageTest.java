@@ -362,7 +362,7 @@ public class HtmlUnitLocalStorageTest {
     private static Main main = new Main();
     private static String reportDir = "target/localStorage";
 
-    protected WebClient webClient = new WebClient(BrowserVersion.FIREFOX_31);
+    protected WebClient webClient = new WebClient(BrowserVersion.FIREFOX_38);
     private static String[] args = new String[]{
             "-ws",
             "--document-root=src/test-acceptance/resources",
