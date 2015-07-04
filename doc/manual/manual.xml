@@ -708,8 +708,7 @@ fs.write("target/jscoverage.json", json, 'w');
   var directory;
   if (/MSIE/.test(navigator.userAgent)) {
     directory = 'IE';
-  }
-  else {
+  } else {
     directory = 'other';
   }
   jscoverage_report(directory);
