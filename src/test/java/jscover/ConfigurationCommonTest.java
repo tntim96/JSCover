@@ -356,6 +356,7 @@ public class ConfigurationCommonTest {
         assertThat(config.isIncludeBranch(), is(true));
         assertThat(config.isIncludeFunction(), is(true));
         assertThat(config.isLocalStorage(), is(false));
+        assertThat(config.isolateBrowser(), is(false));
         assertThat(config.isDetectCoalesce(), is(false));
     }
 
@@ -365,12 +366,14 @@ public class ConfigurationCommonTest {
         config.setIncludeBranch(false);
         config.setIncludeFunction(false);
         config.setLocalStorage(true);
+        config.setIsolateBrowser(true);
         config.setDetectCoalesce(true);
 
         assertThat(config.getJSVersion(), is(180));
         assertThat(config.isIncludeBranch(), is(false));
         assertThat(config.isIncludeFunction(), is(false));
         assertThat(config.isLocalStorage(), is(true));
+        assertThat(config.isolateBrowser(), is(true));
         assertThat(config.isDetectCoalesce(), is(true));
     }
 
@@ -378,6 +381,24 @@ public class ConfigurationCommonTest {
     public void shouldParseLocalStorage() {
         assertThat(config.parseArg("--local-storage"), is(true));
         assertThat(config.isLocalStorage(), is(true));
+    }
+
+    @Test
+    public void shouldParseIsolateBrowser() {
+        assertThat(config.parseArg("--isolate-browser"), is(true));
+        assertThat(config.isolateBrowser(), is(true));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldNotCombineIsolateBrowserAndLocalStorage() {
+        config.parseArg("--local-storage");
+        config.parseArg("--isolate-browser");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldNotCombineLocalStorageAndIsolateBrowser() {
+        config.parseArg("--isolate-browser");
+        config.parseArg("--local-storage");
     }
 
     @Test

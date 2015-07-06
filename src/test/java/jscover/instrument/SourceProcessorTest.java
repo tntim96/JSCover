@@ -414,7 +414,7 @@ public class SourceProcessorTest {
         given(ioUtils.loadFromClassPath("/jscoverage-branch.js")).willReturn("<branch>");
         given(parser.parse(anyString(), anyString(), anyInt())).willReturn(new AstRoot());
 
-        assertThat(sourceProcessor.processSource("test.js", "x;"), startsWith("<branch><common><header>"));
+        assertThat(sourceProcessor.processSource("test.js", "x;"), startsWith("<branch><common>var jsCover_isolateBrowser = false;\n<header>"));
         verify(ioUtils, times(1)).loadFromClassPath("/jscoverage-branch.js");
     }
 
@@ -426,7 +426,7 @@ public class SourceProcessorTest {
         given(ioUtils.loadFromClassPath("/jscoverage-branch.js")).willReturn("<branch>");
         given(parser.parse(anyString(), anyString(), anyInt())).willReturn(new AstRoot());
 
-        assertThat(sourceProcessor.processSource("test.js", "x;"), startsWith("<branch><common><header>"));
+        assertThat(sourceProcessor.processSource("test.js", "x;"), startsWith("<branch><common>var jsCover_isolateBrowser = false;\n<header>"));
         verify(ioUtils, times(1)).loadFromClassPath("/jscoverage-branch.js");
     }
 
@@ -439,7 +439,18 @@ public class SourceProcessorTest {
         given(ioUtils.loadFromClassPath("/jscoverage-localstorage.js")).willReturn("<localStorage>");
         given(parser.parse(anyString(), anyString(), anyInt())).willReturn(new AstRoot());
 
-        assertThat(sourceProcessor.processSource("test.js", "x;"), startsWith("<branch><common><localStorage><header>"));
+        assertThat(sourceProcessor.processSource("test.js", "x;"), startsWith("<branch><common><localStorage>var jsCover_isolateBrowser = false;\n<header>"));
         verify(ioUtils, times(1)).loadFromClassPath("/jscoverage-localstorage.js");
+    }
+
+    @Test
+    public void shouldIncludeIsolateBrowserLogicForProcessSource() throws IOException {
+        ReflectionUtils.setField(sourceProcessor, "isolateBrowser", true);
+        given(ioUtils.loadFromClassPath("/header.js")).willReturn("<header>");
+        given(ioUtils.loadFromClassPath("/jscoverage-common.js")).willReturn("<common>");
+        given(ioUtils.loadFromClassPath("/jscoverage-branch.js")).willReturn("<branch>");
+        given(parser.parse(anyString(), anyString(), anyInt())).willReturn(new AstRoot());
+
+        assertThat(sourceProcessor.processSource("test.js", "x;"), startsWith("<branch><common>var jsCover_isolateBrowser = true;\n<header>"));
     }
 }

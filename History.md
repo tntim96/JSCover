@@ -1,5 +1,6 @@
 1.0.20 / 2015-??-??
 ==================
+  * Add `--isolate-browser` to avoid automatically combining coverage (https://github.com/tntim96/JSCover/issues/197)
   * Update documentation for '-io' option
   * Internal: Upgrade HtmlUnit 2.17
 

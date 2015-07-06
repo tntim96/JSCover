@@ -370,6 +370,7 @@ public class ConfigurationCommon extends Configuration {
     public static final String DETECT_COALESCE_PREFIX = "--detect-coalesce";
     public static final String NO_FUNCTION_PREFIX = "--no-function";
     public static final String LOCAL_STORAGE_PREFIX = "--local-storage";
+    public static final String ISOLATE_BROWSER_PREFIX = "--isolate-browser";
     public static final String LOG_LEVEL = "--log=";
 
     protected boolean showHelp;
@@ -378,6 +379,7 @@ public class ConfigurationCommon extends Configuration {
     protected boolean detectCoalesce;
     protected boolean includeFunction = true;
     protected boolean localStorage;
+    protected boolean isolateBrowser;
     protected final List<PatternMatcher> patternMatchers = new ArrayList<PatternMatcher>();
     protected int JSVersion = Context.VERSION_1_5;
     protected CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
@@ -399,6 +401,10 @@ public class ConfigurationCommon extends Configuration {
 
     public void setLocalStorage(boolean localStorage) {
         this.localStorage = localStorage;
+    }
+
+    public void setIsolateBrowser(boolean isolateBrowser) {
+        this.isolateBrowser = isolateBrowser;
     }
 
     public void setJSVersion(int JSVersion) {
@@ -427,6 +433,10 @@ public class ConfigurationCommon extends Configuration {
 
     public boolean isLocalStorage() {
         return localStorage;
+    }
+
+    public boolean isolateBrowser() {
+        return isolateBrowser;
     }
 
     public int getJSVersion() {
@@ -500,7 +510,13 @@ public class ConfigurationCommon extends Configuration {
         } else if (arg.equals(DETECT_COALESCE_PREFIX)) {
             detectCoalesce = true;
         } else if (arg.equals(LOCAL_STORAGE_PREFIX)) {
+            if (isolateBrowser)
+                throw new IllegalArgumentException("Cannot combine '" + LOCAL_STORAGE_PREFIX + "' and '"  + ISOLATE_BROWSER_PREFIX + "'." );
             localStorage = true;
+        } else if (arg.equals(ISOLATE_BROWSER_PREFIX)) {
+            if (localStorage)
+                throw new IllegalArgumentException("Cannot combine '" + LOCAL_STORAGE_PREFIX + "' and '"  + ISOLATE_BROWSER_PREFIX + "'." );
+            isolateBrowser = true;
         } else if (arg.startsWith(NO_INSTRUMENT_PREFIX)) {
             addNoInstrument(arg);
         } else if (arg.startsWith(NO_INSTRUMENT_REG_PREFIX)) {

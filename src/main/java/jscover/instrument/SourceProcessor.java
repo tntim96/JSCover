@@ -367,6 +367,7 @@ class SourceProcessor {
     private boolean includeBranchCoverage;
     private boolean includeFunctionCoverage;
     private boolean localStorage;
+    private boolean isolateBrowser;
 
     public SourceProcessor(ConfigurationCommon config, String uri) {
         this.uri = uri;
@@ -376,6 +377,7 @@ class SourceProcessor {
         this.includeBranchCoverage = config.isIncludeBranch();
         this.includeFunctionCoverage = config.isIncludeFunction();
         this.localStorage = config.isLocalStorage();
+        this.isolateBrowser = config.isolateBrowser();
     }
 
     ParseTreeInstrumenter getInstrumenter() {
@@ -396,11 +398,15 @@ class SourceProcessor {
     }
 
     protected String processSource(String sourceURI, String source) {
-        String headerJS = ioUtils.loadFromClassPath("/header.js");
+        String headerJS = getIsolateBrowserJS() + ioUtils.loadFromClassPath("/header.js");
         String localStorageJS = localStorage ? ioUtils.loadFromClassPath("/jscoverage-localstorage.js") : "";
         String commonJS = ioUtils.loadFromClassPath("/jscoverage-common.js");
         String branchJS = ioUtils.loadFromClassPath("/jscoverage-branch.js");
         return branchJS + commonJS + localStorageJS + headerJS + processSourceWithoutHeader(sourceURI, source);
+    }
+
+    private String getIsolateBrowserJS() {
+        return "var jsCover_isolateBrowser = " + (isolateBrowser ? "true" : "false") + ";\n";
     }
 
     protected String processSourceWithoutHeader(String source) {

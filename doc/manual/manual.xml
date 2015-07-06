@@ -620,6 +620,11 @@ fs.write("target/jscoverage.json", json, 'w');
                             </td>
                         </tr>
                         <tr>
+                            <td>--isolate-browser</td>
+                            <td>N/A</td>
+                            <td>Prevent automatically combining coverage from different browser windows</td>
+                        </tr>
+                        <tr>
                             <td>--detect-coalesce</td>
                             <td>false</td>
                             <td>Try to exclude coalesce assignments from conditional coverage</td>
@@ -803,6 +808,11 @@ fs.write("target/jscoverage.json", json, 'w');
                                 Save and load coverage data from HTML5 local storage.
                                 See the <a href="#localStorage">section on HTML5 local storage for more information</a>
                             </td>
+                        </tr>
+                        <tr>
+                            <td>--isolate-browser</td>
+                            <td>N/A</td>
+                            <td>Prevent automatically combining coverage from different browser windows</td>
                         </tr>
                         <tr>
                             <td>--js-version=VERSION</td>
