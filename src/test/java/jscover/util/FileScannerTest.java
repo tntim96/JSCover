@@ -361,6 +361,7 @@ public class FileScannerTest {
 
     private FileScanner fileScanner;
     private Set<String> urisAlreadyProcessed = new HashSet<String>();
+    private File file = new File("src/test-integration/resources/jsSearch");
 
     @Before
     public void setUp() {
@@ -372,7 +373,7 @@ public class FileScannerTest {
         configuration = ConfigurationForServer.parse(new String[]{
                 "--document-root=src/test-integration/resources/jsSearch"
         });
-        fileScanner = new FileScanner(configuration);
+        fileScanner = new FileScanner(configuration, file);
 
         Set<File> files = fileScanner.getFiles(urisAlreadyProcessed);
         assertThat(files.size(), equalTo(6));
@@ -389,7 +390,7 @@ public class FileScannerTest {
         configuration = ConfigurationForServer.parse(new String[]{
                 "--document-root=src/test-integration/resources/jsSearch"
         });
-        fileScanner = new FileScanner(configuration);
+        fileScanner = new FileScanner(configuration, file);
         urisAlreadyProcessed.add("root.js");
         urisAlreadyProcessed.add("level2/level2.js");
 
@@ -408,7 +409,7 @@ public class FileScannerTest {
                 "--document-root=src/test-integration/resources/jsSearch",
                 "--no-instrument=noInstrument"
         });
-        fileScanner = new FileScanner(configuration);
+        fileScanner = new FileScanner(configuration, file);
 
         Set<File> files = fileScanner.getFiles(urisAlreadyProcessed);
         assertThat(files.size(), equalTo(5));
@@ -421,11 +422,12 @@ public class FileScannerTest {
 
     @Test
     public void shouldExcludeSrcCopiedForReportWhenReportDirIsInDocumentRoot() {
+        File file = new File("target/ExcludeSrcCopiedForReport");
         configuration = ConfigurationForServer.parse(new String[]{
                 "--document-root=target/ExcludeSrcCopiedForReport",
                 "--report-dir=target/ExcludeSrcCopiedForReport/report"
         });
-        fileScanner = new FileScanner(configuration);
+        fileScanner = new FileScanner(configuration, file);
         File rootJS = new File("src/test-integration/resources/jsSearch/root.js");
         File rootJSSourceCopy = new File("target/ExcludeSrcCopiedForReport/src/jsSearch/root.js");
         ioUtils.copy(rootJS, rootJSSourceCopy);
@@ -443,7 +445,7 @@ public class FileScannerTest {
                 "--document-root=src/test-integration/resources/jsSearch",
                 "--only-instrument-reg=.*/level2/.*"
         });
-        fileScanner = new FileScanner(configuration);
+        fileScanner = new FileScanner(configuration, file);
 
         Set<File> files = fileScanner.getFiles(urisAlreadyProcessed);
         assertThat(files.size(), equalTo(2));

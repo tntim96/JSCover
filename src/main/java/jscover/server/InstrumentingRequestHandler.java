@@ -379,7 +379,7 @@ public class InstrumentingRequestHandler extends HttpServer {
     public InstrumentingRequestHandler(Socket socket, ConfigurationForServer configuration) {
         super(socket, configuration.getDocumentRoot(), configuration.getVersion());
         this.configuration = configuration;
-        this.unloadedSourceProcessor = new UnloadedSourceProcessor(configuration);
+        this.unloadedSourceProcessor = new UnloadedSourceProcessor(configuration, configuration.getDocumentRoot());
         this.uriFileTranslator = configuration.getUriFileTranslator();
         this.ioService = new IoService(configuration.isLocalStorage());
     }

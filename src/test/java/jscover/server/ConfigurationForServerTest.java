@@ -368,7 +368,6 @@ public class ConfigurationForServerTest {
         assertThat(configuration.getCompilerEnvirons().getLanguageVersion(), equalTo(150));
         assertThat(configuration.isProxy(), is(false));
         assertThat(configuration.isSaveJSONOnly(), is(false));
-        assertThat(configuration.isIncludeUnloadedJS(), is(false));
         assertThat(configuration.isIncludeBranch(), is(true));
         assertThat(configuration.isIncludeFunction(), is(true));
         assertThat(configuration.getUriToFileMatcher(), nullValue());
@@ -382,13 +381,11 @@ public class ConfigurationForServerTest {
         ConfigurationForServer configuration = new ConfigurationForServer();
         File dir = new File("src");
         configuration.setDocumentRoot(dir);
-        configuration.setIncludeUnloadedJS(true);
         configuration.setPort(1234);
         File reportDir = new File("doc");
         configuration.setReportDir(reportDir);
 
         assertThat(configuration.getDocumentRoot(), sameInstance(dir));
-        assertThat(configuration.isIncludeUnloadedJS(), is(true));
         assertThat(configuration.getPort(), is(1234));
         assertThat(configuration.getReportDir(), sameInstance(reportDir));
     }
@@ -459,16 +456,6 @@ public class ConfigurationForServerTest {
     @Test
     public void shouldParseSaveJSONOnly() {
         assertThat(ConfigurationForServer.parse(new String[]{"--save-json-only"}).isSaveJSONOnly(), is(true));
-    }
-
-    @Test
-    public void shouldParseIncludedUnloadedJS() {
-        assertThat(ConfigurationForServer.parse(new String[]{"--include-unloaded-js"}).isIncludeUnloadedJS(), is(true));
-    }
-
-    @Test
-    public void shouldIncludedUnloadedJSIfProxy() {
-        assertThat(ConfigurationForServer.parse(new String[]{"--proxy", "--include-unloaded-js"}).isIncludeUnloadedJS(), is(true));
     }
 
     @Test

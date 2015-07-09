@@ -365,6 +365,7 @@ public class ConfigurationCommon extends Configuration {
     public static final String ONLY_INSTRUMENT_REG_PREFIX = "--only-instrument-reg=";
     public static final String NO_INSTRUMENT_PREFIX = "--no-instrument=";
     public static final String NO_INSTRUMENT_REG_PREFIX = "--no-instrument-reg=";
+    public static final String INCLUDE_UNLOADED_JS_PREFIX = "--include-unloaded-js";
     public static final String JS_VERSION_PREFIX = "--js-version=";
     public static final String NO_BRANCH_PREFIX = "--no-branch";
     public static final String DETECT_COALESCE_PREFIX = "--detect-coalesce";
@@ -381,6 +382,7 @@ public class ConfigurationCommon extends Configuration {
     protected boolean localStorage;
     protected boolean isolateBrowser;
     protected final List<PatternMatcher> patternMatchers = new ArrayList<PatternMatcher>();
+    private boolean includeUnloadedJS;
     protected int JSVersion = Context.VERSION_1_5;
     protected CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
     protected boolean defaultSkip;
@@ -403,6 +405,10 @@ public class ConfigurationCommon extends Configuration {
         this.localStorage = localStorage;
     }
 
+    public void setIncludeUnloadedJS(boolean includeUnloadedJS) {
+        this.includeUnloadedJS = includeUnloadedJS;
+    }
+
     public void setIsolateBrowser(boolean isolateBrowser) {
         this.isolateBrowser = isolateBrowser;
     }
@@ -417,6 +423,10 @@ public class ConfigurationCommon extends Configuration {
 
     public boolean isInvalid() {
         return invalid;
+    }
+
+    public boolean isIncludeUnloadedJS() {
+        return includeUnloadedJS;
     }
 
     public boolean isIncludeBranch() {
@@ -509,6 +519,8 @@ public class ConfigurationCommon extends Configuration {
             includeFunction = false;
         } else if (arg.equals(DETECT_COALESCE_PREFIX)) {
             detectCoalesce = true;
+        } else if (arg.equals(INCLUDE_UNLOADED_JS_PREFIX)) {
+            includeUnloadedJS = true;
         } else if (arg.equals(LOCAL_STORAGE_PREFIX)) {
             if (isolateBrowser)
                 throw new IllegalArgumentException("Cannot combine '" + LOCAL_STORAGE_PREFIX + "' and '"  + ISOLATE_BROWSER_PREFIX + "'." );

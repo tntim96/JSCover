@@ -64,15 +64,6 @@
                         </li>
                     </ul>
                 </text>
-                <text>
-                    The server (both web and proxy) has two advantages:
-                    <ol>
-                        <li>can store coverage reports to the filesystem*</li>
-                        <li>can include unloaded/untested JavaScript in the report</li>
-                    </ol>
-                    * It's possible to store a report on the file-system in file-system mode
-                    as described <a href="#fileSystemSave">below</a>.
-                </text>
             </item>
             <item>
                 <heading id="packaging">Packaging</heading>
@@ -800,6 +791,16 @@ fs.write("target/jscoverage.json", json, 'w');
                             <td>--no-function</td>
                             <td>N/A</td>
                             <td>Turn off function coverage data collection</td>
+                        </tr>
+                        <tr>
+                            <td>--include-unloaded-js</td>
+                            <td>N/A</td>
+                            <td>
+                                Generate an empty coverage data file to later be merged with so that all
+                                files are included in the coverage report.
+                                <br/>
+                                Will respect --no-instrument(-reg) and --only-instrument-reg.
+                            </td>
                         </tr>
                         <tr>
                             <td>--local-storage</td>

@@ -342,8 +342,8 @@ Public License instead of this License.
 
 package jscover.instrument;
 
+import jscover.ConfigurationCommon;
 import jscover.report.ScriptCoverageCount;
-import jscover.server.ConfigurationForServer;
 import jscover.util.FileScanner;
 import jscover.util.IoUtils;
 
@@ -358,31 +358,37 @@ import static java.util.logging.Level.SEVERE;
 
 public class UnloadedSourceProcessor {
     private static final Logger logger = Logger.getLogger(UnloadedSourceProcessor.class.getName());
-    private ConfigurationForServer config;
+    private ConfigurationCommon config;
     private IoUtils ioUtils = IoUtils.getInstance();
     private FileScanner fileScanner;
+    private File scanPath;
 
-    public UnloadedSourceProcessor(ConfigurationForServer config) {
-        fileScanner = new FileScanner(config);
+    public UnloadedSourceProcessor(ConfigurationCommon config, File scanPath) {
+        this.scanPath = scanPath;
+        fileScanner = new FileScanner(config, scanPath);
         this.config = config;
     }
 
     public List<ScriptCoverageCount> getEmptyCoverageData(Set<String> urisAlreadyProcessed) {
         List<ScriptCoverageCount> scripts = new ArrayList<ScriptCoverageCount>();
         for (File file: fileScanner.getFiles(urisAlreadyProcessed)) {
-            String uri = ioUtils.getRelativePath(file, config.getDocumentRoot());
-            SourceProcessor sourceProcessor = new SourceProcessor(config, uri);
-            try {
-                sourceProcessor.instrumentSource(ioUtils.loadFromFileSystem(file));
-                ScriptCoverageCount script = new ScriptCoverageCount("/"+uri, new ArrayList<Integer>(
-                        sourceProcessor.getInstrumenter().getValidLines()),
-                        sourceProcessor.getInstrumenter().getNumFunctions(),
-                        sourceProcessor.getBranchInstrumentor().getLineConditionMap());
-                scripts.add(script);
-            } catch (RuntimeException t) {
-                logger.log(SEVERE, format("Problem parsing %s", uri), t);
-            }
+            getEmptyCoverageData(scripts, file);
         }
         return scripts;
+    }
+
+    public void getEmptyCoverageData(List<ScriptCoverageCount> scripts, File file) {
+        String uri = ioUtils.getRelativePath(file, scanPath);
+        SourceProcessor sourceProcessor = new SourceProcessor(config, uri);
+        try {
+            sourceProcessor.instrumentSource(ioUtils.loadFromFileSystem(file));
+            ScriptCoverageCount script = new ScriptCoverageCount("/"+uri, new ArrayList<Integer>(
+                    sourceProcessor.getInstrumenter().getValidLines()),
+                    sourceProcessor.getInstrumenter().getNumFunctions(),
+                    sourceProcessor.getBranchInstrumentor().getLineConditionMap());
+            scripts.add(script);
+        } catch (RuntimeException t) {
+            logger.log(SEVERE, format("Problem parsing %s", uri), t);
+        }
     }
 }

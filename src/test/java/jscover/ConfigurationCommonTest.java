@@ -353,6 +353,7 @@ public class ConfigurationCommonTest {
     @Test
     public void shouldHaveDefaults() {
         assertThat(config.getJSVersion(), is(150));
+        assertThat(config.isIncludeUnloadedJS(), is(false));
         assertThat(config.isIncludeBranch(), is(true));
         assertThat(config.isIncludeFunction(), is(true));
         assertThat(config.isLocalStorage(), is(false));
@@ -363,6 +364,7 @@ public class ConfigurationCommonTest {
     @Test
     public void shouldSetValues() {
         config.setJSVersion(180);
+        config.setIncludeUnloadedJS(true);
         config.setIncludeBranch(false);
         config.setIncludeFunction(false);
         config.setLocalStorage(true);
@@ -370,11 +372,18 @@ public class ConfigurationCommonTest {
         config.setDetectCoalesce(true);
 
         assertThat(config.getJSVersion(), is(180));
+        assertThat(config.isIncludeUnloadedJS(), is(true));
         assertThat(config.isIncludeBranch(), is(false));
         assertThat(config.isIncludeFunction(), is(false));
         assertThat(config.isLocalStorage(), is(true));
         assertThat(config.isolateBrowser(), is(true));
         assertThat(config.isDetectCoalesce(), is(true));
+    }
+
+    @Test
+    public void shouldParseIncludedUnloadedJS() {
+        assertThat(config.parseArg("--include-unloaded-js"), is(true));
+        assertThat(config.isIncludeUnloadedJS(), is(true));
     }
 
     @Test

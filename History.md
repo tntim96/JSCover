@@ -1,7 +1,8 @@
 1.0.20 / 2015-??-??
 ==================
+  * Add `--include-unloaded-js` for file mode (https://github.com/tntim96/JSCover/issues/199)
   * Add `--isolate-browser` to avoid automatically combining coverage (https://github.com/tntim96/JSCover/issues/197)
-  * Update documentation for '-io' option
+  * Update documentation for `-io` option
   * Internal: Upgrade HtmlUnit 2.17
 
 1.0.19 / 2015-06-18
@@ -59,7 +60,7 @@
 
 1.0.11 / 2014-06-05
 ==================
-  * Improve error when 'Class-Path' not in manifest (https://github.com/tntim96/JSCover/pull/135)
+  * Improve error when `Class-Path` not in manifest (https://github.com/tntim96/JSCover/pull/135)
   * Don't try to cover empty condition in loop (https://github.com/tntim96/JSCover/issues/137)
 
 1.0.10 / 2014-06-03
@@ -109,14 +110,14 @@
 
 1.0.4 / 2013-09-05
 ==================
-  * Support 'include-unloaded-js' in proxy mode (https://github.com/tntim96/JSCover/issues/93)
+  * Support `include-unloaded-js` in proxy mode (https://github.com/tntim96/JSCover/issues/93)
   * Fix inclusion logic for unloaded-js (https://github.com/tntim96/JSCover/issues/93)
   * Improve error message when invalid CL option supplied (https://github.com/tntim96/JSCover/issues/96)
 
 1.0.3 / 2013-08-25
 ==================
   * Add enhanced logging using JUL (https://github.com/tntim96/JSCover/issues/88)
-  * Add '--only-instrument-reg=URL' switch (https://github.com/tntim96/JSCover/pull/89)
+  * Add `--only-instrument-reg=URL` switch (https://github.com/tntim96/JSCover/pull/89)
   * Fix POSTs hanging due to persistent connections (https://github.com/tntim96/JSCover/issues/91)
   * Internal:
     * Move WebDriver samples to a separate project
@@ -157,9 +158,9 @@
 ==================
   * Add function coverage (https://github.com/tntim96/JSCover/issues/61)
   * Include branch and function statistics from unloaded JavaScript (https://github.com/tntim96/JSCover/issues/63)
-  * Include branch coverage by default. Replace '--branch' switch with '--no-branch'
+  * Include branch coverage by default. Replace `--branch` switch with `--no-branch`
   * Remove instrumentation code from branch data source
-  * Make 'jscoverage.html' XHTML compliant
+  * Make `jscoverage.html` XHTML compliant
   * Website - handle direct links to HTML pages
 
 0.2.7 / 2013-04-15
@@ -285,7 +286,7 @@
 
 0.0.7 / 2012-10-23
 ==================
-  * Add '--include-unloaded-js', only for non-proxy web-server, to scan beneath www-root for unloaded/untested JS files
+  * Add `--include-unloaded-js`, only for non-proxy web-server, to scan beneath www-root for unloaded/untested JS files
   * Leading slash in --no-instrument and --exclude are ignored for consistent internal handling.
   * Double forward slashes in URLs replaced with single forward slashes
   * Internal:

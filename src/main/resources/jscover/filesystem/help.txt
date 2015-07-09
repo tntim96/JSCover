@@ -11,6 +11,7 @@ Options:
       --no-branch               turn off branch coverage data collection
       --no-function             turn off function coverage data collection
       --local-storage           save and load coverage data from HTML5 local storage
+      --include-unloaded-js     generate empty coverage data file to include unloaded JavaScript for later merging
       --isolate-browser         prevent automatically combining coverage from different browser windows
       --detect-coalesce         try to exclude coalesce assignments from conditional coverage
       --log=LEVEL               set logging level to: SEVERE (default), WARNING, INFO, CONFIG, FINE, FINER, FINEST

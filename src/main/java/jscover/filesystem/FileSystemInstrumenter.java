@@ -344,12 +344,15 @@ package jscover.filesystem;
 
 import jscover.Main;
 import jscover.instrument.InstrumenterService;
-import jscover.util.IoService;
-import jscover.util.IoUtils;
-import jscover.util.LoggerUtils;
+import jscover.instrument.UnloadedSourceProcessor;
+import jscover.report.JSONDataSaver;
+import jscover.report.ScriptCoverageCount;
+import jscover.util.*;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import static java.util.logging.Level.INFO;
@@ -361,15 +364,23 @@ public class FileSystemInstrumenter {
     private IoUtils ioUtils = IoUtils.getInstance();
     private LoggerUtils loggerUtils = LoggerUtils.getInstance();
     private ConfigurationForFS configuration;
+    private UnloadedSourceProcessor unloadedSourceProcessor;
+    private JSONDataSaver jsonDataSaver = new JSONDataSaver();
+    private List<ScriptCoverageCount> unloadJSData = new ArrayList<ScriptCoverageCount>();
+    private UriFileTranslator uriFileTranslator = new UriFileTranslatorNoOp();
 
     public void run(ConfigurationForFS configuration) {
         this.configuration = configuration;
         ioService = new IoService(configuration.isLocalStorage());
         loggerUtils.configureLogger(configuration.getLogLevel(), configuration.getDestDir());
+        unloadedSourceProcessor = new UnloadedSourceProcessor(configuration, configuration.getSrcDir());
         logger.log(INFO, "Starting JSCover {0} file instrumentation", configuration.getVersion());
         ioService.generateJSCoverFilesForFileSystem(configuration.getDestDir(), configuration.getVersion());
         copyFolder(configuration.getSrcDir(), configuration.getDestDir());
         copyFolder(configuration.getSrcDir(), new File(configuration.getDestDir(), Main.reportSrcSubDir), getJavaScriptFilter(), true);
+        if (configuration.isIncludeUnloadedJS()) {
+            jsonDataSaver.saveJSONData(configuration.getDestDir(), "{}", unloadJSData, uriFileTranslator);
+        }
     }
 
     FilenameFilter getJavaScriptFilter() {
@@ -402,6 +413,9 @@ public class FileSystemInstrumenter {
                 if (!dest.getParentFile().exists())
                     dest.getParentFile().mkdirs();
                 instrumenterService.instrumentJSForFileSystem(configuration, src, dest, path);
+                if (configuration.isIncludeUnloadedJS()) {
+                    unloadedSourceProcessor.getEmptyCoverageData(unloadJSData, src);
+                }
             } else {
                 if (!(isReportSrc && configuration.skipInstrumentation(path)))
                     ioUtils.copy(src, dest);

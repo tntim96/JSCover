@@ -342,6 +342,7 @@ Public License instead of this License.
 
 package jscover.util;
 
+import jscover.ConfigurationCommon;
 import jscover.Main;
 import jscover.server.ConfigurationForServer;
 
@@ -353,18 +354,21 @@ import java.util.logging.Logger;
 
 public class FileScanner {
     private static final Logger logger = Logger.getLogger(FileScanner.class.getName());
-    private ConfigurationForServer configuration;
+    private ConfigurationCommon configuration;
+    private File scanPath;
     private IoUtils ioUtils = IoUtils.getInstance();
     private File reportSrc;
 
-    public FileScanner(ConfigurationForServer configuration) {
+    public FileScanner(ConfigurationCommon configuration, File scanPath) {
         this.configuration = configuration;
-        reportSrc = new File(configuration.getReportDir(), Main.reportSrcSubDir);
+        this.scanPath = scanPath;
+        if (configuration instanceof ConfigurationForServer)
+            reportSrc = new File(((ConfigurationForServer)configuration).getReportDir(), Main.reportSrcSubDir);
     }
 
     public Set<File> getFiles(Set<String> urisAlreadyProcessed) {
         Set<File> files = new HashSet<File>();
-        searchFolder(configuration.getDocumentRoot(), files, urisAlreadyProcessed);
+        searchFolder(scanPath, files, urisAlreadyProcessed);
         return files;
     }
 
@@ -377,7 +381,7 @@ public class FileScanner {
         } else {
             if (!src.getName().endsWith(".js"))
                 return;
-            String path = ioUtils.getRelativePath(src, configuration.getDocumentRoot());
+            String path = ioUtils.getRelativePath(src, scanPath);
             logger.log(Level.FINEST, "Checking path {0}", path);
             if (!urisAlreadyProcessed.contains(path) && !configuration.skipInstrumentation(path)) {
                 logger.log(Level.FINE, "Adding path {0}", path);
@@ -387,6 +391,8 @@ public class FileScanner {
     }
 
     private boolean inReportSrc(File src) {
+        if (reportSrc == null)
+            return false;
         return ioUtils.isSubDirectory(src, reportSrc);
     }
 }

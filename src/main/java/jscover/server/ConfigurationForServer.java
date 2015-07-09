@@ -360,7 +360,6 @@ public class ConfigurationForServer extends ConfigurationCommon {
     public static final String PROXY_PREFIX = "--proxy";
     public static final String SAVE_JSON_ONLY = "--save-json-only";
     public static final String REPORT_DIR_PREFIX = "--report-dir=";
-    public static final String INCLUDE_UNLOADED_JS_PREFIX = "--include-unloaded-js";
     public static final String URI_TO_FILE_MATCHER_PREFIX = "--uri-to-file-matcher=";
     public static final String URI_TO_FILE_REPLACE_PREFIX = "--uri-to-file-replace=";
 
@@ -369,7 +368,6 @@ public class ConfigurationForServer extends ConfigurationCommon {
     private boolean proxy;
     private boolean saveJSONOnly;
     private File reportDir = new File(System.getProperty("user.dir"));
-    private boolean includeUnloadedJS;
     private Pattern uriToFileMatcher;
     private String uriToFileReplace;
     private UriFileTranslator uriFileTranslator = new UriFileTranslatorNoOp();
@@ -384,10 +382,6 @@ public class ConfigurationForServer extends ConfigurationCommon {
 
     public void setReportDir(File reportDir) {
         this.reportDir = reportDir;
-    }
-
-    public void setIncludeUnloadedJS(boolean includeUnloadedJS) {
-        this.includeUnloadedJS = includeUnloadedJS;
     }
 
     public File getDocumentRoot() {
@@ -412,10 +406,6 @@ public class ConfigurationForServer extends ConfigurationCommon {
 
     public boolean isProxy() {
         return proxy;
-    }
-
-    public boolean isIncludeUnloadedJS() {
-        return includeUnloadedJS;
     }
 
     public Pattern getUriToFileMatcher() {
@@ -448,8 +438,6 @@ public class ConfigurationForServer extends ConfigurationCommon {
             proxy = true;
         } else if (arg.equals(SAVE_JSON_ONLY)) {
             saveJSONOnly = true;
-        } else if (arg.equals(INCLUDE_UNLOADED_JS_PREFIX)) {
-            includeUnloadedJS = true;
         } else if (arg.startsWith(REPORT_DIR_PREFIX)) {
             reportDir = new File(arg.substring(REPORT_DIR_PREFIX.length()));
             reportDir.mkdirs();
