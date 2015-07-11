@@ -1,4 +1,4 @@
-1.0.20 / 2015-??-??
+1.0.20 / 2015-07-11
 ==================
   * Add `--include-unloaded-js` for file mode (https://github.com/tntim96/JSCover/issues/199)
   * Add `--isolate-browser` to avoid automatically combining coverage (https://github.com/tntim96/JSCover/issues/197)
