@@ -1,16 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="UTF-8">
-	<title>QUnit Main Test Suite</title>
-	<link rel="stylesheet" href="../dist/qunit.css">
-	<script src="../dist/qunit.js"></script>
-	<script src="test.js"></script>
-	<script src="deepEqual.js"></script>
-	<script src="swarminject.js"></script>
+  <title>Underscore Test Suite</title>
+  <link rel="stylesheet" href="vendor/qunit.css" type="text/css" media="screen">
+  <link rel="icon" href="../favicon.ico">
 </head>
 <body>
-	<div id="qunit"></div>
-	<div id="qunit-fixture">test markup</div>
+  <div id="qunit"></div>
+  <script src="vendor/qunit.js"></script>
+  <script src="vendor/qunit-extras.js"></script>
+  <script src="../underscore.js"></script>
+
+  <script src="collections.js"></script>
+  <script src="arrays.js"></script>
+  <script src="functions.js"></script>
+  <script src="objects.js"></script>
+  <script src="cross-document.js"></script>
+  <script src="utility.js"></script>
+  <script src="chaining.js"></script>
 </body>
 </html>

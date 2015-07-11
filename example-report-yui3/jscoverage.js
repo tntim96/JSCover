@@ -10,7 +10,7 @@ function BranchData() {
         this.nodeLength = nodeLength;
         this.src = src;
         return this;
-    }
+    };
 
     this.ranCondition = function(result) {
         if (result)
@@ -71,18 +71,20 @@ BranchData.fromJsonObject = function(json) {
 
 function buildBranchMessage(conditions) {
     var message = 'The following was not covered:';
-    for (var i = 0; i < conditions.length; i++) {
+    var i;
+    for (i = 0; i < conditions.length; i++) {
         if (conditions[i] !== undefined && conditions[i] !== null && !conditions[i].covered())
-          message += '\n- '+ conditions[i].message();
+            message += '\n- '+ conditions[i].message();
     }
     return message;
-};
+}
 
 function convertBranchDataConditionArrayToJSON(branchDataConditionArray) {
+    var condition, branchDataObject, value;
     var array = [];
     var length = branchDataConditionArray.length;
-    for (var condition = 0; condition < length; condition++) {
-        var branchDataObject = branchDataConditionArray[condition];
+    for (condition = 0; condition < length; condition++) {
+        branchDataObject = branchDataConditionArray[condition];
         if (branchDataObject === undefined || branchDataObject === null) {
             value = 'null';
         } else {
@@ -97,12 +99,13 @@ function convertBranchDataLinesToJSON(branchData) {
     if (branchData === undefined) {
         return '{}'
     }
+    var line;
     var json = '';
-    for (var line in branchData) {
+    for (line in branchData) {
         if (isNaN(line))
             continue;
         if (json !== '')
-            json += ','
+            json += ',';
         json += '"' + line + '":' + convertBranchDataConditionArrayToJSON(branchData[line]);
     }
     return '{' + json + '}';
@@ -112,11 +115,12 @@ function convertBranchDataLinesFromJSON(jsonObject) {
     if (jsonObject === undefined) {
         return {};
     }
-    for (var line in jsonObject) {
-        var branchDataJSON = jsonObject[line];
+    var line, branchDataJSON, conditionIndex, condition;
+    for (line in jsonObject) {
+        branchDataJSON = jsonObject[line];
         if (branchDataJSON !== null) {
-            for (var conditionIndex = 0; conditionIndex < branchDataJSON.length; conditionIndex ++) {
-                var condition = branchDataJSON[conditionIndex];
+            for (conditionIndex = 0; conditionIndex < branchDataJSON.length; conditionIndex ++) {
+                condition = branchDataJSON[conditionIndex];
                 if (condition !== null) {
                     branchDataJSON[conditionIndex] = BranchData.fromJsonObject(condition);
                 }
@@ -205,7 +209,7 @@ function jscoverage_html_escape(s) {
 }
 /*
     jscoverage.js - code coverage for JavaScript
-    Copyright (C) 2007, 2008, 2009, 2010 siliconforks.com
+    Copyright (C) 2007, 2008, 2009, 2010 siliconforks.com - 2012, 2013, 2014, 2015 tntim96
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -228,14 +232,6 @@ function called in the page.
 @param  w  this should always be the global window object
 */
 function jscoverage_init(w) {
-  try {
-    // in Safari, "import" is a syntax error
-    Components.utils['import']('resource://app/modules/jscoverage.jsm');
-    jscoverage_isInvertedMode = true;
-    return;
-  }
-  catch (e) {}
-
   // check if we are in inverted mode
   if (w.opener) {
     try {
@@ -244,29 +240,24 @@ function jscoverage_init(w) {
         if (! w._$jscoverage) {
           w._$jscoverage = w.opener.top._$jscoverage;
         }
-      }
-      else {
+      } else {
         jscoverage_isInvertedMode = false;
       }
-    }
-    catch (e) {
+    } catch (e) {
       try {
         if (w.opener._$jscoverage) {
           jscoverage_isInvertedMode = true;
           if (! w._$jscoverage) {
             w._$jscoverage = w.opener._$jscoverage;
           }
-        }
-        else {
+        } else {
           jscoverage_isInvertedMode = false;
         }
-      }
-      catch (e2) {
+      } catch (e2) {
         jscoverage_isInvertedMode = false;
       }
     }
-  }
-  else {
+  } else {
     jscoverage_isInvertedMode = false;
   }
 
@@ -559,6 +550,8 @@ function jscoverage_body_load() {
     var request = jscoverage_createRequest();
     try {
       request.open('GET', 'jscoverage.json', true);
+      // disable cache in IE
+      request.setRequestHeader("If-Modified-Since", "Thu, 01 Jun 1970 00:00:00 GMT");
       request.onreadystatechange = function (event) {
         if (request.readyState === 4) {
           try {
@@ -1265,6 +1258,8 @@ function jscoverage_recalculateSourceTab() {
       relativeUrl = 'original-src' + relativeUrl;
     request.open('GET', relativeUrl, true);
     request.setRequestHeader("NoInstrument", "true");
+    // disable cache in IE
+    request.setRequestHeader("If-Modified-Since", "Thu, 01 Jun 1970 00:00:00 GMT");
     request.onreadystatechange = function (event) {
       if (request.readyState === 4) {
         try {
@@ -1273,7 +1268,7 @@ function jscoverage_recalculateSourceTab() {
           }
           var response = request.responseText;
           var displaySource = function() {
-              var lines = response.split(/\n/);
+              var lines = response.split("\n");
               for (var i = 0; i < lines.length; i++)
                   lines[i] = jscoverage_html_escape(lines[i]);
               jscoverage_makeTable(lines);
