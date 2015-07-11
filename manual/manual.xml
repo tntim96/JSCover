@@ -64,15 +64,6 @@
                         </li>
                     </ul>
                 </text>
-                <text>
-                    The server (both web and proxy) has two advantages:
-                    <ol>
-                        <li>can store coverage reports to the filesystem*</li>
-                        <li>can include unloaded/untested JavaScript in the report</li>
-                    </ol>
-                    * It's possible to store a report on the file-system in file-system mode
-                    as described <a href="#fileSystemSave">below</a>.
-                </text>
             </item>
             <item>
                 <heading id="packaging">Packaging</heading>
@@ -453,6 +444,11 @@ fs.write("target/jscoverage.json", json, 'w');
                             </td>
                         </tr>
                         <tr>
+                            <td>-io</td>
+                            <td>N/A</td>
+                            <td>Instrument single file to instrument single file to stdout <b>I/O</b> stream</td>
+                        </tr>
+                        <tr>
                             <td>-h,--help</td>
                             <td>N/A</td>
                             <td>Display command line help</td>
@@ -615,6 +611,11 @@ fs.write("target/jscoverage.json", json, 'w');
                             </td>
                         </tr>
                         <tr>
+                            <td>--isolate-browser</td>
+                            <td>N/A</td>
+                            <td>Prevent automatically combining coverage from different browser windows</td>
+                        </tr>
+                        <tr>
                             <td>--detect-coalesce</td>
                             <td>false</td>
                             <td>Try to exclude coalesce assignments from conditional coverage</td>
@@ -703,8 +704,7 @@ fs.write("target/jscoverage.json", json, 'w');
   var directory;
   if (/MSIE/.test(navigator.userAgent)) {
     directory = 'IE';
-  }
-  else {
+  } else {
     directory = 'other';
   }
   jscoverage_report(directory);
@@ -793,12 +793,27 @@ fs.write("target/jscoverage.json", json, 'w');
                             <td>Turn off function coverage data collection</td>
                         </tr>
                         <tr>
+                            <td>--include-unloaded-js</td>
+                            <td>N/A</td>
+                            <td>
+                                Generate an empty coverage data file to later be merged with so that all
+                                files are included in the coverage report.
+                                <br/>
+                                Will respect --no-instrument(-reg) and --only-instrument-reg.
+                            </td>
+                        </tr>
+                        <tr>
                             <td>--local-storage</td>
                             <td>N/A</td>
                             <td>
                                 Save and load coverage data from HTML5 local storage.
                                 See the <a href="#localStorage">section on HTML5 local storage for more information</a>
                             </td>
+                        </tr>
+                        <tr>
+                            <td>--isolate-browser</td>
+                            <td>N/A</td>
+                            <td>Prevent automatically combining coverage from different browser windows</td>
                         </tr>
                         <tr>
                             <td>--js-version=VERSION</td>
@@ -1794,7 +1809,7 @@ function square(x) {
                             no code coverage data will be collected.
                         </li>
                         <li>JSCover line coverage instruments physical lines of code rather than logical JavaScript
-                            statements; it works bests with code that has exactly one statement per line. If you put
+                            statements; it works best with code that has exactly one statement per line. If you put
                             multiple statements on a line, or split a line across two or more statements, you may get
                             strange results.
                         </li>
