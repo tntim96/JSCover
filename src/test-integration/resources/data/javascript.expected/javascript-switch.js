@@ -15,6 +15,7 @@ if (! _$jscoverage['javascript-switch.js']) {
   _$jscoverage['javascript-switch.js'].lineData[18] = 0;
   _$jscoverage['javascript-switch.js'].lineData[20] = 0;
   _$jscoverage['javascript-switch.js'].lineData[23] = 0;
+  _$jscoverage['javascript-switch.js'].lineData[24] = 0;
   _$jscoverage['javascript-switch.js'].lineData[26] = 0;
   _$jscoverage['javascript-switch.js'].lineData[27] = 0;
   _$jscoverage['javascript-switch.js'].lineData[29] = 0;
@@ -59,6 +60,7 @@ switch (x) {
 _$jscoverage['javascript-switch.js'].lineData[23]++;
 switch (x) {
   case 1:
+    _$jscoverage['javascript-switch.js'].lineData[24]++;
   case 2:
     _$jscoverage['javascript-switch.js'].lineData[26]++;
     x = 2;

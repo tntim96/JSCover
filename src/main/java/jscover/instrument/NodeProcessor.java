@@ -345,6 +345,7 @@ package jscover.instrument;
 import org.mozilla.javascript.Token;
 import org.mozilla.javascript.ast.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -418,8 +419,12 @@ class NodeProcessor {
         } else if (node instanceof WithStatement) {
             addInstrumentationBefore(node);
         } else if (node instanceof SwitchCase) {
-            List<AstNode> statements = ((SwitchCase) node).getStatements();
+            SwitchCase switchCase = (SwitchCase) node;
+            List<AstNode> statements = switchCase.getStatements();
             if (statements == null) {
+                statements = new ArrayList<AstNode>();
+                statements.add(buildInstrumentationStatement(node.getLineno()));
+                switchCase.setStatements(statements);
                 return true;
             }
             for (int i = statements.size() - 1; i >= 0; i--) {
