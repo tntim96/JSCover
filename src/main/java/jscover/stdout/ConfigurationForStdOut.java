@@ -362,6 +362,9 @@ public class ConfigurationForStdOut extends ConfigurationCommon {
             configuration.parse(arg);
         }
 
+        if (configuration.showHelp)
+            return configuration;
+
         if (args.length < 2) {
             configuration.invalid = true;
             configuration.showHelp = true;

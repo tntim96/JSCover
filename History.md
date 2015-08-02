@@ -1,6 +1,7 @@
 1.0.21 / 2015-??-??
 ==================
   * Include Empty Case Statements In Coverage (https://github.com/tntim96/JSCover/issues/202)
+  * NPE when showing help for '-io' option (https://github.com/tntim96/JSCover/issues/205)
   * Update samples to use latest JSCover, Underscore, QUnit and YUI3
 
 1.0.20 / 2015-07-11

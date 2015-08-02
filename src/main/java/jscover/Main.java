@@ -448,7 +448,7 @@ public class Main {
         } else if (isFileSystem()) {
             runFileSystem(ConfigurationForFS.parse(args));
         } else if (isStdOut()) {
-            runSingleFile(args);
+            runSingleFile(ConfigurationForStdOut.parse(args));
         } else if (showCharSets()) {
             System.out.println("Valid encodings:");
             SortedMap<String, Charset> charSet = Charset.availableCharsets();
@@ -500,8 +500,7 @@ public class Main {
         }
     }
 
-    private void runSingleFile(String[] args) {
-        ConfigurationForStdOut configuration = ConfigurationForStdOut.parse(args);
+    private void runSingleFile(ConfigurationForStdOut configuration) {
         configuration.setProperties(properties);
         if (configuration.isInvalid())
             exitStatus = 1;

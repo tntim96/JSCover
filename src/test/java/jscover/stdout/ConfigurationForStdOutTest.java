@@ -373,6 +373,12 @@ public class ConfigurationForStdOutTest {
     }
 
     @Test
+    public void shouldSetHelp() throws IOException {
+        ConfigurationForStdOut configuration = ConfigurationForStdOut.parse(new String[]{"-io", "-h"});
+        assertThat(configuration.showHelp(), is(true));
+    }
+
+    @Test
     public void shouldGetSourceFileAndCommonConfiguration() {
         ConfigurationForStdOut configuration = ConfigurationForStdOut.parse(new String[]{"-io", "--js-version=1.8", "doc/example/script.js"});
         assertThat(configuration.getSrcFile(), equalTo(new File("doc/example/script.js")));
