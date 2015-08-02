@@ -498,7 +498,12 @@ fs.write("target/jscoverage.json", json, 'w');
                 <item>
                     <heading id="jvmRegularExpressions">Java Regular Expressions</heading>
                     <text>
-                        All regular expression functionality is provided by the JVM. Further documentation can be found at:
+                        All regular expression functionality is provided by the JVM.
+                        Regular expressions can be tested with the '-regex-test' switch. For example:
+                        <code>java -jar JSCover-all.jar -regex-test "/a.*" "/ab"</code>
+                    </text>
+                    <text>
+                        Further documentation can be found at:
                         <ul>
                             <li><a href="http://docs.oracle.com/javase/1.6.0/docs/api/java/util/regex/Pattern.html" target="_blank">Pattern</a></li>
                             <li><a href="http://docs.oracle.com/javase/1.6.0/docs/api/java/util/regex/Matcher.html" target="_blank">Matcher</a></li>
