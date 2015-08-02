@@ -38,11 +38,14 @@
     <a href="https://oss.sonatype.org/content/repositories/snapshots/com/github/tntim96/JSCover" target="_blank">Sonatype</a>
     which will require the sonatype repository:
 </p>
-<div class="xmlBlock" style="width: 550px;"><span class="xmlTag">&lt;pluginRepository&gt;</span><br/>
-    &nbsp;&nbsp;&nbsp;&nbsp;<span class="xmlTag">&lt;</span><span class="xmlTag">id&gt;</span><span class="xmlValue">Sonatype repository</span><span class="xmlTag">&lt;/id&gt;</span><br/>
-    &nbsp;&nbsp;&nbsp;&nbsp;<span class="xmlTag">&lt;name&gt;</span><span class="xmlValue">Sonatype's Maven repository</span><span class="xmlTag">&lt;/name&gt;</span><br/>
-    &nbsp;&nbsp;&nbsp;&nbsp;<span class="xmlTag">&lt;url&gt;</span><span class="xmlValue">https://oss.sonatype.org/content/repositories/snapshots/</span><span class="xmlTag">&lt;/url&gt;</span><br/>
-    <span class="xmlTag">&lt;/pluginRepository&gt;</span></div>
+
+<div class="xmlBlock" style="width: 550px;"><span class="xmlTag">&lt;repositories&gt;</span><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="xmlTag">&lt;repository&gt;</span><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="xmlTag">&lt;</span><span class="xmlTag">id&gt;</span><span class="xmlValue">sonatype-nexus-snapshots</span><span class="xmlTag">&lt;/id&gt;</span><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="xmlTag">&lt;name&gt;</span><span class="xmlValue">Sonatype Nexus Snapshots</span><span class="xmlTag">&lt;/name&gt;</span><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="xmlTag">&lt;url&gt;</span><span class="xmlValue">https://oss.sonatype.org/content/repositories/snapshots</span><span class="xmlTag">&lt;/url&gt;</span><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="xmlTag">&lt;/repository&gt;</span><br/>
+    <span class="xmlTag">&lt;/repositories&gt;</span></div>
 
 <h2>Maven Plugins</h2>
 <p>
