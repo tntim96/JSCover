@@ -449,9 +449,19 @@ fs.write("target/jscoverage.json", json, 'w');
                             <td>Instrument single file to instrument single file to stdout <b>I/O</b> stream</td>
                         </tr>
                         <tr>
+                            <td>-regex-test REGEX STRING</td>
+                            <td>N/A</td>
+                            <td>Test of regular expression (REGEX) matches string (STRING)</td>
+                        </tr>
+                        <tr>
                             <td>-h,--help</td>
                             <td>N/A</td>
                             <td>Display command line help</td>
+                        </tr>
+                        <tr>
+                            <td>-h encoding</td>
+                            <td>N/A</td>
+                            <td>List available character encodings</td>
                         </tr>
                         <tr>
                             <td>-V,--version</td>

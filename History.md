@@ -2,6 +2,7 @@
 ==================
   * Include Empty Case Statements In Coverage (https://github.com/tntim96/JSCover/issues/202)
   * NPE when showing help for '-io' option (https://github.com/tntim96/JSCover/issues/205)
+  * Add CLI option for testing regular expressions (https://github.com/tntim96/JSCover/issues/206)
   * Update samples to use latest JSCover, Underscore, QUnit and YUI3
   * Internal: Upgrade HtmlUnit 2.18
 

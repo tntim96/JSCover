@@ -360,6 +360,8 @@ public class MainParsingTest {
         assertThat(main.printVersion(), equalTo(false));
         assertThat(main.isServer(), equalTo(false));
         assertThat(main.isFileSystem(), equalTo(false));
+        assertThat(main.showCharSets(), equalTo(false));
+        assertThat(main.isRegExpTest(), equalTo(false));
     }
 
     @Test
@@ -405,6 +407,12 @@ public class MainParsingTest {
     public void shouldParseEncodingHelp() {
         assertThat(main.parse(new String[]{"-ws","encoding"}).showCharSets(), equalTo(false));
         assertThat(main.parse(new String[]{"-h","encoding"}).showCharSets(), equalTo(true));
+        assertThat(main.getExitStatus(), equalTo(0));
+    }
+
+    @Test
+    public void shouldParseRegularExpressionTest() {
+        assertThat(main.parse(new String[]{"-regex-test","/a.*","/ab"}).isRegExpTest(), equalTo(true));
         assertThat(main.getExitStatus(), equalTo(0));
     }
 

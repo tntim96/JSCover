@@ -360,6 +360,8 @@ import java.util.Properties;
 import java.util.SortedMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Main {
     private static final Logger logger = Logger.getLogger(Main.class.getName());
@@ -371,6 +373,7 @@ public class Main {
     public static final String SERVER_PREFIX = "-ws";
     public static final String FILESYSTEM_PREFIX = "-fs";
     public static final String STDOUT_PREFIX = "-io";
+    public static final String REG_TEST_PREFIX = "-regex-test";
     public static final Properties properties = new Properties();
     public static String reportSrcSubDir = "original-src";
 
@@ -396,6 +399,7 @@ public class Main {
 
     private boolean showHelp;
     private boolean showCharsets;
+    private boolean isRegExpTest;
     private boolean printVersion;
     private boolean isServer;
     private boolean isFileSystem;
@@ -456,6 +460,14 @@ public class Main {
                 System.out.println(charSetName);
             }
             System.out.println("Default is: " + Charset.defaultCharset().name());
+        } else if (isRegExpTest() && args.length == 3) {
+            Pattern pattern = Pattern.compile(args[1]);
+            Matcher match = pattern.matcher(args[2]);
+            if (match.matches()) {
+                System.out.println("Matched");
+            } else {
+                System.out.println("No match");
+            }
         } else {
             System.out.println(getHelpText());
         }
@@ -533,6 +545,8 @@ public class Main {
             isFileSystem = true;
         } else if (arg.equals(STDOUT_PREFIX)) {
             isStdOut = true;
+        } else if (arg.equals(REG_TEST_PREFIX)) {
+            isRegExpTest = true;
         } else if (arg.equals(CHARSET_PREFIX)) {
             showCharsets = true;
         }
@@ -542,7 +556,7 @@ public class Main {
         if ((isServer && (isFileSystem || isStdOut)) || (isFileSystem && isStdOut)) {
             return false;
         }
-        return isServer || isFileSystem || isStdOut || showHelp || printVersion || showCharsets;
+        return isServer || isFileSystem || isStdOut || isRegExpTest || showHelp || printVersion || showCharsets;
     }
 
     public Boolean printVersion() {
@@ -555,6 +569,10 @@ public class Main {
 
     public Boolean showCharSets() {
         return showHelp && showCharsets;
+    }
+
+    public boolean isRegExpTest() {
+        return isRegExpTest;
     }
 
     public Boolean isServer() {
