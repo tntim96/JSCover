@@ -338,7 +338,7 @@ proprietary programs.  If your program is a subroutine library, you may
 consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
-*/
+ */
 
 package jscover.instrument;
 
@@ -417,7 +417,7 @@ public class BranchInstrumentor implements NodeVisitor {
         if (parent instanceof IfStatement && node == ((IfStatement) parent).getCondition()) {
             ((IfStatement) parent).setCondition(functionCall);
         } else if (parent instanceof ParenthesizedExpression) {
-            ((ParenthesizedExpression)parent).setExpression(functionCall);
+            ((ParenthesizedExpression) parent).setExpression(functionCall);
         } else if (parent instanceof InfixExpression) {//This covers Assignment
             InfixExpression infixExpression = (InfixExpression) parent;
             if (infixExpression.getLeft() == node)
@@ -425,21 +425,21 @@ public class BranchInstrumentor implements NodeVisitor {
             else
                 infixExpression.setRight(functionCall);
         } else if (parent instanceof ReturnStatement) {
-            ((ReturnStatement)parent).setReturnValue(functionCall);
+            ((ReturnStatement) parent).setReturnValue(functionCall);
         } else if (parent instanceof VariableInitializer) {
-            ((VariableInitializer)parent).setInitializer(functionCall);
+            ((VariableInitializer) parent).setInitializer(functionCall);
         } else if (parent instanceof SwitchStatement) {
-            ((SwitchStatement)parent).setExpression(functionCall);
+            ((SwitchStatement) parent).setExpression(functionCall);
         } else if (parent instanceof WhileLoop) {
-            ((WhileLoop)parent).setCondition(functionCall);
+            ((WhileLoop) parent).setCondition(functionCall);
         } else if (parent instanceof DoLoop) {
-            ((DoLoop)parent).setCondition(functionCall);
+            ((DoLoop) parent).setCondition(functionCall);
         } else if (parent instanceof ForLoop) {
-            ((ForLoop)parent).setCondition(functionCall);
+            ((ForLoop) parent).setCondition(functionCall);
         } else if (parent instanceof ElementGet) {
-            ((ElementGet)parent).setElement(functionCall);
+            ((ElementGet) parent).setElement(functionCall);
         } else if (parent instanceof ExpressionStatement) {
-            ((ExpressionStatement)parent).setExpression(functionCall);
+            ((ExpressionStatement) parent).setExpression(functionCall);
         } else if (parent instanceof ConditionalExpression) {
             ConditionalExpression ternary = (ConditionalExpression) parent;
             if (ternary.getTestExpression() == node)
@@ -486,7 +486,7 @@ public class BranchInstrumentor implements NodeVisitor {
     }
 
     public boolean visit(AstNode node) {
-        if (branchHelper.isBoolean(node) && !(detectCoalesce && branchHelper.isCoalesce(node))) {
+        if (node.getLineno() > 0 && branchHelper.isBoolean(node) && !(detectCoalesce && branchHelper.isCoalesce(node))) {
             replaceWithFunction(node);
         }
         return true;
@@ -499,7 +499,7 @@ public class BranchInstrumentor implements NodeVisitor {
             pos += parent.getPosition();
             parent = parent.getParent();
         }
-        return pos-1;
+        return pos - 1;
     }
 
     protected String getJsLineInitialization() {
