@@ -381,6 +381,10 @@ class NodeProcessor {
             }
         }
 
+        if (node instanceof SwitchCase) {
+            return (processSwitchCase(node, (SwitchCase) node));
+        }
+
         if (validLines.contains(node.getLineno())) {
             // Don't add instrumentation if already there
             return true;
@@ -418,19 +422,6 @@ class NodeProcessor {
             }
         } else if (node instanceof WithStatement) {
             addInstrumentationBefore(node);
-        } else if (node instanceof SwitchCase) {
-            SwitchCase switchCase = (SwitchCase) node;
-            List<AstNode> statements = switchCase.getStatements();
-            if (statements == null) {
-                statements = new ArrayList<AstNode>();
-                statements.add(buildInstrumentationStatement(node.getLineno()));
-                switchCase.setStatements(statements);
-                return true;
-            }
-            for (int i = statements.size() - 1; i >= 0; i--) {
-                AstNode statement = statements.get(i);
-                statements.add(i, buildInstrumentationStatement(statement.getLineno()));
-            }
         } else if (node instanceof FunctionNode || node instanceof TryStatement || isDebugStatement(node)) {
             if (!(parent instanceof InfixExpression) && !(parent instanceof VariableInitializer)
                     && !(parent instanceof ConditionalExpression) && !(parent instanceof ArrayLiteral)
@@ -447,6 +438,23 @@ class NodeProcessor {
             addInstrumentationBefore(node);
         }
         return true;
+    }
+
+    private boolean processSwitchCase(AstNode node, SwitchCase switchCase) {
+        List<AstNode> statements = switchCase.getStatements();
+        if (statements == null) {
+            statements = new ArrayList<AstNode>();
+            statements.add(buildInstrumentationStatement(node.getLineno()));
+            switchCase.setStatements(statements);
+            return true;
+        }
+        for (int i = statements.size() - 1; i >= 0; i--) {
+            AstNode statement = statements.get(i);
+            if (!validLines.contains(statement.getLineno())) {
+                statements.add(i, buildInstrumentationStatement(statement.getLineno()));
+            }
+        }
+        return false;
     }
 
     private boolean isLoopInitializer(AstNode node) {
