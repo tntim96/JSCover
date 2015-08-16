@@ -343,6 +343,7 @@ Public License instead of this License.
 package jscover.instrument;
 
 import jscover.util.ReflectionUtils;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -360,15 +361,20 @@ import static org.mockito.Mockito.verify;
 @RunWith(MockitoJUnitRunner.class)
 public class ParseTreeInstrumenterTest {
     private ParseTreeInstrumenter instrumenter;
-    @Mock NodeProcessor nodeProcessor;
-    @Mock AstNode astNode;
-    @Mock Logger logger;
+    @Mock private NodeProcessor nodeProcessor;
+    @Mock private AstNode astNode;
+    @Mock private Logger logger;
 
     @Before
     public void setUp() throws IOException {
         instrumenter = new ParseTreeInstrumenter("/dir/file.js", true);
         ReflectionUtils.setField(instrumenter, "nodeProcessor", nodeProcessor);
         ReflectionUtils.setField(instrumenter, "logger", logger);
+    }
+
+    @After
+    public void tearDown() {
+        ReflectionUtils.setField(instrumenter, "logger", Logger.getLogger(ParseTreeInstrumenter.class.getName()));
     }
 
     @Test
