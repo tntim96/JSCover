@@ -1,4 +1,4 @@
-1.0.21 / 2015-??-??
+1.0.21 / 2015-08-23
 ==================
   * Make js (-fs option) code instrumentation multithreaded (https://github.com/tntim96/JSCover/issues/209)
   * Include Empty Case Statements In Coverage (https://github.com/tntim96/JSCover/issues/202)
