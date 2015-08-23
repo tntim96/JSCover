@@ -367,6 +367,7 @@ public class ConfigurationForFSTest {
         assertThat(configuration.isIncludeBranch(), is(true));
         assertThat(configuration.isIncludeFunction(), is(true));
         assertThat(configuration.getLogLevel(), is(SEVERE));
+        assertThat(configuration.getThreads(), is(Runtime.getRuntime().availableProcessors()));
     }
 
     @Test
@@ -481,6 +482,12 @@ public class ConfigurationForFSTest {
         ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs", "--js-version=1.8", "src", "doc"});
         assertThat(configuration.getJSVersion(), equalTo(180));
         assertThat(configuration.getCompilerEnvirons().getLanguageVersion(), equalTo(180));
+    }
+
+    @Test
+    public void shouldParseThreads() {
+        ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs", "--threads=7", "src", "doc"});
+        assertThat(configuration.getThreads(), equalTo(7));
     }
 
     @Test

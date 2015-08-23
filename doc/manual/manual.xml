@@ -798,6 +798,14 @@ fs.write("target/jscoverage.json", json, 'w');
                             </td>
                         </tr>
                         <tr>
+                            <td>--threads=NUMBER</td>
+                            <td>
+                                <a href="http://docs.oracle.com/javase/6/docs/api/java/lang/Runtime.html#availableProcessors%28%29"
+                                    target="_blank">Runtime.getRuntime().availableProcessors()</a>
+                            </td>
+                            <td>Specify NUMBER of threads for performing instrumentation</td>
+                        </tr>
+                        <tr>
                             <td>--no-branch</td>
                             <td>N/A</td>
                             <td>Turn off branch coverage data collection</td>

@@ -8,6 +8,7 @@ Options:
       --only-instrument-reg=URL only instrument if URL matches regular expression
       --exclude=PATH            don't copy from source/PATH
       --exclude-reg=PATH        don't copy from source/PATH if it matches regular expression
+      --threads=NUMBER          specify NUMBER of threads for performing instrumentation
       --no-branch               turn off branch coverage data collection
       --no-function             turn off function coverage data collection
       --local-storage           save and load coverage data from HTML5 local storage

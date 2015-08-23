@@ -356,11 +356,13 @@ import static java.lang.String.format;
 public class ConfigurationForFS extends ConfigurationCommon {
     public static final String EXLCUDE_PREFIX = "--exclude=";
     public static final String EXLCUDE_REG_PREFIX = "--exclude-reg=";
+    public static final String THREAD_COUNT = "--threads=";
 
     private final Set<String> excludes = new HashSet<String>();
     private final Set<Pattern> excludeRegs = new HashSet<Pattern>();
     private File srcDir;
     private File destDir;
+    private int threads = Runtime.getRuntime().availableProcessors();
 
     public void setSrcDir(File srcDir) {
         this.srcDir = srcDir;
@@ -418,6 +420,8 @@ public class ConfigurationForFS extends ConfigurationCommon {
             addExclude(arg);
         } else if (arg.startsWith(EXLCUDE_REG_PREFIX)) {
             addExcludeReg(arg);
+        } else if (arg.startsWith(THREAD_COUNT)) {
+            threads = Integer.parseInt(arg.substring(THREAD_COUNT.length()));
         } else  if (arg.startsWith("-")) {
             setInvalid(format("JSCover: Unknown option '%s'", arg));
         } else if (srcDir == null) {
@@ -456,5 +460,9 @@ public class ConfigurationForFS extends ConfigurationCommon {
 
     public String getHelpText() {
         return ioUtils.toString(getClass().getResourceAsStream("help.txt"));
+    }
+
+    public int getThreads() {
+        return threads;
     }
 }

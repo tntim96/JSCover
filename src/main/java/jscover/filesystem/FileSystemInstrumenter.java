@@ -353,6 +353,8 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
 import static java.util.logging.Level.INFO;
@@ -368,8 +370,10 @@ public class FileSystemInstrumenter {
     private JSONDataSaver jsonDataSaver = new JSONDataSaver();
     private List<ScriptCoverageCount> unloadJSData = new ArrayList<ScriptCoverageCount>();
     private UriFileTranslator uriFileTranslator = new UriFileTranslatorNoOp();
+    private ExecutorService executor = Executors.newFixedThreadPool(5);
 
     public void run(ConfigurationForFS configuration) {
+        executor = Executors.newFixedThreadPool(configuration.getThreads());
         this.configuration = configuration;
         ioService = new IoService(configuration.isLocalStorage());
         loggerUtils.configureLogger(configuration.getLogLevel(), configuration.getDestDir());
@@ -377,6 +381,9 @@ public class FileSystemInstrumenter {
         logger.log(INFO, "Starting JSCover {0} file instrumentation", configuration.getVersion());
         ioService.generateJSCoverFilesForFileSystem(configuration.getDestDir(), configuration.getVersion());
         copyFolder(configuration.getSrcDir(), configuration.getDestDir());
+
+        executor.shutdown();
+        while (!executor.isTerminated());
         copyFolder(configuration.getSrcDir(), new File(configuration.getDestDir(), Main.reportSrcSubDir), getJavaScriptFilter(), true);
         if (configuration.isIncludeUnloadedJS()) {
             jsonDataSaver.saveJSONData(configuration.getDestDir(), "{}", unloadJSData, uriFileTranslator);
@@ -401,8 +408,8 @@ public class FileSystemInstrumenter {
         copyFolder(src, dest, acceptAll, false);
     }
 
-    void copyFolder(File src, File dest, FilenameFilter filter, boolean isReportSrc) {
-        String path = ioUtils.getRelativePath(src, configuration.getSrcDir());
+    void copyFolder(final File src, final File dest, FilenameFilter filter, boolean isReportSrc) {
+        final String path = ioUtils.getRelativePath(src, configuration.getSrcDir());
         if (configuration.exclude(path))
             return;
         if (src.isDirectory()) {
@@ -412,10 +419,15 @@ public class FileSystemInstrumenter {
             if (!isReportSrc && src.toString().endsWith(".js") && !configuration.skipInstrumentation(path)) {
                 if (!dest.getParentFile().exists())
                     dest.getParentFile().mkdirs();
-                instrumenterService.instrumentJSForFileSystem(configuration, src, dest, path);
-                if (configuration.isIncludeUnloadedJS()) {
-                    unloadedSourceProcessor.getEmptyCoverageData(unloadJSData, src);
-                }
+                executor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        instrumenterService.instrumentJSForFileSystem(configuration, src, dest, path);
+                        if (configuration.isIncludeUnloadedJS()) {
+                            unloadedSourceProcessor.getEmptyCoverageData(unloadJSData, src);
+                        }
+                    }
+                });
             } else {
                 if (!(isReportSrc && configuration.skipInstrumentation(path)))
                     ioUtils.copy(src, dest);

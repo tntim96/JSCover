@@ -355,6 +355,7 @@ import org.mozilla.javascript.CompilerEnvirons;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.concurrent.ExecutorService;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
@@ -402,9 +403,16 @@ public class FileSystemInstrumenterTest {
         given(configuration.skipInstrumentation(path)).willReturn(false);
 
         fsi.copyFolder(src, dest);
+        waitForCompletion();
 
         verify(instrumenterService).instrumentJSForFileSystem(configuration, src, dest, path);
         verify(destParent).mkdirs();
+    }
+
+    private void waitForCompletion() {
+        ExecutorService executor = (ExecutorService) ReflectionUtils.getField(fsi, "executor");
+        executor.shutdown();
+        while (!executor.isTerminated());
     }
 
     @Test
@@ -418,6 +426,7 @@ public class FileSystemInstrumenterTest {
         given(destParent.exists()).willReturn(true);
 
         fsi.copyFolder(src, dest);
+        waitForCompletion();
 
         verify(instrumenterService).instrumentJSForFileSystem(configuration, src, dest, path);
         verify(destParent, times(0)).mkdirs();

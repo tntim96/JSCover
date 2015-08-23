@@ -1,5 +1,6 @@
 1.0.21 / 2015-??-??
 ==================
+  * Make js (-fs option) code instrumentation multithreaded (https://github.com/tntim96/JSCover/issues/209)
   * Include Empty Case Statements In Coverage (https://github.com/tntim96/JSCover/issues/202)
   * NPE when showing help for '-io' option (https://github.com/tntim96/JSCover/issues/205)
   * Fix syntax error caused by branch traversing instrumented nodes (https://github.com/tntim96/JSCover/issues/208)
