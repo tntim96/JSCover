@@ -262,8 +262,8 @@
 
     equal(options.a, 1, 'should not error on `null` or `undefined` sources');
 
-    strictEqual(_.defaults(null, {a: 1}), null, 'result is null if destination is null');
-    strictEqual(_.defaults(void 0, {a: 1}), void 0, 'result is undefined if destination is undefined');
+    deepEqual(_.defaults(null, {a: 1}), {a: 1}, 'defaults skips nulls');
+    deepEqual(_.defaults(void 0, {a: 1}), {a: 1}, 'defaults skips undefined');
   });
 
   test('clone', function() {
@@ -668,6 +668,11 @@
     if (testElement) {
       ok(!_.isFunction(testElement), 'elements are not functions');
     }
+
+    var nodelist = typeof document != 'undefined' && document.childNodes;
+    if (nodelist) {
+      ok(!_.isFunction(nodelist));
+    }
   });
 
   if (typeof Int8Array !== 'undefined') {
@@ -714,6 +719,7 @@
     ok(!_.isNaN(void 0), 'undefined is not NaN');
     ok(!_.isNaN(null), 'null is not NaN');
     ok(!_.isNaN(0), '0 is not NaN');
+    ok(!_.isNaN(new Number(0)), 'wrapped 0 is not NaN');
     ok(_.isNaN(NaN), 'but NaN is');
     ok(_.isNaN(new Number(NaN)), 'wrapped NaN is still NaN');
   });
@@ -814,63 +820,6 @@
     //null edge cases
     var oCon = {constructor: Object};
     deepEqual(_.map([null, void 0, 5, {}], _.partial(_.isMatch, _, oCon)), [false, false, false, true], 'doesnt falsey match constructor on undefined/null');
-  });
-
-  test('matcher', function() {
-    var moe = {name: 'Moe Howard', hair: true};
-    var curly = {name: 'Curly Howard', hair: false};
-    var stooges = [moe, curly];
-
-    equal(_.matcher({hair: true})(moe), true, 'Returns a boolean');
-    equal(_.matcher({hair: true})(curly), false, 'Returns a boolean');
-
-    equal(_.matcher({__x__: void 0})(5), false, 'can match undefined props on primitives');
-    equal(_.matcher({__x__: void 0})({__x__: void 0}), true, 'can match undefined props');
-
-    equal(_.matcher({})(null), true, 'Empty spec called with null object returns true');
-    equal(_.matcher({a: 1})(null), false, 'Non-empty spec called with null object returns false');
-
-    ok(_.find(stooges, _.matcher({hair: false})) === curly, 'returns a predicate that can be used by finding functions.');
-    ok(_.find(stooges, _.matcher(moe)) === moe, 'can be used to locate an object exists in a collection.');
-    deepEqual(_.where([null, void 0], {a: 1}), [], 'Do not throw on null values.');
-
-    deepEqual(_.where([null, void 0], null), [null, void 0], 'null matches null');
-    deepEqual(_.where([null, void 0], {}), [null, void 0], 'null matches {}');
-    deepEqual(_.where([{b: 1}], {a: void 0}), [], 'handles undefined values (1683)');
-
-    _.each([true, 5, NaN, null, void 0], function(item) {
-      deepEqual(_.where([{a: 1}], item), [{a: 1}], 'treats primitives as empty');
-    });
-
-    function Prototest() {}
-    Prototest.prototype.x = 1;
-    var specObj = new Prototest;
-    var protospec = _.matcher(specObj);
-    equal(protospec({x: 2}), true, 'spec is restricted to own properties');
-
-    specObj.y = 5;
-    protospec = _.matcher(specObj);
-    equal(protospec({x: 1, y: 5}), true);
-    equal(protospec({x: 1, y: 4}), false);
-
-    ok(_.matcher({x: 1, y: 5})(specObj), 'inherited and own properties are checked on the test object');
-
-    Prototest.x = 5;
-    ok(_.matcher(Prototest)({x: 5, y: 1}), 'spec can be a function');
-
-    // #1729
-    var o = {b: 1};
-    var m = _.matcher(o);
-
-    equal(m({b: 1}), true);
-    o.b = 2;
-    o.a = 1;
-    equal(m({b: 1}), true, 'changing spec object doesnt change matches result');
-
-
-    //null edge cases
-    var oCon = _.matcher({constructor: Object});
-    deepEqual(_.map([null, void 0, 5, {}], oCon), [false, false, false, true], 'doesnt falsey match constructor on undefined/null');
   });
 
   test('matcher', function() {

@@ -449,9 +449,19 @@ fs.write("target/jscoverage.json", json, 'w');
                             <td>Instrument single file to instrument single file to stdout <b>I/O</b> stream</td>
                         </tr>
                         <tr>
+                            <td>-regex-test REGEX STRING</td>
+                            <td>N/A</td>
+                            <td>Test of regular expression (REGEX) matches string (STRING)</td>
+                        </tr>
+                        <tr>
                             <td>-h,--help</td>
                             <td>N/A</td>
                             <td>Display command line help</td>
+                        </tr>
+                        <tr>
+                            <td>-h encoding</td>
+                            <td>N/A</td>
+                            <td>List available character encodings</td>
                         </tr>
                         <tr>
                             <td>-V,--version</td>
@@ -488,7 +498,12 @@ fs.write("target/jscoverage.json", json, 'w');
                 <item>
                     <heading id="jvmRegularExpressions">Java Regular Expressions</heading>
                     <text>
-                        All regular expression functionality is provided by the JVM. Further documentation can be found at:
+                        All regular expression functionality is provided by the JVM.
+                        Regular expressions can be tested with the '-regex-test' switch. For example:
+                        <code>java -jar JSCover-all.jar -regex-test "/a.*" "/ab"</code>
+                    </text>
+                    <text>
+                        Further documentation can be found at:
                         <ul>
                             <li><a href="http://docs.oracle.com/javase/1.6.0/docs/api/java/util/regex/Pattern.html" target="_blank">Pattern</a></li>
                             <li><a href="http://docs.oracle.com/javase/1.6.0/docs/api/java/util/regex/Matcher.html" target="_blank">Matcher</a></li>
@@ -781,6 +796,14 @@ fs.write("target/jscoverage.json", json, 'w');
                                 Same as '--exclude=PATH', except PATH is interpreted as a
                                 <a href="#jvmRegularExpressions">regular expression</a>
                             </td>
+                        </tr>
+                        <tr>
+                            <td>--threads=NUMBER</td>
+                            <td>
+                                <a href="http://docs.oracle.com/javase/6/docs/api/java/lang/Runtime.html#availableProcessors%28%29"
+                                    target="_blank">Runtime.getRuntime().availableProcessors()</a>
+                            </td>
+                            <td>Specify NUMBER of threads for performing instrumentation</td>
                         </tr>
                         <tr>
                             <td>--no-branch</td>

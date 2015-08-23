@@ -1,9 +1,9 @@
-<script type="text/javascript" src="js/util.js?v=1020a"></script>
+<script type="text/javascript" src="js/util.js?v=1021"></script>
 <h2>Latest Stable Release</h2>
 <h3>ZIP Release</h3>
 <p>
     The latest release is
-    <a href="http://sourceforge.net/projects/jscover/files/JSCover-1.0.20.zip/download" target="_blank">v1.0.20</a>.
+    <a href="http://sourceforge.net/projects/jscover/files/JSCover-1.0.21.zip/download" target="_blank">v1.0.21</a>.
 </p>
 <p>
     See the
@@ -18,12 +18,12 @@
             <div class="xmlBlock"><span class="xmlTag">&lt;dependency&gt;</span><br/>
                 &nbsp;&nbsp;&nbsp;&nbsp;<span class="xmlTag">&lt;</span><span class="xmlTag">groupId&gt;</span><span class="xmlValue">com.github.tntim96</span><span class="xmlTag">&lt;/groupId&gt;</span><br/>
                 &nbsp;&nbsp;&nbsp;&nbsp;<span class="xmlTag">&lt;artifactId&gt;</span><span class="xmlValue">JSCover</span><span class="xmlTag">&lt;/artifactId&gt;</span><br/>
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="xmlTag">&lt;version&gt;</span><span class="xmlValue">1.0.20</span><span class="xmlTag">&lt;/version&gt;</span><br/>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="xmlTag">&lt;version&gt;</span><span class="xmlValue">1.0.21</span><span class="xmlTag">&lt;/version&gt;</span><br/>
                 <span class="xmlTag">&lt;/dependency&gt;</span></div>
         </td>
         <td>
             <h3>Gradle</h3>
-            <div class="xmlBlock"><span class="xmlTag">'</span><span class="xmlValue">com.github.tntim96</span><span class="xmlTag">:</span><span class="xmlValue">JSCover</span><span class="xmlTag">:</span><span class="xmlValue">1.0.20</span><span class="xmlTag">'</span></div>
+            <div class="xmlBlock"><span class="xmlTag">'</span><span class="xmlValue">com.github.tntim96</span><span class="xmlTag">:</span><span class="xmlValue">JSCover</span><span class="xmlTag">:</span><span class="xmlValue">1.0.21</span><span class="xmlTag">'</span></div>
         </td>
     </tr>
 </table>
@@ -38,11 +38,17 @@
     <a href="https://oss.sonatype.org/content/repositories/snapshots/com/github/tntim96/JSCover" target="_blank">Sonatype</a>
     which will require the sonatype repository:
 </p>
-<div class="xmlBlock" style="width: 550px;"><span class="xmlTag">&lt;pluginRepository&gt;</span><br/>
-    &nbsp;&nbsp;&nbsp;&nbsp;<span class="xmlTag">&lt;</span><span class="xmlTag">id&gt;</span><span class="xmlValue">Sonatype repository</span><span class="xmlTag">&lt;/id&gt;</span><br/>
-    &nbsp;&nbsp;&nbsp;&nbsp;<span class="xmlTag">&lt;name&gt;</span><span class="xmlValue">Sonatype's Maven repository</span><span class="xmlTag">&lt;/name&gt;</span><br/>
-    &nbsp;&nbsp;&nbsp;&nbsp;<span class="xmlTag">&lt;url&gt;</span><span class="xmlValue">https://oss.sonatype.org/content/repositories/snapshots/</span><span class="xmlTag">&lt;/url&gt;</span><br/>
-    <span class="xmlTag">&lt;/pluginRepository&gt;</span></div>
+
+<div class="xmlBlock" style="width: 550px;"><span class="xmlTag">&lt;repositories&gt;</span><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="xmlTag">&lt;repository&gt;</span><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="xmlTag">&lt;</span><span class="xmlTag">id&gt;</span><span class="xmlValue">sonatype-nexus-snapshots</span><span class="xmlTag">&lt;/id&gt;</span><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="xmlTag">&lt;name&gt;</span><span class="xmlValue">Sonatype Nexus Snapshots</span><span class="xmlTag">&lt;/name&gt;</span><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="xmlTag">&lt;url&gt;</span><span class="xmlValue">https://oss.sonatype.org/content/repositories/snapshots</span><span class="xmlTag">&lt;/url&gt;</span><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="xmlTag">&lt;snapshots&gt;</span><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="xmlTag">&lt;enabled&gt;</span><span class="xmlValue">true</span><span class="xmlTag">&lt;/enabled&gt;</span><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="xmlTag">&lt;/snapshots&gt;</span><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="xmlTag">&lt;/repository&gt;</span><br/>
+    <span class="xmlTag">&lt;/repositories&gt;</span></div>
 
 <h2>Maven Plugins</h2>
 <p>
