@@ -1467,7 +1467,7 @@ fs.write("target/jscoverage.json", json, 'w');
                     For Jasmine, download
                     <a href="https://github.com/tntim96/JSCover/blob/master/src/test/javascript/lib/PhantomJS/run-jscover-jasmine2.js" target="_blank">run-jscover-jasmine2.js</a>,
                     a modified version of PhantomJS's
-                    <a href="http://code.google.com/p/phantomjs/source/browse/examples/run-jasmine.js" target="_blank">run-jasmine.js</a>.
+                    <a href="https://github.com/ariya/phantomjs/blob/master/examples/run-jasmine2.js" target="_blank">run-jasmine2.js</a>.
                 </text>
                 <text>
                     For QUnit, download
