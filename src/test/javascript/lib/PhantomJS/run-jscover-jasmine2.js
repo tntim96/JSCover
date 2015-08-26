@@ -1,4 +1,3 @@
-//Sample modified from PhantomJS 1.8.2 examples
 var system = require('system');
 
 /**
@@ -14,7 +13,7 @@ var system = require('system');
  * @param timeOutMillis the max amount of time to wait. If not specified, 3 sec is used.
  */
 function waitFor(testFx, onReady, timeOutMillis) {
-    var maxtimeOutMillis = timeOutMillis ? timeOutMillis : 3001, //< Default Max Timeout is 3s
+    var maxtimeOutMillis = timeOutMillis ? timeOutMillis : 10001, //< Default Max Timeout is 10s
         start = new Date().getTime(),
         condition = false,
         interval = setInterval(function() {
@@ -38,7 +37,7 @@ function waitFor(testFx, onReady, timeOutMillis) {
 
 
 if (system.args.length !== 2) {
-    console.log('Usage: run-jasmine.js URL');
+    console.log('Usage: run-jasmine2.js URL');
     phantom.exit(1);
 }
 
@@ -61,24 +60,30 @@ page.open(system.args[1], function(status){
         }, function(){
             var exitCode = page.evaluate(function(){
                 console.log('');
-                console.log(document.body.querySelector('.description').innerText);
-                var list = document.body.querySelectorAll('.results > #details > .specDetail.failed');
+
+                var el = document.body.querySelector('.banner');
+                var banner = el.querySelector('.title').innerText + " " +
+                    el.querySelector('.version').innerText + " " +
+                    document.body.querySelector('.alert > .duration').innerText;
+                console.log(banner);
+
+                var list = document.body.querySelectorAll('.results > .failures > .spec-detail.failed');
                 if (list && list.length > 0) {
-                  console.log('');
-                  console.log(list.length + ' test(s) FAILED:');
-                  for (i = 0; i < list.length; ++i) {
-                      var el = list[i],
-                          desc = el.querySelector('.description'),
-                          msg = el.querySelector('.resultMessage.fail');
-                      console.log('');
-                      console.log(desc.innerText);
-                      console.log(msg.innerText);
-                      console.log('');
-                  }
-                  return 1;
+                    console.log('');
+                    console.log(list.length + ' test(s) FAILED:');
+                    for (i = 0; i < list.length; ++i) {
+                        var el = list[i],
+                            desc = el.querySelector('.description'),
+                            msg = el.querySelector('.messages > .result-message');
+                        console.log('');
+                        console.log(desc.innerText);
+                        console.log(msg.innerText);
+                        console.log('');
+                    }
+                    return 1;
                 } else {
-                  console.log(document.body.querySelector('.alert > .passingAlert.bar').innerText);
-                  return 0;
+                    console.log(document.body.querySelector('.alert > .bar.passed').innerText);
+                    return 0;
                 }
             });
             page.evaluate(function(){
