@@ -12,7 +12,8 @@ It's distinguishing factor from other JavaScript coverage tools is that it easil
 (supporting JavaScript) allowing coverage measurement of tests that include DOM interaction.
 It can be run with most tools (e.g.
 [Jasmine](http://jasmine.github.io/),
-[QUnit](http://qunitjs.com/), etc...).
+[QUnit](http://qunitjs.com/),
+[Mocha](http://mochajs.org/), etc...).
 
 Development
 -----------
