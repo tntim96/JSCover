@@ -1,3 +1,7 @@
+1.0.22 / 2015-??-??
+==================
+  * Improve proxy logging (https://github.com/tntim96/JSCover/issues/210)
+
 1.0.21 / 2015-08-23
 ==================
   * Make js (-fs option) code instrumentation multithreaded (https://github.com/tntim96/JSCover/issues/209)

@@ -386,7 +386,7 @@ public class ProxyService {
             sendHeaders(request, remotePrintWriter);
             ioUtils.copyNoClose(remoteInputStream, os);
         } catch (IOException e) {
-            logger.log(SEVERE, request.getPath(), e);
+            logger.log(SEVERE, request.getUrl().toString(), e);
         } finally {
             ioUtils.closeQuietly(remoteOutputStream);
             ioUtils.closeQuietly(remoteInputStream);
