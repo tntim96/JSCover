@@ -1,6 +1,7 @@
 1.0.22 / 2015-??-??
 ==================
   * Improve proxy logging (https://github.com/tntim96/JSCover/issues/210)
+  * Internal: Minor API modifications to assist with Maven plugin
 
 1.0.21 / 2015-08-23
 ==================

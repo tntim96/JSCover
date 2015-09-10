@@ -402,13 +402,17 @@ public class ConfigurationForFS extends ConfigurationCommon {
             configuration.setInvalid("A minimum of 3 arguments is required");
             return configuration;
         }
-        if (!configuration.validSourceDirectory()) {
-            configuration.setInvalid(format("Source directory '%s' is invalid", configuration.srcDir));
-        } else if (!configuration.validDestinationDirectory()) {
-            configuration.setInvalid(format("Destination directory '%s' must not be in the source directory", configuration.destDir));
-        }
+        configuration.validate();
         configuration.compilerEnvirons.setLanguageVersion(configuration.JSVersion);
         return configuration;
+    }
+
+    public void validate() {
+        if (!validSourceDirectory()) {
+            setInvalid(format("Source directory '%s' is invalid", srcDir));
+        } else if (!validDestinationDirectory()) {
+            setInvalid(format("Destination directory '%s' must not be in the source directory", destDir));
+        }
     }
 
     protected void parse(String arg) {

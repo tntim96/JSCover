@@ -464,13 +464,17 @@ public class ConfigurationForServer extends ConfigurationCommon {
         for (String arg : args) {
             configuration.parse(arg);
         }
-        if (configuration.uriToFileMatcher != null && configuration.uriToFileReplace == null)
-            configuration.setInvalid(URI_TO_FILE_MATCHER_PREFIX + " found without " + URI_TO_FILE_REPLACE_PREFIX);
-        if (configuration.uriToFileMatcher == null && configuration.uriToFileReplace != null)
-            configuration.setInvalid(URI_TO_FILE_REPLACE_PREFIX + " found without " + URI_TO_FILE_MATCHER_PREFIX);
-        if (configuration.uriToFileMatcher != null)
-            configuration.uriFileTranslator = new UriFileTranslatorReg(configuration.uriToFileMatcher, configuration.uriToFileReplace);
+        configuration.validate();
         configuration.compilerEnvirons.setLanguageVersion(configuration.JSVersion);
         return configuration;
+    }
+
+    public void validate() {
+        if (uriToFileMatcher != null && uriToFileReplace == null)
+            setInvalid(URI_TO_FILE_MATCHER_PREFIX + " found without " + URI_TO_FILE_REPLACE_PREFIX);
+        if (uriToFileMatcher == null && uriToFileReplace != null)
+            setInvalid(URI_TO_FILE_REPLACE_PREFIX + " found without " + URI_TO_FILE_MATCHER_PREFIX);
+        if (uriToFileMatcher != null)
+            uriFileTranslator = new UriFileTranslatorReg(uriToFileMatcher, uriToFileReplace);
     }
 }
