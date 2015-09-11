@@ -413,8 +413,16 @@ public class ConfigurationForReport  extends Configuration {
         return mergeDestDir;
     }
 
+    public void setMergeDestDir(File mergeDestDir) {
+        this.mergeDestDir = mergeDestDir;
+    }
+
     public List<File> getMergeDirs() {
         return mergeDirs;
+    }
+
+    public void setMergeDirs(List<File> mergeDirs) {
+        this.mergeDirs = mergeDirs;
     }
 
     public String getHelpText() {

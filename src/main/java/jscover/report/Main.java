@@ -415,7 +415,7 @@ public class Main {
         }
     }
 
-    private void mergeReports() {
+    public void mergeReports() {
         config.getMergeDestDir().mkdirs();
         ioService.generateJSCoverFilesForWebServer(config.getMergeDestDir(), properties.getProperty("version"));
         mergeJSON();

@@ -349,6 +349,8 @@ import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import static jscover.report.ReportFormat.COBERTURAXML;
 import static org.hamcrest.Matchers.*;
@@ -549,5 +551,16 @@ public class ConfigurationForReportTest {
         assertThat(helpText, containsString("Usage: java -cp JSCover-all.jar jscover.report.Main --format=XMLSUMMARY REPORT-DIR"));
         assertThat(helpText, containsString("or     java -cp JSCover-all.jar jscover.report.Main --format=[ LCOV | COBERTURAXML ] REPORT-DIR SRC-DIRECTORY"));
         assertThat(helpText, containsString("or     java -cp JSCover-all.jar jscover.report.Main --merge REPORT-DIR1 REPORT-DIR2... DEST-DIR"));
+    }
+
+    @Test
+    public void shouldSetProperties() {
+        List<File> mergeDirs = new ArrayList<File>();
+        configuration.setMergeDirs(mergeDirs);
+        assertThat(mergeDirs, sameInstance(mergeDirs));
+
+        File mergeDestDir = new File(".");
+        configuration.setMergeDestDir(mergeDestDir);
+        assertThat(mergeDestDir, sameInstance(mergeDestDir));
     }
 }
