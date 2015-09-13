@@ -456,7 +456,7 @@ public class IoUtils {
             is = IoUtils.class.getResourceAsStream(dataFile);
             return toString(is);
         } catch (Throwable e) {
-            throw new RuntimeException(String.format("Problem loading file: '%s'",dataFile),e);
+            throw new RuntimeException(String.format("Problem loading resource: '%s'" , dataFile), e);
         } finally {
             closeQuietly(is);
         }
@@ -468,7 +468,7 @@ public class IoUtils {
             is = new FileInputStream(dataFile);
             return toString(is);
         } catch (Throwable e) {
-            throw new RuntimeException(String.format("Problem loading file: '%s'",dataFile),e);
+            throw new RuntimeException(String.format("Problem loading file: '%s'", dataFile), e);
         } finally {
             closeQuietly(is);
         }

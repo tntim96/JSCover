@@ -444,6 +444,7 @@ public class Main {
         }
         config.getMergeDestDir().mkdirs();
         File mergedJson = new File(config.getMergeDestDir(), "jscoverage.json");
+        logger.log(INFO, "Writing JSON to ''{0}''", mergedJson.getPath());
         ioUtils.copy(jsonDataMerger.toJSON(total), mergedJson);
     }
 
