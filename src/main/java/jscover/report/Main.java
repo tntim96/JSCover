@@ -370,6 +370,7 @@ public class Main {
 
     public void initialize() {
         ioUtils.loadProperties(properties, jscover.Main.class.getResourceAsStream("/jscover/configuration.properties"));
+        config.setProperties(properties);
     }
 
     private ExitHelper exitHelper = new ExitHelper();
@@ -388,7 +389,6 @@ public class Main {
     void runMain(String[] args) throws IOException {
         logger.log(INFO, "Args: {0}", new jscover.Main().getArgsLogger(args));
         initialize();
-        config.setProperties(properties);
         logger.log(INFO, "Starting JSCover {0} merge", config.getVersion());
         config.parse(args);
         runReport();
