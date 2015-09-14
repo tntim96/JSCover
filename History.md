@@ -1,3 +1,7 @@
+1.0.23 / 2015-??-??
+==================
+
+
 1.0.22 / 2015-09-15
 ==================
   * Improve proxy logging (https://github.com/tntim96/JSCover/issues/210)
