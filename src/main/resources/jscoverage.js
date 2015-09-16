@@ -105,7 +105,7 @@ function jscoverage_findPos(obj) {
 
 // http://www.quirksmode.org/viewport/compatibility.html
 function jscoverage_getViewportHeight() {
-//#JSCOVERAGE_IF /MSIE/.test(navigator.userAgent)
+//#JSCOVERAGE_IF /MSIE 6|7/.test(navigator.userAgent)
   if (self.innerHeight) {
     // all except Explorer
     return self.innerHeight;
@@ -174,7 +174,7 @@ function jscoverage_endLengthyOperation() {
 }
 
 function jscoverage_setSize() {
-//#JSCOVERAGE_IF /MSIE/.test(navigator.userAgent)
+//#JSCOVERAGE_IF /MSIE 6|7/.test(navigator.userAgent)
   var viewportHeight = jscoverage_getViewportHeight();
 
   /*
@@ -387,7 +387,7 @@ function jscoverage_body_load() {
 }
 
 function jscoverage_body_resize() {
-  if (/MSIE/.test(navigator.userAgent)) {
+  if (/MSIE 6|7/.test(navigator.userAgent)) {
     jscoverage_setSize();
   }
 }
@@ -1060,7 +1060,7 @@ function jscoverage_recalculateSourceTab() {
           var response = request.responseText;
           var displaySource = function() {
               var lines = response.split("\n");
-              for (var i = 0; i < lines.length; i++)
+            for (var i = 0; i < lines.length; i++)
                   lines[i] = jscoverage_html_escape(lines[i]);
               jscoverage_makeTable(lines);
           }
