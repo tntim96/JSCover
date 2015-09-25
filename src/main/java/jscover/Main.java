@@ -344,13 +344,15 @@ package jscover;
 
 import jscover.filesystem.ConfigurationForFS;
 import jscover.filesystem.FileSystemInstrumenter;
-import jscover.stdout.ConfigurationForStdOut;
-import jscover.stdout.StdOutInstrumenter;
 import jscover.server.ConfigurationForServer;
 import jscover.server.WebDaemon;
+import jscover.stdout.ConfigurationForStdOut;
+import jscover.stdout.StdOutInstrumenter;
+import jscover.util.IoService;
 import jscover.util.IoUtils;
 import jscover.util.LoggerUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.SocketException;
 import java.nio.charset.Charset;
@@ -372,6 +374,7 @@ public class Main {
     public static final String VERSION_PREFIX2 = "--version";
     public static final String SERVER_PREFIX = "-ws";
     public static final String FILESYSTEM_PREFIX = "-fs";
+    public static final String GENERATE_FILES_PREFIX = "-gf";
     public static final String STDOUT_PREFIX = "-io";
     public static final String REG_TEST_PREFIX = "-regex-test";
     public static final Properties properties = new Properties();
@@ -387,6 +390,7 @@ public class Main {
     private FileSystemInstrumenter fileSystemInstrumenter = new FileSystemInstrumenter();
     private StdOutInstrumenter stdOutInstrumenter = new StdOutInstrumenter();
     private IoUtils ioUtils = IoUtils.getInstance();
+    private IoService ioService = new IoService(false);
 
     public void initialize() {
         try {
@@ -403,6 +407,7 @@ public class Main {
     private boolean printVersion;
     private boolean isServer;
     private boolean isFileSystem;
+    private boolean isGenerateFiles;
     private boolean isStdOut;
     private int exitStatus;
 
@@ -460,6 +465,13 @@ public class Main {
                 System.out.println(charSetName);
             }
             System.out.println("Default is: " + Charset.defaultCharset().name());
+        } else if (isGenerateFiles() && (args.length == 2 || args.length == 3)) {
+            File dest = new File(args[args.length - 1]);
+            ioService.generateJSCoverFilesForWebServer(dest, properties.getProperty("version"));
+            if (args.length == 3) {
+                File src = new File(args[1]);
+                ioUtils.copyDir(src, new File(dest, reportSrcSubDir));
+            }
         } else if (isRegExpTest() && args.length == 3) {
             Pattern pattern = Pattern.compile(args[1]);
             Matcher match = pattern.matcher(args[2]);
@@ -545,6 +557,8 @@ public class Main {
             isFileSystem = true;
         } else if (arg.equals(STDOUT_PREFIX)) {
             isStdOut = true;
+        } else if (arg.equals(GENERATE_FILES_PREFIX)) {
+            isGenerateFiles = true;
         } else if (arg.equals(REG_TEST_PREFIX)) {
             isRegExpTest = true;
         } else if (arg.equals(CHARSET_PREFIX)) {
@@ -556,7 +570,7 @@ public class Main {
         if ((isServer && (isFileSystem || isStdOut)) || (isFileSystem && isStdOut)) {
             return false;
         }
-        return isServer || isFileSystem || isStdOut || isRegExpTest || showHelp || printVersion || showCharsets;
+        return isServer || isFileSystem || isStdOut || isGenerateFiles || isRegExpTest || showHelp || printVersion || showCharsets;
     }
 
     public Boolean printVersion() {
@@ -581,6 +595,10 @@ public class Main {
 
     public boolean isFileSystem() {
         return isFileSystem;
+    }
+
+    public boolean isGenerateFiles() {
+        return isGenerateFiles;
     }
 
     public boolean isStdOut() {

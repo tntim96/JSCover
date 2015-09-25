@@ -1,4 +1,6 @@
-This example runs some Underscore tests and stores the JSON coverage results in `<JSCover-root>/target/jscoverage.json`
+This example runs some Underscore tests and stores the JSON coverage results in
+`<JSCover-root>/target/phantom-jscover-qunit-fs/jscoverage.json`.
+It then generates the JSCover report files needed to view the results.
 
 See the documentation at:
  - http://tntim96.github.io/JSCover/manual/manual.xml#fileSystemSave

@@ -376,8 +376,9 @@ fs.write("target/jscoverage.json", json, 'w');
                         </text>
                         <text>
                             Once the JSON is available in your browser driver, it can then be saved to the file-system
-                            using that environment's file-system API. The source JavaScript can then be copied across to
-                            the <var>original-src</var> directory of the reports folder.
+                            using that environment's file-system API. The JSCover report files (and optionally the
+                            original JavaScript source) can be generated with the <var>-gf</var> option.
+                            See the examples/phantomJS-file-system example.
                         </text>
                     </item>
                     <item>
@@ -447,6 +448,14 @@ fs.write("target/jscoverage.json", json, 'w');
                             <td>-io</td>
                             <td>N/A</td>
                             <td>Instrument single file to instrument single file to stdout <b>I/O</b> stream</td>
+                        </tr>
+                        <tr>
+                            <td>-gf [SRC] DEST</td>
+                            <td>N/A</td>
+                            <td>
+                                Generate JSCover report files to DEST.
+                                Optionally copy JavaScript files from SRC to DEST/original-src
+                            </td>
                         </tr>
                         <tr>
                             <td>-regex-test REGEX STRING</td>

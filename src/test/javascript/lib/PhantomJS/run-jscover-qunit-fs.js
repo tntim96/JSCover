@@ -76,7 +76,7 @@ page.open(system.args[1], function(status){
                 return jscoverage_serializeCoverageToJSON();
             });
             try {
-                fs.write("target/jscoverage.json", json, 'w');
+                fs.write("target/phantom-jscover-qunit-fs/jscoverage.json", json, 'w');
             } catch(e) {
                 console.log(e);
             }

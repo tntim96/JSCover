@@ -348,8 +348,11 @@ import jscover.server.ConfigurationForServer;
 import jscover.server.WebDaemon;
 import jscover.stdout.ConfigurationForStdOut;
 import jscover.stdout.StdOutInstrumenter;
+import jscover.util.IoService;
+import jscover.util.IoUtils;
 import jscover.util.ReflectionUtils;
 import org.hamcrest.Description;
+import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.junit.Before;
 import org.junit.Test;
@@ -357,7 +360,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.Properties;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.sameInstance;
@@ -370,19 +375,25 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class MainInstanceTest {
     private Main main = new Main();
+    private Properties properties = new Properties();
     private @Mock ExitHelper exitHelper;
     private @Mock MainHelper mainHelper;
     private @Mock WebDaemon webDaemon;
     private @Mock FileSystemInstrumenter fileSystemInstrumenter;
     private @Mock StdOutInstrumenter stdOutInstrumenter;
+    private @Mock IoUtils ioUtils;
+    private @Mock IoService ioService;
 
     @Before
-    public void setUp() {
+    public void setUp() throws IOException {
         ReflectionUtils.setField(main, "exitHelper", exitHelper);
         ReflectionUtils.setField(main, "mainHelper", mainHelper);
         ReflectionUtils.setField(main, "webDaemon", webDaemon);
         ReflectionUtils.setField(main, "fileSystemInstrumenter", fileSystemInstrumenter);
         ReflectionUtils.setField(main, "stdOutInstrumenter", stdOutInstrumenter);
+        ReflectionUtils.setField(main, "ioUtils", ioUtils);
+        ReflectionUtils.setField(main, "ioService", ioService);
+        properties.load(Main.class.getResourceAsStream("configuration.properties"));
     }
 
     @Test
@@ -391,7 +402,7 @@ public class MainInstanceTest {
 
         try {
             main.initialize();
-        } catch(RuntimeException e) {
+        } catch (RuntimeException e) {
             assertThat(e.getMessage(), equalTo("java.io.IOException: Ouch!"));
         }
     }
@@ -413,7 +424,7 @@ public class MainInstanceTest {
 
     @Test
     public void shouldPrintCharSets() throws IOException, InterruptedException {
-        main.runMain(new String[]{"-h","encoding"});
+        main.runMain(new String[]{"-h", "encoding"});
         verifyZeroInteractions(webDaemon);
         verifyZeroInteractions(exitHelper);
     }
@@ -434,12 +445,12 @@ public class MainInstanceTest {
 
     @Test
     public void shouldRunWebServer() throws IOException, InterruptedException {
-        main.runMain(new String[]{"-ws","--port=1234"});
+        main.runMain(new String[]{"-ws", "--port=1234"});
 
         TypeSafeMatcher<ConfigurationForServer> matcher = new TypeSafeMatcher<ConfigurationForServer>() {
             @Override
             protected boolean matchesSafely(ConfigurationForServer item) {
-                return item.getPort()==1234;
+                return item.getPort() == 1234;
             }
 
             public void describeTo(Description description) {
@@ -451,13 +462,20 @@ public class MainInstanceTest {
     }
 
     @Test
+    public void shouldRunWebServerWithInvalidOptions() throws IOException, InterruptedException {
+        main.runMain(new String[]{"-ws", "--porty=7"});
+        verifyZeroInteractions(webDaemon);
+        verify(exitHelper, times(1)).exit(1);
+    }
+
+    @Test
     public void shouldRunFileSystem() throws IOException, InterruptedException {
-        main.runMain(new String[]{"-fs","--js-version=1.0","src","dest"});
+        main.runMain(new String[]{"-fs", "--js-version=1.0", "src", "dest"});
 
         TypeSafeMatcher<ConfigurationForFS> matcher = new TypeSafeMatcher<ConfigurationForFS>() {
             @Override
             protected boolean matchesSafely(ConfigurationForFS item) {
-                return item.getCompilerEnvirons().getLanguageVersion()==100;
+                return item.getCompilerEnvirons().getLanguageVersion() == 100;
             }
 
             public void describeTo(Description description) {
@@ -469,13 +487,20 @@ public class MainInstanceTest {
     }
 
     @Test
+    public void shouldRunFileSystemWithInvalidOptions() throws IOException, InterruptedException {
+        main.runMain(new String[]{"-fs"});
+        verifyZeroInteractions(fileSystemInstrumenter);
+        verify(exitHelper, times(1)).exit(1);
+    }
+
+    @Test
     public void shouldRunStdIO() throws IOException, InterruptedException {
-        main.runMain(new String[]{"-io","--js-version=1.0","doc/example/script.js"});
+        main.runMain(new String[]{"-io", "--js-version=1.0", "doc/example/script.js"});
 
         TypeSafeMatcher<ConfigurationForStdOut> matcher = new TypeSafeMatcher<ConfigurationForStdOut>() {
             @Override
             protected boolean matchesSafely(ConfigurationForStdOut item) {
-                return item.getCompilerEnvirons().getLanguageVersion()==100;
+                return item.getCompilerEnvirons().getLanguageVersion() == 100;
             }
 
             public void describeTo(Description description) {
@@ -483,6 +508,72 @@ public class MainInstanceTest {
             }
         };
         verify(stdOutInstrumenter, times(1)).run(argThat(matcher));
+        verifyZeroInteractions(exitHelper);
+    }
+
+    @Test
+    public void shouldRunStdIOWithInvalidOptions() throws IOException, InterruptedException {
+        main.runMain(new String[]{"-io"});
+        verifyZeroInteractions(stdOutInstrumenter);
+        verify(exitHelper, times(1)).exit(1);
+    }
+
+    @Test
+    public void shouldRunGenerateFiles() throws IOException, InterruptedException {
+        main.runMain(new String[]{"-gf", "dest"});
+        verify(ioService, times(1)).generateJSCoverFilesForWebServer(argThat(getFileNameMatcher("dest")), (String) eq(properties.get("version")));
+        verify(ioUtils, times(0)).copyDir(any(File.class), any(File.class));
+        verifyZeroInteractions(exitHelper);
+    }
+
+    @Test
+    public void shouldRunGenerateFilesWithOriginalSource() throws IOException, InterruptedException {
+        main.runMain(new String[]{"-gf", "src", "dest"});
+        verify(ioService, times(1)).generateJSCoverFilesForWebServer(argThat(getFileNameMatcher("dest")), (String) eq(properties.get("version")));
+        verify(ioUtils, times(1)).copyDir(argThat(getFileNameMatcher("src")), argThat(getFileNameMatcher(Main.reportSrcSubDir, "dest")));
+        verifyZeroInteractions(exitHelper);
+    }
+
+    @Test
+    public void shouldRunGenerateFilesWithInvalidOptions() throws IOException, InterruptedException {
+        main.runMain(new String[]{"-gf"});
+        verifyZeroInteractions(ioService);
+        verifyZeroInteractions(exitHelper);
+    }
+
+    public Matcher<? extends File> getFileNameMatcher(final String name) {
+        return getFileNameMatcher(name, null);
+    }
+
+    public Matcher<? extends File> getFileNameMatcher(final String name, final String parent) {
+        return new TypeSafeMatcher<File>() {
+            @Override
+            protected boolean matchesSafely(File file) {
+                return file.getName().equals(name) && (parent == null || file.getParent().equals(parent));
+            }
+
+            @Override
+            public void describeTo(Description description) {
+
+            }
+        };
+    }
+
+    @Test
+    public void shouldRunRegExp() throws IOException, InterruptedException {
+        main.runMain(new String[]{"-regex-test", "/js/.*.js", "/js/script.js"});
+        verifyZeroInteractions(exitHelper);
+    }
+
+    @Test
+    public void shouldRunRegExpNoMatch() throws IOException, InterruptedException {
+        main.runMain(new String[]{"-regex-test", "/js/.*.js", "/script.js"});
+        verifyZeroInteractions(exitHelper);
+    }
+
+    @Test
+    public void shouldRunRegExpWithInvalidOptions() throws IOException, InterruptedException {
+        main.runMain(new String[]{"-regex-test", "/js/.*.js"});
         verifyZeroInteractions(exitHelper);
     }
 
@@ -497,8 +588,8 @@ public class MainInstanceTest {
         try {
             main.runMain(new String[]{"-ws", "--port=1234"});
             fail("Should have thrown exception");
-        } catch(RuntimeException rte) {
-            assertThat((InterruptedException)rte.getCause(), sameInstance(toBeThrown));
+        } catch (RuntimeException rte) {
+            assertThat((InterruptedException) rte.getCause(), sameInstance(toBeThrown));
         }
         verifyZeroInteractions(exitHelper);
     }

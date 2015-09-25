@@ -1,5 +1,6 @@
 1.0.23 / 2015-??-??
 ==================
+  * Add option to generate JSCover report files (https://github.com/tntim96/JSCover/issues/215)
   * Fix undefined reportError error in jscoverage.js (https://github.com/tntim96/JSCover/issues/214)
   * Limit IE restrictions to IE7 and below
 
