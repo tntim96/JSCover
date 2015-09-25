@@ -1,5 +1,6 @@
 1.0.23 / 2015-??-??
 ==================
+  * Fix undefined reportError error in jscoverage.js (https://github.com/tntim96/JSCover/issues/214)
   * Limit IE restrictions to IE7 and below
 
 1.0.22 / 2015-09-15

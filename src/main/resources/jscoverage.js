@@ -332,6 +332,7 @@ function jscoverage_body_load() {
     summaryThrobber.style.visibility = 'hidden';
     var div = document.getElementById('summaryErrorDiv');
     div.innerHTML = 'Error: ' + e;
+    throw e;
   }
 
   if (jscoverage_isReport) {
@@ -1036,6 +1037,16 @@ function jscoverage_recalculateSourceTab() {
     jscoverage_endLengthyOperation();
     return;
   }
+
+  function reportError(e) {
+    jscoverage_endLengthyOperation();
+    var summaryThrobber = document.getElementById('summaryThrobber');
+    summaryThrobber.style.visibility = 'hidden';
+    var div = document.getElementById('sourceErrorDiv');
+    div.innerHTML = 'Error: ' + e;
+    throw e;
+  }
+
   var progressLabel = document.getElementById('progressLabel');
   progressLabel.innerHTML = 'Calculating coverage ...';
   var progressBar = document.getElementById('progressBar');
