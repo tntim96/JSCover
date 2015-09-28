@@ -465,7 +465,7 @@ function jscoverage_createLink(file, line) {
 }
 
 var sortOrder = 0;
-var sortColumn = 'Coverage';
+var sortColumn = 'stPc';
 var sortReOrder = true;
 var sortedFiles = null;
 
@@ -796,38 +796,35 @@ function getFilesSortedByCoverage(filesIn) {
     return filesIn;
   }
   var files = [];
+  function getSafeVal(val) {
+    if (isNaN(val))
+      return -1;
+    return val;
+  }
   for (var i=0;i<tbody.children.length;i++) {
     files[i] = {};
   	files[i].file = tbody.children[i].children[0].children[0].innerHTML;
-  	files[i].perc = parseInt(tbody.children[i].children[7].children[1].innerHTML, 10);
-  	files[i].brPerc = parseInt(tbody.children[i].children[8].children[1].innerHTML, 10);
-  	files[i].fnPerc = parseInt(tbody.children[i].children[9].children[1].innerHTML, 10);
-    if (isNaN(files[i].perc))
-      files[i].perc = -1;
-    if (isNaN(files[i].brPerc))
-      files[i].brPerc = -1;
-    if (isNaN(files[i].fnPerc))
-      files[i].fnPerc = -1;
+    files[i].stTot = getSafeVal(parseInt(tbody.children[i].children[1].innerHTML, 10));
+    files[i].stHit = getSafeVal(parseInt(tbody.children[i].children[2].innerHTML, 10));
+    files[i].brTot = getSafeVal(parseInt(tbody.children[i].children[3].innerHTML, 10));
+    files[i].brHit = getSafeVal(parseInt(tbody.children[i].children[4].innerHTML, 10));
+    files[i].fnTot = getSafeVal(parseInt(tbody.children[i].children[5].innerHTML, 10));
+    files[i].fnHit = getSafeVal(parseInt(tbody.children[i].children[6].innerHTML, 10));
+    files[i].stPc = getSafeVal(parseInt(tbody.children[i].children[7].children[1].innerHTML, 10));
+  	files[i].brPc = getSafeVal(parseInt(tbody.children[i].children[8].children[1].innerHTML, 10));
+  	files[i].fnPc = getSafeVal(parseInt(tbody.children[i].children[9].children[1].innerHTML, 10));
   }
 
   if (sortOrder%3===1) {
-    if (sortColumn == 'Coverage')
-      files.sort(function(file1,file2) {return file1.perc-file2.perc});
-    else if (sortColumn == 'Branch')
-      files.sort(function(file1,file2) {return file1.brPerc-file2.brPerc});
-    else if (sortColumn == 'Function')
-      files.sort(function(file1,file2) {return file1.fnPerc-file2.fnPerc});
-    else
+    if (sortColumn == 'Name')
       files.sort(function(file1,file2) {return file1.file>=file2.file});
+    else
+      files.sort(function(file1,file2) {return file1[sortColumn]-file2[sortColumn]});
   } else if (sortOrder%3===2) {
-     if (sortColumn == 'Coverage')
-      files.sort(function(file1,file2) {return file2.perc-file1.perc});
-     else if (sortColumn == 'Branch')
-       files.sort(function(file1,file2) {return file2.brPerc-file1.brPerc});
-     else if (sortColumn == 'Function')
-       files.sort(function(file1,file2) {return file2.fnPerc-file1.fnPerc});
-     else
-       files.sort(function(file1,file2) {return file2.file>=file1.file});
+    if (sortColumn == 'Name')
+      files.sort(function(file1,file2) {return file2.file>=file1.file});
+    else
+      files.sort(function(file1,file2) {return file2[sortColumn]-file1[sortColumn]});
   } else {
       return filesIn.sort();
   }

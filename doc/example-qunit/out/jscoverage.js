@@ -314,7 +314,7 @@ function jscoverage_findPos(obj) {
 
 // http://www.quirksmode.org/viewport/compatibility.html
 function jscoverage_getViewportHeight() {
-//#JSCOVERAGE_IF /MSIE/.test(navigator.userAgent)
+//#JSCOVERAGE_IF /MSIE 6|7/.test(navigator.userAgent)
   if (self.innerHeight) {
     // all except Explorer
     return self.innerHeight;
@@ -383,7 +383,7 @@ function jscoverage_endLengthyOperation() {
 }
 
 function jscoverage_setSize() {
-//#JSCOVERAGE_IF /MSIE/.test(navigator.userAgent)
+//#JSCOVERAGE_IF /MSIE 6|7/.test(navigator.userAgent)
   var viewportHeight = jscoverage_getViewportHeight();
 
   /*
@@ -541,6 +541,7 @@ function jscoverage_body_load() {
     summaryThrobber.style.visibility = 'hidden';
     var div = document.getElementById('summaryErrorDiv');
     div.innerHTML = 'Error: ' + e;
+    throw e;
   }
 
   if (jscoverage_isReport) {
@@ -596,7 +597,7 @@ function jscoverage_body_load() {
 }
 
 function jscoverage_body_resize() {
-  if (/MSIE/.test(navigator.userAgent)) {
+  if (/MSIE 6|7/.test(navigator.userAgent)) {
     jscoverage_setSize();
   }
 }
@@ -673,7 +674,7 @@ function jscoverage_createLink(file, line) {
 }
 
 var sortOrder = 0;
-var sortColumn = 'Coverage';
+var sortColumn = 'stPc';
 var sortReOrder = true;
 var sortedFiles = null;
 
@@ -1004,38 +1005,35 @@ function getFilesSortedByCoverage(filesIn) {
     return filesIn;
   }
   var files = [];
+  function getSafeVal(val) {
+    if (isNaN(val))
+      return -1;
+    return val;
+  }
   for (var i=0;i<tbody.children.length;i++) {
     files[i] = {};
   	files[i].file = tbody.children[i].children[0].children[0].innerHTML;
-  	files[i].perc = parseInt(tbody.children[i].children[7].children[1].innerHTML, 10);
-  	files[i].brPerc = parseInt(tbody.children[i].children[8].children[1].innerHTML, 10);
-  	files[i].fnPerc = parseInt(tbody.children[i].children[9].children[1].innerHTML, 10);
-    if (isNaN(files[i].perc))
-      files[i].perc = -1;
-    if (isNaN(files[i].brPerc))
-      files[i].brPerc = -1;
-    if (isNaN(files[i].fnPerc))
-      files[i].fnPerc = -1;
+    files[i].stTot = getSafeVal(parseInt(tbody.children[i].children[1].innerHTML, 10));
+    files[i].stHit = getSafeVal(parseInt(tbody.children[i].children[2].innerHTML, 10));
+    files[i].brTot = getSafeVal(parseInt(tbody.children[i].children[3].innerHTML, 10));
+    files[i].brHit = getSafeVal(parseInt(tbody.children[i].children[4].innerHTML, 10));
+    files[i].fnTot = getSafeVal(parseInt(tbody.children[i].children[5].innerHTML, 10));
+    files[i].fnHit = getSafeVal(parseInt(tbody.children[i].children[6].innerHTML, 10));
+    files[i].stPc = getSafeVal(parseInt(tbody.children[i].children[7].children[1].innerHTML, 10));
+  	files[i].brPc = getSafeVal(parseInt(tbody.children[i].children[8].children[1].innerHTML, 10));
+  	files[i].fnPc = getSafeVal(parseInt(tbody.children[i].children[9].children[1].innerHTML, 10));
   }
 
   if (sortOrder%3===1) {
-    if (sortColumn == 'Coverage')
-      files.sort(function(file1,file2) {return file1.perc-file2.perc});
-    else if (sortColumn == 'Branch')
-      files.sort(function(file1,file2) {return file1.brPerc-file2.brPerc});
-    else if (sortColumn == 'Function')
-      files.sort(function(file1,file2) {return file1.fnPerc-file2.fnPerc});
-    else
+    if (sortColumn == 'Name')
       files.sort(function(file1,file2) {return file1.file>=file2.file});
+    else
+      files.sort(function(file1,file2) {return file1[sortColumn]-file2[sortColumn]});
   } else if (sortOrder%3===2) {
-     if (sortColumn == 'Coverage')
-      files.sort(function(file1,file2) {return file2.perc-file1.perc});
-     else if (sortColumn == 'Branch')
-       files.sort(function(file1,file2) {return file2.brPerc-file1.brPerc});
-     else if (sortColumn == 'Function')
-       files.sort(function(file1,file2) {return file2.fnPerc-file1.fnPerc});
-     else
-       files.sort(function(file1,file2) {return file2.file>=file1.file});
+    if (sortColumn == 'Name')
+      files.sort(function(file1,file2) {return file2.file>=file1.file});
+    else
+      files.sort(function(file1,file2) {return file2[sortColumn]-file1[sortColumn]});
   } else {
       return filesIn.sort();
   }
@@ -1245,6 +1243,16 @@ function jscoverage_recalculateSourceTab() {
     jscoverage_endLengthyOperation();
     return;
   }
+
+  function reportError(e) {
+    jscoverage_endLengthyOperation();
+    var summaryThrobber = document.getElementById('summaryThrobber');
+    summaryThrobber.style.visibility = 'hidden';
+    var div = document.getElementById('sourceErrorDiv');
+    div.innerHTML = 'Error: ' + e;
+    throw e;
+  }
+
   var progressLabel = document.getElementById('progressLabel');
   progressLabel.innerHTML = 'Calculating coverage ...';
   var progressBar = document.getElementById('progressBar');
@@ -1269,7 +1277,7 @@ function jscoverage_recalculateSourceTab() {
           var response = request.responseText;
           var displaySource = function() {
               var lines = response.split("\n");
-              for (var i = 0; i < lines.length; i++)
+            for (var i = 0; i < lines.length; i++)
                   lines[i] = jscoverage_html_escape(lines[i]);
               jscoverage_makeTable(lines);
           }
