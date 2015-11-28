@@ -1,6 +1,7 @@
 1.0.23 / 2015-??-??
 ==================
   * Allow sorting by all columns (https://github.com/tntim96/JSCover/issues/193)
+  * Provide a column with Missing statements (count) (https://github.com/tntim96/JSCover/issues/192)
   * Add option to generate JSCover report files (https://github.com/tntim96/JSCover/issues/215)
   * Fix undefined reportError error in jscoverage.js (https://github.com/tntim96/JSCover/issues/214)
   * Limit IE restrictions to IE7 and below

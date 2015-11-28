@@ -469,9 +469,9 @@ public class HtmlUnitMergeTest {
     }
 
     private void verifyCoverage(HtmlPage page, String uri, String linePercentage, String branchPercentage, String functionPercentage) {
-        assertThat(getHtmlElement(page, "//tr[@id='row-" + uri + "']/td[8]/span").getTextContent(), equalTo(linePercentage));
-        assertThat(getHtmlElement(page, "//tr[@id='row-" + uri + "']/td[9]/span").getTextContent(), equalTo(branchPercentage));
-        assertThat(getHtmlElement(page, "//tr[@id='row-" + uri + "']/td[10]/span").getTextContent(), equalTo(functionPercentage));
+        assertThat(getHtmlElement(page, "//tr[@id='row-" + uri + "']/td[11]/span").getTextContent(), equalTo(linePercentage));
+        assertThat(getHtmlElement(page, "//tr[@id='row-" + uri + "']/td[12]/span").getTextContent(), equalTo(branchPercentage));
+        assertThat(getHtmlElement(page, "//tr[@id='row-" + uri + "']/td[13]/span").getTextContent(), equalTo(functionPercentage));
     }
 
     private HtmlElement getHtmlElement(HtmlPage page, String xpathExpr) {

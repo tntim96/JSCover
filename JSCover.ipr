@@ -840,7 +840,7 @@
     </library>
     <library name="Maven: net.sourceforge.htmlunit:htmlunit:2.19">
       <CLASSES>
-`        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit/2.19/htmlunit-2.19.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit/2.19/htmlunit-2.19.jar!/" />
       </CLASSES>
       <JAVADOC>
         <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit/2.19/htmlunit-2.19-javadoc.jar!/" />

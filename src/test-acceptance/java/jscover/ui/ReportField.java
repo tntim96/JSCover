@@ -343,7 +343,7 @@ Public License instead of this License.
 package jscover.ui;
 
 public enum ReportField {
-    Name(0), Line(7), Branch(8), Function(9);
+    Name(0), Line(10), Branch(11), Function(12);
 
     int index;
 

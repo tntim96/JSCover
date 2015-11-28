@@ -741,8 +741,7 @@ function jscoverage_recalculateSummaryTab(cc) {
 
       if (lineNumber === currentConditionalEnd) {
         currentConditionalEnd = 0;
-      }
-      else if (currentConditionalEnd === 0 && conditionals && conditionals[lineNumber]) {
+      } else if (currentConditionalEnd === 0 && conditionals && conditionals[lineNumber]) {
         currentConditionalEnd = conditionals[lineNumber];
       }
 
@@ -756,8 +755,7 @@ function jscoverage_recalculateSummaryTab(cc) {
 
       if (n === 0) {
         missing.push(lineNumber);
-      }
-      else {
+      } else {
         num_executed++;
       }
       num_statements++;
@@ -826,6 +824,11 @@ function jscoverage_recalculateSummaryTab(cc) {
 
     cell = document.createElement("td");
     cell.className = 'numeric';
+    cell.appendChild(document.createTextNode(num_statements - num_executed));
+    row.appendChild(cell);
+
+    cell = document.createElement("td");
+    cell.className = 'numeric';
     cell.appendChild(document.createTextNode(num_branches));
     row.appendChild(cell);
 
@@ -836,12 +839,22 @@ function jscoverage_recalculateSummaryTab(cc) {
 
     cell = document.createElement("td");
     cell.className = 'numeric';
+    cell.appendChild(document.createTextNode(num_branches - num_executed_branches));
+    row.appendChild(cell);
+
+    cell = document.createElement("td");
+    cell.className = 'numeric';
     cell.appendChild(document.createTextNode(num_functions));
     row.appendChild(cell);
 
     cell = document.createElement("td");
     cell.className = 'numeric';
     cell.appendChild(document.createTextNode(num_executed_functions));
+    row.appendChild(cell);
+
+    cell = document.createElement("td");
+    cell.className = 'numeric';
+    cell.appendChild(document.createTextNode(num_functions - num_executed_functions));
     row.appendChild(cell);
 
     // new coverage td containing a bar graph
@@ -961,17 +974,20 @@ function jscoverage_recalculateSummaryTab(cc) {
         tds[0].getElementsByTagName("span")[1].firstChild.nodeValue = totals['files'];
         tds[1].firstChild.nodeValue = totals['statements'];
         tds[2].firstChild.nodeValue = totals['executed'];
-        tds[3].firstChild.nodeValue = totals['branches'];
-        tds[4].firstChild.nodeValue = totals['branches_covered'];
-        tds[5].firstChild.nodeValue = totals['functions'];
-        tds[6].firstChild.nodeValue = totals['functions_covered'];
+        tds[3].firstChild.nodeValue = totals['statements'] - totals['executed'];
+        tds[4].firstChild.nodeValue = totals['branches'];
+        tds[5].firstChild.nodeValue = totals['branches_covered'];
+        tds[6].firstChild.nodeValue = totals['branches'] - totals['branches_covered'];
+        tds[7].firstChild.nodeValue = totals['functions'];
+        tds[8].firstChild.nodeValue = totals['functions_covered'];
+        tds[9].firstChild.nodeValue = totals['functions'] - totals['functions_covered'];
 
         var coverage = parseInt(100 * totals['executed'] / totals['statements']);
         if( isNaN( coverage ) ) {
             coverage = 0;
         }
-        tds[7].getElementsByTagName("span")[0].firstChild.nodeValue = coverage + '%';
-        tds[7].getElementsByTagName("div")[1].style.width = coverage + 'px';
+        tds[10].getElementsByTagName("span")[0].firstChild.nodeValue = coverage + '%';
+        tds[10].getElementsByTagName("div")[1].style.width = coverage + 'px';
 
         coverage = 0;
         if (fileBranchCC !== undefined) {
@@ -980,8 +996,8 @@ function jscoverage_recalculateSummaryTab(cc) {
                 coverage = 0;
             }
         }
-        tds[8].getElementsByTagName("span")[0].firstChild.nodeValue = coverage + '%';
-        tds[8].getElementsByTagName("div")[1].style.width = coverage + 'px';
+        tds[11].getElementsByTagName("span")[0].firstChild.nodeValue = coverage + '%';
+        tds[11].getElementsByTagName("div")[1].style.width = coverage + 'px';
 
         coverage = 0;
         if (fileFunctionCC !== undefined) {
@@ -990,8 +1006,8 @@ function jscoverage_recalculateSummaryTab(cc) {
                 coverage = 0;
             }
         }
-        tds[9].getElementsByTagName("span")[0].firstChild.nodeValue = coverage + '%';
-        tds[9].getElementsByTagName("div")[1].style.width = coverage + 'px';
+        tds[12].getElementsByTagName("span")[0].firstChild.nodeValue = coverage + '%';
+        tds[12].getElementsByTagName("div")[1].style.width = coverage + 'px';
     }
 
   }
@@ -1015,13 +1031,16 @@ function getFilesSortedByCoverage(filesIn) {
   	files[i].file = tbody.children[i].children[0].children[0].innerHTML;
     files[i].stTot = getSafeVal(parseInt(tbody.children[i].children[1].innerHTML, 10));
     files[i].stHit = getSafeVal(parseInt(tbody.children[i].children[2].innerHTML, 10));
-    files[i].brTot = getSafeVal(parseInt(tbody.children[i].children[3].innerHTML, 10));
-    files[i].brHit = getSafeVal(parseInt(tbody.children[i].children[4].innerHTML, 10));
-    files[i].fnTot = getSafeVal(parseInt(tbody.children[i].children[5].innerHTML, 10));
-    files[i].fnHit = getSafeVal(parseInt(tbody.children[i].children[6].innerHTML, 10));
-    files[i].stPc = getSafeVal(parseInt(tbody.children[i].children[7].children[1].innerHTML, 10));
-  	files[i].brPc = getSafeVal(parseInt(tbody.children[i].children[8].children[1].innerHTML, 10));
-  	files[i].fnPc = getSafeVal(parseInt(tbody.children[i].children[9].children[1].innerHTML, 10));
+    files[i].stMss = getSafeVal(parseInt(tbody.children[i].children[3].innerHTML, 10));
+    files[i].brTot = getSafeVal(parseInt(tbody.children[i].children[4].innerHTML, 10));
+    files[i].brHit = getSafeVal(parseInt(tbody.children[i].children[5].innerHTML, 10));
+    files[i].brMss = getSafeVal(parseInt(tbody.children[i].children[6].innerHTML, 10));
+    files[i].fnTot = getSafeVal(parseInt(tbody.children[i].children[7].innerHTML, 10));
+    files[i].fnHit = getSafeVal(parseInt(tbody.children[i].children[8].innerHTML, 10));
+    files[i].fnMss = getSafeVal(parseInt(tbody.children[i].children[9].innerHTML, 10));
+    files[i].stPc = getSafeVal(parseInt(tbody.children[i].children[10].children[1].innerHTML, 10));
+    files[i].brPc = getSafeVal(parseInt(tbody.children[i].children[11].children[1].innerHTML, 10));
+    files[i].fnPc = getSafeVal(parseInt(tbody.children[i].children[12].children[1].innerHTML, 10));
   }
 
   if (sortOrder%3===1) {
@@ -1277,7 +1296,7 @@ function jscoverage_recalculateSourceTab() {
           var response = request.responseText;
           var displaySource = function() {
               var lines = response.split("\n");
-              for (var i = 0; i < lines.length; i++)
+            for (var i = 0; i < lines.length; i++)
                   lines[i] = jscoverage_html_escape(lines[i]);
               jscoverage_makeTable(lines);
           }

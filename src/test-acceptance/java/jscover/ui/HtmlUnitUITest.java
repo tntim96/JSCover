@@ -446,9 +446,9 @@ public class HtmlUnitUITest {
 
     private void verifyScriptMatchesRow(HTMLCoverageData data, HtmlTableRow row) {
         assertThat(data.getName(), equalTo(row.getCell(0).asText()));
-        assertThat(data.getLineCoverage(), equalTo(row.getCell(7).asText()));
-        assertThat(data.getBranchCoverage(), equalTo(row.getCell(8).asText()));
-        assertThat(data.getFunctionCoverage(), equalTo(row.getCell(9).asText()));
+        assertThat(data.getLineCoverage(), equalTo(row.getCell(10).asText()));
+        assertThat(data.getBranchCoverage(), equalTo(row.getCell(11).asText()));
+        assertThat(data.getFunctionCoverage(), equalTo(row.getCell(12).asText()));
     }
 
     @Test
