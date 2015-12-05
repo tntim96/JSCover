@@ -370,9 +370,9 @@ public class StatementBuilderTest {
 
     @Test
     public void shouldCreateConditionalIgnoreStatement() {
-        ExpressionStatement statement = builder.buildConditionalStatement(7, "/dir/file.js");
+        ExpressionStatement statement = builder.buildConditionalStatement(7, 12, "/dir/file.js");
 
-        assertThat("_$jscoverage['/dir/file.js'].conditionals[7]++;\n", equalTo(statement.toSource()));
+        assertThat("_$jscoverage['/dir/file.js'].conditionals[7] = 12;\n", equalTo(statement.toSource()));
     }
 
     @Test

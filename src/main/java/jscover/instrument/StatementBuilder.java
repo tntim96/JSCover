@@ -359,11 +359,24 @@ class StatementBuilder {
         return buildInstrumentationIncrementer(lineNumber, fileName, "functionData");
     }
 
-    public ExpressionStatement buildConditionalStatement(int lineNumber, String fileName) {
-        return buildInstrumentationIncrementer(lineNumber, fileName, "conditionals");
+    public ExpressionStatement buildConditionalStatement(int startLine, int endLine, String fileName) {
+        ElementGet indexLineNumber = buildLineNumberExpression(startLine, fileName, "conditionals");
+
+        NumberLiteral lineNumberLiteral = new NumberLiteral();
+        lineNumberLiteral.setValue("" + endLine);
+
+        Assignment assignment = new Assignment(Token.ASSIGN, indexLineNumber, lineNumberLiteral, 0);
+        return new ExpressionStatement(assignment);
     }
 
     private ExpressionStatement buildInstrumentationIncrementer(int lineNumber, String fileName, String identifier) {
+        ElementGet indexLineNumber = buildLineNumberExpression(lineNumber, fileName, identifier);
+
+        UnaryExpression unaryExpression = new UnaryExpression(Token.INC, 0, indexLineNumber, true);
+        return new ExpressionStatement(unaryExpression);
+    }
+
+    private ElementGet buildLineNumberExpression(int lineNumber, String fileName, String identifier) {
         Name var = new Name(0, "_$jscoverage");
         StringLiteral fileNameLiteral = new StringLiteral();
         fileNameLiteral.setValue(fileName);
@@ -375,12 +388,8 @@ class StatementBuilder {
         propertyName.setIdentifier(identifier);
         PropertyGet lineProperty = new PropertyGet(indexJSFile, propertyName);
 
-
         NumberLiteral lineNumberLiteral = new NumberLiteral();
         lineNumberLiteral.setValue("" + lineNumber);
-        ElementGet indexLineNumber = new ElementGet(lineProperty, lineNumberLiteral);
-
-        UnaryExpression unaryExpression = new UnaryExpression(Token.INC, 0, indexLineNumber, true);
-        return new ExpressionStatement(unaryExpression);
+        return new ElementGet(lineProperty, lineNumberLiteral);
     }
 }
