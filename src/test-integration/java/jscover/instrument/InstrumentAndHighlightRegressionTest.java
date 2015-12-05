@@ -635,6 +635,12 @@ public class InstrumentAndHighlightRegressionTest {
         testFile("javascript-ignore", "ignore-simple.js");
     }
 
+    @Ignore
+    @Test
+    public void shouldInstrumentIgnore() {
+        testFile("javascript-ignore", "ignore.js");
+    }
+
     private void testFile(String fileName) {
         testFile("javascript", fileName);
     }

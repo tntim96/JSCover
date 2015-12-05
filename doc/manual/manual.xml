@@ -1746,6 +1746,11 @@ function square(x) {
                                 <th>JSCoverage (0.5.1)</th>
                             </tr>
                             <tr>
+                                <td>Line Coverage</td>
+                                <td class="tick"/>
+                                <td class="tick"/>
+                            </tr>
+                            <tr>
                                 <td>Branch Coverage</td>
                                 <td class="tick"/>
                                 <td class="cross"/>
@@ -1771,14 +1776,9 @@ function square(x) {
                                 <td class="tick"/>
                             </tr>
                             <tr>
-                                <td>HTML5 Local Storage alternative to iFrames and JavaScript-opened windows</td>
+                                <td>Report Merging</td>
                                 <td class="tick"/>
                                 <td class="cross"/>
-                            </tr>
-                            <tr>
-                                <td>Specify Encoding</td>
-                                <td class="tick"/>
-                                <td class="tick"/>
                             </tr>
                             <tr>
                                 <td>Inclusion of Uncovered/Unloaded JavaScript</td>
@@ -1794,6 +1794,16 @@ function square(x) {
                                 <td>Regular Expression Path Support</td>
                                 <td class="tick"/>
                                 <td class="cross"/>
+                            </tr>
+                            <tr>
+                                <td>HTML5 Local Storage alternative to iFrames and JavaScript-opened windows</td>
+                                <td class="tick"/>
+                                <td class="cross"/>
+                            </tr>
+                            <tr>
+                                <td>Specify Encoding</td>
+                                <td class="tick"/>
+                                <td class="tick"/>
                             </tr>
                             <tr>
                                 <td>JavaScript Syntax Highlighting</td>
@@ -1844,10 +1854,6 @@ function square(x) {
                             statements; it works best with code that has exactly one statement per line. If you put
                             multiple statements on a line, or split a line across two or more statements, you may get
                             strange results.
-                        </li>
-                        <li>JSCover uses frames. Some web pages that use frames may not function properly when run with
-                            JSCover, especially those which try to access the top-level frame (window.top,
-                            target="_top", etc.).
                         </li>
                         <li>JSCover proxy currently only supports HTTP, not HTTPS</li>
                         <li>JSCover is distributed without any warranty. See the license for more details.</li>

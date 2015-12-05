@@ -49,6 +49,10 @@ table {
     margin: 0;
 }
 
+tr:nth-of-type(even) {
+	background-color:#003333;
+}
+
 TH {
     border: 1px solid #ccffff;
 	font-family: arial;

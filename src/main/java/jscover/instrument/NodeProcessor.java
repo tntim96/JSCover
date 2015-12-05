@@ -377,7 +377,11 @@ class NodeProcessor {
         if (node instanceof Comment) {
             String comment = ((Comment)node).getValue();
             if (comment.startsWith(IGNORE_START)) {
-                ignores.add(new IgnoreComment(comment.substring(IGNORE_START.length() + 1), node.getLineno()));
+                if (comment.trim().length() > IGNORE_START.length()) {
+                    ignores.add(new IgnoreComment(comment.substring(IGNORE_START.length() + 1), node.getLineno()));
+                } else {
+                    //TODO Add logic to ignore branch if we decide to do this
+                }
             } else if (comment.startsWith(IGNORE_END)) {
                 ignores.getLast().setEnd(node.getLineno());
             }
