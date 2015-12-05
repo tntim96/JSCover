@@ -365,14 +365,12 @@ import static org.mockito.BDDMockito.given;
 //Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013, tntim96
 @RunWith(MockitoJUnitRunner.class)
 public class InstrumenterTest {
-    @Mock private ConfigurationCommon config;
-    private static CompilerEnvirons compilerEnv = new CompilerEnvirons();
+    private static CompilerEnvirons compilerEnv = new ConfigurationCommon().getCompilerEnvirons();
     static {
-        // compilerEnv.setAllowMemberExprAsFunctionName(true);
-//        compilerEnv.setLanguageVersion(Context.VERSION_ES6);
         compilerEnv.setLanguageVersion(Context.VERSION_1_8);
-        compilerEnv.setStrictMode(false);
     }
+
+    @Mock private ConfigurationCommon config;
     private SourceProcessor sourceProcessor;
     private ParseTreeInstrumenter instrumenter;
 

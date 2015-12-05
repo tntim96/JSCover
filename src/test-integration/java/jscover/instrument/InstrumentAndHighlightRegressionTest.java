@@ -364,11 +364,9 @@ import static org.mockito.BDDMockito.given;
 @RunWith(MockitoJUnitRunner.class)
 public class InstrumentAndHighlightRegressionTest {
     private static Set<String> tested = new HashSet<String>();
-    private static CompilerEnvirons compilerEnv = new CompilerEnvirons();
+    private static CompilerEnvirons compilerEnv = new ConfigurationCommon().getCompilerEnvirons();
     static {
-        // compilerEnv.setAllowMemberExprAsFunctionName(true);
         compilerEnv.setLanguageVersion(Context.VERSION_1_8);
-        compilerEnv.setStrictMode(false);
     }
 
     private IoUtils ioUtils = IoUtils.getInstance();
@@ -632,13 +630,22 @@ public class InstrumentAndHighlightRegressionTest {
         }
     }
 
+    @Test
+    public void shouldInstrumentIgnoreSimple() {
+        testFile("javascript-ignore", "ignore-simple.js");
+    }
+
     private void testFile(String fileName) {
+        testFile("javascript", fileName);
+    }
+
+    private void testFile(String dir, String fileName) {
         tested.add(fileName);
         SourceProcessor instrumenter = new SourceProcessor(config, fileName);
 
-        String source = ioUtils.loadFromClassPath("/data/javascript/" + fileName);
+        String source = ioUtils.loadFromClassPath("/data/" + dir + "/" + fileName);
         String instrumentedSource = instrumenter.processSourceWithoutHeader(source);
-        String expectedSource = ioUtils.loadFromClassPath("/data/javascript.expected/" + fileName).replaceAll("\r\n","\n");
+        String expectedSource = ioUtils.loadFromClassPath("/data/" + dir + ".expected/" + fileName).replaceAll("\r\n","\n");
         assertEquals(expectedSource, instrumentedSource);
         //assertEquals(removeHighlightLine(expectedSource), removeHighlightLine(instrumentedSource));
     }

@@ -1,5 +1,6 @@
 1.0.23 / 2015-??-??
 ==================
+  * Add ability to ignore lines (https://github.com/tntim96/JSCover/issues/218)
   * Allow sorting by all columns (https://github.com/tntim96/JSCover/issues/193)
   * Provide a column with Missing statements (count) (https://github.com/tntim96/JSCover/issues/192)
   * Add option to generate JSCover report files (https://github.com/tntim96/JSCover/issues/215)

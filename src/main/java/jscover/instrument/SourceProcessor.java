@@ -347,6 +347,7 @@ import jscover.util.IoUtils;
 import org.mozilla.javascript.Parser;
 import org.mozilla.javascript.ast.AstRoot;
 
+import java.util.List;
 import java.util.SortedSet;
 
 import static java.lang.String.format;
@@ -358,6 +359,7 @@ class SourceProcessor {
 
 	// Function Coverage (HA-CA)
     private static final String initFunction = "  _$jscoverage['%s'].functionData[%d] = 0;\n";
+    private static final String ignoreJS = "\nif (!(%s)) {\n  _$jscoverage['%s'].conditionals[%d] = %d;\n}";
 
     private String uri;
     private ParseTreeInstrumenter instrumenter;
@@ -417,6 +419,8 @@ class SourceProcessor {
         String instrumentedSource = instrumentSource(sourceURI, source);
 
         String jsLineInitialization = getJsLineInitialization(uri, instrumenter.getValidLines());
+        if (instrumenter.getIgnores().size() > 0)
+            jsLineInitialization += format("_$jscoverage['%s'].conditionals = [];\n", uri);
 
         if (includeFunctionCoverage)
             jsLineInitialization += getJsFunctionInitialization(uri, instrumenter.getNumFunctions());
@@ -424,7 +428,9 @@ class SourceProcessor {
         if (includeBranchCoverage)
             jsLineInitialization += branchInstrumentor.getJsLineInitialization();
 
-        return jsLineInitialization + instrumentedSource;
+        String jsConditionals = getJsConditionals(uri, instrumenter.getIgnores());
+
+        return jsLineInitialization + instrumentedSource + jsConditionals;
     }
 
     protected String instrumentSource(String source) {
@@ -433,7 +439,8 @@ class SourceProcessor {
 
     protected String instrumentSource(String sourceURI, String source) {
         AstRoot astRoot = parser.parse(source , sourceURI, 1);
-        astRoot.visitAll(instrumenter);
+        astRoot.visitComments(instrumenter);
+        astRoot.visit(instrumenter);
         if (includeBranchCoverage) {
             branchInstrumentor.setAstRoot(astRoot);
             astRoot.visitAll(branchInstrumentor);
@@ -463,6 +470,15 @@ class SourceProcessor {
             sb.append(format(initFunction, fileName, i));
         }
         sb.append("}\n");
+        return sb.toString();
+    }
+
+    private String getJsConditionals(String fileName, List<IgnoreComment> ignores) {
+        fileName = fileName.replace("\\", "\\\\").replace("'", "\\'");
+        StringBuilder sb = new StringBuilder();
+        for (IgnoreComment ignore : ignores) {
+            sb.append(format(ignoreJS, ignore.getCondition(), fileName, ignore.getStart(), ignore.getEnd()));
+        }
         return sb.toString();
     }
 }

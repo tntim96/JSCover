@@ -389,6 +389,10 @@ public class ConfigurationCommon extends Configuration {
     protected IoUtils ioUtils = IoUtils.getInstance();
     protected Level logLevel = SEVERE;
 
+    {
+        compilerEnvirons.setRecordingComments(true);
+    }
+
     public void setIncludeBranch(boolean includeBranch) {
         this.includeBranch = includeBranch;
     }
