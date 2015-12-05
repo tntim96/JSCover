@@ -28,7 +28,7 @@
         <!ATTLIST img src CDATA #REQUIRED>
         <!ATTLIST table class CDATA #IMPLIED>
         <!ATTLIST td class CDATA #IMPLIED>
-        <!ATTLIST td nowrap CDATA #FIXED "nowrap">
+        <!ATTLIST td nowrap CDATA #IMPLIED>
         <!ATTLIST imgThumb src CDATA #REQUIRED>
         <!ATTLIST imgThumb alt CDATA #IMPLIED>
         <!ATTLIST imgThumb width CDATA #IMPLIED>

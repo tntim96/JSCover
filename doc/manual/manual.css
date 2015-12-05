@@ -1,15 +1,15 @@
-BODY {
-	font-family: arial;
-	font-size: 10pt;
-	color : #ccffff;
-	background-color : #003355;
-	SCROLLBAR-ARROW-COLOR: #ccffcc;
-	SCROLLBAR-FACE-COLOR: #003366;
-	SCROLLBAR-HIGHLIGHT-COLOR: #003355;
-	SCROLLBAR-SHADOW-COLOR: #99ccff;
-	SCROLLBAR-BASE-COLOR: #99ccff;
-	scrollbar-3d-light-color: #cc3399;
-	scrollbar-dark-shadow-color: #003355;
+body {
+    font-family: arial;
+    font-size: 10pt;
+    color: #ccffff;
+    background-color: #003355;
+    scrollbar-arrow-color: #ccffcc;
+    scrollbar-face-color: #003366;
+    scrollbar-highlight-color: #003355;
+    scrollbar-shadow-color: #99ccff;
+    scrollbar-base-color: #99ccff;
+    scrollbar-3d-light-color: #cc3399;
+    scrollbar-dark-shadow-color: #003355;
 }
 
 .floating-menu {
@@ -30,6 +30,7 @@ div .floating-menu a, div.floating-menu h3 {
     display: block;
     margin: 0 0.5em;
 }
+
 div .floating-menu {
     position: fixed;
     background: #fff4c8;
@@ -50,199 +51,195 @@ table {
 }
 
 tr:nth-of-type(even) {
-	background-color:#003333;
+    background-color: #003333;
 }
 
-TH {
+th {
     border: 1px solid #ccffff;
-	font-family: arial;
-	font-weight: bold;
-	font-size: 12pt;
-	color: #ccffcc;
+    font-family: arial, sans-serif;
+    font-weight: bold;
+    font-size: 12pt;
+    color: #ccffcc;
     vertical-align: top;
 }
 
-TD {
+td {
     border: 1px solid #ccffff;
-	font-family: arial;
+    font-family: arial, sans-serif;
     padding: 1px 5px 1px 5px;
-	font-size: 10pt;
-	color: #99ccff;
+    font-size: 10pt;
+    color: #99ccff;
     vertical-align: top;
 }
 
 table.noBorder td {
-    border: 0px;
+    border: 0;
 }
 
-TD.arrow {
-	font: 20pt arial bold;
+td.arrow {
+    font: 20pt arial bold;
     vertical-align: middle;
 }
 
-TD.tick {
-	background-color: #33ff33;
+td.tick {
+    background-color: #33ff33;
 }
 
-TD.cross {
-	background-color: #ff3333;
+td.cross {
+    background-color: #ff3333;
     font-weight: bold;
 }
 
-HR {
-	align: center;
-	color: #99ccff;
+hr {
+    align: center;
+    color: #99ccff;
 }
 
 .var {
-	color: #CCFFCC;
+    color: #CCFFCC;
     font-style: italic;
-    background-color : #002244;
+    background-color: #002244;
 }
 
 .note {
-	color: #FF9933;
-    background-color : #002244;
+    color: #FF9933;
+    background-color: #002244;
 }
 
 .title {
-	font-family: arial;
-	font-size: 20pt;
-	font-weight: bold;
-	color: #ccffff;
+    font-family: arial, sans-serif;
+    font-size: 20pt;
+    font-weight: bold;
+    color: #ccffff;
 }
 
 .heading0 {
-	font-family: arial;
-	font-size: 18pt;
-	color: #99ccff;
+    font-family: arial, sans-serif;
+    font-size: 18pt;
+    color: #99ccff;
 }
 
 .heading1 {
-	font-family: arial;
-	font-size: 15pt;
-	color: #99ccff;
+    font-family: arial, sans-serif;
+    font-size: 15pt;
+    color: #99ccff;
 }
 
 .heading2 {
-	font-family: arial;
-	font-size: 12pt;
-	color: #99ccff;
+    font-family: arial, sans-serif;
+    font-size: 12pt;
+    color: #99ccff;
 }
 
 .heading3 {
-	font-family: arial;
-	font-size: 10pt;
-	color: #99ccff;
+    font-family: arial, sans-serif;
+    font-size: 10pt;
+    color: #99ccff;
 }
 
-A {
-	color: #99ccff;
+a {
+    color: #99ccff;
 }
 
-A.ExpandCollapseAll {
+a.ExpandCollapseAll {
     color: #ccffff;
     font-size: 15pt;
-    font-family: Courier;
+    font-family: Courier, sans-serif;
     font-weight: bold;
     text-decoration: none;
 }
 
-A:hover.ExpandCollapseAll {
+a:hover.ExpandCollapseAll {
     color: #ffcc99;
     background-color: #336666;
 }
 
-A.ExpandCollapse {
+a.ExpandCollapse {
     color: #ccccff;
     font-size: 20pt;
-    font-family: Courier;
+    font-family: Courier, sans-serif;
     text-decoration: none;
 }
 
-A:hover {
-	color: #ccffcc;
+a:hover {
+    color: #ccffcc;
 }
 
-A:active {
-	color: #ffcc00;
+a:active {
+    color: #ffcc00;
 }
 
 .contentHeading1 {
-	font-size: 20pt;
+    font-size: 20pt;
 }
 
 .contentHeading2 {
-	font-size: 12pt;
+    font-size: 12pt;
 }
 
 .contentHeading2 {
-	font-size: 10pt;
+    font-size: 10pt;
 }
 
-UL,OL,LI,I {
-	font-family: arial;
-	font-size: 10pt;
-	color: #ccffff;
+ul, ol, li, i {
+    font-family: arial, sans-serif;
+    font-size: 10pt;
+    color: #ccffff;
 }
 
-P {
-	font-family: arial;
-	font-size: 10pt;
-	color: #ccffff;
+p {
+    font-family: arial, sans-serif;
+    font-size: 10pt;
+    color: #ccffff;
 }
 
-PRE {
-	font-size: 9pt;
-	font-weight: bold;
-	COLOR: #669999;
-	background-color : #000033;
+pre {
+    font-size: 9pt;
+    font-weight: bold;
+    COLOR: #669999;
+    background-color: #000033;
 }
 
-.menuLev1
-{
-	font-family:"Comic Sans MS";
-	font-size : 14pt;
-	text-decoration: none;
+.menuLev1 {
+    font-family: "Comic Sans MS", sans-serif;
+    font-size: 14pt;
+    text-decoration: none;
 }
-.menuLev2
-{
-	font-family:"Comic Sans MS";
-	position:relative;
-	left:10px;
-	font-size : 10pt;
-	text-decoration: none;
+
+.menuLev2 {
+    font-family: "Comic Sans MS", sans-serif;
+    position: relative;
+    left: 10px;
+    font-size: 10pt;
+    text-decoration: none;
 }
-.menuLev3
-{
-	font-family:"Comic Sans MS";
-	position:relative;
-	left:20px;
-	font-size : 8pt;
+
+.menuLev3 {
+    font-family: "Comic Sans MS", sans-serif;
+    position: relative;
+    left: 20px;
+    font-size: 8pt;
 }
 
 .normalText {
-	font-family: arial;
-	font-size: 10pt;
-	color : #ccffff;
+    font-family: arial, sans-serif;
+    font-size: 10pt;
+    color: #ccffff;
 }
 
-.fg
-{
-	width : 15;
-	height : 15;
-	background-color : ffffff;
+.fg {
+    width: 15px;
+    height: 15px;
+    background-color: #ffffff;
 }
 
-.bg
-{
-	width : 15;
-	height : 15;
-	background-color : 006666;
+.bg {
+    width: 15px;
+    height: 15px;
+    background-color: #006666;
 }
 
-.empty
-{
-	width : 15;
-	height : 15;
+.empty {
+    width: 15px;
+    height: 15px;
 }

@@ -41,11 +41,9 @@
         <xsl:attribute name="alt"><xsl:value-of select="@alt"/></xsl:attribute>
         <xsl:attribute name="title"><xsl:value-of select="@alt"/></xsl:attribute>
         <xsl:attribute name="border">0</xsl:attribute>
-        <xsl:choose>
-            <xsl:when test="@width!=''">
-                <xsl:attribute name="width"><xsl:value-of select="@width"/></xsl:attribute>
-            </xsl:when>
-        </xsl:choose>
+        <xsl:if test="@width!=''">
+            <xsl:attribute name="width"><xsl:value-of select="@width"/></xsl:attribute>
+        </xsl:if>
     </img>
 </xsl:template>
 
@@ -71,11 +69,9 @@
 <xsl:template match="td">
   <td>
       <xsl:attribute name="class"><xsl:value-of select="@class"/></xsl:attribute>
-      <xsl:choose>
-          <xsl:when test="@nowrap!=''">
-              <xsl:attribute name="nowrap"><xsl:value-of select="@nowrap"/></xsl:attribute>
-          </xsl:when>
-      </xsl:choose>
+      <xsl:if test="@nowrap!=''">
+          <xsl:attribute name="nowrap"><xsl:value-of select="@nowrap"/></xsl:attribute>
+      </xsl:if>
       <xsl:apply-templates/>
   </td>
 </xsl:template>
