@@ -390,6 +390,9 @@ class BranchHelper {
 
 
   public boolean isCoalesce(AstNode node) {
-    return node.getType() == Token.OR && (node.getParent().getType() == Token.ASSIGN || node.getParent().getType() == Token.VAR);
+      return node.getType() == Token.OR
+              && (node.getParent().getType() == Token.ASSIGN
+              || node.getParent().getType() == Token.VAR
+              || node.getParent().getType() == Token.RETURN);
   }
 }

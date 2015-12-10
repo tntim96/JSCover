@@ -1,5 +1,6 @@
 1.0.23 / 2015-??-??
 ==================
+  * Fix isCoalesce for return statements (https://github.com/tntim96/JSCover/issues/219)
   * Add ability to ignore lines (https://github.com/tntim96/JSCover/issues/218)
   * Allow sorting by all columns (https://github.com/tntim96/JSCover/issues/193)
   * Provide a column with Missing statements (count) (https://github.com/tntim96/JSCover/issues/192)

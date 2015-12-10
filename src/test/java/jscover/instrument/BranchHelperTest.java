@@ -43,6 +43,14 @@ public class BranchHelperTest {
     }
 
     @Test
+    public void shouldDetectCoalesceOnReturn() {
+        String script = "function f(y) {return y || {};}";
+        AstRoot astRoot = parser.parse(script, null, 1);
+        AstNode orNode = NodeTestHelper.findNode(astRoot, Token.OR);
+        assertThat(helper.isCoalesce(orNode), is(true));
+    }
+
+    @Test
     public void shouldDetectCoalesceWithVariableDeclaration() {
         String script = "var x = y || {};";
         AstRoot astRoot = parser.parse(script, null, 1);
