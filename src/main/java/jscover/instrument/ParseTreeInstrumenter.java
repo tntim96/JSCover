@@ -357,9 +357,9 @@ class ParseTreeInstrumenter implements NodeVisitor {
     private String fileName;
     private NodeProcessor nodeProcessor;
 
-    public ParseTreeInstrumenter(String uri, boolean includeFunctionCoverage) {
+    public ParseTreeInstrumenter(String uri, boolean includeFunctionCoverage, CommentsVisitor commentsVisitor) {
         this.fileName = uri;
-        this.nodeProcessor = new NodeProcessor(uri, includeFunctionCoverage);
+        this.nodeProcessor = new NodeProcessor(uri, includeFunctionCoverage, commentsVisitor);
     }
 
     public SortedSet<Integer> getValidLines() {

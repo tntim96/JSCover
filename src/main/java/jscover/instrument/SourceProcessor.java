@@ -362,7 +362,7 @@ class SourceProcessor {
     private static final String ignoreJS = "\nif (!(%s)) {\n  _$jscoverage['%s'].conditionals[%d] = %d;\n}";
 
     private String uri;
-    private CommentsVisitor commentsVisitor;
+    private CommentsVisitor commentsVisitor = new CommentsVisitor();
     private ParseTreeInstrumenter instrumenter;
     private BranchInstrumentor branchInstrumentor;
     private Parser parser;
@@ -374,9 +374,8 @@ class SourceProcessor {
 
     public SourceProcessor(ConfigurationCommon config, String uri) {
         this.uri = uri;
-        this.commentsVisitor = new CommentsVisitor(config.isIncludeBranch());
-        this.instrumenter = new ParseTreeInstrumenter(uri, config.isIncludeFunction());
-        this.branchInstrumentor = new BranchInstrumentor(uri, config.isDetectCoalesce());
+        this.instrumenter = new ParseTreeInstrumenter(uri, config.isIncludeFunction(), commentsVisitor);
+        this.branchInstrumentor = new BranchInstrumentor(uri, config.isDetectCoalesce(), commentsVisitor);
         parser = new Parser(config.getCompilerEnvirons());
         this.includeBranchCoverage = config.isIncludeBranch();
         this.includeFunctionCoverage = config.isIncludeFunction();

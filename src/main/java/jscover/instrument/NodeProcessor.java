@@ -357,10 +357,12 @@ class NodeProcessor {
     private int functionNumber;// Function Coverage (HA-CA)
     private String fileName;
     private boolean includeFunctionCoverage;
+    private CommentsVisitor commentsVisitor;
 
-    public NodeProcessor(String uri, boolean includeFunctionCoverage) {
+    public NodeProcessor(String uri, boolean includeFunctionCoverage, CommentsVisitor commentsVisitor) {
         this.fileName = uri;
         this.includeFunctionCoverage = includeFunctionCoverage;
+        this.commentsVisitor = commentsVisitor;
     }
 
     public ExpressionStatement buildInstrumentationStatement(int lineNumber) {
@@ -385,8 +387,8 @@ class NodeProcessor {
             return (processSwitchCase(node, (SwitchCase) node));
         }
 
-        if (validLines.contains(node.getLineno())) {
-            // Don't add instrumentation if already there
+        if (validLines.contains(node.getLineno()) || commentsVisitor.ignoreLine(node.getLineno())) {
+            // Don't add instrumentation if already there or we're ignoring
             return true;
         }
 

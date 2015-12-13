@@ -358,7 +358,7 @@ public class BranchInstrumentorIntegrationTest {
     private static final String header = "var _$jscoverage = {};\n" +
             "_$jscoverage['test.js'] = {};\n";
 
-    private BranchInstrumentor branchInstrumentor = new BranchInstrumentor("test.js", false);
+    private BranchInstrumentor branchInstrumentor = new BranchInstrumentor("test.js", false, new CommentsVisitor());
     private Parser parser = new Parser();
     private Context context;
     private Scriptable scope;
@@ -428,7 +428,7 @@ public class BranchInstrumentorIntegrationTest {
 
     @Test
     public void shouldNotWrapCoalesceIfConfiguredNotTo() {
-        branchInstrumentor = new BranchInstrumentor("test.js", true);
+        branchInstrumentor = new BranchInstrumentor("test.js", true, new CommentsVisitor());
         StringBuilder script = new StringBuilder("function test(a) {\n  var x = a || {};\n  }\ntest();");
         runScript(script.toString());
         assertThat(getBranchData(scope, "test.js").size(), equalTo(0));
@@ -436,7 +436,7 @@ public class BranchInstrumentorIntegrationTest {
 
     @Test
     public void shouldWrapNonCoalesce() {
-        branchInstrumentor = new BranchInstrumentor("test.js", true);
+        branchInstrumentor = new BranchInstrumentor("test.js", true, new CommentsVisitor());
         StringBuilder script = new StringBuilder("function test(a) {\n  var x = a > 7;\n  }\ntest(3);");
         runScript(script.toString());
         Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);

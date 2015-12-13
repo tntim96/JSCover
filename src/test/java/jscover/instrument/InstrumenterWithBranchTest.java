@@ -338,12 +338,14 @@ proprietary programs.  If your program is a subroutine library, you may
 consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
- */
+*/
 
 package jscover.instrument;
 
 import jscover.ConfigurationCommon;
+import jscover.util.ReflectionUtils;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -351,71 +353,61 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.mozilla.javascript.CompilerEnvirons;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Parser;
-import org.mozilla.javascript.ast.AstRoot;
+import org.mozilla.javascript.Token;
+import org.mozilla.javascript.ast.*;
 
-import static jscover.instrument.CommentsVisitor.*;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
-public class CommentsVisitorTest {
+public class InstrumenterWithBranchTest {
     private static CompilerEnvirons compilerEnv = new ConfigurationCommon().getCompilerEnvirons();
-
     static {
         compilerEnv.setLanguageVersion(Context.VERSION_1_8);
     }
 
-    private CommentsVisitor visitor = new CommentsVisitor();
-    private Parser parser;
-    @Mock
-    private ConfigurationCommon config;
+    @Mock private ConfigurationCommon config;
+    private SourceProcessor sourceProcessor;
+    private ParseTreeInstrumenter instrumenter;
 
     @Before
     public void setUp() {
-        parser = new Parser(compilerEnv);
+        given(config.getCompilerEnvirons()).willReturn(compilerEnv);
+        given(config.isIncludeBranch()).willReturn(true);
+        given(config.isIncludeFunction()).willReturn(true);
+        sourceProcessor = new SourceProcessor(config, "test.js");
+        instrumenter = (ParseTreeInstrumenter)ReflectionUtils.getField(sourceProcessor, "instrumenter");
     }
 
     @Test
-    public void shouldDetectJSCoverageIgnoreComments() {
-        AstRoot astRoot = parser.parse("//#JSCOVERAGE_IF x < 10\nvar x = 0;\n//#JSCOVERAGE_ENDIF", null, 1);
-        astRoot.visitComments(visitor);
-        assertThat(visitor.getJsCoverageIgnoreComments().size(), equalTo(1));
-        JSCoverageIgnoreComment comment = visitor.getJsCoverageIgnoreComments().iterator().next();
-        assertThat(comment.getStart(), equalTo(1));
-        assertThat(comment.getCondition(), equalTo("x < 10"));
-        assertThat(comment.getEnd(), equalTo(3));
+    public void shouldInstrumentBranch() {
+        String source = "var x = x || 7;" ;
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].branchData['1'][1].init(7, 6, 'x || 7');\n" +
+                "function visit1_1_1(result) {\n" +
+                "  _$jscoverage['test.js'].branchData['1'][1].ranCondition(result);\n" +
+                "  return result;\n" +
+                "}_$jscoverage['test.js'].lineData[1]++;\n" +
+                "var x = visit1_1_1(x || 7);\n";
+        assertEquals(expectedSource, instrumentedSource);
     }
 
     @Test
-    public void shouldDetectJSCoverIgnoreLine() {
-        AstRoot astRoot = parser.parse("var x;\nx < 10;" + EXCL_LINE, null, 1);
-        astRoot.visitComments(visitor);
-        assertThat(visitor.ignoreLine(1), equalTo(false));
-        assertThat(visitor.ignoreLine(2), equalTo(true));
+    public void shouldInstrumentIgnoringBranch() {
+        String source = "var x = x || 7;" + CommentsVisitor.EXCL_BR_LINE;
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\nvar x = x || 7;\n";
+        assertEquals(expectedSource, instrumentedSource);
     }
 
     @Test
-    public void shouldDetectJSCoverIgnoreLineRange() {
-        AstRoot astRoot = parser.parse(EXCL_START + "\nvar x;\nx < 10;" + EXCL_STOP, null, 1);
-        astRoot.visitComments(visitor);
-        assertThat(visitor.ignoreLine(1), equalTo(true));
-        assertThat(visitor.ignoreLine(2), equalTo(true));
+    public void shouldInstrumentIgnoringBranches() {
+        String source = CommentsVisitor.EXCL_BR_START + "\nvar x = x || 7;" + CommentsVisitor.EXCL_BR_STOP;
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[2]++;\nvar x = x || 7;\n";
+        assertEquals(expectedSource, instrumentedSource);
     }
-
-    @Test
-    public void shouldDetectJSCoverIgnoreBranch() {
-        AstRoot astRoot = parser.parse("var x;\nx < 10;" + EXCL_BR_LINE, null, 1);
-        astRoot.visitComments(visitor);
-        assertThat(visitor.ignoreBranch(1), equalTo(false));
-        assertThat(visitor.ignoreBranch(2), equalTo(true));
-    }
-
-    @Test
-    public void shouldDetectJSCoverIgnoreBranchRange() {
-        AstRoot astRoot = parser.parse(EXCL_BR_START + "\nvar x;\nx < 10;" + EXCL_BR_STOP, null, 1);
-        astRoot.visitComments(visitor);
-        assertThat(visitor.ignoreBranch(1), equalTo(true));
-        assertThat(visitor.ignoreBranch(2), equalTo(true));
-    }
-
 }

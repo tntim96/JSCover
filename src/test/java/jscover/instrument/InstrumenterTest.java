@@ -898,6 +898,22 @@ public class InstrumenterTest {
     }
 
     @Test
+    public void shouldInstrumentIgnoringLine() {
+        String source = "var x = 7;" + CommentsVisitor.EXCL_LINE;
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "var x = 7;\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+    @Test
+    public void shouldInstrumentIgnoringLines() {
+        String source = CommentsVisitor.EXCL_START + "\nvar x = 7;" + CommentsVisitor.EXCL_STOP;
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "var x = 7;\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+    @Test
     public void shouldInstrumentES6StringStartsWith() {
         String source = "var x = 'abc'.startsWith('a');";
         String instrumentedSource = sourceProcessor.instrumentSource(source);

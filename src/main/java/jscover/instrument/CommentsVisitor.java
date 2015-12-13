@@ -362,17 +362,12 @@ public class CommentsVisitor implements NodeVisitor {
     //Marks the end of a section which is excluded from branch coverage.
     static final String EXCL_BR_STOP = "//#JSCOVER_EXCL_BR_STOP";
 
-    boolean includeBranch;
-    private LinkedList<JSCoverageIgnoreComment> jsCoverageIgnoreComments = new LinkedList<JSCoverageIgnoreComment>();
-
-    public CommentsVisitor(boolean includeBranch) {
-        this.includeBranch = includeBranch;
-    }
-
     private Set<Integer> ignoreLines = new HashSet<Integer>();
     private LinkedList<CommentRange> ignoreLineRanges = new LinkedList<CommentRange>();
     private Set<Integer> ignoreBranches = new HashSet<Integer>();
     private LinkedList<CommentRange> ignoreBranchRanges = new LinkedList<CommentRange>();
+
+    private LinkedList<JSCoverageIgnoreComment> jsCoverageIgnoreComments = new LinkedList<JSCoverageIgnoreComment>();
 
     public List<JSCoverageIgnoreComment> getJsCoverageIgnoreComments() {
         return jsCoverageIgnoreComments;

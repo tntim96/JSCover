@@ -362,12 +362,14 @@ public class BranchInstrumentor implements NodeVisitor {
     private Set<PostProcess> postProcesses = new HashSet<PostProcess>();
     private String uri;
     private boolean detectCoalesce;
+    private CommentsVisitor commentsVisitor;
     private AstRoot astRoot;
     private SortedMap<Integer, SortedSet<Integer>> lineConditionMap = new TreeMap<Integer, SortedSet<Integer>>();
 
-    public BranchInstrumentor(String uri, boolean detectCoalesce) {
+    public BranchInstrumentor(String uri, boolean detectCoalesce, CommentsVisitor commentsVisitor) {
         this.uri = uri;
         this.detectCoalesce = detectCoalesce;
+        this.commentsVisitor = commentsVisitor;
     }
 
     public SortedMap<Integer, SortedSet<Integer>> getLineConditionMap() {
@@ -486,7 +488,8 @@ public class BranchInstrumentor implements NodeVisitor {
     }
 
     public boolean visit(AstNode node) {
-        if (node.getLineno() > 0 && branchHelper.isBoolean(node) && !(detectCoalesce && branchHelper.isCoalesce(node))) {
+        if (node.getLineno() > 0 && !commentsVisitor.ignoreBranch(node.getLineno())
+                && branchHelper.isBoolean(node) && !(detectCoalesce && branchHelper.isCoalesce(node))) {
             replaceWithFunction(node);
         }
         return true;

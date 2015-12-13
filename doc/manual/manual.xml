@@ -1014,6 +1014,11 @@ fs.write("target/jscoverage.json", json, 'w');
                 <item>
                     <heading id="excludeCodeIntro">Introduction</heading>
                     <text>
+                        This feature should not be used before considering alternatives.
+                        It is preferable to cover all code via tests.
+                        Difficulties in testing can indicate a bad design, and can be overcome by reorganising the code.
+                    </text>
+                    <text>
                         There are a few ways to exclude code from coverage:
                         <ul>
                             <li>Using the <code>- -detect-coalesce</code> option</li>
@@ -1023,6 +1028,10 @@ fs.write("target/jscoverage.json", json, 'w');
                         </ul>
                     </text>
                     <heading id="excludeCodeJSCover">Excluding Code</heading>
+                    <text>
+                        JSCover's implementation ignores code by not instrumenting it.
+                        Note that this will also affect the count of lines and/or branches.
+                    </text>
                     <text>
                         JSCover recognises the following comments:
                         <table>
