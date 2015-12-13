@@ -402,4 +402,20 @@ public class CommentsVisitorTest {
         assertThat(visitor.ignoreLine(2), equalTo(true));
     }
 
+    @Test
+    public void shouldDetectJSCoverIgnoreBranch() {
+        AstRoot astRoot = parser.parse("var x;\nx < 10;" + EXCL_BR_LINE, null, 1);
+        astRoot.visitComments(visitor);
+        assertThat(visitor.ignoreBranch(1), equalTo(false));
+        assertThat(visitor.ignoreBranch(2), equalTo(true));
+    }
+
+    @Test
+    public void shouldDetectJSCoverIgnoreBranchRange() {
+        AstRoot astRoot = parser.parse(EXCL_BR_START + "\nvar x;\nx < 10;" + EXCL_BR_STOP, null, 1);
+        astRoot.visitComments(visitor);
+        assertThat(visitor.ignoreBranch(1), equalTo(true));
+        assertThat(visitor.ignoreBranch(2), equalTo(true));
+    }
+
 }

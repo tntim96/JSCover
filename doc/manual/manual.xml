@@ -848,6 +848,11 @@ fs.write("target/jscoverage.json", json, 'w');
                             <td>Prevent automatically combining coverage from different browser windows</td>
                         </tr>
                         <tr>
+                            <td>--detect-coalesce</td>
+                            <td>false</td>
+                            <td>Try to exclude coalesce assignments from conditional coverage</td>
+                        </tr>
+                        <tr>
                             <td>--js-version=VERSION</td>
                             <td>1.5</td>
                             <td>
@@ -999,6 +1004,75 @@ fs.write("target/jscoverage.json", json, 'w');
                     </text>
                 </item>
             </item>
+            <!--
+            When uncommenting this:
+              - join the dashes in front of detect-coalesce
+              - add a tick to "Ignoring certain lines of code"
+              - if 2016, add 2016 copyright
+            <item>
+                <heading id="excludeCode">Excluding Code From Instrumentation</heading>
+                <item>
+                    <heading id="excludeCodeIntro">Introduction</heading>
+                    <text>
+                        There are a few ways to exclude code from coverage:
+                        <ul>
+                            <li>Using the <code>- -detect-coalesce</code> option</li>
+                            <li>Using special comments (see <a href="#excludeCodeJSCover">See below</a>)</li>
+                            <li>Using JSCoverage's original ignore implementation
+                                (<a href="#excludeCodeJSCoverage">See below</a>)</li>
+                        </ul>
+                    </text>
+                    <heading id="excludeCodeJSCover">Excluding Code</heading>
+                    <text>
+                        JSCover recognises the following comments:
+                        <table>
+                            <tr>
+                                <td>//#JSCOVER_EXCL_LINE</td>
+                                <td>Lines containing this marker will be excluded.</td>
+                            </tr>
+                            <tr>
+                                <td>//#JSCOVER_EXCL_START</td>
+                                <td>Marks the beginning of an excluded section.</td>
+                            </tr>
+                            <tr>
+                                <td>//#JSCOVER_EXCL_STOP</td>
+                                <td>Marks the end of an excluded section.</td>
+                            </tr>
+                            <tr>
+                                <td>//#JSCOVER_EXCL_BR_LINE</td>
+                                <td>Exclude line from branch coverage.</td>
+                            </tr>
+                            <tr>
+                                <td>//#JSCOVER_EXCL_BR_START</td>
+                                <td>Marks the beginning of a section which is excluded  from  branch coverage.</td>
+                            </tr>
+                            <tr>
+                                <td>//#JSCOVER_EXCL_BR_STOP</td>
+                                <td>Marks the end of a section which is excluded from branch coverage.</td>
+                            </tr>
+                        </table>
+                    </text>
+                    <heading id="excludeCodeJSCoverage">Excluding Code Using JSCoverage's Original Implementation</heading>
+                    <text>
+                        JSCoverage's original implementation is only partially implemented as legacy support.
+                        This is because the implementation will only work in the JSCoverage HTML report.
+                        The supported functionality is described below.
+                    </text>
+                    <text>
+<code>//#JSCOVERAGE_IF CONDITION
+...
+//#JSCOVERAGE_ENDIF</code>
+                        The comment must be formatted exactly as shown: it must be a line comment starting with //,
+                        it must start in the first column, and it must be followed by #JSCOVERAGE_IF or
+                        #JSCOVERAGE_ENDIF in uppercase letters with no intervening white space.
+
+                        The CONDITION is an ordinary JavaScript expression; if this expression evaluates to true,
+                        then the lines of code between the //#JSCOVERAGE_IF and //#JSCOVERAGE_ENDIF comments are
+                        included in coverage statistics; otherwise, they are excluded from coverage statistics.
+                    </text>
+                </item>
+            </item>
+            -->
             <item>
                 <heading id="logging">Logging</heading>
                 <item>

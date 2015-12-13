@@ -359,7 +359,7 @@ public class CommentsVisitor implements NodeVisitor {
     static final String EXCL_BR_LINE = "//#JSCOVER_EXCL_BR_LINE";//Exclude line from branch coverage.
     //Marks the beginning of a section which is excluded  from  branch coverage.
     static final String EXCL_BR_START = "//#JSCOVER_EXCL_BR_START";
-    //Marks  the end of a section which is excluded from branch coverage.
+    //Marks the end of a section which is excluded from branch coverage.
     static final String EXCL_BR_STOP = "//#JSCOVER_EXCL_BR_STOP";
 
     boolean includeBranch;
@@ -371,6 +371,8 @@ public class CommentsVisitor implements NodeVisitor {
 
     private Set<Integer> ignoreLines = new HashSet<Integer>();
     private LinkedList<CommentRange> ignoreLineRanges = new LinkedList<CommentRange>();
+    private Set<Integer> ignoreBranches = new HashSet<Integer>();
+    private LinkedList<CommentRange> ignoreBranchRanges = new LinkedList<CommentRange>();
 
     public List<JSCoverageIgnoreComment> getJsCoverageIgnoreComments() {
         return jsCoverageIgnoreComments;
@@ -391,6 +393,12 @@ public class CommentsVisitor implements NodeVisitor {
                 ignoreLineRanges.add(new CommentRange(node.getLineno()));
             } else if (rhinoSafeStartsWith(comment, EXCL_STOP)) {
                 ignoreLineRanges.getLast().setEnd(node.getLineno());
+            } else if (rhinoSafeStartsWith(comment, EXCL_BR_LINE)) {
+                ignoreBranches.add(node.getLineno());
+            } else if (rhinoSafeStartsWith(comment, EXCL_BR_START)) {
+                ignoreBranchRanges.add(new CommentRange(node.getLineno()));
+            } else if (rhinoSafeStartsWith(comment, EXCL_BR_STOP)) {
+                ignoreBranchRanges.getLast().setEnd(node.getLineno());
             } else if (rhinoSafeStartsWith(comment, JSCoverageIgnoreComment.IGNORE_END)) {
                 jsCoverageIgnoreComments.getLast().setEnd(node.getLineno());
             }
@@ -407,8 +415,18 @@ public class CommentsVisitor implements NodeVisitor {
     public boolean ignoreLine(int line) {
         if (ignoreLines.contains(line))
             return true;
-        for (CommentRange ignoreLineRange : ignoreLineRanges) {
-            if (ignoreLineRange.inRange(line))
+        for (CommentRange range : ignoreLineRanges) {
+            if (range.inRange(line))
+                return true;
+        }
+        return false;
+    }
+
+    public boolean ignoreBranch(int line) {
+        if (ignoreBranches.contains(line))
+            return true;
+        for (CommentRange range : ignoreBranchRanges) {
+            if (range.inRange(line))
                 return true;
         }
         return false;
