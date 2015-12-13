@@ -443,7 +443,7 @@ class SourceProcessor {
         astRoot.visit(instrumenter);
         if (includeBranchCoverage) {
             branchInstrumentor.setAstRoot(astRoot);
-            astRoot.visitAll(branchInstrumentor);
+            astRoot.visit(branchInstrumentor);
             branchInstrumentor.postProcess();
         }
         return astRoot.toSource();
