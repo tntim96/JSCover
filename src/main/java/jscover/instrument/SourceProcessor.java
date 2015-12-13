@@ -362,6 +362,7 @@ class SourceProcessor {
     private static final String ignoreJS = "\nif (!(%s)) {\n  _$jscoverage['%s'].conditionals[%d] = %d;\n}";
 
     private String uri;
+    private CommentsVisitor commentsVisitor;
     private ParseTreeInstrumenter instrumenter;
     private BranchInstrumentor branchInstrumentor;
     private Parser parser;
@@ -373,6 +374,7 @@ class SourceProcessor {
 
     public SourceProcessor(ConfigurationCommon config, String uri) {
         this.uri = uri;
+        this.commentsVisitor = new CommentsVisitor(config.isIncludeBranch());
         this.instrumenter = new ParseTreeInstrumenter(uri, config.isIncludeFunction());
         this.branchInstrumentor = new BranchInstrumentor(uri, config.isDetectCoalesce());
         parser = new Parser(config.getCompilerEnvirons());
@@ -419,7 +421,7 @@ class SourceProcessor {
         String instrumentedSource = instrumentSource(sourceURI, source);
 
         String jsLineInitialization = getJsLineInitialization(uri, instrumenter.getValidLines());
-        if (instrumenter.getIgnores().size() > 0)
+        if (commentsVisitor.getJsCoverageIgnoreComments().size() > 0)
             jsLineInitialization += format("_$jscoverage['%s'].conditionals = [];\n", uri);
 
         if (includeFunctionCoverage)
@@ -428,7 +430,7 @@ class SourceProcessor {
         if (includeBranchCoverage)
             jsLineInitialization += branchInstrumentor.getJsLineInitialization();
 
-        String jsConditionals = getJsConditionals(uri, instrumenter.getIgnores());
+        String jsConditionals = getJsConditionals(uri, commentsVisitor.getJsCoverageIgnoreComments());
 
         return jsLineInitialization + instrumentedSource + jsConditionals;
     }
@@ -439,7 +441,7 @@ class SourceProcessor {
 
     protected String instrumentSource(String sourceURI, String source) {
         AstRoot astRoot = parser.parse(source , sourceURI, 1);
-        astRoot.visitComments(instrumenter);
+        astRoot.visitComments(commentsVisitor);
         astRoot.visit(instrumenter);
         if (includeBranchCoverage) {
             branchInstrumentor.setAstRoot(astRoot);

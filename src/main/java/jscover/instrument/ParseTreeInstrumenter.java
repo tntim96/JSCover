@@ -345,7 +345,6 @@ package jscover.instrument;
 import org.mozilla.javascript.ast.AstNode;
 import org.mozilla.javascript.ast.NodeVisitor;
 
-import java.util.List;
 import java.util.SortedSet;
 import java.util.logging.Logger;
 
@@ -370,10 +369,6 @@ class ParseTreeInstrumenter implements NodeVisitor {
 	// Function Coverage (HA-CA)
     public int getNumFunctions() {
     	return nodeProcessor.getNumFunctions();
-    }
-
-    public List<JSCoverageIgnoreComment> getIgnores() {
-        return nodeProcessor.getIgnores();
     }
 
     public boolean visit(AstNode node) {

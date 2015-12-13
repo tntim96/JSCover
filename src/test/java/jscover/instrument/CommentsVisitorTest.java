@@ -342,31 +342,64 @@ Public License instead of this License.
 
 package jscover.instrument;
 
-public class JSCoverageIgnoreComment {
-    final static String IGNORE_START = "//#JSCOVERAGE_IF";
-    final static String IGNORE_END = "//#JSCOVERAGE_ENDIF";
-    private int start;
-    private int end;
-    private String condition;
+import jscover.ConfigurationCommon;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.mozilla.javascript.CompilerEnvirons;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Parser;
+import org.mozilla.javascript.ast.AstRoot;
 
-    public JSCoverageIgnoreComment(String condition, int start) {
-        this.condition = condition;
-        this.start = start;
+import static jscover.instrument.CommentsVisitor.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
+
+@RunWith(MockitoJUnitRunner.class)
+public class CommentsVisitorTest {
+    private static CompilerEnvirons compilerEnv = new ConfigurationCommon().getCompilerEnvirons();
+
+    static {
+        compilerEnv.setLanguageVersion(Context.VERSION_1_8);
     }
 
-    public void setEnd(int end) {
-        this.end = end;
+    private CommentsVisitor visitor = new CommentsVisitor(true);
+    private Parser parser;
+    @Mock
+    private ConfigurationCommon config;
+
+    @Before
+    public void setUp() {
+        parser = new Parser(compilerEnv);
     }
 
-    public int getStart() {
-        return start;
+    @Test
+    public void shouldDetectJSCoverageIgnoreComments() {
+        AstRoot astRoot = parser.parse("//#JSCOVERAGE_IF x < 10\nvar x = 0;\n//#JSCOVERAGE_ENDIF", null, 1);
+        astRoot.visitComments(visitor);
+        assertThat(visitor.getJsCoverageIgnoreComments().size(), equalTo(1));
+        JSCoverageIgnoreComment comment = visitor.getJsCoverageIgnoreComments().iterator().next();
+        assertThat(comment.getStart(), equalTo(1));
+        assertThat(comment.getCondition(), equalTo("x < 10"));
+        assertThat(comment.getEnd(), equalTo(3));
     }
 
-    public int getEnd() {
-        return end;
+    @Test
+    public void shouldDetectJSCoverIgnoreLine() {
+        AstRoot astRoot = parser.parse("var x;\nx < 10;" + EXCL_LINE, null, 1);
+        astRoot.visitComments(visitor);
+        assertThat(visitor.ignoreLine(1), equalTo(false));
+        assertThat(visitor.ignoreLine(2), equalTo(true));
     }
 
-    public String getCondition() {
-        return condition;
+    @Test
+    public void shouldDetectJSCoverIgnoreLineRange() {
+        AstRoot astRoot = parser.parse(EXCL_START + "\nvar x;\nx < 10;" + EXCL_STOP, null, 1);
+        astRoot.visitComments(visitor);
+        assertThat(visitor.ignoreLine(1), equalTo(true));
+        assertThat(visitor.ignoreLine(2), equalTo(true));
     }
+
 }

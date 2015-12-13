@@ -342,31 +342,75 @@ Public License instead of this License.
 
 package jscover.instrument;
 
-public class JSCoverageIgnoreComment {
-    final static String IGNORE_START = "//#JSCOVERAGE_IF";
-    final static String IGNORE_END = "//#JSCOVERAGE_ENDIF";
-    private int start;
-    private int end;
-    private String condition;
+import org.mozilla.javascript.ast.AstNode;
+import org.mozilla.javascript.ast.Comment;
+import org.mozilla.javascript.ast.NodeVisitor;
 
-    public JSCoverageIgnoreComment(String condition, int start) {
-        this.condition = condition;
-        this.start = start;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+
+
+public class CommentsVisitor implements NodeVisitor {
+    static final String EXCL_LINE = "//#JSCOVER_EXCL_LINE";//Lines containing this marker will be excluded.
+    static final String EXCL_START = "//#JSCOVER_EXCL_START";//Marks the beginning of an excluded section.
+    static final String EXCL_STOP = "//#JSCOVER_EXCL_STOP";//Marks the end of an excluded section.
+    static final String EXCL_BR_LINE = "//#JSCOVER_EXCL_BR_LINE";//Exclude line from branch coverage.
+    //Marks the beginning of a section which is excluded  from  branch coverage.
+    static final String EXCL_BR_START = "//#JSCOVER_EXCL_BR_START";
+    //Marks  the end of a section which is excluded from branch coverage.
+    static final String EXCL_BR_STOP = "//#JSCOVER_EXCL_BR_STOP";
+
+    boolean includeBranch;
+    private LinkedList<JSCoverageIgnoreComment> jsCoverageIgnoreComments = new LinkedList<JSCoverageIgnoreComment>();
+
+    public CommentsVisitor(boolean includeBranch) {
+        this.includeBranch = includeBranch;
     }
 
-    public void setEnd(int end) {
-        this.end = end;
+    private Set<Integer> ignoreLines = new HashSet<Integer>();
+    private LinkedList<CommentRange> ignoreLineRanges = new LinkedList<CommentRange>();
+
+    public List<JSCoverageIgnoreComment> getJsCoverageIgnoreComments() {
+        return jsCoverageIgnoreComments;
     }
 
-    public int getStart() {
-        return start;
+
+    @Override
+    public boolean visit(AstNode node) {
+        if (node instanceof Comment) {
+            String comment = ((Comment) node).getValue();
+            if (rhinoSafeStartsWith(comment, JSCoverageIgnoreComment.IGNORE_START)) {
+                if (comment.trim().length() > JSCoverageIgnoreComment.IGNORE_START.length()) {
+                    jsCoverageIgnoreComments.add(new JSCoverageIgnoreComment(comment.substring(JSCoverageIgnoreComment.IGNORE_START.length() + 1), node.getLineno()));
+                }
+            } else if (rhinoSafeStartsWith(comment, EXCL_LINE)) {
+                ignoreLines.add(node.getLineno());
+            } else if (rhinoSafeStartsWith(comment, EXCL_START)) {
+                ignoreLineRanges.add(new CommentRange(node.getLineno()));
+            } else if (rhinoSafeStartsWith(comment, EXCL_STOP)) {
+                ignoreLineRanges.getLast().setEnd(node.getLineno());
+            } else if (rhinoSafeStartsWith(comment, JSCoverageIgnoreComment.IGNORE_END)) {
+                jsCoverageIgnoreComments.getLast().setEnd(node.getLineno());
+            }
+            return true;
+        }
+        return true;
     }
 
-    public int getEnd() {
-        return end;
+    //Rhino may truncate comment
+    private boolean rhinoSafeStartsWith(String comment, String ignoreEnd) {
+        return comment.startsWith(ignoreEnd.substring(0, ignoreEnd.length()-1));
     }
 
-    public String getCondition() {
-        return condition;
+    public boolean ignoreLine(int line) {
+        if (ignoreLines.contains(line))
+            return true;
+        for (CommentRange ignoreLineRange : ignoreLineRanges) {
+            if (ignoreLineRange.inRange(line))
+                return true;
+        }
+        return false;
     }
 }
