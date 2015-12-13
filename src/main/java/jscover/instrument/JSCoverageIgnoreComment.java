@@ -341,14 +341,14 @@ Public License instead of this License.
  */
 package jscover.instrument;
 
-public class IgnoreComment {
+public class JSCoverageIgnoreComment {
     final static String IGNORE_START = "//#JSCOVERAGE_IF";
     final static String IGNORE_END = "//#JSCOVERAGE_END";//Should be //#JSCOVERAGE_ENDIF, but Rhino may truncate comment
     private int start;
     private int end;
     private String condition;
 
-    public IgnoreComment(String condition, int start) {
+    public JSCoverageIgnoreComment(String condition, int start) {
         this.condition = condition;
         this.start = start;
     }

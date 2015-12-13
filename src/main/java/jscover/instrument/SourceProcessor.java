@@ -473,10 +473,10 @@ class SourceProcessor {
         return sb.toString();
     }
 
-    private String getJsConditionals(String fileName, List<IgnoreComment> ignores) {
+    private String getJsConditionals(String fileName, List<JSCoverageIgnoreComment> ignores) {
         fileName = fileName.replace("\\", "\\\\").replace("'", "\\'");
         StringBuilder sb = new StringBuilder();
-        for (IgnoreComment ignore : ignores) {
+        for (JSCoverageIgnoreComment ignore : ignores) {
             sb.append(format(ignoreJS, ignore.getCondition(), fileName, ignore.getStart(), ignore.getEnd()));
         }
         return sb.toString();

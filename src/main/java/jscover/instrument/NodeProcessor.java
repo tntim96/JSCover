@@ -347,14 +347,14 @@ import org.mozilla.javascript.ast.*;
 
 import java.util.*;
 
-import static jscover.instrument.IgnoreComment.IGNORE_END;
-import static jscover.instrument.IgnoreComment.IGNORE_START;
+import static jscover.instrument.JSCoverageIgnoreComment.IGNORE_END;
+import static jscover.instrument.JSCoverageIgnoreComment.IGNORE_START;
 
 //Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013, tntim96
 class NodeProcessor {
     private StatementBuilder statementBuilder = new StatementBuilder();
     private SortedSet<Integer> validLines = new TreeSet<Integer>();
-    private LinkedList<IgnoreComment> ignores = new LinkedList<IgnoreComment>();
+    private LinkedList<JSCoverageIgnoreComment> ignores = new LinkedList<JSCoverageIgnoreComment>();
     private int functionNumber;// Function Coverage (HA-CA)
     private String fileName;
     private boolean includeFunctionCoverage;
@@ -378,9 +378,7 @@ class NodeProcessor {
             String comment = ((Comment)node).getValue();
             if (comment.startsWith(IGNORE_START)) {
                 if (comment.trim().length() > IGNORE_START.length()) {
-                    ignores.add(new IgnoreComment(comment.substring(IGNORE_START.length() + 1), node.getLineno()));
-                } else {
-                    //TODO Add logic to ignore branch if we decide to do this
+                    ignores.add(new JSCoverageIgnoreComment(comment.substring(IGNORE_START.length() + 1), node.getLineno()));
                 }
             } else if (comment.startsWith(IGNORE_END)) {
                 ignores.getLast().setEnd(node.getLineno());
@@ -535,7 +533,7 @@ class NodeProcessor {
     	return functionNumber;
     }
 
-    public List<IgnoreComment> getIgnores() {
+    public List<JSCoverageIgnoreComment> getIgnores() {
         return ignores;
     }
 }

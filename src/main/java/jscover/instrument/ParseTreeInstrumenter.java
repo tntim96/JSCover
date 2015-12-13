@@ -372,7 +372,7 @@ class ParseTreeInstrumenter implements NodeVisitor {
     	return nodeProcessor.getNumFunctions();
     }
 
-    public List<IgnoreComment> getIgnores() {
+    public List<JSCoverageIgnoreComment> getIgnores() {
         return nodeProcessor.getIgnores();
     }
 
