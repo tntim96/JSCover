@@ -1,5 +1,6 @@
 //Sample modified from PhantomJS 1.8.2 examples
 var system = require('system');
+var fs = require('fs');
 
 /**
  * Wait until the test condition is true or a timeout occurs. Useful for waiting
@@ -37,8 +38,8 @@ function waitFor(testFx, onReady, timeOutMillis) {
 };
 
 
-if (system.args.length !== 2) {
-    console.log('Usage: run-qunit.js URL');
+if (system.args.length !== 2 && system.args.length !== 3) {
+    console.log('Usage: run-qunit.js URL [dir]');
     phantom.exit(1);
 }
 
@@ -71,9 +72,20 @@ page.open(system.args[1], function(status){
                 } catch (e) { }
                 return 10000;
             });
-            page.evaluate(function(){
-                jscoverage_report('phantom');
-            });
+            if (system.args.length == 2) {
+                page.evaluate(function(){
+                    jscoverage_report('phantom');
+                });
+            } else {
+                var json = page.evaluate(function(){
+                    return jscoverage_serializeCoverageToJSON();
+                });
+                try {
+                    fs.write(system.args[2] + '/jscoverage.json', json, 'w');
+                } catch(e) {
+                    console.log(e);
+                }
+            }
             phantom.exit((parseInt(failedNum, 10) > 0) ? 1 : 0);
         });
     }
