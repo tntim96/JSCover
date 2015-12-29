@@ -7,7 +7,8 @@
   * Add option to generate JSCover report files (https://github.com/tntim96/JSCover/issues/215)
   * Fix undefined reportError error in jscoverage.js (https://github.com/tntim96/JSCover/issues/214)
   * Limit IE restrictions to IE7 and below
-  * Internal: Upgrade HtmlUnit 2.18 to 2.19, Jasmine 2.3.4 to 2.4.1
+  * Upgrade Jasmine 2.3.4 to 2.4.1 and update run-jscover-jasmine2.js
+  * Internal: Upgrade HtmlUnit 2.18 to 2.19
 
 1.0.22 / 2015-09-15
 ==================

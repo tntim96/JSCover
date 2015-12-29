@@ -396,10 +396,10 @@ public class HtmlUnitJSTest {
 
         //Verify Jasmine test result
         HtmlPage frame = (HtmlPage)page.getFrameByName("browserIframe").getEnclosedPage();
-        List<HtmlSpan> passed = (List<HtmlSpan>) frame.getByXPath("//span[contains(@class,'passed')]");
+        List<HtmlSpan> passed = (List<HtmlSpan>) frame.getByXPath("//span[contains(@class,'jasmine-passed')]");
         assertThat(passed.size(), equalTo(1));
-        assertThat(frame.getByXPath("//span[contains(@class,'failed')]").size(), equalTo(0));
-        assertThat(frame.getByXPath("//span[contains(@class,'skipped')]").size(), equalTo(0));
+        assertThat(frame.getByXPath("//span[contains(@class,'jasmine-failed')]").size(), equalTo(0));
+        assertThat(frame.getByXPath("//span[contains(@class,'jasmine-skipped')]").size(), equalTo(0));
         assertThat(passed.get(0).asText(), equalTo("16 specs, 0 failures"));
 
         //Store Report
