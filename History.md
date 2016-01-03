@@ -1,11 +1,10 @@
-1.0.23 / 2015-??-??
+1.0.23 / 2016-01-03
 ==================
-  * Fix isCoalesce for return statements (https://github.com/tntim96/JSCover/issues/219)
-  * Add ability to ignore lines (https://github.com/tntim96/JSCover/issues/218)
+  * Fix `isCoalesce` for return statements (https://github.com/tntim96/JSCover/issues/219)
   * Allow sorting by all columns (https://github.com/tntim96/JSCover/issues/193)
   * Provide a column with Missing statements (count) (https://github.com/tntim96/JSCover/issues/192)
   * Add option to generate JSCover report files (https://github.com/tntim96/JSCover/issues/215)
-  * Fix undefined reportError error in jscoverage.js (https://github.com/tntim96/JSCover/issues/214)
+  * Fix undefined reportError error in `jscoverage.js` (https://github.com/tntim96/JSCover/issues/214)
   * Limit IE restrictions to IE7 and below
   * Upgrade Jasmine 2.3.4 to 2.4.1 and update run-jscover-jasmine2.js
   * Internal: Upgrade HtmlUnit 2.18 to 2.19
