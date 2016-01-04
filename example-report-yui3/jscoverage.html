@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
     jscoverage.html - code coverage for JavaScript
-    Copyright (C) 2007, 2008, 2009, 2010 siliconforks.com - 2012, 2013, 2014, 2015 tntim96
+    Copyright (C) 2007, 2008, 2009, 2010 siliconforks.com - 2012, 2013, 2014, 2015, 2016 tntim96
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,11 +20,10 @@
 
 <html>
 <head>
-<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/>
 <title>JSCover</title>
 <link rel="stylesheet" type="text/css" href="jscoverage-highlight.css"/>
 <link rel="stylesheet" type="text/css" href="jscoverage.css"/>
-<!--[if IE]>
+<!--[if lte IE 7]>
 <link rel="stylesheet" type="text/css" href="jscoverage-ie.css"/>
 <![endif]-->
 <script type="text/javascript" src="jscoverage.js"></script>
@@ -48,7 +47,7 @@
 <div id="tabPages" class="TabPages">
   <div class="TabPage" id="browserTabPage">
     <div id="locationDiv">
-    URL: <input id="location" type="text" size="70" onkeypress="jscoverage_input_keypress(event)"/>
+    <label for="location">URL:</label> <input id="location" type="text" size="70" onkeypress="jscoverage_input_keypress(event)"/>
     <button id="openInFrameButton" onclick="jscoverage_openInFrameButton_click();" title="open URL in the iframe below [Enter]">Open in frame</button>
     <button id="openInWindowButton" onclick="jscoverage_openInWindowButton_click();" title="open URL in a new window (or tab) [Shift+Enter]">Open in window</button>
     </div>
@@ -64,21 +63,27 @@
     <thead>
     <tr id="headerRow">
     <th class="leftColumn"><a id="sortByName" href="javascript:jscoverage_recalculateSummaryTabBy('Name')">File</a></th>
-    <th><abbr title="The total number of executable statements">Statements</abbr></th>
-    <th><abbr title="The number of statements actually executed">Executed</abbr></th>
-    <th><abbr title="The total number of branches">Branches</abbr></th>
-    <th><abbr title="The number of branches covered">Branches Hit</abbr></th>
-    <th><abbr title="The total number of functions">Functions</abbr></th>
-    <th><abbr title="The number of functions covered">Functions Hit</abbr></th>
-    <th><a id="sortByLine" href="javascript:jscoverage_recalculateSummaryTabBy('Coverage')"><abbr title="Number of executed statements as a percentage of total number of statements">Coverage</abbr></a></th>
-    <th><a id="sortByBranch" href="javascript:jscoverage_recalculateSummaryTabBy('Branch')"><abbr title="Number of executed branch paths as a percentage of total number of branch paths">Branch</abbr></a></th>
-    <th><a id="sortByFunction" href="javascript:jscoverage_recalculateSummaryTabBy('Function')"><abbr title="Number of executed functions as a percentage of total number of functions">Function</abbr></a></th>
+    <th><a id="sortByStTot" href="javascript:jscoverage_recalculateSummaryTabBy('stTot')"><abbr title="The total number of executable statements">Stmt</abbr></a></th>
+    <th><a id="sortByStHit" href="javascript:jscoverage_recalculateSummaryTabBy('stHit')"><abbr title="The number of statements executed">Stmt Hit</abbr></a></th>
+    <th><a id="sortByStMss" href="javascript:jscoverage_recalculateSummaryTabBy('stMss')"><abbr title="The number of statements missed">Stmt Miss</abbr></a></th>
+    <th><a id="sortByBrTot" href="javascript:jscoverage_recalculateSummaryTabBy('brTot')"><abbr title="The total number of branches">Br</abbr></a></th>
+    <th><a id="sortByBrHit" href="javascript:jscoverage_recalculateSummaryTabBy('brHit')"><abbr title="The number of branches covered">Br Hit</abbr></a></th>
+    <th><a id="sortByBrMss" href="javascript:jscoverage_recalculateSummaryTabBy('brMss')"><abbr title="The number of branches missed">Br Miss</abbr></a></th>
+    <th><a id="sortByFnTot" href="javascript:jscoverage_recalculateSummaryTabBy('fnTot')"><abbr title="The total number of functions">Fn</abbr></a></th>
+    <th><a id="sortByFnHit" href="javascript:jscoverage_recalculateSummaryTabBy('fnHit')"><abbr title="The number of functions covered">Fn Hit</abbr></a></th>
+    <th><a id="sortByFnMss" href="javascript:jscoverage_recalculateSummaryTabBy('fnMss')"><abbr title="The number of functions missed">Fn Miss</abbr></a></th>
+    <th><a id="sortByLine" href="javascript:jscoverage_recalculateSummaryTabBy('stPc')"><abbr title="Number of executed statements as a percentage of total number of statements">Coverage</abbr></a></th>
+    <th><a id="sortByBranch" href="javascript:jscoverage_recalculateSummaryTabBy('brPc')"><abbr title="Number of executed branch paths as a percentage of total number of branch paths">Branch</abbr></a></th>
+    <th><a id="sortByFunction" href="javascript:jscoverage_recalculateSummaryTabBy('fnPc')"><abbr title="Number of executed functions as a percentage of total number of functions">Function</abbr></a></th>
     </tr>
     <tr id="summaryTotals">
         <td class="leftColumn">
             <span class="title">Total:</span>
             <span>0</span>
         </td>
+        <td class="numeric">0</td>
+        <td class="numeric">0</td>
+        <td class="numeric">0</td>
         <td class="numeric">0</td>
         <td class="numeric">0</td>
         <td class="numeric">0</td>
@@ -108,21 +113,12 @@
     </thead>
     <tbody id="summaryTbody">
 
-    <!--
-    <tr>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0%</td>
-    <td>0</td>
-    </tr>
-    -->
-
     </tbody>
     </table>
     </div>
   </div>
   <div class="TabPage">
+    <div id="sourceErrorDiv"></div>
     <div id="fileDiv"></div>
     <div id="sourceDiv"></div>
   </div>
@@ -133,10 +129,10 @@
     <div id="storeDiv"> </div>
   </div>
   <div class="TabPage">
-    <p>This is version 1.0.21-SNAPSHOT of JSCover, a program that calculates code coverage statistics for JavaScript.</p>
-    <p>Report generated at 20:31:42 23 Aug 2015.</p>
-    <p>See <a href="http://tntim96.github.com/JSCover">http://tntim96.github.com/JSCover</a> for more information.</p>
-    <p>Copyright &copy; 2007, 2008, 2009, 2010 siliconforks.com - 2012, 2013, 2014, 2015 tntim96</p>
+    <p>This is version 1.0.23-SNAPSHOT of JSCover, a program that calculates code coverage statistics for JavaScript.</p>
+    <p>Report generated at 16:46:30 28 Nov 2015.</p>
+    <p>See <a href="http://tntim96.github.com/JSCover" target="_blank">http://tntim96.github.com/JSCover</a> for more information.</p>
+    <p>Copyright &copy; 2007, 2008, 2009, 2010 siliconforks.com - 2012, 2013, 2014, 2015, 2016 tntim96</p>
   </div>
 </div>
 </div>
