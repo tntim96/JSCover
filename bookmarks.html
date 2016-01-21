@@ -93,8 +93,8 @@ var weekAgo = new Date();
 weekAgo.setMilliseconds(now.getMilliseconds() - 1000 * 60 * 60 * 24 * 7);
 
 var link = 'https://www.google.com.au/search?q=JSCover+JavaScript+-&quot;js+cover&quot;+-&quot;jsc+over&quot;&biw=1920&bih=522&source=lnt&tbs=cdr:1';
-link += ',cd_min:' + weekAgo.getDate() + '/' + weekAgo.getMonth() + '/' + weekAgo.getFullYear();
-link += ',cd_max:' + now.getDate()     + '/' + now.getMonth()     + '/' + now.getFullYear()     + '&tbm=';
+link += ',cd_min:' + weekAgo.getDate() + '/' + (weekAgo.getMonth()+1) + '/' + weekAgo.getFullYear();
+link += ',cd_max:' + now.getDate()     + '/' + (now.getMonth()+1)     + '/' + now.getFullYear()     + '&tbm=';
 document.getElementById('searchPastFN').innerHTML = '<a href="'+link+'" target="_blank">Google search past week</a><br/>';
 
 link = "http://sourceforge.net/projects/jscover/files/stats/map?dates=2012-12-01+to+";
