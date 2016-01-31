@@ -1,3 +1,7 @@
+1.0.24 / 2016-??-??
+==================
+  * Don't Switch To Inverted Mode If There's A Query String (https://github.com/tntim96/JSCover/issues/222)
+
 1.0.23 / 2016-01-03
 ==================
   * Fix `isCoalesce` for return statements (https://github.com/tntim96/JSCover/issues/219)

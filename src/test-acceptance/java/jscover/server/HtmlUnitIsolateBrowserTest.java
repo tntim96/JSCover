@@ -67,20 +67,20 @@ public class HtmlUnitIsolateBrowserTest {
     @Test
     public void shouldNotCombineCoverage() throws IOException, InterruptedException {
         HtmlPage page = webClient.getPage("http://localhost:9001/" + getTestUrl());
-        ((HtmlElement)page.getElementById("radio4")).click();
+        page.getElementById("radio4").click();
 
         page.getHtmlElementById("launchDuplicate").click();
         webClient.waitForBackgroundJavaScript(100);
         WebWindow webWindow = webClient.getWebWindowByName("duplicateWindow");
         HtmlPage duplicatePage = (HtmlPage)webWindow.getEnclosedPage();
-        ((HtmlElement)duplicatePage.getElementById("radio1")).click();
+        duplicatePage.getElementById("radio1").click();
         duplicatePage.executeJavaScript("jscoverage_report();");
         page = webClient.getPage("file:///"+ new File(getReportDir()+"/jscoverage.html").getAbsolutePath());
         verifyTotal(page, 57, 12, 33);
     }
 
     protected void verifyTotal(HtmlPage page, int percentage, int branchPercentage, int functionPercentage) throws IOException {
-        page = ((HtmlElement)page.getElementById("summaryTab")).click();
+        page = page.getElementById("summaryTab").click();
         webClient.waitForBackgroundJavaScript(2000);
         verifyTotals(page, percentage, branchPercentage, functionPercentage);
     }

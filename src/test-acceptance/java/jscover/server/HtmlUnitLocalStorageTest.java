@@ -415,7 +415,7 @@ public class HtmlUnitLocalStorageTest {
         clickItem(4, 100, 87, 100);
 
         //page.getHtmlElementById("storeTab").click();
-        //((HtmlElement)page.getElementById("storeButton")).click();
+        //page.getElementById("storeButton").click();
     }
 
     @Test
@@ -437,19 +437,19 @@ public class HtmlUnitLocalStorageTest {
         clickItem(3, 84, 62, 66);
         clickItem(4, 100, 87, 100);
 
-        //((HtmlElement)page.getElementById("storeTab")).click();
-        //((HtmlElement)page.getElementById("storeButton")).click();
+        //page.getElementById("storeTab").click();
+        //page.getElementById("storeButton").click();
     }
 
     private void clickItem(int id, int linePercentage, int branchPercentage, int functionPercentage) throws IOException {
         HtmlPage page = webClient.getPage("http://localhost:9001/" + getTestUrl());
-        ((HtmlElement)page.getElementById("radio" + id)).click();
+        page.getElementById("radio" + id).click();
         page = webClient.getPage("http://localhost:9001/jscoverage.html");
         verifyTotal(page, linePercentage, branchPercentage, functionPercentage);
     }
 
     protected void verifyTotal(HtmlPage page, int percentage, int branchPercentage, int functionPercentage) throws IOException {
-        page = ((HtmlElement)page.getElementById("summaryTab")).click();
+        page = page.getElementById("summaryTab").click();
         webClient.waitForBackgroundJavaScript(2000);
         verifyTotals(page, percentage, branchPercentage, functionPercentage);
     }

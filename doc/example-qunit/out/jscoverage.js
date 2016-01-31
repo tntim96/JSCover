@@ -235,7 +235,7 @@ function jscoverage_init(w) {
   // check if we are in inverted mode
   if (w.opener) {
     try {
-      if (w.opener.top._$jscoverage) {
+      if (w.opener.top._$jscoverage && !location.search) {
         jscoverage_isInvertedMode = true;
         if (! w._$jscoverage) {
           w._$jscoverage = w.opener.top._$jscoverage;
@@ -245,7 +245,7 @@ function jscoverage_init(w) {
       }
     } catch (e) {
       try {
-        if (w.opener._$jscoverage) {
+        if (w.opener._$jscoverage && !location.search) {
           jscoverage_isInvertedMode = true;
           if (! w._$jscoverage) {
             w._$jscoverage = w.opener._$jscoverage;
@@ -733,8 +733,8 @@ function jscoverage_recalculateSummaryTab(cc) {
     var length = fileCC.length;
     var currentConditionalEnd = 0;
     var conditionals = null;
-    if (fileCC.conditionals) {
-      conditionals = fileCC.conditionals;
+    if (cc[file].conditionals) {
+      conditionals = cc[file].conditionals;
     }
     for (lineNumber = 0; lineNumber < length; lineNumber++) {
       var n = fileCC[lineNumber];
@@ -1108,6 +1108,7 @@ function jscoverage_checkbox_click() {
 function jscoverage_makeTable(lines) {
   var coverage = _$jscoverage[jscoverage_currentFile].lineData;
   var branchData = _$jscoverage[jscoverage_currentFile].branchData;
+  var conditionals = _$jscoverage[jscoverage_currentFile].conditionals;
 
   // this can happen if there is an error in the original JavaScript file
   if (! lines) {
@@ -1142,9 +1143,8 @@ function jscoverage_makeTable(lines) {
 
     if (lineNumber === currentConditionalEnd) {
       currentConditionalEnd = 0;
-    }
-    else if (currentConditionalEnd === 0 && coverage.conditionals && coverage.conditionals[lineNumber]) {
-      currentConditionalEnd = coverage.conditionals[lineNumber];
+    } else if (currentConditionalEnd === 0 && conditionals && conditionals[lineNumber]) {
+      currentConditionalEnd = conditionals[lineNumber];
     }
 
     var row = '<tr>';
@@ -1153,17 +1153,14 @@ function jscoverage_makeTable(lines) {
     if (timesExecuted !== undefined && timesExecuted !== null) {
       if (currentConditionalEnd !== 0) {
         row += '<td class="y numeric">';
-      }
-      else if (timesExecuted === 0) {
+      } else if (timesExecuted === 0) {
         row += '<td class="r numeric" id="line-' + lineNumber + '">';
-      }
-      else {
+      } else {
         row += '<td class="g numeric">';
       }
       row += timesExecuted;
       row += '</td>';
-    }
-    else {
+    } else {
       row += '<td></td>';
     }
 
@@ -1172,14 +1169,17 @@ function jscoverage_makeTable(lines) {
         var branchClass = '';
         var branchText = '&#160;';
         if (branchData[lineNumber] !== undefined && branchData[lineNumber] !== null) {
+          if (currentConditionalEnd !== 0) {
+            branchClass = 'y';
+          } else {
             branchClass = 'g';
             for (var conditionIndex = 0; conditionIndex < branchData[lineNumber].length; conditionIndex++) {
-                if (branchData[lineNumber][conditionIndex] !== undefined && branchData[lineNumber][conditionIndex] !== null && !branchData[lineNumber][conditionIndex].covered()) {
-                    branchClass = 'r';
-                    break;
-                }
+              if (branchData[lineNumber][conditionIndex] !== undefined && branchData[lineNumber][conditionIndex] !== null && !branchData[lineNumber][conditionIndex].covered()) {
+                branchClass = 'r';
+                break;
+              }
             }
-
+          }
         }
         if (branchClass === 'r') {
             branchText = '<a href="#" onclick="alert(buildBranchMessage(_$jscoverage[\''+jscoverage_currentFile+'\'].branchData[\''+lineNumber+'\']));">info</a>';
@@ -1299,7 +1299,7 @@ function jscoverage_recalculateSourceTab() {
             for (var i = 0; i < lines.length; i++)
                   lines[i] = jscoverage_html_escape(lines[i]);
               jscoverage_makeTable(lines);
-          }
+          };
           setTimeout(displaySource, 0);
           summaryThrobber.style.visibility = 'hidden';
         }
@@ -1369,8 +1369,7 @@ function jscoverage_selectTab(tab) {
     if (node.className !== 'disabled') {
       if (tabNum === tab) {
         node.className = 'selected';
-      }
-      else {
+      } else {
         node.className = '';
       }
     }
@@ -1387,8 +1386,7 @@ function jscoverage_selectTab(tab) {
 
     if (tabNum === tab) {
       node.className = 'selected TabPage';
-    }
-    else {
+    } else {
       node.className = 'TabPage';
     }
     tabNum++;
@@ -1431,8 +1429,7 @@ function jscoverage_tab_click(e) {
 //#JSCOVERAGE_IF
   if (e) {
     target = e.target;
-  }
-  else if (window.event) {
+  } else if (window.event) {
     // IE
     target = window.event.srcElement;
   }
@@ -1446,19 +1443,16 @@ function jscoverage_tab_click(e) {
       while (tbody.hasChildNodes()) {
         tbody.removeChild(tbody.firstChild);
       }
-    }
-    else if (target.id === 'sourceTab') {
+    } else if (target.id === 'sourceTab') {
       var sourceDiv = document.getElementById('sourceDiv');
       sourceDiv.innerHTML = '';
     }
     jscoverage_selectTab(target);
     if (target.id === 'summaryTab') {
       jscoverage_recalculateSummaryTab();
-    }
-    else if (target.id === 'sourceTab') {
+    } else if (target.id === 'sourceTab') {
       jscoverage_recalculateSourceTab();
-    }
-    else {
+    } else {
       jscoverage_endLengthyOperation();
     }
   }, 50);
@@ -1521,12 +1515,10 @@ function jscoverage_storeButton_click() {
           throw request.status;
         }
         message = request.responseText;
-      }
-      catch (e) {
+      } catch (e) {
         if (e.toString().search(/^\d{3}$/) === 0) {
           message = e + ': ' + request.responseText;
-        }
-        else {
+        } else {
           message = 'Could not connect to server: ' + e;
         }
       }
@@ -1563,12 +1555,10 @@ function jscoverage_stopButton_click() {
           throw request.status;
         }
         message = request.responseText;
-      }
-      catch (e) {
+      } catch (e) {
         if (e.toString().search(/^\d{3}$/) === 0) {
           message = e + ': ' + request.responseText;
-        }
-        else {
+        } else {
           message = 'Could not connect to server: ' + e;
         }
       }
