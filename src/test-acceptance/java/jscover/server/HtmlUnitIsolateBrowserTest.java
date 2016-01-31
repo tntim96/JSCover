@@ -71,7 +71,7 @@ public class HtmlUnitIsolateBrowserTest {
 
         page.getHtmlElementById("launchDuplicate").click();
         webClient.waitForBackgroundJavaScript(100);
-        WebWindow webWindow = webClient.getWebWindowByName("duplicateWindow");
+        WebWindow webWindow = webClient.getWebWindowByName("JSCoverInvertedModeDuplicateWindow");
         HtmlPage duplicatePage = (HtmlPage)webWindow.getEnclosedPage();
         duplicatePage.getElementById("radio1").click();
         duplicatePage.executeJavaScript("jscoverage_report();");
