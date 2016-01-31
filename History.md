@@ -1,5 +1,6 @@
 1.0.24 / 2016-??-??
 ==================
+  * Improve Logic To Determine Inverted Mode (https://github.com/tntim96/JSCover/issues/223)
   * Don't Switch To Inverted Mode If There's A Query String (https://github.com/tntim96/JSCover/issues/222)
 
 1.0.23 / 2016-01-03

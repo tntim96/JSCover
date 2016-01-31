@@ -26,7 +26,7 @@ function jscoverage_init(w) {
   // check if we are in inverted mode
   if (w.opener) {
     try {
-      if (w.opener.top._$jscoverage && !location.search) {
+      if (w.opener.top._$jscoverage && window.name.indexOf('JSCoverInvertedMode') != -1) {
         jscoverage_isInvertedMode = true;
         if (! w._$jscoverage) {
           w._$jscoverage = w.opener.top._$jscoverage;
@@ -36,7 +36,7 @@ function jscoverage_init(w) {
       }
     } catch (e) {
       try {
-        if (w.opener._$jscoverage && !location.search) {
+        if (w.opener._$jscoverage && window.name.indexOf('JSCoverInvertedMode') != -1) {
           jscoverage_isInvertedMode = true;
           if (! w._$jscoverage) {
             w._$jscoverage = w.opener._$jscoverage;

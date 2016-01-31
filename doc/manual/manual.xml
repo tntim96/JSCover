@@ -1346,7 +1346,8 @@ fs.write("target/jscoverage.json", json, 'w');
                     In inverted mode, you do the opposite: you load your test page directly in your web browser, and
                     from there you launch JSCover.
                     To do this you need to add some code to your test page:
-                    <code>window.open('path/to/jscoverage.html');</code>
+                    <code>window.open('path/to/jscoverage.html', 'JSCoverInvertedMode');</code>
+                    The text 'JSCoverInvertedMode' has to be part of the name parameter.
                 </text>
                 <text>
                     The "path/to/jscoverage.html" should be a URL pointing to the location of the jscoverage.html file
@@ -1356,7 +1357,7 @@ fs.write("target/jscoverage.json", json, 'w');
                 <text>
                     You can place this code wherever you like in your page: for example, you could attach it to a
                     button:
-                    <code>&lt;button type="button" onclick="window.open('path/to/jscoverage.html');"&gt;Coverage report&lt;/button&gt;</code>
+                    <code>&lt;button type="button" onclick="window.open('path/to/jscoverage.html', 'JSCoverInvertedMode');"&gt;Coverage report&lt;/button&gt;</code>
                 </text>
                 <text>Note that you must use a window.open call; simply making a link to jscoverage.html is not
                     sufficient.

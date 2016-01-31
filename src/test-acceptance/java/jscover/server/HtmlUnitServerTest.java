@@ -572,7 +572,7 @@ public class HtmlUnitServerTest {
         page.getHtmlElementById("launchJSCover").click();
         webClient.waitForBackgroundJavaScript(100);
 
-        WebWindow webWindow = webClient.getWebWindowByName("jsCoverWindow");
+        WebWindow webWindow = webClient.getWebWindowByName("JSCoverInvertedMode");
         HtmlPage jsCoverPage = (HtmlPage)webWindow.getEnclosedPage();
 
         verifyTotal(webClient, jsCoverPage, 15, branchPercentage1, functionPercentage1);
