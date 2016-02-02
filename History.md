@@ -1,5 +1,6 @@
 1.0.24 / 2016-??-??
 ==================
+  * Upgrade to Rhino 1.7.7.1
   * Improve Logic To Determine Inverted Mode (https://github.com/tntim96/JSCover/issues/223)
   * Don't Switch To Inverted Mode If There's A Query String (https://github.com/tntim96/JSCover/issues/222)
 
