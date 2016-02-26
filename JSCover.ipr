@@ -49,7 +49,6 @@
   <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false">
     <file url="file://$PROJECT_DIR$" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/data/LICENSE-mozilla.txt" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/src/test/javascript/lib/jasmine-2.3.4" charset="US-ASCII" />
     <file url="PROJECT" charset="UTF-8" />
   </component>
   <component name="EntryPointsManager">
@@ -400,7 +399,7 @@
       <option name="PROGRAM_PARAMETERS" value="-ws --report-dir=target --proxy" />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" value="" />
+      <option name="ALTERNATIVE_JRE_PATH" />
       <option name="ENABLE_SWING_INSPECTOR" value="false" />
       <option name="ENV_VARIABLES" />
       <option name="PASS_PARENT_ENVS" value="true" />
@@ -422,7 +421,7 @@
       <option name="PROGRAM_PARAMETERS" value="-ws --report-dir=target --document-root=doc/example --include-unloaded-js" />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" value="" />
+      <option name="ALTERNATIVE_JRE_PATH" />
       <option name="ENABLE_SWING_INSPECTOR" value="false" />
       <option name="ENV_VARIABLES" />
       <option name="PASS_PARENT_ENVS" value="true" />
@@ -616,7 +615,7 @@
       <option name="PROGRAM_PARAMETERS" value="doc/example 8080" />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" value="" />
+      <option name="ALTERNATIVE_JRE_PATH" />
       <option name="ENABLE_SWING_INSPECTOR" value="false" />
       <option name="ENV_VARIABLES" />
       <option name="PASS_PARENT_ENVS" value="true" />
@@ -1058,15 +1057,15 @@
         <root url="jar://$MAVEN_REPOSITORY$/org/mortbay/jetty/servlet-api-2.5/6.1.14/servlet-api-2.5-6.1.14-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.mozilla:rhino:1.7.7">
+    <library name="Maven: org.mozilla:rhino:1.7.7.1">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino/1.7.7/rhino-1.7.7.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino/1.7.7.1/rhino-1.7.7.1.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino/1.7.7/rhino-1.7.7-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino/1.7.7.1/rhino-1.7.7.1-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino/1.7.7/rhino-1.7.7-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino/1.7.7.1/rhino-1.7.7.1-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.objenesis:objenesis:2.1">
