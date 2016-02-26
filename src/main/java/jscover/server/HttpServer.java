@@ -419,7 +419,7 @@ public class HttpServer extends Thread {
             } else
                 handleOther(httpMethod, httpRequest);
         } catch (Exception e) {
-            logger.log(WARNING, format("Error processing request string %s", requestString),e);
+            logger.log(WARNING, format("Error processing request string %s", requestString), e);
         } finally {
             ioUtils.flushQuietly(pw);
             ioUtils.flushQuietly(os);
@@ -484,7 +484,8 @@ public class HttpServer extends Thread {
             File[] files = file.listFiles();
             Arrays.sort(files);
             for (File linkTo : files) {
-                data.append(format("<a href=\"%s\">%s</a><br/>\n", getRelativePath(file, linkTo), linkTo.getName()));
+                String relativePath = getRelativePath(file, linkTo);
+                data.append(format("<a href=\"%s\">%s</a><br/>\n", relativePath, relativePath));
             }
             data.append("</body>\n</html>");
             sendResponse(HTTP_STATUS.HTTP_OK, MIME.HTML, data.toString());
