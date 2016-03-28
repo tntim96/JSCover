@@ -386,6 +386,9 @@ public class LoggerUtils {
         while (names.hasMoreElements()) {
             String loggerName = names.nextElement();
             Logger logger = LogManager.getLogManager().getLogger(loggerName);
+            if (logger == null) {
+                continue;
+            }
             logger.setLevel(level);
             logger.addHandler(fileTxt);
             Handler[] handlers = logger.getHandlers();
@@ -401,6 +404,9 @@ public class LoggerUtils {
         while (names.hasMoreElements()) {
             String loggerName = names.nextElement();
             Logger logger = LogManager.getLogManager().getLogger(loggerName);
+            if (logger == null) {
+                continue;
+            }
             logger.addHandler(exceptionRecordingHandler);
         }
     }
