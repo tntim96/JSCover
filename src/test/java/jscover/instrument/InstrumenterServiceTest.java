@@ -343,6 +343,7 @@ Public License instead of this License.
 package jscover.instrument;
 
 import jscover.ConfigurationCommon;
+import jscover.server.UriNotFound;
 import jscover.util.IoUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -387,18 +388,19 @@ public class InstrumenterServiceTest {
 
     @Test
     public void shouldInstrumentForWebServer() {
-        File dest = new File("target/dest.js");
-        dest.deleteOnExit();
         String jsInstrumented = service.instrumentJSForWebServer(config, src, "/src.js");
 
         assertThat(jsInstrumented, containsString("x++;"));
         assertThat(jsInstrumented, containsString("_$jscoverage['/src.js'].lineData[1]++;"));
     }
 
+    @Test(expected = UriNotFound.class)
+    public void shouldNotInstrumentForWebServer() {
+        service.instrumentJSForWebServer(config, new File("notFound.js"), "/src.js");
+    }
+
     @Test
     public void shouldInstrumentForProxyServer() {
-        File dest = new File("target/dest.js");
-        dest.deleteOnExit();
         String jsInstrumented = service.instrumentJSForProxyServer(config, "x++;", "/src.js");
 
         assertThat(jsInstrumented, containsString("x++;"));

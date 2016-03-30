@@ -401,4 +401,22 @@ public class SummaryDataTest {
         assertThat(summaryData.getBranchesCoveredCount(), equalTo(7));
         assertThat(summaryData.getBranchRate(), equalTo((double)7/10));
     }
+
+    @Test
+    public void shouldAddFunctionStatistics() {
+        given(fileData1.getCodeFunctionCount()).willReturn(4);
+        given(fileData1.getCodeFunctionCoveredCount()).willReturn(2);
+        given(fileData2.getCodeFunctionCount()).willReturn(6);
+        given(fileData2.getCodeFunctionCoveredCount()).willReturn(5);
+
+        List<Coverable> files = new ArrayList<Coverable>();
+        files.add(fileData1);
+        files.add(fileData2);
+
+        SummaryData summaryData = new SummaryData(files);
+
+        assertThat(summaryData.getCodeFunctionCount(), equalTo(10));
+        assertThat(summaryData.getCodeFunctionCoveredCount(), equalTo(7));
+        assertThat(summaryData.getFunctionCoverRate(), equalTo((double)7/10));
+    }
 }

@@ -378,7 +378,7 @@ public class Main {
     public static final String STDOUT_PREFIX = "-io";
     public static final String REG_TEST_PREFIX = "-regex-test";
     public static final Properties properties = new Properties();
-    public static String reportSrcSubDir = "original-src";
+    public static final String reportSrcSubDir = "original-src";
 
     private String manifestName = "MANIFEST.MF";
     private List<String> dependantClasses = new ArrayList<String>() {{

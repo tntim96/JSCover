@@ -343,6 +343,7 @@ Public License instead of this License.
 package jscover.util;
 
 import jscover.Main;
+import jscover.filesystem.ConfigurationForFS;
 import jscover.server.ConfigurationForServer;
 import org.junit.Before;
 import org.junit.Test;
@@ -372,6 +373,23 @@ public class FileScannerTest {
     public void shouldFindAllJavaScriptFiles() {
         configuration = ConfigurationForServer.parse(new String[]{
                 "--document-root=src/test-integration/resources/jsSearch"
+        });
+        fileScanner = new FileScanner(configuration, file);
+
+        Set<File> files = fileScanner.getFiles(urisAlreadyProcessed);
+        assertThat(files.size(), equalTo(6));
+        assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/root.js")));
+        assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/root-empty.js")));
+        assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/level1/level1.js")));
+        assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/level1/level2/level2.js")));
+        assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/level1/level2/level2-empty.js")));
+        assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/noInstrument/noInstrument.js")));
+    }
+
+    @Test
+    public void shouldFindAllJavaScriptFilesForFileConfig() {
+        ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{
+                "--src-dir=src/test-integration/resources/jsSearch"
         });
         fileScanner = new FileScanner(configuration, file);
 
