@@ -1086,15 +1086,14 @@ function jscoverage_recalculateSourceTab() {
           }
           var response = request.responseText;
           var displaySource = function() {
-              var lines = response.split("\n");
+            var lines = response.split("\n");
             for (var i = 0; i < lines.length; i++)
-                  lines[i] = jscoverage_html_escape(lines[i]);
-              jscoverage_makeTable(lines);
+              lines[i] = jscoverage_html_escape(lines[i]);
+            jscoverage_makeTable(lines);
           };
           setTimeout(displaySource, 0);
           summaryThrobber.style.visibility = 'hidden';
-        }
-        catch (e) {
+        } catch (e) {
           reportError(e);
         }
       }

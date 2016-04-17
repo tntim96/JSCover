@@ -543,6 +543,45 @@ public class HtmlUnitServerTest {
     }
 
     @Test
+    public void shouldStoreResultViaJavaScriptCallWithoutUI() throws Exception {
+        File jsonFile = new File(getReportDir() + "/directory-no-ui/jscoverage.json");
+        if (jsonFile.exists())
+            jsonFile.delete();
+
+        HtmlPage page = webClient.getPage("http://localhost:9001/example/index.html");
+
+        ScriptResult result = page.executeJavaScript("jscoverage_report('directory-no-ui');");
+
+        assertThat(result.getJavaScriptResult().toString(), equalTo("Coverage data stored at " + new File(getReportDir() + "/directory-no-ui").getPath()));
+
+        String json = ioUtils.toString(jsonFile);
+        assertThat(json, containsString("/script.js"));
+
+        page = webClient.getPage("file:///"+ new File(getReportDir()+"/directory-no-ui/jscoverage.html").getAbsolutePath());
+        verifyTotal(webClient, page, 15);
+    }
+
+    @Test
+    public void shouldStoreResultViaJavaScriptCallWithoutUIAsync() throws Exception {
+        File jsonFile = new File(getReportDir() + "/directory-no-ui-cb/jscoverage.json");
+        if (jsonFile.exists())
+            jsonFile.delete();
+
+        HtmlPage page = webClient.getPage("http://localhost:9001/example/index.html");
+
+        ScriptResult result = page.executeJavaScript("jscoverage_report('directory-no-ui-cb', function(response){});");
+
+        assertThat(result.getJavaScriptResult().toString(), equalTo("async"));
+        webClient.waitForBackgroundJavaScript(100);
+
+        String json = ioUtils.toString(jsonFile);
+        assertThat(json, containsString("/script.js"));
+
+        page = webClient.getPage("file:///"+ new File(getReportDir()+"/directory-no-ui-cb/jscoverage.html").getAbsolutePath());
+        verifyTotal(webClient, page, 15);
+    }
+
+    @Test
     public void shouldWorkWithServerIFrameByNavigationButtons() throws Exception {
         HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html");
         ((HtmlInput)page.getHtmlElementById("location")).setValueAttribute("http://localhost:9001/example/index.html");
