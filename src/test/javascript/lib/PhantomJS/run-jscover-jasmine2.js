@@ -34,6 +34,8 @@ function waitFor(testFx, onReady, timeOutMillis) {
                 }
             }
         }, 100); //< repeat check every 100ms
+
+
 };
 
 
@@ -49,45 +51,96 @@ page.onConsoleMessage = function(msg) {
     console.log(msg);
 };
 
-page.open(system.args[1], function(status){
+page.open(system.args[1], function(status) {
     if (status !== "success") {
         console.log("Unable to access network");
         phantom.exit();
     } else {
         waitFor(function(){
             return page.evaluate(function(){
-                return (document.body.querySelector('.jasmine-symbol-summary .jasmine-pending') === null &&
-                document.body.querySelector('.jasmine-duration') !== null);
+                // https://github.com/jasmine/jasmine/blob/v2.0.0/src/html/HtmlReporter.js#L25
+                // https://github.com/jasmine/jasmine/blob/v2.0.1/src/html/HtmlReporter.js#L24
+                var elem = document.querySelector('.html-reporter .duration') ||
+                           document.querySelector('.jasmine_html-reporter .duration') ||
+                           document.querySelector('.jasmine-duration')
+
+                return elem && elem.innerText.indexOf('finished') !== -1
             });
         }, function(){
             var exitCode = page.evaluate(function(){
                 console.log('');
 
                 var title = 'Jasmine';
-                var version = document.body.querySelector('.jasmine-version').innerText;
-                var duration = document.body.querySelector('.jasmine-duration').innerText;
+                var version = jasmineRequire.version();
+                var duration = (document.body.querySelector('.jasmine-duration') ||
+                                document.body.querySelector('.jasmine_html-reporter .duration') ||
+                                document.body.querySelector('.html-reporter .duration')).innerText
+
                 var banner = title + ' ' + version + ' ' + duration;
                 console.log(banner);
 
-                var list = document.body.querySelectorAll('.jasmine-results > .jasmine-failures > .jasmine-spec-detail.jasmine-failed');
+                // display jasmine summary
+                var resultText = (
+                    document.body.querySelector('.jasmine-alert > .jasmine-bar.jasmine-passed,.jasmine-alert > .jasmine-bar.jasmine-skipped') ||
+                    document.body.querySelector('.jasmine_html-reporter .bar') ||
+                    document.body.querySelector('.jasmine_html-reporter .jasmine-bar') ||
+                    document.body.querySelector('.html-reporter .bar')
+                ).innerText
+
+                console.log(resultText);
+
+                function getList() {
+                    var list = document.body.querySelectorAll('.jasmine-results > .jasmine-failures > .jasmine-spec-detail.jasmine-failed')
+
+                    if (list.length > 0) { return list }
+
+                    list = document.body.querySelectorAll('.jasmine_html-reporter .failures > .spec-detail.failed')
+
+                    return list
+                }
+
+                var list = getList()
+
                 if (list && list.length > 0) {
                     console.log('');
-                    console.log(list.length + ' test(s) FAILED:');
+                    console.log(list.length + ' test(s) FAILED:')
+
                     for (i = 0; i < list.length; ++i) {
                         var el = list[i],
-                            desc = el.querySelector('.jasmine-description'),
-                            msg = el.querySelector('.jasmine-messages > .jasmine-result-message');
+                            desc = el.querySelector('.jasmine-description') || el.querySelector('.description'),
+                            msg = el.querySelector('.jasmine-messages > .jasmine-result-message') || el.querySelector('.result-message');
                         console.log('');
-                        console.log(desc.innerText);
-                        console.log(msg.innerText);
+                        console.log('    ' + desc.innerText);
+                        console.log('    ' + msg.innerText);
                         console.log('');
                     }
-                    return 1;
-                } else {
-                    console.log(document.body.querySelector('.jasmine-alert > .jasmine-bar.jasmine-passed,.jasmine-alert > .jasmine-bar.jasmine-skipped').innerText);
-                    return 0;
                 }
+
+                // SHOW PENDING TESTS
+                function getPending() {
+                    var list = document.body.querySelectorAll('.jasmine_html-reporter .symbol-summary .pending')
+                    if (list.length > 0) { return list }
+
+                    list = document.body.querySelectorAll('.jasmine_html-reporter .symbol-summary .disabled')
+                    if (list.length > 0) { return list }
+
+                    list = document.body.querySelectorAll('.jasmine_html-reporter .jasmine-symbol-summary .jasmine-pending')
+                    return list
+                }
+
+                var pending = getPending()
+
+                if (pending.length > 0) {
+                    console.log('')
+                    console.log(pending.length + ' Pending test(s)')
+                    Array.prototype.slice.call(pending).forEach(function (item) {
+                        console.log('    - ' + item.getAttribute('title'))
+                    })
+                }
+
+                return 0
             });
+
             if (system.args.length == 2) {
                 page.evaluate(function(){
                     jscoverage_report('phantom');
