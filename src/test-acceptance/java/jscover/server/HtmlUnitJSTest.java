@@ -403,7 +403,8 @@ public class HtmlUnitJSTest {
         assertThat(passed.get(0).asText(), equalTo("16 specs, 0 failures"));
 
         //Store Report
-        ScriptResult result = frame.executeJavaScript("jscoverage_report();");
+        frame.executeJavaScript("jscoverage_report();");
+        webClient.waitForBackgroundJavaScript(2000);
 
         //Verify coverage
         page.getHtmlElementById("summaryTab").click();

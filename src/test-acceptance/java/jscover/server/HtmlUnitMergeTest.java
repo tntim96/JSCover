@@ -438,9 +438,8 @@ public class HtmlUnitMergeTest {
         //verifyTotal(webClient, page, 15);
 
         WebWindow webWindow = webClient.getWebWindowByName("jscoverage_window");
-        ScriptResult result = ((HtmlPage)webWindow.getEnclosedPage()).executeJavaScript("jscoverage_report();");
-
-        assertThat(result.getJavaScriptResult().toString(), equalTo("Coverage data stored at " + new File(reportDir).getPath()));
+        ((HtmlPage)webWindow.getEnclosedPage()).executeJavaScript("jscoverage_report();");
+        webClient.waitForBackgroundJavaScript(2000);
     }
 
     private void saveReportByButton() throws IOException {

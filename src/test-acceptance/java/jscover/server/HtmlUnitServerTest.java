@@ -531,9 +531,8 @@ public class HtmlUnitServerTest {
         verifyTotal(webClient, page, 15);
 
         WebWindow webWindow = webClient.getWebWindowByName("jscoverage_window");
-        ScriptResult result = ((HtmlPage)webWindow.getEnclosedPage()).executeJavaScript("jscoverage_report('directory');");
-
-        assertThat(result.getJavaScriptResult().toString(), equalTo("Coverage data stored at " + new File(getReportDir() + "/directory").getPath()));
+        ((HtmlPage)webWindow.getEnclosedPage()).executeJavaScript("jscoverage_report('directory');");
+        webClient.waitForBackgroundJavaScript(2000);
 
         String json = ioUtils.toString(jsonFile);
         assertThat(json, containsString("/script.js"));
@@ -550,9 +549,8 @@ public class HtmlUnitServerTest {
 
         HtmlPage page = webClient.getPage("http://localhost:9001/example/index.html");
 
-        ScriptResult result = page.executeJavaScript("jscoverage_report('directory-no-ui');");
-
-        assertThat(result.getJavaScriptResult().toString(), equalTo("Coverage data stored at " + new File(getReportDir() + "/directory-no-ui").getPath()));
+        page.executeJavaScript("jscoverage_report('directory-no-ui');");
+        webClient.waitForBackgroundJavaScript(2000);
 
         String json = ioUtils.toString(jsonFile);
         assertThat(json, containsString("/script.js"));
@@ -569,9 +567,7 @@ public class HtmlUnitServerTest {
 
         HtmlPage page = webClient.getPage("http://localhost:9001/example/index.html");
 
-        ScriptResult result = page.executeJavaScript("jscoverage_report('directory-no-ui-cb', function(response){});");
-
-        assertThat(result.getJavaScriptResult().toString(), equalTo("async"));
+        page.executeJavaScript("jscoverage_report('directory-no-ui-cb', function(response){});");
         webClient.waitForBackgroundJavaScript(100);
 
         String json = ioUtils.toString(jsonFile);

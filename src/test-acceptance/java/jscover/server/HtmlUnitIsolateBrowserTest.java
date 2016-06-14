@@ -75,6 +75,7 @@ public class HtmlUnitIsolateBrowserTest {
         HtmlPage duplicatePage = (HtmlPage)webWindow.getEnclosedPage();
         duplicatePage.getElementById("radio1").click();
         duplicatePage.executeJavaScript("jscoverage_report();");
+        webClient.waitForBackgroundJavaScript(2000);
         page = webClient.getPage("file:///"+ new File(getReportDir()+"/jscoverage.html").getAbsolutePath());
         verifyTotal(page, 57, 12, 33);
     }
