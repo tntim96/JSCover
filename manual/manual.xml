@@ -1505,7 +1505,13 @@ fs.write("target/jscoverage.json", json, 'w');
                 </text>
                 <text>
                     Example of JavaScript to store the report:
-                <code>ScriptResult result = ((HtmlPage)webWindow.getEnclosedPage()).executeJavaScript("jscoverage_report('directory');");</code>
+                <code>((HtmlPage)webWindow.getEnclosedPage()).executeJavaScript("jscoverage_report('directory');");</code>
+                </text>
+                <text>
+                    Example of JavaScript to store the report with the optional callback and timeout:
+                <code>((HtmlPage)webWindow.getEnclosedPage()).executeJavaScript("jscoverage_report('directory', callBackFn, timeout);");</code>
+                    ...where <var>callBackFn</var> is a function and <var>timeout</var> is an optional parameter that defaults to 120000.
+                    The <var>callBackFn</var> will be called with the web request object when <note>request.readyState == 4</note>.
                 </text>
             </item>
             <item>
