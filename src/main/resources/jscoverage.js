@@ -1053,7 +1053,7 @@ function jscoverage_recalculateSourceTab() {
     jscoverage_endLengthyOperation();
     return;
   }
-
+  document.getElementById('sourceErrorDiv').innerHTML = '';
   function reportError(e) {
     jscoverage_endLengthyOperation();
     var summaryThrobber = document.getElementById('summaryThrobber');
@@ -1099,8 +1099,7 @@ function jscoverage_recalculateSourceTab() {
       }
     };
     request.send(null);
-  }
-  catch (e) {
+  } catch (e) {
     reportError(e);
   }
 }

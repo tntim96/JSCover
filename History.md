@@ -1,5 +1,6 @@
 1.0.25 / 2016-??-??
 ==================
+  * Source Error Message Not Cleared When Displaying New Source (https://github.com/tntim96/JSCover/issues/234)
   * Remove deprecated Synchronous XMLHttpRequest (https://github.com/tntim96/JSCover/issues/232)
   * Add asynchronous option to jscoverage_report() (https://github.com/tntim96/JSCover/issues/227)
   * Internal: Upgrade HtmlUnit 2.20 to 2.22
