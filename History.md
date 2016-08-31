@@ -1,5 +1,6 @@
 1.0.25 / 2016-??-??
 ==================
+  * Poor performance when used together with systemjs 0.19.37 (https://github.com/tntim96/JSCover/issues/235)
   * Source Error Message Not Cleared When Displaying New Source (https://github.com/tntim96/JSCover/issues/234)
   * Remove deprecated Synchronous XMLHttpRequest (https://github.com/tntim96/JSCover/issues/232)
   * Add asynchronous option to jscoverage_report() (https://github.com/tntim96/JSCover/issues/227)
