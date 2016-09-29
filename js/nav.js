@@ -19,6 +19,7 @@ $(document).ready(function () {
             $(this).fadeTo("fast", 0.7);
     });
     var page = "home.html";
+    var intelliJ = '\n<a href="http://www.jetbrains.com/idea/"><img src="images/icon_IntelliJIDEA.png" alt="The best Java IDE" border="0" style="float: right"/></a>\n';
     var pageIndex = document.location.href.indexOf("?page=");
     if (pageIndex !== -1)
         page = document.location.href.substring(pageIndex + 6);
@@ -26,20 +27,20 @@ $(document).ready(function () {
         url: page,
         dataType: 'html',
         success: function (data) {
-            $('#container').html(data + '<p>&nbsp;</p>');
+            $('#container').html(intelliJ + data + '<p>&nbsp;</p>');
         }
     });
     navButton.click(function () {
         if ($(this).attr("id") === undefined) {
             return;
         }
-        $('#container').html('<div style="position:relative"><h2>Loading...</h2></div>');
+        $('#container').html('<div style="position:relative">' + intelliJ + '<h2>Loading...</h2></div>');
         var contentId = $(this).attr("id").replace('Link', '');
         $.ajax({
-            url: contentId + '.html?v=1024b',
+            url: contentId + '.html?v=1024c',
             dataType: 'html',
             success: function (data) {
-                $('#container').html(data + '<p>&nbsp;</p>');
+                $('#container').html(intelliJ + data + '<p>&nbsp;</p>');
             }
         });
     });
