@@ -1,0 +1,219 @@
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: #222 url("../images/tactile_noise.png");
+    font-family: helvetica, arial, sans-serif;
+    min-width: 900px;
+    height: 100%;
+}
+
+#wrapper {
+    min-height: 100%;
+    position: relative;
+}
+
+table {
+    border-collapse: collapse;
+    padding: 0;
+    margin: 0;
+    color: #eee;
+}
+
+table th {
+    border: 1px inset #333;
+    padding: 2px;
+    margin: 0;
+}
+
+table td {
+    border: 1px inset #333;
+    padding: 4px;
+    margin: 0;
+}
+
+table.noBorder td {
+    border-collapse: collapse;
+    border: none;
+    vertical-align: top;
+}
+
+h2 {
+    color: #F2D062;
+    margin: 15px 0 2px 0;
+}
+
+h3 {
+    color: #028A9E;
+    margin: 10px 0 0 0;
+}
+
+p {
+    color: #ddd;
+}
+
+ul {
+    color: #ddd;
+    margin: 0;
+}
+
+#container {
+    clear: both;
+    padding: 20px 80px;
+}
+
+.gradedBackground {
+    background-color: #023550;
+    background-image: -moz-linear-gradient(top, #024366 0%, #023550 100%);
+    background-image: -webkit-linear-gradient(top, #024366 0%, #023550 100%);
+    background-image: -ms-linear-gradient(top, #024366 0%, #023550 100%);
+    background-image: linear-gradient(top, #024366 0%, #023550 100%);
+}
+
+.navPanel {
+    position: relative;
+    display: block;
+
+    font-family: "Titillium Web", Arial, serif;
+    padding: 10px 50px;
+    color: #fff;
+    line-height: 36px;
+    height: 38px;
+
+    -moz-box-shadow: 0 1px 5px #000;
+    -webkit-box-shadow: 0 1px 5px #000;
+    -ms-box-shadow: 0 1px 5px #000;
+    box-shadow: 0 1px 5px #000;
+}
+
+#nav {
+    float: right;
+    font-size: 20px;
+}
+
+.navButton {
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #ffffff;
+    border: 1px solid #666666;
+    border-radius: 5px;
+    margin: 2px;
+    padding: 3px;
+    text-decoration: none;
+}
+
+.navButtonHover {
+    cursor: hand;
+    color: #F2C12E;
+    border: 1px solid #336699;
+    text-shadow: #336699 0 0 5px;
+}
+
+.brand {
+    font-size: 36px;
+    float: left;
+    font-weight: 900;
+    border: 1px solid #6699ff;
+
+    padding-top: 0;
+    margin-top: 0;
+
+    -moz-text-shadow: 0 -1px 1px #000;
+    -webkit-text-shadow: 0 -1px 1px #000;
+    -ms-text-shadow: 0 -1px 1px #000;
+    text-shadow: 0 -1px 1px #000;
+
+    cursor: pointer;
+}
+
+.navButtonDown {
+    cursor: hand;
+    border: 1px solid #6699ff;
+    text-shadow: #6699ff 0 0 5px;
+}
+
+/*
+.navButton{
+    padding: 0 10px;
+    cursor: pointer;
+}
+
+.navButton:hover{
+    color: #F2C12E;
+    text-decoration: none;
+}
+
+.navButton, a{
+    color: #fff;
+    text-decoration: none;
+}
+*/
+
+.selected {
+    font-weight: bold;
+    background: #a0b8ff;
+}
+
+#footer {
+    width: 100%;
+    height: 36px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
+.shell {
+    border: 1px solid #000;
+    margin: 5px;
+    padding: 10px;
+    background: #111;
+    color: #F2D281;
+
+    -moz-box-shadow: inset 0 0 5px #000;
+    -webkit-box-shadow: inset 0 0 5px #000;
+    -ms-box-shadow: inset 0 0 5px #000;
+    box-shadow: inset 0 0 5px #000;
+}
+
+.xmlBlock {
+    width: 350px;
+    padding: 15px;
+    box-shadow: inset 0 0 25px #244;
+}
+
+.textBlock {
+    padding: 15px;
+    box-shadow: inset 0 0 25px #244;
+}
+
+.bigQuote {
+    font-size: 20pt;
+    color: #99ffff;
+}
+
+.xmlTag {
+    color: #04BFBF;
+}
+
+.xmlValue {
+    color: #F2D281;
+    font-weight: bold;
+}
+
+#license {
+    background-color: #ccc;
+    padding: 20px 40px;
+    width: 700px;
+}
+
+a {
+    color: #04BFBF;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}

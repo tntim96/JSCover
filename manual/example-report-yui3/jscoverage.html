@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<!--
+    jscoverage.html - code coverage for JavaScript
+    Copyright (C) 2007, 2008, 2009, 2010 siliconforks.com - 2012, 2013, 2014, 2015, 2016 tntim96
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this program; if not, write to the Free Software Foundation, Inc.,
+    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+-->
+
+<html>
+<head>
+<title>JSCover</title>
+<link rel="stylesheet" type="text/css" href="jscoverage-highlight.css"/>
+<link rel="stylesheet" type="text/css" href="jscoverage.css"/>
+<!--[if lte IE 7]>
+<link rel="stylesheet" type="text/css" href="jscoverage-ie.css"/>
+<![endif]-->
+<script type="text/javascript" src="jscoverage.js"></script>
+</head>
+
+<body onload="jscoverage_body_load();" onresize="jscoverage_body_resize();">
+<div id="mainDiv">
+<div id="headingDiv">
+<h1>JSCover</h1>
+<div class="ProgressBar" id="progressBar"><span class="ProgressPercentage"></span><div class="ProgressGraph"><div class="ProgressCovered"></div></div></div>
+<span id="progressLabel"></span>
+</div>
+
+<div id="tabs" class="Tabs">
+  <div id="browserTab"><img src="jscoverage-throbber.gif" alt=""/> Browser <img src="jscoverage-throbber.gif" alt=""/></div>
+  <div id="summaryTab"><img id="summaryThrobber" src="jscoverage-throbber.gif" alt=""/> Summary <img src="jscoverage-throbber.gif" alt=""/></div>
+  <div id="sourceTab" class="disabled"><img src="jscoverage-throbber.gif" alt=""/> Source <img src="jscoverage-throbber.gif" alt=""/></div>
+  <div id="storeTab"><img id="storeThrobber" src="jscoverage-throbber.gif" alt=""/> Store <img src="jscoverage-throbber.gif" alt=""/></div>
+  <div id="aboutTab"><img src="jscoverage-throbber.gif" alt=""/> About <img src="jscoverage-throbber.gif" alt=""/></div>
+</div>
+<div id="tabPages" class="TabPages">
+  <div class="TabPage" id="browserTabPage">
+    <div id="locationDiv">
+    <label for="location">URL:</label> <input id="location" type="text" size="70" onkeypress="jscoverage_input_keypress(event)"/>
+    <button id="openInFrameButton" onclick="jscoverage_openInFrameButton_click();" title="open URL in the iframe below [Enter]">Open in frame</button>
+    <button id="openInWindowButton" onclick="jscoverage_openInWindowButton_click();" title="open URL in a new window (or tab) [Shift+Enter]">Open in window</button>
+    </div>
+    <div id="iframeDiv">
+    <iframe id="browserIframe" name="browserIframe" onload="jscoverage_browser_load();"></iframe>
+    </div>
+  </div>
+  <div class="TabPage">
+    <input type="checkbox" id="checkbox" onclick="return jscoverage_checkbox_click();"/> <label for="checkbox">Show missing statements column</label>
+    <div id="summaryDiv">
+    <div id="summaryErrorDiv"></div>
+    <table id="summaryTable">
+    <thead>
+    <tr id="headerRow">
+    <th class="leftColumn"><a id="sortByName" href="javascript:jscoverage_recalculateSummaryTabBy('Name')">File</a></th>
+    <th><a id="sortByStTot" href="javascript:jscoverage_recalculateSummaryTabBy('stTot')"><abbr title="The total number of executable statements">Stmt</abbr></a></th>
+    <th><a id="sortByStHit" href="javascript:jscoverage_recalculateSummaryTabBy('stHit')"><abbr title="The number of statements executed">Stmt Hit</abbr></a></th>
+    <th><a id="sortByStMss" href="javascript:jscoverage_recalculateSummaryTabBy('stMss')"><abbr title="The number of statements missed">Stmt Miss</abbr></a></th>
+    <th><a id="sortByBrTot" href="javascript:jscoverage_recalculateSummaryTabBy('brTot')"><abbr title="The total number of branches">Br</abbr></a></th>
+    <th><a id="sortByBrHit" href="javascript:jscoverage_recalculateSummaryTabBy('brHit')"><abbr title="The number of branches covered">Br Hit</abbr></a></th>
+    <th><a id="sortByBrMss" href="javascript:jscoverage_recalculateSummaryTabBy('brMss')"><abbr title="The number of branches missed">Br Miss</abbr></a></th>
+    <th><a id="sortByFnTot" href="javascript:jscoverage_recalculateSummaryTabBy('fnTot')"><abbr title="The total number of functions">Fn</abbr></a></th>
+    <th><a id="sortByFnHit" href="javascript:jscoverage_recalculateSummaryTabBy('fnHit')"><abbr title="The number of functions covered">Fn Hit</abbr></a></th>
+    <th><a id="sortByFnMss" href="javascript:jscoverage_recalculateSummaryTabBy('fnMss')"><abbr title="The number of functions missed">Fn Miss</abbr></a></th>
+    <th><a id="sortByLine" href="javascript:jscoverage_recalculateSummaryTabBy('stPc')"><abbr title="Number of executed statements as a percentage of total number of statements">Coverage</abbr></a></th>
+    <th><a id="sortByBranch" href="javascript:jscoverage_recalculateSummaryTabBy('brPc')"><abbr title="Number of executed branch paths as a percentage of total number of branch paths">Branch</abbr></a></th>
+    <th><a id="sortByFunction" href="javascript:jscoverage_recalculateSummaryTabBy('fnPc')"><abbr title="Number of executed functions as a percentage of total number of functions">Function</abbr></a></th>
+    </tr>
+    <tr id="summaryTotals">
+        <td class="leftColumn">
+            <span class="title">Total:</span>
+            <span>0</span>
+        </td>
+        <td class="numeric">0</td>
+        <td class="numeric">0</td>
+        <td class="numeric">0</td>
+        <td class="numeric">0</td>
+        <td class="numeric">0</td>
+        <td class="numeric">0</td>
+        <td class="numeric">0</td>
+        <td class="numeric">0</td>
+        <td class="numeric">0</td>
+        <td class="coverage">
+            <div class="pctGraph">
+                <div class="covered"></div>
+            </div>
+            <span id="summaryTotal" class="pct">0%</span>
+        </td>
+        <td class="coverage">
+            <div class="pctGraph">
+                <div class="covered"></div>
+            </div>
+            <span id="branchSummaryTotal" class="pct">0%</span>
+        </td>
+        <td class="coverage">
+            <div class="pctGraph">
+                <div class="covered"></div>
+            </div>
+            <span id="functionSummaryTotal" class="pct">0%</span>
+        </td>
+    </tr>
+
+    </thead>
+    <tbody id="summaryTbody">
+
+    </tbody>
+    </table>
+    </div>
+  </div>
+  <div class="TabPage">
+    <div id="sourceErrorDiv"></div>
+    <div id="fileDiv"></div>
+    <div id="sourceDiv"></div>
+  </div>
+  <div class="TabPage" id="storeTabPage">
+    <button id="storeButton" onclick="jscoverage_storeButton_click();">Store Report</button>
+      <button id="stopButton" onclick="jscoverage_stopButton_click();">Stop Server</button>
+    <img id="storeImg" src="jscoverage-throbber.gif" alt="loading..."/>
+    <div id="storeDiv"> </div>
+  </div>
+  <div class="TabPage">
+    <p>This is version 1.0.23-SNAPSHOT of JSCover, a program that calculates code coverage statistics for JavaScript.</p>
+    <p>Report generated at 16:46:30 28 Nov 2015.</p>
+    <p>See <a href="http://tntim96.github.com/JSCover" target="_blank">http://tntim96.github.com/JSCover</a> for more information.</p>
+    <p>Copyright &copy; 2007, 2008, 2009, 2010 siliconforks.com - 2012, 2013, 2014, 2015, 2016 tntim96</p>
+  </div>
+</div>
+</div>
+</body>
+</html>
