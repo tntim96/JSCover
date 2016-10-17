@@ -359,10 +359,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.mozilla.javascript.CompilerEnvirons;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.lang.String.format;
 import static jscover.server.InstrumentingRequestHandler.JSCOVERAGE_STORE;
@@ -443,8 +440,6 @@ public class InstrumentingRequestHandlerTest {
         File reportDir = new File("target/temp");
         reportDir.deleteOnExit();
         given(configuration.getReportDir()).willReturn(reportDir);
-        given(configuration.getVersion()).willReturn("theVersion");
-        given(ioUtils.toStringNoClose(bais, 12)).willReturn("data");
         given(bais.skip(50)).willReturn(40L);
 
         webServer.handlePostOrPut(new HttpRequest(JSCOVERAGE_STORE, bais, null, 50, headers));
@@ -636,7 +631,7 @@ public class InstrumentingRequestHandlerTest {
         given(bais.skip(50)).willReturn(50L);
         List<ScriptCoverageCount> unloadedJS = new ArrayList<ScriptCoverageCount>();
         unloadedJS.add(new ScriptCoverageCount("/js/unloaded.js", null, 0, null));
-        given(unloadedSourceProcessor.getEmptyCoverageData(anySet())).willReturn(unloadedJS);
+        given(unloadedSourceProcessor.getEmptyCoverageData(any(Set.class))).willReturn(unloadedJS);
 
         webServer.handlePostOrPut(new HttpRequest(JSCOVERAGE_STORE, bais, null, 50, headers));
 
@@ -683,9 +678,6 @@ public class InstrumentingRequestHandlerTest {
     public void shouldServeInstrumentedJSForWebServer() throws IOException {
         File wwwRoot = new File("wwwRoot");
         ReflectionUtils.setField(webServer, HttpServer.class, "wwwRoot", wwwRoot);
-        CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
-        given(configuration.getCompilerEnvirons()).willReturn(compilerEnvirons);
-        given(configuration.skipInstrumentation("/js/production.js")).willReturn(false);
 
         webServer.handleGet(new HttpRequest("/js/production.js", null, null, 0, null));
 
@@ -699,12 +691,8 @@ public class InstrumentingRequestHandlerTest {
 
     @Test
     public void shouldRecordInstrumentedURIsForWebServer() throws IOException {
-        given(configuration.isIncludeUnloadedJS()).willReturn(true);
         File wwwRoot = new File("wwwRoot");
         ReflectionUtils.setField(webServer, HttpServer.class, "wwwRoot", wwwRoot);
-        CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
-        given(configuration.getCompilerEnvirons()).willReturn(compilerEnvirons);
-        given(configuration.skipInstrumentation("/js/production.js")).willReturn(false);
 
         webServer.handleGet(new HttpRequest("/js/production.js", null, null, 0, null));
 
@@ -718,12 +706,8 @@ public class InstrumentingRequestHandlerTest {
 
     @Test
     public void shouldNotRecordInstrumentedURIsForWebServerIfNotFound() throws IOException {
-        given(configuration.isIncludeUnloadedJS()).willReturn(true);
         File wwwRoot = new File("wwwRoot");
         ReflectionUtils.setField(webServer, HttpServer.class, "wwwRoot", wwwRoot);
-        CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
-        given(configuration.getCompilerEnvirons()).willReturn(compilerEnvirons);
-        given(configuration.skipInstrumentation("/js/production.js")).willReturn(false);
         given(instrumenterService.instrumentJSForWebServer(configuration, new File("wwwRoot/js/production.js"), "/js/production.js")).willThrow(new UriNotFound("Ouch!", null));
 
         webServer.handleGet(new HttpRequest("/js/production.js", null, null, 0, null));
@@ -746,9 +730,6 @@ public class InstrumentingRequestHandlerTest {
         given(configuration.isProxy()).willReturn(true);
         File wwwRoot = new File("wwwRoot");
         ReflectionUtils.setField(webServer, HttpServer.class, "wwwRoot", wwwRoot);
-        CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
-        given(configuration.getCompilerEnvirons()).willReturn(compilerEnvirons);
-        given(configuration.skipInstrumentation("/js/production.js")).willReturn(false);
         String uri = "http://someserver.org/exclude/js/production.js";
         HttpRequest request = new HttpRequest(uri, null, null, 0, null);
         given(proxyService.getUrl(request)).willReturn("someJavaScript;");
@@ -769,7 +750,6 @@ public class InstrumentingRequestHandlerTest {
         File wwwRoot = new File("wwwRoot");
         ReflectionUtils.setField(webServer, HttpServer.class, "wwwRoot", wwwRoot);
         CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
-        given(configuration.getCompilerEnvirons()).willReturn(compilerEnvirons);
         given(configuration.skipInstrumentation("test/production.js")).willReturn(true);
 
         webServer.handleGet(new HttpRequest("/test/production.js", null, null, 0, null));
@@ -783,8 +763,6 @@ public class InstrumentingRequestHandlerTest {
     public void shouldServeNonInstrumentedJSWhenViewingSource() throws IOException {
         File wwwRoot = new File("wwwRoot");
         ReflectionUtils.setField(webServer, HttpServer.class, "wwwRoot", wwwRoot);
-        CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
-        given(configuration.getCompilerEnvirons()).willReturn(compilerEnvirons);
         given(configuration.skipInstrumentation("test/production.js")).willReturn(false);
 
         Map<String, List<String>> headers = new HashMap<String, List<String>>();

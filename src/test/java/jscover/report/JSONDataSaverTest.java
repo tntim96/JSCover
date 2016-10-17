@@ -345,13 +345,12 @@ package jscover.report;
 import jscover.util.IoUtils;
 import jscover.util.ReflectionUtils;
 import jscover.util.UriFileTranslator;
-import org.hamcrest.Description;
-import org.hamcrest.TypeSafeMatcher;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -363,8 +362,8 @@ import java.util.TreeMap;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.argThat;
 
 //Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013
 @RunWith(MockitoJUnitRunner.class)
@@ -508,15 +507,11 @@ public class JSONDataSaverTest {
         assertThat(json, equalTo("jsonMerged"));
     }
 
-    TypeSafeMatcher<SortedMap<String, FileData>> isMapWithKey(final String url) {
-        return new TypeSafeMatcher<SortedMap<String, FileData>>() {
+    ArgumentMatcher<SortedMap<String, FileData>> isMapWithKey(final String url) {
+        return new ArgumentMatcher<SortedMap<String, FileData>>() {
             @Override
-            protected boolean matchesSafely(SortedMap<String, FileData> map) {
+            public boolean matches(SortedMap<String, FileData> map) {
                 return map.containsKey(url);
-            }
-
-            public void describeTo(Description description) {
-
             }
         };
     }
@@ -571,14 +566,11 @@ public class JSONDataSaverTest {
         assertThat(json, equalTo("jsonMerged"));
     }
 
-    TypeSafeMatcher<SortedMap<String, FileData>> isMapWithKeys(final String url1, final String url2) {
-        return new TypeSafeMatcher<SortedMap<String, FileData>>() {
+    ArgumentMatcher<SortedMap<String, FileData>> isMapWithKeys(final String url1, final String url2) {
+        return new ArgumentMatcher<SortedMap<String, FileData>>() {
             @Override
-            protected boolean matchesSafely(SortedMap<String, FileData> map) {
+            public boolean matches(SortedMap<String, FileData> map) {
                 return map.size() == 2 &&  map.containsKey(url1) && map.containsKey(url2);
-            }
-
-            public void describeTo(Description description) {
             }
         };
     }

@@ -362,15 +362,16 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Properties;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.argThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.mockito.hamcrest.MockitoHamcrest.argThat;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MainInstanceTest {
@@ -398,7 +399,7 @@ public class MainInstanceTest {
 
     @Test
     public void shouldWrapIoException() throws IOException {
-        doThrow(new IOException("Ouch!")).when(mainHelper).checkDependantClasses(anyList(), any(String.class));
+        doThrow(new IOException("Ouch!")).when(mainHelper).checkDependantClasses(any(List.class), any(String.class));
 
         try {
             main.initialize();

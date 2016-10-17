@@ -356,8 +356,8 @@ import org.hamcrest.TypeSafeMatcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InOrder;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -372,10 +372,10 @@ import static jscover.Main.reportSrcSubDir;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.*;
+import static org.mockito.hamcrest.MockitoHamcrest.argThat;
 
 //Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013
 @RunWith(MockitoJUnitRunner.class)
@@ -464,7 +464,7 @@ public class MainTest {
         doReturn(srcDir.getCanonicalPath()).when(ioUtils).getCanonicalPath(srcDir);
         SortedMap<String, FileData> list = new TreeMap<String, FileData>();
         given(jsonDataMerger.jsonToMap(json)).willReturn(list);
-        given(coberturaXmlGenerator.generateXml(Matchers.<CoberturaData>any(), anyString(), anyString())).willReturn("<xml/>");
+        given(coberturaXmlGenerator.generateXml(ArgumentMatchers.<CoberturaData>any(), anyString(), anyString())).willReturn("<xml/>");
 
         main.runMain(new String[]{});
 

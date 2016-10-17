@@ -356,9 +356,9 @@ import java.util.Properties;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -395,7 +395,6 @@ public class IoUtilsTest {
 
     @Test(expected = RuntimeException.class)
     public void shouldWrapExceptionsInToStringInputStream() throws IOException {
-        given(is.read(any(byte[].class))).willThrow(new IOException("Ouch!"));
         ioUtils.toString(is);
     }
 
@@ -442,7 +441,6 @@ public class IoUtilsTest {
     @Test
     public void shouldWrapExceptionsInCopyFileToOSNoClose() throws Exception {
         File file = new File("target/test.txt");
-        doThrow(new IOException("Ouch!")).when(os).write(any(byte[].class), anyInt(), anyInt());
         try {
             ioUtils.copyNoClose(file, os);
             fail();
@@ -596,7 +594,6 @@ public class IoUtilsTest {
 
     @Test(expected = RuntimeException.class)
     public void shouldWrapExceptionsInCopyInputStreamToFile() throws IOException {
-        given(is.read(any(byte[].class))).willThrow(new IOException("Ouch!"));
         ioUtils.copy(is, new File("target"));
     }
 

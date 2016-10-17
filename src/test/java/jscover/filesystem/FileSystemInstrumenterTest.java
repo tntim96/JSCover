@@ -357,8 +357,8 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.concurrent.ExecutorService;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -389,8 +389,7 @@ public class FileSystemInstrumenterTest {
 
         given(dest.getParentFile()).willReturn(destParent);
 
-        given(configuration.getCompilerEnvirons()).willReturn(compilerEnvirons);
-        given(configuration.getCompilerEnvirons()).willReturn(compilerEnvirons);
+        given(configuration.getSrcDir()).willReturn(src);
     }
 
     @Test
@@ -439,7 +438,6 @@ public class FileSystemInstrumenterTest {
         given(configuration.exclude(path)).willReturn(false);
         given(src.isDirectory()).willReturn(false);
         given(src.toString()).willReturn(path);
-        given(configuration.skipInstrumentation(path)).willReturn(false);
 
         fsi.copyFolder(src, dest);
 
@@ -466,7 +464,6 @@ public class FileSystemInstrumenterTest {
         given(ioUtils.getRelativePath(any(File.class), any(File.class))).willReturn(path);
         given(configuration.exclude(path)).willReturn(false);
         given(src.isDirectory()).willReturn(false);
-        given(src.toString()).willReturn(path);
         given(configuration.skipInstrumentation(path)).willReturn(false);
 
         fsi.copyFolder(src, dest, acceptAll, true);
@@ -481,7 +478,6 @@ public class FileSystemInstrumenterTest {
         given(ioUtils.getRelativePath(any(File.class), any(File.class))).willReturn(path);
         given(configuration.exclude(path)).willReturn(false);
         given(src.isDirectory()).willReturn(false);
-        given(src.toString()).willReturn(path);
         given(configuration.skipInstrumentation(path)).willReturn(true);
 
         fsi.copyFolder(src, dest, acceptAll, true);
