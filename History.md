@@ -4,7 +4,7 @@
   * Source Error Message Not Cleared When Displaying New Source (https://github.com/tntim96/JSCover/issues/234)
   * Remove deprecated Synchronous XMLHttpRequest (https://github.com/tntim96/JSCover/issues/232)
   * Add asynchronous option to jscoverage_report() (https://github.com/tntim96/JSCover/issues/227)
-  * Internal: Upgrade HtmlUnit 2.20 to 2.23, Jasmine 2.4.1 to 2.5.2
+  * Internal: Upgrade HtmlUnit 2.20 to 2.23, Jasmine 2.4.1 to 2.5.2, Mockito 1.10.19 to 2.2.22
 
 1.0.24 / 2016-04-04
 ==================
@@ -58,7 +58,7 @@
   * Swap back to official Rhino release 1.7.6 with merged fixes
   * Set minimum Java version to 1.6
   * Fix web-server generated paths (https://github.com/tntim96/JSCover/issues/186)
-  * Internal: Upgrade to Cobertura 2.0.3->2.1.1
+  * Internal: Upgrade to Cobertura 2.0.3->2.1.1, Mockito 1.10.17 to 1.10.19
 
 1.0.17 / 2015-02-07
 ==================
