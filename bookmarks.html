@@ -111,14 +111,14 @@ document.getElementById('allDownloads').innerHTML = '<a href="'+link+'" target="
     <li>Update release date in History.md</li>
     <li>Make sure working directory is clear of changes</li>
     <li>Make sure all tests pass and build sourceforge release (ant release)</li>
-    <li>Commit changes and tag with version (git tag v1.0.25, git push --tags, git push sf-origin --tags)</li>
+    <li>Commit changes and tag with version (git tag v1.0.26, git push --tags, git push sf-origin --tags)</li>
     <li>Upload sourceforge release</li>
     <li>Build Maven files (ant generate-files)</li>
     <li>Sign files (gpg -ab filename)</li>
     <li>Build Maven bundle (ant maven-bundle) and upload</li>
-    <li>Test the maven staged release with JSCover-maven-test. Commit JSCover-maven-test before releasing.</li>
+    <li>Test the maven staged release with JSCover-maven-test. Commit, push and wait for build to complete for JSCover-maven-test before releasing.</li>
     <li>Upload websites (JSCover-gh-pages $ cp -R ../JSCover/doc/* ./, git push origin gh-pages)</li>
-    <li>Update snapshot version in configuration.properties and pom.xml</li>
+    <li>Update snapshot version in configuration.properties, pom.xml and tag version in this file</li>
     <li>Update JSCover-maven-plugin</li>
 </ol>
 

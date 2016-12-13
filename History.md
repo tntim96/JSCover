@@ -1,3 +1,6 @@
+1.0.26 / 2017-??-??
+==================
+
 1.0.25 / 2016-12-13
 ==================
   * Missing instrumentation in a 'if' in 'case' statement (https://github.com/tntim96/JSCover/issues/241)
