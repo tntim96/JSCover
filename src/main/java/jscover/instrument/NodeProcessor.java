@@ -450,13 +450,15 @@ class NodeProcessor {
             switchCase.setStatements(statements);
             return true;
         }
+        boolean changed = false;
         for (int i = statements.size() - 1; i >= 0; i--) {
             AstNode statement = statements.get(i);
             if (!validLines.contains(statement.getLineno())) {
                 statements.add(i, buildInstrumentationStatement(statement.getLineno()));
+                changed = true;
             }
         }
-        return false;
+        return changed;
     }
 
     private boolean isLoopInitializer(AstNode node) {

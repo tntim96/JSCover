@@ -435,6 +435,22 @@ public class InstrumenterTest {
     }
 
     @Test
+    public void shouldInstrumentIfStatementInSwitchCase() {
+        String source = "switch (x) {\ncase 10:\nif (a) {\nx++;\n}\n}";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "switch (x) {\n" +
+                "  case 10:\n" +
+                "    _$jscoverage['test.js'].lineData[3]++;\n" +
+                "    if (a) {\n" +
+                "      _$jscoverage['test.js'].lineData[4]++;\n" +
+                "      x++;\n" +
+                "    }\n" +
+                "}\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+    @Test
     public void shouldInstrumentStatementOnNewLineInSwitchCase() {//Bug 208
         String source = "  switch(x){ case 10: \nx++; }";
         String instrumentedSource = sourceProcessor.instrumentSource(source);

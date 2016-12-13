@@ -1,5 +1,6 @@
 1.0.25 / 2016-??-??
 ==================
+  * Missing instrumentation in a 'if' in 'case' statement (https://github.com/tntim96/JSCover/issues/241)
   * Poor performance when used together with systemjs 0.19.37 (https://github.com/tntim96/JSCover/issues/235)
   * Source Error Message Not Cleared When Displaying New Source (https://github.com/tntim96/JSCover/issues/234)
   * Remove deprecated Synchronous XMLHttpRequest (https://github.com/tntim96/JSCover/issues/232)
