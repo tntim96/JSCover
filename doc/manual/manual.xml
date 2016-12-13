@@ -1529,6 +1529,11 @@ fs.write("target/jscoverage.json", json, 'w');
             public Boolean apply(WebDriver d) {
                 return (Boolean)((JavascriptExecutor) webClient).executeScript("return window.jscoverFinished;");
             }});</code>
+                    The same with Java8 lamba:
+                    <code>((JavascriptExecutor) webClient).executeScript("window.jscoverFinished = false;");
+((JavascriptExecutor) webClient).executeScript("jscoverage_report('', function(){window.jscoverFinished=true;});");
+    (new WebDriverWait(webClient, 10000))
+        .until((ExpectedCondition&lt;Boolean&gt;) d -> (Boolean)((JavascriptExecutor) webClient).executeScript("return window.jscoverFinished;"));</code>
                 </text>
                 <text>
                     Example of JavaScript to retrieve the JSON coverage data:
