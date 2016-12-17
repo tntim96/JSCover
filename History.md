@@ -1,5 +1,6 @@
 1.0.26 / 2017-??-??
 ==================
+  * Minor API modifications to assist with Maven plugins
 
 1.0.25 / 2016-12-13
 ==================
