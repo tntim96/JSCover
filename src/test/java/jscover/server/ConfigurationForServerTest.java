@@ -384,10 +384,12 @@ public class ConfigurationForServerTest {
         configuration.setPort(1234);
         File reportDir = new File("doc");
         configuration.setReportDir(reportDir);
+        configuration.setProxy(true);
 
         assertThat(configuration.getDocumentRoot(), sameInstance(dir));
         assertThat(configuration.getPort(), is(1234));
         assertThat(configuration.getReportDir(), sameInstance(reportDir));
+        assertThat(configuration.isProxy(), is(true));
     }
 
     @Test

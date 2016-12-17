@@ -384,6 +384,10 @@ public class ConfigurationForServer extends ConfigurationCommon {
         this.reportDir = reportDir;
     }
 
+    public void setProxy(boolean proxy) {
+        this.proxy = proxy;
+    }
+
     public File getDocumentRoot() {
         return documentRoot;
     }
