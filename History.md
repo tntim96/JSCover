@@ -1,6 +1,7 @@
 1.0.26 / 2017-??-??
 ==================
   * Minor API modifications to assist with Maven plugins
+  * Internal: Upgrade HtmlUnit 2.23 to 2.24, Mockito 2.3.30 to 2.5.7
 
 1.0.25 / 2016-12-13
 ==================
