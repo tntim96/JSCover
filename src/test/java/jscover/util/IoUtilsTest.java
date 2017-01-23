@@ -350,6 +350,7 @@ import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.*;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.Charset;
 import java.util.Properties;
@@ -367,13 +368,20 @@ public class IoUtilsTest {
     private @Mock Socket socket;
     private @Mock InputStream is;
     private @Spy OutputStream os = new MyOutputStream();
+    private @Spy ServerSocket ss = getMyServerSocket();
+
     private @Mock Reader reader;
-    private @Mock Writer writer;
 
     @Test
     public void shouldCloseStreamQuietly() throws IOException {
         doThrow(new IOException("Ouch!")).when(os).close();
         ioUtils.closeQuietly(os);
+    }
+
+    @Test
+    public void shouldCloseServerSocketQuietly() throws IOException {
+        doThrow(new IOException("Ouch!")).when(ss).close();
+        ioUtils.closeQuietly(ss);
     }
 
     @Test
@@ -668,6 +676,19 @@ public class IoUtilsTest {
     static class MyOutputStream extends OutputStream {
         @Override
         public void write(int b) throws IOException {}
+    }
+
+    private MyServerSocket getMyServerSocket() {
+        try {
+            return new MyServerSocket();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    static class MyServerSocket extends ServerSocket {
+        public MyServerSocket() throws IOException {
+        }
     }
 
     static class Dummy extends IoUtils {}
