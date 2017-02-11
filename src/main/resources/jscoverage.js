@@ -972,7 +972,6 @@ function jscoverage_makeTable(lines) {
                 var src = lines[i].substring(start, end);
                 branchData[lineNumber][conditionIndex].src = src;
                 branchClass = 'r';
-                break;
               }
             }
           }
