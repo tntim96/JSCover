@@ -968,7 +968,7 @@ function jscoverage_makeTable(lines) {
               var condition = branchData[lineNumber][conditionIndex];
               if (condition && !condition.covered()) {
                 var start = condition.position;
-                var end = start + condition.nodeLength - 1;
+                var end = start + condition.nodeLength;
                 var src = lines[i].substring(start, end);
                 branchData[lineNumber][conditionIndex].src = src;
                 branchClass = 'r';
