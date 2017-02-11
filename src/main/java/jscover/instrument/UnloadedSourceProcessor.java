@@ -379,9 +379,10 @@ public class UnloadedSourceProcessor {
 
     public void getEmptyCoverageData(List<ScriptCoverageCount> scripts, File file) {
         String uri = ioUtils.getRelativePath(file, scanPath);
-        SourceProcessor sourceProcessor = new SourceProcessor(config, uri, "x;");
         try {
-            sourceProcessor.instrumentSource(ioUtils.loadFromFileSystem(file));
+            String source = ioUtils.loadFromFileSystem(file);
+            SourceProcessor sourceProcessor = new SourceProcessor(config, uri, source);
+            sourceProcessor.instrumentSource(source);
             ScriptCoverageCount script = new ScriptCoverageCount("/"+uri, new ArrayList<Integer>(
                     sourceProcessor.getInstrumenter().getValidLines()),
                     sourceProcessor.getInstrumenter().getNumFunctions(),
