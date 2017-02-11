@@ -375,7 +375,7 @@ public class BranchInstrumentorIntegrationTest {
 
         assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(0d));
         assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
-        assertThat((Integer) coverageData.get("position", coverageData), equalTo(7));
+        assertThat((Integer) coverageData.get("position", coverageData), equalTo(6));
         assertThat((Integer) coverageData.get("nodeLength", coverageData), equalTo(5));
         assertThat((Boolean) coveredFn.call(context, scope, coverageData, new Object[0]), equalTo(false));
 
@@ -810,7 +810,7 @@ public class BranchInstrumentorIntegrationTest {
 
         assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(0d));
         assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
-        assertThat((Integer) coverageData.get("position", coverageData), equalTo(7));
+        assertThat((Integer) coverageData.get("position", coverageData), equalTo(6));
         assertThat((Double) coverageData.get("nodeLength", coverageData), equalTo(1d));//Why double?
         assertThat((Boolean) coveredFn.call(context, scope, coverageData, new Object[0]), equalTo(false));
 
@@ -842,7 +842,7 @@ public class BranchInstrumentorIntegrationTest {
 
         assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(0d));
         assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
-        assertThat((Integer) coverageData.get("position", coverageData), equalTo(11));
+        assertThat((Integer) coverageData.get("position", coverageData), equalTo(10));
         assertThat((Integer) coverageData.get("nodeLength", coverageData), equalTo(5));
         assertThat((Boolean) coveredFn.call(context, scope, coverageData, new Object[0]), equalTo(false));
 

@@ -374,7 +374,7 @@ public class BranchInstrumentorTest {
         String script = "var y = x > 0;";
         AstRoot astRoot = parser.parse(script, null, 1);
         AstNode gtNode = NodeTestHelper.findNode(astRoot, Token.GT);
-        assertThat(getBranchInstrumentor(script).getLinePosition(gtNode), equalTo(9));
+        assertThat(getBranchInstrumentor(script).getLinePosition(gtNode), equalTo(8));
     }
 
     @Test
@@ -382,7 +382,7 @@ public class BranchInstrumentorTest {
         String script = "var x;\nvar y = x > 0;";
         AstRoot astRoot = parser.parse(script, null, 1);
         AstNode gtNode = NodeTestHelper.findNode(astRoot, Token.GT);
-        assertThat(getBranchInstrumentor(script).getLinePosition(gtNode), equalTo(9));
+        assertThat(getBranchInstrumentor(script).getLinePosition(gtNode), equalTo(8));
     }
 
     @Test
@@ -390,7 +390,7 @@ public class BranchInstrumentorTest {
         String script = "if (x > y) {a = 1;}";
         AstRoot astRoot = parser.parse(script, null, 1);
         AstNode gtNode = NodeTestHelper.findNode(astRoot, Token.GT);
-        assertThat(getBranchInstrumentor(script).getLinePosition(gtNode), equalTo(5));
+        assertThat(getBranchInstrumentor(script).getLinePosition(gtNode), equalTo(4));
     }
 
     @Test
@@ -402,7 +402,7 @@ public class BranchInstrumentorTest {
                 "}";
         AstRoot astRoot = parser.parse(script, null, 1);
         AstNode gtNode = NodeTestHelper.findNode(astRoot, Token.GT);
-        assertThat(getBranchInstrumentor(script).getLinePosition(gtNode), equalTo(9));
+        assertThat(getBranchInstrumentor(script).getLinePosition(gtNode), equalTo(8));
     }
 
     @Test
@@ -415,6 +415,6 @@ public class BranchInstrumentorTest {
                 "}";
         AstRoot astRoot = parser.parse(script, null, 1);
         AstNode gtNode = NodeTestHelper.findNode(astRoot, Token.GT);
-        assertThat(getBranchInstrumentor(script).getLinePosition(gtNode), equalTo(9));
+        assertThat(getBranchInstrumentor(script).getLinePosition(gtNode), equalTo(8));
     }
 }

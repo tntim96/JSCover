@@ -501,11 +501,12 @@ public class BranchInstrumentor implements NodeVisitor {
         int absoluteLineStart = node.getAbsolutePosition();
         while (absoluteLineStart >= 0) {
             char charAt = source.charAt(absoluteLineStart);
-            if (charAt == '\n')
+            if (charAt == '\n') {
                 break;
+            }
             absoluteLineStart--;
         }
-        return node.getAbsolutePosition() - absoluteLineStart;
+        return node.getAbsolutePosition() - absoluteLineStart - 1;
     }
 
     protected String getJsLineInitialization() {
