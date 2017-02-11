@@ -358,7 +358,6 @@ public class BranchInstrumentorIntegrationTest {
     private static final String header = "var _$jscoverage = {};\n" +
             "_$jscoverage['test.js'] = {};\n";
 
-    private BranchInstrumentor branchInstrumentor = new BranchInstrumentor("test.js", false, new CommentsVisitor());
     private Parser parser = new Parser();
     private Context context;
     private Scriptable scope;
@@ -369,7 +368,7 @@ public class BranchInstrumentorIntegrationTest {
         script.append("  if (x < 0)\n");
         script.append("    ;\n");
         script.append("};\n");
-        runScript(script.toString());
+        runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
         Function coveredFn = (Function) ScriptableObject.getProperty(coverageData, "covered");
         Function testFn = (Function) scope.get("test", scope);
@@ -402,7 +401,7 @@ public class BranchInstrumentorIntegrationTest {
         script.append("  return x > 0\n");
         script.append("}\n");
         script.append("test(1);");
-        runScript(script.toString());
+        runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
         assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
         assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
@@ -411,7 +410,7 @@ public class BranchInstrumentorIntegrationTest {
     @Test
     public void shouldWrapArrayLiteralCondition() {
         StringBuilder script = new StringBuilder("var x = [ 1 || 0];\n");
-        runScript(script.toString());
+        runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 1, 1);
         assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
         assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
@@ -420,7 +419,7 @@ public class BranchInstrumentorIntegrationTest {
     @Test
     public void shouldWrapCoalesce() {
         StringBuilder script = new StringBuilder("function test(a) {\n  var x = a || {};\n  }\ntest();");
-        runScript(script.toString());
+        runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
         assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
         assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
@@ -428,17 +427,15 @@ public class BranchInstrumentorIntegrationTest {
 
     @Test
     public void shouldNotWrapCoalesceIfConfiguredNotTo() {
-        branchInstrumentor = new BranchInstrumentor("test.js", true, new CommentsVisitor());
-        StringBuilder script = new StringBuilder("function test(a) {\n  var x = a || {};\n  }\ntest();");
-        runScript(script.toString());
+        String source = "function test(a) {\n  var x = a || {};\n  }\ntest();";
+        runScript(source, true);
         assertThat(getBranchData(scope, "test.js").size(), equalTo(0));
     }
 
     @Test
     public void shouldWrapNonCoalesce() {
-        branchInstrumentor = new BranchInstrumentor("test.js", true, new CommentsVisitor());
-        StringBuilder script = new StringBuilder("function test(a) {\n  var x = a > 7;\n  }\ntest(3);");
-        runScript(script.toString());
+        String source = "function test(a) {\n  var x = a > 7;\n  }\ntest(3);";
+        runScript(source, true);
         Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
         assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(0d));
         assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(1d));
@@ -449,7 +446,7 @@ public class BranchInstrumentorIntegrationTest {
         StringBuilder script = new StringBuilder("var y = { 'a':1, 'b':2};\n");
         script.append("var prop = null;\n");
         script.append("var x = y[prop || 'a'];");
-        runScript(script.toString());
+        runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 3, 1);
         assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
         assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
@@ -461,7 +458,7 @@ public class BranchInstrumentorIntegrationTest {
         script.append("  x || (x = 0);\n");
         script.append("}\n");
         script.append("test();\n");
-        runScript(script.toString());
+        runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
         assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(0d));
         assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(1d));
@@ -471,7 +468,7 @@ public class BranchInstrumentorIntegrationTest {
     public void shouldWrapAssignmentCondition() {
         StringBuilder script = new StringBuilder("var x = true;\n");
         script.append("x = x === undefined;\n");
-        runScript(script.toString());
+        runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
         assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(0d));
         assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(1d));
@@ -482,7 +479,7 @@ public class BranchInstrumentorIntegrationTest {
         StringBuilder script = new StringBuilder("var x = 1;\n");
         script.append("if (x > 0)\n");
         script.append("  x--;\n");
-        runScript(script.toString());
+        runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
         assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
         assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
@@ -493,7 +490,7 @@ public class BranchInstrumentorIntegrationTest {
         StringBuilder script = new StringBuilder("var x = true;\n");
         script.append("if (x)\n");
         script.append("  x = false;\n");
-        runScript(script.toString());
+        runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
         assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
         assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
@@ -504,7 +501,7 @@ public class BranchInstrumentorIntegrationTest {
         StringBuilder script = new StringBuilder("var x = 1;\n");
         script.append("while (x > 0)\n");
         script.append("  x--;\n");
-        runScript(script.toString());
+        runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
         assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
         assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(1d));
@@ -515,7 +512,7 @@ public class BranchInstrumentorIntegrationTest {
         StringBuilder script = new StringBuilder("var x = true;\n");
         script.append("while (x)\n");
         script.append("  x = false;\n");
-        runScript(script.toString());
+        runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
         assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
         assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(1d));
@@ -525,7 +522,7 @@ public class BranchInstrumentorIntegrationTest {
     public void shouldNotBreakCommaCondition() {
         StringBuilder script = new StringBuilder("if (true, false)\n");
         script.append("  ;\n");
-        runScript(script.toString());
+        runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 1, 1);
         assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(0d));
         assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(1d));
@@ -535,7 +532,7 @@ public class BranchInstrumentorIntegrationTest {
     public void shouldNotBreakCommaCondition2() {
         StringBuilder script = new StringBuilder("if (false, true)\n");
         script.append("  ;\n");
-        runScript(script.toString());
+        runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 1, 1);
         assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
         assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
@@ -547,7 +544,7 @@ public class BranchInstrumentorIntegrationTest {
         script.append("do\n");
         script.append("  x--;\n");
         script.append("while (x > 0)\n");
-        runScript(script.toString());
+        runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 4, 1);
         assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(0d));
         assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(1d));
@@ -559,7 +556,7 @@ public class BranchInstrumentorIntegrationTest {
         script.append("do\n");
         script.append("  x = false;\n");
         script.append("while (x)\n");
-        runScript(script.toString());
+        runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 4, 1);
         assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(0d));
         assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(1d));
@@ -571,7 +568,7 @@ public class BranchInstrumentorIntegrationTest {
         script.append("    case 'd' : case 'D' :\n");
         script.append("      break;\n");
         script.append("}\n");
-        runScript(script.toString());
+        runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 1, 1);
         assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
         assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
@@ -581,7 +578,7 @@ public class BranchInstrumentorIntegrationTest {
     public void shouldWrapForCondition() {
         StringBuilder script = new StringBuilder("for (var i = 0; i < 1; i++)\n");
         script.append("  ;\n");
-        runScript(script.toString());
+        runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 1, 1);
         assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
         assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(1d));
@@ -591,7 +588,7 @@ public class BranchInstrumentorIntegrationTest {
     public void shouldNotWrapInfiniteForCondition() {
         StringBuilder script = new StringBuilder("for (;;)\n");
         script.append("  break;\n");
-        runScript(script.toString());
+        runScript(script.toString(), false);
         assertThat(getBranchData(scope, "test.js").size(), equalTo(0));
     }
 
@@ -600,7 +597,7 @@ public class BranchInstrumentorIntegrationTest {
         StringBuilder script = new StringBuilder("var x = true;\n");
         script.append("for (var i = 0; x; i++)\n");
         script.append("  x = false;\n");
-        runScript(script.toString());
+        runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
         assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
         assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(1d));
@@ -610,7 +607,7 @@ public class BranchInstrumentorIntegrationTest {
     public void shouldWrapTernaryCondition() {
         StringBuilder script = new StringBuilder("var x = 10;\n");
         script.append("var y = x > 0 ? 1 : 0;\n");
-        runScript(script.toString());
+        runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
         assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
         assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
@@ -620,7 +617,7 @@ public class BranchInstrumentorIntegrationTest {
     public void shouldWrapTernaryConditionWithParentheses() {
         StringBuilder script = new StringBuilder("var x = 10;\n");
         script.append("var y = (x > 0) ? 1 : 0;\n");
-        runScript(script.toString());
+        runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
         assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
         assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
@@ -630,7 +627,7 @@ public class BranchInstrumentorIntegrationTest {
     public void shouldWrapTernaryConditionVariable() {
         StringBuilder script = new StringBuilder("var y = true;\n");
         script.append("var x = y ? 1 : 2;\n");
-        runScript(script.toString());
+        runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
         assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
         assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
@@ -640,7 +637,7 @@ public class BranchInstrumentorIntegrationTest {
     public void shouldWrapTernaryConditionParentheses() {
         StringBuilder script = new StringBuilder("var y = true;\n");
         script.append("var x = (y) ? 1 : 2;\n");
-        runScript(script.toString());
+        runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
         assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
         assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
@@ -650,7 +647,7 @@ public class BranchInstrumentorIntegrationTest {
     public void shouldWrapTernaryConditionArgument() {
         StringBuilder script = new StringBuilder("var x = 10;\n");
         script.append("var y = x > 0 ? x > 100 : x < 100;\n");
-        runScript(script.toString());
+        runScript(script.toString(), false);
         Scriptable coverageData1 = getCoverageData(scope, "test.js", 2, 1);
         assertThat((Double) coverageData1.get("evalTrue", coverageData1), equalTo(1d));
         assertThat((Double) coverageData1.get("evalFalse", coverageData1), equalTo(0d));
@@ -669,7 +666,7 @@ public class BranchInstrumentorIntegrationTest {
     public void shouldWrapFunctionCallCondition() {
         StringBuilder script = new StringBuilder("function test(x, y) {};\n");
         script.append("test(0, 1 > 0);\n");
-        runScript(script.toString());
+        runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
         assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
         assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
@@ -682,7 +679,7 @@ public class BranchInstrumentorIntegrationTest {
         script.append("    ;\n");
         script.append("};\n");
         script.append("test(true);\n");
-        runScript(script.toString());
+        runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
         assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(0d));
         assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(1d));
@@ -692,7 +689,7 @@ public class BranchInstrumentorIntegrationTest {
     public void shouldWrapFunctionCallConditionAsFirstArgument() {
         StringBuilder script = new StringBuilder("function test(x, y) {};\n");
         script.append("test(1 > 0, 0);\n");
-        runScript(script.toString());
+        runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
         assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
         assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
@@ -706,7 +703,7 @@ public class BranchInstrumentorIntegrationTest {
         script.append("  else if (x > 100)\n");
         script.append("    ;\n");
         script.append("};\n");
-        runScript(script.toString());
+        runScript(script.toString(), false);
         Scriptable coverageData1 = getCoverageData(scope, "test.js", 2, 1);
         Scriptable coverageData2 = getCoverageData(scope, "test.js", 4, 1);
         Function coveredFn1 = (Function) ScriptableObject.getProperty(coverageData1, "covered");
@@ -754,7 +751,7 @@ public class BranchInstrumentorIntegrationTest {
     }
 
     private void testNestedScript(StringBuilder script) {
-        runScript(script.toString());
+        runScript(script.toString(), false);
         Scriptable coverageData1 = getCoverageData(scope, "test.js", 2, 1);
         Scriptable coverageData2 = getCoverageData(scope, "test.js", 2, 2);
         Scriptable coverageData3 = getCoverageData(scope, "test.js", 2, 3);
@@ -797,7 +794,7 @@ public class BranchInstrumentorIntegrationTest {
         StringBuilder script = new StringBuilder("function fn() { return true;}\n");
         script.append("  if (fn())\n");
         script.append("    ;\n");
-        runScript(script.toString());
+        runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
 
         assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
@@ -810,7 +807,7 @@ public class BranchInstrumentorIntegrationTest {
         script.append("  if (x)\n");
         script.append("    ;\n");
         script.append("};\n");
-        runScript(script.toString());
+        runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
         Function coveredFn = (Function) ScriptableObject.getProperty(coverageData, "covered");
         Function testFn = (Function) scope.get("test", scope);
@@ -842,7 +839,7 @@ public class BranchInstrumentorIntegrationTest {
         script.append("  var y = x < 0;\n");
         script.append("  return y;\n");
         script.append("};\n");
-        runScript(script.toString());
+        runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
         Function coveredFn = (Function) ScriptableObject.getProperty(coverageData, "covered");
         Function testFn = (Function) scope.get("test", scope);
@@ -868,7 +865,9 @@ public class BranchInstrumentorIntegrationTest {
         assertThat((Boolean) coveredFn.call(context, scope, coverageData, new Object[0]), equalTo(true));
     }
 
-    private Object runScript(String script) {
+    private Object runScript(String script, boolean detectCoalesce) {
+        BranchInstrumentor branchInstrumentor = new BranchInstrumentor("test.js", detectCoalesce, new CommentsVisitor(), script);
+
         AstRoot astRoot = parser.parse(script, null, 1);
         branchInstrumentor.setAstRoot(astRoot);
         astRoot.visitAll(branchInstrumentor);

@@ -361,13 +361,15 @@ public class BranchInstrumentor implements NodeVisitor {
     private BranchHelper branchHelper = BranchHelper.getInstance();
     private Set<PostProcess> postProcesses = new HashSet<PostProcess>();
     private String uri;
+    private String source;
     private boolean detectCoalesce;
     private CommentsVisitor commentsVisitor;
     private AstRoot astRoot;
     private SortedMap<Integer, SortedSet<Integer>> lineConditionMap = new TreeMap<Integer, SortedSet<Integer>>();
 
-    public BranchInstrumentor(String uri, boolean detectCoalesce, CommentsVisitor commentsVisitor) {
+    public BranchInstrumentor(String uri, boolean detectCoalesce, CommentsVisitor commentsVisitor, String source) {
         this.uri = uri;
+        this.source = source;
         this.detectCoalesce = detectCoalesce;
         this.commentsVisitor = commentsVisitor;
     }
@@ -496,13 +498,14 @@ public class BranchInstrumentor implements NodeVisitor {
     }
 
     public int getLinePosition(AstNode node) {
-        int pos = node.getPosition();
-        AstNode parent = node.getParent();
-        while (parent != null && parent.getLineno() == node.getLineno()) {
-            pos += parent.getPosition();
-            parent = parent.getParent();
+        int absoluteLineStart = node.getAbsolutePosition();
+        while (absoluteLineStart >= 0) {
+            char charAt = source.charAt(absoluteLineStart);
+            if (charAt == '\n')
+                break;
+            absoluteLineStart--;
         }
-        return pos - 1;
+        return node.getAbsolutePosition() - absoluteLineStart;
     }
 
     protected String getJsLineInitialization() {

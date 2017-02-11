@@ -377,7 +377,7 @@ class SourceProcessor {
         this.uri = uri;
         this.source = source;
         this.instrumenter = new ParseTreeInstrumenter(uri, config.isIncludeFunction(), commentsVisitor);
-        this.branchInstrumentor = new BranchInstrumentor(uri, config.isDetectCoalesce(), commentsVisitor);
+        this.branchInstrumentor = new BranchInstrumentor(uri, config.isDetectCoalesce(), commentsVisitor, source);
         parser = new Parser(config.getCompilerEnvirons());
         this.includeBranchCoverage = config.isIncludeBranch();
         this.includeFunctionCoverage = config.isIncludeFunction();
@@ -436,6 +436,11 @@ class SourceProcessor {
         return jsLineInitialization + instrumentedSource + jsConditionals;
     }
 
+    protected String instrumentSource() {
+        return instrumentSource(uri, source);
+    }
+
+    /* This should only be called from tests */
     protected String instrumentSource(String source) {
         return instrumentSource(uri, source);
     }
