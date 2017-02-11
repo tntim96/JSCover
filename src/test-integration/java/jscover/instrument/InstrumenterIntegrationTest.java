@@ -382,7 +382,7 @@ public class InstrumenterIntegrationTest {
         String source = ioUtils.loadFromClassPath("/" + fileName);
         instrumenter = new SourceProcessor(config, fileName, source);
 
-        String instrumentedSource = instrumenter.processSourceForFileSystem(source);
+        String instrumentedSource = instrumenter.processSourceForFileSystem();
 
         String expectedSource = ioUtils.loadFromClassPath("/test-instrumented-file-system.js");
         // assertThat(instrumentedSource, equalTo(expectedSource));
@@ -396,7 +396,7 @@ public class InstrumenterIntegrationTest {
         String source = ioUtils.loadFromClassPath("/" + fileName);
         instrumenter = new SourceProcessor(config, fileName, source);
 
-        String instrumentedSource = instrumenter.processSourceForServer(source);
+        String instrumentedSource = instrumenter.processSourceForServer();
 
         String expectedSource = ioUtils.loadFromClassPath("/test-instrumented-server.js");
         // assertThat(instrumentedSource, equalTo(expectedSource));

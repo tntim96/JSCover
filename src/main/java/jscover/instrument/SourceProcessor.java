@@ -393,12 +393,12 @@ class SourceProcessor {
         return branchInstrumentor;
     }
 
-    public String processSourceForServer(String source) {
+    public String processSourceForServer() {
         String reportJS = ioUtils.loadFromClassPath("/report.js");
         return reportJS + processSource();
     }
 
-    public String processSourceForFileSystem(String source) {
+    public String processSourceForFileSystem() {
         return processSource();
     }
 
@@ -414,7 +414,7 @@ class SourceProcessor {
         return "var jsCover_isolateBrowser = " + (isolateBrowser ? "true" : "false") + ";\n";
     }
 
-    protected String processSourceWithoutHeader(String source) {
+    protected String processSourceWithoutHeader() {
         return processSourceWithoutHeader(uri, source);
     }
 

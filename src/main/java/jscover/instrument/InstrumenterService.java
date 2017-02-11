@@ -362,7 +362,7 @@ public class InstrumenterService {
         try {
             String source = ioUtils.toString(new FileInputStream(srcFile));
             SourceProcessor sourceProcessor = new SourceProcessor(config, uri, source);
-            return sourceProcessor.processSourceForServer(source);
+            return sourceProcessor.processSourceForServer();
         } catch (FileNotFoundException e) {
             throw new UriNotFound("Couldn't find "+uri, e);
         }
@@ -371,14 +371,14 @@ public class InstrumenterService {
     public String instrumentJSForProxyServer(ConfigurationCommon config, String source, String uri) {
         logger.log(INFO, "Instrumenting {0}", uri);
         SourceProcessor sourceProcessor = new SourceProcessor(config, uri, source);
-        return sourceProcessor.processSourceForServer(source);
+        return sourceProcessor.processSourceForServer();
     }
 
     public void instrumentJSForFileSystem(ConfigurationCommon config, File srcFile, File dest, String uri) {
         logger.log(INFO, "Instrumenting {0}", uri);
         String source = ioUtils.loadFromFileSystem(srcFile);
         SourceProcessor sourceProcessor = new SourceProcessor(config, "/" + uri, source);
-        String jsInstrumented = sourceProcessor.processSourceForFileSystem(source);
+        String jsInstrumented = sourceProcessor.processSourceForFileSystem();
         ioUtils.copy(jsInstrumented, dest);
     }
 }
