@@ -378,6 +378,14 @@ public class BranchInstrumentorTest {
     }
 
     @Test
+    public void shouldCalculateNodePositionWhenAtStart() {
+        String script = "x > 0;";
+        AstRoot astRoot = parser.parse(script, null, 1);
+        AstNode gtNode = NodeTestHelper.findNode(astRoot, Token.GT);
+        assertThat(getBranchInstrumentor(script).getLinePosition(gtNode), equalTo(0));
+    }
+
+    @Test
     public void shouldCalculateNodePositionAsSecondStatement() {
         String script = "var x;\nvar y = x > 0;";
         AstRoot astRoot = parser.parse(script, null, 1);

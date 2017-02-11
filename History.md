@@ -1,4 +1,4 @@
-1.0.26 / 2017-??-??
+1.1.0 / 2017-02-12
 ==================
   * Remove conditional source from JSON (https://github.com/tntim96/JSCover/issues/244)
   * Wrong 'position' values (https://github.com/tntim96/JSCover/issues/243)
