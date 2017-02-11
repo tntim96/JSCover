@@ -371,15 +371,13 @@ public class SourceProcessorTest {
     private SourceProcessor sourceProcessor;
     @Mock private ConfigurationCommon config;
     @Mock private CompilerEnvirons compilerEnvirons;
-    @Mock private ParseTreeInstrumenter instrumenter;
-    @Mock private BranchInstrumentor branchInstrumentor;
     @Mock private Parser parser;
     @Mock private IoUtils ioUtils;
 
     @Before
     public void setUp() {
         given(config.getCompilerEnvirons()).willReturn(compilerEnvirons);
-        sourceProcessor = new SourceProcessor(config, "test.js");
+        sourceProcessor = new SourceProcessor(config, "test.js", "x;");
         ReflectionUtils.setField(sourceProcessor, "ioUtils", ioUtils);
         ReflectionUtils.setField(sourceProcessor, "parser", parser);
     }
@@ -414,7 +412,7 @@ public class SourceProcessorTest {
         given(ioUtils.loadFromClassPath("/jscoverage-branch.js")).willReturn("<branch>");
         given(parser.parse(anyString(), anyString(), anyInt())).willReturn(new AstRoot());
 
-        assertThat(sourceProcessor.processSource("test.js", "x;"), startsWith("<branch><common>var jsCover_isolateBrowser = false;\n<header>"));
+        assertThat(sourceProcessor.processSource(), startsWith("<branch><common>var jsCover_isolateBrowser = false;\n<header>"));
         verify(ioUtils, times(1)).loadFromClassPath("/jscoverage-branch.js");
     }
 
@@ -426,7 +424,7 @@ public class SourceProcessorTest {
         given(ioUtils.loadFromClassPath("/jscoverage-branch.js")).willReturn("<branch>");
         given(parser.parse(anyString(), anyString(), anyInt())).willReturn(new AstRoot());
 
-        assertThat(sourceProcessor.processSource("test.js", "x;"), startsWith("<branch><common>var jsCover_isolateBrowser = false;\n<header>"));
+        assertThat(sourceProcessor.processSource(), startsWith("<branch><common>var jsCover_isolateBrowser = false;\n<header>"));
         verify(ioUtils, times(1)).loadFromClassPath("/jscoverage-branch.js");
     }
 
@@ -439,7 +437,7 @@ public class SourceProcessorTest {
         given(ioUtils.loadFromClassPath("/jscoverage-localstorage.js")).willReturn("<localStorage>");
         given(parser.parse(anyString(), anyString(), anyInt())).willReturn(new AstRoot());
 
-        assertThat(sourceProcessor.processSource("test.js", "x;"), startsWith("<branch><common><localStorage>var jsCover_isolateBrowser = false;\n<header>"));
+        assertThat(sourceProcessor.processSource(), startsWith("<branch><common><localStorage>var jsCover_isolateBrowser = false;\n<header>"));
         verify(ioUtils, times(1)).loadFromClassPath("/jscoverage-localstorage.js");
     }
 
@@ -451,6 +449,6 @@ public class SourceProcessorTest {
         given(ioUtils.loadFromClassPath("/jscoverage-branch.js")).willReturn("<branch>");
         given(parser.parse(anyString(), anyString(), anyInt())).willReturn(new AstRoot());
 
-        assertThat(sourceProcessor.processSource("test.js", "x;"), startsWith("<branch><common>var jsCover_isolateBrowser = true;\n<header>"));
+        assertThat(sourceProcessor.processSource(), startsWith("<branch><common>var jsCover_isolateBrowser = true;\n<header>"));
     }
 }

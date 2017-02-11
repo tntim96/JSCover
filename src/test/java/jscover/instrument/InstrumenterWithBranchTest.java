@@ -345,21 +345,14 @@ package jscover.instrument;
 import jscover.ConfigurationCommon;
 import jscover.util.ReflectionUtils;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mozilla.javascript.CompilerEnvirons;
 import org.mozilla.javascript.Context;
-import org.mozilla.javascript.Parser;
-import org.mozilla.javascript.Token;
-import org.mozilla.javascript.ast.*;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItem;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -378,7 +371,7 @@ public class InstrumenterWithBranchTest {
         given(config.getCompilerEnvirons()).willReturn(compilerEnv);
         given(config.isIncludeBranch()).willReturn(true);
         given(config.isIncludeFunction()).willReturn(true);
-        sourceProcessor = new SourceProcessor(config, "test.js");
+        sourceProcessor = new SourceProcessor(config, "test.js", "x;");
         instrumenter = (ParseTreeInstrumenter)ReflectionUtils.getField(sourceProcessor, "instrumenter");
     }
 

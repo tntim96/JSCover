@@ -391,8 +391,8 @@ public class InMemoryCoverageTest extends ScriptableObject {
         Scriptable scope = cx.initStandardObjects();
         String source = "function isNegative(x) {\n  if (x>=0)\n    return false;\n  else\n    return true;\n}; isNegative(12);";
 
-        processor = new SourceProcessor(config, "inMemory.js");
-        String instrumentedJS = processor.processSource("inMemory.js", source);
+        processor = new SourceProcessor(config, "inMemory.js", source);
+        String instrumentedJS = processor.processSource();
 
         Object expected = cx.evaluateString(scope, source, "inMemory.js", 1, null);
         Object actual = cx.evaluateString(scope, instrumentedJS, "inMemory.js", 1, null);
@@ -413,8 +413,8 @@ public class InMemoryCoverageTest extends ScriptableObject {
                 "};\n" +
                 "isNegative(12);";
 
-        processor = new SourceProcessor(config, "inMemory.js");
-        String instrumentedJS = processor.processSource("inMemory.js", source);
+        processor = new SourceProcessor(config, "inMemory.js", source);
+        String instrumentedJS = processor.processSource();
         instrumentedJS += "_$jscoverage;";
 
         NativeObject coverage = (NativeObject)cx.evaluateString(scope, instrumentedJS, "inMemory.js", 1, null);

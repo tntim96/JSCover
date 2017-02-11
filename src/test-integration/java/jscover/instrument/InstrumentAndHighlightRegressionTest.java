@@ -647,9 +647,9 @@ public class InstrumentAndHighlightRegressionTest {
 
     private void testFile(String dir, String fileName) {
         tested.add(fileName);
-        SourceProcessor instrumenter = new SourceProcessor(config, fileName);
-
         String source = ioUtils.loadFromClassPath("/data/" + dir + "/" + fileName);
+        SourceProcessor instrumenter = new SourceProcessor(config, fileName, source);
+
         String instrumentedSource = instrumenter.processSourceWithoutHeader(source);
         String expectedSource = ioUtils.loadFromClassPath("/data/" + dir + ".expected/" + fileName).replaceAll("\r\n","\n");
         assertEquals(expectedSource, instrumentedSource);

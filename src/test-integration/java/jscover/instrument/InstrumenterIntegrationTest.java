@@ -380,7 +380,7 @@ public class InstrumenterIntegrationTest {
     public void shouldInstrumentForFileSystem() throws URISyntaxException {
         String fileName = "test-simple.js";
         String source = ioUtils.loadFromClassPath("/" + fileName);
-        instrumenter = new SourceProcessor(config, fileName);
+        instrumenter = new SourceProcessor(config, fileName, source);
 
         String instrumentedSource = instrumenter.processSourceForFileSystem(source);
 
@@ -394,7 +394,7 @@ public class InstrumenterIntegrationTest {
     public void shouldInstrumentForServer() throws URISyntaxException {
         String fileName = "test-simple.js";
         String source = ioUtils.loadFromClassPath("/" + fileName);
-        instrumenter = new SourceProcessor(config, fileName);
+        instrumenter = new SourceProcessor(config, fileName, source);
 
         String instrumentedSource = instrumenter.processSourceForServer(source);
 

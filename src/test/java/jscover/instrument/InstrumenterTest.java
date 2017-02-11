@@ -379,7 +379,7 @@ public class InstrumenterTest {
         given(config.getCompilerEnvirons()).willReturn(compilerEnv);
         given(config.isIncludeBranch()).willReturn(false);
         given(config.isIncludeFunction()).willReturn(true);
-        sourceProcessor = new SourceProcessor(config, "test.js");
+        sourceProcessor = new SourceProcessor(config, "test.js", "x;");
         instrumenter = (ParseTreeInstrumenter)ReflectionUtils.getField(sourceProcessor, "instrumenter");
     }
 

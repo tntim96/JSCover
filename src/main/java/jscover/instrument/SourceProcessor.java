@@ -362,6 +362,7 @@ class SourceProcessor {
     private static final String ignoreJS = "\nif (!(%s)) {\n  _$jscoverage['%s'].conditionals[%d] = %d;\n}";
 
     private String uri;
+    private String source;
     private CommentsVisitor commentsVisitor = new CommentsVisitor();
     private ParseTreeInstrumenter instrumenter;
     private BranchInstrumentor branchInstrumentor;
@@ -372,8 +373,9 @@ class SourceProcessor {
     private boolean localStorage;
     private boolean isolateBrowser;
 
-    public SourceProcessor(ConfigurationCommon config, String uri) {
+    public SourceProcessor(ConfigurationCommon config, String uri, String source) {
         this.uri = uri;
+        this.source = source;
         this.instrumenter = new ParseTreeInstrumenter(uri, config.isIncludeFunction(), commentsVisitor);
         this.branchInstrumentor = new BranchInstrumentor(uri, config.isDetectCoalesce(), commentsVisitor);
         parser = new Parser(config.getCompilerEnvirons());
@@ -393,19 +395,19 @@ class SourceProcessor {
 
     public String processSourceForServer(String source) {
         String reportJS = ioUtils.loadFromClassPath("/report.js");
-        return reportJS + processSource(uri, source);
+        return reportJS + processSource();
     }
 
     public String processSourceForFileSystem(String source) {
-        return processSource(uri, source);
+        return processSource();
     }
 
-    protected String processSource(String sourceURI, String source) {
+    protected String processSource() {
         String headerJS = getIsolateBrowserJS() + ioUtils.loadFromClassPath("/header.js");
         String localStorageJS = localStorage ? ioUtils.loadFromClassPath("/jscoverage-localstorage.js") : "";
         String commonJS = ioUtils.loadFromClassPath("/jscoverage-common.js");
         String branchJS = ioUtils.loadFromClassPath("/jscoverage-branch.js");
-        return branchJS + commonJS + localStorageJS + headerJS + processSourceWithoutHeader(sourceURI, source);
+        return branchJS + commonJS + localStorageJS + headerJS + processSourceWithoutHeader(uri, source);
     }
 
     private String getIsolateBrowserJS() {
