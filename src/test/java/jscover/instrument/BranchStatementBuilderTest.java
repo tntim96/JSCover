@@ -354,8 +354,8 @@ public class BranchStatementBuilderTest {
 
     @Test
     public void shouldBuildLineAndConditionInitialisation() {
-        ExpressionStatement statement = builder.buildLineAndConditionInitialisation("test.js", 4, 2, 12, 15, "x < calc('7')");
-        assertThat(statement.toSource(), equalTo("_$jscoverage['test.js'].branchData['4'][2].init(12, 15, 'x < calc(\\'7\\')');\n"));
+        ExpressionStatement statement = builder.buildLineAndConditionInitialisation("test.js", 4, 2, 12, 15);
+        assertThat(statement.toSource(), equalTo("_$jscoverage['test.js'].branchData['4'][2].init(12, 15);\n"));
     }
 
     @Test
@@ -366,12 +366,8 @@ public class BranchStatementBuilderTest {
 
     @Test
     public void shouldRemoveInstrumentationFromSourceInInitialisation() {
-        ExpressionStatement statement = builder.buildLineAndConditionInitialisation("test.js", 4, 2, 12, 15,
-                "  x++;\n" +
-                "  _$jscoverage['/dir/code.js'].lineData[100]++;\n" +
-                "  x++;\n" +
-                "  _$jscoverage['/dir/code.js'].someOtherData[101]++;\n");
-        assertThat(statement.toSource(), equalTo("_$jscoverage['test.js'].branchData['4'][2].init(12, 15, '  x++;\\n  x++;\\n');\n"));
+        ExpressionStatement statement = builder.buildLineAndConditionInitialisation("test.js", 4, 2, 12, 15);
+        assertThat(statement.toSource(), equalTo("_$jscoverage['test.js'].branchData['4'][2].init(12, 15);\n"));
     }
 
     @Test

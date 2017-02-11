@@ -965,7 +965,12 @@ function jscoverage_makeTable(lines) {
           } else {
             branchClass = 'g';
             for (var conditionIndex = 0; conditionIndex < branchData[lineNumber].length; conditionIndex++) {
-              if (branchData[lineNumber][conditionIndex] !== undefined && branchData[lineNumber][conditionIndex] !== null && !branchData[lineNumber][conditionIndex].covered()) {
+              var condition = branchData[lineNumber][conditionIndex];
+              if (condition && !condition.covered()) {
+                var start = condition.position-1;
+                var end = start + condition.nodeLength;
+                var src = lines[i].substring(start, end);
+                branchData[lineNumber][conditionIndex].src = src;
                 branchClass = 'r';
                 break;
               }
@@ -978,7 +983,7 @@ function jscoverage_makeTable(lines) {
         row += '<td class="numeric '+branchClass+'"><pre>' + branchText + '</pre></td>';
     }
 
-    row += '<td><pre>' + lines[i] + '</pre></td>';
+    row += '<td><pre>' + jscoverage_html_escape(lines[i]) + '</pre></td>';
     row += '</tr>';
     row += '\n';
     rows[lineNumber] = row;
@@ -1087,8 +1092,6 @@ function jscoverage_recalculateSourceTab() {
           var response = request.responseText;
           var displaySource = function() {
             var lines = response.split("\n");
-            for (var i = 0; i < lines.length; i++)
-              lines[i] = jscoverage_html_escape(lines[i]);
             jscoverage_makeTable(lines);
           };
           setTimeout(displaySource, 0);

@@ -404,7 +404,7 @@ public class BranchInstrumentor implements NodeVisitor {
 
         astRoot.addChildrenToFront(functionNode);
         ExpressionStatement conditionArrayDeclaration = branchStatementBuilder.buildLineAndConditionInitialisation(uri
-                , node.getLineno(), conditionId, getLinePosition(node), node.getLength(), node.toSource());
+                , node.getLineno(), conditionId, getLinePosition(node), node.getLength());
         astRoot.addChildrenToFront(conditionArrayDeclaration);
 
         FunctionCall functionCall = new FunctionCall();

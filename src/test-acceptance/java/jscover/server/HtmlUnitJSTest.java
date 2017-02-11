@@ -399,7 +399,7 @@ public class HtmlUnitJSTest {
         assertThat(passed.size(), equalTo(1));
         assertThat(frame.getByXPath("//span[contains(@class,'jasmine-failed')]").size(), equalTo(0));
         assertThat(frame.getByXPath("//span[contains(@class,'jasmine-skipped')]").size(), equalTo(0));
-        assertThat(passed.get(0).asText(), equalTo("16 specs, 0 failures"));
+        assertThat(passed.get(0).asText(), equalTo("15 specs, 0 failures"));
 
         //Store Report
         frame.executeJavaScript("jscoverage_report();");

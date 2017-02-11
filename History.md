@@ -1,5 +1,6 @@
 1.0.26 / 2017-??-??
 ==================
+  * Remove conditional source from JSON (https://github.com/tntim96/JSCover/issues/244)
   * Wrong 'position' values (https://github.com/tntim96/JSCover/issues/243)
   * Minor API modifications to assist with Maven plugins
   * Internal: Upgrade HtmlUnit 2.23 to 2.24, Mockito 2.3.30 to 2.5.7

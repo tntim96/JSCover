@@ -1831,7 +1831,6 @@ function square(x) {
                 {
                     "position":n,    //Branch starts n chars in from line
                     "nodeLength":n,  //Branch length is n
-                    "src":"source",  //Branch source to easily identify conditions in report
                     "evalFalse":1,   //Number of times false path executed
                     "evalTrue":0     //Number of times true path executed
                 }

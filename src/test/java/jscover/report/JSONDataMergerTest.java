@@ -432,7 +432,6 @@ public class JSONDataMergerTest {
         assertThat(coverageData.getBranchData().get(2).get(0), nullValue());
         assertThat(coverageData.getBranchData().get(2).get(1).getPosition(), equalTo(13));
         assertThat(coverageData.getBranchData().get(2).get(1).getNodeLength(), equalTo(4));
-        assertThat(coverageData.getBranchData().get(2).get(1).getSource(), equalTo("x == 0"));
         assertThat(coverageData.getBranchData().get(2).get(1).getEvalFalse(), equalTo(1));
         assertThat(coverageData.getBranchData().get(2).get(1).getEvalTrue(), equalTo(2));
     }
@@ -444,7 +443,7 @@ public class JSONDataMergerTest {
 
     @Test
     public void shouldConvertBranchMapToJSONString() {
-        String data = "{\"/test.js\":{\"lineData\":[null,2,2,0,2],\"branchData\":{\"2\":[null,{\"position\":1,\"nodeLength\":4,\"src\":\"x == 0\",\"evalFalse\":1,\"evalTrue\":2}]}}}";
+        String data = "{\"/test.js\":{\"lineData\":[null,2,2,0,2],\"branchData\":{\"2\":[null,{\"position\":1,\"nodeLength\":4,\"evalFalse\":1,\"evalTrue\":2}]}}}";
         SortedMap<String, FileData> map = jsonMerger.jsonToMap(data);
 
         String jsonString = jsonMerger.toJSON(map);
@@ -535,6 +534,5 @@ public class JSONDataMergerTest {
     private void checkCondition(Map<Integer, List<BranchData>> branchMap, int index) {
         assertThat(branchMap.get(12).get(index).getEvalFalse(), equalTo(0));
         assertThat(branchMap.get(12).get(index).getEvalTrue(), equalTo(0));
-        assertThat(branchMap.get(12).get(index).getSource(), equalTo("No conditions are covered"));
     }
 }

@@ -344,7 +344,6 @@ package jscover.report;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.NativeArray;
 import org.mozilla.javascript.NativeObject;
-import org.mozilla.javascript.ScriptRuntime;
 import org.mozilla.javascript.json.JsonParser;
 
 import java.util.*;
@@ -356,8 +355,7 @@ import static java.util.logging.Level.FINEST;
 
 //Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013, tntim96
 public class JSONDataMerger {
-    private static final Logger logger = Logger.getLogger(FileData.class.getName());
-    public static final String NO_CONDITIONS_ARE_COVERED = "No conditions are covered";
+    private static final Logger logger = Logger.getLogger(JSONDataMerger.class.getName());
     private Context cx = Context.enter();
     private JsonParser parser = new JsonParser(cx, cx.initStandardObjects());
 
@@ -455,10 +453,9 @@ public class JSONDataMerger {
             } else {
                 int position = (Integer) conditionJSON.get("position");
                 int nodeLength = (Integer) conditionJSON.get("nodeLength");
-                String src = (String) conditionJSON.get("src");
                 int evalFalse = (Integer) conditionJSON.get("evalFalse");
                 int evalTrue = (Integer) conditionJSON.get("evalTrue");
-                branchConditionArray.add(new BranchData(position, nodeLength, src, evalFalse, evalTrue));
+                branchConditionArray.add(new BranchData(position, nodeLength, evalFalse, evalTrue));
             }
         }
     }
@@ -522,9 +519,8 @@ public class JSONDataMerger {
             if (branchObj == null) {
                 branchData.append("null");
             } else {
-                String branchJSON = "{\"position\":%d,\"nodeLength\":%d,\"src\":\"%s\",\"evalFalse\":%d,\"evalTrue\":%d}";
-                String branchSource = ScriptRuntime.escapeString(branchObj.getSource());
-                branchData.append(format(branchJSON, branchObj.getPosition(), branchObj.getNodeLength(), branchSource, branchObj.getEvalFalse(), branchObj.getEvalTrue()));
+                String branchJSON = "{\"position\":%d,\"nodeLength\":%d,\"evalFalse\":%d,\"evalTrue\":%d}";
+                branchData.append(format(branchJSON, branchObj.getPosition(), branchObj.getNodeLength(), branchObj.getEvalFalse(), branchObj.getEvalTrue()));
             }
         }
     }
@@ -566,7 +562,7 @@ public class JSONDataMerger {
             branchData.put(i, list);
             for (int j = 0; j <= branchMap.get(i).last(); j++)
                 if (branchMap.get(i).contains(j))
-                    list.add(new BranchData(0, 0, NO_CONDITIONS_ARE_COVERED, 0, 0));
+                    list.add(new BranchData(0, 0, 0, 0));
                 else
                     list.add(null);
         }

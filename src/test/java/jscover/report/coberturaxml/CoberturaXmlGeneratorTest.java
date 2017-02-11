@@ -498,7 +498,7 @@ public class CoberturaXmlGeneratorTest {
         SortedMap<Integer, List<BranchData>> branchDataMap = new TreeMap<Integer, List<BranchData>>();
         List<BranchData> conditionsList = new ArrayList<BranchData>();
         conditionsList.add(null);
-        conditionsList.add(new BranchData(0, 0, null, 1, 0));
+        conditionsList.add(new BranchData(0, 0, 1, 0));
         branchDataMap.put(1, conditionsList);
         files.add(new FileData("/dir/file.js", lines, null, branchDataMap));
 
@@ -526,7 +526,7 @@ public class CoberturaXmlGeneratorTest {
         SortedMap<Integer, List<BranchData>> branchDataMap = new TreeMap<Integer, List<BranchData>>();
         List<BranchData> conditionsList = new ArrayList<BranchData>();
         conditionsList.add(null);
-        conditionsList.add(new BranchData(0, 0, null, 0, 1));
+        conditionsList.add(new BranchData(0, 0, 0, 1));
         branchDataMap.put(1, conditionsList);
         files.add(new FileData("/dir/file.js", lines, null, branchDataMap));
 
@@ -554,7 +554,7 @@ public class CoberturaXmlGeneratorTest {
         SortedMap<Integer, List<BranchData>> branchDataMap = new TreeMap<Integer, List<BranchData>>();
         List<BranchData> conditionsList = new ArrayList<BranchData>();
         conditionsList.add(null);
-        conditionsList.add(new BranchData(0, 0, null, 0, 0));
+        conditionsList.add(new BranchData(0, 0, 0, 0));
         branchDataMap.put(1, conditionsList);
         files.add(new FileData("/dir/file.js", lines, null, branchDataMap));
 

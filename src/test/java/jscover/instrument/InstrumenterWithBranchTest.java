@@ -380,7 +380,7 @@ public class InstrumenterWithBranchTest {
         String source = "var x = x || 7;" ;
         sourceProcessor = new SourceProcessor(config, "test.js", source);
         String instrumentedSource = sourceProcessor.instrumentSource(source);
-        String expectedSource = "_$jscoverage['test.js'].branchData['1'][1].init(9, 6, 'x || 7');\n" +
+        String expectedSource = "_$jscoverage['test.js'].branchData['1'][1].init(9, 6);\n" +
                 "function visit1_1_1(result) {\n" +
                 "  _$jscoverage['test.js'].branchData['1'][1].ranCondition(result);\n" +
                 "  return result;\n" +

@@ -342,19 +342,21 @@ Public License instead of this License.
 
 package jscover.report;
 
-import static jscover.report.JSONDataMerger.NO_CONDITIONS_ARE_COVERED;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class BranchData {
+    private static final Logger logger = Logger.getLogger(BranchData.class.getName());
+
     private int position;
     private int nodeLength;
-    private String source;
     private int evalFalse;
     private int evalTrue;
 
-    public BranchData(int position, int nodeLength, String source, int evalFalse, int evalTrue) {
+    public BranchData(int position, int nodeLength, int evalFalse, int evalTrue) {
         this.position = position;
         this.nodeLength = nodeLength;
-        this.source = source;
         this.evalFalse = evalFalse;
         this.evalTrue = evalTrue;
     }
@@ -365,10 +367,6 @@ public class BranchData {
 
     public int getNodeLength() {
         return nodeLength;
-    }
-
-    public String getSource() {
-        return source;
     }
 
     public int getEvalFalse() {
@@ -388,11 +386,32 @@ public class BranchData {
         return coverage;
     }
 
+    boolean isUnloadedJS() {
+        return position == 0 && nodeLength == 0 && evalFalse == 0 && evalTrue == 0;
+    }
+
     public void addCoverage(BranchData branchData) {
-        if (!NO_CONDITIONS_ARE_COVERED.equals(source) && !NO_CONDITIONS_ARE_COVERED.equals(branchData.source))
-            if (position != branchData.position || nodeLength != branchData.nodeLength)
+        if (!isUnloadedJS() && !branchData.isUnloadedJS()) {
+            if (position != branchData.position || nodeLength != branchData.nodeLength) {
+                logger.log(Level.SEVERE, "Merging non-matching branch data: {0}, {1}", new Object[]{this.toString(), branchData.toString()});
                 throw new IllegalStateException("Merging non-matching branch data");
+            }
+        }
+        if (isUnloadedJS()) {
+            this.position = branchData.position;
+            this.nodeLength = branchData.nodeLength;
+        }
         this.evalFalse += branchData.evalFalse;
         this.evalTrue += branchData.evalTrue;
+    }
+
+    @Override
+    public String toString() {
+        return "BranchData{" +
+                "position=" + position +
+                ", nodeLength=" + nodeLength +
+                ", evalFalse=" + evalFalse +
+                ", evalTrue=" + evalTrue +
+                '}';
     }
 }

@@ -351,7 +351,7 @@ import static java.lang.String.format;
 
 public class BranchStatementBuilder {
 
-    public ExpressionStatement buildLineAndConditionInitialisation(String uri, int lineNo, int conditionNo, int position, int length, String source) {
+    public ExpressionStatement buildLineAndConditionInitialisation(String uri, int lineNo, int conditionNo, int position, int length) {
         ElementGet indexLineNumber = buildLineDeclaration(uri, lineNo);
 
         NumberLiteral conditionNumberLiteral = new NumberLiteral();
@@ -369,10 +369,6 @@ public class BranchStatementBuilder {
         NumberLiteral lengthLiteral = new NumberLiteral();
         lengthLiteral.setValue(""+length);
         fnCall.addArgument(lengthLiteral);
-        StringLiteral stringLiteral = new StringLiteral();
-        stringLiteral.setValue(removeInstrumentation(source));
-        stringLiteral.setQuoteCharacter('\'');
-        fnCall.addArgument(stringLiteral);
 
         return new ExpressionStatement(fnCall);
     }

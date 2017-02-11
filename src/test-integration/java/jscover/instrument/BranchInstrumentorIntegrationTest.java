@@ -377,7 +377,6 @@ public class BranchInstrumentorIntegrationTest {
         assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
         assertThat((Integer) coverageData.get("position", coverageData), equalTo(7));
         assertThat((Integer) coverageData.get("nodeLength", coverageData), equalTo(5));
-        assertThat((String) coverageData.get("src", coverageData), equalTo("x < 0"));
         assertThat((Boolean) coveredFn.call(context, scope, coverageData, new Object[0]), equalTo(false));
 
         testFn.call(context, scope, null, new ArrayList() {{
@@ -651,15 +650,12 @@ public class BranchInstrumentorIntegrationTest {
         Scriptable coverageData1 = getCoverageData(scope, "test.js", 2, 1);
         assertThat((Double) coverageData1.get("evalTrue", coverageData1), equalTo(1d));
         assertThat((Double) coverageData1.get("evalFalse", coverageData1), equalTo(0d));
-        assertThat((String) coverageData1.get("src", coverageData1), equalTo("x > 0"));
         Scriptable coverageData2 = getCoverageData(scope, "test.js", 2, 2);
         assertThat((Double) coverageData2.get("evalTrue", coverageData2), equalTo(0d));
         assertThat((Double) coverageData2.get("evalFalse", coverageData2), equalTo(1d));
-        assertThat((String) coverageData2.get("src", coverageData2), equalTo("x > 100"));
         Scriptable coverageData3 = getCoverageData(scope, "test.js", 2, 3);
         assertThat((Double) coverageData3.get("evalTrue", coverageData3), equalTo(0d));
         assertThat((Double) coverageData3.get("evalFalse", coverageData3), equalTo(0d));
-        assertThat((String) coverageData3.get("src", coverageData3), equalTo("x < 100"));
     }
 
     @Test

@@ -409,6 +409,6 @@ public class FileDataTest {
     }
 
     private BranchData getBranchData(int evalFalse, int evalTrue) {
-        return new BranchData(0, 0, null, evalFalse, evalTrue);
+        return new BranchData(0, 0, evalFalse, evalTrue);
     }
 }

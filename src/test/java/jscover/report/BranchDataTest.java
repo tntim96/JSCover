@@ -346,59 +346,77 @@ import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 public class BranchDataTest {
-    private BranchData branchData = new BranchData(1, 2, "x > y", 1, 2);
+    private BranchData branchData = new BranchData(1, 2, 3, 4);
 
     @Test(expected = IllegalStateException.class)
     public void shouldThrowExceptionIfAddingBranchDataWithMismatchedPosition() {
-        branchData.addCoverage(new BranchData(0, 2, "x > y", 0, 0));
+        branchData.addCoverage(new BranchData(0, 2, 0, 0));
     }
 
     @Test(expected = IllegalStateException.class)
     public void shouldThrowExceptionIfAddingBranchDataWithMismatchedNodeLength() {
-        branchData.addCoverage(new BranchData(1, 0, "x > y", 0, 0));
+        branchData.addCoverage(new BranchData(1, 0, 0, 0));
+    }
+
+    @Test
+    public void shouldDetectUnloadedIncluded() {
+        assertThat(new BranchData(0, 0, 0, 0).isUnloadedJS(), is(true));
+        assertThat(new BranchData(1, 0, 0, 0).isUnloadedJS(), is(false));
+        assertThat(new BranchData(0, 1, 0, 0).isUnloadedJS(), is(false));
+        assertThat(new BranchData(0, 0, 1, 0).isUnloadedJS(), is(false));
+        assertThat(new BranchData(0, 0, 0, 1).isUnloadedJS(), is(false));
     }
 
     @Test
     public void shouldIgnoreNodeComparisonIfAddedBranchWasUnloadedIncluded() {
-        branchData.addCoverage(new BranchData(0, 2, JSONDataMerger.NO_CONDITIONS_ARE_COVERED, 0, 0));
+        branchData.addCoverage(new BranchData(0, 0, 0, 0));
+        assertThat(branchData.getPosition(), equalTo(1));
+        assertThat(branchData.getNodeLength(), equalTo(2));
+        assertThat(branchData.getEvalFalse(), equalTo(3));
+        assertThat(branchData.getEvalTrue(), equalTo(4));
     }
 
     @Test
     public void shouldIgnoreNodeComparisonIfSourceBranchWasUnloadedIncluded() {
-        BranchData branchData = new BranchData(1, 2, JSONDataMerger.NO_CONDITIONS_ARE_COVERED, 1, 2);
-        branchData.addCoverage(new BranchData(1, 0, "x > y", 0, 0));
+        BranchData branchData = new BranchData(0, 0, 0, 0);
+        branchData.addCoverage(new BranchData(1, 2, 3, 4));
+        assertThat(branchData.getPosition(), equalTo(1));
+        assertThat(branchData.getNodeLength(), equalTo(2));
+        assertThat(branchData.getEvalFalse(), equalTo(3));
+        assertThat(branchData.getEvalTrue(), equalTo(4));
     }
 
     @Test
     public void shouldAddCounts() {
-        branchData.addCoverage(new BranchData(1, 2, "x > y", 3, 5));
-        assertThat(branchData.getEvalFalse(), equalTo(4));
-        assertThat(branchData.getEvalTrue(), equalTo(7));
+        branchData.addCoverage(new BranchData(1, 2, 10, 100));
+        assertThat(branchData.getEvalFalse(), equalTo(13));
+        assertThat(branchData.getEvalTrue(), equalTo(104));
     }
 
     @Test
     public void shouldReturnCoverage00() {
-        BranchData branchData = new BranchData(1, 2, "x > y", 0, 0);
+        BranchData branchData = new BranchData(1, 2, 0, 0);
         assertThat(branchData.getCoverage(), equalTo(0));
     }
 
     @Test
     public void shouldReturnCoverage01() {
-        BranchData branchData = new BranchData(1, 2, "x > y", 0, 1);
+        BranchData branchData = new BranchData(1, 2, 0, 1);
         assertThat(branchData.getCoverage(), equalTo(50));
     }
 
     @Test
     public void shouldReturnCoverage10() {
-        BranchData branchData = new BranchData(1, 2, "x > y", 1, 0);
+        BranchData branchData = new BranchData(1, 2, 1, 0);
         assertThat(branchData.getCoverage(), equalTo(50));
     }
 
     @Test
     public void shouldReturnCoverage11() {
-        BranchData branchData = new BranchData(1, 2, "x > y", 1, 1);
+        BranchData branchData = new BranchData(1, 2, 1, 1);
         assertThat(branchData.getCoverage(), equalTo(100));
     }
 }
