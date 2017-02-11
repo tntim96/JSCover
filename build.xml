@@ -135,20 +135,19 @@
     <target name="zip">
         <zip destfile="${dist.dir}/${ant.project.name}-${version}.zip">
             <fileset dir="${basedir}">
-                <include name="**/*"/>
-                <exclude name=".gradle/**"/>
-                <exclude name=".settings/**"/>
-                <exclude name="*.log"/>
-                <exclude name="*.lck"/>
-                <exclude name="cobertura.ser"/>
-                <exclude name="junit*"/>
-                <exclude name="bin/**"/>
-                <exclude name="build/**"/>
-                <exclude name="${build.dir}/**"/>
-            </fileset>
-            <fileset dir="${basedir}">
+                <include name="History.md"/>
+                <include name="*.md"/>
+                <include name="build.*"/>
+                <include name="config/**"/>
+                <include name="data/**"/>
+                <include name="dest/**"/>
+                <include name="doc/**"/>
+                <include name="examples/**"/>
+                <include name="lib/**"/>
+                <include name="log.properties"/>
+                <include name="pom.xml"/>
+                <include name="src"/>
                 <include name="${dist.dir}/*.jar"/>
-                <exclude name="${dist.dir}/*-bundle.jar"/>
             </fileset>
         </zip>
     </target>
