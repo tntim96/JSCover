@@ -11,7 +11,7 @@
     <artifactId>JSCover</artifactId>
     <packaging>jar</packaging>
     <name>JSCover</name>
-    <version>1.1.0</version>
+    <version>1.1.1.SNAPSHOT</version>
     <description>JSCover is a tool that measures code coverage for JavaScript programs.</description>
     <url>http://tntim96.github.com/JSCover/</url>
     <properties>
