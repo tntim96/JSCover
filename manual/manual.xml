@@ -1693,7 +1693,7 @@ if (! _$jscoverage['test.js'].branchData) {
     _$jscoverage['test.js'].branchData['1'] = [];
     _$jscoverage['test.js'].branchData['1'][1] = new BranchData();
 }
-_$jscoverage['test.js'].branchData['1'][1].init(19, 5, 'x > 0');
+_$jscoverage['test.js'].branchData['1'][1].init(19, 5);
 function visit1_2_1(result) {
     _$jscoverage['test.js'].branchData['1'][1].ranCondition(result);
     return result;
