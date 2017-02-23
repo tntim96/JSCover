@@ -1,3 +1,7 @@
+1.1.1 / 2017-??-??
+==================
+  * Internal: Upgrade HtmlUnit 2.24 to 2.25, Mockito 2.7.5 to 2.7.11
+
 1.1.0 / 2017-02-12
 ==================
   * Remove conditional source from JSON (https://github.com/tntim96/JSCover/issues/244)
