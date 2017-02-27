@@ -358,9 +358,9 @@ public class ConfigurationForStdOutTest {
         ConfigurationForStdOut configuration = ConfigurationForStdOut.parse(new String[]{"-io", "doc/example/script.js"});
         assertThat(configuration.showHelp(), is(false));
         assertThat(configuration.isInvalid(), is(false));
-        assertThat(configuration.getJSVersion(), equalTo(150));
+        assertThat(configuration.getJSVersion(), equalTo(200));
         assertThat(configuration.skipInstrumentation("/"), is(false));
-        assertThat(configuration.getCompilerEnvirons().getLanguageVersion(), equalTo(150));
+        assertThat(configuration.getCompilerEnvirons().getLanguageVersion(), equalTo(200));
         assertThat(configuration.isIncludeBranch(), is(true));
         assertThat(configuration.isIncludeFunction(), is(true));
         assertThat(configuration.getLogLevel(), is(SEVERE));

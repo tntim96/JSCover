@@ -383,7 +383,7 @@ public class ConfigurationCommon extends Configuration {
     protected boolean isolateBrowser;
     protected final List<PatternMatcher> patternMatchers = new ArrayList<PatternMatcher>();
     private boolean includeUnloadedJS;
-    protected int JSVersion = Context.VERSION_1_5;
+    protected int JSVersion = Context.VERSION_ES6;
     protected CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
     protected boolean defaultSkip;
     protected IoUtils ioUtils = IoUtils.getInstance();

@@ -352,7 +352,7 @@ public class ConfigurationCommonTest {
 
     @Test
     public void shouldHaveDefaults() {
-        assertThat(config.getJSVersion(), is(150));
+        assertThat(config.getJSVersion(), is(200));
         assertThat(config.isIncludeUnloadedJS(), is(false));
         assertThat(config.isIncludeBranch(), is(true));
         assertThat(config.isIncludeFunction(), is(true));
