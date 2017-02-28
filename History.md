@@ -1,6 +1,6 @@
 1.1.1 / 2017-??-??
 ==================
-  * Internal: Upgrade HtmlUnit 2.24 to 2.25, Mockito 2.7.5 to 2.7.11
+  * Internal: Upgrade HtmlUnit 2.24 to 2.25, Mockito 2.7.5 to 2.7.13
 
 1.1.0 / 2017-02-12
 ==================
