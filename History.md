@@ -1,6 +1,7 @@
 1.1.1 / 2017-??-??
 ==================
   * Internal: Upgrade HtmlUnit 2.24 to 2.25, Mockito 2.7.5 to 2.7.14
+  * Upgraded default settings to allow ES6. JSCover currently uses Rhino 1.7.7 details can be found at (https://mozilla.github.io/rhino/compat/engines.html)
 
 1.1.0 / 2017-02-12
 ==================
