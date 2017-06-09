@@ -74,8 +74,18 @@ page.open(system.args[1], function(status){
             });
             if (system.args.length == 2) {
                 page.evaluate(function(){
-                    jscoverage_report('phantom');
+                    jscoverage_report('phantom', function(){
+                        window.jscoverFinished = true;
+                    });
                 });
+                waitFor(function() {
+                    return page.evaluate(function() {
+                        return window.jscoverFinished;
+                    });
+                }, function() {
+                    console.log("Report has now been saved");
+                    phantom.exit((parseInt(failedNum, 10) > 0) ? 1 : 0);
+                }, 20000);
             } else {
                 var json = page.evaluate(function(){
                     return jscoverage_serializeCoverageToJSON();
@@ -85,8 +95,8 @@ page.open(system.args[1], function(status){
                 } catch(e) {
                     console.log(e);
                 }
+                phantom.exit((parseInt(failedNum, 10) > 0) ? 1 : 0);
             }
-            phantom.exit((parseInt(failedNum, 10) > 0) ? 1 : 0);
         });
     }
 });
