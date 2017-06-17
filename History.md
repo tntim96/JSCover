@@ -1,6 +1,6 @@
 1.1.1 / 2017-??-??
 ==================
-  * Internal: Upgrade HtmlUnit 2.24 to 2.27, Mockito 2.7.5 to 2.8.9, Jasmine 2.5.2 to 2.6.3
+  * Internal: Upgrade HtmlUnit 2.24 to 2.27, Mockito 2.7.5 to 2.8.47, Jasmine 2.5.2 to 2.6.3
 
 1.1.0 / 2017-02-12
 ==================
