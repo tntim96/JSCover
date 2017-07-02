@@ -372,25 +372,25 @@ public class BranchStatementBuilderCCTest {
         Node statement = builder.buildLineAndConditionInitialisation("test.js", 4, 2, 12, 15);
         assertThat(new CodePrinter.Builder(statement).setCompilerOptions(options).build(), equalTo("_$jscoverage['test.js'].branchData['4'][2].init(12,15)"));
     }
-//
-//    @Test
-//    public void shouldRemoveInstrumentationFromSource() {
-//        assertThat(builder.removeInstrumentation("  _$jscoverage['/dir/code.js'].someOtherData[101]++;\n"), equalTo(""));
-//        assertThat(builder.removeInstrumentation("x++;\n  _$jscoverage['/dir/code.js'].lineData[100]++;\n"), equalTo("x++;\n"));
-//    }
-//
-//    @Test
-//    public void shouldRemoveInstrumentationFromSourceInInitialisation() {
-//        ExpressionStatement statement = builder.buildLineAndConditionInitialisation("test.js", 4, 2, 12, 15);
-//        assertThat(statement.toSource(), equalTo("_$jscoverage['test.js'].branchData['4'][2].init(12, 15);\n"));
-//    }
-//
-//    @Test
-//    public void shouldBuildLineAndConditionCall() {
-//        ExpressionStatement statement = builder.buildLineAndConditionCall("test.js", 4, 2);
-//        assertThat(statement.toSource(), equalTo("_$jscoverage['test.js'].branchData['4'][2].ranCondition(result);\n"));
-//    }
-//
+
+    @Test
+    public void shouldRemoveInstrumentationFromSource() {
+        assertThat(builder.removeInstrumentation("  _$jscoverage['/dir/code.js'].someOtherData[101]++;\n"), equalTo(""));
+        assertThat(builder.removeInstrumentation("x++;\n  _$jscoverage['/dir/code.js'].lineData[100]++;\n"), equalTo("x++;\n"));
+    }
+
+    @Test
+    public void shouldRemoveInstrumentationFromSourceInInitialisation() {
+        Node statement = builder.buildLineAndConditionInitialisation("test.js", 4, 2, 12, 15);
+        assertThat(new CodePrinter.Builder(statement).setCompilerOptions(options).build(), equalTo("_$jscoverage['test.js'].branchData['4'][2].init(12,15)"));
+    }
+
+    @Test
+    public void shouldBuildLineAndConditionCall() {
+        Node statement = builder.buildLineAndConditionCall("test.js", 4, 2);
+        assertThat(new CodePrinter.Builder(statement).setCompilerOptions(options).build(), equalTo("_$jscoverage['test.js'].branchData['4'][2].ranCondition(result)"));
+    }
+
 //    @Test
 //    public void shouldBuildLineAndConditionRecordingFunction() {
 //        FunctionNode statement = builder.buildBranchRecordingFunction("test.js", 1, 4, 2);

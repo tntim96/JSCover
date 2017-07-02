@@ -360,32 +360,21 @@ public class BranchStatementBuilderCC {
         fnCall.addChildToBack(lengthLiteral);
         return new Node(Token.EXPR_RESULT, fnCall);
     }
-//
-//    protected String removeInstrumentation(String source) {
-//        return source.replaceAll(" *_\\$jscoverage\\['[^']+'\\]\\.[^\\[]+\\[\\d+\\]\\+\\+;\n", "");
-//    }
-//
-//    public Node buildLineAndConditionCall(String uri, int lineNo, int conditionNo) {
-//        ElementGet indexLineNumber = buildLineDeclaration(uri, lineNo);
-//
-//        NumberLiteral conditionNumberLiteral = new NumberLiteral();
-//        conditionNumberLiteral.setValue("" + conditionNo);
-//        ElementGet indexConditionNumber = new ElementGet(indexLineNumber, conditionNumberLiteral);
-//
-//        Name resultName = new Name();
-//        resultName.setIdentifier("result");
-//
-//        FunctionCall fnCall = new FunctionCall();
-//        Name propertyName = new Name();
-//        propertyName.setIdentifier("ranCondition");
-//        PropertyGet propertyGet = new PropertyGet(indexConditionNumber, propertyName);
-//        fnCall.setTarget(propertyGet);
-//        List<AstNode> arguments = new ArrayList<AstNode>();
-//        arguments.add(resultName);
-//        fnCall.setArguments(arguments);
-//
-//        return new ExpressionStatement(fnCall);
-//    }
+
+    protected String removeInstrumentation(String source) {
+        return source.replaceAll(" *_\\$jscoverage\\['[^']+'\\]\\.[^\\[]+\\[\\d+\\]\\+\\+;\n", "");
+    }
+
+    public Node buildLineAndConditionCall(String uri, int lineNo, int conditionNo) {
+        Node indexLineNumber = buildLineDeclaration(uri, lineNo);
+        Node conditionNumberLiteral = Node.newNumber(conditionNo);
+        Node indexConditionNumber = new Node(Token.GETELEM, indexLineNumber, conditionNumberLiteral);
+        Node initCall = Node.newString(Token.STRING, "ranCondition");
+        Node propertyName = new Node(Token.GETPROP, indexConditionNumber, initCall);
+        Node result = Node.newString(Token.NAME, "result");
+        Node fnCall = new Node(Token.CALL, propertyName, result);
+        return new Node(Token.EXPR_RESULT, fnCall);
+    }
 
     Node buildLineDeclaration(String uri, int lineNo) {
         Node coverVar = Node.newString(Token.NAME, "_$jscoverage");
