@@ -17,6 +17,11 @@ public class BranchHelperCCTest {
     private BranchHelperCC helper = new BranchHelperCC();
 
     @Test
+    public void should() {
+        System.out.println(parse("_$jscoverage['test.js'].branchData['4'][2].init(12, 15);").toStringTree());
+    }
+
+    @Test
     public void shouldDetectBoolean() {
         String script = "x = y || 7;";
         Node astRoot = parse(script);
@@ -67,6 +72,7 @@ public class BranchHelperCCTest {
         Node node = NodeTestHelperCC.findNode(astRoot, Token.GT);
         assertThat(helper.isCoalesce(node), is(false));
     }
+
     private Node parse(String source) {
         return ParserRunner.parse(
                 new SourceFile("test.js"),
