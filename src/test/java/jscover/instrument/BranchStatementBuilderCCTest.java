@@ -361,9 +361,8 @@ public class BranchStatementBuilderCCTest {
     }
 
     @Test
-    public void shouldBuildLineAndConditionInitialisation2() {
+    public void shoudlBuildLineDeclaration() {
         Node statement = builder.buildLineDeclaration("test.js", 4);
-        System.out.println(statement.toStringTree());
         assertThat(new CodePrinter.Builder(statement).setCompilerOptions(options).build(), equalTo("_$jscoverage['test.js'].branchData['4']"));
     }
 
@@ -391,12 +390,12 @@ public class BranchStatementBuilderCCTest {
         assertThat(new CodePrinter.Builder(statement).setCompilerOptions(options).build(), equalTo("_$jscoverage['test.js'].branchData['4'][2].ranCondition(result)"));
     }
 
-//    @Test
-//    public void shouldBuildLineAndConditionRecordingFunction() {
-//        FunctionNode statement = builder.buildBranchRecordingFunction("test.js", 1, 4, 2);
-//        assertThat(statement.toSource(), equalTo("function visit1_4_2(result) {\n" +
-//                "  _$jscoverage['test.js'].branchData['4'][2].ranCondition(result);\n" +
-//                "  return result;\n" +
-//                "}"));
-//    }
+    @Test
+    public void shouldBuildLineAndConditionRecordingFunction() {
+        Node statement = builder.buildBranchRecordingFunction("test.js", 1, 4, 2);
+        assertThat(new CodePrinter.Builder(statement).setCompilerOptions(options).build(), equalTo("function visit1_4_2(result){" +
+                "_$jscoverage['test.js'].branchData['4'][2].ranCondition(result);" +
+                "return result" +
+                "}"));
+    }
 }

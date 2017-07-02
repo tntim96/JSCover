@@ -345,6 +345,8 @@ package jscover.instrument;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.Token;
 
+import static java.lang.String.format;
+
 public class BranchStatementBuilderCC {
 
     public Node buildLineAndConditionInitialisation(String uri, int lineNo, int conditionNo, int position, int length) {
@@ -386,23 +388,13 @@ public class BranchStatementBuilderCC {
         return new Node(Token.GETELEM, propGet, number);
     }
 
-//    public Node buildBranchRecordingFunction(String uri, int id, int lineNo, int conditionNo) {
-//        Name functionName = new Name();
-//        functionName.setIdentifier(format("visit%d_%d_%d", id, lineNo, conditionNo));
-//        FunctionNode functionNode = new FunctionNode();
-//        functionNode.setFunctionName(functionName);
-//
-//        Name resultName = new Name();
-//        resultName.setIdentifier("result");
-//        functionNode.addParam(resultName);
-//
-//        Block block = new Block();
-//        block.addStatement(buildLineAndConditionCall(uri, lineNo, conditionNo));
-//
-//        ReturnStatement returnStatement = new ReturnStatement();
-//        returnStatement.setReturnValue(resultName);
-//        block.addChild(returnStatement);
-//        functionNode.setBody(block);
-//        return functionNode;
-//    }
+    public Node buildBranchRecordingFunction(String uri, int id, int lineNo, int conditionNo) {
+        Node paramList = new Node(Token.PARAM_LIST);
+        paramList.addChildToBack(Node.newString(Token.NAME, "result"));
+        Node fnName = Node.newString(Token.NAME, format("visit%d_%d_%d", id, lineNo, conditionNo));
+        Node lineAndConditionCall = buildLineAndConditionCall(uri, lineNo, conditionNo);
+        Node fnBody = new Node(Token.BLOCK, lineAndConditionCall);
+        fnBody.addChildToBack(new Node(Token.RETURN, Node.newString(Token.NAME, "result")));
+        return new Node(Token.FUNCTION, fnName, paramList, fnBody);
+    }
 }

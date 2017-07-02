@@ -17,11 +17,6 @@ public class BranchHelperCCTest {
     private BranchHelperCC helper = new BranchHelperCC();
 
     @Test
-    public void should() {
-        System.out.println(parse("_$jscoverage['test.js'].branchData['4'][2].init(12, 15);").toStringTree());
-    }
-
-    @Test
     public void shouldDetectBoolean() {
         String script = "x = y || 7;";
         Node astRoot = parse(script);
@@ -52,7 +47,6 @@ public class BranchHelperCCTest {
         String script = "var x = y || {};";
         Node astRoot = parse(script);
 
-        System.out.println("astRoot.toStringTree() = " + astRoot.toStringTree());
         Node orNode = NodeTestHelperCC.findNode(astRoot, Token.OR);
         assertThat(helper.isCoalesce(orNode), is(true));
     }
