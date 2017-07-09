@@ -340,244 +340,187 @@ library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
  */
 
-package jscover;
+package jscover.instrument;
 
-import com.google.javascript.jscomp.parsing.Config;
-import jscover.util.IoUtils;
-import jscover.util.PatternMatcher;
-import jscover.util.PatternMatcherRegEx;
-import jscover.util.PatternMatcherString;
-import org.mozilla.javascript.CompilerEnvirons;
-import org.mozilla.javascript.Context;
+import com.google.javascript.rhino.Node;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.regex.PatternSyntaxException;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
-import static java.lang.String.format;
-import static java.util.logging.Level.SEVERE;
-import static jscover.Main.HELP_PREFIX1;
-import static jscover.Main.HELP_PREFIX2;
+//Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013, tntim96
+class NodeProcessorCC {
+    private StatementBuilderCC statementBuilder = new StatementBuilderCC();
+    private SortedSet<Integer> validLines = new TreeSet<Integer>();
+    private int functionNumber;// Function Coverage (HA-CA)
+    private String fileName;
+    private boolean includeFunctionCoverage;
+    private CommentsHandlerCC commentsVisitor;
 
-public class ConfigurationCommon extends Configuration {
-    private static final Logger logger = Logger.getLogger(ConfigurationCommon.class.getName());
-    public static final String ONLY_INSTRUMENT_REG_PREFIX = "--only-instrument-reg=";
-    public static final String NO_INSTRUMENT_PREFIX = "--no-instrument=";
-    public static final String NO_INSTRUMENT_REG_PREFIX = "--no-instrument-reg=";
-    public static final String INCLUDE_UNLOADED_JS_PREFIX = "--include-unloaded-js";
-    public static final String JS_VERSION_PREFIX = "--js-version=";
-    public static final String ECMA_VERSION_PREFIX = "--ecma-version=";
-    public static final String NO_BRANCH_PREFIX = "--no-branch";
-    public static final String DETECT_COALESCE_PREFIX = "--detect-coalesce";
-    public static final String NO_FUNCTION_PREFIX = "--no-function";
-    public static final String LOCAL_STORAGE_PREFIX = "--local-storage";
-    public static final String ISOLATE_BROWSER_PREFIX = "--isolate-browser";
-    public static final String LOG_LEVEL = "--log=";
-
-    protected boolean showHelp;
-    protected boolean invalid;
-    protected boolean includeBranch = true;
-    protected boolean detectCoalesce;
-    protected boolean includeFunction = true;
-    protected boolean localStorage;
-    protected boolean isolateBrowser;
-    protected final List<PatternMatcher> patternMatchers = new ArrayList<PatternMatcher>();
-    private boolean includeUnloadedJS;
-    protected int JSVersion = Context.VERSION_1_5;
-    protected Config.LanguageMode ECMAVersion = Config.LanguageMode.ECMASCRIPT8;
-    protected CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
-    protected boolean defaultSkip;
-    protected IoUtils ioUtils = IoUtils.getInstance();
-    protected Level logLevel = SEVERE;
-
-    {
-        compilerEnvirons.setRecordingComments(true);
+    public NodeProcessorCC(String uri, boolean includeFunctionCoverage, CommentsHandlerCC commentsVisitor) {
+        this.fileName = uri;
+        this.includeFunctionCoverage = includeFunctionCoverage;
+        this.commentsVisitor = commentsVisitor;
     }
 
-    public void setIncludeBranch(boolean includeBranch) {
-        this.includeBranch = includeBranch;
+    public Node buildInstrumentationStatement(int lineNumber) {
+        return statementBuilder.buildInstrumentationStatement(lineNumber, fileName, validLines);
     }
 
-    public void setDetectCoalesce(boolean detectCoalesce) {
-        this.detectCoalesce = detectCoalesce;
+	// Function Coverage (HA-CA)
+    public Node buildFunctionInstrumentationStatement(int functionNumber) {
+        return statementBuilder.buildFunctionInstrumentationStatement(functionNumber, fileName);
     }
 
-    public void setIncludeFunction(boolean includeFunction) {
-        this.includeFunction = includeFunction;
-    }
-
-    public void setLocalStorage(boolean localStorage) {
-        this.localStorage = localStorage;
-    }
-
-    public void setIncludeUnloadedJS(boolean includeUnloadedJS) {
-        this.includeUnloadedJS = includeUnloadedJS;
-    }
-
-    public void setIsolateBrowser(boolean isolateBrowser) {
-        this.isolateBrowser = isolateBrowser;
-    }
-
-    public void setJSVersion(int JSVersion) {
-        this.JSVersion = JSVersion;
-    }
-
-    public void setECMAVersion(Config.LanguageMode ECMAVersion) {
-        this.ECMAVersion = ECMAVersion;
-    }
-
-    public Boolean showHelp() {
-        return showHelp;
-    }
-
-    public boolean isInvalid() {
-        return invalid;
-    }
-
-    public boolean isIncludeUnloadedJS() {
-        return includeUnloadedJS;
-    }
-
-    public boolean isIncludeBranch() {
-        return includeBranch;
-    }
-
-    public boolean isDetectCoalesce() {
-        return detectCoalesce;
-    }
-
-    public boolean isIncludeFunction() {
-        return includeFunction;
-    }
-
-    public boolean isLocalStorage() {
-        return localStorage;
-    }
-
-    public boolean isolateBrowser() {
-        return isolateBrowser;
-    }
-
-    public int getJSVersion() {
-        return JSVersion;
-    }
-
-    public Config.LanguageMode getECMAVersion() {
-        return ECMAVersion;
-    }
-
-    public CompilerEnvirons getCompilerEnvirons() {
-        return compilerEnvirons;
-    }
-
-    public Level getLogLevel() {
-        return logLevel;
-    }
-
-    public boolean skipInstrumentation(String uri) {
-        for (PatternMatcher patternMatcher : patternMatchers) {
-            Boolean instrumentIt = patternMatcher.matches(uri);
-            if (instrumentIt != null) {
-                logger.log(Level.FINEST, "Matched URI ''{0}'' Pattern ''{1}'' Skip {2}", new Object[]{uri, patternMatcher, instrumentIt});
-                return instrumentIt;
-            }
+    boolean processNode(Node node) {
+        // Function Coverage (HA-CA), tntim96
+//        if (includeFunctionCoverage && node instanceof FunctionNode) {
+//            AstNode block = ((FunctionNode) node).getBody();
+//            if (block instanceof Block) {
+//                block.addChildToFront(buildFunctionInstrumentationStatement(functionNumber++));
+//            }
+//        }
+//
+//        if (node instanceof SwitchCase) {
+//            return (processSwitchCase(node, (SwitchCase) node));
+//        }
+//
+//        if (validLines.contains(node.getLineno()) || commentsVisitor.ignoreLine(node.getLineno())) {
+//            // Don't add instrumentation if already there or we're ignoring
+//            return true;
+//        }
+//
+//        if (node.getParent() != null && node.getLineno() == node.getParent().getLineno()) {
+//            // Don't add instrumentation if it will be added by parent for the
+//            // same line
+//            // TODO Need logic to determine if instrumentation will be added to
+//            // parent.
+//            // return true;
+//        }
+//
+//        AstNode parent = node.getParent();
+//        if (parent instanceof ObjectProperty || parent instanceof FunctionCall) {
+//            return true;
+//        }
+        if (node.isVar() || node.isExprResult()) {
+            addInstrumentationBefore(node);
         }
-        return defaultSkip;
-    }
-
-    protected void setInvalid(String message) {
-        System.err.println(message);
-        showHelp = true;
-        invalid = true;
-    }
-
-    public void addNoInstrument(String arg) {
-        String uri = arg.substring(NO_INSTRUMENT_PREFIX.length());
-        if (uri.startsWith("/"))
-            uri = uri.substring(1);
-        patternMatchers.add(new PatternMatcherString(uri));
-    }
-
-    public void addOnlyInstrumentReg(String arg) {
-        String patternString = arg.substring(ONLY_INSTRUMENT_REG_PREFIX.length());
-        if (patternString.startsWith("/"))
-            patternString = patternString.substring(1);
-        defaultSkip = true;
-        try {
-            patternMatchers.add(PatternMatcherRegEx.getIncludePatternMatcher(patternString));
-        } catch (PatternSyntaxException e) {
-            setInvalid(format("Invalid pattern '%s'", patternString));
-            e.printStackTrace(System.err);
-        }
-    }
-
-    public void addNoInstrumentReg(String arg) {
-        String patternString = arg.substring(NO_INSTRUMENT_REG_PREFIX.length());
-        if (patternString.startsWith("/"))
-            patternString = patternString.substring(1);
-        try {
-            patternMatchers.add(PatternMatcherRegEx.getExcludePatternMatcher(patternString));
-        } catch (PatternSyntaxException e) {
-            e.printStackTrace(System.err);
-            setInvalid(format("Invalid pattern '%s'", patternString));
-        }
-    }
-
-    protected boolean parseArg(String arg) {
-        if (arg.equals(HELP_PREFIX1) || arg.equals(HELP_PREFIX2)) {
-            showHelp = true;
-        } else if (arg.equals(NO_BRANCH_PREFIX)) {
-            includeBranch = false;
-        } else if (arg.equals(NO_FUNCTION_PREFIX)) {
-            includeFunction = false;
-        } else if (arg.equals(DETECT_COALESCE_PREFIX)) {
-            detectCoalesce = true;
-        } else if (arg.equals(INCLUDE_UNLOADED_JS_PREFIX)) {
-            includeUnloadedJS = true;
-        } else if (arg.equals(LOCAL_STORAGE_PREFIX)) {
-            if (isolateBrowser)
-                throw new IllegalArgumentException("Cannot combine '" + LOCAL_STORAGE_PREFIX + "' and '" + ISOLATE_BROWSER_PREFIX + "'.");
-            localStorage = true;
-        } else if (arg.equals(ISOLATE_BROWSER_PREFIX)) {
-            if (localStorage)
-                throw new IllegalArgumentException("Cannot combine '" + LOCAL_STORAGE_PREFIX + "' and '" + ISOLATE_BROWSER_PREFIX + "'.");
-            isolateBrowser = true;
-        } else if (arg.startsWith(NO_INSTRUMENT_PREFIX)) {
-            addNoInstrument(arg);
-        } else if (arg.startsWith(NO_INSTRUMENT_REG_PREFIX)) {
-            addNoInstrumentReg(arg);
-        } else if (arg.startsWith(ONLY_INSTRUMENT_REG_PREFIX)) {
-            addOnlyInstrumentReg(arg);
-        } else if (arg.startsWith(JS_VERSION_PREFIX)) {
-            JSVersion = (int) (Float.valueOf(arg.substring(JS_VERSION_PREFIX.length())) * 100);
-        } else if (arg.startsWith(ECMA_VERSION_PREFIX)) {
-            int version = Integer.valueOf(arg.substring(ECMA_VERSION_PREFIX.length()));
-            switch (version) {
-                case 3:
-                    ECMAVersion = Config.LanguageMode.ECMASCRIPT3;
-                    break;
-                case 5:
-                    ECMAVersion = Config.LanguageMode.ECMASCRIPT5;
-                    break;
-                case 6:
-                    ECMAVersion = Config.LanguageMode.ECMASCRIPT6;
-                    break;
-                case 7:
-                    ECMAVersion = Config.LanguageMode.ECMASCRIPT7;
-                    break;
-                case 8:
-                    ECMAVersion = Config.LanguageMode.ECMASCRIPT8;
-                    break;
-                default:
-                    throw new IllegalArgumentException("Unsupported ECMA version '" + version + "'.");
-            }
-        } else if (arg.startsWith(LOG_LEVEL)) {
-            logLevel = Level.parse(arg.substring(LOG_LEVEL.length()));
-        } else {
-            return false;
-        }
+//        if (node instanceof ExpressionStatement || node instanceof EmptyExpression || node instanceof Loop
+//                || node instanceof ContinueStatement || node instanceof VariableDeclaration || node instanceof LetNode
+//                || node instanceof SwitchStatement || node instanceof BreakStatement
+//                || node instanceof EmptyStatement || node instanceof ThrowStatement) {
+//
+//            if (node.getLineno() < 1) {
+//                //Must be a case expression
+//                return true;
+//            }
+//            if (parent instanceof SwitchCase) {
+//                //Don't do anything here. Direct modification of statements will result in concurrent modification exception.
+//            } else if (parent instanceof LabeledStatement) {
+//                //Don't do anything here.
+//            } else if (isLoopInitializer(node)) {
+//                //Don't do anything here.
+//            } else if (parent != null) {
+//                addInstrumentationBefore(node);
+//            }
+//        } else if (node instanceof WithStatement) {
+//            addInstrumentationBefore(node);
+//        } else if (node instanceof FunctionNode || node instanceof TryStatement || isDebugStatement(node)) {
+//            if (!(parent instanceof InfixExpression) && !(parent instanceof VariableInitializer)
+//                    && !(parent instanceof ConditionalExpression) && !(parent instanceof ArrayLiteral)
+//                    && !(parent instanceof ParenthesizedExpression)) {
+//                addInstrumentationBefore(node);
+//            }
+//        } else if (node instanceof ReturnStatement) {
+//            addInstrumentationBefore(node);
+//        } else if (node instanceof LabeledStatement) {
+//            LabeledStatement labeledStatement = (LabeledStatement)node;
+//            ExpressionStatement newChild = buildInstrumentationStatement(labeledStatement.getLineno());
+//            parent.addChildBefore(newChild, node);
+//        } else if (node instanceof IfStatement) {
+//            addInstrumentationBefore(node);
+//        }
         return true;
+    }
+
+//    private boolean processSwitchCase(AstNode node, SwitchCase switchCase) {
+//        List<AstNode> statements = switchCase.getStatements();
+//        if (statements == null) {
+//            statements = new ArrayList<AstNode>();
+//            statements.add(buildInstrumentationStatement(node.getLineno()));
+//            switchCase.setStatements(statements);
+//            return true;
+//        }
+//        boolean changed = false;
+//        for (int i = statements.size() - 1; i >= 0; i--) {
+//            AstNode statement = statements.get(i);
+//            if (!validLines.contains(statement.getLineno())) {
+//                statements.add(i, buildInstrumentationStatement(statement.getLineno()));
+//                changed = true;
+//            }
+//        }
+//        return changed;
+//    }
+//
+//    private boolean isLoopInitializer(AstNode node) {
+//        if (node.getParent() instanceof ForLoop) {
+//            ForLoop forLoop = (ForLoop)node.getParent();
+//            if (forLoop.getInitializer() == node)
+//                return true;
+//        }
+//        return false;
+//    }
+//
+    private void addInstrumentationBefore(Node node) {
+        Node parent = node.getParent();
+        if (parent.isIf()) {
+//            addIfScope(node, (IfStatement) parent);
+        } else if (parent.isVanillaFor()) {
+//            addLoopScope(node, (Loop) parent);
+        } else if (parent.isWith()) {
+//            addWithScope(node, (WithStatement) parent);
+        } else {
+            parent.addChildBefore(buildInstrumentationStatement(node.getLineno()), node);
+        }
+    }
+//
+//    private Scope makeReplacementScope(AstNode node) {
+//        Scope scope = new Scope();
+//        scope.addChild(buildInstrumentationStatement(node.getLineno()));
+//        scope.addChild(node);
+//        return scope;
+//    }
+//
+//    private void addWithScope(AstNode node, WithStatement with) {
+//        Scope scope = makeReplacementScope(node);
+//        with.setStatement(scope);
+//    }
+//
+//    private void addLoopScope(AstNode node, Loop parentLoop) {
+//        Scope scope = makeReplacementScope(node);
+//        parentLoop.setBody(scope);
+//    }
+//
+//    private void addIfScope(AstNode node, IfStatement parentIf) {
+//        Scope scope = makeReplacementScope(node);
+//        if (parentIf.getThenPart() == node) {
+//            parentIf.setThenPart(scope);
+//        } else if (parentIf.getElsePart() == node) {
+//            parentIf.setElsePart(scope);
+//        }
+//    }
+//
+//    private boolean isDebugStatement(AstNode node) {
+//        if (!(node instanceof KeywordLiteral))
+//            return false;
+//        KeywordLiteral keywordLiteral = (KeywordLiteral) node;
+//        return keywordLiteral.getType() == Token.DEBUGGER;
+//    }
+
+    public SortedSet<Integer> getValidLines() {
+        return validLines;
+    }
+
+    public int getNumFunctions() {
+    	return functionNumber;
     }
 }

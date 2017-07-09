@@ -342,6 +342,7 @@ Public License instead of this License.
 
 package jscover.server;
 
+import com.google.javascript.jscomp.parsing.Config;
 import jscover.util.UriFileTranslatorNoOp;
 import jscover.util.UriFileTranslatorReg;
 import org.junit.Test;
@@ -364,6 +365,7 @@ public class ConfigurationForServerTest {
         assertThat(configuration.getPort(), equalTo(8080));
         assertThat(configuration.getReportDir(), is(new File(System.getProperty("user.dir"))));
         assertThat(configuration.getJSVersion(), equalTo(150));
+        assertThat(configuration.getECMAVersion(), equalTo(Config.LanguageMode.ECMASCRIPT8));
         assertThat(configuration.skipInstrumentation("/"), is(false));
         assertThat(configuration.getCompilerEnvirons().getLanguageVersion(), equalTo(150));
         assertThat(configuration.isProxy(), is(false));
@@ -465,6 +467,12 @@ public class ConfigurationForServerTest {
         ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--js-version=1.8"});
         assertThat(configuration.getJSVersion(), equalTo(180));
         assertThat(configuration.getCompilerEnvirons().getLanguageVersion(), equalTo(180));
+    }
+
+    @Test
+    public void shouldParseECMAVersion() {
+        ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--ecma-version=7"});
+        assertThat(configuration.getECMAVersion(), equalTo(Config.LanguageMode.ECMASCRIPT7));
     }
 
     @Test

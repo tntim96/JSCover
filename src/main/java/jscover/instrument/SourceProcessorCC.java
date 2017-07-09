@@ -338,246 +338,179 @@ proprietary programs.  If your program is a subroutine library, you may
 consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
- */
+*/
 
-package jscover;
+package jscover.instrument;
 
+import com.google.javascript.jscomp.CodePrinter;
+import com.google.javascript.jscomp.CompilerOptions;
+import com.google.javascript.jscomp.SourceFile;
 import com.google.javascript.jscomp.parsing.Config;
+import com.google.javascript.jscomp.parsing.ParserRunner;
+import com.google.javascript.jscomp.parsing.parser.LineNumberTable;
+import com.google.javascript.rhino.Node;
+import com.google.javascript.rhino.StaticSourceFile;
+import jscover.ConfigurationCommon;
 import jscover.util.IoUtils;
-import jscover.util.PatternMatcher;
-import jscover.util.PatternMatcherRegEx;
-import jscover.util.PatternMatcherString;
-import org.mozilla.javascript.CompilerEnvirons;
-import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Parser;
+import org.mozilla.javascript.ast.AstRoot;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedSet;
 import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.regex.PatternSyntaxException;
 
+import static com.google.javascript.jscomp.parsing.Config.JsDocParsing.TYPES_ONLY;
+import static com.google.javascript.jscomp.parsing.Config.RunMode.KEEP_GOING;
 import static java.lang.String.format;
-import static java.util.logging.Level.SEVERE;
-import static jscover.Main.HELP_PREFIX1;
-import static jscover.Main.HELP_PREFIX2;
 
-public class ConfigurationCommon extends Configuration {
-    private static final Logger logger = Logger.getLogger(ConfigurationCommon.class.getName());
-    public static final String ONLY_INSTRUMENT_REG_PREFIX = "--only-instrument-reg=";
-    public static final String NO_INSTRUMENT_PREFIX = "--no-instrument=";
-    public static final String NO_INSTRUMENT_REG_PREFIX = "--no-instrument-reg=";
-    public static final String INCLUDE_UNLOADED_JS_PREFIX = "--include-unloaded-js";
-    public static final String JS_VERSION_PREFIX = "--js-version=";
-    public static final String ECMA_VERSION_PREFIX = "--ecma-version=";
-    public static final String NO_BRANCH_PREFIX = "--no-branch";
-    public static final String DETECT_COALESCE_PREFIX = "--detect-coalesce";
-    public static final String NO_FUNCTION_PREFIX = "--no-function";
-    public static final String LOCAL_STORAGE_PREFIX = "--local-storage";
-    public static final String ISOLATE_BROWSER_PREFIX = "--isolate-browser";
-    public static final String LOG_LEVEL = "--log=";
+//Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013
+class SourceProcessorCC {
 
-    protected boolean showHelp;
-    protected boolean invalid;
-    protected boolean includeBranch = true;
-    protected boolean detectCoalesce;
-    protected boolean includeFunction = true;
-    protected boolean localStorage;
-    protected boolean isolateBrowser;
-    protected final List<PatternMatcher> patternMatchers = new ArrayList<PatternMatcher>();
-    private boolean includeUnloadedJS;
-    protected int JSVersion = Context.VERSION_1_5;
-    protected Config.LanguageMode ECMAVersion = Config.LanguageMode.ECMASCRIPT8;
-    protected CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
-    protected boolean defaultSkip;
-    protected IoUtils ioUtils = IoUtils.getInstance();
-    protected Level logLevel = SEVERE;
+    private static final String initLine = "  _$jscoverage['%s'].lineData[%d] = 0;\n";
 
-    {
-        compilerEnvirons.setRecordingComments(true);
+	// Function Coverage (HA-CA)
+    private static final String initFunction = "  _$jscoverage['%s'].functionData[%d] = 0;\n";
+    private static final String ignoreJS = "\nif (!(%s)) {\n  _$jscoverage['%s'].conditionals[%d] = %d;\n}";
+
+    private String uri;
+    private String source;
+    private CommentsHandlerCC commentsVisitor = new CommentsHandlerCC();
+    private ParseTreeInstrumenterCC instrumenter;
+    private BranchInstrumentor branchInstrumentor;
+    private Config config;
+    private CompilerOptions options = new CompilerOptions();
+    private IoUtils ioUtils = IoUtils.getInstance();
+    private boolean includeBranchCoverage;
+    private boolean includeFunctionCoverage;
+    private boolean localStorage;
+    private boolean isolateBrowser;
+
+    public SourceProcessorCC(ConfigurationCommon config, String uri, String source) {
+        this.uri = uri;
+        this.source = source;
+        this.instrumenter = new ParseTreeInstrumenterCC(uri, config.isIncludeFunction(), commentsVisitor);
+        //this.branchInstrumentor = new BranchInstrumentor(uri, config.isDetectCoalesce(), commentsVisitor, source);
+        this.config = ParserRunner.createConfig(config.getECMAVersion(), TYPES_ONLY, KEEP_GOING, null, false, Config.StrictMode.STRICT);
+        this.options.setPreferSingleQuotes(true);
+        this.includeBranchCoverage = config.isIncludeBranch();
+        this.includeFunctionCoverage = config.isIncludeFunction();
+        this.localStorage = config.isLocalStorage();
+        this.isolateBrowser = config.isolateBrowser();
     }
 
-    public void setIncludeBranch(boolean includeBranch) {
-        this.includeBranch = includeBranch;
+    ParseTreeInstrumenterCC getInstrumenter() {
+        return instrumenter;
     }
 
-    public void setDetectCoalesce(boolean detectCoalesce) {
-        this.detectCoalesce = detectCoalesce;
+    BranchInstrumentor getBranchInstrumentor() {
+        return branchInstrumentor;
     }
 
-    public void setIncludeFunction(boolean includeFunction) {
-        this.includeFunction = includeFunction;
+    public String processSourceForServer() {
+        String reportJS = ioUtils.loadFromClassPath("/report.js");
+        return reportJS + processSource();
     }
 
-    public void setLocalStorage(boolean localStorage) {
-        this.localStorage = localStorage;
+    public String processSourceForFileSystem() {
+        return processSource();
     }
 
-    public void setIncludeUnloadedJS(boolean includeUnloadedJS) {
-        this.includeUnloadedJS = includeUnloadedJS;
+    protected String processSource() {
+        String headerJS = getIsolateBrowserJS() + ioUtils.loadFromClassPath("/header.js");
+        String localStorageJS = localStorage ? ioUtils.loadFromClassPath("/jscoverage-localstorage.js") : "";
+        String commonJS = ioUtils.loadFromClassPath("/jscoverage-common.js");
+        String branchJS = ioUtils.loadFromClassPath("/jscoverage-branch.js");
+        return branchJS + commonJS + localStorageJS + headerJS + processSourceWithoutHeader(uri, source);
     }
 
-    public void setIsolateBrowser(boolean isolateBrowser) {
-        this.isolateBrowser = isolateBrowser;
+    private String getIsolateBrowserJS() {
+        return "var jsCover_isolateBrowser = " + (isolateBrowser ? "true" : "false") + ";\n";
     }
 
-    public void setJSVersion(int JSVersion) {
-        this.JSVersion = JSVersion;
+    protected String processSourceWithoutHeader() {
+        return processSourceWithoutHeader(uri, source);
     }
 
-    public void setECMAVersion(Config.LanguageMode ECMAVersion) {
-        this.ECMAVersion = ECMAVersion;
+    protected String processSourceWithoutHeader(String sourceURI, String source) {
+        String instrumentedSource = instrumentSource(sourceURI, source);
+
+        String jsLineInitialization = getJsLineInitialization(uri, instrumenter.getValidLines());
+        if (commentsVisitor.getJsCoverageIgnoreComments().size() > 0)
+            jsLineInitialization += format("_$jscoverage['%s'].conditionals = [];\n", uri);
+
+        if (includeFunctionCoverage)
+            jsLineInitialization += getJsFunctionInitialization(uri, instrumenter.getNumFunctions());
+
+        if (includeBranchCoverage)
+            jsLineInitialization += branchInstrumentor.getJsLineInitialization();
+
+        String jsConditionals = getJsConditionals(uri, commentsVisitor.getJsCoverageIgnoreComments());
+
+        return jsLineInitialization + instrumentedSource + jsConditionals;
     }
 
-    public Boolean showHelp() {
-        return showHelp;
+    protected String instrumentSource() {
+        return instrumentSource(uri, source);
     }
 
-    public boolean isInvalid() {
-        return invalid;
+    /* This should only be called from tests */
+    protected String instrumentSource(String source) {
+        return instrumentSource(uri, source);
     }
 
-    public boolean isIncludeUnloadedJS() {
-        return includeUnloadedJS;
+    protected String instrumentSource(String sourceURI, String source) {
+        SourceFile sourceFile = SourceFile.fromCode(sourceURI, source);
+        com.google.javascript.jscomp.parsing.parser.SourceFile sf = new com.google.javascript.jscomp.parsing.parser.SourceFile(sourceURI, source);
+        LineNumberTable lineNumberTable = new LineNumberTable(sf);
+        Node jsRoot = parse(source, sourceFile);
+        //System.out.println("jsRoot.toStringTree():\n" + jsRoot.toStringTree());
+
+        NodeWalker nodeWalker = new NodeWalker();
+        nodeWalker.visit(jsRoot, instrumenter);
+        return new CodePrinter.Builder(jsRoot).setCompilerOptions(options).setPrettyPrint(true).build();
     }
 
-    public boolean isIncludeBranch() {
-        return includeBranch;
+
+    private Node parse(String source, StaticSourceFile sourceFile) {
+        Node script = ParserRunner.parse(
+                sourceFile,
+                source,
+                config,
+                null).ast;
+        return script;
     }
 
-    public boolean isDetectCoalesce() {
-        return detectCoalesce;
-    }
 
-    public boolean isIncludeFunction() {
-        return includeFunction;
-    }
-
-    public boolean isLocalStorage() {
-        return localStorage;
-    }
-
-    public boolean isolateBrowser() {
-        return isolateBrowser;
-    }
-
-    public int getJSVersion() {
-        return JSVersion;
-    }
-
-    public Config.LanguageMode getECMAVersion() {
-        return ECMAVersion;
-    }
-
-    public CompilerEnvirons getCompilerEnvirons() {
-        return compilerEnvirons;
-    }
-
-    public Level getLogLevel() {
-        return logLevel;
-    }
-
-    public boolean skipInstrumentation(String uri) {
-        for (PatternMatcher patternMatcher : patternMatchers) {
-            Boolean instrumentIt = patternMatcher.matches(uri);
-            if (instrumentIt != null) {
-                logger.log(Level.FINEST, "Matched URI ''{0}'' Pattern ''{1}'' Skip {2}", new Object[]{uri, patternMatcher, instrumentIt});
-                return instrumentIt;
-            }
+    protected String getJsLineInitialization(String fileName, SortedSet<Integer> validLines) {
+        fileName = fileName.replace("\\", "\\\\").replace("'", "\\'");
+        StringBuilder sb = new StringBuilder(format("if (! _$jscoverage['%s']) {\n", fileName));
+        sb.append(format("  _$jscoverage['%s'] = {};\n", fileName));
+        sb.append(format("  _$jscoverage['%s'].lineData = [];\n", fileName));
+        for (Integer line : validLines) {
+            sb.append(format(initLine, fileName, line));
         }
-        return defaultSkip;
+        sb.append("}\n");
+        return sb.toString();
     }
 
-    protected void setInvalid(String message) {
-        System.err.println(message);
-        showHelp = true;
-        invalid = true;
-    }
-
-    public void addNoInstrument(String arg) {
-        String uri = arg.substring(NO_INSTRUMENT_PREFIX.length());
-        if (uri.startsWith("/"))
-            uri = uri.substring(1);
-        patternMatchers.add(new PatternMatcherString(uri));
-    }
-
-    public void addOnlyInstrumentReg(String arg) {
-        String patternString = arg.substring(ONLY_INSTRUMENT_REG_PREFIX.length());
-        if (patternString.startsWith("/"))
-            patternString = patternString.substring(1);
-        defaultSkip = true;
-        try {
-            patternMatchers.add(PatternMatcherRegEx.getIncludePatternMatcher(patternString));
-        } catch (PatternSyntaxException e) {
-            setInvalid(format("Invalid pattern '%s'", patternString));
-            e.printStackTrace(System.err);
+	// Function Coverage (HA-CA)
+    protected String getJsFunctionInitialization(String fileName, int numFunction) {
+        fileName = fileName.replace("\\", "\\\\").replace("'", "\\'");
+        StringBuilder sb = new StringBuilder(format("if (! _$jscoverage['%s'].functionData) {\n", fileName));
+        sb.append(format("  _$jscoverage['%s'].functionData = [];\n", fileName));
+        for ( int i = 0; i < numFunction; ++i) {
+            sb.append(format(initFunction, fileName, i));
         }
+        sb.append("}\n");
+        return sb.toString();
     }
 
-    public void addNoInstrumentReg(String arg) {
-        String patternString = arg.substring(NO_INSTRUMENT_REG_PREFIX.length());
-        if (patternString.startsWith("/"))
-            patternString = patternString.substring(1);
-        try {
-            patternMatchers.add(PatternMatcherRegEx.getExcludePatternMatcher(patternString));
-        } catch (PatternSyntaxException e) {
-            e.printStackTrace(System.err);
-            setInvalid(format("Invalid pattern '%s'", patternString));
+    private String getJsConditionals(String fileName, List<JSCoverageIgnoreComment> ignores) {
+        fileName = fileName.replace("\\", "\\\\").replace("'", "\\'");
+        StringBuilder sb = new StringBuilder();
+        for (JSCoverageIgnoreComment ignore : ignores) {
+            sb.append(format(ignoreJS, ignore.getCondition(), fileName, ignore.getStart(), ignore.getEnd()));
         }
-    }
-
-    protected boolean parseArg(String arg) {
-        if (arg.equals(HELP_PREFIX1) || arg.equals(HELP_PREFIX2)) {
-            showHelp = true;
-        } else if (arg.equals(NO_BRANCH_PREFIX)) {
-            includeBranch = false;
-        } else if (arg.equals(NO_FUNCTION_PREFIX)) {
-            includeFunction = false;
-        } else if (arg.equals(DETECT_COALESCE_PREFIX)) {
-            detectCoalesce = true;
-        } else if (arg.equals(INCLUDE_UNLOADED_JS_PREFIX)) {
-            includeUnloadedJS = true;
-        } else if (arg.equals(LOCAL_STORAGE_PREFIX)) {
-            if (isolateBrowser)
-                throw new IllegalArgumentException("Cannot combine '" + LOCAL_STORAGE_PREFIX + "' and '" + ISOLATE_BROWSER_PREFIX + "'.");
-            localStorage = true;
-        } else if (arg.equals(ISOLATE_BROWSER_PREFIX)) {
-            if (localStorage)
-                throw new IllegalArgumentException("Cannot combine '" + LOCAL_STORAGE_PREFIX + "' and '" + ISOLATE_BROWSER_PREFIX + "'.");
-            isolateBrowser = true;
-        } else if (arg.startsWith(NO_INSTRUMENT_PREFIX)) {
-            addNoInstrument(arg);
-        } else if (arg.startsWith(NO_INSTRUMENT_REG_PREFIX)) {
-            addNoInstrumentReg(arg);
-        } else if (arg.startsWith(ONLY_INSTRUMENT_REG_PREFIX)) {
-            addOnlyInstrumentReg(arg);
-        } else if (arg.startsWith(JS_VERSION_PREFIX)) {
-            JSVersion = (int) (Float.valueOf(arg.substring(JS_VERSION_PREFIX.length())) * 100);
-        } else if (arg.startsWith(ECMA_VERSION_PREFIX)) {
-            int version = Integer.valueOf(arg.substring(ECMA_VERSION_PREFIX.length()));
-            switch (version) {
-                case 3:
-                    ECMAVersion = Config.LanguageMode.ECMASCRIPT3;
-                    break;
-                case 5:
-                    ECMAVersion = Config.LanguageMode.ECMASCRIPT5;
-                    break;
-                case 6:
-                    ECMAVersion = Config.LanguageMode.ECMASCRIPT6;
-                    break;
-                case 7:
-                    ECMAVersion = Config.LanguageMode.ECMASCRIPT7;
-                    break;
-                case 8:
-                    ECMAVersion = Config.LanguageMode.ECMASCRIPT8;
-                    break;
-                default:
-                    throw new IllegalArgumentException("Unsupported ECMA version '" + version + "'.");
-            }
-        } else if (arg.startsWith(LOG_LEVEL)) {
-            logLevel = Level.parse(arg.substring(LOG_LEVEL.length()));
-        } else {
-            return false;
-        }
-        return true;
+        return sb.toString();
     }
 }
