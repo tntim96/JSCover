@@ -883,14 +883,13 @@ public class InstrumenterCCTest {
 //                "var x = 'abc'.startsWith('a');\n";
 //        assertEquals(expectedSource, instrumentedSource);
 //    }
-//
-//    @Test
-//    @Ignore
-//    public void shouldInstrumentES6ArrowFunction() {
-//        String source = "var a3 = a.map( s => s.length );";
-//        String instrumentedSource = sourceProcessor.instrumentSource(source);
-//        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
-//                "var a3 = a.map( s => s.length );\n";
-//        assertEquals(expectedSource, instrumentedSource);
-//    }
+
+    @Test
+    public void shouldInstrumentES6ArrowFunction() {
+        String source = "var a3 = a.map( s => s.length );";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "var a3 = a.map((s) => s.length);\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
 }
