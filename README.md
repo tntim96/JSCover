@@ -2,7 +2,7 @@
 ================================
 
 [![Build Status](https://travis-ci.org/tntim96/JSCover.svg?branch=master)](https://travis-ci.org/tntim96/JSCover)
-[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/JSCover)
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/JSCover)
 
 JSCover is an easy-to-use JavaScript code coverage measuring tool. It is an enhanced version of the popular
 [JSCoverage](http://siliconforks.com/jscoverage/) tool, having added several features including **branch coverage**,
