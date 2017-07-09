@@ -341,8 +341,8 @@ Public License instead of this License.
  */
 package jscover.instrument;
 
+import com.google.javascript.rhino.IR;
 import com.google.javascript.rhino.Node;
-import com.google.javascript.rhino.Token;
 
 import java.util.SortedSet;
 
@@ -362,27 +362,24 @@ class StatementBuilderCC {
 
     public Node buildConditionalStatement(int startLine, int endLine, String fileName) {
         Node indexLineNumber = buildLineNumberExpression(startLine, fileName, "conditionals");
-
-        Node lineNumberLiteral = Node.newNumber(endLine);
-
-        Node assignment = new Node(Token.ASSIGN, indexLineNumber, lineNumberLiteral);
-        return new Node(Token.EXPR_RESULT, assignment);
+        Node lineNumberLiteral = IR.number(endLine);
+        Node assignment = IR.assign(indexLineNumber, lineNumberLiteral);
+        return IR.exprResult(assignment);
     }
 
     Node buildInstrumentationIncrementer(int lineNumber, String fileName, String identifier) {
         Node getNumber = buildLineNumberExpression(lineNumber, fileName, identifier);
-        Node inc = new Node(Token.INC, getNumber);
-        inc.putBooleanProp(Node.INCRDECR_PROP, true);
-        return new Node(Token.EXPR_RESULT, inc);
+        Node inc = IR.inc(getNumber, true);
+        return IR.exprResult(inc);
     }
 
     Node buildLineNumberExpression(int lineNumber, String fileName, String identifier) {
-        Node coverVar = Node.newString(Token.NAME, "_$jscoverage");
-        Node path = Node.newString(Token.STRING, fileName);
-        Node getURI = new Node(Token.GETELEM, coverVar, path);
-        Node prop = Node.newString(Token.STRING, identifier);
-        Node propGet = new Node(Token.GETPROP, getURI, prop);
-        Node number = Node.newNumber(lineNumber);
-        return new Node(Token.GETELEM, propGet, number);
+        Node coverVar = IR.name("_$jscoverage");
+        Node path = IR.string(fileName);
+        Node getURI = IR.getelem(coverVar, path);
+        Node prop = IR.string(identifier);
+        Node propGet = IR.getprop(getURI, prop);
+        Node number = IR.number(lineNumber);
+        return IR.getelem(propGet, number);
     }
 }
