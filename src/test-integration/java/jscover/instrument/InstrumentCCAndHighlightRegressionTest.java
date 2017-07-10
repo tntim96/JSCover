@@ -338,187 +338,401 @@ proprietary programs.  If your program is a subroutine library, you may
 consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
- */
+*/
 
 package jscover.instrument;
 
+import com.google.javascript.jscomp.CodePrinter;
+import com.google.javascript.jscomp.CompilerOptions;
+import com.google.javascript.jscomp.parsing.Config;
+import com.google.javascript.jscomp.parsing.ParserRunner;
 import com.google.javascript.rhino.Node;
+import com.google.javascript.rhino.SimpleErrorReporter;
+import com.google.javascript.rhino.SimpleSourceFile;
+import jscover.ConfigurationCommon;
+import jscover.util.IoUtils;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.io.File;
+import java.io.FilenameFilter;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
-//Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013, tntim96
-class NodeProcessorCC {
-    private StatementBuilderCC statementBuilder = new StatementBuilderCC();
-    private SortedSet<Integer> validLines = new TreeSet<Integer>();
-    private int functionNumber;// Function Coverage (HA-CA)
-    private String fileName;
-    private boolean includeFunctionCoverage;
-    private CommentsHandlerCC commentsVisitor;
+import static com.google.javascript.jscomp.parsing.Config.JsDocParsing.TYPES_ONLY;
+import static com.google.javascript.jscomp.parsing.Config.LanguageMode.ECMASCRIPT8;
+import static com.google.javascript.jscomp.parsing.Config.RunMode.KEEP_GOING;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.BDDMockito.given;
 
-    public NodeProcessorCC(String uri, boolean includeFunctionCoverage, CommentsHandlerCC commentsVisitor) {
-        this.fileName = uri;
-        this.includeFunctionCoverage = includeFunctionCoverage;
-        this.commentsVisitor = commentsVisitor;
+//@Ignore
+@RunWith(MockitoJUnitRunner.class)
+public class InstrumentCCAndHighlightRegressionTest {
+    private static Set<String> tested = new HashSet<>();
+    private static Map<String, String> allTests = new HashMap<>();
+    private static Config parserConfig = ParserRunner.createConfig(ECMASCRIPT8, TYPES_ONLY, KEEP_GOING, null, false, Config.StrictMode.SLOPPY);
+
+    private IoUtils ioUtils = IoUtils.getInstance();
+    private CompilerOptions options = new CompilerOptions();
+    @Mock private ConfigurationCommon config;
+
+    @Before
+    public void setUp() {
+        given(config.getECMAVersion()).willReturn(ECMASCRIPT8);
+        given(config.isIncludeBranch()).willReturn(false);
+        given(config.isIncludeFunction()).willReturn(true);
+        options.setPreferSingleQuotes(true);
+        options.setPrettyPrint(true);
+        options.setLanguage(CompilerOptions.LanguageMode.ECMASCRIPT_NEXT);
     }
 
-    public Node buildInstrumentationStatement(int lineNumber) {
-        return statementBuilder.buildInstrumentationStatement(lineNumber, fileName, validLines);
-    }
-
-	// Function Coverage (HA-CA)
-    public Node buildFunctionInstrumentationStatement(int functionNumber) {
-        return statementBuilder.buildFunctionInstrumentationStatement(functionNumber, fileName);
-    }
-
-    boolean processNode(Node node) {
-        // Function Coverage (HA-CA), tntim96
-//        if (includeFunctionCoverage && node instanceof FunctionNode) {
-//            AstNode block = ((FunctionNode) node).getBody();
-//            if (block instanceof Block) {
-//                block.addChildToFront(buildFunctionInstrumentationStatement(functionNumber++));
-//            }
-//        }
-//
-//        if (node instanceof SwitchCase) {
-//            return (processSwitchCase(node, (SwitchCase) node));
-//        }
-//
-//        if (validLines.contains(node.getLineno()) || commentsVisitor.ignoreLine(node.getLineno())) {
-//            // Don't add instrumentation if already there or we're ignoring
-//            return true;
-//        }
-//
-//        if (node.getParent() != null && node.getLineno() == node.getParent().getLineno()) {
-//            // Don't add instrumentation if it will be added by parent for the
-//            // same line
-//            // TODO Need logic to determine if instrumentation will be added to
-//            // parent.
-//            // return true;
-//        }
-//
-        Node parent = node.getParent();
-//        if (parent instanceof ObjectProperty || parent instanceof FunctionCall) {
-//            return true;
-//        }
-        if (node.isExprResult() || node.isEmpty() || node.isVar() || node.isLabel() || node.isLet()) {
-//        if (node instanceof ExpressionStatement || node instanceof EmptyExpression || node instanceof Loop
-//                || node instanceof ContinueStatement || node instanceof VariableDeclaration || node instanceof LetNode
-//                || node instanceof SwitchStatement || node instanceof BreakStatement
-//                || node instanceof EmptyStatement || node instanceof ThrowStatement) {
-//
-//            if (node.getLineno() < 1) {
-//                //Must be a case expression
-//                return true;
-//            }
-            if (parent.isCase()) {
-                //Don't do anything here. Direct modification of statements will result in concurrent modification exception.
-            } else if (parent.isLabel()) {
-                //Don't do anything here.
-//            } else if (isLoopInitializer(node)) {
-                //Don't do anything here.
-            } else if (parent != null) {
-                addInstrumentationBefore(node);
+    @AfterClass
+    public static void afterClass() {
+        for (String testName : allTests.keySet()) {
+            if (!tested.contains(testName)) {
+                System.out.println(allTests.get(testName) + " " + testName);
             }
-//        } else if (node instanceof WithStatement) {
-//            addInstrumentationBefore(node);
-//        } else if (node instanceof FunctionNode || node instanceof TryStatement || isDebugStatement(node)) {
-//            if (!(parent instanceof InfixExpression) && !(parent instanceof VariableInitializer)
-//                    && !(parent instanceof ConditionalExpression) && !(parent instanceof ArrayLiteral)
-//                    && !(parent instanceof ParenthesizedExpression)) {
-//                addInstrumentationBefore(node);
-//            }
-//        } else if (node instanceof ReturnStatement) {
-//            addInstrumentationBefore(node);
-//        } else if (node instanceof LabeledStatement) {
-//            LabeledStatement labeledStatement = (LabeledStatement)node;
-//            ExpressionStatement newChild = buildInstrumentationStatement(labeledStatement.getLineno());
-//            parent.addChildBefore(newChild, node);
-//        } else if (node instanceof IfStatement) {
-//            addInstrumentationBefore(node);
-        }
-        return true;
-    }
-
-//    private boolean processSwitchCase(AstNode node, SwitchCase switchCase) {
-//        List<AstNode> statements = switchCase.getStatements();
-//        if (statements == null) {
-//            statements = new ArrayList<AstNode>();
-//            statements.add(buildInstrumentationStatement(node.getLineno()));
-//            switchCase.setStatements(statements);
-//            return true;
-//        }
-//        boolean changed = false;
-//        for (int i = statements.size() - 1; i >= 0; i--) {
-//            AstNode statement = statements.get(i);
-//            if (!validLines.contains(statement.getLineno())) {
-//                statements.add(i, buildInstrumentationStatement(statement.getLineno()));
-//                changed = true;
-//            }
-//        }
-//        return changed;
-//    }
-//
-//    private boolean isLoopInitializer(AstNode node) {
-//        if (node.getParent() instanceof ForLoop) {
-//            ForLoop forLoop = (ForLoop)node.getParent();
-//            if (forLoop.getInitializer() == node)
-//                return true;
-//        }
-//        return false;
-//    }
-//
-    private void addInstrumentationBefore(Node node) {
-        Node parent = node.getParent();
-        if (parent.isIf()) {
-//            addIfScope(node, (IfStatement) parent);
-        } else if (parent.isVanillaFor()) {
-//            addLoopScope(node, (Loop) parent);
-        } else if (parent.isWith()) {
-//            addWithScope(node, (WithStatement) parent);
-        } else {
-            parent.addChildBefore(buildInstrumentationStatement(node.getLineno()), node);
         }
     }
-//
-//    private Scope makeReplacementScope(AstNode node) {
-//        Scope scope = new Scope();
-//        scope.addChild(buildInstrumentationStatement(node.getLineno()));
-//        scope.addChild(node);
-//        return scope;
-//    }
-//
-//    private void addWithScope(AstNode node, WithStatement with) {
-//        Scope scope = makeReplacementScope(node);
-//        with.setStatement(scope);
-//    }
-//
-//    private void addLoopScope(AstNode node, Loop parentLoop) {
-//        Scope scope = makeReplacementScope(node);
-//        parentLoop.setBody(scope);
-//    }
-//
-//    private void addIfScope(AstNode node, IfStatement parentIf) {
-//        Scope scope = makeReplacementScope(node);
-//        if (parentIf.getThenPart() == node) {
-//            parentIf.setThenPart(scope);
-//        } else if (parentIf.getElsePart() == node) {
-//            parentIf.setElsePart(scope);
-//        }
-//    }
-//
-//    private boolean isDebugStatement(AstNode node) {
-//        if (!(node instanceof KeywordLiteral))
-//            return false;
-//        KeywordLiteral keywordLiteral = (KeywordLiteral) node;
-//        return keywordLiteral.getType() == Token.DEBUGGER;
-//    }
 
-    public SortedSet<Integer> getValidLines() {
-        return validLines;
+    @Test
+    @Ignore
+    public void shouldInstrumentArray() {
+        testFile("javascript-array-comprehension.js");
     }
 
-    public int getNumFunctions() {
-    	return functionNumber;
+    @Test
+    public void shouldInstrumentAssign() {
+        testFile("javascript-assign.js");
     }
+
+    @Test
+    public void shouldInstrumentColon() {
+        testFile("javascript-colon.js");
+    }
+
+    @Test
+    public void shouldInstrumentComma() {
+        testFile("javascript-comma.js");
+    }
+
+    @Test
+    @Ignore
+    public void shouldInstrumentConst() {
+        testFile("javascript-const.js");
+    }
+
+    @Test
+    public void shouldInstrumentCr() {
+        testFile("javascript-cr.js");
+    }
+
+    @Test
+    public void shouldInstrumentCrLf() {
+        testFile("javascript-crlf.js");
+    }
+
+    @Test
+    public void shouldInstrumentDec() {
+        testFile("javascript-dec.js");
+    }
+
+    @Test//https://bugzilla.mozilla.org/show_bug.cgi?id=688021
+    @Ignore
+    public void shouldInstrumentDebugger() {
+        testFile("javascript-debugger.js");
+    }
+
+    @Test
+    public void shouldInstrumentDelete() {
+        testFile("javascript-delete.js");
+    }
+
+    @Test//https://bugzilla.mozilla.org/show_bug.cgi?id=689308, https://bugzilla.mozilla.org/show_bug.cgi?id=689314
+    @Ignore
+    public void shouldInstrumentDestructuring() {
+        testFile("javascript-destructuring.js");
+    }
+
+    @Test
+    @Ignore
+    public void shouldInstrumentDo() {
+        testFile("javascript-do.js");
+    }
+
+    @Test
+    public void shouldInstrumentDot() {
+        testFile("javascript-dot.js");
+    }
+
+    @Test
+    public void shouldInstrumentEmpty() {
+        testFile("javascript-empty.js");
+    }
+
+    @Test
+    @Ignore
+    public void shouldInstrumentFor() {
+        testFile("javascript-for.js");
+    }
+
+    @Test
+    @Ignore
+    public void shouldInstrumentForEach() {
+        testFile("javascript-foreach.js");
+    }
+
+    @Test//https://bugzilla.mozilla.org/show_bug.cgi?id=687669
+    @Ignore
+    public void shouldInstrumentFunction() {
+        testFile("javascript-function.js");
+    }
+
+    @Test
+    @Ignore
+    public void shouldInstrumentFunctionChain() {
+        testFile("javascript-function-chain.js");
+    }
+
+    @Test
+    @Ignore
+    public void shouldInstrumentGenerator() {
+        testFile("javascript-generator.js");
+    }
+
+    @Test
+    @Ignore
+    public void shouldInstrumentGeneratorExpression() {
+        testFile("javascript-generator-expression.js");
+    }
+
+    @Test
+    //https://bugzilla.mozilla.org/show_bug.cgi?id=798642
+    @Ignore
+    public void shouldInstrumentGetterSetter() {
+        testFile("javascript-getter-setter.js");
+    }
+
+    @Test
+    public void shouldInstrumentHook() {
+        testFile("javascript-hook.js");
+    }
+
+    @Test
+    @Ignore
+    public void shouldInstrumentIf() {
+        testFile("javascript-if.js");
+    }
+
+    @Test
+    @Ignore
+    public void shouldInstrumentIn() {
+        testFile("javascript-in.js");
+    }
+
+    @Test
+    public void shouldInstrumentInc() {
+        testFile("javascript-inc.js");
+    }
+
+    @Test
+    @Ignore//This is handled by JVM 'file.encoding' system property
+    public void shouldInstrumentISO_8859_1() {
+        testFile("javascript-iso-8859-1.js");
+    }
+
+    @Test
+    @Ignore
+    public void shouldInstrumentJSONObject() {
+        testFile("javascript-json-object.js");
+    }
+
+    @Test//https://bugzilla.mozilla.org/show_bug.cgi?id=689314
+    @Ignore
+    public void shouldInstrumentLambda() {
+        testFile("javascript-lambda.js");
+    }
+
+    @Test
+    @Ignore
+    public void shouldInstrumentLet() {
+        testFile("javascript-let.js");
+    }
+
+    @Test
+    public void shouldInstrumentLineFeed() {
+        testFile("javascript-lf.js");
+    }
+
+    @Test
+    @Ignore
+    public void shouldInstrumentNew() {
+        testFile("javascript-new.js");
+    }
+
+    @Test
+    public void shouldInstrumentNumber() {
+        testFile("javascript-number.js");
+    }
+
+    @Test
+    public void shouldInstrumentObject() {
+        testFile("javascript-object.js");
+    }
+
+    @Test
+    public void shouldInstrumentOp() {
+        testFile("javascript-op.js");
+    }
+
+    @Test
+    public void shouldInstrumentPrimary() {
+        testFile("javascript-primary.js");
+    }
+
+    @Test
+    @Ignore
+    public void shouldInstrumentRb() {
+        testFile("javascript-rb.js");
+    }
+
+    @Test
+    public void shouldInstrumentRc() {
+        testFile("javascript-rc.js");
+    }
+
+    @Test
+    public void shouldInstrumentRp() {
+        testFile("javascript-rp.js");
+    }
+
+    @Test
+    @Ignore
+    public void shouldInstrumentSpecialCharacters() {
+        testFile("javascript-special-characters.js");
+    }
+
+    @Test
+    public void shouldInstrumentString() {
+        testFile("javascript-string.js");
+    }
+
+    @Test//https://bugzilla.mozilla.org/show_bug.cgi?id=788070
+    @Ignore
+    public void shouldInstrumentSwitch() {
+        testFile("javascript-switch.js");
+    }
+
+    @Test
+    @Ignore
+    public void shouldInstrumentThrow() {
+        testFile("javascript-throw.js");
+    }
+
+    @Test
+    @Ignore
+    public void shouldInstrumentTry() {
+        testFile("javascript-try.js");
+    }
+
+    @Test//https://bugzilla.mozilla.org/show_bug.cgi?id=688018
+    public void shouldInstrumentUnaryOp() {
+        testFile("javascript-unaryop.js");
+    }
+
+    @Test
+    public void shouldInstrumentVar() {
+        testFile("javascript-var.js");
+    }
+
+    @Test//https://bugzilla.mozilla.org/show_bug.cgi?id=784651
+    @Ignore
+    public void shouldInstrumentWhile() {
+        testFile("javascript-while.js");
+    }
+
+    @Test
+    @Ignore
+    public void shouldInstrumentWith() {
+        testFile("javascript-with.js");
+    }
+
+    @Test
+    public void shouldTestTheRest() {
+        File testDir = new File("src/test-integration/resources/data/javascript");
+        FilenameFilter filter = new FilenameFilter() {
+            public boolean accept(File file, String name) {
+                return name.endsWith(".js");
+            }
+        };
+        for (String jsFile : testDir.list(filter)) {
+            testFileWithoutStopping(jsFile);
+        }
+    }
+
+    @Test
+    @Ignore
+    public void shouldInstrumentIgnoreSimple() {
+        testFile("javascript-ignore", "ignore-simple.js");
+    }
+
+    @Ignore
+    @Test
+    public void shouldInstrumentIgnore() {
+        testFile("javascript-ignore", "ignore.js");
+    }
+
+    private void testFile(String fileName) {
+        testFile("javascript", fileName);
+    }
+
+    private void testFile(String dir, String fileName) {
+        testFile(dir, fileName, true);
+    }
+
+    private void testFile(String dir, String fileName, boolean recordTest) {
+        if (recordTest)
+            tested.add(fileName);
+        String source = ioUtils.loadFromClassPath("/data/" + dir + "/" + fileName);
+        SourceProcessorCC instrumenter = new SourceProcessorCC(config, fileName, source);
+
+        String instrumentedSource = instrumenter.processSourceWithoutHeader();
+
+
+        String instrumentedSourceParsed = new CodePrinter.Builder(parse(instrumentedSource)).setCompilerOptions(options).build();
+
+        String expectedSource = ioUtils.loadFromClassPath("/data/" + dir + ".expected/" + fileName);
+        String expectedSourceParsed = new CodePrinter.Builder(parse(expectedSource)).setCompilerOptions(options).build();
+        assertEquals(expectedSourceParsed, instrumentedSourceParsed);
+        //assertEquals(removeHighlightLine(expectedSource), removeHighlightLine(instrumentedSource));
+    }
+
+    private void testFileWithoutStopping(String fileName) {
+        System.out.print("Test " + fileName + " ");
+        try {
+            testFile("javascript", fileName, false);
+            allTests.put(fileName, "* passed\t");
+        } catch (AssertionError e) {
+            allTests.put(fileName, "  failed\t");
+        } catch (Throwable t) {
+            allTests.put(fileName, "  errored\t");
+        }
+    }
+
+    private Node parse(String source) {
+        SimpleErrorReporter errorReporter = new SimpleErrorReporter();
+        return ParserRunner.parse(
+                new SimpleSourceFile("test.js", false),
+                source,
+                parserConfig,
+                errorReporter).ast;
+    }
+
 }

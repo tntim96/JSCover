@@ -348,16 +348,14 @@ import com.google.javascript.jscomp.SourceFile;
 import com.google.javascript.jscomp.parsing.Config;
 import com.google.javascript.jscomp.parsing.ParserRunner;
 import com.google.javascript.jscomp.parsing.parser.LineNumberTable;
+import com.google.javascript.rhino.ErrorReporter;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.StaticSourceFile;
 import jscover.ConfigurationCommon;
 import jscover.util.IoUtils;
-import org.mozilla.javascript.Parser;
-import org.mozilla.javascript.ast.AstRoot;
 
 import java.util.List;
 import java.util.SortedSet;
-import java.util.logging.Level;
 
 import static com.google.javascript.jscomp.parsing.Config.JsDocParsing.TYPES_ONLY;
 import static com.google.javascript.jscomp.parsing.Config.RunMode.KEEP_GOING;
@@ -390,8 +388,9 @@ class SourceProcessorCC {
         this.source = source;
         this.instrumenter = new ParseTreeInstrumenterCC(uri, config.isIncludeFunction(), commentsVisitor);
         //this.branchInstrumentor = new BranchInstrumentor(uri, config.isDetectCoalesce(), commentsVisitor, source);
-        this.config = ParserRunner.createConfig(config.getECMAVersion(), TYPES_ONLY, KEEP_GOING, null, false, Config.StrictMode.STRICT);
+        this.config = ParserRunner.createConfig(config.getECMAVersion(), TYPES_ONLY, KEEP_GOING, null, false, Config.StrictMode.SLOPPY);
         this.options.setPreferSingleQuotes(true);
+        this.options.setPrettyPrint(true);
         this.includeBranchCoverage = config.isIncludeBranch();
         this.includeFunctionCoverage = config.isIncludeFunction();
         this.localStorage = config.isLocalStorage();
@@ -467,16 +466,27 @@ class SourceProcessorCC {
 
         NodeWalker nodeWalker = new NodeWalker();
         nodeWalker.visit(jsRoot, instrumenter);
-        return new CodePrinter.Builder(jsRoot).setCompilerOptions(options).setPrettyPrint(true).build();
+        return new CodePrinter.Builder(jsRoot).setCompilerOptions(options).build();
     }
 
 
     private Node parse(String source, StaticSourceFile sourceFile) {
+        ErrorReporter errorReporter = new ErrorReporter(){
+            @Override
+            public void warning(String message, String sourceName, int line, int lineOffset) {
+                //System.err.println(format("Warn: %s, sourceName: %s, line: %d lineOffset: %d", message, sourceName, line, lineOffset));
+            }
+
+            @Override
+            public void error(String message, String sourceName, int line, int lineOffset) {
+                //System.err.println(format("Error: %s, sourceName: %s, line: %d, lineOffset: %d", message, sourceName, line, lineOffset));
+            }
+        };
         Node script = ParserRunner.parse(
                 sourceFile,
                 source,
                 config,
-                null).ast;
+                errorReporter).ast;
         return script;
     }
 
