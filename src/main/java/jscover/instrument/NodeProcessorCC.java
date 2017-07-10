@@ -407,6 +407,11 @@ class NodeProcessorCC {
                 || node.isVar()
                 || node.isConst()
                 || node.isLabel()
+                || node.isThrow()
+                || node.isContinue()
+                || node.isBreak()
+                || node.isWhile()
+                || node.isDo()
                 || node.isLet()) {
 //        if (node instanceof ExpressionStatement || node instanceof EmptyExpression || node instanceof Loop
 //                || node instanceof ContinueStatement || node instanceof VariableDeclaration || node instanceof LetNode
@@ -421,7 +426,7 @@ class NodeProcessorCC {
                 //Don't do anything here. Direct modification of statements will result in concurrent modification exception.
             } else if (parent.isLabel()) {
                 //Don't do anything here.
-//            } else if (isLoopInitializer(node)) {
+            } else if (isLoopInitializer(node)) {
                 //Don't do anything here.
             } else if (parent != null) {
                 addInstrumentationBefore(node);
@@ -443,6 +448,8 @@ class NodeProcessorCC {
 //            parent.addChildBefore(newChild, node);
         } else if (node.isIf()) {
             addInstrumentationBefore(node);
+        } else if (node.isAddedBlock() && node.getChildCount() == 0) {
+            node.addChildToFront(buildInstrumentationStatement(node.getLineno()));
         }
         return true;
     }
@@ -465,16 +472,15 @@ class NodeProcessorCC {
 //        }
 //        return changed;
 //    }
-//
-//    private boolean isLoopInitializer(AstNode node) {
-//        if (node.getParent() instanceof ForLoop) {
-//            ForLoop forLoop = (ForLoop)node.getParent();
-//            if (forLoop.getInitializer() == node)
-//                return true;
-//        }
-//        return false;
-//    }
-//
+
+    private boolean isLoopInitializer(Node node) {
+        if (node.getParent().isVanillaFor()) {
+            if (node.getFirstChild() == node)
+                return true;
+        }
+        return false;
+    }
+
     private void addInstrumentationBefore(Node node) {
         Node parent = node.getParent();
         if (parent.isIf()) {

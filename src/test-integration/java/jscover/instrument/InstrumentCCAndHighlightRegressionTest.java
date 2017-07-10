@@ -460,7 +460,6 @@ public class InstrumentCCAndHighlightRegressionTest {
     }
 
     @Test
-    @Ignore
     public void shouldInstrumentDo() {
         testFile("javascript-do.js");
     }
@@ -498,7 +497,6 @@ public class InstrumentCCAndHighlightRegressionTest {
     }
 
     @Test
-    @Ignore
     public void shouldInstrumentGenerator() {
         testFile("javascript-generator.js");
     }
@@ -621,7 +619,6 @@ public class InstrumentCCAndHighlightRegressionTest {
     }
 
     @Test
-    @Ignore
     public void shouldInstrumentThrow() {
         testFile("javascript-throw.js");
     }
@@ -642,7 +639,6 @@ public class InstrumentCCAndHighlightRegressionTest {
     }
 
     @Test//https://bugzilla.mozilla.org/show_bug.cgi?id=784651
-    @Ignore
     public void shouldInstrumentWhile() {
         testFile("javascript-while.js");
     }
