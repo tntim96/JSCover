@@ -526,13 +526,11 @@ public class InstrumentCCAndHighlightRegressionTest {
     }
 
     @Test
-    @Ignore
     public void shouldInstrumentIf() {
         testFile("javascript-if.js");
     }
 
     @Test
-    @Ignore
     public void shouldInstrumentIn() {
         testFile("javascript-in.js");
     }

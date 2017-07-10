@@ -420,22 +420,22 @@ class NodeProcessorCC {
             } else if (parent != null) {
                 addInstrumentationBefore(node);
             }
-//        } else if (node instanceof WithStatement) {
-//            addInstrumentationBefore(node);
-//        } else if (node instanceof FunctionNode || node instanceof TryStatement || isDebugStatement(node)) {
+        } else if (node.isWith()) {
+            addInstrumentationBefore(node);
+        } else if (node.isFunction() || node.isTry() || node.isDebugger()) {
 //            if (!(parent instanceof InfixExpression) && !(parent instanceof VariableInitializer)
 //                    && !(parent instanceof ConditionalExpression) && !(parent instanceof ArrayLiteral)
 //                    && !(parent instanceof ParenthesizedExpression)) {
 //                addInstrumentationBefore(node);
 //            }
-//        } else if (node instanceof ReturnStatement) {
-//            addInstrumentationBefore(node);
+        } else if (node.isReturn()) {
+            addInstrumentationBefore(node);
 //        } else if (node instanceof LabeledStatement) {
 //            LabeledStatement labeledStatement = (LabeledStatement)node;
 //            ExpressionStatement newChild = buildInstrumentationStatement(labeledStatement.getLineno());
 //            parent.addChildBefore(newChild, node);
-//        } else if (node instanceof IfStatement) {
-//            addInstrumentationBefore(node);
+        } else if (node.isIf()) {
+            addInstrumentationBefore(node);
         }
         return true;
     }
