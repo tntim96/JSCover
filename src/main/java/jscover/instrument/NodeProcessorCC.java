@@ -432,8 +432,9 @@ class NodeProcessorCC {
 //            if (!(parent instanceof InfixExpression) && !(parent instanceof VariableInitializer)
 //                    && !(parent instanceof ConditionalExpression) && !(parent instanceof ArrayLiteral)
 //                    && !(parent instanceof ParenthesizedExpression)) {
-//                addInstrumentationBefore(node);
-//            }
+            if (!parent.isStringKey() && !parent.isCall()) {
+                addInstrumentationBefore(node);
+            }
         } else if (node.isReturn()) {
             addInstrumentationBefore(node);
 //        } else if (node instanceof LabeledStatement) {

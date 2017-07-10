@@ -444,7 +444,6 @@ public class InstrumentCCAndHighlightRegressionTest {
     }
 
     @Test//https://bugzilla.mozilla.org/show_bug.cgi?id=688021
-    @Ignore
     public void shouldInstrumentDebugger() {
         testFile("javascript-debugger.js");
     }
@@ -489,7 +488,6 @@ public class InstrumentCCAndHighlightRegressionTest {
     }
 
     @Test//https://bugzilla.mozilla.org/show_bug.cgi?id=687669
-    @Ignore
     public void shouldInstrumentFunction() {
         testFile("javascript-function.js");
     }
@@ -567,7 +565,6 @@ public class InstrumentCCAndHighlightRegressionTest {
     }
 
     @Test
-    @Ignore
     public void shouldInstrumentNew() {
         testFile("javascript-new.js");
     }
@@ -608,7 +605,6 @@ public class InstrumentCCAndHighlightRegressionTest {
     }
 
     @Test
-    @Ignore
     public void shouldInstrumentSpecialCharacters() {
         testFile("javascript-special-characters.js");
     }
@@ -631,7 +627,6 @@ public class InstrumentCCAndHighlightRegressionTest {
     }
 
     @Test
-    @Ignore
     public void shouldInstrumentTry() {
         testFile("javascript-try.js");
     }
@@ -653,7 +648,6 @@ public class InstrumentCCAndHighlightRegressionTest {
     }
 
     @Test
-    @Ignore
     public void shouldInstrumentWith() {
         testFile("javascript-with.js");
     }

@@ -10,7 +10,7 @@ catch (e) {
 try {
   f();
 }
-catch (e if e instanceof E) {
+catch (e) {
   f();
 }
 

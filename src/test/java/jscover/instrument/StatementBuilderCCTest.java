@@ -64,7 +64,7 @@ public class StatementBuilderCCTest {
 
     @Test
     public void shouldDetectInstrumentation() throws IOException {
-        Node jscover = IR.string("_$jscoverage");
+        Node jscover = IR.name("_$jscoverage");
         Node getProp = IR.getprop(jscover, "someval");
         Node call = IR.call(getProp);
 
