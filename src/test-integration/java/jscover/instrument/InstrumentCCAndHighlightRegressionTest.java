@@ -424,7 +424,6 @@ public class InstrumentCCAndHighlightRegressionTest {
     }
 
     @Test
-    @Ignore
     public void shouldInstrumentConst() {
         testFile("javascript-const.js");
     }

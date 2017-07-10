@@ -402,7 +402,12 @@ class NodeProcessorCC {
 //        if (parent instanceof ObjectProperty || parent instanceof FunctionCall) {
 //            return true;
 //        }
-        if (node.isExprResult() || node.isEmpty() || node.isVar() || node.isLabel() || node.isLet()) {
+        if (node.isExprResult()
+                || node.isEmpty()
+                || node.isVar()
+                || node.isConst()
+                || node.isLabel()
+                || node.isLet()) {
 //        if (node instanceof ExpressionStatement || node instanceof EmptyExpression || node instanceof Loop
 //                || node instanceof ContinueStatement || node instanceof VariableDeclaration || node instanceof LetNode
 //                || node instanceof SwitchStatement || node instanceof BreakStatement
