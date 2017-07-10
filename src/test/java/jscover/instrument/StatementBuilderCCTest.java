@@ -2,16 +2,19 @@ package jscover.instrument;
 
 import com.google.javascript.jscomp.CodePrinter;
 import com.google.javascript.jscomp.CompilerOptions;
+import com.google.javascript.rhino.IR;
 import com.google.javascript.rhino.Node;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.is;
 
 public class StatementBuilderCCTest {
     private StatementBuilderCC builder = new StatementBuilderCC();
@@ -59,4 +62,24 @@ public class StatementBuilderCCTest {
         assertThat(new CodePrinter.Builder(statement).setCompilerOptions(options).build(), equalTo("_$jscoverage['/dir/file.js'].functionData[7]++"));
     }
 
+    @Test
+    public void shouldDetectInstrumentation() throws IOException {
+        Node jscover = IR.string("_$jscoverage");
+        Node getProp = IR.getprop(jscover, "someval");
+        Node call = IR.call(getProp);
+
+        assertThat(builder.isInstrumentation(call), is(true));//No source so must be synthetic
+        call.setSourceFileForTesting("Hey");
+        assertThat(builder.isInstrumentation(call), is(true));
+    }
+
+    @Test
+    public void shouldNotDetectInstrumentation() throws IOException {
+        Node jscover = IR.string("_$someOtherVar");
+        Node getProp = IR.getprop(jscover, "someval");
+        Node call = IR.call(getProp);
+        call.setSourceFileForTesting("Hey");
+
+        assertThat(builder.isInstrumentation(call), is(false));
+    }
 }

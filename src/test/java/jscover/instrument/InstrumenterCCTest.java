@@ -874,15 +874,15 @@ public class InstrumenterCCTest {
 //        String expectedSource = "var x = 7;\n";
 //        assertEquals(expectedSource, instrumentedSource);
 //    }
-//
-//    @Test
-//    public void shouldInstrumentES6StringStartsWith() {
-//        String source = "var x = 'abc'.startsWith('a');";
-//        String instrumentedSource = sourceProcessor.instrumentSource(source);
-//        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
-//                "var x = 'abc'.startsWith('a');\n";
-//        assertEquals(expectedSource, instrumentedSource);
-//    }
+
+    @Test
+    public void shouldInstrumentES6StringStartsWith() {
+        String source = "var x = 'abc'.startsWith('a');";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "var x = 'abc'.startsWith('a');\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
 
     @Test
     public void shouldInstrumentES6ArrowFunction() {

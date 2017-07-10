@@ -496,7 +496,6 @@ public class InstrumentCCAndHighlightRegressionTest {
     }
 
     @Test
-    @Ignore
     public void shouldInstrumentFunctionChain() {
         testFile("javascript-function-chain.js");
     }
@@ -547,7 +546,6 @@ public class InstrumentCCAndHighlightRegressionTest {
     }
 
     @Test
-    @Ignore
     public void shouldInstrumentJSONObject() {
         testFile("javascript-json-object.js");
     }
@@ -596,7 +594,6 @@ public class InstrumentCCAndHighlightRegressionTest {
     }
 
     @Test
-    @Ignore
     public void shouldInstrumentRb() {
         testFile("javascript-rb.js");
     }

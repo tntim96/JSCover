@@ -382,4 +382,16 @@ class StatementBuilderCC {
         Node number = IR.number(lineNumber);
         return IR.getelem(propGet, number);
     }
+
+    boolean isInstrumentation(Node n) {
+        //if (n == null)
+        //    return false;
+        if (n.getSourceFileName() == null)
+            return true;
+        Node child = n.getFirstChild();
+        if (child != null && child.isGetProp() && child.getFirstChild().getString().equals("_$jscoverage"))
+            return true;
+        return false;
+    }
+
 }

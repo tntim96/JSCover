@@ -366,28 +366,29 @@ class NodeProcessorCC {
         return statementBuilder.buildInstrumentationStatement(lineNumber, fileName, validLines);
     }
 
-	// Function Coverage (HA-CA)
+    // Function Coverage (HA-CA)
     public Node buildFunctionInstrumentationStatement(int functionNumber) {
         return statementBuilder.buildFunctionInstrumentationStatement(functionNumber, fileName);
     }
 
     boolean processNode(Node node) {
+        if (statementBuilder.isInstrumentation(node)) {
+            return false;
+        }
         // Function Coverage (HA-CA), tntim96
-//        if (includeFunctionCoverage && node instanceof FunctionNode) {
-//            AstNode block = ((FunctionNode) node).getBody();
-//            if (block instanceof Block) {
-//                block.addChildToFront(buildFunctionInstrumentationStatement(functionNumber++));
-//            }
-//        }
+        if (includeFunctionCoverage && node.isFunction() && !node.isArrowFunction()) {
+            Node block = node.getChildAtIndex(2);
+            block.addChildToFront(buildFunctionInstrumentationStatement(functionNumber++));
+        }
 //
 //        if (node instanceof SwitchCase) {
 //            return (processSwitchCase(node, (SwitchCase) node));
 //        }
 //
-//        if (validLines.contains(node.getLineno()) || commentsVisitor.ignoreLine(node.getLineno())) {
-//            // Don't add instrumentation if already there or we're ignoring
-//            return true;
-//        }
+        if (validLines.contains(node.getLineno()) || commentsVisitor.ignoreLine(node.getLineno())) {
+            // Don't add instrumentation if already there or we're ignoring
+            return true;
+        }
 //
 //        if (node.getParent() != null && node.getLineno() == node.getParent().getLineno()) {
 //            // Don't add instrumentation if it will be added by parent for the
@@ -440,7 +441,7 @@ class NodeProcessorCC {
         return true;
     }
 
-//    private boolean processSwitchCase(AstNode node, SwitchCase switchCase) {
+    //    private boolean processSwitchCase(AstNode node, SwitchCase switchCase) {
 //        List<AstNode> statements = switchCase.getStatements();
 //        if (statements == null) {
 //            statements = new ArrayList<AstNode>();
@@ -519,6 +520,8 @@ class NodeProcessorCC {
     }
 
     public int getNumFunctions() {
-    	return functionNumber;
+        return functionNumber;
     }
+
+
 }
