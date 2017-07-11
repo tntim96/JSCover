@@ -338,66 +338,91 @@ proprietary programs.  If your program is a subroutine library, you may
 consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
-*/
-
+ */
 
 package jscover.instrument;
 
+import com.google.javascript.jscomp.SourceFile;
+import com.google.javascript.jscomp.parsing.Config;
+import com.google.javascript.jscomp.parsing.ParserRunner;
 import com.google.javascript.rhino.Node;
+import com.google.javascript.rhino.Token;
+import org.junit.Test;
 
-import static com.google.javascript.rhino.Token.*;
+import static com.google.javascript.jscomp.parsing.Config.JsDocParsing.TYPES_ONLY;
+import static com.google.javascript.jscomp.parsing.Config.LanguageMode.ECMASCRIPT8;
+import static com.google.javascript.jscomp.parsing.Config.RunMode.KEEP_GOING;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 
 
-class BranchHelperCC {
-    private static BranchHelperCC branchHelper = new BranchHelperCC();
-
-    static BranchHelperCC getInstance() {
-        return branchHelper;
+public class BranchInstrumentorCCTest {
+    private BranchInstrumentorCC getBranchInstrumentor(String source) {
+        return new BranchInstrumentorCC("/test.js", false, null, source);
     }
 
-    boolean isBoolean(Node node) {
-        if (node.isEmpty())
-            return false;
-        switch (node.getToken()) {
-            case EQ:
-            case NE:
-            case LT:
-            case LE:
-            case GT:
-            case GE:
-            case SHEQ:
-            case SHNE:
-            case OR:
-            case AND:
-                return true;
-        }
-        Node parent = node.getParent();
-        if (parent == null)
-            return false;
-        if (parent.isIf()) {
-            return parent.getFirstChild() == node;
-        }
-//        if (node.getParent() instanceof ConditionalExpression) {
-//            return ((ConditionalExpression)node.getParent()).getTestExpression() == node;
-//        }
-        if (parent.isWhile()) {
-            return parent.getFirstChild() == node;
-        }
-        if (parent.isDo()) {
-            return parent.getFirstChild() == node;
-        }
-        if (parent.isForIn()) {
-            return parent.getFirstChild() == node;
-        }
-        return false;
+    static Node parse(String source) {
+        return ParserRunner.parse(
+                new SourceFile("test.js"),
+                source,
+                ParserRunner.createConfig(ECMASCRIPT8, TYPES_ONLY, KEEP_GOING, null, false, Config.StrictMode.SLOPPY),
+                null).ast;
     }
 
+    @Test
+    public void shouldCalculateNodePosition() {
+        String script = "var y = x > 0;";
+        Node astRoot = parse(script);
+        Node gtNode = NodeTestHelperCC.findNode(astRoot, Token.GT);
+        assertThat(getBranchInstrumentor(script).getLinePosition(gtNode), equalTo(8));
+    }
 
-  public boolean isCoalesce(Node node) {
-      Node parent = node.getParent();
-      return node.getToken() == OR
-              && ((parent.getToken() == NAME && parent.getParent().getToken() == VAR)
-              || parent.getToken() == ASSIGN
-              || parent.getToken() == RETURN);
-  }
+    @Test
+    public void shouldCalculateNodePositionWhenAtStart() {
+        String script = "x > 0;";
+        Node astRoot = parse(script);
+        Node gtNode = NodeTestHelperCC.findNode(astRoot, Token.GT);
+        assertThat(getBranchInstrumentor(script).getLinePosition(gtNode), equalTo(0));
+    }
+
+    @Test
+    public void shouldCalculateNodePositionAsSecondStatement() {
+        String script = "var x;\nvar y = x > 0;";
+        Node astRoot = parse(script);
+        Node gtNode = NodeTestHelperCC.findNode(astRoot, Token.GT);
+        assertThat(getBranchInstrumentor(script).getLinePosition(gtNode), equalTo(8));
+    }
+
+    @Test
+    public void shouldCalculateNodePositionWithParent() {
+        String script = "if (x > y) {a = 1;}";
+        Node astRoot = parse(script);
+        Node gtNode = NodeTestHelperCC.findNode(astRoot, Token.GT);
+        assertThat(getBranchInstrumentor(script).getLinePosition(gtNode), equalTo(4));
+    }
+
+    @Test
+    public void shouldCalculateNodePositionAsFirstSiblingOfFunction() {
+        String script = "function fn(x, y) {\n" +
+                "    if (x > y) {\n" +
+                "        x = 1;\n" +
+                "    }\n" +
+                "}";
+        Node astRoot = parse(script);
+        Node gtNode = NodeTestHelperCC.findNode(astRoot, Token.GT);
+        assertThat(getBranchInstrumentor(script).getLinePosition(gtNode), equalTo(8));
+    }
+
+    @Test
+    public void shouldCalculateNodePositionAsSecondSiblingOfFunction() {
+        String script = "function fn(x, y) {\n" +
+                "    var a;\n" +
+                "    if (x > y) {\n" +
+                "        a = 1;\n" +
+                "    }\n" +
+                "}";
+        Node astRoot = parse(script);
+        Node gtNode = NodeTestHelperCC.findNode(astRoot, Token.GT);
+        assertThat(getBranchInstrumentor(script).getLinePosition(gtNode), equalTo(8));
+    }
 }

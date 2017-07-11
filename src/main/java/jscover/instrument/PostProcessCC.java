@@ -340,64 +340,25 @@ library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
 */
 
-
 package jscover.instrument;
+
 
 import com.google.javascript.rhino.Node;
 
-import static com.google.javascript.rhino.Token.*;
+public abstract class PostProcessCC {
+    private Node parent;
+    private Node node;
+    private Node functionCall;
 
-
-class BranchHelperCC {
-    private static BranchHelperCC branchHelper = new BranchHelperCC();
-
-    static BranchHelperCC getInstance() {
-        return branchHelper;
+    public PostProcessCC(Node parent, Node node, Node functionCall) {
+        this.parent = parent;
+        this.node = node;
+        this.functionCall = functionCall;
     }
 
-    boolean isBoolean(Node node) {
-        if (node.isEmpty())
-            return false;
-        switch (node.getToken()) {
-            case EQ:
-            case NE:
-            case LT:
-            case LE:
-            case GT:
-            case GE:
-            case SHEQ:
-            case SHNE:
-            case OR:
-            case AND:
-                return true;
-        }
-        Node parent = node.getParent();
-        if (parent == null)
-            return false;
-        if (parent.isIf()) {
-            return parent.getFirstChild() == node;
-        }
-//        if (node.getParent() instanceof ConditionalExpression) {
-//            return ((ConditionalExpression)node.getParent()).getTestExpression() == node;
-//        }
-        if (parent.isWhile()) {
-            return parent.getFirstChild() == node;
-        }
-        if (parent.isDo()) {
-            return parent.getFirstChild() == node;
-        }
-        if (parent.isForIn()) {
-            return parent.getFirstChild() == node;
-        }
-        return false;
+    public void process() {
+        run(parent, node, functionCall);
     }
 
-
-  public boolean isCoalesce(Node node) {
-      Node parent = node.getParent();
-      return node.getToken() == OR
-              && ((parent.getToken() == NAME && parent.getParent().getToken() == VAR)
-              || parent.getToken() == ASSIGN
-              || parent.getToken() == RETURN);
-  }
+    abstract void run(Node parent, Node node, Node functionCall);
 }

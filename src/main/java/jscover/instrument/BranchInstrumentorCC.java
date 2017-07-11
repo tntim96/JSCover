@@ -338,66 +338,180 @@ proprietary programs.  If your program is a subroutine library, you may
 consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
-*/
-
+ */
 
 package jscover.instrument;
 
+import com.google.javascript.rhino.IR;
 import com.google.javascript.rhino.Node;
+import com.google.javascript.rhino.Token;
 
-import static com.google.javascript.rhino.Token.*;
+import java.util.*;
+import java.util.logging.Logger;
 
+import static java.lang.String.format;
+import static java.util.logging.Level.SEVERE;
 
-class BranchHelperCC {
-    private static BranchHelperCC branchHelper = new BranchHelperCC();
+public class BranchInstrumentorCC implements NodeVisitorCC {
+    private static final String initBranchLine = "  _$jscoverage['%s'].branchData['%d'] = [];\n";
+    private static final String initBranchCondition = "  _$jscoverage['%s'].branchData['%d'][%d] = new BranchData();\n";
+    private static final Logger logger = Logger.getLogger(BranchInstrumentorCC.class.getName());
+    private static int functionId = 1;
 
-    static BranchHelperCC getInstance() {
-        return branchHelper;
+    private BranchStatementBuilderCC branchStatementBuilder = new BranchStatementBuilderCC();
+    private BranchHelperCC branchHelper = BranchHelperCC.getInstance();
+    private Set<PostProcess> postProcesses = new HashSet<PostProcess>();
+    private String uri;
+    private String source;
+    private boolean detectCoalesce;
+    private CommentsHandlerCC commentsHandlerCC;
+    private Node astRoot;
+    private SortedMap<Integer, SortedSet<Integer>> lineConditionMap = new TreeMap<Integer, SortedSet<Integer>>();
+
+    public BranchInstrumentorCC(String uri, boolean detectCoalesce, CommentsHandlerCC commentsHandlerCC, String source) {
+        this.uri = uri;
+        this.source = source;
+        this.detectCoalesce = detectCoalesce;
+        this.commentsHandlerCC = commentsHandlerCC;
     }
 
-    boolean isBoolean(Node node) {
-        if (node.isEmpty())
-            return false;
-        switch (node.getToken()) {
-            case EQ:
-            case NE:
-            case LT:
-            case LE:
-            case GT:
-            case GE:
-            case SHEQ:
-            case SHNE:
-            case OR:
-            case AND:
-                return true;
-        }
+    public SortedMap<Integer, SortedSet<Integer>> getLineConditionMap() {
+        return lineConditionMap;
+    }
+
+    public void setAstRoot(Node astRoot) {
+        this.astRoot = astRoot;
+    }
+
+    public void postProcess() {
+        for (PostProcess postProcess : postProcesses)
+            postProcess.process();
+    }
+
+    private void replaceWithFunction(Node node) {
         Node parent = node.getParent();
-        if (parent == null)
-            return false;
-        if (parent.isIf()) {
-            return parent.getFirstChild() == node;
+
+        Integer conditionId = 1;
+        SortedSet<Integer> conditions = lineConditionMap.get(node.getLineno());
+        if (conditions == null) {
+            conditions = new TreeSet<Integer>();
+            lineConditionMap.put(node.getLineno(), conditions);
+        } else {
+            conditionId = conditions.last() + 1;
         }
-//        if (node.getParent() instanceof ConditionalExpression) {
-//            return ((ConditionalExpression)node.getParent()).getTestExpression() == node;
-//        }
-        if (parent.isWhile()) {
-            return parent.getFirstChild() == node;
+        conditions.add(conditionId);
+
+        Node functionNode = branchStatementBuilder.buildBranchRecordingFunction(uri, functionId++, node.getLineno(), conditionId);
+
+        astRoot.addChildToFront(functionNode);
+        Node conditionArrayDeclaration = branchStatementBuilder.buildLineAndConditionInitialisation(uri
+                , node.getLineno(), conditionId, getLinePosition(node), node.getLength());
+        astRoot.addChildToFront(conditionArrayDeclaration);
+
+        Node arguments;
+        if (node.isComma()) {
+            Node parenthesizedExpression = IR.block();
+            parenthesizedExpression.addChildToFront(node);
+            arguments = parenthesizedExpression;
+        } else
+            arguments = node.cloneTree();
+
+        Node functionCall = IR.call(IR.name(functionNode.getFirstChild().getString()), arguments);
+//        Node functionCall = IR.call(functionNode.getFirstChild().cloneNode(), arguments);
+        if (parent.isIf() && node == parent.getFirstChild()) {
+            parent.replaceChild(node, functionCall);
+//        } else if (parent instanceof ParenthesizedExpression) {
+//            ((ParenthesizedExpression) parent).setExpression(functionCall);
+//        } else if (parent instanceof InfixExpression) {//This covers Assignment
+//            InfixExpression infixExpression = (InfixExpression) parent;
+//            if (infixExpression.getLeft() == node)
+//                infixExpression.setLeft(functionCall);
+//            else
+//                infixExpression.setRight(functionCall);
+//        } else if (parent.isReturn()) {
+//            parent.replaceChild(node, functionCall);
+//        } else if (parent.isVar()) {
+//            parent.replaceChild(node, functionCall);
+//        } else if (parent.isSwitch()) {
+//            parent.replaceChild(node, functionCall);
+//        } else if (parent.isWhile()) {
+//            parent.replaceChild(node, functionCall);
+//        } else if (parent.isDo()) {
+//            parent.replaceChild(node, functionCall);
+//        } else if (parent.isVanillaFor()) {
+//            parent.replaceChild(node, functionCall);
+//        } else if (parent.isGetElem()) {
+//            parent.replaceChild(node, functionCall);
+//        } else if (parent instanceof ExpressionStatement) {
+//            parent.replaceChild(node, functionCall);
+//        } else if (parent instanceof ConditionalExpression) {
+//            ConditionalExpression ternary = (ConditionalExpression) parent;
+//            if (ternary.getTestExpression() == node)
+//                ternary.setTestExpression(functionCall);
+//            else if (ternary.getTrueExpression() == node)
+//                ternary.setTrueExpression(functionCall);
+//            else
+//                ternary.setFalseExpression(functionCall);
+//        } else if (parent instanceof ArrayLiteral) {
+//            postProcesses.add(new PostProcess(parent, node, functionCall) {
+//                @Override
+//                void run(AstNode parent, AstNode node, AstNode functionCall) {
+//                    final ArrayLiteral arrayParent = (ArrayLiteral) parent;
+//                    List<AstNode> elements = arrayParent.getElements();
+//                    List<AstNode> newElements = new ArrayList<AstNode>();
+//                    for (AstNode element : elements) {
+//                        if (element == node)
+//                            newElements.add(functionCall);
+//                        else
+//                            newElements.add(element);
+//                    }
+//                    arrayParent.setElements(newElements);
+//                }
+//            });
+//        } else if (parent instanceof FunctionCall) {
+//            postProcesses.add(new PostProcess(parent, node, functionCall) {
+//                @Override
+//                void run(AstNode parent, AstNode node, AstNode functionCall) {
+//                    FunctionCall fnParent = (FunctionCall) parent;
+//                    List<AstNode> fnParentArguments = fnParent.getArguments();
+//                    List<AstNode> newFnParentArguments = new ArrayList<AstNode>();
+//                    for (AstNode arg : fnParentArguments) {
+//                        if (arg == node)
+//                            newFnParentArguments.add(functionCall);
+//                        else
+//                            newFnParentArguments.add(arg);
+//                    }
+//                    fnParent.setArguments(newFnParentArguments);
+//                }
+//            });
+        } else {
+            logger.log(SEVERE, format("Couldn't insert wrapper for parent %s, file: %s, line: %d, position: %d, source: %s", parent.getClass().getName(), uri, node.getLineno(), node.getCharno(), "TODO"));
         }
-        if (parent.isDo()) {
-            return parent.getFirstChild() == node;
-        }
-        if (parent.isForIn()) {
-            return parent.getFirstChild() == node;
-        }
-        return false;
     }
 
+    public boolean visit(Node node) {
+        if (node.getLineno() > 0 && !commentsHandlerCC.ignoreBranch(node.getLineno())
+                && branchHelper.isBoolean(node) && !(detectCoalesce && branchHelper.isCoalesce(node))) {
+            replaceWithFunction(node);
+        }
+        return true;
+    }
 
-  public boolean isCoalesce(Node node) {
-      Node parent = node.getParent();
-      return node.getToken() == OR
-              && ((parent.getToken() == NAME && parent.getParent().getToken() == VAR)
-              || parent.getToken() == ASSIGN
-              || parent.getToken() == RETURN);
-  }
+    public int getLinePosition(Node node) {
+        return node.getCharno();
+    }
+
+    protected String getJsLineInitialization() {
+        String fileName = uri.replace("\\", "\\\\").replace("'", "\\'");
+        StringBuilder sb = new StringBuilder(format("if (! _$jscoverage['%s'].branchData) {\n", fileName));
+        sb.append(format("  _$jscoverage['%s'].branchData = {};\n", fileName));
+        for (Integer line : lineConditionMap.keySet()) {
+            sb.append(format(initBranchLine, fileName, line));
+            for (Integer condition : lineConditionMap.get(line))
+                sb.append(format(initBranchCondition, fileName, line, condition));
+        }
+        sb.append("}\n");
+        return sb.toString();
+    }
+
 }
