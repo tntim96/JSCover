@@ -338,374 +338,87 @@ proprietary programs.  If your program is a subroutine library, you may
 consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
-*/
+ */
 
 package jscover.instrument;
 
-import com.google.javascript.jscomp.CodePrinter;
-import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.parsing.Config;
 import com.google.javascript.jscomp.parsing.ParserRunner;
-import com.google.javascript.rhino.Node;
+import com.google.javascript.jscomp.parsing.parser.trees.Comment;
 import com.google.javascript.rhino.SimpleErrorReporter;
 import com.google.javascript.rhino.SimpleSourceFile;
-import jscover.ConfigurationCommon;
-import jscover.util.IoUtils;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.mozilla.javascript.ast.AstRoot;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.List;
 
+import static com.google.javascript.jscomp.parsing.Config.JsDocParsing.INCLUDE_DESCRIPTIONS_NO_WHITESPACE;
+import static com.google.javascript.jscomp.parsing.Config.JsDocParsing.INCLUDE_DESCRIPTIONS_WITH_WHITESPACE;
 import static com.google.javascript.jscomp.parsing.Config.JsDocParsing.TYPES_ONLY;
 import static com.google.javascript.jscomp.parsing.Config.LanguageMode.ECMASCRIPT8;
 import static com.google.javascript.jscomp.parsing.Config.RunMode.KEEP_GOING;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.BDDMockito.given;
+import static jscover.instrument.CommentsHandlerCC.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
-public class InstrumentCCAndHighlightRegressionTest {
-    private static Set<String> tested = new HashSet<>();
-    private static Map<String, String> allTests = new HashMap<>();
-    private static Config parserConfig = ParserRunner.createConfig(ECMASCRIPT8, TYPES_ONLY, KEEP_GOING, null, false, Config.StrictMode.SLOPPY);
+public class CommentsHandlerCCTest {
+    private CommentsHandlerCC handlerCC = new CommentsHandlerCC();
+    private static Config parserConfig = ParserRunner.createConfig(ECMASCRIPT8, INCLUDE_DESCRIPTIONS_WITH_WHITESPACE, KEEP_GOING, null, false, Config.StrictMode.SLOPPY);
 
-    private IoUtils ioUtils = IoUtils.getInstance();
-    private CompilerOptions options = new CompilerOptions();
-    @Mock private ConfigurationCommon config;
 
-    @Before
-    public void setUp() {
-        given(config.getECMAVersion()).willReturn(ECMASCRIPT8);
-        given(config.isIncludeBranch()).willReturn(false);
-        given(config.isIncludeFunction()).willReturn(true);
-        options.setPreferSingleQuotes(true);
-        options.setPrettyPrint(true);
-        options.setLanguage(CompilerOptions.LanguageMode.ECMASCRIPT_NEXT);
-    }
-
-    @AfterClass
-    public static void afterClass() {
-        for (String testName : allTests.keySet()) {
-            if (!tested.contains(testName)) {
-                System.out.println(allTests.get(testName) + " " + testName);
-            }
-        }
+    @Test
+    public void shouldDetectJSCoverageIgnoreComments() {
+        List<Comment> comments = parse("//#JSCOVERAGE_IF x < 10\nvar x = 0;\n//#JSCOVERAGE_ENDIF");
+        handlerCC.processComments(comments);
+        assertThat(handlerCC.getJsCoverageIgnoreComments().size(), equalTo(1));
+        JSCoverageIgnoreComment comment = handlerCC.getJsCoverageIgnoreComments().iterator().next();
+        assertThat(comment.getStart(), equalTo(1));
+        assertThat(comment.getCondition(), equalTo("x < 10"));
+        assertThat(comment.getEnd(), equalTo(3));
     }
 
     @Test
-    public void shouldInstrumentArray() {
-        testFile("javascript-array-comprehension.js");
+    public void shouldDetectJSCoverIgnoreLine() {
+        List<Comment> comments = parse("var x;\nx < 10;" + EXCL_LINE);
+        handlerCC.processComments(comments);
+        assertThat(handlerCC.ignoreLine(1), equalTo(false));
+        assertThat(handlerCC.ignoreLine(2), equalTo(true));
     }
 
     @Test
-    public void shouldInstrumentAssign() {
-        testFile("javascript-assign.js");
+    public void shouldDetectJSCoverIgnoreLineRange() {
+        List<Comment> comments = parse(EXCL_START + "\nvar x;\nx < 10;" + EXCL_STOP);
+        handlerCC.processComments(comments);
+        assertThat(handlerCC.ignoreLine(1), equalTo(true));
+        assertThat(handlerCC.ignoreLine(2), equalTo(true));
     }
 
     @Test
-    public void shouldInstrumentColon() {
-        testFile("javascript-colon.js");
+    public void shouldDetectJSCoverIgnoreBranch() {
+        List<Comment> comments = parse("var x;\nx < 10;" + EXCL_BR_LINE);
+        handlerCC.processComments(comments);
+        assertThat(handlerCC.ignoreBranch(1), equalTo(false));
+        assertThat(handlerCC.ignoreBranch(2), equalTo(true));
     }
 
     @Test
-    public void shouldInstrumentComma() {
-        testFile("javascript-comma.js");
+    public void shouldDetectJSCoverIgnoreBranchRange() {
+        List<Comment> comments = parse(EXCL_BR_START + "\nvar x;\nx < 10;" + EXCL_BR_STOP);
+        handlerCC.processComments(comments);
+        assertThat(handlerCC.ignoreBranch(1), equalTo(true));
+        assertThat(handlerCC.ignoreBranch(2), equalTo(true));
     }
 
-    @Test
-    public void shouldInstrumentConst() {
-        testFile("javascript-const.js");
-    }
-
-    @Test
-    public void shouldInstrumentCr() {
-        testFile("javascript-cr.js");
-    }
-
-    @Test
-    public void shouldInstrumentCrLf() {
-        testFile("javascript-crlf.js");
-    }
-
-    @Test
-    public void shouldInstrumentDec() {
-        testFile("javascript-dec.js");
-    }
-
-    @Test//https://bugzilla.mozilla.org/show_bug.cgi?id=688021
-    public void shouldInstrumentDebugger() {
-        testFile("javascript-debugger.js");
-    }
-
-    @Test
-    public void shouldInstrumentDelete() {
-        testFile("javascript-delete.js");
-    }
-
-    @Test//https://bugzilla.mozilla.org/show_bug.cgi?id=689308, https://bugzilla.mozilla.org/show_bug.cgi?id=689314
-    public void shouldInstrumentDestructuring() {
-        testFile("javascript-destructuring.js");
-    }
-
-    @Test
-    public void shouldInstrumentDo() {
-        testFile("javascript-do.js");
-    }
-
-    @Test
-    public void shouldInstrumentDot() {
-        testFile("javascript-dot.js");
-    }
-
-    @Test
-    public void shouldInstrumentEmpty() {
-        testFile("javascript-empty.js");
-    }
-
-    @Test
-    public void shouldInstrumentFor() {
-        testFile("javascript-for.js");
-    }
-
-    @Test//Deprecated ECMA 4: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for_each...in
-    public void shouldInstrumentForEach() {
-        testFile("javascript-foreach.js");
-    }
-
-    @Test//https://bugzilla.mozilla.org/show_bug.cgi?id=687669
-    public void shouldInstrumentFunction() {
-        testFile("javascript-function.js");
-    }
-
-    @Test
-    public void shouldInstrumentFunctionChain() {
-        testFile("javascript-function-chain.js");
-    }
-
-    @Test
-    public void shouldInstrumentGenerator() {
-        testFile("javascript-generator.js");
-    }
-
-    @Test
-    public void shouldInstrumentGeneratorExpression() {
-        testFile("javascript-generator-expression.js");
-    }
-
-    @Test//https://bugzilla.mozilla.org/show_bug.cgi?id=798642
-    public void shouldInstrumentGetterSetter() {
-        testFile("javascript-getter-setter.js");
-    }
-
-    @Test
-    public void shouldInstrumentHook() {
-        testFile("javascript-hook.js");
-    }
-
-    @Test
-    public void shouldInstrumentIf() {
-        testFile("javascript-if.js");
-    }
-
-    @Test
-    public void shouldInstrumentIn() {
-        testFile("javascript-in.js");
-    }
-
-    @Test
-    public void shouldInstrumentInc() {
-        testFile("javascript-inc.js");
-    }
-
-    @Test
-    @Ignore("This is handled by JVM 'file.encoding' system property")
-    public void shouldInstrumentISO_8859_1() {
-        testFile("javascript-iso-8859-1.js");
-    }
-
-    @Test
-    public void shouldInstrumentJSONObject() {
-        testFile("javascript-json-object.js");
-    }
-
-    @Test//https://bugzilla.mozilla.org/show_bug.cgi?id=689314
-    @Ignore("Deprecated SpiderMonkey-specific")//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Expression_Closures
-    public void shouldInstrumentLambda() {
-        testFile("javascript-lambda.js");
-    }
-
-    @Test
-    public void shouldInstrumentLet() {
-        testFile("javascript-let.js");
-    }
-
-    @Test
-    public void shouldInstrumentLineFeed() {
-        testFile("javascript-lf.js");
-    }
-
-    @Test
-    public void shouldInstrumentNew() {
-        testFile("javascript-new.js");
-    }
-
-    @Test
-    public void shouldInstrumentNumber() {
-        testFile("javascript-number.js");
-    }
-
-    @Test
-    public void shouldInstrumentObject() {
-        testFile("javascript-object.js");
-    }
-
-    @Test
-    public void shouldInstrumentOp() {
-        testFile("javascript-op.js");
-    }
-
-    @Test
-    public void shouldInstrumentPrimary() {
-        testFile("javascript-primary.js");
-    }
-
-    @Test
-    public void shouldInstrumentRb() {
-        testFile("javascript-rb.js");
-    }
-
-    @Test
-    public void shouldInstrumentRc() {
-        testFile("javascript-rc.js");
-    }
-
-    @Test
-    public void shouldInstrumentRp() {
-        testFile("javascript-rp.js");
-    }
-
-    @Test
-    public void shouldInstrumentSpecialCharacters() {
-        testFile("javascript-special-characters.js");
-    }
-
-    @Test
-    public void shouldInstrumentString() {
-        testFile("javascript-string.js");
-    }
-
-    @Test//https://bugzilla.mozilla.org/show_bug.cgi?id=788070
-    public void shouldInstrumentSwitch() {
-        testFile("javascript-switch.js");
-    }
-
-    @Test
-    public void shouldInstrumentThrow() {
-        testFile("javascript-throw.js");
-    }
-
-    @Test
-    public void shouldInstrumentTry() {
-        testFile("javascript-try.js");
-    }
-
-    @Test//https://bugzilla.mozilla.org/show_bug.cgi?id=688018
-    public void shouldInstrumentUnaryOp() {
-        testFile("javascript-unaryop.js");
-    }
-
-    @Test
-    public void shouldInstrumentVar() {
-        testFile("javascript-var.js");
-    }
-
-    @Test//https://bugzilla.mozilla.org/show_bug.cgi?id=784651
-    public void shouldInstrumentWhile() {
-        testFile("javascript-while.js");
-    }
-
-    @Test
-    public void shouldInstrumentWith() {
-        testFile("javascript-with.js");
-    }
-
-    @Test
-    public void shouldTestTheRest() {
-        File testDir = new File("src/test-integration/resources/data/javascript");
-        FilenameFilter filter = new FilenameFilter() {
-            public boolean accept(File file, String name) {
-                return name.endsWith(".js");
-            }
-        };
-        for (String jsFile : testDir.list(filter)) {
-            testFileWithoutStopping(jsFile);
-        }
-    }
-
-    @Test
-    public void shouldInstrumentIgnoreSimple() {
-        testFile("javascript-ignore", "ignore-simple.js");
-    }
-
-    @Test
-    @Ignore
-    public void shouldInstrumentIgnore() {
-        testFile("javascript-ignore", "ignore.js");
-    }
-
-    private void testFile(String fileName) {
-        testFile("javascript", fileName);
-    }
-
-    private void testFile(String dir, String fileName) {
-        testFile(dir, fileName, true);
-    }
-
-    private void testFile(String dir, String fileName, boolean recordTest) {
-        if (recordTest)
-            tested.add(fileName);
-        String source = ioUtils.loadFromClassPath("/data/" + dir + "/" + fileName);
-        SourceProcessorCC instrumenter = new SourceProcessorCC(config, fileName, source);
-
-        String instrumentedSource = instrumenter.processSourceWithoutHeader();
-
-
-        String instrumentedSourceParsed = new CodePrinter.Builder(parse(instrumentedSource)).setCompilerOptions(options).build();
-
-        String expectedSource = ioUtils.loadFromClassPath("/data/" + dir + ".expected/" + fileName);
-        String expectedSourceParsed = new CodePrinter.Builder(parse(expectedSource)).setCompilerOptions(options).build();
-        assertEquals(expectedSourceParsed, instrumentedSourceParsed);
-        //assertEquals(removeHighlightLine(expectedSource), removeHighlightLine(instrumentedSource));
-    }
-
-    private void testFileWithoutStopping(String fileName) {
-        System.out.print("Test " + fileName + " ");
-        try {
-            testFile("javascript", fileName, false);
-            allTests.put(fileName, "* passed\t");
-        } catch (AssertionError e) {
-            allTests.put(fileName, "  failed\t");
-        } catch (Throwable t) {
-            allTests.put(fileName, "  errored\t");
-        }
-    }
-
-    private Node parse(String source) {
+    private List<Comment> parse(String source) {
         SimpleErrorReporter errorReporter = new SimpleErrorReporter();
         return ParserRunner.parse(
                 new SimpleSourceFile("test.js", false),
                 source,
                 parserConfig,
-                errorReporter).ast;
+                errorReporter).comments;
     }
 
 }

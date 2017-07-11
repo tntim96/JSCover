@@ -357,7 +357,7 @@ import jscover.util.IoUtils;
 import java.util.List;
 import java.util.SortedSet;
 
-import static com.google.javascript.jscomp.parsing.Config.JsDocParsing.TYPES_ONLY;
+import static com.google.javascript.jscomp.parsing.Config.JsDocParsing.INCLUDE_DESCRIPTIONS_WITH_WHITESPACE;
 import static com.google.javascript.jscomp.parsing.Config.RunMode.KEEP_GOING;
 import static java.lang.String.format;
 
@@ -388,7 +388,7 @@ class SourceProcessorCC {
         this.source = source;
         this.instrumenter = new ParseTreeInstrumenterCC(uri, config.isIncludeFunction(), commentsVisitor);
         //this.branchInstrumentor = new BranchInstrumentor(uri, config.isDetectCoalesce(), commentsVisitor, source);
-        this.config = ParserRunner.createConfig(config.getECMAVersion(), TYPES_ONLY, KEEP_GOING, null, false, Config.StrictMode.SLOPPY);
+        this.config = ParserRunner.createConfig(config.getECMAVersion(), INCLUDE_DESCRIPTIONS_WITH_WHITESPACE, KEEP_GOING, null, false, Config.StrictMode.SLOPPY);
         this.options.setPreferSingleQuotes(true);
         this.options.setPrettyPrint(true);
         this.includeBranchCoverage = config.isIncludeBranch();
@@ -461,8 +461,10 @@ class SourceProcessorCC {
         SourceFile sourceFile = SourceFile.fromCode(sourceURI, source);
         com.google.javascript.jscomp.parsing.parser.SourceFile sf = new com.google.javascript.jscomp.parsing.parser.SourceFile(sourceURI, source);
         LineNumberTable lineNumberTable = new LineNumberTable(sf);
-        Node jsRoot = parse(source, sourceFile);
+        ParserRunner.ParseResult parsed = parse(source, sourceFile);
+        Node jsRoot = parsed.ast;
         //System.out.println("jsRoot.toStringTree():\n" + jsRoot.toStringTree());
+        commentsVisitor.processComments(parsed.comments);
 
         NodeWalker nodeWalker = new NodeWalker();
         nodeWalker.visit(jsRoot, instrumenter);
@@ -470,7 +472,7 @@ class SourceProcessorCC {
     }
 
 
-    private Node parse(String source, StaticSourceFile sourceFile) {
+    private ParserRunner.ParseResult parse(String source, StaticSourceFile sourceFile) {
         ErrorReporter errorReporter = new ErrorReporter(){
             @Override
             public void warning(String message, String sourceName, int line, int lineOffset) {
@@ -482,12 +484,12 @@ class SourceProcessorCC {
                 //System.err.println(format("Error: %s, sourceName: %s, line: %d, lineOffset: %d", message, sourceName, line, lineOffset));
             }
         };
-        Node script = ParserRunner.parse(
+        ParserRunner.ParseResult parseResult = ParserRunner.parse(
                 sourceFile,
                 source,
                 config,
-                errorReporter).ast;
-        return script;
+                errorReporter);
+        return parseResult;
     }
 
 

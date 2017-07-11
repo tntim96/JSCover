@@ -344,7 +344,6 @@ package jscover.instrument;
 
 
 import com.google.javascript.jscomp.parsing.parser.trees.Comment;
-import com.google.javascript.rhino.Node;
 
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -376,35 +375,34 @@ public class CommentsHandlerCC {
     public void processComments(List<Comment> comments) {
         for (Comment comment : comments) {
             String value = comment.value;
-            if (rhinoSafeStartsWith(value, JSCoverageIgnoreComment.IGNORE_START)) {
+            if (startWith(value, JSCoverageIgnoreComment.IGNORE_START)) {
                 if (value.trim().length() > JSCoverageIgnoreComment.IGNORE_START.length()) {
                     jsCoverageIgnoreComments.add(new JSCoverageIgnoreComment(value.substring(JSCoverageIgnoreComment.IGNORE_START.length() + 1), getLineno(comment)));
                 }
-            } else if (rhinoSafeStartsWith(value, EXCL_LINE)) {
+            } else if (startWith(value, EXCL_LINE)) {
                 ignoreLines.add(getLineno(comment));
-            } else if (rhinoSafeStartsWith(value, EXCL_START)) {
+            } else if (startWith(value, EXCL_START)) {
                 ignoreLineRanges.add(new CommentRange(getLineno(comment)));
-            } else if (rhinoSafeStartsWith(value, EXCL_STOP)) {
+            } else if (startWith(value, EXCL_STOP)) {
                 ignoreLineRanges.getLast().setEnd(getLineno(comment));
-            } else if (rhinoSafeStartsWith(value, EXCL_BR_LINE)) {
+            } else if (startWith(value, EXCL_BR_LINE)) {
                 ignoreBranches.add(getLineno(comment));
-            } else if (rhinoSafeStartsWith(value, EXCL_BR_START)) {
+            } else if (startWith(value, EXCL_BR_START)) {
                 ignoreBranchRanges.add(new CommentRange(getLineno(comment)));
-            } else if (rhinoSafeStartsWith(value, EXCL_BR_STOP)) {
+            } else if (startWith(value, EXCL_BR_STOP)) {
                 ignoreBranchRanges.getLast().setEnd(getLineno(comment));
-            } else if (rhinoSafeStartsWith(value, JSCoverageIgnoreComment.IGNORE_END)) {
+            } else if (startWith(value, JSCoverageIgnoreComment.IGNORE_END)) {
                 jsCoverageIgnoreComments.getLast().setEnd(getLineno(comment));
             }
         }
     }
 
     private Integer getLineno(Comment comment) {
-        return comment.location.start.line;
+        return comment.location.start.line + 1;
     }
 
-    //Rhino may truncate comment
-    private boolean rhinoSafeStartsWith(String comment, String ignoreEnd) {
-        return comment.startsWith(ignoreEnd.substring(0, ignoreEnd.length()-1));
+    private boolean startWith(String comment, String ignoreEnd) {
+        return comment.startsWith(ignoreEnd);
     }
 
     public boolean ignoreLine(int line) {
