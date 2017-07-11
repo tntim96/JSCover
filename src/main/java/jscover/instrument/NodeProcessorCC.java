@@ -440,7 +440,13 @@ class NodeProcessorCC {
 //            if (!(parent instanceof InfixExpression) && !(parent instanceof VariableInitializer)
 //                    && !(parent instanceof ConditionalExpression) && !(parent instanceof ArrayLiteral)
 //                    && !(parent instanceof ParenthesizedExpression)) {
-            if (!parent.isStringKey() && !parent.isCall()) {
+            if (!parent.isHook()
+                    && !parent.isStringKey()
+                    && !parent.isCall()
+                    && !parent.isName()
+                    && !parent.isArrayLit()
+                    && !parent.isAssign()
+                    && !isBooleanOperation(parent)) {
                 addInstrumentationBefore(node);
             }
         } else if (node.isReturn()) {
@@ -538,6 +544,10 @@ class NodeProcessorCC {
 
     public int getNumFunctions() {
         return functionNumber;
+    }
+
+    private boolean isBooleanOperation(Node n) {
+        return n.isAnd() || n.isOr() || n.isNot();
     }
 
 

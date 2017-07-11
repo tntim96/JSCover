@@ -412,13 +412,13 @@ public class InstrumenterCCTest {
         assertEquals(expectedSource, instrumentedSource);
     }
 
-//    @Test
-//    public void shouldInstrumentStatementFunctionAssignment() {
-//        String source = "this.someFn()\n    ._renderItem = function() {};";
-//        String instrumentedSource = sourceProcessor.instrumentSource(source);
-//        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\nthis.someFn()._renderItem = function() {\n  _$jscoverage['test.js'].functionData[0]++;\n};\n";
-//        assertEquals(expectedSource, instrumentedSource);
-//    }
+    @Test
+    public void shouldInstrumentStatementFunctionAssignment() {
+        String source = "this.someFn()\n    ._renderItem = function() {};";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\nthis.someFn()._renderItem = function() {\n  _$jscoverage['test.js'].functionData[0]++;\n};\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
 
     @Test
     public void shouldInstrumentIfWithLoopParent() {
@@ -499,113 +499,110 @@ public class InstrumenterCCTest {
         assertEquals(expectedSource, instrumentedSource);
     }
 
-//    @Test
-//    public void shouldInstrumentFunctionDeclarationAndAssignment() {
-//        String source = "var x,\n" +
-//                "  fn = function() {\n" +
-//                "    ;\n" +
-//                "  };";
-//        String instrumentedSource = sourceProcessor.instrumentSource(source);
-//        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
-//                "var x, fn = function() {\n" +
-//                "  _$jscoverage['test.js'].functionData[0]++;\n" +
-//                "  _$jscoverage['test.js'].lineData[3]++;\n" +
-//                "  ;\n" +
-//                "};\n";
-//        assertEquals(expectedSource, instrumentedSource);
-//        assertThat(instrumenter.getValidLines().size(), equalTo(2));
-//        assertThat(instrumenter.getValidLines(), hasItem(1));
-//        assertThat(instrumenter.getValidLines(), hasItem(3));
-//    }
-//
-//    @Test
-//    public void shouldInstrumentFunctionDeclarationInInfix() {
-//        String source = "var x = {" +
-//                "  'y': 0,\n" +
-//                "  fn: 0 || function() {\n" +
-//                "    return 1;\n" +
-//                "  }" +
-//                "}";
-//        String instrumentedSource = sourceProcessor.instrumentSource(source);
-//        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
-//                "var x = {\n" +
-//                "  'y': 0, \n" +
-//                "  fn: 0 || function() {\n" +
-//                "  _$jscoverage['test.js'].functionData[0]++;\n" +
-//                "  _$jscoverage['test.js'].lineData[3]++;\n" +
-//                "  return 1;\n" +
-//                "}};\n";
-//        assertEquals(expectedSource, instrumentedSource);
-//        assertThat(instrumenter.getValidLines().size(), equalTo(2));
-//        assertThat(instrumenter.getValidLines(), hasItem(1));
-//        assertThat(instrumenter.getValidLines(), hasItem(3));
-//    }
-//
-//    @Test
-//    public void shouldInstrumentFunctionInTernary() {
-//        String source = "var x = a > b ? \n" +
-//                "  function() {\n" +
-//                "    return true;" +
-//                "  } :\n" +
-//                "  function() {\n" +
-//                "    return false;\n" +
-//                "  }";
-//        String instrumentedSource = sourceProcessor.instrumentSource(source);
-//        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
-//                "var x = a > b ? function() {\n" +
-//                "  _$jscoverage['test.js'].functionData[0]++;\n" +
-//                "  _$jscoverage['test.js'].lineData[3]++;\n" +
-//                "  return true;\n" +
-//                "} : function() {\n" +
-//                "  _$jscoverage['test.js'].functionData[1]++;\n" +
-//                "  _$jscoverage['test.js'].lineData[5]++;\n" +
-//                "  return false;\n" +
-//                "};\n";
-//        assertEquals(expectedSource, instrumentedSource);
-//        assertThat(instrumenter.getValidLines().size(), equalTo(3));
-//        assertThat(instrumenter.getValidLines(), hasItem(1));
-//        assertThat(instrumenter.getValidLines(), hasItem(3));
-//        assertThat(instrumenter.getValidLines(), hasItem(5));
-//    }
-//
-//    @Test
-//    public void shouldInstrumentFunctionInArray() {
-//        String source = "var x = [\n" +
-//                "  function() {\n" +
-//                "    return true;\n" +
-//                "  }]\n";
-//        String instrumentedSource = sourceProcessor.instrumentSource(source);
-//        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
-//                "var x = [function() {\n" +
-//                "  _$jscoverage['test.js'].functionData[0]++;\n" +
-//                "  _$jscoverage['test.js'].lineData[3]++;\n" +
-//                "  return true;\n" +
-//                "}];\n";
-//        assertEquals(expectedSource, instrumentedSource);
-//        assertThat(instrumenter.getValidLines().size(), equalTo(2));
-//        assertThat(instrumenter.getValidLines(), hasItem(1));
-//        assertThat(instrumenter.getValidLines(), hasItem(3));
-//    }
-//
-//    @Test
-//    public void shouldInstrumentFunctionInBraces() {
-//        String source = "var x = \n" +
-//                "  (function() {\n" +
-//                "    return true;\n" +
-//                "  });\n";
-//        String instrumentedSource = sourceProcessor.instrumentSource(source);
-//        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
-//                "var x = (function() {\n" +
-//                "  _$jscoverage['test.js'].functionData[0]++;\n" +
-//                "  _$jscoverage['test.js'].lineData[3]++;\n" +
-//                "  return true;\n" +
-//                "});\n";
-//        assertEquals(expectedSource, instrumentedSource);
-//        assertThat(instrumenter.getValidLines().size(), equalTo(2));
-//        assertThat(instrumenter.getValidLines(), hasItem(1));
-//        assertThat(instrumenter.getValidLines(), hasItem(3));
-//    }
-//
+    @Test
+    public void shouldInstrumentFunctionDeclarationAndAssignment() {
+        String source = "var x,\n" +
+                "  fn = function() {\n" +
+                "    ;\n" +
+                "  };";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "var x, fn = function() {\n" +
+                "  _$jscoverage['test.js'].functionData[0]++;\n" +
+                "  _$jscoverage['test.js'].lineData[3]++;\n" +
+                "};\n";
+        assertEquals(expectedSource, instrumentedSource);
+        assertThat(instrumenter.getValidLines().size(), equalTo(2));
+        assertThat(instrumenter.getValidLines(), hasItem(1));
+        assertThat(instrumenter.getValidLines(), hasItem(3));
+    }
+
+    @Test
+    public void shouldInstrumentFunctionDeclarationInInfix() {
+        String source = "var x = {" +
+                "  'y': 0,\n" +
+                "  fn: 0 || function() {\n" +
+                "    return 1;\n" +
+                "  }" +
+                "}";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "var x = {'y':0, fn:0 || function() {\n" +
+                "  _$jscoverage['test.js'].functionData[0]++;\n" +
+                "  _$jscoverage['test.js'].lineData[3]++;\n" +
+                "  return 1;\n" +
+                "}};\n";
+        assertEquals(expectedSource, instrumentedSource);
+        assertThat(instrumenter.getValidLines().size(), equalTo(2));
+        assertThat(instrumenter.getValidLines(), hasItem(1));
+        assertThat(instrumenter.getValidLines(), hasItem(3));
+    }
+
+    @Test
+    public void shouldInstrumentFunctionInTernary() {
+        String source = "var x = a > b ? \n" +
+                "  function() {\n" +
+                "    return true;" +
+                "  } :\n" +
+                "  function() {\n" +
+                "    return false;\n" +
+                "  }";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "var x = a > b ? function() {\n" +
+                "  _$jscoverage['test.js'].functionData[0]++;\n" +
+                "  _$jscoverage['test.js'].lineData[3]++;\n" +
+                "  return true;\n" +
+                "} : function() {\n" +
+                "  _$jscoverage['test.js'].functionData[1]++;\n" +
+                "  _$jscoverage['test.js'].lineData[5]++;\n" +
+                "  return false;\n" +
+                "};\n";
+        assertEquals(expectedSource, instrumentedSource);
+        assertThat(instrumenter.getValidLines().size(), equalTo(3));
+        assertThat(instrumenter.getValidLines(), hasItem(1));
+        assertThat(instrumenter.getValidLines(), hasItem(3));
+        assertThat(instrumenter.getValidLines(), hasItem(5));
+    }
+
+    @Test
+    public void shouldInstrumentFunctionInArray() {
+        String source = "var x = [\n" +
+                "  function() {\n" +
+                "    return true;\n" +
+                "  }]\n";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "var x = [function() {\n" +
+                "  _$jscoverage['test.js'].functionData[0]++;\n" +
+                "  _$jscoverage['test.js'].lineData[3]++;\n" +
+                "  return true;\n" +
+                "}];\n";
+        assertEquals(expectedSource, instrumentedSource);
+        assertThat(instrumenter.getValidLines().size(), equalTo(2));
+        assertThat(instrumenter.getValidLines(), hasItem(1));
+        assertThat(instrumenter.getValidLines(), hasItem(3));
+    }
+
+    @Test
+    public void shouldInstrumentFunctionInBraces() {
+        String source = "var x = \n" +
+                "  (function() {\n" +
+                "    return true;\n" +
+                "  });\n";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "var x = function() {\n" +
+                "  _$jscoverage['test.js'].functionData[0]++;\n" +
+                "  _$jscoverage['test.js'].lineData[3]++;\n" +
+                "  return true;\n" +
+                "};\n";
+        assertEquals(expectedSource, instrumentedSource);
+        assertThat(instrumenter.getValidLines().size(), equalTo(2));
+        assertThat(instrumenter.getValidLines(), hasItem(1));
+        assertThat(instrumenter.getValidLines(), hasItem(3));
+    }
+
     @Test
     public void shouldInstrumentIfWithBraces() {
         String source = "if (x > 10)\n{\n  x++;\n}";
