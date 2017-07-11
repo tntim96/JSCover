@@ -377,9 +377,9 @@ class BranchHelperCC {
         if (parent.isIf()) {
             return parent.getFirstChild() == node;
         }
-//        if (node.getParent() instanceof ConditionalExpression) {
-//            return ((ConditionalExpression)node.getParent()).getTestExpression() == node;
-//        }
+        if (parent.isHook()) {
+            return parent.getFirstChild() == node;
+        }
         if (parent.isVanillaFor()) {
             return parent.getSecondChild() == node;
         }

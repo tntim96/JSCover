@@ -374,7 +374,7 @@ class SourceProcessorCC {
     private String source;
     private CommentsHandlerCC commentsVisitor = new CommentsHandlerCC();
     private ParseTreeInstrumenterCC instrumenter;
-    private BranchInstrumentor branchInstrumentor;
+    private BranchInstrumentorCC branchInstrumentor;
     private Config config;
     private CompilerOptions options = new CompilerOptions();
     private IoUtils ioUtils = IoUtils.getInstance();
@@ -387,7 +387,7 @@ class SourceProcessorCC {
         this.uri = uri;
         this.source = source;
         this.instrumenter = new ParseTreeInstrumenterCC(uri, config.isIncludeFunction(), commentsVisitor);
-        //this.branchInstrumentor = new BranchInstrumentor(uri, config.isDetectCoalesce(), commentsVisitor, source);
+        this.branchInstrumentor = new BranchInstrumentorCC(uri, config.isDetectCoalesce(), commentsVisitor, source);
         this.config = ParserRunner.createConfig(config.getECMAVersion(), INCLUDE_DESCRIPTIONS_WITH_WHITESPACE, KEEP_GOING, null, false, Config.StrictMode.SLOPPY);
         this.options.setPreferSingleQuotes(true);
         this.options.setPrettyPrint(true);
@@ -401,7 +401,7 @@ class SourceProcessorCC {
         return instrumenter;
     }
 
-    BranchInstrumentor getBranchInstrumentor() {
+    BranchInstrumentorCC getBranchInstrumentor() {
         return branchInstrumentor;
     }
 
@@ -468,6 +468,19 @@ class SourceProcessorCC {
 
         NodeWalker nodeWalker = new NodeWalker();
         nodeWalker.visit(jsRoot, instrumenter);
+        if (includeBranchCoverage) {
+            int parses = 0;
+            while (++parses <= 10000) {
+//            log.log(Level.FINEST, "Condition parse number {0}", parses);
+                int conditions = branchInstrumentor.getLineConditionMap().size();
+                nodeWalker.visit(jsRoot, branchInstrumentor);
+                if (conditions == branchInstrumentor.getLineConditionMap().size()) {
+                    //log.log(Level.FINE, "No branchInstrumentor condition changes after parse {0}", parses);
+                    break;
+                }
+            }
+
+        }
         return new CodePrinter.Builder(jsRoot).setCompilerOptions(options).build();
     }
 

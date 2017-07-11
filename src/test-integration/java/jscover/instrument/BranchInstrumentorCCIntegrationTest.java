@@ -349,6 +349,7 @@ import com.google.javascript.jscomp.parsing.ParserRunner;
 import com.google.javascript.rhino.Node;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import jscover.util.IoUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.script.Invocable;
@@ -610,62 +611,63 @@ public class BranchInstrumentorCCIntegrationTest {
         assertThat(coverageData.get("evalFalse"), equalTo(1.0));
     }
 
-//    @Test
-//    public void shouldWrapTernaryCondition() throws Exception {
-//        StringBuilder script = new StringBuilder("var x = 10;\n");
-//        script.append("var y = x > 0 ? 1 : 0;\n");
-//        runScript(script.toString(), false);
-//        Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
-//        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
-//        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
-//    }
-//
-//    @Test
-//    public void shouldWrapTernaryConditionWithParentheses() throws Exception {
-//        StringBuilder script = new StringBuilder("var x = 10;\n");
-//        script.append("var y = (x > 0) ? 1 : 0;\n");
-//        runScript(script.toString(), false);
-//        Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
-//        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
-//        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
-//    }
-//
-//    @Test
-//    public void shouldWrapTernaryConditionVariable() throws Exception {
-//        StringBuilder script = new StringBuilder("var y = true;\n");
-//        script.append("var x = y ? 1 : 2;\n");
-//        runScript(script.toString(), false);
-//        Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
-//        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
-//        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
-//    }
-//
-//    @Test
-//    public void shouldWrapTernaryConditionParentheses() throws Exception {
-//        StringBuilder script = new StringBuilder("var y = true;\n");
-//        script.append("var x = (y) ? 1 : 2;\n");
-//        runScript(script.toString(), false);
-//        Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
-//        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
-//        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
-//    }
-//
-//    @Test
-//    public void shouldWrapTernaryConditionArgument() throws Exception {
-//        StringBuilder script = new StringBuilder("var x = 10;\n");
-//        script.append("var y = x > 0 ? x > 100 : x < 100;\n");
-//        runScript(script.toString(), false);
-//        Scriptable coverageData1 = getCoverageData(scope, "test.js", 2, 1);
-//        assertThat((Double) coverageData1.get("evalTrue", coverageData1), equalTo(1d));
-//        assertThat((Double) coverageData1.get("evalFalse", coverageData1), equalTo(0d));
-//        Scriptable coverageData2 = getCoverageData(scope, "test.js", 2, 2);
-//        assertThat((Double) coverageData2.get("evalTrue", coverageData2), equalTo(0d));
-//        assertThat((Double) coverageData2.get("evalFalse", coverageData2), equalTo(1d));
-//        Scriptable coverageData3 = getCoverageData(scope, "test.js", 2, 3);
-//        assertThat((Double) coverageData3.get("evalTrue", coverageData3), equalTo(0d));
-//        assertThat((Double) coverageData3.get("evalFalse", coverageData3), equalTo(0d));
-//    }
-//
+    @Test
+    public void shouldWrapTernaryCondition() throws Exception {
+        StringBuilder script = new StringBuilder("var x = 10;\n");
+        script.append("var y = x > 0 ? 1 : 0;\n");
+        runScript(script.toString(), false);
+        ScriptObjectMirror coverageData = (ScriptObjectMirror) engine.eval("_$jscoverage['test.js'].branchData[2][1]");
+        assertThat(coverageData.get("evalTrue"), equalTo(1.0));
+        assertThat(coverageData.get("evalFalse"), equalTo(0));
+    }
+
+    @Test
+    public void shouldWrapTernaryConditionWithParentheses() throws Exception {
+        StringBuilder script = new StringBuilder("var x = 10;\n");
+        script.append("var y = (x > 0) ? 1 : 0;\n");
+        runScript(script.toString(), false);
+        ScriptObjectMirror coverageData = (ScriptObjectMirror) engine.eval("_$jscoverage['test.js'].branchData[2][1]");
+        assertThat(coverageData.get("evalTrue"), equalTo(1.0));
+        assertThat(coverageData.get("evalFalse"), equalTo(0));
+    }
+
+    @Test
+    public void shouldWrapTernaryConditionVariable() throws Exception {
+        StringBuilder script = new StringBuilder("var y = true;\n");
+        script.append("var x = y ? 1 : 2;\n");
+        runScript(script.toString(), false);
+        ScriptObjectMirror coverageData = (ScriptObjectMirror) engine.eval("_$jscoverage['test.js'].branchData[2][1]");
+        assertThat(coverageData.get("evalTrue"), equalTo(1.0));
+        assertThat(coverageData.get("evalFalse"), equalTo(0));
+    }
+
+    @Test
+    public void shouldWrapTernaryConditionParentheses() throws Exception {
+        StringBuilder script = new StringBuilder("var y = true;\n");
+        script.append("var x = (y) ? 1 : 2;\n");
+        runScript(script.toString(), false);
+        ScriptObjectMirror coverageData = (ScriptObjectMirror) engine.eval("_$jscoverage['test.js'].branchData[2][1]");
+        assertThat(coverageData.get("evalTrue"), equalTo(1.0));
+        assertThat(coverageData.get("evalFalse"), equalTo(0));
+    }
+
+    @Test
+    @Ignore
+    public void shouldWrapTernaryConditionArgument() throws Exception {
+        StringBuilder script = new StringBuilder("var x = 10;\n");
+        script.append("var y = x > 0 ? x > 100 : x < 100;\n");
+        runScript(script.toString(), false);
+        ScriptObjectMirror coverageData1 = (ScriptObjectMirror) engine.eval("_$jscoverage['test.js'].branchData[2][1]");
+        assertThat(coverageData1.get("evalTrue"), equalTo(1.0));
+        assertThat(coverageData1.get("evalFalse"), equalTo(0));
+        ScriptObjectMirror coverageData2 = (ScriptObjectMirror) engine.eval("_$jscoverage['test.js'].branchData[2][2]");
+        assertThat(coverageData2.get("evalTrue"), equalTo(0));
+        assertThat(coverageData2.get("evalFalse"), equalTo(1.0));
+        ScriptObjectMirror coverageData3 = (ScriptObjectMirror) engine.eval("_$jscoverage['test.js'].branchData[2][3]");
+        assertThat(coverageData3.get("evalTrue"), equalTo(0));
+        assertThat(coverageData3.get("evalFalse"), equalTo(0));
+    }
+
 //    @Test
 //    public void shouldWrapFunctionCallCondition() throws Exception {
 //        StringBuilder script = new StringBuilder("function test(x, y) {};\n");
@@ -876,14 +878,25 @@ public class BranchInstrumentorCCIntegrationTest {
         BranchInstrumentorCC branchInstrumentor = new BranchInstrumentorCC("test.js", detectCoalesce, new CommentsHandlerCC(), script);
         branchInstrumentor.setAstRoot(astRoot);
         NodeWalker nodeWalker = new NodeWalker();
-        nodeWalker.visit(astRoot, branchInstrumentor);
+        int parses = 0;
+        while (++parses <= 10000) {
+//            log.log(Level.FINEST, "Condition parse number {0}", parses);
+            int conditions = branchInstrumentor.getLineConditionMap().size();
+            nodeWalker.visit(astRoot, branchInstrumentor);
+            if (conditions == branchInstrumentor.getLineConditionMap().size()) {
+                //log.log(Level.FINE, "No branchInstrumentor condition changes after parse {0}", parses);
+                break;
+            }
+        }
+
+//        nodeWalker.visit(astRoot, branchInstrumentor);
         branchInstrumentor.postProcess();
 
 //        context = Context.enter();
 //        scope = context.initStandardObjects();
         String source = branchObjectHeader + header + branchInstrumentor.getJsLineInitialization() + new CodePrinter.Builder(astRoot).setLineBreak(true).build();
-//        System.out.println("--------------------------------------");
-//        System.out.println("source = " + source);
+        System.out.println("--------------------------------------");
+        System.out.println("source = " + source);
         return engine.eval(source);
     }
 

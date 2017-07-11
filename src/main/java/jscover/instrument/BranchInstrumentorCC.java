@@ -439,14 +439,8 @@ public class BranchInstrumentorCC implements NodeVisitorCC {
             parent.replaceChild(node, functionCall);
         } else if (parent.isExprResult()) {
             parent.replaceChild(node, functionCall);
-//        } else if (parent instanceof ConditionalExpression) {
-//            ConditionalExpression ternary = (ConditionalExpression) parent;
-//            if (ternary.getTestExpression() == node)
-//                ternary.setTestExpression(functionCall);
-//            else if (ternary.getTrueExpression() == node)
-//                ternary.setTrueExpression(functionCall);
-//            else
-//                ternary.setFalseExpression(functionCall);
+        } else if (parent.isHook()) {
+            parent.replaceChild(node, functionCall);
         } else if (parent.isArrayLit()) {
             parent.replaceChild(node, functionCall);
 //            postProcesses.add(new PostProcessCC(parent, node, functionCall) {
@@ -472,7 +466,7 @@ public class BranchInstrumentorCC implements NodeVisitorCC {
 //                }
 //            });
         } else {
-            logger.log(SEVERE, format("Couldn't insert wrapper for parent %s, file: %s, line: %d, position: %d, source: %s", parent.getClass().getName(), uri, node.getLineno(), node.getCharno(), "TODO"));
+            logger.log(SEVERE, format("Couldn't insert wrapper for parent %s, file: %s, line: %d, position: %d, source: %s", parent, uri, node.getLineno(), node.getCharno(), "TODO"));
         }
     }
 
