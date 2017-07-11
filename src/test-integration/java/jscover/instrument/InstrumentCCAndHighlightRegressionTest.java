@@ -372,7 +372,6 @@ import static com.google.javascript.jscomp.parsing.Config.RunMode.KEEP_GOING;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.BDDMockito.given;
 
-//@Ignore
 @RunWith(MockitoJUnitRunner.class)
 public class InstrumentCCAndHighlightRegressionTest {
     private static Set<String> tested = new HashSet<>();
@@ -498,7 +497,6 @@ public class InstrumentCCAndHighlightRegressionTest {
     }
 
     @Test
-    @Ignore
     public void shouldInstrumentGeneratorExpression() {
         testFile("javascript-generator-expression.js");
     }
@@ -529,7 +527,7 @@ public class InstrumentCCAndHighlightRegressionTest {
     }
 
     @Test
-    @Ignore//This is handled by JVM 'file.encoding' system property
+    @Ignore("This is handled by JVM 'file.encoding' system property")
     public void shouldInstrumentISO_8859_1() {
         testFile("javascript-iso-8859-1.js");
     }
