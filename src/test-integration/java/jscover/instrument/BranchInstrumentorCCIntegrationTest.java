@@ -403,18 +403,19 @@ public class BranchInstrumentorCCIntegrationTest {
         assertThat(coverageData.callMember("covered"), equalTo(true));
     }
 
-//    @Test
-//    public void shouldWrapReturnCondition() {
-//        StringBuilder script = new StringBuilder("function test(x) {\n");
-//        script.append("  return x > 0\n");
-//        script.append("}\n");
-//        script.append("test(1);");
-//        runScript(script.toString(), false);
-//        Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
-//        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
-//        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
-//    }
-//
+    @Test
+    public void shouldWrapReturnCondition() throws Exception {
+        StringBuilder script = new StringBuilder("function test(x) {\n");
+        script.append("  return x > 0\n");
+        script.append("}\n");
+        script.append("test(1);");
+        runScript(script.toString(), false);
+
+        ScriptObjectMirror coverageData = (ScriptObjectMirror) engine.eval("_$jscoverage['test.js'].branchData[2][1]");
+        assertThat(coverageData.get("evalTrue"), equalTo(1.0));
+        assertThat(coverageData.get("evalFalse"), equalTo(0));
+    }
+
 //    @Test
 //    public void shouldWrapArrayLiteralCondition() {
 //        StringBuilder script = new StringBuilder("var x = [ 1 || 0];\n");
