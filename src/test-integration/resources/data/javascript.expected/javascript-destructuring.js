@@ -24,9 +24,6 @@ if (! _$jscoverage['javascript-destructuring.js']) {
   _$jscoverage['javascript-destructuring.js'].lineData[35] = 0;
   _$jscoverage['javascript-destructuring.js'].lineData[37] = 0;
   _$jscoverage['javascript-destructuring.js'].lineData[38] = 0;
-  _$jscoverage['javascript-destructuring.js'].lineData[39] = 0;
-  _$jscoverage['javascript-destructuring.js'].lineData[40] = 0;
-  _$jscoverage['javascript-destructuring.js'].lineData[41] = 0;
 }
 if (! _$jscoverage['javascript-destructuring.js'].functionData) {
   _$jscoverage['javascript-destructuring.js'].functionData = [];
@@ -53,7 +50,7 @@ for (let [name, value] in Iterator(obj)) {
   print(value);
 }
 _$jscoverage['javascript-destructuring.js'].lineData[15]++;
-for each (let {
+for (let {
   name: n, 
   family: {
   father: f}} in people) {
@@ -90,21 +87,15 @@ function h(a, [b, c], {
   g();
 }
 _$jscoverage['javascript-destructuring.js'].lineData[35]++;
-x = function([a, b]) a + b;
+x = function([a, b]) {
+  _$jscoverage['javascript-destructuring.js'].functionData[3]++;
+  a + b;
+};
 _$jscoverage['javascript-destructuring.js'].lineData[37]++;
-({
+point = ({
   x: x0, 
-  y: y0}) = point;
+  y: y0});
 _$jscoverage['javascript-destructuring.js'].lineData[38]++;
 var {
   x: x0, 
   y: y0} = point;
-_$jscoverage['javascript-destructuring.js'].lineData[39]++;
-let ({
-  x: x0, 
-  y: y0} = point) {
-  _$jscoverage['javascript-destructuring.js'].lineData[40]++;
-  print(x0);
-  _$jscoverage['javascript-destructuring.js'].lineData[41]++;
-  print(y0);
-}

@@ -454,7 +454,6 @@ public class InstrumentCCAndHighlightRegressionTest {
     }
 
     @Test//https://bugzilla.mozilla.org/show_bug.cgi?id=689308, https://bugzilla.mozilla.org/show_bug.cgi?id=689314
-    @Ignore
     public void shouldInstrumentDestructuring() {
         testFile("javascript-destructuring.js");
     }
@@ -480,8 +479,7 @@ public class InstrumentCCAndHighlightRegressionTest {
         testFile("javascript-for.js");
     }
 
-    @Test
-    @Ignore
+    @Test//Deprecated ECMA 4: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for_each...in
     public void shouldInstrumentForEach() {
         testFile("javascript-foreach.js");
     }
