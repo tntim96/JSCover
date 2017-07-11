@@ -431,8 +431,8 @@ public class BranchInstrumentorCC implements NodeVisitorCC {
 //            parent.replaceChild(node, functionCall);
         } else if (parent.isWhile()) {
             parent.replaceChild(node, functionCall);
-//        } else if (parent.isDo()) {
-//            parent.replaceChild(node, functionCall);
+        } else if (parent.isDo()) {
+            parent.replaceChild(node, functionCall);
 //        } else if (parent.isVanillaFor()) {
 //            parent.replaceChild(node, functionCall);
         } else if (parent.isGetElem()) {

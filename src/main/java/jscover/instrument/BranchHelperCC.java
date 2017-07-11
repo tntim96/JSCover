@@ -384,7 +384,7 @@ class BranchHelperCC {
             return parent.getFirstChild() == node;
         }
         if (parent.isDo()) {
-            return parent.getFirstChild() == node;
+            return parent.getSecondChild() == node;
         }
         if (parent.isForIn()) {
             return parent.getFirstChild() == node;

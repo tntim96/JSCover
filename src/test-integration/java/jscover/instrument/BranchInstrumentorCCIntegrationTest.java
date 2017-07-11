@@ -545,30 +545,30 @@ public class BranchInstrumentorCCIntegrationTest {
         assertThat(coverageData.get("evalFalse"), equalTo(0));
     }
 
-//    @Test
-//    public void shouldWrapDoCondition() throws Exception {
-//        StringBuilder script = new StringBuilder("var x = 1;\n");
-//        script.append("do\n");
-//        script.append("  x--;\n");
-//        script.append("while (x > 0)\n");
-//        runScript(script.toString(), false);
-//        Scriptable coverageData = getCoverageData(scope, "test.js", 4, 1);
-//        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(0d));
-//        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(1d));
-//    }
-//
-//    @Test
-//    public void shouldWrapDoConditionVariable() throws Exception {
-//        StringBuilder script = new StringBuilder("var x = true;\n");
-//        script.append("do\n");
-//        script.append("  x = false;\n");
-//        script.append("while (x)\n");
-//        runScript(script.toString(), false);
-//        Scriptable coverageData = getCoverageData(scope, "test.js", 4, 1);
-//        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(0d));
-//        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(1d));
-//    }
-//
+    @Test
+    public void shouldWrapDoCondition() throws Exception {
+        StringBuilder script = new StringBuilder("var x = 1;\n");
+        script.append("do\n");
+        script.append("  x--;\n");
+        script.append("while (x > 0)\n");
+        runScript(script.toString(), false);
+        ScriptObjectMirror coverageData = (ScriptObjectMirror) engine.eval("_$jscoverage['test.js'].branchData[4][1]");
+        assertThat(coverageData.get("evalTrue"), equalTo(0));
+        assertThat(coverageData.get("evalFalse"), equalTo(1.0));
+    }
+
+    @Test
+    public void shouldWrapDoConditionVariable() throws Exception {
+        StringBuilder script = new StringBuilder("var x = true;\n");
+        script.append("do\n");
+        script.append("  x = false;\n");
+        script.append("while (x)\n");
+        runScript(script.toString(), false);
+        ScriptObjectMirror coverageData = (ScriptObjectMirror) engine.eval("_$jscoverage['test.js'].branchData[4][1]");
+        assertThat(coverageData.get("evalTrue"), equalTo(0));
+        assertThat(coverageData.get("evalFalse"), equalTo(1.0));
+    }
+
 //    @Test
 //    public void shouldWrapSwitchCondition() throws Exception {
 //        StringBuilder script = new StringBuilder("  switch (null || 'd') {\n");
