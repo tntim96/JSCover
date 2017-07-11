@@ -700,43 +700,34 @@ public class BranchInstrumentorCCIntegrationTest {
         assertThat(coverageData.get("evalFalse"), equalTo(0));
     }
 
-//    @Test
-//    public void shouldHandleTwoSeparateConditions() throws Exception {
-//        StringBuilder script = new StringBuilder("function test(x) {\n");
-//        script.append("  if (x < 0)\n");
-//        script.append("    ;\n");
-//        script.append("  else if (x > 100)\n");
-//        script.append("    ;\n");
-//        script.append("};\n");
-//        runScript(script.toString(), false);
-//        Scriptable coverageData1 = getCoverageData(scope, "test.js", 2, 1);
-//        Scriptable coverageData2 = getCoverageData(scope, "test.js", 4, 1);
-//        Function coveredFn1 = (Function) ScriptableObject.getProperty(coverageData1, "covered");
-//        Function coveredFn2 = (Function) ScriptableObject.getProperty(coverageData2, "covered");
-//        Function testFn = (Function) scope.get("test", scope);
-//
-//        assertThat((Boolean) coveredFn1.call(context, scope, coverageData1, new Object[0]), equalTo(false));
-//        assertThat((Boolean) coveredFn2.call(context, scope, coverageData2, new Object[0]), equalTo(false));
-//
-//        testFn.call(context, scope, null, new ArrayList() throws Exception {{
-//            add(-1);
-//        }}.toArray());
-//        assertThat((Boolean) coveredFn1.call(context, scope, coverageData1, new Object[0]), equalTo(false));
-//        assertThat((Boolean) coveredFn2.call(context, scope, coverageData2, new Object[0]), equalTo(false));
-//
-//        testFn.call(context, scope, null, new ArrayList() throws Exception {{
-//            add(1);
-//        }}.toArray());
-//        assertThat((Boolean) coveredFn1.call(context, scope, coverageData1, new Object[0]), equalTo(true));
-//        assertThat((Boolean) coveredFn2.call(context, scope, coverageData2, new Object[0]), equalTo(false));
-//
-//        testFn.call(context, scope, null, new ArrayList() throws Exception {{
-//            add(1000);
-//        }}.toArray());
-//        assertThat((Boolean) coveredFn1.call(context, scope, coverageData1, new Object[0]), equalTo(true));
-//        assertThat((Boolean) coveredFn2.call(context, scope, coverageData2, new Object[0]), equalTo(true));
-//    }
-//
+    @Test
+    public void shouldHandleTwoSeparateConditions() throws Exception {
+        StringBuilder script = new StringBuilder("function test(x) {\n");
+        script.append("  if (x < 0)\n");
+        script.append("    ;\n");
+        script.append("  else if (x > 100)\n");
+        script.append("    ;\n");
+        script.append("};\n");
+        runScript(script.toString(), false);
+        ScriptObjectMirror coverageData1 = (ScriptObjectMirror) engine.eval("_$jscoverage['test.js'].branchData[2][1]");
+        ScriptObjectMirror coverageData2 = (ScriptObjectMirror) engine.eval("_$jscoverage['test.js'].branchData[4][1]");
+
+        assertThat(coverageData1.callMember("covered"), equalTo(false));
+        assertThat(coverageData2.callMember("covered"), equalTo(false));
+
+        invocable.invokeFunction("test", -1);
+        assertThat(coverageData1.callMember("covered"), equalTo(false));
+        assertThat(coverageData2.callMember("covered"), equalTo(false));
+
+        invocable.invokeFunction("test", 1);
+        assertThat(coverageData1.callMember("covered"), equalTo(true));
+        assertThat(coverageData2.callMember("covered"), equalTo(false));
+
+        invocable.invokeFunction("test", 1000);
+        assertThat(coverageData1.callMember("covered"), equalTo(true));
+        assertThat(coverageData2.callMember("covered"), equalTo(true));
+    }
+
 //    @Test
 //    public void shouldHandleNestedConditions() throws Exception {
 //        StringBuilder script = new StringBuilder("function test(x, y) {\n");
