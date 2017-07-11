@@ -344,7 +344,6 @@ package jscover.instrument;
 
 import com.google.javascript.rhino.IR;
 import com.google.javascript.rhino.Node;
-import com.google.javascript.rhino.Token;
 
 import java.util.*;
 import java.util.logging.Logger;
@@ -360,7 +359,7 @@ public class BranchInstrumentorCC implements NodeVisitorCC {
 
     private BranchStatementBuilderCC branchStatementBuilder = new BranchStatementBuilderCC();
     private BranchHelperCC branchHelper = BranchHelperCC.getInstance();
-    private Set<PostProcess> postProcesses = new HashSet<PostProcess>();
+    private Set<PostProcessCC> postProcesses = new HashSet<PostProcessCC>();
     private String uri;
     private String source;
     private boolean detectCoalesce;
@@ -384,7 +383,7 @@ public class BranchInstrumentorCC implements NodeVisitorCC {
     }
 
     public void postProcess() {
-        for (PostProcess postProcess : postProcesses)
+        for (PostProcessCC postProcess : postProcesses)
             postProcess.process();
     }
 
@@ -452,20 +451,12 @@ public class BranchInstrumentorCC implements NodeVisitorCC {
 //                ternary.setTrueExpression(functionCall);
 //            else
 //                ternary.setFalseExpression(functionCall);
-//        } else if (parent instanceof ArrayLiteral) {
-//            postProcesses.add(new PostProcess(parent, node, functionCall) {
+        } else if (parent.isArrayLit()) {
+            parent.replaceChild(node, functionCall);
+//            postProcesses.add(new PostProcessCC(parent, node, functionCall) {
 //                @Override
-//                void run(AstNode parent, AstNode node, AstNode functionCall) {
-//                    final ArrayLiteral arrayParent = (ArrayLiteral) parent;
-//                    List<AstNode> elements = arrayParent.getElements();
-//                    List<AstNode> newElements = new ArrayList<AstNode>();
-//                    for (AstNode element : elements) {
-//                        if (element == node)
-//                            newElements.add(functionCall);
-//                        else
-//                            newElements.add(element);
-//                    }
-//                    arrayParent.setElements(newElements);
+//                void run(Node parent, Node node, Node functionCall) {
+//                    parent.replaceChild(node, functionCall);
 //                }
 //            });
 //        } else if (parent instanceof FunctionCall) {

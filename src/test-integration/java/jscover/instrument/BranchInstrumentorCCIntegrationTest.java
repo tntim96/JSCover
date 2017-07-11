@@ -416,15 +416,15 @@ public class BranchInstrumentorCCIntegrationTest {
         assertThat(coverageData.get("evalFalse"), equalTo(0));
     }
 
-//    @Test
-//    public void shouldWrapArrayLiteralCondition() {
-//        StringBuilder script = new StringBuilder("var x = [ 1 || 0];\n");
-//        runScript(script.toString(), false);
-//        Scriptable coverageData = getCoverageData(scope, "test.js", 1, 1);
-//        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
-//        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
-//    }
-//
+    @Test
+    public void shouldWrapArrayLiteralCondition() throws Exception {
+        StringBuilder script = new StringBuilder("var x = [ 1 || 0];\n");
+        runScript(script.toString(), false);
+        ScriptObjectMirror coverageData = (ScriptObjectMirror) engine.eval("_$jscoverage['test.js'].branchData[1][1]");
+        assertThat(coverageData.get("evalTrue"), equalTo(1.0));
+        assertThat(coverageData.get("evalFalse"), equalTo(0));
+    }
+
 //    @Test
 //    public void shouldWrapCoalesce() {
 //        StringBuilder script = new StringBuilder("function test(a) {\n  var x = a || {};\n  }\ntest();");
