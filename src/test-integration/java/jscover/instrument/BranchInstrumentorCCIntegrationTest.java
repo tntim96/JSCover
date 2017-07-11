@@ -677,29 +677,29 @@ public class BranchInstrumentorCCIntegrationTest {
         assertThat(coverageData.get("evalFalse"), equalTo(0));
     }
 
-//    @Test
-//    public void shouldWrapNotOperatorCondition() throws Exception {
-//        StringBuilder script = new StringBuilder("function test(x) {\n");
-//        script.append("  if (!x)\n");
-//        script.append("    ;\n");
-//        script.append("};\n");
-//        script.append("test(true);\n");
-//        runScript(script.toString(), false);
-//        Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
-//        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(0d));
-//        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(1d));
-//    }
-//
-//    @Test
-//    public void shouldWrapFunctionCallConditionAsFirstArgument() throws Exception {
-//        StringBuilder script = new StringBuilder("function test(x, y) {};\n");
-//        script.append("test(1 > 0, 0);\n");
-//        runScript(script.toString(), false);
-//        Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
-//        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
-//        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
-//    }
-//
+    @Test
+    public void shouldWrapNotOperatorCondition() throws Exception {
+        StringBuilder script = new StringBuilder("function test(x) {\n");
+        script.append("  if (!x)\n");
+        script.append("    ;\n");
+        script.append("};\n");
+        script.append("test(true);\n");
+        runScript(script.toString(), false);
+        ScriptObjectMirror coverageData = (ScriptObjectMirror) engine.eval("_$jscoverage['test.js'].branchData[2][1]");
+        assertThat(coverageData.get("evalTrue"), equalTo(0));
+        assertThat(coverageData.get("evalFalse"), equalTo(1.0));
+    }
+
+    @Test
+    public void shouldWrapFunctionCallConditionAsFirstArgument() throws Exception {
+        StringBuilder script = new StringBuilder("function test(x, y) {};\n");
+        script.append("test(1 > 0, 0);\n");
+        runScript(script.toString(), false);
+        ScriptObjectMirror coverageData = (ScriptObjectMirror) engine.eval("_$jscoverage['test.js'].branchData[2][1]");
+        assertThat(coverageData.get("evalTrue"), equalTo(1.0));
+        assertThat(coverageData.get("evalFalse"), equalTo(0));
+    }
+
 //    @Test
 //    public void shouldHandleTwoSeparateConditions() throws Exception {
 //        StringBuilder script = new StringBuilder("function test(x) {\n");
@@ -794,17 +794,16 @@ public class BranchInstrumentorCCIntegrationTest {
 //        assertThat((Boolean) coveredFn3.call(context, scope, coverageData3, new Object[0]), equalTo(true));
 //    }
 //
-//    @Test
-//    public void shouldHandleFunctionAsIfConditions() throws Exception {
-//        StringBuilder script = new StringBuilder("function fn() { return true;}\n");
-//        script.append("  if (fn())\n");
-//        script.append("    ;\n");
-//        runScript(script.toString(), false);
-//        Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
-//
-//        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
-//        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
-//    }
+    @Test
+    public void shouldHandleFunctionAsIfConditions() throws Exception {
+        StringBuilder script = new StringBuilder("function fn() { return true;}\n");
+        script.append("  if (fn())\n");
+        script.append("    ;\n");
+        runScript(script.toString(), false);
+        ScriptObjectMirror coverageData = (ScriptObjectMirror) engine.eval("_$jscoverage['test.js'].branchData[2][1]");
+        assertThat(coverageData.get("evalTrue"), equalTo(1.0));
+        assertThat(coverageData.get("evalFalse"), equalTo(0));
+    }
 //
 //    @Test
 //    public void shouldHandleVariableAsIfConditions() throws Exception {
