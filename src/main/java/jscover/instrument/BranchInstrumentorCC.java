@@ -407,15 +407,7 @@ public class BranchInstrumentorCC implements NodeVisitorCC {
                 , node.getLineno(), conditionId, getLinePosition(node), node.getLength());
         astRoot.addChildToFront(conditionArrayDeclaration);
 
-        Node arguments;
-        if (node.isComma()) {
-            Node parenthesizedExpression = IR.block();
-            parenthesizedExpression.addChildToFront(node);
-            arguments = parenthesizedExpression;
-        } else
-            arguments = node.cloneTree();
-
-        Node functionCall = IR.call(IR.name(functionNode.getFirstChild().getString()), arguments);
+        Node functionCall = IR.call(IR.name(functionNode.getFirstChild().getString()), node.cloneTree());
 //        Node functionCall = IR.call(functionNode.getFirstChild().cloneNode(), arguments);
         if (parent.isIf() && node == parent.getFirstChild()) {
             parent.replaceChild(node, functionCall);

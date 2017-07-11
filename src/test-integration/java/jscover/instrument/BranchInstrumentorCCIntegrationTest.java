@@ -514,37 +514,37 @@ public class BranchInstrumentorCCIntegrationTest {
         assertThat(coverageData.get("evalFalse"), equalTo(1.0));
     }
 
-//    @Test
-//    public void shouldWrapWhileConditionVariable() throws Exception {
-//        StringBuilder script = new StringBuilder("var x = true;\n");
-//        script.append("while (x)\n");
-//        script.append("  x = false;\n");
-//        runScript(script.toString(), false);
-//        Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
-//        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
-//        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(1d));
-//    }
-//
-//    @Test
-//    public void shouldNotBreakCommaCondition() throws Exception {
-//        StringBuilder script = new StringBuilder("if (true, false)\n");
-//        script.append("  ;\n");
-//        runScript(script.toString(), false);
-//        Scriptable coverageData = getCoverageData(scope, "test.js", 1, 1);
-//        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(0d));
-//        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(1d));
-//    }
-//
-//    @Test
-//    public void shouldNotBreakCommaCondition2() throws Exception {
-//        StringBuilder script = new StringBuilder("if (false, true)\n");
-//        script.append("  ;\n");
-//        runScript(script.toString(), false);
-//        Scriptable coverageData = getCoverageData(scope, "test.js", 1, 1);
-//        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
-//        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
-//    }
-//
+    @Test
+    public void shouldWrapWhileConditionVariable() throws Exception {
+        StringBuilder script = new StringBuilder("var x = true;\n");
+        script.append("while (x)\n");
+        script.append("  x = false;\n");
+        runScript(script.toString(), false);
+        ScriptObjectMirror coverageData = (ScriptObjectMirror) engine.eval("_$jscoverage['test.js'].branchData[2][1]");
+        assertThat(coverageData.get("evalTrue"), equalTo(1.0));
+        assertThat(coverageData.get("evalFalse"), equalTo(1.0));
+    }
+
+    @Test
+    public void shouldNotBreakCommaCondition() throws Exception {
+        StringBuilder script = new StringBuilder("if (true, false)\n");
+        script.append("  ;\n");
+        runScript(script.toString(), false);
+        ScriptObjectMirror coverageData = (ScriptObjectMirror) engine.eval("_$jscoverage['test.js'].branchData[1][1]");
+        assertThat(coverageData.get("evalTrue"), equalTo(0));
+        assertThat(coverageData.get("evalFalse"), equalTo(1.0));
+    }
+
+    @Test
+    public void shouldNotBreakCommaCondition2() throws Exception {
+        StringBuilder script = new StringBuilder("if (false, true)\n");
+        script.append("  ;\n");
+        runScript(script.toString(), false);
+        ScriptObjectMirror coverageData = (ScriptObjectMirror) engine.eval("_$jscoverage['test.js'].branchData[1][1]");
+        assertThat(coverageData.get("evalTrue"), equalTo(1.0));
+        assertThat(coverageData.get("evalFalse"), equalTo(0));
+    }
+
 //    @Test
 //    public void shouldWrapDoCondition() throws Exception {
 //        StringBuilder script = new StringBuilder("var x = 1;\n");
