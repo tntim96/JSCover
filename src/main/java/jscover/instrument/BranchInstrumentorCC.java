@@ -408,7 +408,7 @@ public class BranchInstrumentorCC implements NodeVisitorCC {
         astRoot.addChildToFront(conditionArrayDeclaration);
 
         Node functionCall = IR.call(IR.name(functionNode.getFirstChild().getString()), node.cloneTree());
-//        Node functionCall = IR.call(functionNode.getFirstChild().cloneNode(), arguments);
+//        Node functionCall = IR.call(functionNode.getFirstChild().cloneNode(), node.cloneTree());
         if (parent.isIf() && node == parent.getFirstChild()) {
             parent.replaceChild(node, functionCall);
 //        } else if (parent instanceof ParenthesizedExpression) {

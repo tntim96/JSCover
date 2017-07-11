@@ -469,17 +469,17 @@ class SourceProcessorCC {
         NodeWalker nodeWalker = new NodeWalker();
         nodeWalker.visit(jsRoot, instrumenter);
         if (includeBranchCoverage) {
-            int parses = 0;
-            while (++parses <= 10000) {
-//            log.log(Level.FINEST, "Condition parse number {0}", parses);
-                int conditions = branchInstrumentor.getLineConditionMap().size();
-                nodeWalker.visit(jsRoot, branchInstrumentor);
-                if (conditions == branchInstrumentor.getLineConditionMap().size()) {
-                    //log.log(Level.FINE, "No branchInstrumentor condition changes after parse {0}", parses);
-                    break;
-                }
-            }
-
+//            int parses = 0;
+//            while (++parses <= 10000) {
+////            log.log(Level.FINEST, "Condition parse number {0}", parses);
+//                int conditions = branchInstrumentor.getLineConditionMap().size();
+//                nodeWalker.visit(jsRoot, branchInstrumentor);
+//                if (conditions == branchInstrumentor.getLineConditionMap().size()) {
+//                    //log.log(Level.FINE, "No branchInstrumentor condition changes after parse {0}", parses);
+//                    break;
+//                }
+//            }
+            nodeWalker.visit(jsRoot, branchInstrumentor);
         }
         return new CodePrinter.Builder(jsRoot).setCompilerOptions(options).build();
     }

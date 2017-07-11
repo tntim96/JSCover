@@ -652,10 +652,9 @@ public class BranchInstrumentorCCIntegrationTest {
     }
 
     @Test
-    @Ignore
     public void shouldWrapTernaryConditionArgument() throws Exception {
         StringBuilder script = new StringBuilder("var x = 10;\n");
-        script.append("var y = x > 0 ? x > 100 : x < 100;\n");
+        script.append("var y = x > 0 ? x >= 100 : x < 100;\n");
         runScript(script.toString(), false);
         ScriptObjectMirror coverageData1 = (ScriptObjectMirror) engine.eval("_$jscoverage['test.js'].branchData[2][1]");
         assertThat(coverageData1.get("evalTrue"), equalTo(1.0));
@@ -878,25 +877,26 @@ public class BranchInstrumentorCCIntegrationTest {
         BranchInstrumentorCC branchInstrumentor = new BranchInstrumentorCC("test.js", detectCoalesce, new CommentsHandlerCC(), script);
         branchInstrumentor.setAstRoot(astRoot);
         NodeWalker nodeWalker = new NodeWalker();
-        int parses = 0;
-        while (++parses <= 10000) {
-//            log.log(Level.FINEST, "Condition parse number {0}", parses);
-            int conditions = branchInstrumentor.getLineConditionMap().size();
-            nodeWalker.visit(astRoot, branchInstrumentor);
-            if (conditions == branchInstrumentor.getLineConditionMap().size()) {
-                //log.log(Level.FINE, "No branchInstrumentor condition changes after parse {0}", parses);
-                break;
-            }
-        }
+//        int parses = 0;
+//        while (++parses <= 10000) {
+////            log.log(Level.FINEST, "Condition parse number {0}", parses);
+//            int conditions = branchInstrumentor.getLineConditionMap().size();
+//            nodeWalker.visit(astRoot, branchInstrumentor);
+//            System.out.println(parses + " astRoot.toStringTree\n" + astRoot.toStringTree());
+//            if (conditions == branchInstrumentor.getLineConditionMap().size()) {
+//                //log.log(Level.FINE, "No branchInstrumentor condition changes after parse {0}", parses);
+//                break;
+//            }
+//        }
 
-//        nodeWalker.visit(astRoot, branchInstrumentor);
+        nodeWalker.visit(astRoot, branchInstrumentor);
         branchInstrumentor.postProcess();
 
 //        context = Context.enter();
 //        scope = context.initStandardObjects();
         String source = branchObjectHeader + header + branchInstrumentor.getJsLineInitialization() + new CodePrinter.Builder(astRoot).setLineBreak(true).build();
-        System.out.println("--------------------------------------");
-        System.out.println("source = " + source);
+//        System.out.println("--------------------------------------");
+//        System.out.println("source = " + source);
         return engine.eval(source);
     }
 
