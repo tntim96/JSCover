@@ -403,7 +403,6 @@ public class InstrumentCCAndHighlightRegressionTest {
     }
 
     @Test
-    @Ignore
     public void shouldInstrumentArray() {
         testFile("javascript-array-comprehension.js");
     }
@@ -474,7 +473,6 @@ public class InstrumentCCAndHighlightRegressionTest {
     }
 
     @Test
-    @Ignore
     public void shouldInstrumentFor() {
         testFile("javascript-for.js");
     }

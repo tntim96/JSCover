@@ -410,6 +410,7 @@ class NodeProcessorCC {
                 || node.isThrow()
                 || node.isContinue()
                 || node.isBreak()
+                || node.isVanillaFor()
                 || node.isWhile()
                 || node.isDo()
                 || node.isForIn()
