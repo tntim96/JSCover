@@ -667,16 +667,16 @@ public class BranchInstrumentorCCIntegrationTest {
         assertThat(coverageData3.get("evalFalse"), equalTo(0));
     }
 
-//    @Test
-//    public void shouldWrapFunctionCallCondition() throws Exception {
-//        StringBuilder script = new StringBuilder("function test(x, y) {};\n");
-//        script.append("test(0, 1 > 0);\n");
-//        runScript(script.toString(), false);
-//        Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
-//        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
-//        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
-//    }
-//
+    @Test
+    public void shouldWrapFunctionCallCondition() throws Exception {
+        StringBuilder script = new StringBuilder("function test(x, y) {};\n");
+        script.append("test(0, 1 > 0);\n");
+        runScript(script.toString(), false);
+        ScriptObjectMirror coverageData = (ScriptObjectMirror) engine.eval("_$jscoverage['test.js'].branchData[2][1]");
+        assertThat(coverageData.get("evalTrue"), equalTo(1.0));
+        assertThat(coverageData.get("evalFalse"), equalTo(0));
+    }
+
 //    @Test
 //    public void shouldWrapNotOperatorCondition() throws Exception {
 //        StringBuilder script = new StringBuilder("function test(x) {\n");

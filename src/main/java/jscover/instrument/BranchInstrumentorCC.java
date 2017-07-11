@@ -419,6 +419,8 @@ public class BranchInstrumentorCC implements NodeVisitorCC {
 //                infixExpression.setLeft(functionCall);
 //            else
 //                infixExpression.setRight(functionCall);
+        } else if (parent.isCall()) {
+            parent.replaceChild(node, functionCall);
         } else if (parent.isReturn()) {
             parent.replaceChild(node, functionCall);
         } else if (parent.isAssign()) {
