@@ -350,20 +350,18 @@ import com.google.javascript.rhino.Node;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import jscover.util.IoUtils;
 import org.junit.Test;
-import org.mozilla.javascript.*;
-import org.mozilla.javascript.ast.AstRoot;
 
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
-import java.util.Collections;
 
 import static com.google.javascript.jscomp.parsing.Config.JsDocParsing.TYPES_ONLY;
 import static com.google.javascript.jscomp.parsing.Config.LanguageMode.ECMASCRIPT8;
 import static com.google.javascript.jscomp.parsing.Config.RunMode.KEEP_GOING;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 public class BranchInstrumentorCCIntegrationTest {
@@ -425,33 +423,33 @@ public class BranchInstrumentorCCIntegrationTest {
         assertThat(coverageData.get("evalFalse"), equalTo(0));
     }
 
-//    @Test
-//    public void shouldWrapCoalesce() {
-//        StringBuilder script = new StringBuilder("function test(a) {\n  var x = a || {};\n  }\ntest();");
-//        runScript(script.toString(), false);
-//        Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
-//        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
-//        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
-//    }
+    @Test
+    public void shouldWrapCoalesce() throws Exception {
+        StringBuilder script = new StringBuilder("function test(a) {\n  var x = a || {};\n  }\ntest();");
+        runScript(script.toString(), false);
+        ScriptObjectMirror coverageData = (ScriptObjectMirror) engine.eval("_$jscoverage['test.js'].branchData[2][1]");
+        assertThat(coverageData.get("evalTrue"), equalTo(1.0));
+        assertThat(coverageData.get("evalFalse"), equalTo(0));
+    }
+
+    @Test
+    public void shouldNotWrapCoalesceIfConfiguredNotTo() throws Exception {
+        String source = "function test(a) {\n  var x = a || {};\n  }\ntest();";
+        runScript(source, true);
+        assertThat(((ScriptObjectMirror)engine.eval("_$jscoverage['test.js'].branchData")).isEmpty(), is(true));
+    }
+
+    @Test
+    public void shouldWrapNonCoalesce() throws Exception {
+        String source = "function test(a) {\n  var x = a > 7;\n  }\ntest(3);";
+        runScript(source, true);
+        ScriptObjectMirror coverageData = (ScriptObjectMirror) engine.eval("_$jscoverage['test.js'].branchData[2][1]");
+        assertThat(coverageData.get("evalTrue"), equalTo(0));
+        assertThat(coverageData.get("evalFalse"), equalTo(1.0));
+    }
 //
 //    @Test
-//    public void shouldNotWrapCoalesceIfConfiguredNotTo() {
-//        String source = "function test(a) {\n  var x = a || {};\n  }\ntest();";
-//        runScript(source, true);
-//        assertThat(getBranchData(scope, "test.js").size(), equalTo(0));
-//    }
-//
-//    @Test
-//    public void shouldWrapNonCoalesce() {
-//        String source = "function test(a) {\n  var x = a > 7;\n  }\ntest(3);";
-//        runScript(source, true);
-//        Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
-//        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(0d));
-//        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(1d));
-//    }
-//
-//    @Test
-//    public void shouldWrapGetterCondition() {
+//    public void shouldWrapGetterCondition() throws Exception {
 //        StringBuilder script = new StringBuilder("var y = { 'a':1, 'b':2};\n");
 //        script.append("var prop = null;\n");
 //        script.append("var x = y[prop || 'a'];");
@@ -462,7 +460,7 @@ public class BranchInstrumentorCCIntegrationTest {
 //    }
 //
 //    @Test
-//    public void shouldWrapExpressionCondition() {
+//    public void shouldWrapExpressionCondition() throws Exception {
 //        StringBuilder script = new StringBuilder("function test(x) {;\n");
 //        script.append("  x || (x = 0);\n");
 //        script.append("}\n");
@@ -474,7 +472,7 @@ public class BranchInstrumentorCCIntegrationTest {
 //    }
 //
 //    @Test
-//    public void shouldWrapAssignmentCondition() {
+//    public void shouldWrapAssignmentCondition() throws Exception {
 //        StringBuilder script = new StringBuilder("var x = true;\n");
 //        script.append("x = x === undefined;\n");
 //        runScript(script.toString(), false);
@@ -484,7 +482,7 @@ public class BranchInstrumentorCCIntegrationTest {
 //    }
 //
 //    @Test
-//    public void shouldWrapIfCondition() {
+//    public void shouldWrapIfCondition() throws Exception {
 //        StringBuilder script = new StringBuilder("var x = 1;\n");
 //        script.append("if (x > 0)\n");
 //        script.append("  x--;\n");
@@ -495,7 +493,7 @@ public class BranchInstrumentorCCIntegrationTest {
 //    }
 //
 //    @Test
-//    public void shouldWrapIfConditionVariable() {
+//    public void shouldWrapIfConditionVariable() throws Exception {
 //        StringBuilder script = new StringBuilder("var x = true;\n");
 //        script.append("if (x)\n");
 //        script.append("  x = false;\n");
@@ -506,7 +504,7 @@ public class BranchInstrumentorCCIntegrationTest {
 //    }
 //
 //    @Test
-//    public void shouldWrapWhileCondition() {
+//    public void shouldWrapWhileCondition() throws Exception {
 //        StringBuilder script = new StringBuilder("var x = 1;\n");
 //        script.append("while (x > 0)\n");
 //        script.append("  x--;\n");
@@ -517,7 +515,7 @@ public class BranchInstrumentorCCIntegrationTest {
 //    }
 //
 //    @Test
-//    public void shouldWrapWhileConditionVariable() {
+//    public void shouldWrapWhileConditionVariable() throws Exception {
 //        StringBuilder script = new StringBuilder("var x = true;\n");
 //        script.append("while (x)\n");
 //        script.append("  x = false;\n");
@@ -528,7 +526,7 @@ public class BranchInstrumentorCCIntegrationTest {
 //    }
 //
 //    @Test
-//    public void shouldNotBreakCommaCondition() {
+//    public void shouldNotBreakCommaCondition() throws Exception {
 //        StringBuilder script = new StringBuilder("if (true, false)\n");
 //        script.append("  ;\n");
 //        runScript(script.toString(), false);
@@ -538,7 +536,7 @@ public class BranchInstrumentorCCIntegrationTest {
 //    }
 //
 //    @Test
-//    public void shouldNotBreakCommaCondition2() {
+//    public void shouldNotBreakCommaCondition2() throws Exception {
 //        StringBuilder script = new StringBuilder("if (false, true)\n");
 //        script.append("  ;\n");
 //        runScript(script.toString(), false);
@@ -548,7 +546,7 @@ public class BranchInstrumentorCCIntegrationTest {
 //    }
 //
 //    @Test
-//    public void shouldWrapDoCondition() {
+//    public void shouldWrapDoCondition() throws Exception {
 //        StringBuilder script = new StringBuilder("var x = 1;\n");
 //        script.append("do\n");
 //        script.append("  x--;\n");
@@ -560,7 +558,7 @@ public class BranchInstrumentorCCIntegrationTest {
 //    }
 //
 //    @Test
-//    public void shouldWrapDoConditionVariable() {
+//    public void shouldWrapDoConditionVariable() throws Exception {
 //        StringBuilder script = new StringBuilder("var x = true;\n");
 //        script.append("do\n");
 //        script.append("  x = false;\n");
@@ -572,7 +570,7 @@ public class BranchInstrumentorCCIntegrationTest {
 //    }
 //
 //    @Test
-//    public void shouldWrapSwitchCondition() {
+//    public void shouldWrapSwitchCondition() throws Exception {
 //        StringBuilder script = new StringBuilder("  switch (null || 'd') {\n");
 //        script.append("    case 'd' : case 'D' :\n");
 //        script.append("      break;\n");
@@ -584,7 +582,7 @@ public class BranchInstrumentorCCIntegrationTest {
 //    }
 //
 //    @Test
-//    public void shouldWrapForCondition() {
+//    public void shouldWrapForCondition() throws Exception {
 //        StringBuilder script = new StringBuilder("for (var i = 0; i < 1; i++)\n");
 //        script.append("  ;\n");
 //        runScript(script.toString(), false);
@@ -594,7 +592,7 @@ public class BranchInstrumentorCCIntegrationTest {
 //    }
 //
 //    @Test
-//    public void shouldNotWrapInfiniteForCondition() {
+//    public void shouldNotWrapInfiniteForCondition() throws Exception {
 //        StringBuilder script = new StringBuilder("for (;;)\n");
 //        script.append("  break;\n");
 //        runScript(script.toString(), false);
@@ -602,7 +600,7 @@ public class BranchInstrumentorCCIntegrationTest {
 //    }
 //
 //    @Test
-//    public void shouldWrapForConditionVariable() {
+//    public void shouldWrapForConditionVariable() throws Exception {
 //        StringBuilder script = new StringBuilder("var x = true;\n");
 //        script.append("for (var i = 0; x; i++)\n");
 //        script.append("  x = false;\n");
@@ -613,7 +611,7 @@ public class BranchInstrumentorCCIntegrationTest {
 //    }
 //
 //    @Test
-//    public void shouldWrapTernaryCondition() {
+//    public void shouldWrapTernaryCondition() throws Exception {
 //        StringBuilder script = new StringBuilder("var x = 10;\n");
 //        script.append("var y = x > 0 ? 1 : 0;\n");
 //        runScript(script.toString(), false);
@@ -623,7 +621,7 @@ public class BranchInstrumentorCCIntegrationTest {
 //    }
 //
 //    @Test
-//    public void shouldWrapTernaryConditionWithParentheses() {
+//    public void shouldWrapTernaryConditionWithParentheses() throws Exception {
 //        StringBuilder script = new StringBuilder("var x = 10;\n");
 //        script.append("var y = (x > 0) ? 1 : 0;\n");
 //        runScript(script.toString(), false);
@@ -633,7 +631,7 @@ public class BranchInstrumentorCCIntegrationTest {
 //    }
 //
 //    @Test
-//    public void shouldWrapTernaryConditionVariable() {
+//    public void shouldWrapTernaryConditionVariable() throws Exception {
 //        StringBuilder script = new StringBuilder("var y = true;\n");
 //        script.append("var x = y ? 1 : 2;\n");
 //        runScript(script.toString(), false);
@@ -643,7 +641,7 @@ public class BranchInstrumentorCCIntegrationTest {
 //    }
 //
 //    @Test
-//    public void shouldWrapTernaryConditionParentheses() {
+//    public void shouldWrapTernaryConditionParentheses() throws Exception {
 //        StringBuilder script = new StringBuilder("var y = true;\n");
 //        script.append("var x = (y) ? 1 : 2;\n");
 //        runScript(script.toString(), false);
@@ -653,7 +651,7 @@ public class BranchInstrumentorCCIntegrationTest {
 //    }
 //
 //    @Test
-//    public void shouldWrapTernaryConditionArgument() {
+//    public void shouldWrapTernaryConditionArgument() throws Exception {
 //        StringBuilder script = new StringBuilder("var x = 10;\n");
 //        script.append("var y = x > 0 ? x > 100 : x < 100;\n");
 //        runScript(script.toString(), false);
@@ -669,7 +667,7 @@ public class BranchInstrumentorCCIntegrationTest {
 //    }
 //
 //    @Test
-//    public void shouldWrapFunctionCallCondition() {
+//    public void shouldWrapFunctionCallCondition() throws Exception {
 //        StringBuilder script = new StringBuilder("function test(x, y) {};\n");
 //        script.append("test(0, 1 > 0);\n");
 //        runScript(script.toString(), false);
@@ -679,7 +677,7 @@ public class BranchInstrumentorCCIntegrationTest {
 //    }
 //
 //    @Test
-//    public void shouldWrapNotOperatorCondition() {
+//    public void shouldWrapNotOperatorCondition() throws Exception {
 //        StringBuilder script = new StringBuilder("function test(x) {\n");
 //        script.append("  if (!x)\n");
 //        script.append("    ;\n");
@@ -692,7 +690,7 @@ public class BranchInstrumentorCCIntegrationTest {
 //    }
 //
 //    @Test
-//    public void shouldWrapFunctionCallConditionAsFirstArgument() {
+//    public void shouldWrapFunctionCallConditionAsFirstArgument() throws Exception {
 //        StringBuilder script = new StringBuilder("function test(x, y) {};\n");
 //        script.append("test(1 > 0, 0);\n");
 //        runScript(script.toString(), false);
@@ -702,7 +700,7 @@ public class BranchInstrumentorCCIntegrationTest {
 //    }
 //
 //    @Test
-//    public void shouldHandleTwoSeparateConditions() {
+//    public void shouldHandleTwoSeparateConditions() throws Exception {
 //        StringBuilder script = new StringBuilder("function test(x) {\n");
 //        script.append("  if (x < 0)\n");
 //        script.append("    ;\n");
@@ -719,19 +717,19 @@ public class BranchInstrumentorCCIntegrationTest {
 //        assertThat((Boolean) coveredFn1.call(context, scope, coverageData1, new Object[0]), equalTo(false));
 //        assertThat((Boolean) coveredFn2.call(context, scope, coverageData2, new Object[0]), equalTo(false));
 //
-//        testFn.call(context, scope, null, new ArrayList() {{
+//        testFn.call(context, scope, null, new ArrayList() throws Exception {{
 //            add(-1);
 //        }}.toArray());
 //        assertThat((Boolean) coveredFn1.call(context, scope, coverageData1, new Object[0]), equalTo(false));
 //        assertThat((Boolean) coveredFn2.call(context, scope, coverageData2, new Object[0]), equalTo(false));
 //
-//        testFn.call(context, scope, null, new ArrayList() {{
+//        testFn.call(context, scope, null, new ArrayList() throws Exception {{
 //            add(1);
 //        }}.toArray());
 //        assertThat((Boolean) coveredFn1.call(context, scope, coverageData1, new Object[0]), equalTo(true));
 //        assertThat((Boolean) coveredFn2.call(context, scope, coverageData2, new Object[0]), equalTo(false));
 //
-//        testFn.call(context, scope, null, new ArrayList() {{
+//        testFn.call(context, scope, null, new ArrayList() throws Exception {{
 //            add(1000);
 //        }}.toArray());
 //        assertThat((Boolean) coveredFn1.call(context, scope, coverageData1, new Object[0]), equalTo(true));
@@ -739,7 +737,7 @@ public class BranchInstrumentorCCIntegrationTest {
 //    }
 //
 //    @Test
-//    public void shouldHandleNestedConditions() {
+//    public void shouldHandleNestedConditions() throws Exception {
 //        StringBuilder script = new StringBuilder("function test(x, y) {\n");
 //        script.append("  if ((x < 0) && (y < 0))\n");
 //        script.append("    ;\n");
@@ -748,7 +746,7 @@ public class BranchInstrumentorCCIntegrationTest {
 //    }
 //
 //    @Test
-//    public void shouldHandleNestedConditionsWithoutBraces() {
+//    public void shouldHandleNestedConditionsWithoutBraces() throws Exception {
 //        StringBuilder script = new StringBuilder("function test(x, y) {\n");
 //        script.append("  if (x < 0 && y < 0)\n");
 //        script.append("    ;\n");
@@ -796,7 +794,7 @@ public class BranchInstrumentorCCIntegrationTest {
 //    }
 //
 //    @Test
-//    public void shouldHandleFunctionAsIfConditions() {
+//    public void shouldHandleFunctionAsIfConditions() throws Exception {
 //        StringBuilder script = new StringBuilder("function fn() { return true;}\n");
 //        script.append("  if (fn())\n");
 //        script.append("    ;\n");
@@ -808,7 +806,7 @@ public class BranchInstrumentorCCIntegrationTest {
 //    }
 //
 //    @Test
-//    public void shouldHandleVariableAsIfConditions() {
+//    public void shouldHandleVariableAsIfConditions() throws Exception {
 //        StringBuilder script = new StringBuilder("function test(x) {\n");
 //        script.append("  if (x)\n");
 //        script.append("    ;\n");
@@ -840,7 +838,7 @@ public class BranchInstrumentorCCIntegrationTest {
 //    }
 //
 //    @Test
-//    public void shouldHandleVariableInitializer() {
+//    public void shouldHandleVariableInitializer() throws Exception {
 //        StringBuilder script = new StringBuilder("function test(x) {\n");
 //        script.append("  var y = x < 0;\n");
 //        script.append("  return y;\n");
@@ -873,7 +871,7 @@ public class BranchInstrumentorCCIntegrationTest {
 
     private Object runScript(String script, boolean detectCoalesce) throws ScriptException {
         Node astRoot = parse(script);
-        //System.out.println(astRoot.toStringTree());
+        System.out.println(astRoot.toStringTree());
 
         BranchInstrumentorCC branchInstrumentor = new BranchInstrumentorCC("test.js", detectCoalesce, new CommentsHandlerCC(), script);
         branchInstrumentor.setAstRoot(astRoot);
