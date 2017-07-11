@@ -413,6 +413,7 @@ class NodeProcessorCC {
                 || node.isWhile()
                 || node.isDo()
                 || node.isForIn()
+                || node.isSwitch()
                 || node.isLet()) {
 //        if (node instanceof ExpressionStatement || node instanceof EmptyExpression || node instanceof Loop
 //                || node instanceof ContinueStatement || node instanceof VariableDeclaration || node instanceof LetNode

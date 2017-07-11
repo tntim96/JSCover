@@ -611,7 +611,6 @@ public class InstrumentCCAndHighlightRegressionTest {
     }
 
     @Test//https://bugzilla.mozilla.org/show_bug.cgi?id=788070
-    @Ignore
     public void shouldInstrumentSwitch() {
         testFile("javascript-switch.js");
     }
