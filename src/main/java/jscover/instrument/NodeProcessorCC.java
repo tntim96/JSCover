@@ -492,6 +492,8 @@ class NodeProcessorCC {
 //            addLoopScope(node, (Loop) parent);
         } else if (parent.isWith()) {
 //            addWithScope(node, (WithStatement) parent);
+        } else if (parent.isGetterDef()) {
+        } else if (parent.isSetterDef()) {
         } else {
             parent.addChildBefore(buildInstrumentationStatement(node.getLineno()), node);
         }

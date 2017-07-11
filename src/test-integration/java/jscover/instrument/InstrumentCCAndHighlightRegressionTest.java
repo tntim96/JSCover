@@ -503,9 +503,7 @@ public class InstrumentCCAndHighlightRegressionTest {
         testFile("javascript-generator-expression.js");
     }
 
-    @Test
-    //https://bugzilla.mozilla.org/show_bug.cgi?id=798642
-    @Ignore
+    @Test//https://bugzilla.mozilla.org/show_bug.cgi?id=798642
     public void shouldInstrumentGetterSetter() {
         testFile("javascript-getter-setter.js");
     }
@@ -542,7 +540,7 @@ public class InstrumentCCAndHighlightRegressionTest {
     }
 
     @Test//https://bugzilla.mozilla.org/show_bug.cgi?id=689314
-    @Ignore
+    @Ignore("Deprecated SpiderMonkey-specific")//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Expression_Closures
     public void shouldInstrumentLambda() {
         testFile("javascript-lambda.js");
     }
