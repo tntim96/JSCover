@@ -569,47 +569,47 @@ public class BranchInstrumentorCCIntegrationTest {
         assertThat(coverageData.get("evalFalse"), equalTo(1.0));
     }
 
-//    @Test
-//    public void shouldWrapSwitchCondition() throws Exception {
-//        StringBuilder script = new StringBuilder("  switch (null || 'd') {\n");
-//        script.append("    case 'd' : case 'D' :\n");
-//        script.append("      break;\n");
-//        script.append("}\n");
-//        runScript(script.toString(), false);
-//        Scriptable coverageData = getCoverageData(scope, "test.js", 1, 1);
-//        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
-//        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
-//    }
-//
-//    @Test
-//    public void shouldWrapForCondition() throws Exception {
-//        StringBuilder script = new StringBuilder("for (var i = 0; i < 1; i++)\n");
-//        script.append("  ;\n");
-//        runScript(script.toString(), false);
-//        Scriptable coverageData = getCoverageData(scope, "test.js", 1, 1);
-//        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
-//        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(1d));
-//    }
-//
-//    @Test
-//    public void shouldNotWrapInfiniteForCondition() throws Exception {
-//        StringBuilder script = new StringBuilder("for (;;)\n");
-//        script.append("  break;\n");
-//        runScript(script.toString(), false);
-//        assertThat(getBranchData(scope, "test.js").size(), equalTo(0));
-//    }
-//
-//    @Test
-//    public void shouldWrapForConditionVariable() throws Exception {
-//        StringBuilder script = new StringBuilder("var x = true;\n");
-//        script.append("for (var i = 0; x; i++)\n");
-//        script.append("  x = false;\n");
-//        runScript(script.toString(), false);
-//        Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
-//        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
-//        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(1d));
-//    }
-//
+    @Test
+    public void shouldWrapSwitchCondition() throws Exception {
+        StringBuilder script = new StringBuilder("  switch (null || 'd') {\n");
+        script.append("    case 'd' : case 'D' :\n");
+        script.append("      break;\n");
+        script.append("}\n");
+        runScript(script.toString(), false);
+        ScriptObjectMirror coverageData = (ScriptObjectMirror) engine.eval("_$jscoverage['test.js'].branchData[1][1]");
+        assertThat(coverageData.get("evalTrue"), equalTo(1.0));
+        assertThat(coverageData.get("evalFalse"), equalTo(0));
+    }
+
+    @Test
+    public void shouldWrapForCondition() throws Exception {
+        StringBuilder script = new StringBuilder("for (var i = 0; i < 1; i++)\n");
+        script.append("  ;\n");
+        runScript(script.toString(), false);
+        ScriptObjectMirror coverageData = (ScriptObjectMirror) engine.eval("_$jscoverage['test.js'].branchData[1][1]");
+        assertThat(coverageData.get("evalTrue"), equalTo(1.0));
+        assertThat(coverageData.get("evalFalse"), equalTo(1.0));
+    }
+
+    @Test
+    public void shouldNotWrapInfiniteForCondition() throws Exception {
+        StringBuilder script = new StringBuilder("for (;;)\n");
+        script.append("  break;\n");
+        runScript(script.toString(), false);
+        assertThat(((ScriptObjectMirror)engine.eval("_$jscoverage['test.js'].branchData")).isEmpty(), is(true));
+    }
+
+    @Test
+    public void shouldWrapForConditionVariable() throws Exception {
+        StringBuilder script = new StringBuilder("var x = true;\n");
+        script.append("for (var i = 0; x; i++)\n");
+        script.append("  x = false;\n");
+        runScript(script.toString(), false);
+        ScriptObjectMirror coverageData = (ScriptObjectMirror) engine.eval("_$jscoverage['test.js'].branchData[2][1]");
+        assertThat(coverageData.get("evalTrue"), equalTo(1.0));
+        assertThat(coverageData.get("evalFalse"), equalTo(1.0));
+    }
+
 //    @Test
 //    public void shouldWrapTernaryCondition() throws Exception {
 //        StringBuilder script = new StringBuilder("var x = 10;\n");

@@ -380,6 +380,9 @@ class BranchHelperCC {
 //        if (node.getParent() instanceof ConditionalExpression) {
 //            return ((ConditionalExpression)node.getParent()).getTestExpression() == node;
 //        }
+        if (parent.isVanillaFor()) {
+            return parent.getSecondChild() == node;
+        }
         if (parent.isWhile()) {
             return parent.getFirstChild() == node;
         }
