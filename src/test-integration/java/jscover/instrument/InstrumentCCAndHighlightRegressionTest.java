@@ -548,7 +548,6 @@ public class InstrumentCCAndHighlightRegressionTest {
     }
 
     @Test
-    @Ignore
     public void shouldInstrumentLet() {
         testFile("javascript-let.js");
     }
