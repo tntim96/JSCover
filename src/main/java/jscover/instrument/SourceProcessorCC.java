@@ -356,6 +356,8 @@ import jscover.util.IoUtils;
 
 import java.util.List;
 import java.util.SortedSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static com.google.javascript.jscomp.parsing.Config.JsDocParsing.INCLUDE_DESCRIPTIONS_WITH_WHITESPACE;
 import static com.google.javascript.jscomp.parsing.Config.RunMode.KEEP_GOING;
@@ -363,7 +365,7 @@ import static java.lang.String.format;
 
 //Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013
 class SourceProcessorCC {
-
+    private static final Logger logger = Logger.getLogger(SourceProcessorCC.class.getName());
     private static final String initLine = "  _$jscoverage['%s'].lineData[%d] = 0;\n";
 
 	// Function Coverage (HA-CA)
@@ -387,7 +389,7 @@ class SourceProcessorCC {
         this.uri = uri;
         this.source = source;
         this.instrumenter = new ParseTreeInstrumenterCC(uri, config.isIncludeFunction(), commentsVisitor);
-        this.branchInstrumentor = new BranchInstrumentorCC(uri, config.isDetectCoalesce(), commentsVisitor, source);
+        this.branchInstrumentor = new BranchInstrumentorCC(uri, config.isDetectCoalesce(), commentsVisitor);
         this.config = ParserRunner.createConfig(config.getECMAVersion(), INCLUDE_DESCRIPTIONS_WITH_WHITESPACE, KEEP_GOING, null, false, Config.StrictMode.SLOPPY);
         this.options.setPreferSingleQuotes(true);
         this.options.setPrettyPrint(true);
@@ -469,17 +471,16 @@ class SourceProcessorCC {
         NodeWalker nodeWalker = new NodeWalker();
         nodeWalker.visit(jsRoot, instrumenter);
         if (includeBranchCoverage) {
-//            int parses = 0;
-//            while (++parses <= 10000) {
-////            log.log(Level.FINEST, "Condition parse number {0}", parses);
-//                int conditions = branchInstrumentor.getLineConditionMap().size();
-//                nodeWalker.visit(jsRoot, branchInstrumentor);
-//                if (conditions == branchInstrumentor.getLineConditionMap().size()) {
-//                    //log.log(Level.FINE, "No branchInstrumentor condition changes after parse {0}", parses);
-//                    break;
-//                }
-//            }
-            nodeWalker.visit(jsRoot, branchInstrumentor);
+            int parses = 0;
+            while (++parses <= 1000000) {
+                logger.log(Level.FINEST, "Condition parse number {0}", parses);
+                int conditions = branchInstrumentor.getFunctionWrapperCount();
+                nodeWalker.visit(jsRoot, branchInstrumentor);
+                if (conditions == branchInstrumentor.getFunctionWrapperCount()) {
+                    logger.log(Level.FINE, "No branchInstrumentor condition changes after parse {0}", parses);
+                    break;
+                }
+            }
         }
         return new CodePrinter.Builder(jsRoot).setCompilerOptions(options).build();
     }

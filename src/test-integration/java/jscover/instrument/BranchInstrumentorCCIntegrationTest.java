@@ -349,7 +349,6 @@ import com.google.javascript.jscomp.parsing.ParserRunner;
 import com.google.javascript.rhino.Node;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import jscover.util.IoUtils;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.script.Invocable;
@@ -728,63 +727,50 @@ public class BranchInstrumentorCCIntegrationTest {
         assertThat(coverageData2.callMember("covered"), equalTo(true));
     }
 
-//    @Test
-//    public void shouldHandleNestedConditions() throws Exception {
-//        StringBuilder script = new StringBuilder("function test(x, y) {\n");
-//        script.append("  if ((x < 0) && (y < 0))\n");
-//        script.append("    ;\n");
-//        script.append("};\n");
-//        testNestedScript(script);
-//    }
-//
-//    @Test
-//    public void shouldHandleNestedConditionsWithoutBraces() throws Exception {
-//        StringBuilder script = new StringBuilder("function test(x, y) {\n");
-//        script.append("  if (x < 0 && y < 0)\n");
-//        script.append("    ;\n");
-//        script.append("};\n");
-//        testNestedScript(script);
-//    }
-//
-//    private void testNestedScript(StringBuilder script) {
-//        runScript(script.toString(), false);
-//        Scriptable coverageData1 = getCoverageData(scope, "test.js", 2, 1);
-//        Scriptable coverageData2 = getCoverageData(scope, "test.js", 2, 2);
-//        Scriptable coverageData3 = getCoverageData(scope, "test.js", 2, 3);
-//        Function coveredFn1 = (Function) ScriptableObject.getProperty(coverageData1, "covered");
-//        Function coveredFn2 = (Function) ScriptableObject.getProperty(coverageData2, "covered");
-//        Function coveredFn3 = (Function) ScriptableObject.getProperty(coverageData3, "covered");
-//        Function testFn = (Function) scope.get("test", scope);
-//
-//        assertThat((Boolean) coveredFn1.call(context, scope, coverageData1, new Object[0]), equalTo(false));
-//        assertThat((Boolean) coveredFn2.call(context, scope, coverageData2, new Object[0]), equalTo(false));
-//        assertThat((Boolean) coveredFn2.call(context, scope, coverageData3, new Object[0]), equalTo(false));
-//
-//        testFn.call(context, scope, null, new ArrayList() {{
-//            add(-1);
-//            add(-1);
-//        }}.toArray());
-//        assertThat((Boolean) coveredFn1.call(context, scope, coverageData1, new Object[0]), equalTo(false));
-//        assertThat((Boolean) coveredFn2.call(context, scope, coverageData2, new Object[0]), equalTo(false));
-//        assertThat((Boolean) coveredFn3.call(context, scope, coverageData3, new Object[0]), equalTo(false));
-//
-//        testFn.call(context, scope, null, new ArrayList() {{
-//            add(1);
-//            add(-1);
-//        }}.toArray());
-//        assertThat((Boolean) coveredFn1.call(context, scope, coverageData1, new Object[0]), equalTo(true));
-//        assertThat((Boolean) coveredFn2.call(context, scope, coverageData2, new Object[0]), equalTo(true));
-//        assertThat((Boolean) coveredFn3.call(context, scope, coverageData3, new Object[0]), equalTo(false));
-//
-//        testFn.call(context, scope, null, new ArrayList() {{
-//            add(-1);
-//            add(1);
-//        }}.toArray());
-//        assertThat((Boolean) coveredFn1.call(context, scope, coverageData1, new Object[0]), equalTo(true));
-//        assertThat((Boolean) coveredFn2.call(context, scope, coverageData2, new Object[0]), equalTo(true));
-//        assertThat((Boolean) coveredFn3.call(context, scope, coverageData3, new Object[0]), equalTo(true));
-//    }
-//
+    @Test
+    public void shouldHandleNestedConditions() throws Exception {
+        StringBuilder script = new StringBuilder("function test(x, y) {\n");
+        script.append("  if ((x < 0) && (y <= 0))\n");
+        script.append("    ;\n");
+        script.append("};\n");
+        testNestedScript(script);
+    }
+
+    @Test
+    public void shouldHandleNestedConditionsWithoutBraces() throws Exception {
+        StringBuilder script = new StringBuilder("function test(x, y) {\n");
+        script.append("  if (x < 0 && y <= 0)\n");
+        script.append("    ;\n");
+        script.append("};\n");
+        testNestedScript(script);
+    }
+
+    private void testNestedScript(StringBuilder script) throws Exception {
+        runScript(script.toString(), false);
+        ScriptObjectMirror coverageData1 = (ScriptObjectMirror) engine.eval("_$jscoverage['test.js'].branchData[2][1]");
+        ScriptObjectMirror coverageData2 = (ScriptObjectMirror) engine.eval("_$jscoverage['test.js'].branchData[2][2]");
+        ScriptObjectMirror coverageData3 = (ScriptObjectMirror) engine.eval("_$jscoverage['test.js'].branchData[2][3]");
+
+        assertThat(coverageData1.callMember("covered"), equalTo(false));
+        assertThat(coverageData2.callMember("covered"), equalTo(false));
+        assertThat(coverageData3.callMember("covered"), equalTo(false));
+
+        invocable.invokeFunction("test", -1, -1);
+        assertThat(coverageData1.callMember("covered"), equalTo(false));
+        assertThat(coverageData2.callMember("covered"), equalTo(false));
+        assertThat(coverageData3.callMember("covered"), equalTo(false));
+
+        invocable.invokeFunction("test", 1, -1);
+        assertThat(coverageData1.callMember("covered"), equalTo(true));
+        assertThat(coverageData2.callMember("covered"), equalTo(true));
+        assertThat(coverageData3.callMember("covered"), equalTo(false));
+
+        invocable.invokeFunction("test", -1, 1);
+        assertThat(coverageData1.callMember("covered"), equalTo(true));
+        assertThat(coverageData2.callMember("covered"), equalTo(true));
+        assertThat(coverageData3.callMember("covered"), equalTo(true));
+    }
+
     @Test
     public void shouldHandleFunctionAsIfConditions() throws Exception {
         StringBuilder script = new StringBuilder("function fn() { return true;}\n");
@@ -864,22 +850,23 @@ public class BranchInstrumentorCCIntegrationTest {
         Node astRoot = parse(script);
         System.out.println(astRoot.toStringTree());
 
-        BranchInstrumentorCC branchInstrumentor = new BranchInstrumentorCC("test.js", detectCoalesce, new CommentsHandlerCC(), script);
+        BranchInstrumentorCC branchInstrumentor = new BranchInstrumentorCC("test.js", detectCoalesce, new CommentsHandlerCC());
         branchInstrumentor.setAstRoot(astRoot);
         NodeWalker nodeWalker = new NodeWalker();
-//        int parses = 0;
-//        while (++parses <= 10000) {
-////            log.log(Level.FINEST, "Condition parse number {0}", parses);
-//            int conditions = branchInstrumentor.getLineConditionMap().size();
+        int parses = 0;
+        while (++parses <= 100) {
+//            log.log(Level.FINEST, "Condition parse number {0}", parses);
+            int conditions = branchInstrumentor.getFunctionWrapperCount();
 //            nodeWalker.visit(astRoot, branchInstrumentor);
-//            System.out.println(parses + " astRoot.toStringTree\n" + astRoot.toStringTree());
-//            if (conditions == branchInstrumentor.getLineConditionMap().size()) {
-//                //log.log(Level.FINE, "No branchInstrumentor condition changes after parse {0}", parses);
-//                break;
-//            }
-//        }
+            nodeWalker.visitAndExitOnAstChange(astRoot, branchInstrumentor);
+            System.out.println(parses + " astRoot.toStringTree\n" + astRoot.toStringTree());
+            if (conditions == branchInstrumentor.getFunctionWrapperCount()) {
+                //log.log(Level.FINE, "No branchInstrumentor condition changes after parse {0}", parses);
+                break;
+            }
+        }
 
-        nodeWalker.visit(astRoot, branchInstrumentor);
+//        nodeWalker.visit(astRoot, branchInstrumentor);
         branchInstrumentor.postProcess();
 
 //        context = Context.enter();

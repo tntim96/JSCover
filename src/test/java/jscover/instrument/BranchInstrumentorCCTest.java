@@ -358,7 +358,7 @@ import static org.hamcrest.Matchers.equalTo;
 
 public class BranchInstrumentorCCTest {
     private BranchInstrumentorCC getBranchInstrumentor(String source) {
-        return new BranchInstrumentorCC("/test.js", false, null, source);
+        return new BranchInstrumentorCC("/test.js", false, null);
     }
 
     static Node parse(String source) {

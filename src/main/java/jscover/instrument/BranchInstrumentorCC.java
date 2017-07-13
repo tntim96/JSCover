@@ -361,15 +361,14 @@ public class BranchInstrumentorCC implements NodeVisitorCC {
     private BranchHelperCC branchHelper = BranchHelperCC.getInstance();
     private Set<PostProcessCC> postProcesses = new HashSet<PostProcessCC>();
     private String uri;
-    private String source;
     private boolean detectCoalesce;
     private CommentsHandlerCC commentsHandlerCC;
     private Node astRoot;
     private SortedMap<Integer, SortedSet<Integer>> lineConditionMap = new TreeMap<Integer, SortedSet<Integer>>();
+    private int functionWrapperCount = 0;
 
-    public BranchInstrumentorCC(String uri, boolean detectCoalesce, CommentsHandlerCC commentsHandlerCC, String source) {
+    public BranchInstrumentorCC(String uri, boolean detectCoalesce, CommentsHandlerCC commentsHandlerCC) {
         this.uri = uri;
-        this.source = source;
         this.detectCoalesce = detectCoalesce;
         this.commentsHandlerCC = commentsHandlerCC;
     }
@@ -387,8 +386,11 @@ public class BranchInstrumentorCC implements NodeVisitorCC {
             postProcess.process();
     }
 
-    private void replaceWithFunction(Node node) {
+    private boolean replaceWithFunction(Node node) {
         Node parent = node.getParent();
+        if (isInstrumented(node) || isInstrumented(parent)) {
+            return false;
+        }
 
         Integer conditionId = 1;
         SortedSet<Integer> conditions = lineConditionMap.get(node.getLineno());
@@ -408,7 +410,10 @@ public class BranchInstrumentorCC implements NodeVisitorCC {
         astRoot.addChildToFront(conditionArrayDeclaration);
 
         Node functionCall = IR.call(IR.name(functionNode.getFirstChild().getString()), node.cloneTree());
+        functionCall.setChangeTime(-1);
+        functionWrapperCount++;
 //        Node functionCall = IR.call(functionNode.getFirstChild().cloneNode(), node.cloneTree());
+
         if (parent.isIf() && node == parent.getFirstChild()) {
             parent.replaceChild(node, functionCall);
 //        } else if (parent instanceof ParenthesizedExpression) {
@@ -420,6 +425,8 @@ public class BranchInstrumentorCC implements NodeVisitorCC {
 //            else
 //                infixExpression.setRight(functionCall);
         } else if (parent.isCall()) {
+            parent.replaceChild(node, functionCall);
+        } else if (parent.isAnd() || parent.isOr() || parent.isNot()) {
             parent.replaceChild(node, functionCall);
         } else if (parent.isReturn()) {
             parent.replaceChild(node, functionCall);
@@ -470,14 +477,19 @@ public class BranchInstrumentorCC implements NodeVisitorCC {
         } else {
             logger.log(SEVERE, format("Couldn't insert wrapper for parent %s, file: %s, line: %d, position: %d, source: %s", parent, uri, node.getLineno(), node.getCharno(), "TODO"));
         }
+        return true;
+    }
+
+    private boolean isInstrumented(Node node) {
+        return node.isCall() && node.getChangeTime() < 0;
     }
 
     public boolean visit(Node node) {
         if (node.getLineno() > 0 && !commentsHandlerCC.ignoreBranch(node.getLineno())
                 && branchHelper.isBoolean(node) && !(detectCoalesce && branchHelper.isCoalesce(node))) {
-            replaceWithFunction(node);
+            return replaceWithFunction(node);
         }
-        return true;
+        return false;
     }
 
     public int getLinePosition(Node node) {
@@ -497,4 +509,7 @@ public class BranchInstrumentorCC implements NodeVisitorCC {
         return sb.toString();
     }
 
+    public int getFunctionWrapperCount() {
+        return functionWrapperCount;
+    }
 }
