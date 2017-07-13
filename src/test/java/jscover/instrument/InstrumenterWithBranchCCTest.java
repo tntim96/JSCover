@@ -342,202 +342,64 @@ Public License instead of this License.
 
 package jscover.instrument;
 
-import com.google.javascript.jscomp.CodePrinter;
-import com.google.javascript.jscomp.CompilerOptions;
-import com.google.javascript.jscomp.SourceFile;
 import com.google.javascript.jscomp.parsing.Config;
-import com.google.javascript.jscomp.parsing.ParserRunner;
-import com.google.javascript.jscomp.parsing.parser.LineNumberTable;
-import com.google.javascript.rhino.ErrorReporter;
-import com.google.javascript.rhino.Node;
-import com.google.javascript.rhino.StaticSourceFile;
 import jscover.ConfigurationCommon;
-import jscover.util.IoUtils;
+import jscover.util.ReflectionUtils;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.mozilla.javascript.CompilerEnvirons;
+import org.mozilla.javascript.Context;
 
-import java.util.List;
-import java.util.SortedSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.BDDMockito.given;
 
-import static com.google.javascript.jscomp.parsing.Config.JsDocParsing.INCLUDE_DESCRIPTIONS_WITH_WHITESPACE;
-import static com.google.javascript.jscomp.parsing.Config.RunMode.KEEP_GOING;
-import static java.lang.String.format;
+@RunWith(MockitoJUnitRunner.class)
+public class InstrumenterWithBranchCCTest {
 
-//Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013
-class SourceProcessorCC {
-    private static final Logger logger = Logger.getLogger(SourceProcessorCC.class.getName());
-    private static final String initLine = "  _$jscoverage['%s'].lineData[%d] = 0;\n";
-
-	// Function Coverage (HA-CA)
-    private static final String initFunction = "  _$jscoverage['%s'].functionData[%d] = 0;\n";
-    private static final String ignoreJS = "\nif (!(%s)) {\n  _$jscoverage['%s'].conditionals[%d] = %d;\n}";
-
-    private String uri;
-    private String source;
-    private CommentsHandlerCC commentsVisitor = new CommentsHandlerCC();
+    @Mock private ConfigurationCommon config;
+    private SourceProcessorCC sourceProcessor;
     private ParseTreeInstrumenterCC instrumenter;
-    private BranchInstrumentorCC branchInstrumentor;
-    private Config config;
-    private CompilerOptions options = new CompilerOptions();
-    private IoUtils ioUtils = IoUtils.getInstance();
-    private boolean includeBranchCoverage;
-    private boolean includeFunctionCoverage;
-    private boolean localStorage;
-    private boolean isolateBrowser;
 
-    public SourceProcessorCC(ConfigurationCommon config, String uri, String source) {
-        this.uri = uri;
-        this.source = source;
-        this.instrumenter = new ParseTreeInstrumenterCC(uri, config.isIncludeFunction(), commentsVisitor);
-        this.branchInstrumentor = new BranchInstrumentorCC(uri, config.isDetectCoalesce(), commentsVisitor);
-        this.config = ParserRunner.createConfig(config.getECMAVersion(), INCLUDE_DESCRIPTIONS_WITH_WHITESPACE, KEEP_GOING, null, false, Config.StrictMode.SLOPPY);
-        this.options.setPreferSingleQuotes(true);
-        this.options.setPrettyPrint(true);
-        this.includeBranchCoverage = config.isIncludeBranch();
-        this.includeFunctionCoverage = config.isIncludeFunction();
-        this.localStorage = config.isLocalStorage();
-        this.isolateBrowser = config.isolateBrowser();
+    @Before
+    public void setUp() {
+        given(config.getECMAVersion()).willReturn(Config.LanguageMode.ECMASCRIPT8);
+        given(config.isIncludeBranch()).willReturn(true);
+        given(config.isIncludeFunction()).willReturn(true);
+        sourceProcessor = new SourceProcessorCC(config, "test.js", "x;");
+        instrumenter = (ParseTreeInstrumenterCC)ReflectionUtils.getField(sourceProcessor, "instrumenter");
     }
 
-    ParseTreeInstrumenterCC getInstrumenter() {
-        return instrumenter;
+    @Test
+    public void shouldInstrumentBranch() {
+        String source = "var x = x || 7;" ;
+        sourceProcessor = new SourceProcessorCC(config, "test.js", source);
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].branchData['1'][1].init(8, 6);\n" +
+                "function visit1_1_1(result) {\n" +
+                "  _$jscoverage['test.js'].branchData['1'][1].ranCondition(result);\n" +
+                "  return result;\n" +
+                "}\n" +
+                "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "var x = visit1_1_1(x || 7);\n";
+        assertEquals(expectedSource, instrumentedSource);
     }
 
-    BranchInstrumentorCC getBranchInstrumentor() {
-        return branchInstrumentor;
+    @Test
+    public void shouldInstrumentIgnoringBranch() {
+        String source = "var x = x || 7;" + CommentsVisitor.EXCL_BR_LINE;
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\nvar x = x || 7;\n";
+        assertEquals(expectedSource, instrumentedSource);
     }
 
-    public String processSourceForServer() {
-        String reportJS = ioUtils.loadFromClassPath("/report.js");
-        return reportJS + processSource();
-    }
-
-    public String processSourceForFileSystem() {
-        return processSource();
-    }
-
-    protected String processSource() {
-        String headerJS = getIsolateBrowserJS() + ioUtils.loadFromClassPath("/header.js");
-        String localStorageJS = localStorage ? ioUtils.loadFromClassPath("/jscoverage-localstorage.js") : "";
-        String commonJS = ioUtils.loadFromClassPath("/jscoverage-common.js");
-        String branchJS = ioUtils.loadFromClassPath("/jscoverage-branch.js");
-        return branchJS + commonJS + localStorageJS + headerJS + processSourceWithoutHeader(uri, source);
-    }
-
-    private String getIsolateBrowserJS() {
-        return "var jsCover_isolateBrowser = " + (isolateBrowser ? "true" : "false") + ";\n";
-    }
-
-    protected String processSourceWithoutHeader() {
-        return processSourceWithoutHeader(uri, source);
-    }
-
-    protected String processSourceWithoutHeader(String sourceURI, String source) {
-        String instrumentedSource = instrumentSource(sourceURI, source);
-
-        String jsLineInitialization = getJsLineInitialization(uri, instrumenter.getValidLines());
-        if (commentsVisitor.getJsCoverageIgnoreComments().size() > 0)
-            jsLineInitialization += format("_$jscoverage['%s'].conditionals = [];\n", uri);
-
-        if (includeFunctionCoverage)
-            jsLineInitialization += getJsFunctionInitialization(uri, instrumenter.getNumFunctions());
-
-        if (includeBranchCoverage)
-            jsLineInitialization += branchInstrumentor.getJsLineInitialization();
-
-        String jsConditionals = getJsConditionals(uri, commentsVisitor.getJsCoverageIgnoreComments());
-
-        return jsLineInitialization + instrumentedSource + jsConditionals;
-    }
-
-    protected String instrumentSource() {
-        return instrumentSource(uri, source);
-    }
-
-    /* This should only be called from tests */
-    protected String instrumentSource(String source) {
-        return instrumentSource(uri, source);
-    }
-
-    protected String instrumentSource(String sourceURI, String source) {
-        SourceFile sourceFile = SourceFile.fromCode(sourceURI, source);
-        com.google.javascript.jscomp.parsing.parser.SourceFile sf = new com.google.javascript.jscomp.parsing.parser.SourceFile(sourceURI, source);
-        LineNumberTable lineNumberTable = new LineNumberTable(sf);
-        ParserRunner.ParseResult parsed = parse(source, sourceFile);
-        Node jsRoot = parsed.ast;
-        //System.out.println("jsRoot.toStringTree():\n" + jsRoot.toStringTree());
-        commentsVisitor.processComments(parsed.comments);
-
-        NodeWalker nodeWalker = new NodeWalker();
-        nodeWalker.visit(jsRoot, instrumenter);
-        if (includeBranchCoverage) {
-            branchInstrumentor.setAstRoot(jsRoot);
-            int parses = 0;
-            while (++parses <= 1000000) {
-                logger.log(Level.FINEST, "Condition parse number {0}", parses);
-                int conditions = branchInstrumentor.getFunctionWrapperCount();
-                nodeWalker.visit(jsRoot, branchInstrumentor);
-                if (conditions == branchInstrumentor.getFunctionWrapperCount()) {
-                    logger.log(Level.FINE, "No branchInstrumentor condition changes after parse {0}", parses);
-                    break;
-                }
-            }
-        }
-        return new CodePrinter.Builder(jsRoot).setCompilerOptions(options).build();
-    }
-
-
-    private ParserRunner.ParseResult parse(String source, StaticSourceFile sourceFile) {
-        ErrorReporter errorReporter = new ErrorReporter(){
-            @Override
-            public void warning(String message, String sourceName, int line, int lineOffset) {
-                //System.err.println(format("Warn: %s, sourceName: %s, line: %d lineOffset: %d", message, sourceName, line, lineOffset));
-            }
-
-            @Override
-            public void error(String message, String sourceName, int line, int lineOffset) {
-                //System.err.println(format("Error: %s, sourceName: %s, line: %d, lineOffset: %d", message, sourceName, line, lineOffset));
-            }
-        };
-        ParserRunner.ParseResult parseResult = ParserRunner.parse(
-                sourceFile,
-                source,
-                config,
-                errorReporter);
-        return parseResult;
-    }
-
-
-    protected String getJsLineInitialization(String fileName, SortedSet<Integer> validLines) {
-        fileName = fileName.replace("\\", "\\\\").replace("'", "\\'");
-        StringBuilder sb = new StringBuilder(format("if (! _$jscoverage['%s']) {\n", fileName));
-        sb.append(format("  _$jscoverage['%s'] = {};\n", fileName));
-        sb.append(format("  _$jscoverage['%s'].lineData = [];\n", fileName));
-        for (Integer line : validLines) {
-            sb.append(format(initLine, fileName, line));
-        }
-        sb.append("}\n");
-        return sb.toString();
-    }
-
-	// Function Coverage (HA-CA)
-    protected String getJsFunctionInitialization(String fileName, int numFunction) {
-        fileName = fileName.replace("\\", "\\\\").replace("'", "\\'");
-        StringBuilder sb = new StringBuilder(format("if (! _$jscoverage['%s'].functionData) {\n", fileName));
-        sb.append(format("  _$jscoverage['%s'].functionData = [];\n", fileName));
-        for ( int i = 0; i < numFunction; ++i) {
-            sb.append(format(initFunction, fileName, i));
-        }
-        sb.append("}\n");
-        return sb.toString();
-    }
-
-    private String getJsConditionals(String fileName, List<JSCoverageIgnoreComment> ignores) {
-        fileName = fileName.replace("\\", "\\\\").replace("'", "\\'");
-        StringBuilder sb = new StringBuilder();
-        for (JSCoverageIgnoreComment ignore : ignores) {
-            sb.append(format(ignoreJS, ignore.getCondition(), fileName, ignore.getStart(), ignore.getEnd()));
-        }
-        return sb.toString();
+    @Test
+    public void shouldInstrumentIgnoringBranches() {
+        String source = CommentsVisitor.EXCL_BR_START + "\nvar x = x || 7;" + CommentsVisitor.EXCL_BR_STOP;
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[2]++;\nvar x = x || 7;\n";
+        assertEquals(expectedSource, instrumentedSource);
     }
 }
