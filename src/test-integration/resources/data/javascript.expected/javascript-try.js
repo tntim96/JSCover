@@ -36,7 +36,7 @@ _$jscoverage['javascript-try.js'].lineData[10]++;
 try {
   _$jscoverage['javascript-try.js'].lineData[11]++;
   f();
-}catch (e if e instanceof E) {
+}catch (e) {
   _$jscoverage['javascript-try.js'].lineData[14]++;
   f();
 }

@@ -338,246 +338,374 @@ proprietary programs.  If your program is a subroutine library, you may
 consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
- */
+*/
 
-package jscover;
+package jscover.instrument;
 
+import com.google.javascript.jscomp.CodePrinter;
+import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.parsing.Config;
+import com.google.javascript.jscomp.parsing.ParserRunner;
+import com.google.javascript.rhino.Node;
+import com.google.javascript.rhino.SimpleErrorReporter;
+import com.google.javascript.rhino.SimpleSourceFile;
+import jscover.ConfigurationCommon;
 import jscover.util.IoUtils;
-import jscover.util.PatternMatcher;
-import jscover.util.PatternMatcherRegEx;
-import jscover.util.PatternMatcherString;
-import org.mozilla.javascript.CompilerEnvirons;
-import org.mozilla.javascript.Context;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.regex.PatternSyntaxException;
+import java.io.File;
+import java.io.FilenameFilter;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
-import static java.lang.String.format;
-import static java.util.logging.Level.SEVERE;
-import static jscover.Main.HELP_PREFIX1;
-import static jscover.Main.HELP_PREFIX2;
+import static com.google.javascript.jscomp.parsing.Config.JsDocParsing.TYPES_ONLY;
+import static com.google.javascript.jscomp.parsing.Config.LanguageMode.ECMASCRIPT8;
+import static com.google.javascript.jscomp.parsing.Config.RunMode.KEEP_GOING;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.BDDMockito.given;
 
-public class ConfigurationCommon extends Configuration {
-    private static final Logger logger = Logger.getLogger(ConfigurationCommon.class.getName());
-    public static final String ONLY_INSTRUMENT_REG_PREFIX = "--only-instrument-reg=";
-    public static final String NO_INSTRUMENT_PREFIX = "--no-instrument=";
-    public static final String NO_INSTRUMENT_REG_PREFIX = "--no-instrument-reg=";
-    public static final String INCLUDE_UNLOADED_JS_PREFIX = "--include-unloaded-js";
-    public static final String JS_VERSION_PREFIX = "--js-version=";
-    public static final String ECMA_VERSION_PREFIX = "--ecma-version=";
-    public static final String NO_BRANCH_PREFIX = "--no-branch";
-    public static final String DETECT_COALESCE_PREFIX = "--detect-coalesce";
-    public static final String NO_FUNCTION_PREFIX = "--no-function";
-    public static final String LOCAL_STORAGE_PREFIX = "--local-storage";
-    public static final String ISOLATE_BROWSER_PREFIX = "--isolate-browser";
-    public static final String LOG_LEVEL = "--log=";
+@RunWith(MockitoJUnitRunner.class)
+public class InstrumentCCAndHighlightRegressionTest {
+    private static Set<String> tested = new HashSet<>();
+    private static Map<String, String> allTests = new HashMap<>();
+    private static Config parserConfig = ParserRunner.createConfig(ECMASCRIPT8, TYPES_ONLY, KEEP_GOING, null, false, Config.StrictMode.SLOPPY);
 
-    protected boolean showHelp;
-    protected boolean invalid;
-    protected boolean includeBranch = true;
-    protected boolean detectCoalesce;
-    protected boolean includeFunction = true;
-    protected boolean localStorage;
-    protected boolean isolateBrowser;
-    protected final List<PatternMatcher> patternMatchers = new ArrayList<PatternMatcher>();
-    private boolean includeUnloadedJS;
-    protected int JSVersion = Context.VERSION_1_5;
-    protected Config.LanguageMode ECMAVersion = Config.LanguageMode.ECMASCRIPT8;
-    protected CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
-    protected boolean defaultSkip;
-    protected IoUtils ioUtils = IoUtils.getInstance();
-    protected Level logLevel = SEVERE;
+    private IoUtils ioUtils = IoUtils.getInstance();
+    private CompilerOptions options = new CompilerOptions();
+    @Mock private ConfigurationCommon config;
 
-    {
-        compilerEnvirons.setRecordingComments(true);
+    @Before
+    public void setUp() {
+        given(config.getECMAVersion()).willReturn(ECMASCRIPT8);
+        given(config.isIncludeBranch()).willReturn(false);
+        given(config.isIncludeFunction()).willReturn(true);
+        options.setPreferSingleQuotes(true);
+        options.setPrettyPrint(true);
+        options.setLanguage(CompilerOptions.LanguageMode.ECMASCRIPT_NEXT);
     }
 
-    public void setIncludeBranch(boolean includeBranch) {
-        this.includeBranch = includeBranch;
-    }
-
-    public void setDetectCoalesce(boolean detectCoalesce) {
-        this.detectCoalesce = detectCoalesce;
-    }
-
-    public void setIncludeFunction(boolean includeFunction) {
-        this.includeFunction = includeFunction;
-    }
-
-    public void setLocalStorage(boolean localStorage) {
-        this.localStorage = localStorage;
-    }
-
-    public void setIncludeUnloadedJS(boolean includeUnloadedJS) {
-        this.includeUnloadedJS = includeUnloadedJS;
-    }
-
-    public void setIsolateBrowser(boolean isolateBrowser) {
-        this.isolateBrowser = isolateBrowser;
-    }
-
-    public void setJSVersion(int JSVersion) {
-        this.JSVersion = JSVersion;
-    }
-
-    public void setECMAVersion(Config.LanguageMode ECMAVersion) {
-        this.ECMAVersion = ECMAVersion;
-    }
-
-    public Boolean showHelp() {
-        return showHelp;
-    }
-
-    public boolean isInvalid() {
-        return invalid;
-    }
-
-    public boolean isIncludeUnloadedJS() {
-        return includeUnloadedJS;
-    }
-
-    public boolean isIncludeBranch() {
-        return includeBranch;
-    }
-
-    public boolean isDetectCoalesce() {
-        return detectCoalesce;
-    }
-
-    public boolean isIncludeFunction() {
-        return includeFunction;
-    }
-
-    public boolean isLocalStorage() {
-        return localStorage;
-    }
-
-    public boolean isolateBrowser() {
-        return isolateBrowser;
-    }
-
-    public int getJSVersion() {
-        return JSVersion;
-    }
-
-    public Config.LanguageMode getECMAVersion() {
-        return ECMAVersion;
-    }
-
-    public CompilerEnvirons getCompilerEnvirons() {
-        return compilerEnvirons;
-    }
-
-    public Level getLogLevel() {
-        return logLevel;
-    }
-
-    public boolean skipInstrumentation(String uri) {
-        for (PatternMatcher patternMatcher : patternMatchers) {
-            Boolean instrumentIt = patternMatcher.matches(uri);
-            if (instrumentIt != null) {
-                logger.log(Level.FINEST, "Matched URI ''{0}'' Pattern ''{1}'' Skip {2}", new Object[]{uri, patternMatcher, instrumentIt});
-                return instrumentIt;
+    @AfterClass
+    public static void afterClass() {
+        for (String testName : allTests.keySet()) {
+            if (!tested.contains(testName)) {
+                System.out.println(allTests.get(testName) + " " + testName);
             }
         }
-        return defaultSkip;
     }
 
-    protected void setInvalid(String message) {
-        System.err.println(message);
-        showHelp = true;
-        invalid = true;
+    @Test
+    public void shouldInstrumentArray() {
+        testFile("javascript-array-comprehension.js");
     }
 
-    public void addNoInstrument(String arg) {
-        String uri = arg.substring(NO_INSTRUMENT_PREFIX.length());
-        if (uri.startsWith("/"))
-            uri = uri.substring(1);
-        patternMatchers.add(new PatternMatcherString(uri));
+    @Test
+    public void shouldInstrumentAssign() {
+        testFile("javascript-assign.js");
     }
 
-    public void addOnlyInstrumentReg(String arg) {
-        String patternString = arg.substring(ONLY_INSTRUMENT_REG_PREFIX.length());
-        if (patternString.startsWith("/"))
-            patternString = patternString.substring(1);
-        defaultSkip = true;
-        try {
-            patternMatchers.add(PatternMatcherRegEx.getIncludePatternMatcher(patternString));
-        } catch (PatternSyntaxException e) {
-            setInvalid(format("Invalid pattern '%s'", patternString));
-            e.printStackTrace(System.err);
-        }
+    @Test
+    public void shouldInstrumentColon() {
+        testFile("javascript-colon.js");
     }
 
-    public void addNoInstrumentReg(String arg) {
-        String patternString = arg.substring(NO_INSTRUMENT_REG_PREFIX.length());
-        if (patternString.startsWith("/"))
-            patternString = patternString.substring(1);
-        try {
-            patternMatchers.add(PatternMatcherRegEx.getExcludePatternMatcher(patternString));
-        } catch (PatternSyntaxException e) {
-            e.printStackTrace(System.err);
-            setInvalid(format("Invalid pattern '%s'", patternString));
-        }
+    @Test
+    public void shouldInstrumentComma() {
+        testFile("javascript-comma.js");
     }
 
-    protected boolean parseArg(String arg) {
-        if (arg.equals(HELP_PREFIX1) || arg.equals(HELP_PREFIX2)) {
-            showHelp = true;
-        } else if (arg.equals(NO_BRANCH_PREFIX)) {
-            includeBranch = false;
-        } else if (arg.equals(NO_FUNCTION_PREFIX)) {
-            includeFunction = false;
-        } else if (arg.equals(DETECT_COALESCE_PREFIX)) {
-            detectCoalesce = true;
-        } else if (arg.equals(INCLUDE_UNLOADED_JS_PREFIX)) {
-            includeUnloadedJS = true;
-        } else if (arg.equals(LOCAL_STORAGE_PREFIX)) {
-            if (isolateBrowser)
-                throw new IllegalArgumentException("Cannot combine '" + LOCAL_STORAGE_PREFIX + "' and '" + ISOLATE_BROWSER_PREFIX + "'.");
-            localStorage = true;
-        } else if (arg.equals(ISOLATE_BROWSER_PREFIX)) {
-            if (localStorage)
-                throw new IllegalArgumentException("Cannot combine '" + LOCAL_STORAGE_PREFIX + "' and '" + ISOLATE_BROWSER_PREFIX + "'.");
-            isolateBrowser = true;
-        } else if (arg.startsWith(NO_INSTRUMENT_PREFIX)) {
-            addNoInstrument(arg);
-        } else if (arg.startsWith(NO_INSTRUMENT_REG_PREFIX)) {
-            addNoInstrumentReg(arg);
-        } else if (arg.startsWith(ONLY_INSTRUMENT_REG_PREFIX)) {
-            addOnlyInstrumentReg(arg);
-        } else if (arg.startsWith(JS_VERSION_PREFIX)) {
-            JSVersion = (int) (Float.valueOf(arg.substring(JS_VERSION_PREFIX.length())) * 100);
-        } else if (arg.startsWith(ECMA_VERSION_PREFIX)) {
-            int version = Integer.valueOf(arg.substring(ECMA_VERSION_PREFIX.length()));
-            switch (version) {
-                case 3:
-                    ECMAVersion = Config.LanguageMode.ECMASCRIPT3;
-                    break;
-                case 5:
-                    ECMAVersion = Config.LanguageMode.ECMASCRIPT5;
-                    break;
-                case 6:
-                    ECMAVersion = Config.LanguageMode.ECMASCRIPT6;
-                    break;
-                case 7:
-                    ECMAVersion = Config.LanguageMode.ECMASCRIPT7;
-                    break;
-                case 8:
-                    ECMAVersion = Config.LanguageMode.ECMASCRIPT8;
-                    break;
-                default:
-                    throw new IllegalArgumentException("Unsupported ECMA version '" + version + "'.");
+    @Test
+    public void shouldInstrumentConst() {
+        testFile("javascript-const.js");
+    }
+
+    @Test
+    public void shouldInstrumentCr() {
+        testFile("javascript-cr.js");
+    }
+
+    @Test
+    public void shouldInstrumentCrLf() {
+        testFile("javascript-crlf.js");
+    }
+
+    @Test
+    public void shouldInstrumentDec() {
+        testFile("javascript-dec.js");
+    }
+
+    @Test//https://bugzilla.mozilla.org/show_bug.cgi?id=688021
+    public void shouldInstrumentDebugger() {
+        testFile("javascript-debugger.js");
+    }
+
+    @Test
+    public void shouldInstrumentDelete() {
+        testFile("javascript-delete.js");
+    }
+
+    @Test//https://bugzilla.mozilla.org/show_bug.cgi?id=689308, https://bugzilla.mozilla.org/show_bug.cgi?id=689314
+    public void shouldInstrumentDestructuring() {
+        testFile("javascript-destructuring.js");
+    }
+
+    @Test
+    public void shouldInstrumentDo() {
+        testFile("javascript-do.js");
+    }
+
+    @Test
+    public void shouldInstrumentDot() {
+        testFile("javascript-dot.js");
+    }
+
+    @Test
+    public void shouldInstrumentEmpty() {
+        testFile("javascript-empty.js");
+    }
+
+    @Test
+    public void shouldInstrumentFor() {
+        testFile("javascript-for.js");
+    }
+
+    @Test//Deprecated ECMA 4: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for_each...in
+    public void shouldInstrumentForEach() {
+        testFile("javascript-foreach.js");
+    }
+
+    @Test//https://bugzilla.mozilla.org/show_bug.cgi?id=687669
+    public void shouldInstrumentFunction() {
+        testFile("javascript-function.js");
+    }
+
+    @Test
+    public void shouldInstrumentFunctionChain() {
+        testFile("javascript-function-chain.js");
+    }
+
+    @Test
+    public void shouldInstrumentGenerator() {
+        testFile("javascript-generator.js");
+    }
+
+    @Test
+    public void shouldInstrumentGeneratorExpression() {
+        testFile("javascript-generator-expression.js");
+    }
+
+    @Test//https://bugzilla.mozilla.org/show_bug.cgi?id=798642
+    public void shouldInstrumentGetterSetter() {
+        testFile("javascript-getter-setter.js");
+    }
+
+    @Test
+    public void shouldInstrumentHook() {
+        testFile("javascript-hook.js");
+    }
+
+    @Test
+    public void shouldInstrumentIf() {
+        testFile("javascript-if.js");
+    }
+
+    @Test
+    public void shouldInstrumentIn() {
+        testFile("javascript-in.js");
+    }
+
+    @Test
+    public void shouldInstrumentInc() {
+        testFile("javascript-inc.js");
+    }
+
+    @Test
+    @Ignore("This is handled by JVM 'file.encoding' system property")
+    public void shouldInstrumentISO_8859_1() {
+        testFile("javascript-iso-8859-1.js");
+    }
+
+    @Test
+    public void shouldInstrumentJSONObject() {
+        testFile("javascript-json-object.js");
+    }
+
+    @Test//https://bugzilla.mozilla.org/show_bug.cgi?id=689314
+    @Ignore("Deprecated SpiderMonkey-specific")//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Expression_Closures
+    public void shouldInstrumentLambda() {
+        testFile("javascript-lambda.js");
+    }
+
+    @Test
+    public void shouldInstrumentLet() {
+        testFile("javascript-let.js");
+    }
+
+    @Test
+    public void shouldInstrumentLineFeed() {
+        testFile("javascript-lf.js");
+    }
+
+    @Test
+    public void shouldInstrumentNew() {
+        testFile("javascript-new.js");
+    }
+
+    @Test
+    public void shouldInstrumentNumber() {
+        testFile("javascript-number.js");
+    }
+
+    @Test
+    public void shouldInstrumentObject() {
+        testFile("javascript-object.js");
+    }
+
+    @Test
+    public void shouldInstrumentOp() {
+        testFile("javascript-op.js");
+    }
+
+    @Test
+    public void shouldInstrumentPrimary() {
+        testFile("javascript-primary.js");
+    }
+
+    @Test
+    public void shouldInstrumentRb() {
+        testFile("javascript-rb.js");
+    }
+
+    @Test
+    public void shouldInstrumentRc() {
+        testFile("javascript-rc.js");
+    }
+
+    @Test
+    public void shouldInstrumentRp() {
+        testFile("javascript-rp.js");
+    }
+
+    @Test
+    public void shouldInstrumentSpecialCharacters() {
+        testFile("javascript-special-characters.js");
+    }
+
+    @Test
+    public void shouldInstrumentString() {
+        testFile("javascript-string.js");
+    }
+
+    @Test//https://bugzilla.mozilla.org/show_bug.cgi?id=788070
+    public void shouldInstrumentSwitch() {
+        testFile("javascript-switch.js");
+    }
+
+    @Test
+    public void shouldInstrumentThrow() {
+        testFile("javascript-throw.js");
+    }
+
+    @Test
+    public void shouldInstrumentTry() {
+        testFile("javascript-try.js");
+    }
+
+    @Test//https://bugzilla.mozilla.org/show_bug.cgi?id=688018
+    public void shouldInstrumentUnaryOp() {
+        testFile("javascript-unaryop.js");
+    }
+
+    @Test
+    public void shouldInstrumentVar() {
+        testFile("javascript-var.js");
+    }
+
+    @Test//https://bugzilla.mozilla.org/show_bug.cgi?id=784651
+    public void shouldInstrumentWhile() {
+        testFile("javascript-while.js");
+    }
+
+    @Test
+    public void shouldInstrumentWith() {
+        testFile("javascript-with.js");
+    }
+
+    @Test
+    public void shouldTestTheRest() {
+        File testDir = new File("src/test-integration/resources/data/javascript");
+        FilenameFilter filter = new FilenameFilter() {
+            public boolean accept(File file, String name) {
+                return name.endsWith(".js");
             }
-        } else if (arg.startsWith(LOG_LEVEL)) {
-            logLevel = Level.parse(arg.substring(LOG_LEVEL.length()));
-        } else {
-            return false;
+        };
+        for (String jsFile : testDir.list(filter)) {
+            testFileWithoutStopping(jsFile);
         }
-        return true;
     }
+
+    @Test
+    public void shouldInstrumentIgnoreSimple() {
+        testFile("javascript-ignore", "ignore-simple.js");
+    }
+
+    @Test
+    @Ignore
+    public void shouldInstrumentIgnore() {
+        testFile("javascript-ignore", "ignore.js");
+    }
+
+    private void testFile(String fileName) {
+        testFile("javascript", fileName);
+    }
+
+    private void testFile(String dir, String fileName) {
+        testFile(dir, fileName, true);
+    }
+
+    private void testFile(String dir, String fileName, boolean recordTest) {
+        if (recordTest)
+            tested.add(fileName);
+        String source = ioUtils.loadFromClassPath("/data/" + dir + "/" + fileName);
+        SourceProcessorCC instrumenter = new SourceProcessorCC(config, fileName, source);
+
+        String instrumentedSource = instrumenter.processSourceWithoutHeader();
+
+
+        String instrumentedSourceParsed = new CodePrinter.Builder(parse(instrumentedSource)).setCompilerOptions(options).build();
+
+        String expectedSource = ioUtils.loadFromClassPath("/data/" + dir + ".expected/" + fileName);
+        String expectedSourceParsed = new CodePrinter.Builder(parse(expectedSource)).setCompilerOptions(options).build();
+        assertEquals(expectedSourceParsed, instrumentedSourceParsed);
+        //assertEquals(removeHighlightLine(expectedSource), removeHighlightLine(instrumentedSource));
+    }
+
+    private void testFileWithoutStopping(String fileName) {
+        System.out.print("Test " + fileName + " ");
+        try {
+            testFile("javascript", fileName, false);
+            allTests.put(fileName, "* passed\t");
+        } catch (AssertionError e) {
+            allTests.put(fileName, "  failed\t");
+        } catch (Throwable t) {
+            allTests.put(fileName, "  errored\t");
+        }
+    }
+
+    private Node parse(String source) {
+        SimpleErrorReporter errorReporter = new SimpleErrorReporter();
+        return ParserRunner.parse(
+                new SimpleSourceFile("test.js", false),
+                source,
+                parserConfig,
+                errorReporter).ast;
+    }
+
 }

@@ -2,9 +2,9 @@
 
 // let statement
 
-let (x = x+10, y = 12) {
-  print(x+y + "\n");
-}
+let a;
+let b = 10;
+
 
 // let expressions
 
@@ -29,7 +29,7 @@ for (var i = 1; i <= 5; i++) {
   };
   list.appendChild(item);
 }
-
+//
 function varTest() {
   var x = 31;
   if (true) {
@@ -51,13 +51,8 @@ function letTest() {
 function letTests() {
   let x = 10;
 
-  // let-statement
-  let (x = x + 20) {
-    alert(x);  // 30
-  }
-
   // let-expression
-  alert(let (x = x + 20) x);  // 30
+  //alert(let (x = x + 20) x);  // 30
 
   // let-definition
   {

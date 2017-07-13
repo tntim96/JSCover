@@ -340,244 +340,176 @@ library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
  */
 
-package jscover;
+package jscover.instrument;
 
-import com.google.javascript.jscomp.parsing.Config;
-import jscover.util.IoUtils;
-import jscover.util.PatternMatcher;
-import jscover.util.PatternMatcherRegEx;
-import jscover.util.PatternMatcherString;
-import org.mozilla.javascript.CompilerEnvirons;
-import org.mozilla.javascript.Context;
+import com.google.javascript.rhino.IR;
+import com.google.javascript.rhino.Node;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
+import java.util.*;
 import java.util.logging.Logger;
-import java.util.regex.PatternSyntaxException;
 
 import static java.lang.String.format;
 import static java.util.logging.Level.SEVERE;
-import static jscover.Main.HELP_PREFIX1;
-import static jscover.Main.HELP_PREFIX2;
 
-public class ConfigurationCommon extends Configuration {
-    private static final Logger logger = Logger.getLogger(ConfigurationCommon.class.getName());
-    public static final String ONLY_INSTRUMENT_REG_PREFIX = "--only-instrument-reg=";
-    public static final String NO_INSTRUMENT_PREFIX = "--no-instrument=";
-    public static final String NO_INSTRUMENT_REG_PREFIX = "--no-instrument-reg=";
-    public static final String INCLUDE_UNLOADED_JS_PREFIX = "--include-unloaded-js";
-    public static final String JS_VERSION_PREFIX = "--js-version=";
-    public static final String ECMA_VERSION_PREFIX = "--ecma-version=";
-    public static final String NO_BRANCH_PREFIX = "--no-branch";
-    public static final String DETECT_COALESCE_PREFIX = "--detect-coalesce";
-    public static final String NO_FUNCTION_PREFIX = "--no-function";
-    public static final String LOCAL_STORAGE_PREFIX = "--local-storage";
-    public static final String ISOLATE_BROWSER_PREFIX = "--isolate-browser";
-    public static final String LOG_LEVEL = "--log=";
+public class BranchInstrumentorCC implements NodeVisitorCC {
+    private static final String initBranchLine = "  _$jscoverage['%s'].branchData['%d'] = [];\n";
+    private static final String initBranchCondition = "  _$jscoverage['%s'].branchData['%d'][%d] = new BranchData();\n";
+    private static final Logger logger = Logger.getLogger(BranchInstrumentorCC.class.getName());
+    private static int functionId = 1;
 
-    protected boolean showHelp;
-    protected boolean invalid;
-    protected boolean includeBranch = true;
-    protected boolean detectCoalesce;
-    protected boolean includeFunction = true;
-    protected boolean localStorage;
-    protected boolean isolateBrowser;
-    protected final List<PatternMatcher> patternMatchers = new ArrayList<PatternMatcher>();
-    private boolean includeUnloadedJS;
-    protected int JSVersion = Context.VERSION_1_5;
-    protected Config.LanguageMode ECMAVersion = Config.LanguageMode.ECMASCRIPT8;
-    protected CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
-    protected boolean defaultSkip;
-    protected IoUtils ioUtils = IoUtils.getInstance();
-    protected Level logLevel = SEVERE;
+    private BranchStatementBuilderCC branchStatementBuilder = new BranchStatementBuilderCC();
+    private BranchHelperCC branchHelper = BranchHelperCC.getInstance();
+    private Set<PostProcessCC> postProcesses = new HashSet<PostProcessCC>();
+    private String uri;
+    private boolean detectCoalesce;
+    private CommentsHandlerCC commentsHandlerCC;
+    private Node astRoot;
+    private SortedMap<Integer, SortedSet<Integer>> lineConditionMap = new TreeMap<Integer, SortedSet<Integer>>();
+    private int functionWrapperCount = 0;
 
-    {
-        compilerEnvirons.setRecordingComments(true);
-    }
-
-    public void setIncludeBranch(boolean includeBranch) {
-        this.includeBranch = includeBranch;
-    }
-
-    public void setDetectCoalesce(boolean detectCoalesce) {
+    public BranchInstrumentorCC(String uri, boolean detectCoalesce, CommentsHandlerCC commentsHandlerCC) {
+        this.uri = uri;
         this.detectCoalesce = detectCoalesce;
+        this.commentsHandlerCC = commentsHandlerCC;
     }
 
-    public void setIncludeFunction(boolean includeFunction) {
-        this.includeFunction = includeFunction;
+    public SortedMap<Integer, SortedSet<Integer>> getLineConditionMap() {
+        return lineConditionMap;
     }
 
-    public void setLocalStorage(boolean localStorage) {
-        this.localStorage = localStorage;
+    public void setAstRoot(Node astRoot) {
+        this.astRoot = astRoot;
     }
 
-    public void setIncludeUnloadedJS(boolean includeUnloadedJS) {
-        this.includeUnloadedJS = includeUnloadedJS;
+    public void postProcess() {
+        for (PostProcessCC postProcess : postProcesses)
+            postProcess.process();
     }
 
-    public void setIsolateBrowser(boolean isolateBrowser) {
-        this.isolateBrowser = isolateBrowser;
-    }
-
-    public void setJSVersion(int JSVersion) {
-        this.JSVersion = JSVersion;
-    }
-
-    public void setECMAVersion(Config.LanguageMode ECMAVersion) {
-        this.ECMAVersion = ECMAVersion;
-    }
-
-    public Boolean showHelp() {
-        return showHelp;
-    }
-
-    public boolean isInvalid() {
-        return invalid;
-    }
-
-    public boolean isIncludeUnloadedJS() {
-        return includeUnloadedJS;
-    }
-
-    public boolean isIncludeBranch() {
-        return includeBranch;
-    }
-
-    public boolean isDetectCoalesce() {
-        return detectCoalesce;
-    }
-
-    public boolean isIncludeFunction() {
-        return includeFunction;
-    }
-
-    public boolean isLocalStorage() {
-        return localStorage;
-    }
-
-    public boolean isolateBrowser() {
-        return isolateBrowser;
-    }
-
-    public int getJSVersion() {
-        return JSVersion;
-    }
-
-    public Config.LanguageMode getECMAVersion() {
-        return ECMAVersion;
-    }
-
-    public CompilerEnvirons getCompilerEnvirons() {
-        return compilerEnvirons;
-    }
-
-    public Level getLogLevel() {
-        return logLevel;
-    }
-
-    public boolean skipInstrumentation(String uri) {
-        for (PatternMatcher patternMatcher : patternMatchers) {
-            Boolean instrumentIt = patternMatcher.matches(uri);
-            if (instrumentIt != null) {
-                logger.log(Level.FINEST, "Matched URI ''{0}'' Pattern ''{1}'' Skip {2}", new Object[]{uri, patternMatcher, instrumentIt});
-                return instrumentIt;
-            }
-        }
-        return defaultSkip;
-    }
-
-    protected void setInvalid(String message) {
-        System.err.println(message);
-        showHelp = true;
-        invalid = true;
-    }
-
-    public void addNoInstrument(String arg) {
-        String uri = arg.substring(NO_INSTRUMENT_PREFIX.length());
-        if (uri.startsWith("/"))
-            uri = uri.substring(1);
-        patternMatchers.add(new PatternMatcherString(uri));
-    }
-
-    public void addOnlyInstrumentReg(String arg) {
-        String patternString = arg.substring(ONLY_INSTRUMENT_REG_PREFIX.length());
-        if (patternString.startsWith("/"))
-            patternString = patternString.substring(1);
-        defaultSkip = true;
-        try {
-            patternMatchers.add(PatternMatcherRegEx.getIncludePatternMatcher(patternString));
-        } catch (PatternSyntaxException e) {
-            setInvalid(format("Invalid pattern '%s'", patternString));
-            e.printStackTrace(System.err);
-        }
-    }
-
-    public void addNoInstrumentReg(String arg) {
-        String patternString = arg.substring(NO_INSTRUMENT_REG_PREFIX.length());
-        if (patternString.startsWith("/"))
-            patternString = patternString.substring(1);
-        try {
-            patternMatchers.add(PatternMatcherRegEx.getExcludePatternMatcher(patternString));
-        } catch (PatternSyntaxException e) {
-            e.printStackTrace(System.err);
-            setInvalid(format("Invalid pattern '%s'", patternString));
-        }
-    }
-
-    protected boolean parseArg(String arg) {
-        if (arg.equals(HELP_PREFIX1) || arg.equals(HELP_PREFIX2)) {
-            showHelp = true;
-        } else if (arg.equals(NO_BRANCH_PREFIX)) {
-            includeBranch = false;
-        } else if (arg.equals(NO_FUNCTION_PREFIX)) {
-            includeFunction = false;
-        } else if (arg.equals(DETECT_COALESCE_PREFIX)) {
-            detectCoalesce = true;
-        } else if (arg.equals(INCLUDE_UNLOADED_JS_PREFIX)) {
-            includeUnloadedJS = true;
-        } else if (arg.equals(LOCAL_STORAGE_PREFIX)) {
-            if (isolateBrowser)
-                throw new IllegalArgumentException("Cannot combine '" + LOCAL_STORAGE_PREFIX + "' and '" + ISOLATE_BROWSER_PREFIX + "'.");
-            localStorage = true;
-        } else if (arg.equals(ISOLATE_BROWSER_PREFIX)) {
-            if (localStorage)
-                throw new IllegalArgumentException("Cannot combine '" + LOCAL_STORAGE_PREFIX + "' and '" + ISOLATE_BROWSER_PREFIX + "'.");
-            isolateBrowser = true;
-        } else if (arg.startsWith(NO_INSTRUMENT_PREFIX)) {
-            addNoInstrument(arg);
-        } else if (arg.startsWith(NO_INSTRUMENT_REG_PREFIX)) {
-            addNoInstrumentReg(arg);
-        } else if (arg.startsWith(ONLY_INSTRUMENT_REG_PREFIX)) {
-            addOnlyInstrumentReg(arg);
-        } else if (arg.startsWith(JS_VERSION_PREFIX)) {
-            JSVersion = (int) (Float.valueOf(arg.substring(JS_VERSION_PREFIX.length())) * 100);
-        } else if (arg.startsWith(ECMA_VERSION_PREFIX)) {
-            int version = Integer.valueOf(arg.substring(ECMA_VERSION_PREFIX.length()));
-            switch (version) {
-                case 3:
-                    ECMAVersion = Config.LanguageMode.ECMASCRIPT3;
-                    break;
-                case 5:
-                    ECMAVersion = Config.LanguageMode.ECMASCRIPT5;
-                    break;
-                case 6:
-                    ECMAVersion = Config.LanguageMode.ECMASCRIPT6;
-                    break;
-                case 7:
-                    ECMAVersion = Config.LanguageMode.ECMASCRIPT7;
-                    break;
-                case 8:
-                    ECMAVersion = Config.LanguageMode.ECMASCRIPT8;
-                    break;
-                default:
-                    throw new IllegalArgumentException("Unsupported ECMA version '" + version + "'.");
-            }
-        } else if (arg.startsWith(LOG_LEVEL)) {
-            logLevel = Level.parse(arg.substring(LOG_LEVEL.length()));
-        } else {
+    private boolean replaceWithFunction(Node node) {
+        Node parent = node.getParent();
+        if (isInstrumented(node) || isInstrumented(parent)) {
             return false;
         }
+
+        Integer conditionId = 1;
+        SortedSet<Integer> conditions = lineConditionMap.get(node.getLineno());
+        if (conditions == null) {
+            conditions = new TreeSet<Integer>();
+            lineConditionMap.put(node.getLineno(), conditions);
+        } else {
+            conditionId = conditions.last() + 1;
+        }
+        conditions.add(conditionId);
+
+        Node functionNode = branchStatementBuilder.buildBranchRecordingFunction(uri, functionId++, node.getLineno(), conditionId);
+
+        astRoot.addChildToFront(functionNode);
+        Node conditionArrayDeclaration = branchStatementBuilder.buildLineAndConditionInitialisation(uri
+                , node.getLineno(), conditionId, getLinePosition(node), node.getLength());
+        astRoot.addChildToFront(conditionArrayDeclaration);
+
+        Node functionCall = IR.call(IR.name(functionNode.getFirstChild().getString()), node.cloneTree());
+        functionCall.setChangeTime(-1);
+        functionWrapperCount++;
+//        Node functionCall = IR.call(functionNode.getFirstChild().cloneNode(), node.cloneTree());
+
+        if (parent.isIf() && node == parent.getFirstChild()) {
+            parent.replaceChild(node, functionCall);
+//        } else if (parent instanceof ParenthesizedExpression) {
+//            ((ParenthesizedExpression) parent).setExpression(functionCall);
+//        } else if (parent instanceof InfixExpression) {//This covers Assignment
+//            InfixExpression infixExpression = (InfixExpression) parent;
+//            if (infixExpression.getLeft() == node)
+//                infixExpression.setLeft(functionCall);
+//            else
+//                infixExpression.setRight(functionCall);
+        } else if (parent.isCall()) {
+            parent.replaceChild(node, functionCall);
+        } else if (parent.isAnd() || parent.isOr() || parent.isNot()) {
+            parent.replaceChild(node, functionCall);
+        } else if (parent.isReturn()) {
+            parent.replaceChild(node, functionCall);
+        } else if (parent.isAssign()) {
+            parent.replaceChild(node, functionCall);
+        } else if (parent.isName()) {
+            parent.replaceChild(node, functionCall);
+//        } else if (parent.isVar()) {
+//            parent.replaceChild(node, functionCall);
+        } else if (parent.isSwitch()) {
+            parent.replaceChild(node, functionCall);
+        } else if (parent.isWhile()) {
+            parent.replaceChild(node, functionCall);
+        } else if (parent.isDo()) {
+            parent.replaceChild(node, functionCall);
+        } else if (parent.isVanillaFor()) {
+            parent.replaceChild(node, functionCall);
+        } else if (parent.isGetElem()) {
+            parent.replaceChild(node, functionCall);
+        } else if (parent.isExprResult()) {
+            parent.replaceChild(node, functionCall);
+        } else if (parent.isHook()) {
+            parent.replaceChild(node, functionCall);
+        } else if (parent.isArrayLit()) {
+            parent.replaceChild(node, functionCall);
+//            postProcesses.add(new PostProcessCC(parent, node, functionCall) {
+//                @Override
+//                void run(Node parent, Node node, Node functionCall) {
+//                    parent.replaceChild(node, functionCall);
+//                }
+//            });
+//        } else if (parent instanceof FunctionCall) {
+//            postProcesses.add(new PostProcess(parent, node, functionCall) {
+//                @Override
+//                void run(AstNode parent, AstNode node, AstNode functionCall) {
+//                    FunctionCall fnParent = (FunctionCall) parent;
+//                    List<AstNode> fnParentArguments = fnParent.getArguments();
+//                    List<AstNode> newFnParentArguments = new ArrayList<AstNode>();
+//                    for (AstNode arg : fnParentArguments) {
+//                        if (arg == node)
+//                            newFnParentArguments.add(functionCall);
+//                        else
+//                            newFnParentArguments.add(arg);
+//                    }
+//                    fnParent.setArguments(newFnParentArguments);
+//                }
+//            });
+        } else {
+            logger.log(SEVERE, format("Couldn't insert wrapper for parent %s, file: %s, line: %d, position: %d, source: %s", parent, uri, node.getLineno(), node.getCharno(), "TODO"));
+        }
         return true;
+    }
+
+    private boolean isInstrumented(Node node) {
+        return node.isCall() && node.getChangeTime() < 0;
+    }
+
+    public boolean visit(Node node) {
+        if (node.getLineno() > 0 && !commentsHandlerCC.ignoreBranch(node.getLineno())
+                && branchHelper.isBoolean(node) && !(detectCoalesce && branchHelper.isCoalesce(node))) {
+            return replaceWithFunction(node);
+        }
+        return false;
+    }
+
+    public int getLinePosition(Node node) {
+        return node.getCharno();
+    }
+
+    protected String getJsLineInitialization() {
+        String fileName = uri.replace("\\", "\\\\").replace("'", "\\'");
+        StringBuilder sb = new StringBuilder(format("if (! _$jscoverage['%s'].branchData) {\n", fileName));
+        sb.append(format("  _$jscoverage['%s'].branchData = {};\n", fileName));
+        for (Integer line : lineConditionMap.keySet()) {
+            sb.append(format(initBranchLine, fileName, line));
+            for (Integer condition : lineConditionMap.get(line))
+                sb.append(format(initBranchCondition, fileName, line, condition));
+        }
+        sb.append("}\n");
+        return sb.toString();
+    }
+
+    public int getFunctionWrapperCount() {
+        return functionWrapperCount;
     }
 }

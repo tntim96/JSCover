@@ -12,7 +12,7 @@ for (let [name, value] in Iterator(obj)) {
   print(value);
 }
 
-for each (let {name: n, family: { father: f } } in people) {
+for (let {name: n, family: { father: f } } in people) {
   print(n);
   print(f);
 }
@@ -32,11 +32,7 @@ function h(a, [b, c], {foo: d, 'bar': e}) {
   g();
 }
 
-x = function([a, b]) a + b;
+x = function([a, b]) { a + b };
 
-({x: x0, y: y0}) = point;
+point = ({x: x0, y: y0});
 var {x: x0, y: y0} = point;
-let ({x: x0, y: y0} = point) {
-  print(x0);
-  print(y0);
-}

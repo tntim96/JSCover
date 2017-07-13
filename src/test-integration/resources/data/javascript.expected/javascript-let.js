@@ -29,19 +29,16 @@ if (! _$jscoverage['javascript-let.js']) {
   _$jscoverage['javascript-let.js'].lineData[48] = 0;
   _$jscoverage['javascript-let.js'].lineData[51] = 0;
   _$jscoverage['javascript-let.js'].lineData[52] = 0;
-  _$jscoverage['javascript-let.js'].lineData[55] = 0;
-  _$jscoverage['javascript-let.js'].lineData[56] = 0;
+  _$jscoverage['javascript-let.js'].lineData[59] = 0;
   _$jscoverage['javascript-let.js'].lineData[60] = 0;
   _$jscoverage['javascript-let.js'].lineData[64] = 0;
   _$jscoverage['javascript-let.js'].lineData[65] = 0;
+  _$jscoverage['javascript-let.js'].lineData[66] = 0;
   _$jscoverage['javascript-let.js'].lineData[69] = 0;
   _$jscoverage['javascript-let.js'].lineData[70] = 0;
   _$jscoverage['javascript-let.js'].lineData[71] = 0;
+  _$jscoverage['javascript-let.js'].lineData[73] = 0;
   _$jscoverage['javascript-let.js'].lineData[74] = 0;
-  _$jscoverage['javascript-let.js'].lineData[75] = 0;
-  _$jscoverage['javascript-let.js'].lineData[76] = 0;
-  _$jscoverage['javascript-let.js'].lineData[78] = 0;
-  _$jscoverage['javascript-let.js'].lineData[79] = 0;
 }
 if (! _$jscoverage['javascript-let.js'].functionData) {
   _$jscoverage['javascript-let.js'].functionData = [];
@@ -51,10 +48,9 @@ if (! _$jscoverage['javascript-let.js'].functionData) {
   _$jscoverage['javascript-let.js'].functionData[3] = 0;
 }
 _$jscoverage['javascript-let.js'].lineData[5]++;
-let (x = x + 10, y = 12) {
-  _$jscoverage['javascript-let.js'].lineData[6]++;
-  print(x + y + "\n");
-}
+let a;
+_$jscoverage['javascript-let.js'].lineData[6]++;
+let b = 10;
 _$jscoverage['javascript-let.js'].lineData[11]++;
 print(let (x = x + 10, y = 12) x + y + "<br>\n");
 _$jscoverage['javascript-let.js'].lineData[15]++;
@@ -118,35 +114,28 @@ function letTests() {
   _$jscoverage['javascript-let.js'].functionData[3]++;
   _$jscoverage['javascript-let.js'].lineData[52]++;
   let x = 10;
-  _$jscoverage['javascript-let.js'].lineData[55]++;
-  let (x = x + 20)   {
-    _$jscoverage['javascript-let.js'].lineData[56]++;
-    alert(x);
-  }
-  _$jscoverage['javascript-let.js'].lineData[60]++;
-  alert(let (x = x + 20) x);
   {
-    _$jscoverage['javascript-let.js'].lineData[64]++;
+    _$jscoverage['javascript-let.js'].lineData[59]++;
     let x = x + 20;
-    _$jscoverage['javascript-let.js'].lineData[65]++;
+    _$jscoverage['javascript-let.js'].lineData[60]++;
     alert(x);
   }
 }
-_$jscoverage['javascript-let.js'].lineData[69]++;
+_$jscoverage['javascript-let.js'].lineData[64]++;
 var x = 'global';
-_$jscoverage['javascript-let.js'].lineData[70]++;
+_$jscoverage['javascript-let.js'].lineData[65]++;
 let x = 42;
-_$jscoverage['javascript-let.js'].lineData[71]++;
+_$jscoverage['javascript-let.js'].lineData[66]++;
 document.write(this.x + "<br>\n");
-_$jscoverage['javascript-let.js'].lineData[74]++;
+_$jscoverage['javascript-let.js'].lineData[69]++;
 var i = 0;
-_$jscoverage['javascript-let.js'].lineData[75]++;
+_$jscoverage['javascript-let.js'].lineData[70]++;
 for (let i = i; i < 10; i++) {
-  _$jscoverage['javascript-let.js'].lineData[76]++;
+  _$jscoverage['javascript-let.js'].lineData[71]++;
   document.write(i + "<br>\n");
 }
-_$jscoverage['javascript-let.js'].lineData[78]++;
+_$jscoverage['javascript-let.js'].lineData[73]++;
 for (let [name, value] in obj) {
-  _$jscoverage['javascript-let.js'].lineData[79]++;
+  _$jscoverage['javascript-let.js'].lineData[74]++;
   document.write("Name: " + name + ", Value: " + value + "<br>\n");
 }

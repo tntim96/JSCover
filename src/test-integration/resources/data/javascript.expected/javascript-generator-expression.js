@@ -17,7 +17,7 @@ if (! _$jscoverage['javascript-generator-expression.js'].functionData) {
   _$jscoverage['javascript-generator-expression.js'].functionData[0] = 0;
 }
 _$jscoverage['javascript-generator-expression.js'].lineData[3]++;
-let it = (i + 3 for (i in someObj));
+let it = makeIterator();
 _$jscoverage['javascript-generator-expression.js'].lineData[4]++;
 try {
   _$jscoverage['javascript-generator-expression.js'].lineData[5]++;
@@ -25,7 +25,7 @@ try {
     _$jscoverage['javascript-generator-expression.js'].lineData[6]++;
     document.write(it.next() + "<br>\n");
   }
-}catch (err if err instanceof StopIteration) {
+}catch (err) {
   _$jscoverage['javascript-generator-expression.js'].lineData[9]++;
   document.write("End of record.<br>\n");
 }
@@ -39,6 +39,6 @@ function handleResults(results) {
   }
 }
 _$jscoverage['javascript-generator-expression.js'].lineData[16]++;
-handleResults((i for (i in obj) if (i > 3)));
+handleResults(makeIterator());
 _$jscoverage['javascript-generator-expression.js'].lineData[18]++;
 it = (1 for (a in x) for (b in y));

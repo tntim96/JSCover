@@ -17,7 +17,7 @@ public class ClassVersionChecker {
         ZipEntry ze;
         while ((ze = zis.getNextEntry()) != null) {
             String fileName = ze.getName();
-            if (!fileName.endsWith(".class"))
+            if (!fileName.startsWith("jscover/") || !fileName.endsWith(".class"))
                 continue;
             checkClassVersion2(new File(new File("target/tmp"), fileName));
         }
@@ -34,6 +34,6 @@ public class ClassVersionChecker {
 
         int majorVersion = buffer[6] << 8 | buffer[7];
         //int minorVersion = buffer[4] << 8 | buffer[5];
-        assertThat(file + " is not a 1.6 class!", majorVersion, equalTo(50));
+        assertThat(file + " is not a 1.8 class!", majorVersion, equalTo(52));
     }
 }
