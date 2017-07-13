@@ -810,37 +810,33 @@ public class BranchInstrumentorCCIntegrationTest {
         assertThat(coverageData.callMember("covered"), equalTo(true));
     }
 
-//    @Test
-//    public void shouldHandleVariableInitializer() throws Exception {
-//        StringBuilder script = new StringBuilder("function test(x) {\n");
-//        script.append("  var y = x < 0;\n");
-//        script.append("  return y;\n");
-//        script.append("};\n");
-//        runScript(script.toString(), false);
-//        Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
-//        Function coveredFn = (Function) ScriptableObject.getProperty(coverageData, "covered");
-//        Function testFn = (Function) scope.get("test", scope);
-//
-//        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(0d));
-//        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
-//        assertThat((Integer) coverageData.get("position", coverageData), equalTo(10));
-//        assertThat((Integer) coverageData.get("nodeLength", coverageData), equalTo(5));
-//        assertThat((Boolean) coveredFn.call(context, scope, coverageData, new Object[0]), equalTo(false));
-//
-//        testFn.call(context, scope, null, new ArrayList() {{
-//            add(-1);
-//        }}.toArray());
-//        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
-//        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
-//        assertThat((Boolean) coveredFn.call(context, scope, coverageData, new Object[0]), equalTo(false));
-//
-//        testFn.call(context, scope, null, new ArrayList() {{
-//            add(1);
-//        }}.toArray());
-//        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
-//        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(1d));
-//        assertThat((Boolean) coveredFn.call(context, scope, coverageData, new Object[0]), equalTo(true));
-//    }
+    @Test
+    public void shouldHandleVariableInitializer() throws Exception {
+        StringBuilder script = new StringBuilder("function test(x) {\n");
+        script.append("  var y = x < 0;\n");
+        script.append("  return y;\n");
+        script.append("};\n");
+        runScript(script.toString(), false);
+
+        ScriptObjectMirror coverageData = (ScriptObjectMirror) engine.eval("_$jscoverage['test.js'].branchData[2][1]");
+        assertThat(coverageData.get("evalTrue"), equalTo(0));
+        assertThat(coverageData.get("evalFalse"), equalTo(0));
+        assertThat(coverageData.get("position"), equalTo(10));
+        assertThat(coverageData.get("nodeLength"), equalTo(5));
+        assertThat(coverageData.callMember("covered"), equalTo(false));
+
+        invocable.invokeFunction("test", -1);
+
+        assertThat(coverageData.get("evalTrue"), equalTo(1.0));
+        assertThat(coverageData.get("evalFalse"), equalTo(0));
+        assertThat(coverageData.callMember("covered"), equalTo(false));
+
+        invocable.invokeFunction("test", 1);
+
+        assertThat(coverageData.get("evalTrue"), equalTo(1.0));
+        assertThat(coverageData.get("evalFalse"), equalTo(1.0));
+        assertThat(coverageData.callMember("covered"), equalTo(true));
+    }
 
     private Object runScript(String script, boolean detectCoalesce) throws ScriptException {
         Node astRoot = parse(script);
@@ -855,7 +851,7 @@ public class BranchInstrumentorCCIntegrationTest {
             int conditions = branchInstrumentor.getFunctionWrapperCount();
 //            nodeWalker.visit(astRoot, branchInstrumentor);
             nodeWalker.visitAndExitOnAstChange(astRoot, branchInstrumentor);
-            System.out.println(parses + " astRoot.toStringTree\n" + astRoot.toStringTree());
+//            System.out.println(parses + " astRoot.toStringTree\n" + astRoot.toStringTree());
             if (conditions == branchInstrumentor.getFunctionWrapperCount()) {
                 //log.log(Level.FINE, "No branchInstrumentor condition changes after parse {0}", parses);
                 break;
@@ -880,20 +876,4 @@ public class BranchInstrumentorCCIntegrationTest {
                 ParserRunner.createConfig(ECMASCRIPT8, TYPES_ONLY, KEEP_GOING, null, false, Config.StrictMode.SLOPPY),
                 null).ast;
     }
-
-
-//    private Scriptable getCoverageData(Scriptable scope, String uri, int lineNo, int conditionNo) {
-//        Scriptable lineData = getLineData(scope, uri, lineNo);
-//        return (Scriptable) lineData.get(conditionNo, lineData);
-//    }
-//
-//    private Scriptable getLineData(Scriptable scope, String uri, int lineNo) {
-//        return (Scriptable) getBranchData(scope, uri).get(lineNo, getBranchData(scope, uri));
-//    }
-//
-//    private NativeObject getBranchData(Scriptable scope, String uri) {
-//        Scriptable jscoverage = (Scriptable) scope.get("_$jscoverage", scope);
-//        Scriptable scriptData = (Scriptable) jscoverage.get(uri, jscoverage);
-//        return (NativeObject) scriptData.get("branchData", scriptData);
-//    }
 }
