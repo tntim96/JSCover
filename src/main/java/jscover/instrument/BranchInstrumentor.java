@@ -342,8 +342,8 @@ Public License instead of this License.
 
 package jscover.instrument;
 
-import org.mozilla.javascript.Token;
-import org.mozilla.javascript.ast.*;
+import com.google.javascript.rhino.IR;
+import com.google.javascript.rhino.Node;
 
 import java.util.*;
 import java.util.logging.Logger;
@@ -361,24 +361,23 @@ public class BranchInstrumentor implements NodeVisitor {
     private BranchHelper branchHelper = BranchHelper.getInstance();
     private Set<PostProcess> postProcesses = new HashSet<PostProcess>();
     private String uri;
-    private String source;
     private boolean detectCoalesce;
-    private CommentsVisitor commentsVisitor;
-    private AstRoot astRoot;
+    private CommentsHandler commentsHandler;
+    private Node astRoot;
     private SortedMap<Integer, SortedSet<Integer>> lineConditionMap = new TreeMap<Integer, SortedSet<Integer>>();
+    private int functionWrapperCount = 0;
 
-    public BranchInstrumentor(String uri, boolean detectCoalesce, CommentsVisitor commentsVisitor, String source) {
+    public BranchInstrumentor(String uri, boolean detectCoalesce, CommentsHandler commentsHandler) {
         this.uri = uri;
-        this.source = source;
         this.detectCoalesce = detectCoalesce;
-        this.commentsVisitor = commentsVisitor;
+        this.commentsHandler = commentsHandler;
     }
 
     public SortedMap<Integer, SortedSet<Integer>> getLineConditionMap() {
         return lineConditionMap;
     }
 
-    public void setAstRoot(AstRoot astRoot) {
+    public void setAstRoot(Node astRoot) {
         this.astRoot = astRoot;
     }
 
@@ -387,8 +386,11 @@ public class BranchInstrumentor implements NodeVisitor {
             postProcess.process();
     }
 
-    private void replaceWithFunction(AstNode node) {
-        AstNode parent = node.getParent();
+    private boolean replaceWithFunction(Node node) {
+        Node parent = node.getParent();
+        if (isInstrumented(node) || isInstrumented(parent)) {
+            return false;
+        }
 
         Integer conditionId = 1;
         SortedSet<Integer> conditions = lineConditionMap.get(node.getLineno());
@@ -400,113 +402,65 @@ public class BranchInstrumentor implements NodeVisitor {
         }
         conditions.add(conditionId);
 
-        FunctionNode functionNode = branchStatementBuilder.buildBranchRecordingFunction(uri, functionId++, node.getLineno(), conditionId);
+        Node functionNode = branchStatementBuilder.buildBranchRecordingFunction(uri, functionId++, node.getLineno(), conditionId);
 
-        astRoot.addChildrenToFront(functionNode);
-        ExpressionStatement conditionArrayDeclaration = branchStatementBuilder.buildLineAndConditionInitialisation(uri
+        astRoot.addChildToFront(functionNode);
+        Node conditionArrayDeclaration = branchStatementBuilder.buildLineAndConditionInitialisation(uri
                 , node.getLineno(), conditionId, getLinePosition(node), node.getLength());
-        astRoot.addChildrenToFront(conditionArrayDeclaration);
+        astRoot.addChildToFront(conditionArrayDeclaration);
 
-        FunctionCall functionCall = new FunctionCall();
-        List<AstNode> arguments = new ArrayList<AstNode>();
-        functionCall.setTarget(functionNode.getFunctionName());
+        Node functionCall = IR.call(IR.name(functionNode.getFirstChild().getString()), node.cloneTree());
+        functionCall.setChangeTime(-1);
+        functionWrapperCount++;
 
-        if (node.getType() == Token.COMMA) {
-            ParenthesizedExpression parenthesizedExpression = new ParenthesizedExpression();
-            parenthesizedExpression.setExpression(node);
-            arguments.add(parenthesizedExpression);
-        } else
-            arguments.add(node);
-        functionCall.setArguments(arguments);
-        if (parent instanceof IfStatement && node == ((IfStatement) parent).getCondition()) {
-            ((IfStatement) parent).setCondition(functionCall);
-        } else if (parent instanceof ParenthesizedExpression) {
-            ((ParenthesizedExpression) parent).setExpression(functionCall);
-        } else if (parent instanceof InfixExpression) {//This covers Assignment
-            InfixExpression infixExpression = (InfixExpression) parent;
-            if (infixExpression.getLeft() == node)
-                infixExpression.setLeft(functionCall);
-            else
-                infixExpression.setRight(functionCall);
-        } else if (parent instanceof ReturnStatement) {
-            ((ReturnStatement) parent).setReturnValue(functionCall);
-        } else if (parent instanceof VariableInitializer) {
-            ((VariableInitializer) parent).setInitializer(functionCall);
-        } else if (parent instanceof SwitchStatement) {
-            ((SwitchStatement) parent).setExpression(functionCall);
-        } else if (parent instanceof WhileLoop) {
-            ((WhileLoop) parent).setCondition(functionCall);
-        } else if (parent instanceof DoLoop) {
-            ((DoLoop) parent).setCondition(functionCall);
-        } else if (parent instanceof ForLoop) {
-            ((ForLoop) parent).setCondition(functionCall);
-        } else if (parent instanceof ElementGet) {
-            ((ElementGet) parent).setElement(functionCall);
-        } else if (parent instanceof ExpressionStatement) {
-            ((ExpressionStatement) parent).setExpression(functionCall);
-        } else if (parent instanceof ConditionalExpression) {
-            ConditionalExpression ternary = (ConditionalExpression) parent;
-            if (ternary.getTestExpression() == node)
-                ternary.setTestExpression(functionCall);
-            else if (ternary.getTrueExpression() == node)
-                ternary.setTrueExpression(functionCall);
-            else
-                ternary.setFalseExpression(functionCall);
-        } else if (parent instanceof ArrayLiteral) {
-            postProcesses.add(new PostProcess(parent, node, functionCall) {
-                @Override
-                void run(AstNode parent, AstNode node, AstNode functionCall) {
-                    final ArrayLiteral arrayParent = (ArrayLiteral) parent;
-                    List<AstNode> elements = arrayParent.getElements();
-                    List<AstNode> newElements = new ArrayList<AstNode>();
-                    for (AstNode element : elements) {
-                        if (element == node)
-                            newElements.add(functionCall);
-                        else
-                            newElements.add(element);
-                    }
-                    arrayParent.setElements(newElements);
-                }
-            });
-        } else if (parent instanceof FunctionCall) {
-            postProcesses.add(new PostProcess(parent, node, functionCall) {
-                @Override
-                void run(AstNode parent, AstNode node, AstNode functionCall) {
-                    FunctionCall fnParent = (FunctionCall) parent;
-                    List<AstNode> fnParentArguments = fnParent.getArguments();
-                    List<AstNode> newFnParentArguments = new ArrayList<AstNode>();
-                    for (AstNode arg : fnParentArguments) {
-                        if (arg == node)
-                            newFnParentArguments.add(functionCall);
-                        else
-                            newFnParentArguments.add(arg);
-                    }
-                    fnParent.setArguments(newFnParentArguments);
-                }
-            });
+        if (parent.isIf() && node == parent.getFirstChild()) {
+            parent.replaceChild(node, functionCall);
+        } else if (parent.isCall()) {
+            parent.replaceChild(node, functionCall);
+        } else if (parent.isAnd() || parent.isOr() || parent.isNot()) {
+            parent.replaceChild(node, functionCall);
+        } else if (parent.isReturn()) {
+            parent.replaceChild(node, functionCall);
+        } else if (parent.isAssign()) {
+            parent.replaceChild(node, functionCall);
+        } else if (parent.isName()) {
+            parent.replaceChild(node, functionCall);
+        } else if (parent.isSwitch()) {
+            parent.replaceChild(node, functionCall);
+        } else if (parent.isWhile()) {
+            parent.replaceChild(node, functionCall);
+        } else if (parent.isDo()) {
+            parent.replaceChild(node, functionCall);
+        } else if (parent.isVanillaFor()) {
+            parent.replaceChild(node, functionCall);
+        } else if (parent.isGetElem()) {
+            parent.replaceChild(node, functionCall);
+        } else if (parent.isExprResult()) {
+            parent.replaceChild(node, functionCall);
+        } else if (parent.isHook()) {
+            parent.replaceChild(node, functionCall);
+        } else if (parent.isArrayLit()) {
+            parent.replaceChild(node, functionCall);
         } else {
-            logger.log(SEVERE, format("Couldn't insert wrapper for parent %s, file: %s, line: %d, position: %d, source: %s", parent.getClass().getName(), uri, node.getLineno(), node.getPosition(), node.toSource()));
-        }
-    }
-
-    public boolean visit(AstNode node) {
-        if (node.getLineno() > 0 && !commentsVisitor.ignoreBranch(node.getLineno())
-                && branchHelper.isBoolean(node) && !(detectCoalesce && branchHelper.isCoalesce(node))) {
-            replaceWithFunction(node);
+            logger.log(SEVERE, format("Couldn't insert wrapper for parent %s, file: %s, line: %d, position: %d, source: %s", parent, uri, node.getLineno(), node.getCharno(), "TODO"));
         }
         return true;
     }
 
-    public int getLinePosition(AstNode node) {
-        int absoluteLineStart = node.getAbsolutePosition();
-        while (absoluteLineStart >= 0) {
-            char charAt = source.charAt(absoluteLineStart);
-            if (charAt == '\n') {
-                break;
-            }
-            absoluteLineStart--;
+    private boolean isInstrumented(Node node) {
+        return node.isCall() && node.getChangeTime() < 0;
+    }
+
+    public boolean visit(Node node) {
+        if (node.getLineno() > 0 && !commentsHandler.ignoreBranch(node.getLineno())
+                && branchHelper.isBoolean(node) && !(detectCoalesce && branchHelper.isCoalesce(node))) {
+            return replaceWithFunction(node);
         }
-        return node.getAbsolutePosition() - absoluteLineStart - 1;
+        return false;
+    }
+
+    public int getLinePosition(Node node) {
+        return node.getCharno();
     }
 
     protected String getJsLineInitialization() {
@@ -520,5 +474,9 @@ public class BranchInstrumentor implements NodeVisitor {
         }
         sb.append("}\n");
         return sb.toString();
+    }
+
+    public int getFunctionWrapperCount() {
+        return functionWrapperCount;
     }
 }

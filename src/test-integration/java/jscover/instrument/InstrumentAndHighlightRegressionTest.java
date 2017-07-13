@@ -342,41 +342,63 @@ Public License instead of this License.
 
 package jscover.instrument;
 
+import com.google.javascript.jscomp.CodePrinter;
+import com.google.javascript.jscomp.CompilerOptions;
+import com.google.javascript.jscomp.parsing.Config;
+import com.google.javascript.jscomp.parsing.ParserRunner;
+import com.google.javascript.rhino.Node;
+import com.google.javascript.rhino.SimpleErrorReporter;
+import com.google.javascript.rhino.SimpleSourceFile;
 import jscover.ConfigurationCommon;
 import jscover.util.IoUtils;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.mozilla.javascript.CompilerEnvirons;
-import org.mozilla.javascript.Context;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
+import static com.google.javascript.jscomp.parsing.Config.JsDocParsing.TYPES_ONLY;
+import static com.google.javascript.jscomp.parsing.Config.LanguageMode.ECMASCRIPT8;
+import static com.google.javascript.jscomp.parsing.Config.RunMode.KEEP_GOING;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
 public class InstrumentAndHighlightRegressionTest {
-    private static Set<String> tested = new HashSet<String>();
-    private static CompilerEnvirons compilerEnv = new ConfigurationCommon().getCompilerEnvirons();
-    static {
-        compilerEnv.setLanguageVersion(Context.VERSION_1_8);
-    }
+    private static Set<String> tested = new HashSet<>();
+    private static Map<String, String> allTests = new HashMap<>();
+    private static Config parserConfig = ParserRunner.createConfig(ECMASCRIPT8, TYPES_ONLY, KEEP_GOING, null, false, Config.StrictMode.SLOPPY);
 
     private IoUtils ioUtils = IoUtils.getInstance();
+    private CompilerOptions options = new CompilerOptions();
     @Mock private ConfigurationCommon config;
 
     @Before
     public void setUp() {
-        given(config.getCompilerEnvirons()).willReturn(compilerEnv);
+        given(config.getECMAVersion()).willReturn(ECMASCRIPT8);
         given(config.isIncludeBranch()).willReturn(false);
         given(config.isIncludeFunction()).willReturn(true);
+        options.setPreferSingleQuotes(true);
+        options.setPrettyPrint(true);
+        options.setLanguage(CompilerOptions.LanguageMode.ECMASCRIPT_NEXT);
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        for (String testName : allTests.keySet()) {
+            if (!tested.contains(testName)) {
+                System.out.println(allTests.get(testName) + " " + testName);
+            }
+        }
     }
 
     @Test
@@ -454,7 +476,7 @@ public class InstrumentAndHighlightRegressionTest {
         testFile("javascript-for.js");
     }
 
-    @Test
+    @Test//Deprecated ECMA 4: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for_each...in
     public void shouldInstrumentForEach() {
         testFile("javascript-foreach.js");
     }
@@ -465,7 +487,6 @@ public class InstrumentAndHighlightRegressionTest {
     }
 
     @Test
-    @Ignore
     public void shouldInstrumentFunctionChain() {
         testFile("javascript-function-chain.js");
     }
@@ -480,8 +501,7 @@ public class InstrumentAndHighlightRegressionTest {
         testFile("javascript-generator-expression.js");
     }
 
-    @Test
-    //https://bugzilla.mozilla.org/show_bug.cgi?id=798642
+    @Test//https://bugzilla.mozilla.org/show_bug.cgi?id=798642
     public void shouldInstrumentGetterSetter() {
         testFile("javascript-getter-setter.js");
     }
@@ -507,7 +527,7 @@ public class InstrumentAndHighlightRegressionTest {
     }
 
     @Test
-    @Ignore//This is handled by JVM 'file.encoding' system property
+    @Ignore("This is handled by JVM 'file.encoding' system property")
     public void shouldInstrumentISO_8859_1() {
         testFile("javascript-iso-8859-1.js");
     }
@@ -518,6 +538,7 @@ public class InstrumentAndHighlightRegressionTest {
     }
 
     @Test//https://bugzilla.mozilla.org/show_bug.cgi?id=689314
+    @Ignore("Deprecated SpiderMonkey-specific")//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Expression_Closures
     public void shouldInstrumentLambda() {
         testFile("javascript-lambda.js");
     }
@@ -622,7 +643,7 @@ public class InstrumentAndHighlightRegressionTest {
         File testDir = new File("src/test-integration/resources/data/javascript");
         FilenameFilter filter = new FilenameFilter() {
             public boolean accept(File file, String name) {
-                return name.endsWith(".js") && !tested.contains(name);
+                return name.endsWith(".js");
             }
         };
         for (String jsFile : testDir.list(filter)) {
@@ -635,8 +656,8 @@ public class InstrumentAndHighlightRegressionTest {
         testFile("javascript-ignore", "ignore-simple.js");
     }
 
-    @Ignore
     @Test
+    @Ignore
     public void shouldInstrumentIgnore() {
         testFile("javascript-ignore", "ignore.js");
     }
@@ -646,25 +667,45 @@ public class InstrumentAndHighlightRegressionTest {
     }
 
     private void testFile(String dir, String fileName) {
-        tested.add(fileName);
+        testFile(dir, fileName, true);
+    }
+
+    private void testFile(String dir, String fileName, boolean recordTest) {
+        if (recordTest)
+            tested.add(fileName);
         String source = ioUtils.loadFromClassPath("/data/" + dir + "/" + fileName);
         SourceProcessor instrumenter = new SourceProcessor(config, fileName, source);
 
         String instrumentedSource = instrumenter.processSourceWithoutHeader();
-        String expectedSource = ioUtils.loadFromClassPath("/data/" + dir + ".expected/" + fileName).replaceAll("\r\n","\n");
-        assertEquals(expectedSource, instrumentedSource);
+
+
+        String instrumentedSourceParsed = new CodePrinter.Builder(parse(instrumentedSource)).setCompilerOptions(options).build();
+
+        String expectedSource = ioUtils.loadFromClassPath("/data/" + dir + ".expected/" + fileName);
+        String expectedSourceParsed = new CodePrinter.Builder(parse(expectedSource)).setCompilerOptions(options).build();
+        assertEquals(expectedSourceParsed, instrumentedSourceParsed);
         //assertEquals(removeHighlightLine(expectedSource), removeHighlightLine(instrumentedSource));
     }
 
     private void testFileWithoutStopping(String fileName) {
         System.out.print("Test " + fileName + " ");
         try {
-            testFile(fileName);
-            System.out.println("passed");
+            testFile("javascript", fileName, false);
+            allTests.put(fileName, "* passed\t");
         } catch (AssertionError e) {
-            System.out.println("failed");
+            allTests.put(fileName, "  failed\t");
         } catch (Throwable t) {
-            System.out.println("errored");
+            allTests.put(fileName, "  errored\t");
         }
     }
+
+    private Node parse(String source) {
+        SimpleErrorReporter errorReporter = new SimpleErrorReporter();
+        return ParserRunner.parse(
+                new SimpleSourceFile("test.js", false),
+                source,
+                parserConfig,
+                errorReporter).ast;
+    }
+
 }

@@ -342,87 +342,87 @@ Public License instead of this License.
 
 package jscover.instrument;
 
+import com.google.javascript.jscomp.SourceFile;
+import com.google.javascript.jscomp.parsing.Config;
+import com.google.javascript.jscomp.parsing.ParserRunner;
+import com.google.javascript.rhino.Node;
+import com.google.javascript.rhino.Token;
 import org.junit.Test;
-import org.mozilla.javascript.CompilerEnvirons;
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.Parser;
-import org.mozilla.javascript.Token;
-import org.mozilla.javascript.ast.AstNode;
-import org.mozilla.javascript.ast.AstRoot;
 
+import static com.google.javascript.jscomp.parsing.Config.JsDocParsing.TYPES_ONLY;
+import static com.google.javascript.jscomp.parsing.Config.LanguageMode.ECMASCRIPT8;
+import static com.google.javascript.jscomp.parsing.Config.RunMode.KEEP_GOING;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
 
 public class BranchInstrumentorTest {
-    private static CompilerEnvirons compilerEnv = new CompilerEnvirons();
-
-    private BranchInstrumentor getBranchInstrumentor(String source) {
-        return new BranchInstrumentor("/test.js", false, null, source);
+    private BranchInstrumentor getBranchInstrumentor() {
+        return new BranchInstrumentor("/test.js", false, null);
     }
 
-    private Parser parser = new Parser();
-
-    static {
-        // compilerEnv.setAllowMemberExprAsFunctionName(true);
-        compilerEnv.setLanguageVersion(Context.VERSION_1_8);
-        compilerEnv.setStrictMode(false);
+    static Node parse(String source) {
+        return ParserRunner.parse(
+                new SourceFile("test.js"),
+                source,
+                ParserRunner.createConfig(ECMASCRIPT8, TYPES_ONLY, KEEP_GOING, null, false, Config.StrictMode.SLOPPY),
+                null).ast;
     }
 
     @Test
     public void shouldCalculateNodePosition() {
         String script = "var y = x > 0;";
-        AstRoot astRoot = parser.parse(script, null, 1);
-        AstNode gtNode = NodeTestHelper.findNode(astRoot, Token.GT);
-        assertThat(getBranchInstrumentor(script).getLinePosition(gtNode), equalTo(8));
+        Node astRoot = parse(script);
+        Node gtNode = NodeTestHelper.findNode(astRoot, Token.GT);
+        assertThat(getBranchInstrumentor().getLinePosition(gtNode), equalTo(8));
     }
 
     @Test
     public void shouldCalculateNodePositionWhenAtStart() {
         String script = "x > 0;";
-        AstRoot astRoot = parser.parse(script, null, 1);
-        AstNode gtNode = NodeTestHelper.findNode(astRoot, Token.GT);
-        assertThat(getBranchInstrumentor(script).getLinePosition(gtNode), equalTo(0));
+        Node astRoot = parse(script);
+        Node gtNode = NodeTestHelper.findNode(astRoot, Token.GT);
+        assertThat(getBranchInstrumentor().getLinePosition(gtNode), equalTo(0));
     }
 
     @Test
     public void shouldCalculateNodePositionAsSecondStatement() {
         String script = "var x;\nvar y = x > 0;";
-        AstRoot astRoot = parser.parse(script, null, 1);
-        AstNode gtNode = NodeTestHelper.findNode(astRoot, Token.GT);
-        assertThat(getBranchInstrumentor(script).getLinePosition(gtNode), equalTo(8));
+        Node astRoot = parse(script);
+        Node gtNode = NodeTestHelper.findNode(astRoot, Token.GT);
+        assertThat(getBranchInstrumentor().getLinePosition(gtNode), equalTo(8));
     }
 
     @Test
     public void shouldCalculateNodePositionWithParent() {
         String script = "if (x > y) {a = 1;}";
-        AstRoot astRoot = parser.parse(script, null, 1);
-        AstNode gtNode = NodeTestHelper.findNode(astRoot, Token.GT);
-        assertThat(getBranchInstrumentor(script).getLinePosition(gtNode), equalTo(4));
+        Node astRoot = parse(script);
+        Node gtNode = NodeTestHelper.findNode(astRoot, Token.GT);
+        assertThat(getBranchInstrumentor().getLinePosition(gtNode), equalTo(4));
     }
 
     @Test
     public void shouldCalculateNodePositionAsFirstSiblingOfFunction() {
-        String script = "function(x, y) {\n" +
+        String script = "function fn(x, y) {\n" +
                 "    if (x > y) {\n" +
                 "        x = 1;\n" +
                 "    }\n" +
                 "}";
-        AstRoot astRoot = parser.parse(script, null, 1);
-        AstNode gtNode = NodeTestHelper.findNode(astRoot, Token.GT);
-        assertThat(getBranchInstrumentor(script).getLinePosition(gtNode), equalTo(8));
+        Node astRoot = parse(script);
+        Node gtNode = NodeTestHelper.findNode(astRoot, Token.GT);
+        assertThat(getBranchInstrumentor().getLinePosition(gtNode), equalTo(8));
     }
 
     @Test
     public void shouldCalculateNodePositionAsSecondSiblingOfFunction() {
-        String script = "function(x, y) {\n" +
+        String script = "function fn(x, y) {\n" +
                 "    var a;\n" +
                 "    if (x > y) {\n" +
                 "        a = 1;\n" +
                 "    }\n" +
                 "}";
-        AstRoot astRoot = parser.parse(script, null, 1);
-        AstNode gtNode = NodeTestHelper.findNode(astRoot, Token.GT);
-        assertThat(getBranchInstrumentor(script).getLinePosition(gtNode), equalTo(8));
+        Node astRoot = parse(script);
+        Node gtNode = NodeTestHelper.findNode(astRoot, Token.GT);
+        assertThat(getBranchInstrumentor().getLinePosition(gtNode), equalTo(8));
     }
 }

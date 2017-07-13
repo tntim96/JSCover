@@ -342,6 +342,7 @@ Public License instead of this License.
 
 package jscover.instrument;
 
+import com.google.javascript.jscomp.parsing.Config;
 import jscover.ConfigurationCommon;
 import jscover.util.IoUtils;
 import org.junit.Before;
@@ -349,8 +350,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.mozilla.javascript.CompilerEnvirons;
-import org.mozilla.javascript.Context;
 
 import java.net.URISyntaxException;
 
@@ -359,19 +358,13 @@ import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
 public class InstrumenterIntegrationTest {
-    private static CompilerEnvirons compilerEnv = new CompilerEnvirons();
     @Mock private ConfigurationCommon config;
     private IoUtils ioUtils = IoUtils.getInstance();
-    static {
-        // compilerEnv.setAllowMemberExprAsFunctionName(true);
-        compilerEnv.setLanguageVersion(Context.VERSION_1_8);
-        compilerEnv.setStrictMode(false);
-    }
     private SourceProcessor instrumenter;
 
     @Before
     public void setUp() {
-        given(config.getCompilerEnvirons()).willReturn(compilerEnv);
+        given(config.getECMAVersion()).willReturn(Config.LanguageMode.ECMASCRIPT8);
         given(config.isIncludeBranch()).willReturn(true);
         given(config.isIncludeFunction()).willReturn(true);
     }

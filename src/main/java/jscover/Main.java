@@ -382,7 +382,7 @@ public class Main {
 
     private String manifestName = "MANIFEST.MF";
     private List<String> dependantClasses = new ArrayList<String>() {{
-        add("org.mozilla.javascript.ast.AstNode");
+        add("com.google.javascript.rhino.Node");
     }};
     private ExitHelper exitHelper = new ExitHelper();
     private MainHelper mainHelper = new MainHelper();

@@ -342,8 +342,7 @@ Public License instead of this License.
 
 package jscover.instrument;
 
-import org.mozilla.javascript.ast.AstNode;
-import org.mozilla.javascript.ast.NodeVisitor;
+import com.google.javascript.rhino.Node;
 
 import java.util.SortedSet;
 import java.util.logging.Logger;
@@ -357,9 +356,9 @@ class ParseTreeInstrumenter implements NodeVisitor {
     private String fileName;
     private NodeProcessor nodeProcessor;
 
-    public ParseTreeInstrumenter(String uri, boolean includeFunctionCoverage, CommentsVisitor commentsVisitor) {
+    public ParseTreeInstrumenter(String uri, boolean includeFunctionCoverage, CommentsHandler commentsHandler) {
         this.fileName = uri;
-        this.nodeProcessor = new NodeProcessor(uri, includeFunctionCoverage, commentsVisitor);
+        this.nodeProcessor = new NodeProcessor(uri, includeFunctionCoverage, commentsHandler);
     }
 
     public SortedSet<Integer> getValidLines() {
@@ -371,7 +370,7 @@ class ParseTreeInstrumenter implements NodeVisitor {
     	return nodeProcessor.getNumFunctions();
     }
 
-    public boolean visit(AstNode node) {
+    public boolean visit(Node node) {
         try {
             return nodeProcessor.processNode(node);
         } catch (RuntimeException t) {

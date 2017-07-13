@@ -342,60 +342,86 @@ Public License instead of this License.
 
 package jscover.instrument;
 
-import com.google.javascript.jscomp.CodePrinter;
-import com.google.javascript.jscomp.CompilerOptions;
-import com.google.javascript.rhino.Node;
-import org.junit.Before;
-import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
+import com.google.javascript.jscomp.parsing.parser.trees.Comment;
 
-public class BranchStatementBuilderCCTest {
-    private BranchStatementBuilderCC builder = new BranchStatementBuilderCC();
-    private CompilerOptions options = new CompilerOptions();
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
-    @Before
-    public void setUp() {
-        options.setPreferSingleQuotes(true);
+
+public class CommentsHandler {
+    static final String EXCL_LINE = "//#JSCOVER_EXCL_LINE";//Lines containing this marker will be excluded.
+    static final String EXCL_START = "//#JSCOVER_EXCL_START";//Marks the beginning of an excluded section.
+    static final String EXCL_STOP = "//#JSCOVER_EXCL_STOP";//Marks the end of an excluded section.
+    static final String EXCL_BR_LINE = "//#JSCOVER_EXCL_BR_LINE";//Exclude line from branch coverage.
+    //Marks the beginning of a section which is excluded  from  branch coverage.
+    static final String EXCL_BR_START = "//#JSCOVER_EXCL_BR_START";
+    //Marks the end of a section which is excluded from branch coverage.
+    static final String EXCL_BR_STOP = "//#JSCOVER_EXCL_BR_STOP";
+
+    private Set<Integer> ignoreLines = new HashSet<Integer>();
+    private LinkedList<CommentRange> ignoreLineRanges = new LinkedList<CommentRange>();
+    private Set<Integer> ignoreBranches = new HashSet<Integer>();
+    private LinkedList<CommentRange> ignoreBranchRanges = new LinkedList<CommentRange>();
+
+    private LinkedList<JSCoverageIgnoreComment> jsCoverageIgnoreComments = new LinkedList<JSCoverageIgnoreComment>();
+
+    public List<JSCoverageIgnoreComment> getJsCoverageIgnoreComments() {
+        return jsCoverageIgnoreComments;
     }
 
-    @Test
-    public void shoudlBuildLineDeclaration() {
-        Node statement = builder.buildLineDeclaration("test.js", 4);
-        assertThat(new CodePrinter.Builder(statement).setCompilerOptions(options).build(), equalTo("_$jscoverage['test.js'].branchData['4']"));
+    public void processComments(List<Comment> comments) {
+        for (Comment comment : comments) {
+            String value = comment.value;
+            if (startWith(value, JSCoverageIgnoreComment.IGNORE_START)) {
+                if (value.trim().length() > JSCoverageIgnoreComment.IGNORE_START.length()) {
+                    jsCoverageIgnoreComments.add(new JSCoverageIgnoreComment(value.substring(JSCoverageIgnoreComment.IGNORE_START.length() + 1), getLineno(comment)));
+                }
+            } else if (startWith(value, EXCL_LINE)) {
+                ignoreLines.add(getLineno(comment));
+            } else if (startWith(value, EXCL_START)) {
+                ignoreLineRanges.add(new CommentRange(getLineno(comment)));
+            } else if (startWith(value, EXCL_STOP)) {
+                ignoreLineRanges.getLast().setEnd(getLineno(comment));
+            } else if (startWith(value, EXCL_BR_LINE)) {
+                ignoreBranches.add(getLineno(comment));
+            } else if (startWith(value, EXCL_BR_START)) {
+                ignoreBranchRanges.add(new CommentRange(getLineno(comment)));
+            } else if (startWith(value, EXCL_BR_STOP)) {
+                ignoreBranchRanges.getLast().setEnd(getLineno(comment));
+            } else if (startWith(value, JSCoverageIgnoreComment.IGNORE_END)) {
+                jsCoverageIgnoreComments.getLast().setEnd(getLineno(comment));
+            }
+        }
     }
 
-    @Test
-    public void shouldBuildLineAndConditionInitialisation() {
-        Node statement = builder.buildLineAndConditionInitialisation("test.js", 4, 2, 12, 15);
-        assertThat(new CodePrinter.Builder(statement).setCompilerOptions(options).build(), equalTo("_$jscoverage['test.js'].branchData['4'][2].init(12,15)"));
+    private Integer getLineno(Comment comment) {
+        return comment.location.start.line + 1;
     }
 
-    @Test
-    public void shouldRemoveInstrumentationFromSource() {
-        assertThat(builder.removeInstrumentation("  _$jscoverage['/dir/code.js'].someOtherData[101]++;\n"), equalTo(""));
-        assertThat(builder.removeInstrumentation("x++;\n  _$jscoverage['/dir/code.js'].lineData[100]++;\n"), equalTo("x++;\n"));
+    private boolean startWith(String comment, String ignoreEnd) {
+        return comment.startsWith(ignoreEnd);
     }
 
-    @Test
-    public void shouldRemoveInstrumentationFromSourceInInitialisation() {
-        Node statement = builder.buildLineAndConditionInitialisation("test.js", 4, 2, 12, 15);
-        assertThat(new CodePrinter.Builder(statement).setCompilerOptions(options).build(), equalTo("_$jscoverage['test.js'].branchData['4'][2].init(12,15)"));
+    public boolean ignoreLine(int line) {
+        if (ignoreLines.contains(line))
+            return true;
+        for (CommentRange range : ignoreLineRanges) {
+            if (range.inRange(line))
+                return true;
+        }
+        return false;
     }
 
-    @Test
-    public void shouldBuildLineAndConditionCall() {
-        Node statement = builder.buildLineAndConditionCall("test.js", 4, 2);
-        assertThat(new CodePrinter.Builder(statement).setCompilerOptions(options).build(), equalTo("_$jscoverage['test.js'].branchData['4'][2].ranCondition(result)"));
-    }
-
-    @Test
-    public void shouldBuildLineAndConditionRecordingFunction() {
-        Node statement = builder.buildBranchRecordingFunction("test.js", 1, 4, 2);
-        assertThat(new CodePrinter.Builder(statement).setCompilerOptions(options).build(), equalTo("function visit1_4_2(result){" +
-                "_$jscoverage['test.js'].branchData['4'][2].ranCondition(result);" +
-                "return result" +
-                "}"));
+    public boolean ignoreBranch(int line) {
+        if (ignoreBranches.contains(line))
+            return true;
+        for (CommentRange range : ignoreBranchRanges) {
+            if (range.inRange(line))
+                return true;
+        }
+        return false;
     }
 }

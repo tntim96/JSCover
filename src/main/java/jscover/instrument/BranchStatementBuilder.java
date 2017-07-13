@@ -342,98 +342,56 @@ Public License instead of this License.
 
 package jscover.instrument;
 
-import org.mozilla.javascript.ast.*;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.google.javascript.rhino.IR;
+import com.google.javascript.rhino.Node;
 
 import static java.lang.String.format;
 
 public class BranchStatementBuilder {
 
-    public ExpressionStatement buildLineAndConditionInitialisation(String uri, int lineNo, int conditionNo, int position, int length) {
-        ElementGet indexLineNumber = buildLineDeclaration(uri, lineNo);
-
-        NumberLiteral conditionNumberLiteral = new NumberLiteral();
-        conditionNumberLiteral.setValue("" + conditionNo);
-        ElementGet indexConditionNumber = new ElementGet(indexLineNumber, conditionNumberLiteral);
-
-        FunctionCall fnCall = new FunctionCall();
-        Name propertyName = new Name();
-        propertyName.setIdentifier("init");
-        PropertyGet propertyGet = new PropertyGet(indexConditionNumber, propertyName);
-        fnCall.setTarget(propertyGet);
-        NumberLiteral positionLiteral = new NumberLiteral();
-        positionLiteral.setValue(""+position);
-        fnCall.addArgument(positionLiteral);
-        NumberLiteral lengthLiteral = new NumberLiteral();
-        lengthLiteral.setValue(""+length);
-        fnCall.addArgument(lengthLiteral);
-
-        return new ExpressionStatement(fnCall);
+    public Node buildLineAndConditionInitialisation(String uri, int lineNo, int conditionNo, int position, int length) {
+        Node indexLineNumber = buildLineDeclaration(uri, lineNo);
+        Node conditionNumberLiteral = IR.number(conditionNo);
+        Node indexConditionNumber = IR.getelem(indexLineNumber, conditionNumberLiteral);
+        Node positionLiteral = IR.number(position);
+        Node lengthLiteral = IR.number(length);
+        Node initCall = IR.string("init");
+        Node propertyName = IR.getprop(indexConditionNumber, initCall);
+        Node fnCall = IR.call(propertyName, positionLiteral, lengthLiteral);
+        return IR.exprResult(fnCall);
     }
 
     protected String removeInstrumentation(String source) {
         return source.replaceAll(" *_\\$jscoverage\\['[^']+'\\]\\.[^\\[]+\\[\\d+\\]\\+\\+;\n", "");
     }
 
-    public ExpressionStatement buildLineAndConditionCall(String uri, int lineNo, int conditionNo) {
-        ElementGet indexLineNumber = buildLineDeclaration(uri, lineNo);
-
-        NumberLiteral conditionNumberLiteral = new NumberLiteral();
-        conditionNumberLiteral.setValue("" + conditionNo);
-        ElementGet indexConditionNumber = new ElementGet(indexLineNumber, conditionNumberLiteral);
-
-        Name resultName = new Name();
-        resultName.setIdentifier("result");
-
-        FunctionCall fnCall = new FunctionCall();
-        Name propertyName = new Name();
-        propertyName.setIdentifier("ranCondition");
-        PropertyGet propertyGet = new PropertyGet(indexConditionNumber, propertyName);
-        fnCall.setTarget(propertyGet);
-        List<AstNode> arguments = new ArrayList<AstNode>();
-        arguments.add(resultName);
-        fnCall.setArguments(arguments);
-
-        return new ExpressionStatement(fnCall);
+    public Node buildLineAndConditionCall(String uri, int lineNo, int conditionNo) {
+        Node indexLineNumber = buildLineDeclaration(uri, lineNo);
+        Node conditionNumberLiteral = IR.number(conditionNo);
+        Node indexConditionNumber = IR.getelem(indexLineNumber, conditionNumberLiteral);
+        Node initCall = IR.string("ranCondition");
+        Node propertyName = IR.getprop(indexConditionNumber, initCall);
+        Node result = IR.name("result");
+        Node fnCall = IR.call(propertyName, result);
+        return IR.exprResult(fnCall);
     }
 
-    private ElementGet buildLineDeclaration(String uri, int lineNo) {
-        Name jscoverageVar = new Name();
-        jscoverageVar.setIdentifier("_$jscoverage");
-
-        StringLiteral fileNameLiteral = new StringLiteral();
-        fileNameLiteral.setValue(uri);
-        fileNameLiteral.setQuoteCharacter('\'');
-        ElementGet indexJSFile = new ElementGet(jscoverageVar, fileNameLiteral);
-
-        Name branchPropertyName = new Name();
-        branchPropertyName.setIdentifier("branchData");
-        PropertyGet branchProperty = new PropertyGet(indexJSFile, branchPropertyName);
-
-        NumberLiteral lineNumberLiteral = new NumberLiteral();
-        lineNumberLiteral.setValue("'" + lineNo + "'");
-        return new ElementGet(branchProperty, lineNumberLiteral);
+    Node buildLineDeclaration(String uri, int lineNo) {
+        Node coverVar = IR.name("_$jscoverage");
+        Node path = IR.string(uri);
+        Node getURI = IR.getelem(coverVar, path);
+        Node prop = IR.string("branchData");
+        Node propGet = IR.getprop(getURI, prop);
+        Node number = IR.string("" + lineNo);
+        return IR.getelem(propGet, number);
     }
 
-    public FunctionNode buildBranchRecordingFunction(String uri, int id, int lineNo, int conditionNo) {
-        Name functionName = new Name();
-        functionName.setIdentifier(format("visit%d_%d_%d", id, lineNo, conditionNo));
-        FunctionNode functionNode = new FunctionNode();
-        functionNode.setFunctionName(functionName);
-
-        Name resultName = new Name();
-        resultName.setIdentifier("result");
-        functionNode.addParam(resultName);
-
-        Block block = new Block();
-        block.addStatement(buildLineAndConditionCall(uri, lineNo, conditionNo));
-
-        ReturnStatement returnStatement = new ReturnStatement();
-        returnStatement.setReturnValue(resultName);
-        block.addChild(returnStatement);
-        functionNode.setBody(block);
-        return functionNode;
+    public Node buildBranchRecordingFunction(String uri, int id, int lineNo, int conditionNo) {
+        Node params = IR.paramList(IR.name("result"));
+        Node name = IR.name(format("visit%d_%d_%d", id, lineNo, conditionNo));
+        Node lineAndConditionCall = buildLineAndConditionCall(uri, lineNo, conditionNo);
+        Node body = IR.block(lineAndConditionCall);
+        body.addChildToBack(IR.returnNode(IR.name("result")));
+        return IR.function(name, params, body);
     }
 }

@@ -342,6 +342,7 @@ Public License instead of this License.
 
 package jscover.instrument;
 
+import com.google.javascript.rhino.Node;
 import jscover.util.ReflectionUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -349,7 +350,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.mozilla.javascript.ast.AstNode;
 
 import java.io.IOException;
 import java.util.logging.Logger;
@@ -362,12 +362,12 @@ import static org.mockito.Mockito.verify;
 public class ParseTreeInstrumenterTest {
     private ParseTreeInstrumenter instrumenter;
     @Mock private NodeProcessor nodeProcessor;
-    @Mock private AstNode astNode;
+    @Mock private Node astNode;
     @Mock private Logger logger;
 
     @Before
     public void setUp() throws IOException {
-        instrumenter = new ParseTreeInstrumenter("/dir/file.js", true, new CommentsVisitor());
+        instrumenter = new ParseTreeInstrumenter("/dir/file.js", true, new CommentsHandler());
         ReflectionUtils.setField(instrumenter, "nodeProcessor", nodeProcessor);
         ReflectionUtils.setField(instrumenter, "logger", logger);
     }

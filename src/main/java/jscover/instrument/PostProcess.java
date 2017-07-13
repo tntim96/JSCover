@@ -342,15 +342,15 @@ Public License instead of this License.
 
 package jscover.instrument;
 
-import org.mozilla.javascript.ast.AstNode;
-import org.mozilla.javascript.ast.FunctionCall;
+
+import com.google.javascript.rhino.Node;
 
 public abstract class PostProcess {
-    private AstNode parent;
-    private AstNode node;
-    private FunctionCall functionCall;
+    private Node parent;
+    private Node node;
+    private Node functionCall;
 
-    public PostProcess(AstNode parent, AstNode node, FunctionCall functionCall) {
+    public PostProcess(Node parent, Node node, Node functionCall) {
         this.parent = parent;
         this.node = node;
         this.functionCall = functionCall;
@@ -360,5 +360,5 @@ public abstract class PostProcess {
         run(parent, node, functionCall);
     }
 
-    abstract void run(AstNode parent, AstNode node, AstNode functionCall);
+    abstract void run(Node parent, Node node, Node functionCall);
 }

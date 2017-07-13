@@ -343,9 +343,9 @@ Public License instead of this License.
 
 package jscover.instrument;
 
-import org.mozilla.javascript.Token;
-import org.mozilla.javascript.ast.*;
+import com.google.javascript.rhino.Node;
 
+import static com.google.javascript.rhino.Token.*;
 
 class BranchHelper {
     private static BranchHelper branchHelper = new BranchHelper();
@@ -354,45 +354,52 @@ class BranchHelper {
         return branchHelper;
     }
 
-    boolean isBoolean(AstNode node) {
-        if (node instanceof EmptyExpression)
+    boolean isBoolean(Node node) {
+        if (node.isEmpty())
             return false;
-        switch (node.getType()) {
-            case Token.EQ:
-            case Token.NE:
-            case Token.LT:
-            case Token.LE:
-            case Token.GT:
-            case Token.GE:
-            case Token.SHEQ:
-            case Token.SHNE:
-            case Token.OR:
-            case Token.AND:
+        switch (node.getToken()) {
+            case EQ:
+            case NE:
+            case LT:
+            case LE:
+            case GT:
+            case GE:
+            case SHEQ:
+            case SHNE:
+            case OR:
+            case AND:
                 return true;
         }
-        if (node.getParent() instanceof IfStatement) {
-            return ((IfStatement)node.getParent()).getCondition() == node;
+        Node parent = node.getParent();
+        if (parent == null)
+            return false;
+        if (parent.isIf()) {
+            return parent.getFirstChild() == node;
         }
-        if (node.getParent() instanceof ConditionalExpression) {
-            return ((ConditionalExpression)node.getParent()).getTestExpression() == node;
+        if (parent.isHook()) {
+            return parent.getFirstChild() == node;
         }
-        if (node.getParent() instanceof WhileLoop) {
-            return ((WhileLoop)node.getParent()).getCondition() == node;
+        if (parent.isVanillaFor()) {
+            return parent.getSecondChild() == node;
         }
-        if (node.getParent() instanceof DoLoop) {
-            return ((DoLoop)node.getParent()).getCondition() == node;
+        if (parent.isWhile()) {
+            return parent.getFirstChild() == node;
         }
-        if (node.getParent() instanceof ForLoop) {
-            return ((ForLoop)node.getParent()).getCondition() == node;
+        if (parent.isDo()) {
+            return parent.getSecondChild() == node;
+        }
+        if (parent.isForIn()) {
+            return parent.getFirstChild() == node;
         }
         return false;
     }
 
 
-  public boolean isCoalesce(AstNode node) {
-      return node.getType() == Token.OR
-              && (node.getParent().getType() == Token.ASSIGN
-              || node.getParent().getType() == Token.VAR
-              || node.getParent().getType() == Token.RETURN);
+  public boolean isCoalesce(Node node) {
+      Node parent = node.getParent();
+      return node.getToken() == OR
+              && ((parent.getToken() == NAME && parent.getParent().getToken() == VAR)
+              || parent.getToken() == ASSIGN
+              || parent.getToken() == RETURN);
   }
 }

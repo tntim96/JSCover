@@ -351,7 +351,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.mozilla.javascript.CompilerEnvirons;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -372,7 +371,6 @@ public class FileSystemInstrumenterTest {
     private @Mock File src;
     private @Mock File dest;
     private @Mock File destParent;
-    private @Mock CompilerEnvirons compilerEnvirons;
     private FilenameFilter acceptAll =  new FilenameFilter() {
         public boolean accept(File dir, String name) {
             return true;

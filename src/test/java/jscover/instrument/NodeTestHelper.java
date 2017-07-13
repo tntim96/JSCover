@@ -1,40 +1,20 @@
 package jscover.instrument;
 
-import org.mozilla.javascript.ast.AstNode;
-import org.mozilla.javascript.ast.AstRoot;
-import org.mozilla.javascript.ast.NodeVisitor;
 
+import com.google.javascript.rhino.Node;
+import com.google.javascript.rhino.Token;
 
 public class NodeTestHelper {
 
-    static class SearchNodeVisitor implements NodeVisitor {
-
-        private int type;
-        private AstNode node;
-
-        public SearchNodeVisitor(int type) {
-            this.type = type;
-        }
-
-        public boolean visit(AstNode astNode) {
-            if (astNode.getType() == type) {
-                node = astNode;
-                return false;
-            }
-            return true;
-        }
-
-
-        public AstNode getNode() {
+    public static Node findNode(Node node, Token token) {
+        if (node.getToken() == token)
             return node;
+        for (Node cursor = node.getFirstChild(); cursor != null; cursor = cursor.getNext()) {
+            Node found = findNode(cursor, token);
+            if (found != null)
+                return found;
         }
-
-    }
-
-    public static AstNode findNode(AstRoot node, int token) {
-        SearchNodeVisitor visitor = new SearchNodeVisitor(token);
-        node.visitAll(visitor);
-        return visitor.getNode();
+        return null;
     }
 
 }

@@ -342,6 +342,7 @@ Public License instead of this License.
 
 package jscover.instrument;
 
+import com.google.javascript.jscomp.parsing.Config;
 import jscover.ConfigurationCommon;
 import jscover.util.IoUtils;
 import jscover.util.ReflectionUtils;
@@ -350,9 +351,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.mozilla.javascript.CompilerEnvirons;
-import org.mozilla.javascript.Parser;
-import org.mozilla.javascript.ast.AstRoot;
 
 import java.io.IOException;
 import java.util.TreeSet;
@@ -360,8 +358,6 @@ import java.util.TreeSet;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.startsWith;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -370,16 +366,13 @@ import static org.mockito.Mockito.verify;
 public class SourceProcessorTest {
     private SourceProcessor sourceProcessor;
     @Mock private ConfigurationCommon config;
-    @Mock private CompilerEnvirons compilerEnvirons;
-    @Mock private Parser parser;
     @Mock private IoUtils ioUtils;
 
     @Before
     public void setUp() {
-        given(config.getCompilerEnvirons()).willReturn(compilerEnvirons);
+        given(config.getECMAVersion()).willReturn(Config.LanguageMode.ECMASCRIPT8);
         sourceProcessor = new SourceProcessor(config, "test.js", "x;");
         ReflectionUtils.setField(sourceProcessor, "ioUtils", ioUtils);
-        ReflectionUtils.setField(sourceProcessor, "parser", parser);
     }
 
     @Test
@@ -410,7 +403,6 @@ public class SourceProcessorTest {
         given(ioUtils.loadFromClassPath("/header.js")).willReturn("<header>");
         given(ioUtils.loadFromClassPath("/jscoverage-common.js")).willReturn("<common>");
         given(ioUtils.loadFromClassPath("/jscoverage-branch.js")).willReturn("<branch>");
-        given(parser.parse(anyString(), anyString(), anyInt())).willReturn(new AstRoot());
 
         assertThat(sourceProcessor.processSource(), startsWith("<branch><common>var jsCover_isolateBrowser = false;\n<header>"));
         verify(ioUtils, times(1)).loadFromClassPath("/jscoverage-branch.js");
@@ -422,7 +414,6 @@ public class SourceProcessorTest {
         given(ioUtils.loadFromClassPath("/header.js")).willReturn("<header>");
         given(ioUtils.loadFromClassPath("/jscoverage-common.js")).willReturn("<common>");
         given(ioUtils.loadFromClassPath("/jscoverage-branch.js")).willReturn("<branch>");
-        given(parser.parse(anyString(), anyString(), anyInt())).willReturn(new AstRoot());
 
         assertThat(sourceProcessor.processSource(), startsWith("<branch><common>var jsCover_isolateBrowser = false;\n<header>"));
         verify(ioUtils, times(1)).loadFromClassPath("/jscoverage-branch.js");
@@ -435,7 +426,6 @@ public class SourceProcessorTest {
         given(ioUtils.loadFromClassPath("/jscoverage-common.js")).willReturn("<common>");
         given(ioUtils.loadFromClassPath("/jscoverage-branch.js")).willReturn("<branch>");
         given(ioUtils.loadFromClassPath("/jscoverage-localstorage.js")).willReturn("<localStorage>");
-        given(parser.parse(anyString(), anyString(), anyInt())).willReturn(new AstRoot());
 
         assertThat(sourceProcessor.processSource(), startsWith("<branch><common><localStorage>var jsCover_isolateBrowser = false;\n<header>"));
         verify(ioUtils, times(1)).loadFromClassPath("/jscoverage-localstorage.js");
@@ -447,7 +437,6 @@ public class SourceProcessorTest {
         given(ioUtils.loadFromClassPath("/header.js")).willReturn("<header>");
         given(ioUtils.loadFromClassPath("/jscoverage-common.js")).willReturn("<common>");
         given(ioUtils.loadFromClassPath("/jscoverage-branch.js")).willReturn("<branch>");
-        given(parser.parse(anyString(), anyString(), anyInt())).willReturn(new AstRoot());
 
         assertThat(sourceProcessor.processSource(), startsWith("<branch><common>var jsCover_isolateBrowser = true;\n<header>"));
     }

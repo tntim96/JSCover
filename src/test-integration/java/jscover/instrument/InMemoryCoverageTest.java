@@ -343,14 +343,17 @@ Public License instead of this License.
 package jscover.instrument;
 
 
+import com.google.javascript.jscomp.parsing.Config;
 import jscover.ConfigurationCommon;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.mozilla.javascript.*;
+
+import javax.script.Invocable;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -359,51 +362,39 @@ import static org.hamcrest.core.Is.is;
 import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
-public class InMemoryCoverageTest extends ScriptableObject {
+public class InMemoryCoverageTest {
     private @Mock ConfigurationCommon config;
-    private static CompilerEnvirons compilerEnv = new CompilerEnvirons();
-    static {
-        // compilerEnv.setAllowMemberExprAsFunctionName(true);
-        compilerEnv.setLanguageVersion(Context.VERSION_1_8);
-        compilerEnv.setStrictMode(false);
-    }
     private SourceProcessor processor;
+    private ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
+    private Invocable invocable = (Invocable) engine;
 
     @Before
     public void setUp() {
-        given(config.getCompilerEnvirons()).willReturn(compilerEnv);
+        given(config.getECMAVersion()).willReturn(Config.LanguageMode.ECMASCRIPT8);
         given(config.isIncludeBranch()).willReturn(true);
         given(config.isIncludeFunction()).willReturn(true);
     }
 
     @Test
-    public void shouldExecuteJS() {
-        Context cx = Context.enter();
-        Scriptable scope = cx.initStandardObjects();
-        String source = "function isNegative(x) {\n  if (x>=0)\n    return false;\n  else\n    return true;\n}; isNegative(12);";
-        Object result = cx.evaluateString(scope, source, "inMemory.js", 1, null);
-        assertThat((Boolean)result, is(false));
+    public void shouldExecuteJS() throws Exception {
+        String source = "function isNegative(x) {\n  if (x>=0)\n    return false;\n  else\n    return true;\n};";
+        engine.eval(source);
+        assertThat(invocable.invokeFunction("isNegative", 12), is(false));
     }
 
     @Test
-    public void shouldExecuteInstrumentedJS() {
-        Context cx = Context.enter();
-        Scriptable scope = cx.initStandardObjects();
-        String source = "function isNegative(x) {\n  if (x>=0)\n    return false;\n  else\n    return true;\n}; isNegative(12);";
+    public void shouldExecuteInstrumentedJS() throws Exception {
+        String source = "function isNegative(x) {\n  if (x>=0)\n    return false;\n  else\n    return true;\n};";
 
         processor = new SourceProcessor(config, "inMemory.js", source);
         String instrumentedJS = processor.processSource();
 
-        Object expected = cx.evaluateString(scope, source, "inMemory.js", 1, null);
-        Object actual = cx.evaluateString(scope, instrumentedJS, "inMemory.js", 1, null);
-        assertThat(actual, equalTo(expected));
+        engine.eval(instrumentedJS);
+        assertThat(invocable.invokeFunction("isNegative", 12), is(false));
     }
 
     @Test
-    @Ignore
-    public void shouldPrintLineCoverage() {
-        Context cx = Context.enter();
-        Scriptable scope = cx.initStandardObjects();
+    public void shouldPrintLineCoverage() throws Exception {
         String source =
                 "function isNegative(x) {\n" +
                 "  if (x>=0)\n" +
@@ -413,37 +404,18 @@ public class InMemoryCoverageTest extends ScriptableObject {
                 "};\n" +
                 "isNegative(12);";
 
-        processor = new SourceProcessor(config, "inMemory.js", source);
+        processor = new SourceProcessor(config, "test.js", source);
         String instrumentedJS = processor.processSource();
         instrumentedJS += "_$jscoverage;";
 
-        NativeObject coverage = (NativeObject)cx.evaluateString(scope, instrumentedJS, "inMemory.js", 1, null);
-        for (Object o : coverage.getIds()) {
-            System.out.println("o = " + o + " " + o.getClass().getName());
-            NativeArray array = (NativeArray)coverage.get(o);
-            for (int i=0; i< array.size(); i++) {
-                System.out.println(i + " " + array.get(i));
-            }
-        }
-        verifyLineCount((NativeArray)coverage.get("inMemory.js"), 0, null);
-        verifyLineCount((NativeArray)coverage.get("inMemory.js"), 1, 1.0);
-        verifyLineCount((NativeArray)coverage.get("inMemory.js"), 2, 1.0);
-        verifyLineCount((NativeArray)coverage.get("inMemory.js"), 3, 1.0);
-        verifyLineCount((NativeArray)coverage.get("inMemory.js"), 4, null);
-        verifyLineCount((NativeArray)coverage.get("inMemory.js"), 5, 0.0);
-        verifyLineCount((NativeArray)coverage.get("inMemory.js"), 6, 1.0);
-        verifyLineCount((NativeArray)coverage.get("inMemory.js"), 7, 1.0);
-    }
-
-    private void verifyLineCount(NativeArray array, Integer line, Double count) {
-        if (count == null)
-            assertThat(array.get(line), nullValue());
-        else
-            assertThat((Double)array.get(line), equalTo(count));
-    }
-
-    @Override
-    public String getClassName() {
-        return this.getClass().getName();
+        engine.eval(instrumentedJS);
+        assertThat(engine.eval("_$jscoverage['test.js'].lineData[0]"), nullValue());
+        assertThat(engine.eval("_$jscoverage['test.js'].lineData[1]"), equalTo(1));
+        assertThat(engine.eval("_$jscoverage['test.js'].lineData[2]"), equalTo(1));
+        assertThat(engine.eval("_$jscoverage['test.js'].lineData[3]"), equalTo(1));
+        assertThat(engine.eval("_$jscoverage['test.js'].lineData[4]"), nullValue());
+        assertThat(engine.eval("_$jscoverage['test.js'].lineData[5]"), equalTo(0));
+        assertThat(engine.eval("_$jscoverage['test.js'].lineData[6]"), equalTo(1));
+        assertThat(engine.eval("_$jscoverage['test.js'].lineData[7]"), equalTo(1));
     }
 }

@@ -342,19 +342,14 @@ Public License instead of this License.
 
 package jscover.instrument;
 
+import com.google.javascript.jscomp.parsing.Config;
 import jscover.ConfigurationCommon;
 import jscover.util.ReflectionUtils;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.mozilla.javascript.CompilerEnvirons;
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.Parser;
-import org.mozilla.javascript.Token;
-import org.mozilla.javascript.ast.*;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
@@ -365,10 +360,6 @@ import static org.mockito.BDDMockito.given;
 //Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013, tntim96
 @RunWith(MockitoJUnitRunner.class)
 public class InstrumenterTest {
-    private static CompilerEnvirons compilerEnv = new ConfigurationCommon().getCompilerEnvirons();
-    static {
-        compilerEnv.setLanguageVersion(Context.VERSION_1_8);
-    }
 
     @Mock private ConfigurationCommon config;
     private SourceProcessor sourceProcessor;
@@ -376,55 +367,13 @@ public class InstrumenterTest {
 
     @Before
     public void setUp() {
-        given(config.getCompilerEnvirons()).willReturn(compilerEnv);
+        given(config.getECMAVersion()).willReturn(Config.LanguageMode.ECMASCRIPT8);
         given(config.isIncludeBranch()).willReturn(false);
         given(config.isIncludeFunction()).willReturn(true);
         sourceProcessor = new SourceProcessor(config, "test.js", "x;");
         instrumenter = (ParseTreeInstrumenter)ReflectionUtils.getField(sourceProcessor, "instrumenter");
     }
 
-    @Test
-    public void shouldPatchRhinoBug684131() {
-        assertEquals("^=", AstNode.operatorToString(92));
-    }
-
-    @Test
-    public void shouldPatchRhinoBugVoid() {
-        assertEquals("void", AstNode.operatorToString(126));
-    }
-
-    @Test
-    public void shouldPatchRhinoOctLiteral() {
-        Parser parser = new Parser(compilerEnv);
-        AstNode astNode = parser.parse("var x = 010", null, 1);
-        assertEquals("var x = 010;\n", astNode.toSource());
-    }
-
-    @Test
-    public void shouldPatchRhinoHexLiteral() {
-        Parser parser = new Parser(compilerEnv);
-        AstNode astNode = parser.parse("var x = 0xff", null, 1);
-        assertEquals("var x = 0xff;\n", astNode.toSource());
-    }
-
-    @Test
-    public void shouldHandleEmptySwitch() {//Bug 179
-        Parser parser = new Parser(compilerEnv);
-        AstNode astNode = parser.parse("switch(1){}", null, 1);
-        assertEquals("switch (1) {\n}\n", astNode.toSource());
-    }
-
-    @Test
-    public void shouldBuildSimpleStatement() {
-        Name left = new Name(0,"x");
-        NumberLiteral right = new NumberLiteral(0,"50");
-        Assignment assignment = new Assignment(left, right);
-        assignment.setOperator(Token.ASSIGN);
-        ExpressionStatement newChild = new ExpressionStatement(assignment);
-
-        String expectedSource = "x = 50;\n";
-        assertEquals(expectedSource, newChild.toSource());
-    }
 
     @Test
     public void shouldInstrumentStatements() {
@@ -439,7 +388,7 @@ public class InstrumenterTest {
         String source = "switch (x) {\ncase 10:\nif (a) {\nx++;\n}\n}";
         String instrumentedSource = sourceProcessor.instrumentSource(source);
         String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
-                "switch (x) {\n" +
+                "switch(x) {\n" +
                 "  case 10:\n" +
                 "    _$jscoverage['test.js'].lineData[3]++;\n" +
                 "    if (a) {\n" +
@@ -455,7 +404,7 @@ public class InstrumenterTest {
         String source = "  switch(x){ case 10: \nx++; }";
         String instrumentedSource = sourceProcessor.instrumentSource(source);
         String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
-                "switch (x) {\n" +
+                "switch(x) {\n" +
                 "  case 10:\n" +
                 "    _$jscoverage['test.js'].lineData[2]++;\n" +
                 "    x++;\n" +
@@ -524,7 +473,7 @@ public class InstrumenterTest {
         String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
                 "if (i > 0) {\n" +
                 "  _$jscoverage['test.js'].lineData[2]++;\n" +
-                "  switch (x) {\n" +
+                "  switch(x) {\n" +
                 "    case 1:\n" +
                 "      _$jscoverage['test.js'].lineData[3]++;\n" +
                 "      break;\n" +
@@ -561,7 +510,6 @@ public class InstrumenterTest {
                 "var x, fn = function() {\n" +
                 "  _$jscoverage['test.js'].functionData[0]++;\n" +
                 "  _$jscoverage['test.js'].lineData[3]++;\n" +
-                "  ;\n" +
                 "};\n";
         assertEquals(expectedSource, instrumentedSource);
         assertThat(instrumenter.getValidLines().size(), equalTo(2));
@@ -579,9 +527,7 @@ public class InstrumenterTest {
                 "}";
         String instrumentedSource = sourceProcessor.instrumentSource(source);
         String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
-                "var x = {\n" +
-                "  'y': 0, \n" +
-                "  fn: 0 || function() {\n" +
+                "var x = {'y':0, fn:0 || function() {\n" +
                 "  _$jscoverage['test.js'].functionData[0]++;\n" +
                 "  _$jscoverage['test.js'].lineData[3]++;\n" +
                 "  return 1;\n" +
@@ -646,11 +592,11 @@ public class InstrumenterTest {
                 "  });\n";
         String instrumentedSource = sourceProcessor.instrumentSource(source);
         String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
-                "var x = (function() {\n" +
+                "var x = function() {\n" +
                 "  _$jscoverage['test.js'].functionData[0]++;\n" +
                 "  _$jscoverage['test.js'].lineData[3]++;\n" +
                 "  return true;\n" +
-                "});\n";
+                "};\n";
         assertEquals(expectedSource, instrumentedSource);
         assertThat(instrumenter.getValidLines().size(), equalTo(2));
         assertThat(instrumenter.getValidLines(), hasItem(1));
@@ -698,14 +644,13 @@ public class InstrumenterTest {
                 "}\n";
         String instrumentedSource = sourceProcessor.instrumentSource(source);
         String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
-                "labelmark:\n" +
-                "  for (x = 0; x < 5; x++) {\n" +
-                "    _$jscoverage['test.js'].lineData[3]++;\n" +
-                "    if (x) {\n" +
-                "      _$jscoverage['test.js'].lineData[4]++;\n" +
-                "      continue labelmark;\n" +
-                "    }\n" +
-                "  }\n";
+                "labelmark: for (x = 0; x < 5; x++) {\n" +
+                "  _$jscoverage['test.js'].lineData[3]++;\n" +
+                "  if (x) {\n" +
+                "    _$jscoverage['test.js'].lineData[4]++;\n" +
+                "    continue labelmark;\n" +
+                "  }\n" +
+                "}\n";
         assertEquals(expectedSource, instrumentedSource);
     }
 
@@ -721,19 +666,18 @@ public class InstrumenterTest {
                 "}\n";
         String instrumentedSource = sourceProcessor.instrumentSource(source);
         String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
-                "label2:\n" +
-                "  {\n" +
-                "    _$jscoverage['test.js'].lineData[2]++;\n" +
-                "    f();\n" +
-                "    _$jscoverage['test.js'].lineData[3]++;\n" +
-                "    while (x) {\n" +
-                "      _$jscoverage['test.js'].lineData[4]++;\n" +
-                "      if (x) {\n" +
-                "        _$jscoverage['test.js'].lineData[5]++;\n" +
-                "        break label2;\n" +
-                "      }\n" +
+                "label2: {\n" +
+                "  _$jscoverage['test.js'].lineData[2]++;\n" +
+                "  f();\n" +
+                "  _$jscoverage['test.js'].lineData[3]++;\n" +
+                "  while (x) {\n" +
+                "    _$jscoverage['test.js'].lineData[4]++;\n" +
+                "    if (x) {\n" +
+                "      _$jscoverage['test.js'].lineData[5]++;\n" +
+                "      break label2;\n" +
                 "    }\n" +
-                "  }\n";
+                "  }\n" +
+                "}\n";
         assertEquals(expectedSource, instrumentedSource);
     }
 
@@ -747,14 +691,13 @@ public class InstrumenterTest {
                 "  }";
         String instrumentedSource = sourceProcessor.instrumentSource(source);
         String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
-                "outloop:\n" +
-                "  {\n" +
-                "    _$jscoverage['test.js'].lineData[3]++;\n" +
-                "    for (var j = 0; j < 10; j++) {\n" +
-                "      _$jscoverage['test.js'].lineData[4]++;\n" +
-                "      break outloop;\n" +
-                "    }\n" +
-                "  }\n";
+                "outloop: {\n" +
+                "  _$jscoverage['test.js'].lineData[3]++;\n" +
+                "  for (var j = 0; j < 10; j++) {\n" +
+                "    _$jscoverage['test.js'].lineData[4]++;\n" +
+                "    break outloop;\n" +
+                "  }\n" +
+                "}\n";
         assertEquals(expectedSource, instrumentedSource);
     }
 
@@ -766,17 +709,16 @@ public class InstrumenterTest {
                 "    }";
         String instrumentedSource = sourceProcessor.instrumentSource(source);
         String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
-                "outloop:\n" +
-                "  for (var j = 0; j < 10; j++) {\n" +
-                "    _$jscoverage['test.js'].lineData[3]++;\n" +
-                "    break outloop;\n" +
-                "  }\n";
+                "outloop: for (var j = 0; j < 10; j++) {\n" +
+                "  _$jscoverage['test.js'].lineData[3]++;\n" +
+                "  break outloop;\n" +
+                "}\n";
         assertEquals(expectedSource, instrumentedSource);
     }
 
     @Test
     public void shouldInstrumentIfElseNoBraceTry() {
-        String source = "" + 
+        String source = "" +
                 "if (condition)\n" +
                 "  f1()\n" +
                 "else try {\n" +
@@ -794,17 +736,17 @@ public class InstrumenterTest {
                 "  try {\n" +
                 "    _$jscoverage['test.js'].lineData[4]++;\n" +
                 "    f2();\n" +
-                "  }  catch (ex) {\n" +
-                "  _$jscoverage['test.js'].lineData[6]++;\n" +
-                "  f3(ex);\n" +
-                "}\n" +
+                "  } catch (ex) {\n" +
+                "    _$jscoverage['test.js'].lineData[6]++;\n" +
+                "    f3(ex);\n" +
+                "  }\n" +
                 "}\n";
         assertEquals(expectedSource, instrumentedSource);
     }
-    
+
     @Test
     public void shouldInstrumentIfElseTry() {
-        String source = "" + 
+        String source = "" +
                 "if (condition)\n" +
                 "  f1()\n" +
                 "else { try {\n" +
@@ -822,17 +764,17 @@ public class InstrumenterTest {
                 "  try {\n" +
                 "    _$jscoverage['test.js'].lineData[4]++;\n" +
                 "    f2();\n" +
-                "  }  catch (ex) {\n" +
-                "  _$jscoverage['test.js'].lineData[6]++;\n" +
-                "  f3(ex);\n" +
-                "}\n" +
+                "  } catch (ex) {\n" +
+                "    _$jscoverage['test.js'].lineData[6]++;\n" +
+                "    f3(ex);\n" +
+                "  }\n" +
                 "}\n";
         assertEquals(expectedSource, instrumentedSource);
     }
-    
+
     @Test
     public void shouldInstrumentWhileNoBraceTry() {
-        String source = "" + 
+        String source = "" +
                 "while (condition)\n" +
                 "  try {\n" +
                 "    f2()\n" +
@@ -846,14 +788,14 @@ public class InstrumenterTest {
                 "  try {\n" +
                 "    _$jscoverage['test.js'].lineData[3]++;\n" +
                 "    f2();\n" +
-                "  }  catch (ex) {\n" +
-                "  _$jscoverage['test.js'].lineData[5]++;\n" +
-                "  f3(ex);\n" +
-                "}\n" +
+                "  } catch (ex) {\n" +
+                "    _$jscoverage['test.js'].lineData[5]++;\n" +
+                "    f3(ex);\n" +
+                "  }\n" +
                 "}\n";
         assertEquals(expectedSource, instrumentedSource);
     }
-    
+
     @Test
     public void shouldInstrumentIfNoBraceWith() {
         String source = "if (c)\n with(o) {\n f();\n}";
@@ -861,24 +803,25 @@ public class InstrumenterTest {
         String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
                 "if (c) {\n" +
                 "  _$jscoverage['test.js'].lineData[2]++;\n" +
-                "  with (o) {\n" +
+                "  with(o) {\n" +
                 "    _$jscoverage['test.js'].lineData[3]++;\n" +
                 "    f();\n" +
                 "  }\n" +
                 "}\n";
         assertEquals(expectedSource, instrumentedSource);
     }
-    
+
     @Test
     public void shouldInstrumentIfNoBraceFunction() {
-        String source = "if (c)\n function() { }";
+        String source = "if (c)\n function fn() { }";
         String instrumentedSource = sourceProcessor.instrumentSource(source);
         String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
                 "if (c) {\n" +
                 "  _$jscoverage['test.js'].lineData[2]++;\n" +
-                "  function() {\n" +
+                "  function fn() {\n" +
                 "    _$jscoverage['test.js'].functionData[0]++;\n" +
-                "  }}\n";
+                "  }\n" +
+                "}\n";
         assertEquals(expectedSource, instrumentedSource);
     }
 
@@ -896,7 +839,7 @@ public class InstrumenterTest {
                 "}\n";
         assertEquals(expectedSource, instrumentedSource);
     }
-    
+
     @Test
     public void shouldInstrumentWhileNoBraceReturn() {
         String source = "function f() {\nwhile (c)\n return f()\n}";
@@ -915,7 +858,7 @@ public class InstrumenterTest {
 
     @Test
     public void shouldInstrumentIgnoringLine() {
-        String source = "var x = 7;" + CommentsVisitor.EXCL_LINE;
+        String source = "var x = 7;" + CommentsHandler.EXCL_LINE;
         String instrumentedSource = sourceProcessor.instrumentSource(source);
         String expectedSource = "var x = 7;\n";
         assertEquals(expectedSource, instrumentedSource);
@@ -923,7 +866,7 @@ public class InstrumenterTest {
 
     @Test
     public void shouldInstrumentIgnoringLines() {
-        String source = CommentsVisitor.EXCL_START + "\nvar x = 7;" + CommentsVisitor.EXCL_STOP;
+        String source = CommentsHandler.EXCL_START + "\nvar x = 7;" + CommentsHandler.EXCL_STOP;
         String instrumentedSource = sourceProcessor.instrumentSource(source);
         String expectedSource = "var x = 7;\n";
         assertEquals(expectedSource, instrumentedSource);
@@ -939,12 +882,11 @@ public class InstrumenterTest {
     }
 
     @Test
-    @Ignore
     public void shouldInstrumentES6ArrowFunction() {
         String source = "var a3 = a.map( s => s.length );";
         String instrumentedSource = sourceProcessor.instrumentSource(source);
         String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
-                "var a3 = a.map( s => s.length );\n";
+                "var a3 = a.map((s) => s.length);\n";
         assertEquals(expectedSource, instrumentedSource);
     }
 }

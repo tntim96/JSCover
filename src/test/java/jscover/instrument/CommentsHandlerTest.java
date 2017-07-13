@@ -339,59 +339,83 @@ consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
  */
+
 package jscover.instrument;
 
-import com.google.javascript.rhino.IR;
-import com.google.javascript.rhino.Node;
+import com.google.javascript.jscomp.parsing.Config;
+import com.google.javascript.jscomp.parsing.ParserRunner;
+import com.google.javascript.jscomp.parsing.parser.trees.Comment;
+import com.google.javascript.rhino.SimpleErrorReporter;
+import com.google.javascript.rhino.SimpleSourceFile;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.SortedSet;
+import java.util.List;
+
+import static com.google.javascript.jscomp.parsing.Config.JsDocParsing.INCLUDE_DESCRIPTIONS_WITH_WHITESPACE;
+import static com.google.javascript.jscomp.parsing.Config.LanguageMode.ECMASCRIPT8;
+import static com.google.javascript.jscomp.parsing.Config.RunMode.KEEP_GOING;
+import static jscover.instrument.CommentsHandler.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
+
+@RunWith(MockitoJUnitRunner.class)
+public class CommentsHandlerTest {
+    private CommentsHandler handler = new CommentsHandler();
+    private static Config parserConfig = ParserRunner.createConfig(ECMASCRIPT8, INCLUDE_DESCRIPTIONS_WITH_WHITESPACE, KEEP_GOING, null, false, Config.StrictMode.SLOPPY);
 
 
-class StatementBuilderCC {
-
-    public Node buildInstrumentationStatement(int lineNumber, String fileName, SortedSet<Integer> validLines) {
-        if (lineNumber < 1)
-            throw new IllegalStateException("Illegal line number: " + lineNumber);
-        validLines.add(lineNumber);
-        return buildInstrumentationIncrementer(lineNumber, fileName, "lineData");
+    @Test
+    public void shouldDetectJSCoverageIgnoreComments() {
+        List<Comment> comments = parse("//#JSCOVERAGE_IF x < 10\nvar x = 0;\n//#JSCOVERAGE_ENDIF");
+        handler.processComments(comments);
+        assertThat(handler.getJsCoverageIgnoreComments().size(), equalTo(1));
+        JSCoverageIgnoreComment comment = handler.getJsCoverageIgnoreComments().iterator().next();
+        assertThat(comment.getStart(), equalTo(1));
+        assertThat(comment.getCondition(), equalTo("x < 10"));
+        assertThat(comment.getEnd(), equalTo(3));
     }
 
-    public Node buildFunctionInstrumentationStatement(int lineNumber, String fileName) {
-        return buildInstrumentationIncrementer(lineNumber, fileName, "functionData");
+    @Test
+    public void shouldDetectJSCoverIgnoreLine() {
+        List<Comment> comments = parse("var x;\nx < 10;" + EXCL_LINE);
+        handler.processComments(comments);
+        assertThat(handler.ignoreLine(1), equalTo(false));
+        assertThat(handler.ignoreLine(2), equalTo(true));
     }
 
-    public Node buildConditionalStatement(int startLine, int endLine, String fileName) {
-        Node indexLineNumber = buildLineNumberExpression(startLine, fileName, "conditionals");
-        Node lineNumberLiteral = IR.number(endLine);
-        Node assignment = IR.assign(indexLineNumber, lineNumberLiteral);
-        return IR.exprResult(assignment);
+    @Test
+    public void shouldDetectJSCoverIgnoreLineRange() {
+        List<Comment> comments = parse(EXCL_START + "\nvar x;\nx < 10;" + EXCL_STOP);
+        handler.processComments(comments);
+        assertThat(handler.ignoreLine(1), equalTo(true));
+        assertThat(handler.ignoreLine(2), equalTo(true));
     }
 
-    Node buildInstrumentationIncrementer(int lineNumber, String fileName, String identifier) {
-        Node getNumber = buildLineNumberExpression(lineNumber, fileName, identifier);
-        Node inc = IR.inc(getNumber, true);
-        return IR.exprResult(inc);
+    @Test
+    public void shouldDetectJSCoverIgnoreBranch() {
+        List<Comment> comments = parse("var x;\nx < 10;" + EXCL_BR_LINE);
+        handler.processComments(comments);
+        assertThat(handler.ignoreBranch(1), equalTo(false));
+        assertThat(handler.ignoreBranch(2), equalTo(true));
     }
 
-    Node buildLineNumberExpression(int lineNumber, String fileName, String identifier) {
-        Node coverVar = IR.name("_$jscoverage");
-        Node path = IR.string(fileName);
-        Node getURI = IR.getelem(coverVar, path);
-        Node prop = IR.string(identifier);
-        Node propGet = IR.getprop(getURI, prop);
-        Node number = IR.number(lineNumber);
-        return IR.getelem(propGet, number);
+    @Test
+    public void shouldDetectJSCoverIgnoreBranchRange() {
+        List<Comment> comments = parse(EXCL_BR_START + "\nvar x;\nx < 10;" + EXCL_BR_STOP);
+        handler.processComments(comments);
+        assertThat(handler.ignoreBranch(1), equalTo(true));
+        assertThat(handler.ignoreBranch(2), equalTo(true));
     }
 
-    boolean isInstrumentation(Node n) {
-        //if (n == null)
-        //    return false;
-        if (n.getSourceFileName() == null)
-            return true;
-        Node child = n.getFirstChild();
-        if (child != null && child.isGetProp() && child.getFirstChild().isName() && child.getFirstChild().getString().equals("_$jscoverage"))
-            return true;
-        return false;
+    private List<Comment> parse(String source) {
+        SimpleErrorReporter errorReporter = new SimpleErrorReporter();
+        return ParserRunner.parse(
+                new SimpleSourceFile("test.js", false),
+                source,
+                parserConfig,
+                errorReporter).comments;
     }
 
 }

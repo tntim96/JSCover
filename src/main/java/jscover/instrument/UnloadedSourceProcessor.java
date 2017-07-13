@@ -381,7 +381,7 @@ public class UnloadedSourceProcessor {
         String uri = ioUtils.getRelativePath(file, scanPath);
         try {
             String source = ioUtils.loadFromFileSystem(file);
-            SourceProcessorCC sourceProcessor = new SourceProcessorCC(config, uri, source);
+            SourceProcessor sourceProcessor = new SourceProcessor(config, uri, source);
             sourceProcessor.instrumentSource();
             ScriptCoverageCount script = new ScriptCoverageCount("/"+uri, new ArrayList<Integer>(
                     sourceProcessor.getInstrumenter().getValidLines()),

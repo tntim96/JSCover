@@ -342,6 +342,7 @@ Public License instead of this License.
 
 package jscover.instrument;
 
+import com.google.javascript.jscomp.parsing.Config;
 import jscover.ConfigurationCommon;
 import jscover.util.ReflectionUtils;
 import org.junit.Before;
@@ -349,18 +350,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.mozilla.javascript.CompilerEnvirons;
-import org.mozilla.javascript.Context;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
 public class InstrumenterWithBranchTest {
-    private static CompilerEnvirons compilerEnv = new ConfigurationCommon().getCompilerEnvirons();
-    static {
-        compilerEnv.setLanguageVersion(Context.VERSION_1_8);
-    }
 
     @Mock private ConfigurationCommon config;
     private SourceProcessor sourceProcessor;
@@ -368,7 +363,7 @@ public class InstrumenterWithBranchTest {
 
     @Before
     public void setUp() {
-        given(config.getCompilerEnvirons()).willReturn(compilerEnv);
+        given(config.getECMAVersion()).willReturn(Config.LanguageMode.ECMASCRIPT8);
         given(config.isIncludeBranch()).willReturn(true);
         given(config.isIncludeFunction()).willReturn(true);
         sourceProcessor = new SourceProcessor(config, "test.js", "x;");
@@ -384,14 +379,15 @@ public class InstrumenterWithBranchTest {
                 "function visit1_1_1(result) {\n" +
                 "  _$jscoverage['test.js'].branchData['1'][1].ranCondition(result);\n" +
                 "  return result;\n" +
-                "}_$jscoverage['test.js'].lineData[1]++;\n" +
+                "}\n" +
+                "_$jscoverage['test.js'].lineData[1]++;\n" +
                 "var x = visit1_1_1(x || 7);\n";
         assertEquals(expectedSource, instrumentedSource);
     }
 
     @Test
     public void shouldInstrumentIgnoringBranch() {
-        String source = "var x = x || 7;" + CommentsVisitor.EXCL_BR_LINE;
+        String source = "var x = x || 7;" + CommentsHandler.EXCL_BR_LINE;
         String instrumentedSource = sourceProcessor.instrumentSource(source);
         String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\nvar x = x || 7;\n";
         assertEquals(expectedSource, instrumentedSource);
@@ -399,7 +395,7 @@ public class InstrumenterWithBranchTest {
 
     @Test
     public void shouldInstrumentIgnoringBranches() {
-        String source = CommentsVisitor.EXCL_BR_START + "\nvar x = x || 7;" + CommentsVisitor.EXCL_BR_STOP;
+        String source = CommentsHandler.EXCL_BR_START + "\nvar x = x || 7;" + CommentsHandler.EXCL_BR_STOP;
         String instrumentedSource = sourceProcessor.instrumentSource(source);
         String expectedSource = "_$jscoverage['test.js'].lineData[2]++;\nvar x = x || 7;\n";
         assertEquals(expectedSource, instrumentedSource);

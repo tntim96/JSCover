@@ -342,20 +342,34 @@ Public License instead of this License.
 
 package jscover.instrument;
 
+import com.google.javascript.jscomp.CodePrinter;
+import com.google.javascript.jscomp.CompilerOptions;
+import com.google.javascript.rhino.Node;
+import org.junit.Before;
 import org.junit.Test;
-import org.mozilla.javascript.ast.ExpressionStatement;
-import org.mozilla.javascript.ast.FunctionNode;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class BranchStatementBuilderTest {
     private BranchStatementBuilder builder = new BranchStatementBuilder();
+    private CompilerOptions options = new CompilerOptions();
+
+    @Before
+    public void setUp() {
+        options.setPreferSingleQuotes(true);
+    }
+
+    @Test
+    public void shoudlBuildLineDeclaration() {
+        Node statement = builder.buildLineDeclaration("test.js", 4);
+        assertThat(new CodePrinter.Builder(statement).setCompilerOptions(options).build(), equalTo("_$jscoverage['test.js'].branchData['4']"));
+    }
 
     @Test
     public void shouldBuildLineAndConditionInitialisation() {
-        ExpressionStatement statement = builder.buildLineAndConditionInitialisation("test.js", 4, 2, 12, 15);
-        assertThat(statement.toSource(), equalTo("_$jscoverage['test.js'].branchData['4'][2].init(12, 15);\n"));
+        Node statement = builder.buildLineAndConditionInitialisation("test.js", 4, 2, 12, 15);
+        assertThat(new CodePrinter.Builder(statement).setCompilerOptions(options).build(), equalTo("_$jscoverage['test.js'].branchData['4'][2].init(12,15)"));
     }
 
     @Test
@@ -366,22 +380,22 @@ public class BranchStatementBuilderTest {
 
     @Test
     public void shouldRemoveInstrumentationFromSourceInInitialisation() {
-        ExpressionStatement statement = builder.buildLineAndConditionInitialisation("test.js", 4, 2, 12, 15);
-        assertThat(statement.toSource(), equalTo("_$jscoverage['test.js'].branchData['4'][2].init(12, 15);\n"));
+        Node statement = builder.buildLineAndConditionInitialisation("test.js", 4, 2, 12, 15);
+        assertThat(new CodePrinter.Builder(statement).setCompilerOptions(options).build(), equalTo("_$jscoverage['test.js'].branchData['4'][2].init(12,15)"));
     }
 
     @Test
     public void shouldBuildLineAndConditionCall() {
-        ExpressionStatement statement = builder.buildLineAndConditionCall("test.js", 4, 2);
-        assertThat(statement.toSource(), equalTo("_$jscoverage['test.js'].branchData['4'][2].ranCondition(result);\n"));
+        Node statement = builder.buildLineAndConditionCall("test.js", 4, 2);
+        assertThat(new CodePrinter.Builder(statement).setCompilerOptions(options).build(), equalTo("_$jscoverage['test.js'].branchData['4'][2].ranCondition(result)"));
     }
 
     @Test
     public void shouldBuildLineAndConditionRecordingFunction() {
-        FunctionNode statement = builder.buildBranchRecordingFunction("test.js", 1, 4, 2);
-        assertThat(statement.toSource(), equalTo("function visit1_4_2(result) {\n" +
-                "  _$jscoverage['test.js'].branchData['4'][2].ranCondition(result);\n" +
-                "  return result;\n" +
+        Node statement = builder.buildBranchRecordingFunction("test.js", 1, 4, 2);
+        assertThat(new CodePrinter.Builder(statement).setCompilerOptions(options).build(), equalTo("function visit1_4_2(result){" +
+                "_$jscoverage['test.js'].branchData['4'][2].ranCondition(result);" +
+                "return result" +
                 "}"));
     }
 }

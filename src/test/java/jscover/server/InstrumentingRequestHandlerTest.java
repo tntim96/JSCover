@@ -356,7 +356,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.mozilla.javascript.CompilerEnvirons;
 
 import java.io.*;
 import java.util.*;
@@ -749,7 +748,6 @@ public class InstrumentingRequestHandlerTest {
     public void shouldServeNonInstrumentedJS() throws IOException {
         File wwwRoot = new File("wwwRoot");
         ReflectionUtils.setField(webServer, HttpServer.class, "wwwRoot", wwwRoot);
-        CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
         given(configuration.skipInstrumentation("test/production.js")).willReturn(true);
 
         webServer.handleGet(new HttpRequest("/test/production.js", null, null, 0, null));

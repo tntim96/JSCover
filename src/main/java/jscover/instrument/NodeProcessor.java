@@ -342,11 +342,8 @@ Public License instead of this License.
 
 package jscover.instrument;
 
-import org.mozilla.javascript.Token;
-import org.mozilla.javascript.ast.*;
+import com.google.javascript.rhino.Node;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -357,34 +354,31 @@ class NodeProcessor {
     private int functionNumber;// Function Coverage (HA-CA)
     private String fileName;
     private boolean includeFunctionCoverage;
-    private CommentsVisitor commentsVisitor;
+    private CommentsHandler commentsVisitor;
 
-    public NodeProcessor(String uri, boolean includeFunctionCoverage, CommentsVisitor commentsVisitor) {
+    public NodeProcessor(String uri, boolean includeFunctionCoverage, CommentsHandler commentsHandler) {
         this.fileName = uri;
         this.includeFunctionCoverage = includeFunctionCoverage;
-        this.commentsVisitor = commentsVisitor;
+        this.commentsVisitor = commentsHandler;
     }
 
-    public ExpressionStatement buildInstrumentationStatement(int lineNumber) {
+    public Node buildInstrumentationStatement(int lineNumber) {
         return statementBuilder.buildInstrumentationStatement(lineNumber, fileName, validLines);
     }
 
-	// Function Coverage (HA-CA)
-    public ExpressionStatement buildFunctionInstrumentationStatement(int functionNumber) {
+    // Function Coverage (HA-CA)
+    public Node buildFunctionInstrumentationStatement(int functionNumber) {
         return statementBuilder.buildFunctionInstrumentationStatement(functionNumber, fileName);
     }
 
-    boolean processNode(AstNode node) {
-        // Function Coverage (HA-CA), tntim96
-        if (includeFunctionCoverage && node instanceof FunctionNode) {
-            AstNode block = ((FunctionNode) node).getBody();
-            if (block instanceof Block) {
-                block.addChildToFront(buildFunctionInstrumentationStatement(functionNumber++));
-            }
+    boolean processNode(Node node) {
+        if (statementBuilder.isInstrumentation(node)) {
+            return false;
         }
-
-        if (node instanceof SwitchCase) {
-            return (processSwitchCase(node, (SwitchCase) node));
+        // Function Coverage (HA-CA), tntim96
+        if (includeFunctionCoverage && node.isFunction() && !node.isArrowFunction()) {
+            Node block = node.getChildAtIndex(2);
+            block.addChildToFront(buildFunctionInstrumentationStatement(functionNumber++));
         }
 
         if (validLines.contains(node.getLineno()) || commentsVisitor.ignoreLine(node.getLineno())) {
@@ -392,135 +386,87 @@ class NodeProcessor {
             return true;
         }
 
-        if (node.getParent() != null && node.getLineno() == node.getParent().getLineno()) {
-            // Don't add instrumentation if it will be added by parent for the
-            // same line
-            // TODO Need logic to determine if instrumentation will be added to
-            // parent.
-            // return true;
-        }
-
-        AstNode parent = node.getParent();
-        if (parent instanceof ObjectProperty || parent instanceof FunctionCall) {
-            return true;
-        }
-        if (node instanceof ExpressionStatement || node instanceof EmptyExpression || node instanceof Loop
-                || node instanceof ContinueStatement || node instanceof VariableDeclaration || node instanceof LetNode
-                || node instanceof SwitchStatement || node instanceof BreakStatement
-                || node instanceof EmptyStatement || node instanceof ThrowStatement) {
-
-            if (node.getLineno() < 1) {
-                //Must be a case expression
-                return true;
-            }
-            if (parent instanceof SwitchCase) {
+        Node parent = node.getParent();
+        if (node.isExprResult()
+                || node.isEmpty()
+                || node.isVar()
+                || node.isConst()
+                || node.isLabel()
+                || node.isThrow()
+                || node.isContinue()
+                || node.isBreak()
+                || node.isVanillaFor()
+                || node.isWhile()
+                || node.isDo()
+                || node.isForIn()
+                || node.isSwitch()
+                || node.isLet()) {
+            if (parent.isCase()) {
                 //Don't do anything here. Direct modification of statements will result in concurrent modification exception.
-            } else if (parent instanceof LabeledStatement) {
+            } else if (parent.isLabel()) {
                 //Don't do anything here.
             } else if (isLoopInitializer(node)) {
                 //Don't do anything here.
             } else if (parent != null) {
                 addInstrumentationBefore(node);
             }
-        } else if (node instanceof WithStatement) {
+        } else if (node.isWith()) {
             addInstrumentationBefore(node);
-        } else if (node instanceof FunctionNode || node instanceof TryStatement || isDebugStatement(node)) {
-            if (!(parent instanceof InfixExpression) && !(parent instanceof VariableInitializer)
-                    && !(parent instanceof ConditionalExpression) && !(parent instanceof ArrayLiteral)
-                    && !(parent instanceof ParenthesizedExpression)) {
+        } else if (node.isFunction() || node.isTry() || node.isDebugger()) {
+            if (!parent.isHook()
+                    && !parent.isStringKey()
+                    && !parent.isCall()
+                    && !parent.isName()
+                    && !parent.isArrayLit()
+                    && !parent.isAssign()
+                    && !isBooleanOperation(parent)) {
                 addInstrumentationBefore(node);
             }
-        } else if (node instanceof ReturnStatement) {
+        } else if (node.isReturn()) {
             addInstrumentationBefore(node);
-        } else if (node instanceof LabeledStatement) {
-            LabeledStatement labeledStatement = (LabeledStatement)node;
-            ExpressionStatement newChild = buildInstrumentationStatement(labeledStatement.getLineno());
-            parent.addChildBefore(newChild, node);
-        } else if (node instanceof IfStatement) {
+        } else if (node.isIf()) {
             addInstrumentationBefore(node);
+        } else if (node.isAddedBlock() && node.getChildCount() == 0) {
+            node.addChildToFront(buildInstrumentationStatement(node.getLineno()));
         }
         return true;
     }
 
-    private boolean processSwitchCase(AstNode node, SwitchCase switchCase) {
-        List<AstNode> statements = switchCase.getStatements();
-        if (statements == null) {
-            statements = new ArrayList<AstNode>();
-            statements.add(buildInstrumentationStatement(node.getLineno()));
-            switchCase.setStatements(statements);
-            return true;
-        }
-        boolean changed = false;
-        for (int i = statements.size() - 1; i >= 0; i--) {
-            AstNode statement = statements.get(i);
-            if (!validLines.contains(statement.getLineno())) {
-                statements.add(i, buildInstrumentationStatement(statement.getLineno()));
-                changed = true;
-            }
-        }
-        return changed;
-    }
-
-    private boolean isLoopInitializer(AstNode node) {
-        if (node.getParent() instanceof ForLoop) {
-            ForLoop forLoop = (ForLoop)node.getParent();
-            if (forLoop.getInitializer() == node)
+    private boolean isLoopInitializer(Node node) {
+        if (node.getParent().isVanillaFor()) {
+            if (node.getFirstChild() == node)
                 return true;
         }
         return false;
     }
 
-    private void addInstrumentationBefore(AstNode node) {
-        AstNode parent = node.getParent();
-        if (parent instanceof IfStatement) {
-            addIfScope(node, (IfStatement) parent);
-        } else if (parent instanceof Loop) {
-            addLoopScope(node, (Loop) parent);
-        } else if (parent instanceof WithStatement) {
-            addWithScope(node, (WithStatement) parent);
+    private void addInstrumentationBefore(Node node) {
+        Node parent = node.getParent();
+        if (parent.isIf()) {
+//            addIfScope(node, (IfStatement) parent);
+        } else if (parent.isVanillaFor()) {
+//            addLoopScope(node, (Loop) parent);
+        } else if (parent.isWith()) {
+//            addWithScope(node, (WithStatement) parent);
+        } else if (parent.isGetterDef()) {
+        } else if (parent.isSetterDef()) {
         } else {
             parent.addChildBefore(buildInstrumentationStatement(node.getLineno()), node);
         }
     }
     
-    private Scope makeReplacementScope(AstNode node) {
-        Scope scope = new Scope();
-        scope.addChild(buildInstrumentationStatement(node.getLineno()));
-        scope.addChild(node);
-        return scope;
-    }
-
-    private void addWithScope(AstNode node, WithStatement with) {
-        Scope scope = makeReplacementScope(node);
-        with.setStatement(scope);
-    }
-
-    private void addLoopScope(AstNode node, Loop parentLoop) {
-        Scope scope = makeReplacementScope(node);
-        parentLoop.setBody(scope);
-    }
-
-    private void addIfScope(AstNode node, IfStatement parentIf) {
-        Scope scope = makeReplacementScope(node);
-        if (parentIf.getThenPart() == node) {
-            parentIf.setThenPart(scope);
-        } else if (parentIf.getElsePart() == node) {
-            parentIf.setElsePart(scope);
-        }
-    }
-
-    private boolean isDebugStatement(AstNode node) {
-        if (!(node instanceof KeywordLiteral))
-            return false;
-        KeywordLiteral keywordLiteral = (KeywordLiteral) node;
-        return keywordLiteral.getType() == Token.DEBUGGER;
-    }
 
     public SortedSet<Integer> getValidLines() {
         return validLines;
     }
 
     public int getNumFunctions() {
-    	return functionNumber;
+        return functionNumber;
     }
+
+    private boolean isBooleanOperation(Node n) {
+        return n.isAnd() || n.isOr() || n.isNot();
+    }
+
+
 }

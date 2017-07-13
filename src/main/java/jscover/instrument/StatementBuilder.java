@@ -341,55 +341,57 @@ Public License instead of this License.
  */
 package jscover.instrument;
 
-import org.mozilla.javascript.Token;
-import org.mozilla.javascript.ast.*;
+import com.google.javascript.rhino.IR;
+import com.google.javascript.rhino.Node;
 
 import java.util.SortedSet;
 
+
 class StatementBuilder {
 
-    public ExpressionStatement buildInstrumentationStatement(int lineNumber, String fileName, SortedSet<Integer> validLines) {
+    public Node buildInstrumentationStatement(int lineNumber, String fileName, SortedSet<Integer> validLines) {
         if (lineNumber < 1)
             throw new IllegalStateException("Illegal line number: " + lineNumber);
         validLines.add(lineNumber);
         return buildInstrumentationIncrementer(lineNumber, fileName, "lineData");
     }
 
-    public ExpressionStatement buildFunctionInstrumentationStatement(int lineNumber, String fileName) {
+    public Node buildFunctionInstrumentationStatement(int lineNumber, String fileName) {
         return buildInstrumentationIncrementer(lineNumber, fileName, "functionData");
     }
 
-    public ExpressionStatement buildConditionalStatement(int startLine, int endLine, String fileName) {
-        ElementGet indexLineNumber = buildLineNumberExpression(startLine, fileName, "conditionals");
-
-        NumberLiteral lineNumberLiteral = new NumberLiteral();
-        lineNumberLiteral.setValue("" + endLine);
-
-        Assignment assignment = new Assignment(Token.ASSIGN, indexLineNumber, lineNumberLiteral, 0);
-        return new ExpressionStatement(assignment);
+    public Node buildConditionalStatement(int startLine, int endLine, String fileName) {
+        Node indexLineNumber = buildLineNumberExpression(startLine, fileName, "conditionals");
+        Node lineNumberLiteral = IR.number(endLine);
+        Node assignment = IR.assign(indexLineNumber, lineNumberLiteral);
+        return IR.exprResult(assignment);
     }
 
-    private ExpressionStatement buildInstrumentationIncrementer(int lineNumber, String fileName, String identifier) {
-        ElementGet indexLineNumber = buildLineNumberExpression(lineNumber, fileName, identifier);
-
-        UnaryExpression unaryExpression = new UnaryExpression(Token.INC, 0, indexLineNumber, true);
-        return new ExpressionStatement(unaryExpression);
+    Node buildInstrumentationIncrementer(int lineNumber, String fileName, String identifier) {
+        Node getNumber = buildLineNumberExpression(lineNumber, fileName, identifier);
+        Node inc = IR.inc(getNumber, true);
+        return IR.exprResult(inc);
     }
 
-    private ElementGet buildLineNumberExpression(int lineNumber, String fileName, String identifier) {
-        Name var = new Name(0, "_$jscoverage");
-        StringLiteral fileNameLiteral = new StringLiteral();
-        fileNameLiteral.setValue(fileName);
-        fileNameLiteral.setQuoteCharacter('\'');
-
-        ElementGet indexJSFile = new ElementGet(var, fileNameLiteral);
-
-        Name propertyName = new Name();
-        propertyName.setIdentifier(identifier);
-        PropertyGet lineProperty = new PropertyGet(indexJSFile, propertyName);
-
-        NumberLiteral lineNumberLiteral = new NumberLiteral();
-        lineNumberLiteral.setValue("" + lineNumber);
-        return new ElementGet(lineProperty, lineNumberLiteral);
+    Node buildLineNumberExpression(int lineNumber, String fileName, String identifier) {
+        Node coverVar = IR.name("_$jscoverage");
+        Node path = IR.string(fileName);
+        Node getURI = IR.getelem(coverVar, path);
+        Node prop = IR.string(identifier);
+        Node propGet = IR.getprop(getURI, prop);
+        Node number = IR.number(lineNumber);
+        return IR.getelem(propGet, number);
     }
+
+    boolean isInstrumentation(Node n) {
+        //if (n == null)
+        //    return false;
+        if (n.getSourceFileName() == null)
+            return true;
+        Node child = n.getFirstChild();
+        if (child != null && child.isGetProp() && child.getFirstChild().isName() && child.getFirstChild().getString().equals("_$jscoverage"))
+            return true;
+        return false;
+    }
+
 }
