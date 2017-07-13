@@ -781,39 +781,35 @@ public class BranchInstrumentorCCIntegrationTest {
         assertThat(coverageData.get("evalTrue"), equalTo(1.0));
         assertThat(coverageData.get("evalFalse"), equalTo(0));
     }
-//
-//    @Test
-//    public void shouldHandleVariableAsIfConditions() throws Exception {
-//        StringBuilder script = new StringBuilder("function test(x) {\n");
-//        script.append("  if (x)\n");
-//        script.append("    ;\n");
-//        script.append("};\n");
-//        runScript(script.toString(), false);
-//        Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
-//        Function coveredFn = (Function) ScriptableObject.getProperty(coverageData, "covered");
-//        Function testFn = (Function) scope.get("test", scope);
-//
-//        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(0d));
-//        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
-//        assertThat((Integer) coverageData.get("position", coverageData), equalTo(6));
-//        assertThat((Double) coverageData.get("nodeLength", coverageData), equalTo(1d));//Why double?
-//        assertThat((Boolean) coveredFn.call(context, scope, coverageData, new Object[0]), equalTo(false));
-//
-//        testFn.call(context, scope, null, new ArrayList() {{
-//            add(true);
-//        }}.toArray());
-//        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
-//        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(0d));
-//        assertThat((Boolean) coveredFn.call(context, scope, coverageData, new Object[0]), equalTo(false));
-//
-//        testFn.call(context, scope, null, new ArrayList() {{
-//            add(false);
-//        }}.toArray());
-//        assertThat((Double) coverageData.get("evalTrue", coverageData), equalTo(1d));
-//        assertThat((Double) coverageData.get("evalFalse", coverageData), equalTo(1d));
-//        assertThat((Boolean) coveredFn.call(context, scope, coverageData, new Object[0]), equalTo(true));
-//    }
-//
+
+    @Test
+    public void shouldHandleVariableAsIfConditions() throws Exception {
+        StringBuilder script = new StringBuilder("function test(x) {\n");
+        script.append("  if (x)\n");
+        script.append("    ;\n");
+        script.append("};\n");
+        runScript(script.toString(), false);
+
+        ScriptObjectMirror coverageData = (ScriptObjectMirror) engine.eval("_$jscoverage['test.js'].branchData[2][1]");
+        assertThat(coverageData.get("evalTrue"), equalTo(0));
+        assertThat(coverageData.get("evalFalse"), equalTo(0));
+        assertThat(coverageData.get("position"), equalTo(6));
+        assertThat(coverageData.get("nodeLength"), equalTo(1));
+        assertThat(coverageData.callMember("covered"), equalTo(false));
+
+        invocable.invokeFunction("test", true);
+
+        assertThat(coverageData.get("evalTrue"), equalTo(1.0));
+        assertThat(coverageData.get("evalFalse"), equalTo(0));
+        assertThat(coverageData.callMember("covered"), equalTo(false));
+
+        invocable.invokeFunction("test", false);
+
+        assertThat(coverageData.get("evalTrue"), equalTo(1.0));
+        assertThat(coverageData.get("evalFalse"), equalTo(1.0));
+        assertThat(coverageData.callMember("covered"), equalTo(true));
+    }
+
 //    @Test
 //    public void shouldHandleVariableInitializer() throws Exception {
 //        StringBuilder script = new StringBuilder("function test(x) {\n");
@@ -848,7 +844,7 @@ public class BranchInstrumentorCCIntegrationTest {
 
     private Object runScript(String script, boolean detectCoalesce) throws ScriptException {
         Node astRoot = parse(script);
-        System.out.println(astRoot.toStringTree());
+        //System.out.println(astRoot.toStringTree());
 
         BranchInstrumentorCC branchInstrumentor = new BranchInstrumentorCC("test.js", detectCoalesce, new CommentsHandlerCC());
         branchInstrumentor.setAstRoot(astRoot);
