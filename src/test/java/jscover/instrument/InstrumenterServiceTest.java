@@ -342,6 +342,7 @@ Public License instead of this License.
 
 package jscover.instrument;
 
+import com.google.javascript.jscomp.parsing.Config;
 import jscover.ConfigurationCommon;
 import jscover.server.UriNotFound;
 import jscover.util.IoUtils;
@@ -350,7 +351,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.mozilla.javascript.CompilerEnvirons;
 
 import java.io.File;
 
@@ -362,7 +362,6 @@ import static org.mockito.BDDMockito.given;
 public class InstrumenterServiceTest {
     @Mock private ConfigurationCommon config;
     private InstrumenterService service = new InstrumenterService();
-    private CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
     private IoUtils ioUtils = IoUtils.getInstance();
     private File src = new File("target/src.js");
 
@@ -370,7 +369,7 @@ public class InstrumenterServiceTest {
     public void setUp() {
         src.delete();
         ioUtils.copy("x++;", src);
-        given(config.getCompilerEnvirons()).willReturn(compilerEnvirons);
+        given(config.getECMAVersion()).willReturn(Config.LanguageMode.ECMASCRIPT8);
         given(config.isIncludeBranch()).willReturn(false);
         given(config.isIncludeFunction()).willReturn(false);
     }
