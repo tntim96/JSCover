@@ -964,12 +964,16 @@ function jscoverage_makeTable(lines) {
             branchClass = 'y';
           } else {
             branchClass = 'g';
+            var conditionSrc = lines[i];
+            var extraLines = 1;
             for (var conditionIndex = 0; conditionIndex < branchData[lineNumber].length; conditionIndex++) {
               var condition = branchData[lineNumber][conditionIndex];
               if (condition && !condition.covered()) {
                 var start = condition.position;
                 var end = start + condition.nodeLength;
-                var src = lines[i].substring(start, end);
+                while (end > conditionSrc.length && (i + extraLines) < lines.length)
+                  conditionSrc += lines[i + extraLines++];
+                var src = conditionSrc.substring(start, end);
                 branchData[lineNumber][conditionIndex].src = src;
                 branchClass = 'r';
               }

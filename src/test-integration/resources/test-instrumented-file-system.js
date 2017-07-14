@@ -39,11 +39,11 @@ function BranchData() {
 
     this.message = function(src) {
         if (this.evalTrue === 0 && this.evalFalse === 0)
-            return 'Condition never evaluated         :\t' + src;
+            return 'Condition never evaluated         :\t' + src + '\n';
         else if (this.evalTrue === 0)
-            return 'Condition never evaluated to true :\t' + src;
+            return 'Condition never evaluated to true :\t' + src + '\n';
         else if (this.evalFalse === 0)
-            return 'Condition never evaluated to false:\t' + src;
+            return 'Condition never evaluated to false:\t' + src + '\n';
         else
             return 'Condition covered';
     };

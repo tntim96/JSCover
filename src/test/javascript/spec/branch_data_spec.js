@@ -38,7 +38,7 @@ describe('JSCover', function() {
         it("should not be covered if neither path evaluated", function() {
             expect(branchData.covered()).toBeFalsy();
             expect(branchData.pathsCovered()).toEqual(0);
-            expect(branchData.message('x<y')).toEqual('Condition never evaluated         :\tx<y');
+            expect(branchData.message('x<y')).toEqual('Condition never evaluated         :\tx<y\n');
         });
 
         it("should convert to and from JSON", function() {
@@ -54,14 +54,14 @@ describe('JSCover', function() {
             branchData.ranCondition(false);
             expect(branchData.covered()).toBeFalsy();
             expect(branchData.pathsCovered()).toEqual(1);
-            expect(branchData.message('x<y')).toEqual('Condition never evaluated to true :\tx<y');
+            expect(branchData.message('x<y')).toEqual('Condition never evaluated to true :\tx<y\n');
         });
 
         it("should not be covered if only true path evaluated", function() {
             branchData.ranCondition(true);
             expect(branchData.covered()).toBeFalsy();
             expect(branchData.pathsCovered()).toEqual(1);
-            expect(branchData.message('x<y')).toEqual('Condition never evaluated to false:\tx<y');
+            expect(branchData.message('x<y')).toEqual('Condition never evaluated to false:\tx<y\n');
         });
 
         it("should be covered if both paths evaluated", function() {
@@ -106,7 +106,7 @@ describe('JSCover', function() {
             conditions[2].src = 'src2';
 
             var message = buildBranchMessage(conditions);
-            var expected = 'The following was not covered:\n- Condition never evaluated         :\tsrc1\n- Condition never evaluated         :\tsrc2';
+            var expected = 'The following was not covered:\n- Condition never evaluated         :\tsrc1\n\n- Condition never evaluated         :\tsrc2\n';
             expect(message).toEqual(expected);
         });
 
