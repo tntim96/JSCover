@@ -149,7 +149,7 @@
                 <include name="lib/**"/>
                 <include name="log.properties"/>
                 <include name="pom.xml"/>
-                <include name="src"/>
+                <include name="src/**"/>
                 <include name="${dist.dir}/*.jar"/>
             </fileset>
         </zip>
