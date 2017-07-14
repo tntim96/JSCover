@@ -450,6 +450,7 @@ class NodeProcessor {
 //            addWithScope(node, (WithStatement) parent);
         } else if (parent.isGetterDef()) {
         } else if (parent.isSetterDef()) {
+        } else if (parent.isGetProp()) {
         } else {
             parent.addChildBefore(buildInstrumentationStatement(node.getLineno()), node);
         }
