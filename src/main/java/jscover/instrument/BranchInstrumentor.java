@@ -407,37 +407,7 @@ public class BranchInstrumentor implements NodeVisitor {
         functionCall.setChangeTime(-1);
         functionWrapperCount++;
 
-        if (parent.isIf() && node == parent.getFirstChild()) {
-            parent.replaceChild(node, functionCall);
-        } else if (parent.isCall()) {
-            parent.replaceChild(node, functionCall);
-        } else if (parent.isAnd() || parent.isOr() || parent.isNot()) {
-            parent.replaceChild(node, functionCall);
-        } else if (parent.isReturn()) {
-            parent.replaceChild(node, functionCall);
-        } else if (parent.isAssign()) {
-            parent.replaceChild(node, functionCall);
-        } else if (parent.isName()) {
-            parent.replaceChild(node, functionCall);
-        } else if (parent.isSwitch()) {
-            parent.replaceChild(node, functionCall);
-        } else if (parent.isWhile()) {
-            parent.replaceChild(node, functionCall);
-        } else if (parent.isDo()) {
-            parent.replaceChild(node, functionCall);
-        } else if (parent.isVanillaFor()) {
-            parent.replaceChild(node, functionCall);
-        } else if (parent.isGetElem()) {
-            parent.replaceChild(node, functionCall);
-        } else if (parent.isExprResult()) {
-            parent.replaceChild(node, functionCall);
-        } else if (parent.isHook()) {
-            parent.replaceChild(node, functionCall);
-        } else if (parent.isArrayLit()) {
-            parent.replaceChild(node, functionCall);
-        } else {
-            logger.log(SEVERE, format("Couldn't insert wrapper for parent %s, file: %s, line: %d, position: %d, source: %s", parent, uri, node.getLineno(), node.getCharno(), "TODO"));
-        }
+        parent.replaceChild(node, functionCall);
         return true;
     }
 

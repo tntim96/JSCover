@@ -781,6 +781,17 @@ public class BranchInstrumentorIntegrationTest {
     }
 
     @Test
+    public void shouldWrapStringKeyCondition() throws Exception {
+        StringBuilder script = new StringBuilder("var x = 0; var a = {\n");
+        script.append("  key: x || 1\n");
+        script.append("};\n");
+        runScript(script.toString(), false);
+        ScriptObjectMirror coverageData1 = (ScriptObjectMirror) engine.eval("_$jscoverage['test.js'].branchData[2][1]");
+        assertThat(coverageData1.get("evalTrue"), equalTo(1.0));
+        assertThat(coverageData1.get("evalFalse"), equalTo(0));
+    }
+
+    @Test
     public void shouldHandleNestedConditions() throws Exception {
         StringBuilder script = new StringBuilder("function test(x, y) {\n");
         script.append("  if ((x < 0) && (y <= 0))\n");
@@ -898,19 +909,8 @@ public class BranchInstrumentorIntegrationTest {
         BranchInstrumentor branchInstrumentor = new BranchInstrumentor("test.js", detectCoalesce, new CommentsHandler());
         branchInstrumentor.setAstRoot(astRoot);
         NodeWalker nodeWalker = new NodeWalker();
-        int parses = 0;
-        while (++parses <= 100) {
-//            log.log(Level.FINEST, "Condition parse number {0}", parses);
-            int conditions = branchInstrumentor.getFunctionWrapperCount();
-//            nodeWalker.visit(astRoot, branchInstrumentor);
-            nodeWalker.visitAndExitOnAstChange(astRoot, branchInstrumentor);
-//            System.out.println(parses + " astRoot.toStringTree\n" + astRoot.toStringTree());
-            if (conditions == branchInstrumentor.getFunctionWrapperCount()) {
-                //log.log(Level.FINE, "No branchInstrumentor condition changes after parse {0}", parses);
-                break;
-            }
-        }
-        //branchInstrumentor.postProcess();
+
+        SourceProcessor.instrumentBranch(astRoot, nodeWalker, branchInstrumentor);
 
         String source = branchObjectHeader + header + branchInstrumentor.getJsLineInitialization() + new CodePrinter.Builder(astRoot).setLineBreak(true).build();
 //        System.out.println("--------------------------------------");

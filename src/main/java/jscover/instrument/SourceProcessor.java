@@ -471,19 +471,23 @@ class SourceProcessor {
         NodeWalker nodeWalker = new NodeWalker();
         nodeWalker.visit(jsRoot, instrumenter);
         if (includeBranchCoverage) {
-            branchInstrumentor.setAstRoot(jsRoot);
-            int parses = 0;
-            while (++parses <= 1000000) {
-                logger.log(Level.FINEST, "Condition parse number {0}", parses);
-                int conditions = branchInstrumentor.getFunctionWrapperCount();
-                nodeWalker.visit(jsRoot, branchInstrumentor);
-                if (conditions == branchInstrumentor.getFunctionWrapperCount()) {
-                    logger.log(Level.FINE, "No branchInstrumentor condition changes after parse {0}", parses);
-                    break;
-                }
-            }
+            instrumentBranch(jsRoot, nodeWalker, branchInstrumentor);
         }
         return new CodePrinter.Builder(jsRoot).setCompilerOptions(options).build();
+    }
+
+    static void instrumentBranch(Node jsRoot, NodeWalker nodeWalker, BranchInstrumentor branchInstrumentor) {
+        branchInstrumentor.setAstRoot(jsRoot);
+        int parses = 0;
+        while (++parses <= 1000000) {
+            logger.log(Level.FINEST, "Condition parse number {0}", parses);
+            int conditions = branchInstrumentor.getFunctionWrapperCount();
+            nodeWalker.visitAndExitOnAstChange(jsRoot, branchInstrumentor);
+            if (conditions == branchInstrumentor.getFunctionWrapperCount()) {
+                logger.log(Level.FINE, "No branchInstrumentor condition changes after parse {0}", parses);
+                break;
+            }
+        }
     }
 
 
