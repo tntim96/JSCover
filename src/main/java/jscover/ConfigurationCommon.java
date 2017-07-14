@@ -347,7 +347,6 @@ import jscover.util.IoUtils;
 import jscover.util.PatternMatcher;
 import jscover.util.PatternMatcherRegEx;
 import jscover.util.PatternMatcherString;
-import org.mozilla.javascript.CompilerEnvirons;
 import org.mozilla.javascript.Context;
 
 import java.util.ArrayList;
@@ -368,7 +367,6 @@ public class ConfigurationCommon extends Configuration {
     public static final String NO_INSTRUMENT_REG_PREFIX = "--no-instrument-reg=";
     public static final String INCLUDE_UNLOADED_JS_PREFIX = "--include-unloaded-js";
     public static final String JS_VERSION_PREFIX = "--js-version=";
-    public static final String ECMA_VERSION_PREFIX = "--ecma-version=";
     public static final String NO_BRANCH_PREFIX = "--no-branch";
     public static final String DETECT_COALESCE_PREFIX = "--detect-coalesce";
     public static final String NO_FUNCTION_PREFIX = "--no-function";
@@ -387,14 +385,9 @@ public class ConfigurationCommon extends Configuration {
     private boolean includeUnloadedJS;
     protected int JSVersion = Context.VERSION_1_5;
     protected Config.LanguageMode ECMAVersion = Config.LanguageMode.ECMASCRIPT8;
-    protected CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
     protected boolean defaultSkip;
     protected IoUtils ioUtils = IoUtils.getInstance();
     protected Level logLevel = SEVERE;
-
-    {
-        compilerEnvirons.setRecordingComments(true);
-    }
 
     public void setIncludeBranch(boolean includeBranch) {
         this.includeBranch = includeBranch;
@@ -418,10 +411,6 @@ public class ConfigurationCommon extends Configuration {
 
     public void setIsolateBrowser(boolean isolateBrowser) {
         this.isolateBrowser = isolateBrowser;
-    }
-
-    public void setJSVersion(int JSVersion) {
-        this.JSVersion = JSVersion;
     }
 
     public void setECMAVersion(Config.LanguageMode ECMAVersion) {
@@ -460,16 +449,8 @@ public class ConfigurationCommon extends Configuration {
         return isolateBrowser;
     }
 
-    public int getJSVersion() {
-        return JSVersion;
-    }
-
     public Config.LanguageMode getECMAVersion() {
         return ECMAVersion;
-    }
-
-    public CompilerEnvirons getCompilerEnvirons() {
-        return compilerEnvirons;
     }
 
     public Level getLogLevel() {
@@ -551,28 +532,7 @@ public class ConfigurationCommon extends Configuration {
         } else if (arg.startsWith(ONLY_INSTRUMENT_REG_PREFIX)) {
             addOnlyInstrumentReg(arg);
         } else if (arg.startsWith(JS_VERSION_PREFIX)) {
-            JSVersion = (int) (Float.valueOf(arg.substring(JS_VERSION_PREFIX.length())) * 100);
-        } else if (arg.startsWith(ECMA_VERSION_PREFIX)) {
-            int version = Integer.valueOf(arg.substring(ECMA_VERSION_PREFIX.length()));
-            switch (version) {
-                case 3:
-                    ECMAVersion = Config.LanguageMode.ECMASCRIPT3;
-                    break;
-                case 5:
-                    ECMAVersion = Config.LanguageMode.ECMASCRIPT5;
-                    break;
-                case 6:
-                    ECMAVersion = Config.LanguageMode.ECMASCRIPT6;
-                    break;
-                case 7:
-                    ECMAVersion = Config.LanguageMode.ECMASCRIPT7;
-                    break;
-                case 8:
-                    ECMAVersion = Config.LanguageMode.ECMASCRIPT8;
-                    break;
-                default:
-                    throw new IllegalArgumentException("Unsupported ECMA version '" + version + "'.");
-            }
+            ECMAVersion = Config.LanguageMode.valueOf(arg.substring(JS_VERSION_PREFIX.length()));
         } else if (arg.startsWith(LOG_LEVEL)) {
             logLevel = Level.parse(arg.substring(LOG_LEVEL.length()));
         } else {

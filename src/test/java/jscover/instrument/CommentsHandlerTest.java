@@ -391,6 +391,7 @@ public class CommentsHandlerTest {
         handler.processComments(comments);
         assertThat(handler.ignoreLine(1), equalTo(true));
         assertThat(handler.ignoreLine(2), equalTo(true));
+        assertThat(handler.ignoreLine(4), equalTo(false));
     }
 
     @Test
@@ -407,6 +408,7 @@ public class CommentsHandlerTest {
         handler.processComments(comments);
         assertThat(handler.ignoreBranch(1), equalTo(true));
         assertThat(handler.ignoreBranch(2), equalTo(true));
+        assertThat(handler.ignoreBranch(4), equalTo(false));
     }
 
     private List<Comment> parse(String source) {

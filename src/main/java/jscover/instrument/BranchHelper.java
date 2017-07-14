@@ -388,9 +388,6 @@ class BranchHelper {
         if (parent.isDo()) {
             return parent.getSecondChild() == node;
         }
-        if (parent.isForIn()) {
-            return parent.getFirstChild() == node;
-        }
         return false;
     }
 

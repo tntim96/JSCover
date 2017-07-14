@@ -889,4 +889,13 @@ public class InstrumenterTest {
                 "var a3 = a.map((s) => s.length);\n";
         assertEquals(expectedSource, instrumentedSource);
     }
+
+    @Test//https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Operators/Spread_operator
+    public void shouldInstrumentES6SpreadOperator() {
+        String source = "myFunction(...args);";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "myFunction(...args);\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
 }

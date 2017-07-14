@@ -403,7 +403,6 @@ public class ConfigurationForFS extends ConfigurationCommon {
             return configuration;
         }
         configuration.validate();
-        configuration.compilerEnvirons.setLanguageVersion(configuration.JSVersion);
         return configuration;
     }
 

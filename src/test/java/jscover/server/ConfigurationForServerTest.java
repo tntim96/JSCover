@@ -349,6 +349,7 @@ import org.junit.Test;
 
 import java.io.File;
 
+import static com.google.javascript.jscomp.parsing.Config.LanguageMode.ECMASCRIPT8;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.SEVERE;
 import static org.hamcrest.Matchers.*;
@@ -364,10 +365,8 @@ public class ConfigurationForServerTest {
         assertThat(configuration.getDocumentRoot().toString(), equalTo(System.getProperty("user.dir")));
         assertThat(configuration.getPort(), equalTo(8080));
         assertThat(configuration.getReportDir(), is(new File(System.getProperty("user.dir"))));
-        assertThat(configuration.getJSVersion(), equalTo(150));
-        assertThat(configuration.getECMAVersion(), equalTo(Config.LanguageMode.ECMASCRIPT8));
+        assertThat(configuration.getECMAVersion(), equalTo(ECMASCRIPT8));
         assertThat(configuration.skipInstrumentation("/"), is(false));
-        assertThat(configuration.getCompilerEnvirons().getLanguageVersion(), equalTo(150));
         assertThat(configuration.isProxy(), is(false));
         assertThat(configuration.isSaveJSONOnly(), is(false));
         assertThat(configuration.isIncludeBranch(), is(true));
@@ -401,7 +400,7 @@ public class ConfigurationForServerTest {
         assertThat(configuration.getDocumentRoot().toString(), equalTo(System.getProperty("user.dir")));
         assertThat(configuration.getPort(), equalTo(8080));
         assertThat(configuration.isProxy(), is(false));
-        assertThat(configuration.getJSVersion(), equalTo(150));
+        assertThat(configuration.getECMAVersion(), equalTo(ECMASCRIPT8));
         assertThat(configuration.skipInstrumentation("/"), is(false));
         assertThat(configuration.isIncludeBranch(), is(true));
         assertThat(configuration.isIncludeFunction(), is(true));
@@ -463,15 +462,8 @@ public class ConfigurationForServerTest {
     }
 
     @Test
-    public void shouldParseJSVersion() {
-        ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--js-version=1.8"});
-        assertThat(configuration.getJSVersion(), equalTo(180));
-        assertThat(configuration.getCompilerEnvirons().getLanguageVersion(), equalTo(180));
-    }
-
-    @Test
     public void shouldParseECMAVersion() {
-        ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--ecma-version=7"});
+        ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--js-version=ECMASCRIPT7"});
         assertThat(configuration.getECMAVersion(), equalTo(Config.LanguageMode.ECMASCRIPT7));
     }
 

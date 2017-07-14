@@ -347,6 +347,7 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 
+import static com.google.javascript.jscomp.parsing.Config.LanguageMode.ECMASCRIPT7;
 import static java.util.logging.Level.SEVERE;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
@@ -358,9 +359,7 @@ public class ConfigurationForStdOutTest {
         ConfigurationForStdOut configuration = ConfigurationForStdOut.parse(new String[]{"-io", "doc/example/script.js"});
         assertThat(configuration.showHelp(), is(false));
         assertThat(configuration.isInvalid(), is(false));
-        assertThat(configuration.getJSVersion(), equalTo(150));
         assertThat(configuration.skipInstrumentation("/"), is(false));
-        assertThat(configuration.getCompilerEnvirons().getLanguageVersion(), equalTo(150));
         assertThat(configuration.isIncludeBranch(), is(true));
         assertThat(configuration.isIncludeFunction(), is(true));
         assertThat(configuration.getLogLevel(), is(SEVERE));
@@ -380,9 +379,9 @@ public class ConfigurationForStdOutTest {
 
     @Test
     public void shouldGetSourceFileAndCommonConfiguration() {
-        ConfigurationForStdOut configuration = ConfigurationForStdOut.parse(new String[]{"-io", "--js-version=1.8", "doc/example/script.js"});
+        ConfigurationForStdOut configuration = ConfigurationForStdOut.parse(new String[]{"-io", "--js-version=ECMASCRIPT7", "doc/example/script.js"});
         assertThat(configuration.getSrcFile(), equalTo(new File("doc/example/script.js")));
-        assertThat(configuration.getJSVersion(), equalTo(180));
+        assertThat(configuration.getECMAVersion(), equalTo(ECMASCRIPT7));
     }
 
     @Test

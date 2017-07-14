@@ -469,7 +469,6 @@ public class ConfigurationForServer extends ConfigurationCommon {
             configuration.parse(arg);
         }
         configuration.validate();
-        configuration.compilerEnvirons.setLanguageVersion(configuration.JSVersion);
         return configuration;
     }
 

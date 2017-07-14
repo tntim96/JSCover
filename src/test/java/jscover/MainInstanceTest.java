@@ -365,6 +365,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
 
+import static com.google.javascript.jscomp.parsing.Config.LanguageMode.ECMASCRIPT5;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.assertThat;
@@ -471,12 +472,12 @@ public class MainInstanceTest {
 
     @Test
     public void shouldRunFileSystem() throws IOException, InterruptedException {
-        main.runMain(new String[]{"-fs", "--js-version=1.0", "src", "dest"});
+        main.runMain(new String[]{"-fs", "--js-version=ECMASCRIPT5", "src", "dest"});
 
         TypeSafeMatcher<ConfigurationForFS> matcher = new TypeSafeMatcher<ConfigurationForFS>() {
             @Override
             protected boolean matchesSafely(ConfigurationForFS item) {
-                return item.getCompilerEnvirons().getLanguageVersion() == 100;
+                return item.getECMAVersion() == ECMASCRIPT5;
             }
 
             public void describeTo(Description description) {
@@ -496,12 +497,12 @@ public class MainInstanceTest {
 
     @Test
     public void shouldRunStdIO() throws IOException, InterruptedException {
-        main.runMain(new String[]{"-io", "--js-version=1.0", "doc/example/script.js"});
+        main.runMain(new String[]{"-io", "--js-version=ECMASCRIPT5", "doc/example/script.js"});
 
         TypeSafeMatcher<ConfigurationForStdOut> matcher = new TypeSafeMatcher<ConfigurationForStdOut>() {
             @Override
             protected boolean matchesSafely(ConfigurationForStdOut item) {
-                return item.getCompilerEnvirons().getLanguageVersion() == 100;
+                return item.getECMAVersion() == ECMASCRIPT5;
             }
 
             public void describeTo(Description description) {

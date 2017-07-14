@@ -373,7 +373,6 @@ public class ConfigurationForStdOut extends ConfigurationCommon {
         if (!configuration.validSourceFile()) {
             configuration.setInvalid(format("Source file '%s' is invalid", configuration.srcFile));
         }
-        configuration.compilerEnvirons.setLanguageVersion(configuration.JSVersion);
         return configuration;
     }
 

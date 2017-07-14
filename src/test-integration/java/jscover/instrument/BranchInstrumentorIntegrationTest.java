@@ -728,6 +728,59 @@ public class BranchInstrumentorIntegrationTest {
     }
 
     @Test
+    public void shouldWrapOr() throws Exception {
+        StringBuilder script = new StringBuilder("function test(x, y) {\n");
+        script.append("  if ((x < 0) || (y <= 0))\n");
+        script.append("    ;\n");
+        script.append("};\n");
+        runScript(script.toString(), false);
+        ScriptObjectMirror coverageData1 = (ScriptObjectMirror) engine.eval("_$jscoverage['test.js'].branchData[2][1]");
+        ScriptObjectMirror coverageData2 = (ScriptObjectMirror) engine.eval("_$jscoverage['test.js'].branchData[2][2]");
+        ScriptObjectMirror coverageData3 = (ScriptObjectMirror) engine.eval("_$jscoverage['test.js'].branchData[2][3]");
+
+        assertThat(coverageData1.callMember("covered"), equalTo(false));
+        assertThat(coverageData2.callMember("covered"), equalTo(false));
+        assertThat(coverageData3.callMember("covered"), equalTo(false));
+
+        invocable.invokeFunction("test", -1, -1);
+        assertThat(coverageData1.callMember("covered"), equalTo(false));
+        assertThat(coverageData2.callMember("covered"), equalTo(false));
+        assertThat(coverageData3.callMember("covered"), equalTo(false));
+
+        invocable.invokeFunction("test", 1, -1);
+        assertThat(coverageData1.callMember("covered"), equalTo(false));
+        assertThat(coverageData2.callMember("covered"), equalTo(true));
+        assertThat(coverageData3.callMember("covered"), equalTo(false));
+
+        invocable.invokeFunction("test", 1, 1);
+        assertThat(coverageData1.callMember("covered"), equalTo(true));
+        assertThat(coverageData2.callMember("covered"), equalTo(true));
+        assertThat(coverageData3.callMember("covered"), equalTo(true));
+    }
+
+    @Test
+    public void shouldWrapNot() throws Exception {
+        StringBuilder script = new StringBuilder("function test(x) {\n");
+        script.append("  if (!(x < 0))\n");
+        script.append("    ;\n");
+        script.append("};\n");
+        runScript(script.toString(), false);
+        ScriptObjectMirror coverageData1 = (ScriptObjectMirror) engine.eval("_$jscoverage['test.js'].branchData[2][1]");
+        ScriptObjectMirror coverageData2 = (ScriptObjectMirror) engine.eval("_$jscoverage['test.js'].branchData[2][2]");
+
+        assertThat(coverageData1.callMember("covered"), equalTo(false));
+        assertThat(coverageData2.callMember("covered"), equalTo(false));
+
+        invocable.invokeFunction("test", -1);
+        assertThat(coverageData1.callMember("covered"), equalTo(false));
+        assertThat(coverageData2.callMember("covered"), equalTo(false));
+
+        invocable.invokeFunction("test", 1);
+        assertThat(coverageData1.callMember("covered"), equalTo(true));
+        assertThat(coverageData2.callMember("covered"), equalTo(true));
+    }
+
+    @Test
     public void shouldHandleNestedConditions() throws Exception {
         StringBuilder script = new StringBuilder("function test(x, y) {\n");
         script.append("  if ((x < 0) && (y <= 0))\n");
@@ -857,7 +910,7 @@ public class BranchInstrumentorIntegrationTest {
                 break;
             }
         }
-        branchInstrumentor.postProcess();
+        //branchInstrumentor.postProcess();
 
         String source = branchObjectHeader + header + branchInstrumentor.getJsLineInitialization() + new CodePrinter.Builder(astRoot).setLineBreak(true).build();
 //        System.out.println("--------------------------------------");

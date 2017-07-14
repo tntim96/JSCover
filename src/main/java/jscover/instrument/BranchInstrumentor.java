@@ -359,7 +359,6 @@ public class BranchInstrumentor implements NodeVisitor {
 
     private BranchStatementBuilder branchStatementBuilder = new BranchStatementBuilder();
     private BranchHelper branchHelper = BranchHelper.getInstance();
-    private Set<PostProcess> postProcesses = new HashSet<PostProcess>();
     private String uri;
     private boolean detectCoalesce;
     private CommentsHandler commentsHandler;
@@ -379,11 +378,6 @@ public class BranchInstrumentor implements NodeVisitor {
 
     public void setAstRoot(Node astRoot) {
         this.astRoot = astRoot;
-    }
-
-    public void postProcess() {
-        for (PostProcess postProcess : postProcesses)
-            postProcess.process();
     }
 
     private boolean replaceWithFunction(Node node) {
