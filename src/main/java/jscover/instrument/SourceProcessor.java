@@ -460,7 +460,7 @@ class SourceProcessor {
 
     protected String instrumentSource(String sourceURI, String source) {
         SourceFile sourceFile = SourceFile.fromCode(sourceURI, source);
-        com.google.javascript.jscomp.parsing.parser.SourceFile sf = new com.google.javascript.jscomp.parsing.parser.SourceFile(sourceURI, source);
+//        com.google.javascript.jscomp.parsing.parser.SourceFile sf = new com.google.javascript.jscomp.parsing.parser.SourceFile(sourceURI, source);
 //        LineNumberTable lineNumberTable = new LineNumberTable(sf);
         ParserRunner.ParseResult parsed = parse(source, sourceFile);
         Node jsRoot = parsed.ast;

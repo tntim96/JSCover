@@ -3,6 +3,10 @@
   * Replace Rhino AST engine with Closure Compiler (https://github.com/tntim96/JSCover/issues/255)
   * Internal: Upgrade HtmlUnit 2.24 to 2.27, Mockito 2.7.5 to 2.8.47, Jasmine 2.5.2 to 2.6.4
 
+This is a major upgrade of the AST engine. The only visible changes should be the options for `--js-version` have
+changed, as well as the default language level. See the [manual](http://tntim96.github.io/JSCover/manual/manual.xml)
+for details.
+
 1.1.0 / 2017-02-12
 ==================
   * Remove conditional source from JSON (https://github.com/tntim96/JSCover/issues/244)
