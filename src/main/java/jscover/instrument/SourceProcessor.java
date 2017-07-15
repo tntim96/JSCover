@@ -494,12 +494,12 @@ class SourceProcessor {
         ErrorReporter errorReporter = new ErrorReporter(){
             @Override
             public void warning(String message, String sourceName, int line, int lineOffset) {
-                //System.err.println(format("Warn: %s, sourceName: %s, line: %d lineOffset: %d", message, sourceName, line, lineOffset));
+                logger.log(Level.WARNING, "{0}, sourceName: {1}, line: {2} lineOffset: {3}", new Object[]{message, sourceName, line, lineOffset});
             }
 
             @Override
             public void error(String message, String sourceName, int line, int lineOffset) {
-                //System.err.println(format("Error: %s, sourceName: %s, line: %d, lineOffset: %d", message, sourceName, line, lineOffset));
+                logger.log(Level.SEVERE, "{0}, sourceName: {1}, line: {2} lineOffset: {3}", new Object[]{message, sourceName, line, lineOffset});
             }
         };
         ParserRunner.ParseResult parseResult = ParserRunner.parse(
