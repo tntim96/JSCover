@@ -1,14 +1,12 @@
 function BranchData() {
     this.position = -1;
     this.nodeLength = -1;
-    this.src = null;
     this.evalFalse = 0;
     this.evalTrue = 0;
 
-    this.init = function(position, nodeLength, src) {
+    this.init = function(position, nodeLength) {
         this.position = position;
         this.nodeLength = nodeLength;
-        this.src = src;
         return this;
     };
 
@@ -35,18 +33,17 @@ function BranchData() {
     this.toJSON = function() {
         return '{"position":' + this.position
             + ',"nodeLength":' + this.nodeLength
-            + ',"src":' + jscoverage_quote(this.src)
             + ',"evalFalse":' + this.evalFalse
             + ',"evalTrue":' + this.evalTrue + '}';
     };
 
-    this.message = function() {
+    this.message = function(src) {
         if (this.evalTrue === 0 && this.evalFalse === 0)
-            return 'Condition never evaluated         :\t' + this.src;
+            return 'Condition never evaluated         :\t' + src + '\n';
         else if (this.evalTrue === 0)
-            return 'Condition never evaluated to true :\t' + this.src;
+            return 'Condition never evaluated to true :\t' + src + '\n';
         else if (this.evalFalse === 0)
-            return 'Condition never evaluated to false:\t' + this.src;
+            return 'Condition never evaluated to false:\t' + src + '\n';
         else
             return 'Condition covered';
     };
@@ -55,7 +52,7 @@ function BranchData() {
 BranchData.fromJson = function(jsonString) {
     var json = eval('(' + jsonString + ')');
     var branchData = new BranchData();
-    branchData.init(json.position, json.nodeLength, json.src);
+    branchData.init(json.position, json.nodeLength);
     branchData.evalFalse = json.evalFalse;
     branchData.evalTrue = json.evalTrue;
     return branchData;
@@ -63,7 +60,7 @@ BranchData.fromJson = function(jsonString) {
 
 BranchData.fromJsonObject = function(json) {
     var branchData = new BranchData();
-    branchData.init(json.position, json.nodeLength, json.src);
+    branchData.init(json.position, json.nodeLength);
     branchData.evalFalse = json.evalFalse;
     branchData.evalTrue = json.evalTrue;
     return branchData;
@@ -74,7 +71,7 @@ function buildBranchMessage(conditions) {
     var i;
     for (i = 0; i < conditions.length; i++) {
         if (conditions[i] !== undefined && conditions[i] !== null && !conditions[i].covered())
-            message += '\n- '+ conditions[i].message();
+            message += '\n- '+ conditions[i].message(conditions[i].src);
     }
     return message;
 }
@@ -209,7 +206,7 @@ function jscoverage_html_escape(s) {
 }
 /*
     jscoverage.js - code coverage for JavaScript
-    Copyright (C) 2007, 2008, 2009, 2010 siliconforks.com - 2012, 2013, 2014, 2015, 2016 tntim96
+    Copyright (C) 2007, 2008, 2009, 2010 siliconforks.com - 2012, 2013, 2014, 2015, 2016, 2017 tntim96
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -1173,10 +1170,18 @@ function jscoverage_makeTable(lines) {
             branchClass = 'y';
           } else {
             branchClass = 'g';
+            var conditionSrc = lines[i];
+            var extraLines = 1;
             for (var conditionIndex = 0; conditionIndex < branchData[lineNumber].length; conditionIndex++) {
-              if (branchData[lineNumber][conditionIndex] !== undefined && branchData[lineNumber][conditionIndex] !== null && !branchData[lineNumber][conditionIndex].covered()) {
+              var condition = branchData[lineNumber][conditionIndex];
+              if (condition && !condition.covered()) {
+                var start = condition.position;
+                var end = start + condition.nodeLength;
+                while (end > conditionSrc.length && (i + extraLines) < lines.length)
+                  conditionSrc += lines[i + extraLines++];
+                var src = conditionSrc.substring(start, end);
+                branchData[lineNumber][conditionIndex].src = src;
                 branchClass = 'r';
-                break;
               }
             }
           }
@@ -1187,7 +1192,7 @@ function jscoverage_makeTable(lines) {
         row += '<td class="numeric '+branchClass+'"><pre>' + branchText + '</pre></td>';
     }
 
-    row += '<td><pre>' + lines[i] + '</pre></td>';
+    row += '<td><pre>' + jscoverage_html_escape(lines[i]) + '</pre></td>';
     row += '</tr>';
     row += '\n';
     rows[lineNumber] = row;
@@ -1262,7 +1267,7 @@ function jscoverage_recalculateSourceTab() {
     jscoverage_endLengthyOperation();
     return;
   }
-
+  document.getElementById('sourceErrorDiv').innerHTML = '';
   function reportError(e) {
     jscoverage_endLengthyOperation();
     var summaryThrobber = document.getElementById('summaryThrobber');
@@ -1295,22 +1300,18 @@ function jscoverage_recalculateSourceTab() {
           }
           var response = request.responseText;
           var displaySource = function() {
-              var lines = response.split("\n");
-            for (var i = 0; i < lines.length; i++)
-                  lines[i] = jscoverage_html_escape(lines[i]);
-              jscoverage_makeTable(lines);
+            var lines = response.split("\n");
+            jscoverage_makeTable(lines);
           };
           setTimeout(displaySource, 0);
           summaryThrobber.style.visibility = 'hidden';
-        }
-        catch (e) {
+        } catch (e) {
           reportError(e);
         }
       }
     };
     request.send(null);
-  }
-  catch (e) {
+  } catch (e) {
     reportError(e);
   }
 }

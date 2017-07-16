@@ -649,8 +649,8 @@ fs.write("target/jscoverage.json", json, 'w');
                             <td>1.5</td>
                             <td>
                                 Use the specified JavaScript version; valid values for VERSION are
-                                <a href="https://en.wikipedia.org/wiki/ECMAScript#Version_correspondence" target="_blank">1.0, 1.1,
-                                    1.2, ..., 1.8, 2.0</a> (2.0 for ES6).
+                                <a href="https://en.wikipedia.org/wiki/ECMAScript#Versions" target="_blank">ECMASCRIPT3,
+                                    ECMASCRIPT5, ECMASCRIPT6, ECMASCRIPT7, ECMASCRIPT8, TYPESCRIPT</a>.
                             </td>
                         </tr>
                         <tr>
@@ -864,8 +864,8 @@ fs.write("target/jscoverage.json", json, 'w');
                             <td>1.5</td>
                             <td>
                                 Use the specified JavaScript version; valid values for VERSION are
-                                <a href="http://en.wikipedia.org/wiki/JavaScript#Versions" target="_blank">1.0, 1.1,
-                                    1.2, ..., 1.8</a>.
+                                <a href="https://en.wikipedia.org/wiki/ECMAScript#Versions" target="_blank">ECMASCRIPT3,
+                                    ECMASCRIPT5, ECMASCRIPT6, ECMASCRIPT7, ECMASCRIPT8, TYPESCRIPT</a>.
                             </td>
                         </tr>
                         <tr>
