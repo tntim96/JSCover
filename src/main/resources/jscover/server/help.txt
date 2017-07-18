@@ -12,7 +12,7 @@ Options:
       --save-json-only          save only the coverage data, jscoverage.json
       --uri-to-file-matcher=REG for proxy mode, regular expression matcher for converting a URI to a file path
       --uri-to-file-replace=REP for proxy mode, regular expression replacement for converting a URI to a file path
-      --js-version=VERSION      JavaScript version ECMASCRIPT3/5/6/7/8, TYPESCRIPT (default: ECMASCRIPT8)
+      --js-version=VERSION      JavaScript version ECMASCRIPT3/5/6/7/8 (default: ECMASCRIPT8)
       --no-branch               turn off branch coverage data collection
       --no-function             turn off function coverage data collection
       --include-unloaded-js     include unloaded JavaScript under <document-root> in the report
