@@ -85,13 +85,12 @@
 
     <target name="jar" depends="compile">
         <copy file="${com.google.javascript:closure-compiler:jar}" tofile="${dist.dir}/closure-compiler.jar"/>
-        <copy file="${org.mozilla:rhino:jar}" tofile="${dist.dir}/js.jar"/>
         <jar jarfile="${dist.dir}/${ant.project.name}.jar" basedir="${classes.main.dir}" compress="true">
             <manifest>
                 <attribute name="Implementation-Title" value="${ant.project.name}"/>
                 <attribute name="Implementation-Version" value="${version}"/>
                 <attribute name="Main-Class" value="jscover.Main"/>
-                <attribute name="Class-Path" value="js.jar closure-compiler.jar"/><!--Add required JARs here-->
+                <attribute name="Class-Path" value="closure-compiler.jar"/><!--Add required JARs here-->
             </manifest>
         </jar>
     </target>
