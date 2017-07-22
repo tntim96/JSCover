@@ -85,13 +85,12 @@
 
     <target name="jar" depends="compile">
         <copy file="${com.google.javascript:closure-compiler:jar}" tofile="${dist.dir}/closure-compiler.jar"/>
-        <copy file="${org.mozilla:rhino:jar}" tofile="${dist.dir}/js.jar"/>
         <jar jarfile="${dist.dir}/${ant.project.name}.jar" basedir="${classes.main.dir}" compress="true">
             <manifest>
                 <attribute name="Implementation-Title" value="${ant.project.name}"/>
                 <attribute name="Implementation-Version" value="${version}"/>
                 <attribute name="Main-Class" value="jscover.Main"/>
-                <attribute name="Class-Path" value="js.jar closure-compiler.jar"/><!--Add required JARs here-->
+                <attribute name="Class-Path" value="closure-compiler.jar"/><!--Add required JARs here-->
             </manifest>
         </jar>
     </target>
@@ -101,8 +100,6 @@
         <mkdir dir="${tmpDir}"/>
         <unzip src="${com.google.javascript:closure-compiler:jar}" dest="${tmpDir}"/>
         <move file="${tmpDir}/LICENSE" tofile="${tmpDir}/META-INF/LICENSE-closure-compiler.txt"/>
-        <unzip src="${org.mozilla:rhino:jar}" dest="${tmpDir}"/>
-        <move file="${tmpDir}/LICENSE.txt" tofile="${tmpDir}/META-INF/LICENSE-mozilla.txt"/>
         <copy todir="${tmpDir}" includeemptydirs="no">
             <fileset dir="${classes.main.dir}" />
         </copy>

@@ -341,10 +341,7 @@ Public License instead of this License. */
 
 package jscover.report;
 
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.NativeArray;
-import org.mozilla.javascript.NativeObject;
-import org.mozilla.javascript.json.JsonParser;
+import com.google.gson.Gson;
 
 import java.util.*;
 import java.util.logging.Logger;
@@ -356,8 +353,6 @@ import static java.util.logging.Level.FINEST;
 //Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013, tntim96
 public class JSONDataMerger {
     private static final Logger logger = Logger.getLogger(JSONDataMerger.class.getName());
-    private Context cx = Context.enter();
-    private JsonParser parser = new JsonParser(cx, cx.initStandardObjects());
 
 
     public SortedMap<String, FileData> mergeJSONCoverageStrings(String... data) {
@@ -406,58 +401,58 @@ public class JSONDataMerger {
 
     public SortedMap<String, FileData> jsonToMap(String data) {
         TreeMap<String, FileData> map = new TreeMap<String, FileData>();
-        try {
-            NativeObject json = (NativeObject) parser.parseValue(data);
-            for (Object scriptURI : json.keySet()) {
-                NativeObject scriptData = (NativeObject) json.get(scriptURI);
-                NativeArray lineCoverageArray = (NativeArray) scriptData.get("lineData");
-                NativeObject branchJSONArray = (NativeObject) scriptData.get("branchData");
-                List<Integer> countData = new ArrayList<Integer>(lineCoverageArray.size());
-                for (int i = 0; i < lineCoverageArray.size(); i++)
-                    countData.add((Integer) lineCoverageArray.get(i));
-    
-                // Function Coverage (HA-CA) 
-                NativeArray functionCoverageArray = (NativeArray) scriptData.get("functionData");
-                List<Integer> funcData = new ArrayList<Integer>();
-                if (functionCoverageArray != null) {
-                    for (int i = 0; i < functionCoverageArray.size(); i++)
-                        funcData.add((Integer) functionCoverageArray.get(i));
-                }
+        TreeMap json = new Gson().fromJson(data, TreeMap.class);
+        for (Object scriptURI : json.keySet()) {
+            Map scriptData = (Map) json.get(scriptURI);
+            List lineCoverageArray = (List) scriptData.get("lineData");
+            Map branchJSONArray = (Map) scriptData.get("branchData");
+            List<Integer> countData = new ArrayList<Integer>(lineCoverageArray.size());
+            for (int i = 0; i < lineCoverageArray.size(); i++)
+                countData.add(getIntOrNull(lineCoverageArray.get(i)));
 
-                SortedMap<Integer, List<BranchData>> branchLineMap = new TreeMap<Integer, List<BranchData>>();
-                if (branchJSONArray != null) {
-                    readBranchLines(branchJSONArray, branchLineMap);
-                }
-                map.put((String) scriptURI, new FileData((String) scriptURI, countData, funcData, branchLineMap));
+            // Function Coverage (HA-CA)
+            List functionCoverageArray = (List) scriptData.get("functionData");
+            List<Integer> funcData = new ArrayList<Integer>();
+            if (functionCoverageArray != null) {
+                for (int i = 0; i < functionCoverageArray.size(); i++)
+                    funcData.add(getIntOrNull(functionCoverageArray.get(i)));
             }
-        } catch (JsonParser.ParseException e) {
-            throw new RuntimeException(e);
+
+            SortedMap<Integer, List<BranchData>> branchLineMap = new TreeMap<Integer, List<BranchData>>();
+            if (branchJSONArray != null) {
+                    readBranchLines(branchJSONArray, branchLineMap);
+            }
+            map.put((String) scriptURI, new FileData((String) scriptURI, countData, funcData, branchLineMap));
         }
         return map;
     }
 
-    private void readBranchLines(NativeObject branchJSONObject, SortedMap<Integer, List<BranchData>> branchLineMap) {
+    private void readBranchLines(Map branchJSONObject, SortedMap<Integer, List<BranchData>> branchLineMap) {
         for (Object line: branchJSONObject.keySet()) {
             List<BranchData> branchConditionArray = new ArrayList<BranchData>();
-            branchLineMap.put((Integer)line, branchConditionArray);
-            NativeArray conditionsJSON = (NativeArray) branchJSONObject.get(line);
+            branchLineMap.put(line == null ? null : Integer.parseInt((String) line), branchConditionArray);
+            List conditionsJSON = (List) branchJSONObject.get(line);
             readBranchCondition(branchConditionArray, conditionsJSON);
         }
     }
 
-    private void readBranchCondition(List<BranchData> branchConditionArray, NativeArray conditionsJSON) {
+    private void readBranchCondition(List<BranchData> branchConditionArray, List conditionsJSON) {
         for (int j = 0; j < conditionsJSON.size(); j++) {
-            NativeObject conditionJSON = (NativeObject) conditionsJSON.get(j);
+            Map conditionJSON = (Map) conditionsJSON.get(j);
             if (conditionJSON == null) {
                 branchConditionArray.add(null);
             } else {
-                int position = (Integer) conditionJSON.get("position");
-                int nodeLength = (Integer) conditionJSON.get("nodeLength");
-                int evalFalse = (Integer) conditionJSON.get("evalFalse");
-                int evalTrue = (Integer) conditionJSON.get("evalTrue");
+                int position = getIntOrNull(conditionJSON.get("position"));
+                int nodeLength = getIntOrNull(conditionJSON.get("nodeLength"));
+                int evalFalse = getIntOrNull(conditionJSON.get("evalFalse"));
+                int evalTrue = getIntOrNull(conditionJSON.get("evalTrue"));
                 branchConditionArray.add(new BranchData(position, nodeLength, evalFalse, evalTrue));
             }
         }
+    }
+
+    private Integer getIntOrNull(Object value) {
+        return value == null ? null : ((Double)value).intValue();
     }
 
     String toJSON(SortedMap<String, FileData> map) {

@@ -42,7 +42,6 @@
   </component>
   <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false">
     <file url="file://$PROJECT_DIR$" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/data/LICENSE-mozilla.txt" charset="UTF-8" />
     <file url="PROJECT" charset="UTF-8" />
   </component>
   <component name="IdProvider" IDEtalkID="F3D739D27C07C546C9EE9E91670B37A6" />
@@ -1171,17 +1170,6 @@
       </JAVADOC>
       <SOURCES>
         <root url="jar://$MAVEN_REPOSITORY$/org/mortbay/jetty/servlet-api-2.5/6.1.14/servlet-api-2.5-6.1.14-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.mozilla:rhino:1.7.7.1">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino/1.7.7.1/rhino-1.7.7.1.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino/1.7.7.1/rhino-1.7.7.1-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino/1.7.7.1/rhino-1.7.7.1-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.objenesis:objenesis:2.5">

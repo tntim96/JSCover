@@ -46,7 +46,6 @@
     <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.7" level="project" />
     <orderEntry type="library" name="Maven: com.google.code.findbugs:jsr305:3.0.1" level="project" />
     <orderEntry type="library" name="Maven: com.google.jsinterop:jsinterop-annotations:1.0.0" level="project" />
-    <orderEntry type="library" name="Maven: org.mozilla:rhino:1.7.7.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: net.sourceforge.htmlunit:htmlunit:2.27" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: xalan:xalan:2.7.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: xalan:serializer:2.7.2" level="project" />
@@ -94,7 +93,7 @@
     <orderEntry type="module-library">
       <library name="Maven: com.sun:tools:0">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../jdk1.8.0_112/lib/tools.jar!/" />
+          <root url="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_111.jdk/Contents/Home/lib/tools.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
