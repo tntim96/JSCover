@@ -347,7 +347,6 @@ import jscover.util.IoUtils;
 import jscover.util.PatternMatcher;
 import jscover.util.PatternMatcherRegEx;
 import jscover.util.PatternMatcherString;
-import org.mozilla.javascript.Context;
 
 import java.util.ArrayList;
 import java.util.List;
