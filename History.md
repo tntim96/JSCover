@@ -1,4 +1,4 @@
-2.0.1 / 2017-??-??
+2.0.1 / 2017-07-23
 ==================
   * Convert JSON merger from Mozilla Rhino to Google GSON (https://github.com/tntim96/JSCover/issues/258)
 
