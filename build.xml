@@ -101,8 +101,6 @@
         <mkdir dir="${tmpDir}"/>
         <unzip src="${com.google.javascript:closure-compiler:jar}" dest="${tmpDir}"/>
         <move file="${tmpDir}/LICENSE" tofile="${tmpDir}/META-INF/LICENSE-closure-compiler.txt"/>
-        <unzip src="${org.mozilla:rhino:jar}" dest="${tmpDir}"/>
-        <move file="${tmpDir}/LICENSE.txt" tofile="${tmpDir}/META-INF/LICENSE-mozilla.txt"/>
         <copy todir="${tmpDir}" includeemptydirs="no">
             <fileset dir="${classes.main.dir}" />
         </copy>
