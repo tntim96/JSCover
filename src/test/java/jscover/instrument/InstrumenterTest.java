@@ -868,6 +868,15 @@ public class InstrumenterTest {
     }
 
     @Test
+    public void shouldInstrumentArrayAcrossLines() {
+        String source ="var x = [y,\n,];";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "var x = [y, , ];\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+    @Test
     public void shouldInstrumentIgnoringLine() {
         String source = "var x = 7;" + CommentsHandler.EXCL_LINE;
         String instrumentedSource = sourceProcessor.instrumentSource(source);

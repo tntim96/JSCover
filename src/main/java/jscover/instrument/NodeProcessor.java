@@ -405,6 +405,8 @@ class NodeProcessor {
                 //Don't do anything here. Direct modification of statements will result in concurrent modification exception.
             } else if (parent.isLabel()) {
                 //Don't do anything here.
+            } else if (parent.isArrayLit()) {
+                //Don't do anything here.
             } else if (isLoopInitializer(node)) {
                 //Don't do anything here.
             } else if (parent != null) {

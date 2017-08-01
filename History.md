@@ -1,3 +1,7 @@
+2.0.2 / 2017-08-??
+==================
+  * Fix instrumentation for array definition across lines (https://github.com/tntim96/JSCover/issues/260)
+
 2.0.1 / 2017-07-23
 ==================
   * Convert JSON merger from Mozilla Rhino to Google GSON (https://github.com/tntim96/JSCover/issues/258)
