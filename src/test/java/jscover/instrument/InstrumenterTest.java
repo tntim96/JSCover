@@ -451,6 +451,19 @@ public class InstrumenterTest {
     }
 
     @Test
+    public void shouldInstrumentLoopWithLetAcrossLines() {
+        String source = "for (\nlet i = 0; i < 2; i++ )\n" +
+                "  i++";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "for (let i = 0; i < 2; i++) {\n" +
+                "  _$jscoverage['test.js'].lineData[3]++;\n" +
+                "  i++;\n" +
+                "}\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+    @Test
     public void shouldInstrumentIfWithIfParent() {
         String source = "if ( i > 0 )\n" +
                 "  var x = 1;";
@@ -608,6 +621,14 @@ public class InstrumenterTest {
         String source = "if (x > 10)\n{\n  x++;\n}";
         String instrumentedSource = sourceProcessor.instrumentSource(source);
         String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\nif (x > 10) {\n  _$jscoverage['test.js'].lineData[3]++;\n  x++;\n}\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+    @Test
+    public void shouldInstrumentIfAcrossLines() {
+        String source = "if (\nx > 10)\n{\n  x++;\n}";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\nif (x > 10) {\n  _$jscoverage['test.js'].lineData[4]++;\n  x++;\n}\n";
         assertEquals(expectedSource, instrumentedSource);
     }
 
@@ -873,6 +894,17 @@ public class InstrumenterTest {
         String instrumentedSource = sourceProcessor.instrumentSource(source);
         String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
                 "var x = [y, , ];\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+    @Test
+    public void shouldInstrumentLoopAcrossLines() {
+        String source ="for (\nx in y)\n;";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "for (x in y) {\n" +
+                "  _$jscoverage['test.js'].lineData[3]++;\n" +
+                "}\n";
         assertEquals(expectedSource, instrumentedSource);
     }
 

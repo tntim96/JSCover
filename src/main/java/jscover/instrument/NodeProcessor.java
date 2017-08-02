@@ -401,13 +401,9 @@ class NodeProcessor {
                 || node.isForIn()
                 || node.isSwitch()
                 || node.isLet()) {
-            if (parent.isCase()) {
-                //Don't do anything here. Direct modification of statements will result in concurrent modification exception.
-            } else if (parent.isLabel()) {
+            if (parent.isLabel()) {
                 //Don't do anything here.
             } else if (parent.isArrayLit()) {
-                //Don't do anything here.
-            } else if (isLoopInitializer(node)) {
                 //Don't do anything here.
             } else if (parent != null) {
                 addInstrumentationBefore(node);
@@ -434,22 +430,9 @@ class NodeProcessor {
         return true;
     }
 
-    private boolean isLoopInitializer(Node node) {
-        if (node.getParent().isVanillaFor()) {
-            if (node.getFirstChild() == node)
-                return true;
-        }
-        return false;
-    }
-
     private void addInstrumentationBefore(Node node) {
         Node parent = node.getParent();
-        if (parent.isIf()) {
-//            addIfScope(node, (IfStatement) parent);
-        } else if (parent.isVanillaFor()) {
-//            addLoopScope(node, (Loop) parent);
-        } else if (parent.isWith()) {
-//            addWithScope(node, (WithStatement) parent);
+        if (parent.isVanillaFor()) {
         } else if (parent.isGetterDef()) {
         } else if (parent.isSetterDef()) {
         } else if (parent.isGetProp()) {
