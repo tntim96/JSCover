@@ -400,7 +400,8 @@ class NodeProcessor {
                 || node.isDo()
                 || node.isForIn()
                 || node.isSwitch()
-                || node.isLet()) {
+                || node.isLet()
+                || node.isClass()) {
             if (parent.isLabel()) {
                 //Don't do anything here.
             } else if (parent.isArrayLit()) {
@@ -436,6 +437,7 @@ class NodeProcessor {
         } else if (parent.isGetterDef()) {
         } else if (parent.isSetterDef()) {
         } else if (parent.isGetProp()) {
+        } else if (parent.isMemberFunctionDef()) {
         } else {
             parent.addChildBefore(buildInstrumentationStatement(node.getLineno()), node);
         }

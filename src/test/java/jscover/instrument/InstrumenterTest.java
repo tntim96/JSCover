@@ -950,4 +950,137 @@ public class InstrumenterTest {
                 "myFunction(...args);\n";
         assertEquals(expectedSource, instrumentedSource);
     }
+
+    @Test
+    public void shouldInstrumentES6MemberFunction() {
+        String source = "var x = {\n" +
+                "    mounted () {\n" +
+                "        this.onReady();\n" +
+                "    }\n" +
+                "};";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "var x = {mounted() {\n" +
+                "  _$jscoverage['test.js'].functionData[0]++;\n" +
+                "  _$jscoverage['test.js'].lineData[3]++;\n" +
+                "  this.onReady();\n" +
+                "}};\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+    @Test
+    public void shouldInstrumentES6ClassMemberFunction() {
+        String source = "class Animal {\n" +
+                "    speak () {\n" +
+                "        return 1;\n" +
+                "    }\n" +
+                "}";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "class Animal {\n" +
+                "  speak() {\n" +
+                "    _$jscoverage['test.js'].functionData[0]++;\n" +
+                "    _$jscoverage['test.js'].lineData[3]++;\n" +
+                "    return 1;\n" +
+                "  }\n" +
+                "}\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+    @Test
+    public void shouldInstrumentES6ClassConstructor() {
+        String source = "class Rectangle {\n" +
+                "  constructor(height, width) {\n" +
+                "    this.height = height;\n" +
+                "    this.width = width;\n" +
+                "  }\n" +
+                "}";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "class Rectangle {\n" +
+                "  constructor(height, width) {\n" +
+                "    _$jscoverage['test.js'].functionData[0]++;\n" +
+                "    _$jscoverage['test.js'].lineData[3]++;\n" +
+                "    this.height = height;\n" +
+                "    _$jscoverage['test.js'].lineData[4]++;\n" +
+                "    this.width = width;\n" +
+                "  }\n" +
+                "}\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+    @Test
+    public void shouldInstrumentES6ClassPrototypeMethod() {
+        String source = "class Rectangle {\n" +
+                "  get area() {\n" +
+                "    return 1;\n" +
+                "  }\n" +
+                "}";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "class Rectangle {\n" +
+                "  get area() {\n" +
+                "    _$jscoverage['test.js'].functionData[0]++;\n" +
+                "    _$jscoverage['test.js'].lineData[3]++;\n" +
+                "    return 1;\n" +
+                "  }\n" +
+                "}\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+    @Test
+    public void shouldInstrumentES6ClassStaticMethod() {
+        String source = "class Rectangle {\n" +
+                "  static area(height, width) {\n" +
+                "    return height * width;\n" +
+                "  }\n" +
+                "}";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "class Rectangle {\n" +
+                "  static area(height, width) {\n" +
+                "    _$jscoverage['test.js'].functionData[0]++;\n" +
+                "    _$jscoverage['test.js'].lineData[3]++;\n" +
+                "    return height * width;\n" +
+                "  }\n" +
+                "}\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+    @Test
+    public void shouldInstrumentES6ClassSuper() {
+        String source = "class Lion extends Cat {\n" +
+                "  speak() {\n" +
+                "    super.speak();\n" +
+                "    console.log(this.name + ' roars.');\n" +
+                "  }\n" +
+                "}";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "class Lion extends Cat {\n" +
+                "  speak() {\n" +
+                "    _$jscoverage['test.js'].functionData[0]++;\n" +
+                "    _$jscoverage['test.js'].lineData[3]++;\n" +
+                "    super.speak();\n" +
+                "    _$jscoverage['test.js'].lineData[4]++;\n" +
+                "    console.log(this.name + ' roars.');\n" +
+                "  }\n" +
+                "}\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+    @Test
+    public void shouldInstrumentES6ClassMixin() {
+        String source = "var calculatorMixin = Base => class extends Base {\n" +
+                "  calc() { }\n" +
+                "};";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "var calculatorMixin = (Base) => class extends Base {\n" +
+                "  calc() {\n" +
+                "    _$jscoverage['test.js'].functionData[0]++;\n" +
+                "  }\n" +
+                "};\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
 }
