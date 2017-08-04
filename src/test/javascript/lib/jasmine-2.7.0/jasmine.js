@@ -71,6 +71,7 @@ var getJasmineRequireObj = (function (jasmineGlobal) {
     j$.SpyRegistry = jRequire.SpyRegistry(j$);
     j$.SpyStrategy = jRequire.SpyStrategy(j$);
     j$.StringMatching = jRequire.StringMatching(j$);
+    j$.UserContext = jRequire.UserContext(j$);
     j$.Suite = jRequire.Suite(j$);
     j$.Timer = jRequire.Timer();
     j$.TreeProcessor = jRequire.TreeProcessor();
@@ -138,6 +139,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
   j$.MAX_PRETTY_PRINT_DEPTH = 40;
   /**
    * Maximum number of array elements to display when pretty printing objects.
+   * This will also limit the number of keys and values displayed for an object.
    * Elements past this number will be ellipised.
    * @name jasmine.MAX_PRETTY_PRINT_ARRAY_LENGTH
    */
@@ -183,6 +185,10 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
 
   j$.isFunction_ = function(value) {
     return j$.isA_('Function', value);
+  };
+
+  j$.isAsyncFunction_ = function(value) {
+    return j$.isA_('AsyncFunction', value);
   };
 
   j$.isA_ = function(typeName, value) {
@@ -462,20 +468,25 @@ getJasmineRequireObj().Spec = function(j$) {
 
     this.onStart(this);
 
-    if (!this.isExecutable() || this.markedPending || enabled === false) {
-      complete(enabled);
-      return;
-    }
-
     var fns = this.beforeAndAfterFns();
-    var allFns = fns.befores.concat(this.queueableFn).concat(fns.afters);
+    var regularFns = fns.befores.concat(this.queueableFn);
 
-    this.queueRunnerFactory({
-      queueableFns: allFns,
+    var runnerConfig = {
+      isLeaf: true,
+      queueableFns: regularFns,
+      cleanupFns: fns.afters,
       onException: function() { self.onException.apply(self, arguments); },
       onComplete: complete,
       userContext: this.userContext()
-    });
+    };
+
+    if (!this.isExecutable() || this.markedPending || enabled === false) {
+      runnerConfig.queueableFns = [];
+      runnerConfig.cleanupFns = [];
+      runnerConfig.onComplete = function() { complete(enabled); };
+    }
+
+    this.queueRunnerFactory(runnerConfig);
 
     function complete(enabledAgain) {
       self.result.status = self.status(enabledAgain);
@@ -812,6 +823,7 @@ getJasmineRequireObj().Env = function(j$) {
       options.timeout = {setTimeout: realSetTimeout, clearTimeout: realClearTimeout};
       options.fail = self.fail;
       options.globalErrors = globalErrors;
+      options.completeOnFirstError = throwOnExpectationFailure && options.isLeaf;
 
       new j$.QueueRunner(options).execute();
     };
@@ -874,7 +886,8 @@ getJasmineRequireObj().Env = function(j$) {
       }
 
       reporter.jasmineStarted({
-        totalSpecsDefined: totalSpecsDefined
+        totalSpecsDefined: totalSpecsDefined,
+        order: order
       });
 
       currentlyExecutingSuites.push(topSuite);
@@ -931,6 +944,12 @@ getJasmineRequireObj().Env = function(j$) {
 
     var ensureIsFunction = function(fn, caller) {
       if (!j$.isFunction_(fn)) {
+        throw new Error(caller + ' expects a function argument; received ' + j$.getType_(fn));
+      }
+    };
+
+    var ensureIsFunctionOrAsync = function(fn, caller) {
+      if (!j$.isFunction_(fn) && !j$.isAsyncFunction_(fn)) {
         throw new Error(caller + ' expects a function argument; received ' + j$.getType_(fn));
       }
     };
@@ -1073,7 +1092,7 @@ getJasmineRequireObj().Env = function(j$) {
       // it() sometimes doesn't have a fn argument, so only check the type if
       // it's given.
       if (arguments.length > 1 && typeof fn !== 'undefined') {
-        ensureIsFunction(fn, 'it');
+        ensureIsFunctionOrAsync(fn, 'it');
       }
       var spec = specFactory(description, fn, currentDeclarationSuite, timeout);
       if (currentDeclarationSuite.markedPending) {
@@ -1087,7 +1106,7 @@ getJasmineRequireObj().Env = function(j$) {
       // xit(), like it(), doesn't always have a fn argument, so only check the
       // type when needed.
       if (arguments.length > 1 && typeof fn !== 'undefined') {
-        ensureIsFunction(fn, 'xit');
+        ensureIsFunctionOrAsync(fn, 'xit');
       }
       var spec = this.it.apply(this, arguments);
       spec.pend('Temporarily disabled with xit');
@@ -1095,7 +1114,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     this.fit = function(description, fn, timeout){
-      ensureIsFunction(fn, 'fit');
+      ensureIsFunctionOrAsync(fn, 'fit');
       var spec = specFactory(description, fn, currentDeclarationSuite, timeout);
       currentDeclarationSuite.addChild(spec);
       focusedRunnables.push(spec.id);
@@ -1112,7 +1131,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     this.beforeEach = function(beforeEachFunction, timeout) {
-      ensureIsFunction(beforeEachFunction, 'beforeEach');
+      ensureIsFunctionOrAsync(beforeEachFunction, 'beforeEach');
       currentDeclarationSuite.beforeEach({
         fn: beforeEachFunction,
         timeout: function() { return timeout || j$.DEFAULT_TIMEOUT_INTERVAL; }
@@ -1120,7 +1139,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     this.beforeAll = function(beforeAllFunction, timeout) {
-      ensureIsFunction(beforeAllFunction, 'beforeAll');
+      ensureIsFunctionOrAsync(beforeAllFunction, 'beforeAll');
       currentDeclarationSuite.beforeAll({
         fn: beforeAllFunction,
         timeout: function() { return timeout || j$.DEFAULT_TIMEOUT_INTERVAL; }
@@ -1128,7 +1147,8 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     this.afterEach = function(afterEachFunction, timeout) {
-      ensureIsFunction(afterEachFunction, 'afterEach');
+      ensureIsFunctionOrAsync(afterEachFunction, 'afterEach');
+      afterEachFunction.isCleanup = true;
       currentDeclarationSuite.afterEach({
         fn: afterEachFunction,
         timeout: function() { return timeout || j$.DEFAULT_TIMEOUT_INTERVAL; }
@@ -1136,7 +1156,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     this.afterAll = function(afterAllFunction, timeout) {
-      ensureIsFunction(afterAllFunction, 'afterAll');
+      ensureIsFunctionOrAsync(afterAllFunction, 'afterAll');
       currentDeclarationSuite.afterAll({
         fn: afterAllFunction,
         timeout: function() { return timeout || j$.DEFAULT_TIMEOUT_INTERVAL; }
@@ -1177,6 +1197,10 @@ getJasmineRequireObj().Env = function(j$) {
         message: message,
         error: error && error.message ? error : null
       });
+
+      if (self.throwingExpectationFailures()) {
+        throw new Error(message);
+      }
     };
   }
 
@@ -2523,12 +2547,12 @@ getJasmineRequireObj().matchersUtil = function(j$) {
       if (!result) {
         return false;
       }
-    } else if (className == '[object Set]') {
+    } else if (className == '[object Set]' || className == '[object Map]') {
       if (a.size != b.size) {
         diffBuilder.record(a, b);
         return false;
       }
-      var iterA = a.values(), iterB = b.values();
+      var iterA = a.entries(), iterB = b.entries();
       var valA, valB;
       do {
         valA = iterA.next();
@@ -2768,8 +2792,18 @@ getJasmineRequireObj().toBeCloseTo = function() {
           precision = precision || 2;
         }
 
+        if (expected === null || actual === null) {
+          throw new Error('Cannot use toBeCloseTo with null. Arguments evaluated to: ' +
+            'expect(' + actual + ').toBeCloseTo(' + expected + ').'
+          );
+        }
+
+        var pow = Math.pow(10, precision + 1);
+        var delta = Math.abs(expected - actual);
+        var maxDelta = Math.pow(10, -precision) / 2;
+
         return {
-          pass: Math.abs(expected - actual) < (Math.pow(10, -precision) / 2)
+          pass: Math.round(delta * pow) / pow <= maxDelta
         };
       }
     };
@@ -3650,7 +3684,7 @@ getJasmineRequireObj().pp = function(j$) {
   function hasCustomToString(value) {
     // value.toString !== Object.prototype.toString if value has no custom toString but is from another context (e.g.
     // iframe, web worker)
-    return value.toString !== Object.prototype.toString && (value.toString() !== Object.prototype.toString.call(value));
+    return j$.isFunction_(value.toString) && value.toString !== Object.prototype.toString && (value.toString() !== Object.prototype.toString.call(value));
   }
 
   PrettyPrinter.prototype.format = function(value) {
@@ -3678,8 +3712,10 @@ getJasmineRequireObj().pp = function(j$) {
         this.emitScalar('HTMLNode');
       } else if (value instanceof Date) {
         this.emitScalar('Date(' + value + ')');
-      } else if (value.toString && value.toString() == '[object Set]') {
+      } else if (j$.getType_(value) == '[object Set]') {
         this.emitSet(value);
+      } else if (j$.getType_(value) == '[object Map]') {
+        this.emitMap(value);
       } else if (value.toString && typeof value === 'object' && !j$.isArray_(value) && hasCustomToString(value)) {
         this.emitScalar(value.toString());
       } else if (j$.util.arrayContains(this.seen, value)) {
@@ -3701,15 +3737,28 @@ getJasmineRequireObj().pp = function(j$) {
   };
 
   PrettyPrinter.prototype.iterateObject = function(obj, fn) {
-    for (var property in obj) {
-      if (!Object.prototype.hasOwnProperty.call(obj, property)) { continue; }
-      fn(property, obj.__lookupGetter__ ? (!j$.util.isUndefined(obj.__lookupGetter__(property)) &&
-          obj.__lookupGetter__(property) !== null) : false);
+    var objKeys = keys(obj, j$.isArray_(obj));
+    var isGetter = function isGetter(prop) {};
+
+    if (obj.__lookupGetter__) {
+      isGetter = function isGetter(prop) {
+        var getter = obj.__lookupGetter__(prop);
+        return !j$.util.isUndefined(getter) && getter !== null;
+      };
+
     }
+    var length = Math.min(objKeys.length, j$.MAX_PRETTY_PRINT_ARRAY_LENGTH);
+    for (var i = 0; i < length; i++) {
+      var property = objKeys[i];
+      fn(property, isGetter(property));
+    }
+
+    return objKeys.length > length;
   };
 
   PrettyPrinter.prototype.emitArray = j$.unimplementedMethod_;
   PrettyPrinter.prototype.emitSet = j$.unimplementedMethod_;
+  PrettyPrinter.prototype.emitMap = j$.unimplementedMethod_;
   PrettyPrinter.prototype.emitObject = j$.unimplementedMethod_;
   PrettyPrinter.prototype.emitScalar = j$.unimplementedMethod_;
   PrettyPrinter.prototype.emitString = j$.unimplementedMethod_;
@@ -3717,7 +3766,7 @@ getJasmineRequireObj().pp = function(j$) {
   function StringPrettyPrinter() {
     PrettyPrinter.call(this);
 
-    this.string = '';
+    this.stringParts = [];
   }
 
   j$.util.inherit(StringPrettyPrinter, PrettyPrinter);
@@ -3749,11 +3798,7 @@ getJasmineRequireObj().pp = function(j$) {
 
     var self = this;
     var first = array.length === 0;
-    this.iterateObject(array, function(property, isGetter) {
-      if (property.match(/^\d+$/)) {
-        return;
-      }
-
+    var truncated = this.iterateObject(array, function(property, isGetter) {
       if (first) {
         first = false;
       } else {
@@ -3762,6 +3807,8 @@ getJasmineRequireObj().pp = function(j$) {
 
       self.formatProperty(array, property, isGetter);
     });
+
+    if (truncated) { this.append(', ...'); }
 
     this.append(' ]');
   };
@@ -3786,6 +3833,26 @@ getJasmineRequireObj().pp = function(j$) {
     this.append(' )');
   };
 
+  StringPrettyPrinter.prototype.emitMap = function(map) {
+    if (this.ppNestLevel_ > j$.MAX_PRETTY_PRINT_DEPTH) {
+      this.append('Map');
+      return;
+    }
+    this.append('Map( ');
+    var size = Math.min(map.size, j$.MAX_PRETTY_PRINT_ARRAY_LENGTH);
+    var iter = map.entries();
+    for (var i = 0; i < size; i++) {
+      if (i > 0) {
+        this.append(', ');
+      }
+      this.format(iter.next().value);
+    }
+    if (map.size > size){
+      this.append(', ...');
+    }
+    this.append(' )');
+  };
+
   StringPrettyPrinter.prototype.emitObject = function(obj) {
     var ctor = obj.constructor,
         constructorName;
@@ -3804,7 +3871,7 @@ getJasmineRequireObj().pp = function(j$) {
     this.append('({ ');
     var first = true;
 
-    this.iterateObject(obj, function(property, isGetter) {
+    var truncated = this.iterateObject(obj, function(property, isGetter) {
       if (first) {
         first = false;
       } else {
@@ -3813,6 +3880,8 @@ getJasmineRequireObj().pp = function(j$) {
 
       self.formatProperty(obj, property, isGetter);
     });
+
+    if (truncated) { this.append(', ...'); }
 
     this.append(' })');
   };
@@ -3828,13 +3897,42 @@ getJasmineRequireObj().pp = function(j$) {
   };
 
   StringPrettyPrinter.prototype.append = function(value) {
-    this.string += value;
+    this.stringParts.push(value);
   };
 
+  function keys(obj, isArray) {
+    var allKeys = Object.keys ? Object.keys(obj) :
+      (function(o) {
+          var keys = [];
+          for (var key in o) {
+              if (j$.util.has(o, key)) {
+                  keys.push(key);
+              }
+          }
+          return keys;
+      })(obj);
+
+    if (!isArray) {
+      return allKeys;
+    }
+
+    if (allKeys.length === 0) {
+        return allKeys;
+    }
+
+    var extraKeys = [];
+    for (var i = 0; i < allKeys.length; i++) {
+      if (!/^[0-9]+$/.test(allKeys[i])) {
+        extraKeys.push(allKeys[i]);
+      }
+    }
+
+    return extraKeys;
+  }
   return function(value) {
     var stringPrettyPrinter = new StringPrettyPrinter();
     stringPrettyPrinter.format(value);
-    return stringPrettyPrinter.string;
+    return stringPrettyPrinter.stringParts.join('');
   };
 };
 
@@ -3852,15 +3950,18 @@ getJasmineRequireObj().QueueRunner = function(j$) {
   }
 
   function QueueRunner(attrs) {
-    this.queueableFns = attrs.queueableFns || [];
+    var queueableFns = attrs.queueableFns || [];
+    this.queueableFns = queueableFns.concat(attrs.cleanupFns || []);
+    this.firstCleanupIx = queueableFns.length;
     this.onComplete = attrs.onComplete || function() {};
     this.clearStack = attrs.clearStack || function(fn) {fn();};
     this.onException = attrs.onException || function() {};
     this.catchException = attrs.catchException || function() { return true; };
-    this.userContext = attrs.userContext || {};
+    this.userContext = attrs.userContext || new j$.UserContext();
     this.timeout = attrs.timeout || {setTimeout: setTimeout, clearTimeout: clearTimeout};
     this.fail = attrs.fail || function() {};
     this.globalErrors = attrs.globalErrors || { pushListener: function() {}, popListener: function() {} };
+    this.completeOnFirstError = !!attrs.completeOnFirstError;
   }
 
   QueueRunner.prototype.execute = function() {
@@ -3869,22 +3970,33 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       self.onException(error);
     };
     this.globalErrors.pushListener(this.handleFinalError);
-    this.run(this.queueableFns, 0);
+    this.run(0);
   };
 
-  QueueRunner.prototype.run = function(queueableFns, recursiveIndex) {
-    var length = queueableFns.length,
+  QueueRunner.prototype.skipToCleanup = function(lastRanIndex) {
+    if (lastRanIndex < this.firstCleanupIx) {
+      this.run(this.firstCleanupIx);
+    } else {
+      this.run(lastRanIndex + 1);
+    }
+  };
+
+  QueueRunner.prototype.run = function(recursiveIndex) {
+    var length = this.queueableFns.length,
       self = this,
       iterativeIndex;
 
 
     for(iterativeIndex = recursiveIndex; iterativeIndex < length; iterativeIndex++) {
-      var queueableFn = queueableFns[iterativeIndex];
-      if (queueableFn.fn.length > 0) {
-        attemptAsync(queueableFn);
+      var result = attempt(iterativeIndex);
+
+      if (!result.completedSynchronously) {
         return;
-      } else {
-        attemptSync(queueableFn);
+      }
+
+      if (this.completeOnFirstError && result.errored) {
+        this.skipToCleanup(iterativeIndex);
+        return;
       }
     }
 
@@ -3893,41 +4005,46 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       self.onComplete();
     });
 
-    function attemptSync(queueableFn) {
-      try {
-        queueableFn.fn.call(self.userContext);
-      } catch (e) {
-        handleException(e, queueableFn);
-      }
-    }
-
-    function attemptAsync(queueableFn) {
+    function attempt() {
       var clearTimeout = function () {
           Function.prototype.apply.apply(self.timeout.clearTimeout, [j$.getGlobal(), [timeoutId]]);
         },
-        completedSynchronously = true,
         setTimeout = function(delayedFn, delay) {
           return Function.prototype.apply.apply(self.timeout.setTimeout, [j$.getGlobal(), [delayedFn, delay]]);
         },
+        completedSynchronously = true,
         handleError = function(error) {
           onException(error);
           next();
         },
-        next = once(function () {
+        cleanup = once(function() {
           clearTimeout(timeoutId);
           self.globalErrors.popListener(handleError);
+        }),
+        next = once(function () {
+          cleanup();
+
+          function runNext() {
+            if (self.completeOnFirstError && errored) {
+              self.skipToCleanup(iterativeIndex);
+            } else {
+              self.run(iterativeIndex + 1);
+            }
+          }
+
           if (completedSynchronously) {
-            setTimeout(function() {
-              self.run(queueableFns, iterativeIndex + 1);
-            });
+            setTimeout(runNext);
           } else {
-            self.run(queueableFns, iterativeIndex + 1);
+            runNext();
           }
         }),
+        errored = false,
+        queueableFn = self.queueableFns[iterativeIndex],
         timeoutId;
 
       next.fail = function() {
         self.fail.apply(null, arguments);
+        errored = true;
         next();
       };
 
@@ -3942,24 +4059,39 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       }
 
       try {
-        queueableFn.fn.call(self.userContext, next);
-        completedSynchronously = false;
+        if (queueableFn.fn.length === 0) {
+          var maybeThenable = queueableFn.fn.call(self.userContext);
+
+          if (maybeThenable && j$.isFunction_(maybeThenable.then)) {
+            maybeThenable.then(next, next.fail);
+            completedSynchronously = false;
+            return { completedSynchronously: false };
+          }
+        } else {
+          queueableFn.fn.call(self.userContext, next);
+          completedSynchronously = false;
+          return { completedSynchronously: false };
+        }
       } catch (e) {
         handleException(e, queueableFn);
-        next();
+        errored = true;
       }
-    }
 
-    function onException(e) {
-      self.onException(e);
-    }
+      cleanup();
+      return { completedSynchronously: true, errored: errored };
 
-    function handleException(e, queueableFn) {
-      onException(e);
-      if (!self.catchException(e)) {
-        //TODO: set a var when we catch an exception and
-        //use a finally block to close the loop in a nice way..
-        throw e;
+      function onException(e) {
+        self.onException(e);
+        errored = true;
+      }
+
+      function handleException(e, queueableFn) {
+        onException(e);
+        if (!self.catchException(e)) {
+          //TODO: set a var when we catch an exception and
+          //use a finally block to close the loop in a nice way..
+          throw e;
+        }
       }
     }
   };
@@ -4689,14 +4821,14 @@ getJasmineRequireObj().Suite = function(j$) {
 
   Suite.prototype.sharedUserContext = function() {
     if (!this.sharedContext) {
-      this.sharedContext = this.parentSuite ? clone(this.parentSuite.sharedUserContext()) : {};
+      this.sharedContext = this.parentSuite ? this.parentSuite.clonedSharedUserContext() : new j$.UserContext();
     }
 
     return this.sharedContext;
   };
 
   Suite.prototype.clonedSharedUserContext = function() {
-    return clone(this.sharedUserContext());
+    return j$.UserContext.fromExisting(this.sharedUserContext());
   };
 
   Suite.prototype.onException = function() {
@@ -4746,17 +4878,6 @@ getJasmineRequireObj().Suite = function(j$) {
 
   function isFailure(args) {
     return !args[0];
-  }
-
-  function clone(obj) {
-    var clonedObj = {};
-    for (var prop in obj) {
-      if (obj.hasOwnProperty(prop)) {
-        clonedObj[prop] = obj[prop];
-      }
-    }
-
-    return clonedObj;
   }
 
   return Suite;
@@ -4996,6 +5117,25 @@ getJasmineRequireObj().TreeProcessor = function() {
   return TreeProcessor;
 };
 
+getJasmineRequireObj().UserContext = function(j$) {
+  function UserContext() {
+  }
+
+  UserContext.fromExisting = function(oldContext) {
+    var context = new UserContext();
+
+    for (var prop in oldContext) {
+      if (oldContext.hasOwnProperty(prop)) {
+        context[prop] = oldContext[prop];
+      }
+    }
+
+    return context;
+  };
+
+  return  UserContext;
+};
+
 getJasmineRequireObj().version = function() {
-  return '2.6.4';
+  return '2.7.0';
 };
