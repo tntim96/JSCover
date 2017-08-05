@@ -401,6 +401,9 @@ class NodeProcessor {
                 || node.isForIn()
                 || node.isSwitch()
                 || node.isLet()
+                || node.isExport()
+                || node.isImport()
+                || node.isImportStar()
                 || node.isClass()) {
             if (parent.isLabel()) {
                 //Don't do anything here.
@@ -438,6 +441,9 @@ class NodeProcessor {
         } else if (parent.isSetterDef()) {
         } else if (parent.isGetProp()) {
         } else if (parent.isMemberFunctionDef()) {
+        } else if (parent.isExport()) {
+        } else if (parent.isImport()) {
+        } else if (parent.isImportStar()) {
         } else {
             parent.addChildBefore(buildInstrumentationStatement(node.getLineno()), node);
         }

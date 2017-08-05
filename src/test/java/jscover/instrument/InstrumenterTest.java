@@ -346,6 +346,7 @@ import com.google.javascript.jscomp.parsing.Config;
 import jscover.ConfigurationCommon;
 import jscover.util.ReflectionUtils;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -925,6 +926,51 @@ public class InstrumenterTest {
     }
 
     @Test
+    public void shouldInstrumentES6Export() {
+        String source = "export var pi = 3.141593;";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "export var pi = 3.141593;\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+    @Test
+    public void shouldInstrumentES6ExportStar() {
+        String source = "export * from 'lib/math'";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "export*from 'lib/math';\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+    @Test
+    public void shouldInstrumentES6ExportDefault() {
+        String source = "export default (x) => Math.exp(x);";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "export default(x) => Math.exp(x)\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+    @Test
+    public void shouldInstrumentES6Import() {
+        String source = "import{sum, pi}from 'lib/math';";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "import{sum, pi}from 'lib/math';\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+    @Test
+    public void shouldInstrumentES6ImportStar() {
+        String source = "import * as math from 'lib/math';";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "import*as math from 'lib/math';\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+    @Test
     public void shouldInstrumentES6StringStartsWith() {
         String source = "var x = 'abc'.startsWith('a');";
         String instrumentedSource = sourceProcessor.instrumentSource(source);
@@ -948,6 +994,27 @@ public class InstrumenterTest {
         String instrumentedSource = sourceProcessor.instrumentSource(source);
         String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
                 "myFunction(...args);\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+    @Test
+    public void shouldInstrumentES6RestParameter() {
+        String source = "myFunction(x, ...args);";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "myFunction(x, ...args);\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+    @Test
+    public void shouldInstrumentES6ComputedObjectPropertyName() {
+        String source = "let obj = {\n" +
+                "    foo: \"bar\",\n" +
+                "    [ \"baz\" + quux() ]: 42\n" +
+                "}";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "let obj = {foo:'bar', ['baz' + quux()]:42};\n";
         assertEquals(expectedSource, instrumentedSource);
     }
 
@@ -1081,6 +1148,128 @@ public class InstrumenterTest {
                 "    _$jscoverage['test.js'].functionData[0]++;\n" +
                 "  }\n" +
                 "};\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+    @Test
+    public void shouldInstrumentES6Const() {
+        String source = "const PI = 3.141593;";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "const PI = 3.141593;\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+
+    @Test
+    public void shouldInstrumentES6DefaultParamValues() {
+        String source = "function f(x, y = 7, z = 42) {\n" +
+                "    return x + y + z\n" +
+                "}";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "function f(x, y = 7, z = 42) {\n" +
+                "  _$jscoverage['test.js'].functionData[0]++;\n" +
+                "  _$jscoverage['test.js'].lineData[2]++;\n" +
+                "  return x + y + z;\n" +
+                "}\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+    @Test
+    public void shouldInstrumentES6StatementBodies() {
+        String source = "nums.forEach(v => {\n" +
+                "    if (v % 5 === 0)\n" +
+                "      fives.push(v)\n" +
+                "})";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "nums.forEach((v) => {\n" +
+                "  _$jscoverage['test.js'].lineData[2]++;\n" +
+                "  if (v % 5 === 0) {\n" +
+                "    _$jscoverage['test.js'].lineData[3]++;\n" +
+                "    fives.push(v);\n" +
+                "  }\n" +
+                "});\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+    @Test
+    public void shouldInstrumentES6BlockScopedFunction() {
+        String source = "{\n" +
+                "    function foo() {\n" +
+                "        return 1\n" +
+                "    }\n" +
+                "\n" +
+                "    foo() === 1\n" +
+                "    {\n" +
+                "        function foo() {\n" +
+                "            return 2\n" +
+                "        }\n" +
+                "\n" +
+                "        foo() === 2\n" +
+                "    }\n" +
+                "    foo() === 1\n" +
+                "} ";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = " {\n" +
+                "  _$jscoverage['test.js'].lineData[2]++;\n" +
+                "  function foo() {\n" +
+                "    _$jscoverage['test.js'].functionData[0]++;\n" +
+                "    _$jscoverage['test.js'].lineData[3]++;\n" +
+                "    return 1;\n" +
+                "  }\n" +
+                "  _$jscoverage['test.js'].lineData[6]++;\n" +
+                "  foo() === 1;\n" +
+                "  {\n" +
+                "    _$jscoverage['test.js'].lineData[8]++;\n" +
+                "    function foo() {\n" +
+                "      _$jscoverage['test.js'].functionData[1]++;\n" +
+                "      _$jscoverage['test.js'].lineData[9]++;\n" +
+                "      return 2;\n" +
+                "    }\n" +
+                "    _$jscoverage['test.js'].lineData[12]++;\n" +
+                "    foo() === 2;\n" +
+                "  }\n" +
+                "  _$jscoverage['test.js'].lineData[14]++;\n" +
+                "  foo() === 1;\n" +
+                "}\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+    @Test
+    @Ignore//http://es6-features.org/#IteratorForOfOperator
+    public void shouldInstrumentES6Iterator() {
+        String source = "let fibonacci = {\n" +
+                "    [Symbol.iterator]() {\n" +
+                "        let pre = 0, cur = 1;\n" +
+                "        return {\n" +
+                "            next() {\n" +
+                "                [pre, cur] = [cur, pre + cur];\n" +
+                "                return {done: false, value: cur}\n" +
+                "            }\n" +
+                "        }\n" +
+                "    }\n" +
+                "};";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "let fibonacci = {\n" +
+                "    _$jscoverage['test.js'].lineData[2]++;\n" +
+                "    [Symbol.iterator]() {\n" +
+                "        _$jscoverage['test.js'].lineData[3]++;\n" +
+                "        let pre = 0, cur = 1;\n" +
+                "        _$jscoverage['test.js'].lineData[4]++;\n" +
+                "        return {\n" +
+                "            next() {\n" +
+                "                _$jscoverage['test.js'].functionData[0]++;\n" +
+                "                _$jscoverage['test.js'].lineData[6]++;\n" +
+                "                [pre, cur] = [cur, pre + cur];\n" +
+                "                _$jscoverage['test.js'].lineData[7]++;\n" +
+                "                return {done: false, value: cur}\n" +
+                "            }\n" +
+                "        }\n" +
+                "    }\n" +
+                "};";
         assertEquals(expectedSource, instrumentedSource);
     }
 }
