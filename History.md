@@ -1,4 +1,4 @@
-2.0.2 / 2017-08-??
+2.0.2 / 2017-08-05
 ==================
   * Fix instrumentation for ES6 class members (https://github.com/tntim96/JSCover/issues/261)
   * Fix instrumentation for array definition across lines (https://github.com/tntim96/JSCover/issues/260)
