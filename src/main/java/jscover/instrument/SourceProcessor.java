@@ -469,6 +469,7 @@ class SourceProcessor {
 
         NodeWalker nodeWalker = new NodeWalker();
         nodeWalker.visit(jsRoot, instrumenter);
+//        System.out.println("jsRoot.toStringTree():\n" + jsRoot.toStringTree());
         if (includeBranchCoverage) {
             instrumentBranch(jsRoot, nodeWalker, branchInstrumentor);
         }

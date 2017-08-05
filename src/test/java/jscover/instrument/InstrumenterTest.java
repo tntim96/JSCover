@@ -1238,7 +1238,6 @@ public class InstrumenterTest {
     }
 
     @Test
-    @Ignore//http://es6-features.org/#IteratorForOfOperator
     public void shouldInstrumentES6Iterator() {
         String source = "let fibonacci = {\n" +
                 "    [Symbol.iterator]() {\n" +
@@ -1253,23 +1252,70 @@ public class InstrumenterTest {
                 "};";
         String instrumentedSource = sourceProcessor.instrumentSource(source);
         String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
-                "let fibonacci = {\n" +
-                "    _$jscoverage['test.js'].lineData[2]++;\n" +
-                "    [Symbol.iterator]() {\n" +
-                "        _$jscoverage['test.js'].lineData[3]++;\n" +
+                "let fibonacci = {[Symbol.iterator]() {\n" +
+                "  _$jscoverage['test.js'].functionData[0]++;\n" +
+                "  _$jscoverage['test.js'].lineData[3]++;\n" +
+                "  let pre = 0, cur = 1;\n" +
+                "  _$jscoverage['test.js'].lineData[4]++;\n" +
+                "  return {next() {\n" +
+                "    _$jscoverage['test.js'].functionData[1]++;\n" +
+                "    _$jscoverage['test.js'].lineData[6]++;\n" +
+                "    [pre, cur] = [cur, pre + cur];\n" +
+                "    _$jscoverage['test.js'].lineData[7]++;\n" +
+                "    return {done:false, value:cur};\n" +
+                "  }};\n" +
+                "}};\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+    @Test
+    public void shouldInstrumentES6GeneratorFunctionIterator() {
+        String source = "let fibonacci = {\n" +
+                "    * [Symbol.iterator]() {\n" +
                 "        let pre = 0, cur = 1;\n" +
-                "        _$jscoverage['test.js'].lineData[4]++;\n" +
-                "        return {\n" +
-                "            next() {\n" +
-                "                _$jscoverage['test.js'].functionData[0]++;\n" +
-                "                _$jscoverage['test.js'].lineData[6]++;\n" +
-                "                [pre, cur] = [cur, pre + cur];\n" +
-                "                _$jscoverage['test.js'].lineData[7]++;\n" +
-                "                return {done: false, value: cur}\n" +
-                "            }\n" +
+                "        for (; ;) {\n" +
+                "            [pre, cur] = [cur, pre + cur];\n" +
+                "            yield cur\n" +
                 "        }\n" +
                 "    }\n" +
                 "};";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "let fibonacci = {*[Symbol.iterator]() {\n" +
+                "  _$jscoverage['test.js'].functionData[0]++;\n" +
+                "  _$jscoverage['test.js'].lineData[3]++;\n" +
+                "  let pre = 0, cur = 1;\n" +
+                "  _$jscoverage['test.js'].lineData[4]++;\n" +
+                "  for (;;) {\n" +
+                "    _$jscoverage['test.js'].lineData[5]++;\n" +
+                "    [pre, cur] = [cur, pre + cur];\n" +
+                "    _$jscoverage['test.js'].lineData[6]++;\n" +
+                "    yield cur;\n" +
+                "  }\n" +
+                "}};\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+    @Test
+    public void shouldInstrumentES6GeneratorDirect() {
+        String source = "function* range(start, end, step) {\n" +
+                "    while (start < end) {\n" +
+                "        yield start;\n" +
+                "        start += step;\n" +
+                "    }\n" +
+                "}";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "function* range(start, end, step) {\n" +
+                "  _$jscoverage['test.js'].functionData[0]++;\n" +
+                "  _$jscoverage['test.js'].lineData[2]++;\n" +
+                "  while (start < end) {\n" +
+                "    _$jscoverage['test.js'].lineData[3]++;\n" +
+                "    yield start;\n" +
+                "    _$jscoverage['test.js'].lineData[4]++;\n" +
+                "    start += step;\n" +
+                "  }\n" +
+                "}\n";
         assertEquals(expectedSource, instrumentedSource);
     }
 }

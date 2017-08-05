@@ -444,6 +444,7 @@ class NodeProcessor {
         } else if (parent.isExport()) {
         } else if (parent.isImport()) {
         } else if (parent.isImportStar()) {
+        } else if (parent.isComputedProp()) {
         } else {
             parent.addChildBefore(buildInstrumentationStatement(node.getLineno()), node);
         }
