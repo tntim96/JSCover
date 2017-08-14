@@ -342,6 +342,7 @@ Public License instead of this License.
 
 package jscover.instrument;
 
+import com.google.javascript.rhino.IR;
 import com.google.javascript.rhino.Node;
 import jscover.util.ReflectionUtils;
 import org.junit.After;
@@ -352,17 +353,21 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static java.util.logging.Level.SEVERE;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ParseTreeInstrumenterTest {
     private ParseTreeInstrumenter instrumenter;
     @Mock private NodeProcessor nodeProcessor;
-    @Mock private Node astNode;
+    private Node astNode = IR.returnNode();
     @Mock private Logger logger;
 
     @Before
@@ -370,6 +375,7 @@ public class ParseTreeInstrumenterTest {
         instrumenter = new ParseTreeInstrumenter("/dir/file.js", true, new CommentsHandler());
         ReflectionUtils.setField(instrumenter, "nodeProcessor", nodeProcessor);
         ReflectionUtils.setField(instrumenter, "logger", logger);
+        astNode.setLineno(7);
     }
 
     @After
@@ -381,7 +387,6 @@ public class ParseTreeInstrumenterTest {
     public void shouldLogException() {
         RuntimeException exception = new RuntimeException("Ouch!");
         given(nodeProcessor.processNode(astNode)).willThrow(exception);
-        given(astNode.getLineno()).willReturn(7);
 
         instrumenter.visit(astNode);
 
@@ -397,9 +402,9 @@ public class ParseTreeInstrumenterTest {
     }
 
     @Test(expected = RuntimeException.class)
-    public void shouldRethrowExceptionWhileLoggin() {
+    public void shouldRethrowExceptionWhileLogging() {
         given(nodeProcessor.processNode(astNode)).willThrow(new RuntimeException("Ouch!"));
-        given(astNode.getLineno()).willThrow(new IllegalArgumentException("Ouchy!"));
+        doThrow(new IllegalArgumentException("Ouchy!")).doNothing().when(logger).log(any(Level.class), anyString(), any(Throwable.class));
 
         instrumenter.visit(astNode);
     }
