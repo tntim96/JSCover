@@ -1,7 +1,7 @@
 2.0.3 / 2017-??-??
 ==================
-  * Upgrade closure-compiler v20170626 to v20170806 
-  * Internal: Upgrade Jasmine 2.7.0 to 2.8.0, Mockito 2.8.47 to 2.9.0
+  * Upgrade closure-compiler v20170626 to v20170910 
+  * Internal: Upgrade Jasmine 2.7.0 to 2.8.0, Mockito 2.8.47 to 2.10.0
 
 2.0.2 / 2017-08-05
 ==================
