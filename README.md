@@ -29,3 +29,8 @@ Project files for IDEs are checked in, but any editor can be used.
 Before checking in any changes, be sure to run `ant pre-commit` which runs the full build and test suite,
 and enforces coverage limits on the combined unit and integration tests as well as on the combined unit,
 integration and acceptance tests.
+
+
+<a target='_blank' rel='nofollow' href='https://app.codesponsor.io/link/9FkBBBvaESHLvASDsBKtuxn1/tntim96/JSCover'>
+  <img alt='Sponsor' width='888' height='68' src='https://app.codesponsor.io/embed/9FkBBBvaESHLvASDsBKtuxn1/tntim96/JSCover.svg' />
+</a>
