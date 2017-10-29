@@ -70,7 +70,7 @@
         <dependency>
             <groupId>com.google.javascript</groupId>
             <artifactId>closure-compiler</artifactId>
-            <version>v20170910</version>
+            <version>v20171023</version>
         </dependency>
         <dependency>
             <groupId>net.sourceforge.htmlunit</groupId>
