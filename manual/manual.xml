@@ -47,7 +47,7 @@
                 <text>
                     JSCover is a tool that measures code coverage for JavaScript programs.
                     It is based on the popular JSCoverage, with the C++/SpiderMonkey instrumentation replaced with
-                    Java/Rhino.
+                    Java/Closure-Compiler.
                 </text>
                 <text>
                     JSCover works by adding instrumentation to JavaScript code before it is executed in a web browser.
@@ -70,7 +70,7 @@
                 <text>
                     JSCover comes packaged in two JARs.
                     The first option is preferred to avoid class-path issues, especially as JSCover may be using a
-                    different version of Rhino to your build.
+                    different version of the Closure-Compiler to your build.
                 </text>
                 <text>
                     <ul>
@@ -1779,8 +1779,7 @@ function square(x) {
                                 <td>JSCover</td>
                                 <td>Java</td>
                                 <td>
-                                    <a href="https://github.com/mozilla/rhino">Rhino</a>
-                                    1.7.7
+                                    <a href="https://github.com/google/closure-compiler">Closure-Compiler</a>
                                 </td>
                             </tr>
                             <tr>
