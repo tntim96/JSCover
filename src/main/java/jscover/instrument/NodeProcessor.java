@@ -418,6 +418,7 @@ class NodeProcessor {
             if (!parent.isHook()
                     && !parent.isStringKey()
                     && !parent.isCall()
+                    && !parent.isNew()
                     && !parent.isName()
                     && !parent.isArrayLit()
                     && !parent.isAssign()

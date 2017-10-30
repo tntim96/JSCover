@@ -385,6 +385,22 @@ public class InstrumenterTest {
     }
 
     @Test
+    public void shouldInstrumentDeclarationAcrossLines() {
+        String source = "var x,\n" +
+                "    y = new X(function () {\n" +
+                "        return 1;\n" +
+                "    });";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "var x, y = new X(function() {\n" +
+                "  _$jscoverage['test.js'].functionData[0]++;\n" +
+                "  _$jscoverage['test.js'].lineData[3]++;\n" +
+                "  return 1;\n" +
+                "});\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+    @Test
     public void shouldInstrumentIfStatementInSwitchCase() {
         String source = "switch (x) {\ncase 10:\nif (a) {\nx++;\n}\n}";
         String instrumentedSource = sourceProcessor.instrumentSource(source);

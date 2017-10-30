@@ -1,5 +1,6 @@
 2.0.3 / 2017-??-??
 ==================
+  * Fix instrumentation fn declaration in new operator (https://github.com/tntim96/JSCover/issues/265)
   * Upgrade closure-compiler v20170626 to v20170910 
   * Internal: Upgrade Jasmine 2.7.0 to 2.8.0, Mockito 2.8.47 to 2.11.0
 
