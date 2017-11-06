@@ -15,7 +15,7 @@
   * Convert JSON merger from Mozilla Rhino to Google GSON (https://github.com/tntim96/JSCover/issues/258)
 
 2.0.0 / 2017-07-16
-=======ends===========
+==================
   * Replace Rhino AST engine with Closure Compiler (https://github.com/tntim96/JSCover/issues/255)
   * Internal: Upgrade HtmlUnit 2.24 to 2.27, Mockito 2.7.5 to 2.8.47, Jasmine 2.5.2 to 2.6.4
 
