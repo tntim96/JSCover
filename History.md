@@ -1,3 +1,7 @@
+2.0.4 / 201?-??-??
+==================
+  * Internal: Upgrade HtmlUnit 2.27 to 2.28, Mockito 2.11.0 to 2.12
+
 2.0.3 / 2017-11-05
 ==================
   * Fix instrumentation fn declaration in new operator (https://github.com/tntim96/JSCover/issues/265)

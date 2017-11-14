@@ -339,7 +339,7 @@ consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
  */
- 
+
 package jscover.server;
 
 import static java.util.logging.Level.FINE;
@@ -350,7 +350,7 @@ import java.net.Socket;
 import java.nio.charset.Charset;
 import java.util.logging.Logger;
 
-import org.apache.commons.io.IOUtils;
+import jscover.util.IoUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpEntityEnclosingRequest;
@@ -371,28 +371,29 @@ import org.apache.http.util.EntityUtils;
  */
 public class PersistentStaticHttpServer implements Runnable {
     private static final Logger logger = Logger.getLogger(PersistentStaticHttpServer.class.getName());
-    
+
     protected final Socket socket;
     protected String content;
+    protected IoUtils ioUtils = IoUtils.getInstance();
 
     public PersistentStaticHttpServer(Socket socket, String content) {
-        if( socket == null ) throw new NullPointerException("socket is null");
+        if (socket == null) throw new NullPointerException("socket is null");
         this.socket = socket;
         this.content = content;
     }
-    
+
     public void run() {
         DefaultBHttpServerConnection conn = new DefaultBHttpServerConnection(8 * 1024);
         try {
             conn.bind(socket);
             try {
                 boolean keepAlive = true;
-                while( keepAlive && !socket.isClosed() ) {
+                while (keepAlive && !socket.isClosed()) {
                     // fully read the request, whatever it is
                     HttpRequest request = conn.receiveRequestHeader();
                     logger.log(FINE, "Received request: {0}", request);
                     keepAlive = isKeepAlive(request);
-                    
+
                     if (request instanceof HttpEntityEnclosingRequest) {
                         conn.receiveRequestEntity((HttpEntityEnclosingRequest) request);
                         HttpEntity entity = ((HttpEntityEnclosingRequest) request)
@@ -402,29 +403,29 @@ public class PersistentStaticHttpServer implements Runnable {
                             EntityUtils.consume(entity);
                         }
                     }
-                    
+
                     // send static content or reject the method
                     String method = request.getRequestLine().getMethod();
-                    if( method.matches("(?i)get|post|put") )
+                    if (method.matches("(?i)get|post|put"))
                         sendOkContent(conn);
                     else
                         rejectMethod(conn);
                 }
             } finally {
-                IOUtils.closeQuietly(conn);
-                IOUtils.closeQuietly(socket);
+                ioUtils.closeQuietly(conn);
+                ioUtils.closeQuietly(socket);
             }
-        } catch( HttpException e ) {
+        } catch (HttpException e) {
             e.printStackTrace();
-            IOUtils.closeQuietly(socket);
-        } catch (IOException e ) {
+            ioUtils.closeQuietly(socket);
+        } catch (IOException e) {
             e.printStackTrace();
-            IOUtils.closeQuietly(socket);
+            ioUtils.closeQuietly(socket);
         }
     }
-    
+
     protected boolean isKeepAlive(HttpRequest request) {
-        for (Header header: request.getAllHeaders()) {
+        for (Header header : request.getAllHeaders()) {
             String name = header.getName().toLowerCase();
             if ("connection".equals(name) || "proxy-connection".equals(name)) {
                 String value = header.getValue();
@@ -434,28 +435,28 @@ public class PersistentStaticHttpServer implements Runnable {
         }
         return false;
     }
-    
+
     protected void sendOkContent(HttpServerConnection conn) throws IOException, HttpException {
         // send a 200 OK with the static content
         BasicHttpResponse response = new BasicHttpResponse(HttpVersion.HTTP_1_1,
-                HttpStatus.SC_OK, "OK") ;
+                HttpStatus.SC_OK, "OK");
         BasicHttpEntity entity = new BasicHttpEntity();
         byte[] message = content.getBytes(Charset.forName("UTF-8"));
         entity.setContent(new ByteArrayInputStream(message));
         entity.setContentLength(message.length);
         response.setEntity(entity);
-        
+
         // force Content-Length header so the client doesn't expect us to close the connection to end the response
         response.addHeader("Content-Length", String.valueOf(message.length));
-        
+
         conn.sendResponseHeader(response);
         conn.sendResponseEntity(response);
         conn.flush();
         logger.log(FINE, "Sent 200 OK");
     }
-    
+
     protected void rejectMethod(HttpServerConnection conn) throws IOException, HttpException {
-        BasicHttpResponse response = new BasicHttpResponse(HttpVersion.HTTP_1_1, 
+        BasicHttpResponse response = new BasicHttpResponse(HttpVersion.HTTP_1_1,
                 HttpStatus.SC_METHOD_NOT_ALLOWED, "Must be GET, POST or PUT");
         conn.sendResponseHeader(response);
         conn.flush();
