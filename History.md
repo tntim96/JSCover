@@ -1,7 +1,7 @@
 2.0.4 / 201?-??-??
 ==================
-  * Upgrade closure-compiler v20171023 to v20171112 
-  * Internal: Upgrade HtmlUnit 2.27 to 2.28, Mockito 2.11.0 to 2.12
+  * Upgrade closure-compiler v20171023 to v20171203 
+  * Internal: Upgrade HtmlUnit 2.27 to 2.28, Mockito 2.11.0 to 2.13
 
 2.0.3 / 2017-11-05
 ==================
