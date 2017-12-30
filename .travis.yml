@@ -3,3 +3,4 @@ jdk:
   - oraclejdk8
 install: true
 script: ant release
+after_success: bash <(curl -s https://codecov.io/bash)
