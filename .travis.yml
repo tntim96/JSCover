@@ -7,4 +7,4 @@ cache:
   - $HOME/.m2
 script:
   - ant release
-  - bash <(curl -s https://codecov.io/bash) -f cobertura.ser
+  - bash <(curl -s https://codecov.io/bash) -f target/reports/coverage/all/coverage.xml
