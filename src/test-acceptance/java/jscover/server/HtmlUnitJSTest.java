@@ -350,7 +350,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -374,17 +373,13 @@ public class HtmlUnitJSTest {
     };
 
     @BeforeClass
-    public static void setUpOnce() throws IOException {
-        server = new Thread(new Runnable() {
-            public void run() {
-                main.runMain(args);
-            }
-        });
+    public static void setUpOnce() {
+        server = new Thread(() -> main.runMain(args));
         server.start();
     }
 
     @AfterClass
-    public static void tearDown() throws InterruptedException {
+    public static void tearDown() {
         main.stop();
     }
 

@@ -379,32 +379,26 @@ public class HtmlUnitProxyTest extends HtmlUnitServerTest {
     }
 
     @BeforeClass
-    public static void setUpOnce() throws IOException {
-        proxyServer = new Thread(new Runnable() {
-            public void run() {
-                main.runMain(args);
-            }
-        });
+    public static void setUpOnce() {
+        proxyServer = new Thread(() -> main.runMain(args));
         proxyServer.start();
-        webServer = new Thread(new Runnable() {
-            public void run() {
-                try {
-                    serverSocket = new ServerSocket(9001);
-                    File wwwRoot = new File("src/test-acceptance/resources");
-                    while (true) {
-                        Socket socket = serverSocket.accept();
-                        (new HttpServer(socket, wwwRoot, "testVersion")).start();
-                    }
-                } catch (IOException e) {
-                    //throw new RuntimeException(e);
+        webServer = new Thread(() -> {
+            try {
+                serverSocket = new ServerSocket(9001);
+                File wwwRoot = new File("src/test-acceptance/resources");
+                while (true) {
+                    Socket socket = serverSocket.accept();
+                    (new HttpServer(socket, wwwRoot, "testVersion")).start();
                 }
+            } catch (IOException e) {
+                //throw new RuntimeException(e);
             }
         });
         webServer.start();
     }
 
     @AfterClass
-    public static void tearDown() throws Exception {
+    public static void tearDown() {
         main.stop();
         IoUtils.getInstance().closeQuietly(serverSocket);
     }

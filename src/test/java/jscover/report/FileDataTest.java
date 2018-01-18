@@ -362,7 +362,7 @@ public class FileDataTest {
 
     @Test
     public void shouldReturnLinesStats() {
-        List<Integer> lines = new ArrayList<Integer>();
+        List<Integer> lines = new ArrayList<>();
         lines.add(null);
         lines.add(7);
         lines.add(2);
@@ -379,7 +379,7 @@ public class FileDataTest {
 
     @Test
     public void shouldReturnFunctionStats() {
-        List<Integer> functions = new ArrayList<Integer>();
+        List<Integer> functions = new ArrayList<>();
         functions.add(7);
         functions.add(2);
         functions.add(0);
@@ -391,13 +391,13 @@ public class FileDataTest {
         assertThat(functionData.getCodeFunctionCoveredCount(), equalTo(3));//Check cache
         assertThat(functionData.getFunctionCoverRate(), equalTo((double)3 / 4));
         
-        functionData = new FileData("test.js", null, new ArrayList<Integer>(), null);
+        functionData = new FileData("test.js", null, new ArrayList<>(), null);
         assertThat(functionData.getFunctionCoverRate(), equalTo(1.0));
     }
     
     @Test
     public void shouldReturnBranchStats() {
-        SortedMap<Integer, List<BranchData>> lines = new TreeMap<Integer, List<BranchData>>();
+        SortedMap<Integer, List<BranchData>> lines = new TreeMap<>();
         lines.put(3, asList(null, getBranchData(1, 0), getBranchData(0, 1)));
         lines.put(9, asList(null, getBranchData(1, 1)));
         FileData lineData = new FileData("test.js", null, null, lines);

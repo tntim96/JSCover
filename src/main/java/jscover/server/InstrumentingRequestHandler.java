@@ -367,7 +367,7 @@ import static java.util.logging.Level.SEVERE;
 public class InstrumentingRequestHandler extends HttpServer {
     private static final Logger logger = Logger.getLogger(InstrumentingRequestHandler.class.getName());
     public static final String JSCOVERAGE_STORE = "/jscoverage-store";
-    static Map<String, String> uris = new HashMap<String, String>();
+    static Map<String, String> uris = new HashMap<>();
     private ConfigurationForServer configuration;
     private IoService ioService;
     private JSONDataSaver jsonDataSaver = new JSONDataSaver();
@@ -449,7 +449,7 @@ public class InstrumentingRequestHandler extends HttpServer {
     }
 
     @Override
-    protected void handleGet(HttpRequest request) throws IOException {
+    protected void handleGet(HttpRequest request) {
         String uri = request.getPath();
         try {
             if (uri.equals("/jscoverage.js")) {

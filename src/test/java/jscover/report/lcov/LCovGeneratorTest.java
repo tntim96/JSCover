@@ -361,7 +361,7 @@ public class LCovGeneratorTest {
 
     @Test
     public void shouldGenerateLcovDataForFile() {
-        List<Integer> lines = new ArrayList<Integer>();
+        List<Integer> lines = new ArrayList<>();
         lines.add(null);
         lines.add(7);
         lines.add(2);
@@ -369,11 +369,11 @@ public class LCovGeneratorTest {
         lines.add(0);
         lines.add(5);
 
-        SortedMap<Integer, List<BranchData>> branches = new TreeMap<Integer, List<BranchData>>();
+        SortedMap<Integer, List<BranchData>> branches = new TreeMap<>();
         branches.put(1, asList(null, getBranchData(1, 0), getBranchData(0, 1)));
         branches.put(3, asList(null, getBranchData(1, 1)));
 
-        List<Integer> functions = new ArrayList<Integer>();
+        List<Integer> functions = new ArrayList<>();
         functions.add(7);
         functions.add(2);
         functions.add(0);

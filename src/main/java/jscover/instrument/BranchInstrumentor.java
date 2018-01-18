@@ -345,16 +345,16 @@ package jscover.instrument;
 import com.google.javascript.rhino.IR;
 import com.google.javascript.rhino.Node;
 
-import java.util.*;
-import java.util.logging.Logger;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import static java.lang.String.format;
-import static java.util.logging.Level.SEVERE;
 
 public class BranchInstrumentor implements NodeVisitor {
     private static final String initBranchLine = "  _$jscoverage['%s'].branchData['%d'] = [];\n";
     private static final String initBranchCondition = "  _$jscoverage['%s'].branchData['%d'][%d] = new BranchData();\n";
-    private static final Logger logger = Logger.getLogger(BranchInstrumentor.class.getName());
     private static int functionId = 1;
 
     private BranchStatementBuilder branchStatementBuilder = new BranchStatementBuilder();
@@ -363,7 +363,7 @@ public class BranchInstrumentor implements NodeVisitor {
     private boolean detectCoalesce;
     private CommentsHandler commentsHandler;
     private Node astRoot;
-    private SortedMap<Integer, SortedSet<Integer>> lineConditionMap = new TreeMap<Integer, SortedSet<Integer>>();
+    private SortedMap<Integer, SortedSet<Integer>> lineConditionMap = new TreeMap<>();
     private int functionWrapperCount = 0;
 
     public BranchInstrumentor(String uri, boolean detectCoalesce, CommentsHandler commentsHandler) {
@@ -389,7 +389,7 @@ public class BranchInstrumentor implements NodeVisitor {
         Integer conditionId = 1;
         SortedSet<Integer> conditions = lineConditionMap.get(node.getLineno());
         if (conditions == null) {
-            conditions = new TreeSet<Integer>();
+            conditions = new TreeSet<>();
             lineConditionMap.put(node.getLineno(), conditions);
         } else {
             conditionId = conditions.last() + 1;

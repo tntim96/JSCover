@@ -432,7 +432,7 @@ public class HttpServer extends Thread {
     }
 
     protected Map<String, List<String>> readHeaders(BufferedReader br) throws IOException {
-        Map<String, List<String>> headers = new HashMap<String, List<String>>();
+        Map<String, List<String>> headers = new HashMap<>();
         String headerLine = br.readLine();
         for (; headerLine != null && !headerLine.equals(""); headerLine = br.readLine()) {
             logger.log(FINEST, "Header: {0}", headerLine);
@@ -441,7 +441,7 @@ public class HttpServer extends Thread {
                 String headerField = headerLine.substring(0, index).trim();
                 String headerValue = headerLine.substring(index + 1).trim();
                 if (!headers.containsKey(headerField))
-                    headers.put(headerField, new ArrayList<String>());
+                    headers.put(headerField, new ArrayList<>());
                 headers.get(headerField).add(headerValue);
             }
         }

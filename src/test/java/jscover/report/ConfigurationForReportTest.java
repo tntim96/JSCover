@@ -555,7 +555,7 @@ public class ConfigurationForReportTest {
 
     @Test
     public void shouldSetProperties() {
-        List<File> mergeDirs = new ArrayList<File>();
+        List<File> mergeDirs = new ArrayList<>();
         configuration.setMergeDirs(mergeDirs);
         assertThat(mergeDirs, sameInstance(mergeDirs));
 

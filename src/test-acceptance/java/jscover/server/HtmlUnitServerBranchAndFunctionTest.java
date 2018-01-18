@@ -342,8 +342,6 @@ Public License instead of this License.
 
 package jscover.server;
 
-import com.gargoylesoftware.htmlunit.AlertHandler;
-import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlTable;
@@ -372,17 +370,13 @@ public class HtmlUnitServerBranchAndFunctionTest extends HtmlUnitServerTest {
     };
 
     @BeforeClass
-    public static void setUpOnce() throws IOException {
-        server = new Thread(new Runnable() {
-            public void run() {
-                main.runMain(args);
-            }
-        });
+    public static void setUpOnce() {
+        server = new Thread(() -> main.runMain(args));
         server.start();
     }
 
     @AfterClass
-    public static void tearDown() throws InterruptedException {
+    public static void tearDown() {
         main.stop();
     }
 
@@ -465,11 +459,7 @@ public class HtmlUnitServerBranchAndFunctionTest extends HtmlUnitServerTest {
             HtmlAnchor anchor = (HtmlAnchor) branchCell.getFirstChild().getFirstChild();
 
             final String alert[] = new String[1];
-            webClient.setAlertHandler(new AlertHandler() {
-                public void handleAlert(Page page, String message) {
-                    alert[0] = message;
-                }
-            });
+            webClient.setAlertHandler((page, message) -> alert[0] = message);
 
             anchor.click();
             assertThat(alert[0], containsString(alertLine));

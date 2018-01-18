@@ -368,7 +368,7 @@ public class LCovGeneratorIntegrationTest {
 
     @Test
     @Ignore
-    public void shouldGenerateLCovDataForYUI3() throws Exception {
+    public void shouldGenerateLCovDataForYUI3() {
         String json = IoUtils.getInstance().loadFromFileSystem(new File("src/test-integration/resources/jscover/report/xml/jscoverage.json"));
         SortedMap<String, FileData> data = jsonDataMerger.jsonToMap(json);
         dest = new File("target/yui3.lcov");

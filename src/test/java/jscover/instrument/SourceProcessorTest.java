@@ -352,7 +352,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.io.IOException;
 import java.util.TreeSet;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -399,7 +398,7 @@ public class SourceProcessorTest {
     }
 
     @Test
-    public void shouldIncludeBranchLogicForProcessSourceEvenIfIncludeBranchCoverageIsFalse() throws IOException {
+    public void shouldIncludeBranchLogicForProcessSourceEvenIfIncludeBranchCoverageIsFalse() {
         given(ioUtils.loadFromClassPath("/header.js")).willReturn("<header>");
         given(ioUtils.loadFromClassPath("/jscoverage-common.js")).willReturn("<common>");
         given(ioUtils.loadFromClassPath("/jscoverage-branch.js")).willReturn("<branch>");
@@ -409,7 +408,7 @@ public class SourceProcessorTest {
     }
 
     @Test
-    public void shouldIncludeBranchLogicForProcessSource() throws IOException {
+    public void shouldIncludeBranchLogicForProcessSource() {
         ReflectionUtils.setField(sourceProcessor, "includeBranchCoverage", true);
         given(ioUtils.loadFromClassPath("/header.js")).willReturn("<header>");
         given(ioUtils.loadFromClassPath("/jscoverage-common.js")).willReturn("<common>");
@@ -420,7 +419,7 @@ public class SourceProcessorTest {
     }
 
     @Test
-    public void shouldIncludeLocalStorageLogicForProcessSource() throws IOException {
+    public void shouldIncludeLocalStorageLogicForProcessSource() {
         ReflectionUtils.setField(sourceProcessor, "localStorage", true);
         given(ioUtils.loadFromClassPath("/header.js")).willReturn("<header>");
         given(ioUtils.loadFromClassPath("/jscoverage-common.js")).willReturn("<common>");
@@ -432,7 +431,7 @@ public class SourceProcessorTest {
     }
 
     @Test
-    public void shouldIncludeIsolateBrowserLogicForProcessSource() throws IOException {
+    public void shouldIncludeIsolateBrowserLogicForProcessSource() {
         ReflectionUtils.setField(sourceProcessor, "isolateBrowser", true);
         given(ioUtils.loadFromClassPath("/header.js")).willReturn("<header>");
         given(ioUtils.loadFromClassPath("/jscoverage-common.js")).willReturn("<common>");

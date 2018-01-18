@@ -389,9 +389,7 @@ class StatementBuilder {
         if (n.getSourceFileName() == null)
             return true;
         Node child = n.getFirstChild();
-        if (child != null && child.isGetProp() && child.getFirstChild().isName() && child.getFirstChild().getString().equals("_$jscoverage"))
-            return true;
-        return false;
+        return child != null && child.isGetProp() && child.getFirstChild().isName() && child.getFirstChild().getString().equals("_$jscoverage");
     }
 
 }

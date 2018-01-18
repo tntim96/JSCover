@@ -361,7 +361,7 @@ public class SummaryDataTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void shouldNotSupportOperation() {
-        List<Coverable> files = new ArrayList<Coverable>();
+        List<Coverable> files = new ArrayList<>();
         SummaryData summaryData = new SummaryData(files);
         summaryData.getUri();
     }
@@ -373,7 +373,7 @@ public class SummaryDataTest {
         given(fileData2.getCodeLineCount()).willReturn(6);
         given(fileData2.getCodeLinesCoveredCount()).willReturn(5);
 
-        List<Coverable> files = new ArrayList<Coverable>();
+        List<Coverable> files = new ArrayList<>();
         files.add(fileData1);
         files.add(fileData2);
 
@@ -391,7 +391,7 @@ public class SummaryDataTest {
         given(fileData2.getBranchCount()).willReturn(6);
         given(fileData2.getBranchesCoveredCount()).willReturn(5);
 
-        List<Coverable> files = new ArrayList<Coverable>();
+        List<Coverable> files = new ArrayList<>();
         files.add(fileData1);
         files.add(fileData2);
 
@@ -409,7 +409,7 @@ public class SummaryDataTest {
         given(fileData2.getCodeFunctionCount()).willReturn(6);
         given(fileData2.getCodeFunctionCoveredCount()).willReturn(5);
 
-        List<Coverable> files = new ArrayList<Coverable>();
+        List<Coverable> files = new ArrayList<>();
         files.add(fileData1);
         files.add(fileData2);
 

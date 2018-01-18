@@ -360,7 +360,7 @@ public class HttpServerTest {
     private PrintWriter pw = new PrintWriter(stringWriter);
 
     @Before
-    public void setUp() throws IOException {
+    public void setUp() {
         ReflectionUtils.setField(httpServer, HttpServer.class, "pw", pw);
     }
 
@@ -404,7 +404,7 @@ public class HttpServerTest {
     }
 
     @Test
-    public void shouldSetContentLength() throws IOException {
+    public void shouldSetContentLength() {
         httpServer.sendResponse(HTTP_OK, MIME.TEXT_PLAIN, "Hey");
 
         assertThat(stringWriter.toString(), equalTo("HTTP/1.0 200 OK\nServer: JSCover/null\nContent-Type: text/plain\nConnection: close\nContent-Length: 3\n\nHey"));

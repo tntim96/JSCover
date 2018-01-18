@@ -360,7 +360,7 @@ public class WebDaemon {
     private ServerSocket serverSocket;
     public boolean running = true;
 
-    public void start(ConfigurationForServer configuration) throws IOException, InterruptedException {
+    public void start(ConfigurationForServer configuration) throws IOException {
         loggerUtils.configureLogger(configuration.getLogLevel(), configuration.getReportDir());
         logger.log(INFO, "Starting JSCover {0} HTTP Server, port {1,number,#}", new Object[]{configuration.getVersion(), configuration.getPort()});
         serverSocket = new ServerSocket(configuration.getPort());

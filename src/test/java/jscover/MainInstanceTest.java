@@ -370,7 +370,6 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.hamcrest.MockitoHamcrest.argThat;
 
@@ -410,7 +409,7 @@ public class MainInstanceTest {
     }
 
     @Test
-    public void shouldExitWithError() throws IOException, InterruptedException {
+    public void shouldExitWithError() {
         main.runMain(new String[]{"--unknown"});
         verifyZeroInteractions(webDaemon);
         verifyZeroInteractions(fileSystemInstrumenter);
@@ -418,28 +417,28 @@ public class MainInstanceTest {
     }
 
     @Test
-    public void shouldPrintVersion() throws IOException, InterruptedException {
+    public void shouldPrintVersion() {
         main.runMain(new String[]{"-V"});
         verifyZeroInteractions(webDaemon);
         verifyZeroInteractions(exitHelper);
     }
 
     @Test
-    public void shouldPrintCharSets() throws IOException, InterruptedException {
+    public void shouldPrintCharSets() {
         main.runMain(new String[]{"-h", "encoding"});
         verifyZeroInteractions(webDaemon);
         verifyZeroInteractions(exitHelper);
     }
 
     @Test
-    public void shouldShowWebServerHelp() throws IOException, InterruptedException {
+    public void shouldShowWebServerHelp() {
         main.runMain(new String[]{"-ws", "-h"});
         verifyZeroInteractions(webDaemon);
         verifyZeroInteractions(exitHelper);
     }
 
     @Test
-    public void shouldShowFileSystemHelp() throws IOException, InterruptedException {
+    public void shouldShowFileSystemHelp() {
         main.runMain(new String[]{"-ws", "-h"});
         verifyZeroInteractions(fileSystemInstrumenter);
         verifyZeroInteractions(exitHelper);
@@ -464,14 +463,14 @@ public class MainInstanceTest {
     }
 
     @Test
-    public void shouldRunWebServerWithInvalidOptions() throws IOException, InterruptedException {
+    public void shouldRunWebServerWithInvalidOptions() {
         main.runMain(new String[]{"-ws", "--porty=7"});
         verifyZeroInteractions(webDaemon);
         verify(exitHelper, times(1)).exit(1);
     }
 
     @Test
-    public void shouldRunFileSystem() throws IOException, InterruptedException {
+    public void shouldRunFileSystem() {
         main.runMain(new String[]{"-fs", "--js-version=ECMASCRIPT5", "src", "dest"});
 
         TypeSafeMatcher<ConfigurationForFS> matcher = new TypeSafeMatcher<ConfigurationForFS>() {
@@ -489,14 +488,14 @@ public class MainInstanceTest {
     }
 
     @Test
-    public void shouldRunFileSystemWithInvalidOptions() throws IOException, InterruptedException {
+    public void shouldRunFileSystemWithInvalidOptions() {
         main.runMain(new String[]{"-fs"});
         verifyZeroInteractions(fileSystemInstrumenter);
         verify(exitHelper, times(1)).exit(1);
     }
 
     @Test
-    public void shouldRunStdIO() throws IOException, InterruptedException {
+    public void shouldRunStdIO() {
         main.runMain(new String[]{"-io", "--js-version=ECMASCRIPT5", "doc/example/script.js"});
 
         TypeSafeMatcher<ConfigurationForStdOut> matcher = new TypeSafeMatcher<ConfigurationForStdOut>() {
@@ -514,14 +513,14 @@ public class MainInstanceTest {
     }
 
     @Test
-    public void shouldRunStdIOWithInvalidOptions() throws IOException, InterruptedException {
+    public void shouldRunStdIOWithInvalidOptions() {
         main.runMain(new String[]{"-io"});
         verifyZeroInteractions(stdOutInstrumenter);
         verify(exitHelper, times(1)).exit(1);
     }
 
     @Test
-    public void shouldRunGenerateFiles() throws IOException, InterruptedException {
+    public void shouldRunGenerateFiles() {
         main.runMain(new String[]{"-gf", "dest"});
         verify(ioService, times(1)).generateJSCoverFilesForWebServer(argThat(getFileNameMatcher("dest")), (String) eq(properties.get("version")));
         verify(ioUtils, times(0)).copyDir(any(File.class), any(File.class));
@@ -529,7 +528,7 @@ public class MainInstanceTest {
     }
 
     @Test
-    public void shouldRunGenerateFilesWithOriginalSource() throws IOException, InterruptedException {
+    public void shouldRunGenerateFilesWithOriginalSource() {
         main.runMain(new String[]{"-gf", "src", "dest"});
         verify(ioService, times(1)).generateJSCoverFilesForWebServer(argThat(getFileNameMatcher("dest")), (String) eq(properties.get("version")));
         verify(ioUtils, times(1)).copyDir(argThat(getFileNameMatcher("src")), argThat(getFileNameMatcher(Main.reportSrcSubDir, "dest")));
@@ -537,7 +536,7 @@ public class MainInstanceTest {
     }
 
     @Test
-    public void shouldRunGenerateFilesWithInvalidOptions() throws IOException, InterruptedException {
+    public void shouldRunGenerateFilesWithInvalidOptions() {
         main.runMain(new String[]{"-gf"});
         verifyZeroInteractions(ioService);
         verifyZeroInteractions(exitHelper);
@@ -562,36 +561,36 @@ public class MainInstanceTest {
     }
 
     @Test
-    public void shouldRunRegExp() throws IOException, InterruptedException {
+    public void shouldRunRegExp() {
         main.runMain(new String[]{"-regex-test", "/js/.*.js", "/js/script.js"});
         verifyZeroInteractions(exitHelper);
     }
 
     @Test
-    public void shouldRunRegExpNoMatch() throws IOException, InterruptedException {
+    public void shouldRunRegExpNoMatch() {
         main.runMain(new String[]{"-regex-test", "/js/.*.js", "/script.js"});
         verifyZeroInteractions(exitHelper);
     }
 
     @Test
-    public void shouldRunRegExpWithInvalidOptions() throws IOException, InterruptedException {
+    public void shouldRunRegExpWithInvalidOptions() {
         main.runMain(new String[]{"-regex-test", "/js/.*.js"});
         verifyZeroInteractions(exitHelper);
     }
 
     @Test
-    public void shouldReThrowWebServerException() throws IOException, InterruptedException {
+    public void shouldReThrowWebServerException() throws IOException {
         WebDaemon webDaemon = spy(new WebDaemon());
         ReflectionUtils.setField(main, "webDaemon", webDaemon);
 
-        InterruptedException toBeThrown = new InterruptedException("Ouch!");
+        RuntimeException toBeThrown = new RuntimeException("Ouch!");
         doThrow(toBeThrown).when(webDaemon).start(any(ConfigurationForServer.class));
 
         try {
             main.runMain(new String[]{"-ws", "--port=1234"});
             fail("Should have thrown exception");
         } catch (RuntimeException rte) {
-            assertThat((InterruptedException) rte.getCause(), sameInstance(toBeThrown));
+            assertThat(rte.getCause(), sameInstance(toBeThrown));
         }
         verifyZeroInteractions(exitHelper);
     }

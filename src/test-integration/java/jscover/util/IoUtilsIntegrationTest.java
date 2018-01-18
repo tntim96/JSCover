@@ -353,7 +353,7 @@ public class IoUtilsIntegrationTest {
     IoUtils ioUtils = IoUtils.getInstance();
 
     @Test
-    public void shouldCopyDir() throws Exception {
+    public void shouldCopyDir() {
         File src = new File("src/test-integration/resources/jsSearch");
         File dest = new File("target/copy/jsSearch");
         ioUtils.copyDir(src, dest);

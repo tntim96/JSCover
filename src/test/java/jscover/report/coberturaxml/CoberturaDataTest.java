@@ -362,7 +362,7 @@ public class CoberturaDataTest {
 
     @Test
     public void shouldExtractPackage() {
-        CoberturaData data = new CoberturaData(new ArrayList<Coverable>());
+        CoberturaData data = new CoberturaData(new ArrayList<>());
 
         assertThat(data.getPackage(null), equalTo(""));
         assertThat(data.getPackage("test.js"), equalTo(""));
@@ -378,7 +378,7 @@ public class CoberturaDataTest {
         given(fileData2.getCodeLineCount()).willReturn(6);
         given(fileData2.getCodeLinesCoveredCount()).willReturn(5);
 
-        List<Coverable> files = new ArrayList<Coverable>();
+        List<Coverable> files = new ArrayList<>();
         files.add(fileData1);
         files.add(fileData2);
 
@@ -396,7 +396,7 @@ public class CoberturaDataTest {
         given(fileData2.getBranchCount()).willReturn(6);
         given(fileData2.getBranchesCoveredCount()).willReturn(5);
 
-        List<Coverable> files = new ArrayList<Coverable>();
+        List<Coverable> files = new ArrayList<>();
         files.add(fileData1);
         files.add(fileData2);
 

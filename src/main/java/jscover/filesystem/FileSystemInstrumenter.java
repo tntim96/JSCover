@@ -368,7 +368,7 @@ public class FileSystemInstrumenter {
     private ConfigurationForFS configuration;
     private UnloadedSourceProcessor unloadedSourceProcessor;
     private JSONDataSaver jsonDataSaver = new JSONDataSaver();
-    private List<ScriptCoverageCount> unloadJSData = new ArrayList<ScriptCoverageCount>();
+    private List<ScriptCoverageCount> unloadJSData = new ArrayList<>();
     private UriFileTranslator uriFileTranslator = new UriFileTranslatorNoOp();
     private ExecutorService executor = Executors.newFixedThreadPool(5);
 
@@ -391,20 +391,14 @@ public class FileSystemInstrumenter {
     }
 
     FilenameFilter getJavaScriptFilter() {
-        return new FilenameFilter() {
-            public boolean accept(File dir, String name) {
-                File file = new File(dir, name);
-                return file.isDirectory() || name.endsWith(".js");
-            }
+        return (dir, name) -> {
+            File file = new File(dir, name);
+            return file.isDirectory() || name.endsWith(".js");
         };
     }
 
     void copyFolder(File src, File dest) {
-        FilenameFilter acceptAll = new FilenameFilter() {
-            public boolean accept(File dir, String name) {
-                return true;
-            }
-        };
+        FilenameFilter acceptAll = (dir, name) -> true;
         copyFolder(src, dest, acceptAll, false);
     }
 
@@ -419,13 +413,10 @@ public class FileSystemInstrumenter {
             if (!isReportSrc && src.toString().endsWith(".js") && !configuration.skipInstrumentation(path)) {
                 if (!dest.getParentFile().exists())
                     dest.getParentFile().mkdirs();
-                executor.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        instrumenterService.instrumentJSForFileSystem(configuration, src, dest, path);
-                        if (configuration.isIncludeUnloadedJS()) {
-                            unloadedSourceProcessor.getEmptyCoverageData(unloadJSData, src);
-                        }
+                executor.execute(() -> {
+                    instrumenterService.instrumentJSForFileSystem(configuration, src, dest, path);
+                    if (configuration.isIncludeUnloadedJS()) {
+                        unloadedSourceProcessor.getEmptyCoverageData(unloadJSData, src);
                     }
                 });
             } else {

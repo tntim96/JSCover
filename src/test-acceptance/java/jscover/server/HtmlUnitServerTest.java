@@ -343,7 +343,6 @@ Public License instead of this License.
 package jscover.server;
 
 import com.gargoylesoftware.htmlunit.Page;
-import com.gargoylesoftware.htmlunit.ScriptResult;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebWindow;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
@@ -385,17 +384,13 @@ public class HtmlUnitServerTest {
     }
 
     @BeforeClass
-    public static void setUpOnce() throws IOException {
-        server = new Thread(new Runnable() {
-            public void run() {
-                main.runMain(args);
-            }
-        });
+    public static void setUpOnce() {
+        server = new Thread(() -> main.runMain(args));
         server.start();
     }
 
     @AfterClass
-    public static void tearDown() throws Exception {
+    public static void tearDown() {
         main.stop();
     }
 

@@ -367,7 +367,7 @@ public class FileScanner {
     }
 
     public Set<File> getFiles(Set<String> urisAlreadyProcessed) {
-        Set<File> files = new HashSet<File>();
+        Set<File> files = new HashSet<>();
         searchFolder(scanPath, files, urisAlreadyProcessed);
         return files;
     }

@@ -366,7 +366,6 @@ public class PersistentProxyTest {
     private static int proxyPort = 3129;
 
     protected WebClient webClient = new WebClient();
-    protected IoUtils ioUtils = IoUtils.getInstance();
 
     private static String CONTENT = "Some content";
 
@@ -380,31 +379,25 @@ public class PersistentProxyTest {
     };
 
     @BeforeClass
-    public static void setUpOnce() throws IOException {
-        proxyServer = new Thread(new Runnable() {
-            public void run() {
-                main.runMain(args);
-            }
-        });
+    public static void setUpOnce() {
+        proxyServer = new Thread(() -> main.runMain(args));
         proxyServer.start();
-        webServer = new Thread(new Runnable() {
-            public void run() {
-                try {
-                    serverSocket = new ServerSocket(9001);
-                    while (true) {
-                        final Socket socket = serverSocket.accept();
-                        new Thread(new PersistentStaticHttpServer(socket, CONTENT)).start();
-                    }
-                } catch (IOException e) {
-                    //throw new RuntimeException(e);
+        webServer = new Thread(() -> {
+            try {
+                serverSocket = new ServerSocket(9001);
+                while (true) {
+                    final Socket socket = serverSocket.accept();
+                    new Thread(new PersistentStaticHttpServer(socket, CONTENT)).start();
                 }
+            } catch (IOException e) {
+                //throw new RuntimeException(e);
             }
         });
         webServer.start();
     }
 
     @AfterClass
-    public static void tearDown() throws Exception {
+    public static void tearDown() {
         main.stop();
         IoUtils.getInstance().closeQuietly(serverSocket);
     }

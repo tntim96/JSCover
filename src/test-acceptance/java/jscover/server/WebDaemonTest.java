@@ -6,8 +6,6 @@ import jscover.Main;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.IOException;
-
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -22,12 +20,8 @@ public class WebDaemonTest {
     };
 
     @Before
-    public void setUp() throws IOException {
-        server = new Thread(new Runnable() {
-            public void run() {
-                main.runMain(args);
-            }
-        });
+    public void setUp() {
+        server = new Thread(() -> main.runMain(args));
         server.start();
     }
 

@@ -348,7 +348,6 @@ import com.google.javascript.rhino.Node;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -360,7 +359,7 @@ import static org.hamcrest.Matchers.is;
 public class StatementBuilderTest {
     private StatementBuilder builder = new StatementBuilder();
     private CompilerOptions options = new CompilerOptions();
-    private SortedSet<Integer> validLines = new TreeSet<Integer>();
+    private SortedSet<Integer> validLines = new TreeSet<>();
 
     @Before
     public void setUp() {
@@ -404,7 +403,7 @@ public class StatementBuilderTest {
     }
 
     @Test
-    public void shouldDetectInstrumentation() throws IOException {
+    public void shouldDetectInstrumentation() {
         Node jscover = IR.name("_$jscoverage");
         Node getProp = IR.getprop(jscover, "someval");
         Node call = IR.call(getProp);
@@ -415,7 +414,7 @@ public class StatementBuilderTest {
     }
 
     @Test
-    public void shouldNotDetectInstrumentation() throws IOException {
+    public void shouldNotDetectInstrumentation() {
         Node jscover = IR.string("_$someOtherVar");
         Node getProp = IR.getprop(jscover, "someval");
         Node call = IR.call(getProp);

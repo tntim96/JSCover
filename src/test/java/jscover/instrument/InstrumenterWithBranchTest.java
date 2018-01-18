@@ -344,7 +344,6 @@ package jscover.instrument;
 
 import com.google.javascript.jscomp.parsing.Config;
 import jscover.ConfigurationCommon;
-import jscover.util.ReflectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -359,7 +358,6 @@ public class InstrumenterWithBranchTest {
 
     @Mock private ConfigurationCommon config;
     private SourceProcessor sourceProcessor;
-    private ParseTreeInstrumenter instrumenter;
 
     @Before
     public void setUp() {
@@ -367,7 +365,6 @@ public class InstrumenterWithBranchTest {
         given(config.isIncludeBranch()).willReturn(true);
         given(config.isIncludeFunction()).willReturn(true);
         sourceProcessor = new SourceProcessor(config, "test.js", "x;");
-        instrumenter = (ParseTreeInstrumenter)ReflectionUtils.getField(sourceProcessor, "instrumenter");
     }
 
     @Test

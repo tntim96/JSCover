@@ -370,7 +370,7 @@ public class UnloadedSourceProcessor {
     }
 
     public List<ScriptCoverageCount> getEmptyCoverageData(Set<String> urisAlreadyProcessed) {
-        List<ScriptCoverageCount> scripts = new ArrayList<ScriptCoverageCount>();
+        List<ScriptCoverageCount> scripts = new ArrayList<>();
         for (File file: fileScanner.getFiles(urisAlreadyProcessed)) {
             getEmptyCoverageData(scripts, file);
         }
@@ -383,7 +383,7 @@ public class UnloadedSourceProcessor {
             String source = ioUtils.loadFromFileSystem(file);
             SourceProcessor sourceProcessor = new SourceProcessor(config, uri, source);
             sourceProcessor.instrumentSource();
-            ScriptCoverageCount script = new ScriptCoverageCount("/"+uri, new ArrayList<Integer>(
+            ScriptCoverageCount script = new ScriptCoverageCount("/"+uri, new ArrayList<>(
                     sourceProcessor.getInstrumenter().getValidLines()),
                     sourceProcessor.getInstrumenter().getNumFunctions(),
                     sourceProcessor.getBranchInstrumentor().getLineConditionMap());

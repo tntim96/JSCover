@@ -350,7 +350,7 @@ import java.util.TreeSet;
 //Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013, tntim96
 class NodeProcessor {
     private StatementBuilder statementBuilder = new StatementBuilder();
-    private SortedSet<Integer> validLines = new TreeSet<Integer>();
+    private SortedSet<Integer> validLines = new TreeSet<>();
     private int functionNumber;// Function Coverage (HA-CA)
     private String fileName;
     private boolean includeFunctionCoverage;

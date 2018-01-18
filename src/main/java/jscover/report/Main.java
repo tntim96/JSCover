@@ -395,7 +395,7 @@ public class Main {
         logger.log(INFO, "Finished");
     }
 
-    private void runReport() throws IOException {
+    private void runReport() {
         if (config.isInvalid()) {
             System.out.println(config.getHelpText());
             exitHelper.exit(1);
@@ -435,7 +435,7 @@ public class Main {
     }
 
     private void mergeJSON() {
-        SortedMap<String, FileData> total = new TreeMap<String, FileData>();
+        SortedMap<String, FileData> total = new TreeMap<>();
         for (int i = 0; i < config.getMergeDirs().size(); i++) {
             File dataFile = new File(config.getMergeDirs().get(i), "jscoverage.json");
             logger.log(INFO, "Merging JSON from ''{0}''", dataFile.getPath());

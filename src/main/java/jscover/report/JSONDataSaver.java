@@ -353,7 +353,7 @@ import static java.util.logging.Level.SEVERE;
 
 public class JSONDataSaver {
     private static final Logger logger = Logger.getLogger(JSONDataSaver.class.getName());
-    protected static final Set<File> files = new HashSet<File>();
+    protected static final Set<File> files = new HashSet<>();
     private JSONDataMerger jsonDataMerger = new JSONDataMerger();
     private IoUtils ioUtils = IoUtils.getInstance();
 
@@ -362,7 +362,7 @@ public class JSONDataSaver {
             lockOnReportDir(reportDir);
             reportDir.mkdirs();
             File jsonFile = new File(reportDir, "jscoverage.json");
-            SortedMap<String, FileData> dataMap = new TreeMap<String, FileData>();
+            SortedMap<String, FileData> dataMap = new TreeMap<>();
             if (jsonFile.exists()) {
                 logger.info("Saving/merging JSON with existing JSON");
                 String existingJSON = ioUtils.toString(jsonFile);

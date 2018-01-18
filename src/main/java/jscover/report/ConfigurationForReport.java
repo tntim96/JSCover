@@ -366,7 +366,7 @@ public class ConfigurationForReport  extends Configuration {
     private boolean format;
     private boolean merge;
     private File mergeDestDir;
-    private List<File> mergeDirs = new ArrayList<File>();
+    private List<File> mergeDirs = new ArrayList<>();
     private IoUtils ioUtils = IoUtils.getInstance();
 
     public void setReportFormat(ReportFormat reportFormat) {

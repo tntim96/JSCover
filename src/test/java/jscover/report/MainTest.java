@@ -372,7 +372,6 @@ import static jscover.Main.reportSrcSubDir;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static org.mockito.hamcrest.MockitoHamcrest.argThat;
@@ -414,7 +413,7 @@ public class MainTest {
     public void shouldSetConfig() {
         ConfigurationForReport configuration = mock(ConfigurationForReport.class);
         main.setConfig(configuration);
-        assertThat((ConfigurationForReport) ReflectionUtils.getField(main, "config"), sameInstance(configuration));
+        assertThat(ReflectionUtils.getField(main, "config"), sameInstance(configuration));
     }
 
     @Test
@@ -441,7 +440,7 @@ public class MainTest {
         String json = "json";
         given(ioUtils.loadFromFileSystem(new File(jsonDirectory, "jscoverage.json"))).willReturn(json);
         doReturn(srcDir.getCanonicalPath()).when(ioUtils).getCanonicalPath(srcDir);
-        SortedMap<String, FileData> list = new TreeMap<String, FileData>();
+        SortedMap<String, FileData> list = new TreeMap<>();
         given(jsonDataMerger.jsonToMap(json)).willReturn(list);
 
         main.runMain(new String[]{});
@@ -462,9 +461,9 @@ public class MainTest {
         String json = "json";
         given(ioUtils.loadFromFileSystem(new File(jsonDirectory, "jscoverage.json"))).willReturn(json);
         doReturn(srcDir.getCanonicalPath()).when(ioUtils).getCanonicalPath(srcDir);
-        SortedMap<String, FileData> list = new TreeMap<String, FileData>();
+        SortedMap<String, FileData> list = new TreeMap<>();
         given(jsonDataMerger.jsonToMap(json)).willReturn(list);
-        given(coberturaXmlGenerator.generateXml(ArgumentMatchers.<CoberturaData>any(), anyString(), anyString())).willReturn("<xml/>");
+        given(coberturaXmlGenerator.generateXml(ArgumentMatchers.any(), anyString(), anyString())).willReturn("<xml/>");
 
         main.runMain(new String[]{});
 
@@ -494,12 +493,12 @@ public class MainTest {
         given(config.getJsonDirectory()).willReturn(jsonDirectory);
         String json = "json";
         given(ioUtils.loadFromFileSystem(new File(jsonDirectory, "jscoverage.json"))).willReturn(json);
-        SortedMap<String, FileData> list = new TreeMap<String, FileData>();
-        List<Integer> lines = new ArrayList<Integer>();
+        SortedMap<String, FileData> list = new TreeMap<>();
+        List<Integer> lines = new ArrayList<>();
         for (int i = 0; i <= 42; i++)
             lines.add(i);
-        SortedMap<Integer, List<BranchData>> branches = new TreeMap<Integer, List<BranchData>>();
-        List<Integer> functions = new ArrayList<Integer>();
+        SortedMap<Integer, List<BranchData>> branches = new TreeMap<>();
+        List<Integer> functions = new ArrayList<>();
         list.put("/test.js", new FileData("/test.js", lines, functions, branches));
         given(jsonDataMerger.jsonToMap(json)).willReturn(list);
 
@@ -542,7 +541,7 @@ public class MainTest {
     }
 
     private void testMergeLogic(boolean hasOriginalSrc) throws IOException {
-        List<File> mergeDirs = new ArrayList<File>();
+        List<File> mergeDirs = new ArrayList<>();
         File dir1 = new File("target/dir1");
         mergeDirs.add(dir1);
         File dir2 = new File("target/dir2");
@@ -563,10 +562,10 @@ public class MainTest {
         given(config.getMergeDirs()).willReturn(mergeDirs);
         given(ioUtils.loadFromFileSystem(new File(dir1, "jscoverage.json"))).willReturn("json1");
         given(ioUtils.loadFromFileSystem(new File(dir2, "jscoverage.json"))).willReturn("json2");
-        SortedMap<String, FileData> mergedMapTemp = new TreeMap<String, FileData>();
-        SortedMap<String, FileData> mergedMap = new TreeMap<String, FileData>();
-        SortedMap<String, FileData> map1 = new TreeMap<String, FileData>();
-        SortedMap<String, FileData> map2 = new TreeMap<String, FileData>();
+        SortedMap<String, FileData> mergedMapTemp = new TreeMap<>();
+        SortedMap<String, FileData> mergedMap = new TreeMap<>();
+        SortedMap<String, FileData> map1 = new TreeMap<>();
+        SortedMap<String, FileData> map2 = new TreeMap<>();
         given(jsonDataMerger.jsonToMap("json1")).willReturn(map1);
         given(jsonDataMerger.jsonToMap("json2")).willReturn(map2);
         given(jsonDataMerger.mergeJSONCoverageMaps(argThat(getTypeSafeMatcher()), argThat(sameInstance(map2)))).willReturn(mergedMapTemp);

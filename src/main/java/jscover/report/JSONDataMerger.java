@@ -356,7 +356,7 @@ public class JSONDataMerger {
 
 
     public SortedMap<String, FileData> mergeJSONCoverageStrings(String... data) {
-        SortedMap<String, FileData> total = new TreeMap<String, FileData>();
+        SortedMap<String, FileData> total = new TreeMap<>();
         for (String json : data) {
             mergeJSONCoverageMaps(total, jsonToMap(json));
         }
@@ -400,25 +400,25 @@ public class JSONDataMerger {
     }
 
     public SortedMap<String, FileData> jsonToMap(String data) {
-        TreeMap<String, FileData> map = new TreeMap<String, FileData>();
+        TreeMap<String, FileData> map = new TreeMap<>();
         TreeMap json = new Gson().fromJson(data, TreeMap.class);
         for (Object scriptURI : json.keySet()) {
             Map scriptData = (Map) json.get(scriptURI);
             List lineCoverageArray = (List) scriptData.get("lineData");
             Map branchJSONArray = (Map) scriptData.get("branchData");
-            List<Integer> countData = new ArrayList<Integer>(lineCoverageArray.size());
+            List<Integer> countData = new ArrayList<>(lineCoverageArray.size());
             for (int i = 0; i < lineCoverageArray.size(); i++)
                 countData.add(getIntOrNull(lineCoverageArray.get(i)));
 
             // Function Coverage (HA-CA)
             List functionCoverageArray = (List) scriptData.get("functionData");
-            List<Integer> funcData = new ArrayList<Integer>();
+            List<Integer> funcData = new ArrayList<>();
             if (functionCoverageArray != null) {
                 for (int i = 0; i < functionCoverageArray.size(); i++)
                     funcData.add(getIntOrNull(functionCoverageArray.get(i)));
             }
 
-            SortedMap<Integer, List<BranchData>> branchLineMap = new TreeMap<Integer, List<BranchData>>();
+            SortedMap<Integer, List<BranchData>> branchLineMap = new TreeMap<>();
             if (branchJSONArray != null) {
                     readBranchLines(branchJSONArray, branchLineMap);
             }
@@ -429,7 +429,7 @@ public class JSONDataMerger {
 
     private void readBranchLines(Map branchJSONObject, SortedMap<Integer, List<BranchData>> branchLineMap) {
         for (Object line: branchJSONObject.keySet()) {
-            List<BranchData> branchConditionArray = new ArrayList<BranchData>();
+            List<BranchData> branchConditionArray = new ArrayList<>();
             branchLineMap.put(line == null ? null : Integer.parseInt((String) line), branchConditionArray);
             List conditionsJSON = (List) branchJSONObject.get(line);
             readBranchCondition(branchConditionArray, conditionsJSON);
@@ -521,7 +521,7 @@ public class JSONDataMerger {
     }
 
     public SortedMap<String, FileData> createEmptyJSON(List<ScriptCoverageCount> scripts) {
-        SortedMap<String, FileData> map = new TreeMap<String, FileData>();
+        SortedMap<String, FileData> map = new TreeMap<>();
         for (ScriptCoverageCount script : scripts) {
             List<Integer> codeLines = script.getLines();
             FileData coverageData = new FileData(script.getUri(), getNoHitLineData(codeLines), getNoHitFunctionData(script.getFunctionCount()), getNoHitBranchData(script.getBranchData()));
@@ -532,7 +532,7 @@ public class JSONDataMerger {
 
     private List<Integer> getNoHitLineData(List<Integer> codeLines) {
         if (codeLines.size() == 0)
-            return new ArrayList<Integer>();
+            return new ArrayList<>();
         Integer[] lines = new Integer[codeLines.get(codeLines.size() - 1) + 1];
         for (int i = 0; i < codeLines.size(); i++) {
             lines[codeLines.get(i)] = 0;
@@ -541,19 +541,19 @@ public class JSONDataMerger {
     }
 
     private List<Integer> getNoHitFunctionData(int functionCount) {
-        ArrayList<Integer> functionData = new ArrayList<Integer>();
+        ArrayList<Integer> functionData = new ArrayList<>();
         for (int i = 0; i < functionCount; i++)
             functionData.add(0);
         return functionData;
     }
 
     private SortedMap<Integer, List<BranchData>> getNoHitBranchData(SortedMap<Integer, SortedSet<Integer>> branchMap) {
-        SortedMap<Integer, List<BranchData>> branchData = new TreeMap<Integer, List<BranchData>>();
+        SortedMap<Integer, List<BranchData>> branchData = new TreeMap<>();
         if (branchMap.size() == 0)
             return branchData;
 
         for (int i : branchMap.keySet()) {
-            List<BranchData> list = new ArrayList<BranchData>();
+            List<BranchData> list = new ArrayList<>();
             branchData.put(i, list);
             for (int j = 0; j <= branchMap.get(i).last(); j++)
                 if (branchMap.get(i).contains(j))

@@ -348,7 +348,7 @@ import jscover.report.SummaryData;
 import java.util.*;
 
 public class CoberturaData extends SummaryData {
-    private Map<String, Set<? extends Coverable>> packageMap = new HashMap<String, Set<? extends Coverable>>();
+    private Map<String, Set<? extends Coverable>> packageMap = new HashMap<>();
     private Collection<? extends Coverable> files;
 
     @SuppressWarnings(value = "unchecked")
@@ -358,7 +358,7 @@ public class CoberturaData extends SummaryData {
         for (Coverable file : files) {
             String path = getPackage(file.getUri());
             if (!packageMap.containsKey(path)) {
-                packageMap.put(path, new HashSet<Coverable>());
+                packageMap.put(path, new HashSet<>());
             }
             ((Set<Coverable>)packageMap.get(path)).add(file);
         }

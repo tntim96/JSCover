@@ -358,8 +358,8 @@ public class ConfigurationForFS extends ConfigurationCommon {
     public static final String EXLCUDE_REG_PREFIX = "--exclude-reg=";
     public static final String THREAD_COUNT = "--threads=";
 
-    private final Set<String> excludes = new HashSet<String>();
-    private final Set<Pattern> excludeRegs = new HashSet<Pattern>();
+    private final Set<String> excludes = new HashSet<>();
+    private final Set<Pattern> excludeRegs = new HashSet<>();
     private File srcDir;
     private File destDir;
     private int threads = Runtime.getRuntime().availableProcessors();

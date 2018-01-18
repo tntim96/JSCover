@@ -641,11 +641,7 @@ public class InstrumentAndHighlightRegressionTest {
     @Test
     public void shouldTestTheRest() {
         File testDir = new File("src/test-integration/resources/data/javascript");
-        FilenameFilter filter = new FilenameFilter() {
-            public boolean accept(File file, String name) {
-                return name.endsWith(".js");
-            }
-        };
+        FilenameFilter filter = (file, name) -> name.endsWith(".js");
         for (String jsFile : testDir.list(filter)) {
             testFileWithoutStopping(jsFile);
         }

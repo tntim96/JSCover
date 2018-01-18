@@ -351,8 +351,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.net.URISyntaxException;
-
 import static org.junit.Assert.assertEquals;
 import static org.mockito.BDDMockito.given;
 
@@ -370,7 +368,7 @@ public class InstrumenterIntegrationTest {
     }
 
     @Test
-    public void shouldInstrumentForFileSystem() throws URISyntaxException {
+    public void shouldInstrumentForFileSystem() {
         String fileName = "test-simple.js";
         String source = ioUtils.loadFromClassPath("/" + fileName);
         instrumenter = new SourceProcessor(config, fileName, source);
@@ -384,7 +382,7 @@ public class InstrumenterIntegrationTest {
     }
 
     @Test
-    public void shouldInstrumentForServer() throws URISyntaxException {
+    public void shouldInstrumentForServer() {
         String fileName = "test-simple.js";
         String source = ioUtils.loadFromClassPath("/" + fileName);
         instrumenter = new SourceProcessor(config, fileName, source);

@@ -352,7 +352,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -371,7 +370,7 @@ public class ParseTreeInstrumenterTest {
     @Mock private Logger logger;
 
     @Before
-    public void setUp() throws IOException {
+    public void setUp() {
         instrumenter = new ParseTreeInstrumenter("/dir/file.js", true, new CommentsHandler());
         ReflectionUtils.setField(instrumenter, "nodeProcessor", nodeProcessor);
         ReflectionUtils.setField(instrumenter, "logger", logger);

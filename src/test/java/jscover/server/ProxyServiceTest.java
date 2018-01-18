@@ -367,7 +367,7 @@ public class ProxyServiceTest {
     private ProxyService proxyService = new ProxyService();
     private HttpRequest request = new HttpRequest("test.js", null, null, 0, null);
     @Mock private HttpURLConnection conn;
-    private Map<String, List<String>> headers = new HashMap<String, List<String>>();
+    private Map<String, List<String>> headers = new HashMap<>();
 
     @Before
     public void setUp() {
@@ -417,7 +417,7 @@ public class ProxyServiceTest {
 
     @Test
     public void shouldConvertToHTTP10() throws Exception {
-        Map<String, List<String>> headers = new HashMap<String, List<String>>();
+        Map<String, List<String>> headers = new HashMap<>();
         headers.put("Content-Length", Collections.singletonList("0"));
         String url = "http://somehost/someURL";
         String requestString = "POST " + url + " HTTP/1.1\r\nContent-Length: 0\r\n\r\n";
@@ -428,7 +428,7 @@ public class ProxyServiceTest {
 
     @Test
     public void shouldChangeURLToPath() throws Exception {
-        Map<String, List<String>> headers = new HashMap<String, List<String>>();
+        Map<String, List<String>> headers = new HashMap<>();
         headers.put("Content-Length", Collections.singletonList("0"));
         String url = "http://somehost/someURL";
         String requestString = "POST " + url + " HTTP/1.1\r\nContent-Length: 0\r\n\r\n";
@@ -439,7 +439,7 @@ public class ProxyServiceTest {
 
     @Test
     public void shouldNotAddKeepAliveHeadersPost() throws Exception {
-        Map<String, List<String>> headers = new HashMap<String, List<String>>();
+        Map<String, List<String>> headers = new HashMap<>();
         headers.put("Proxy-Connection", Collections.singletonList("keep-alive"));
         headers.put("Connection", Collections.singletonList("keep-alive"));
         headers.put("Content-Length", Collections.singletonList("0"));

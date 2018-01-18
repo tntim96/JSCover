@@ -3,7 +3,6 @@ package jscover.server;
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebWindow;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import jscover.Main;
 import jscover.util.IoService;
@@ -38,12 +37,8 @@ public class HtmlUnitIsolateBrowserTest {
     }
 
     @BeforeClass
-    public static void setUpOnce() throws IOException {
-        server = new Thread(new Runnable() {
-            public void run() {
-                main.runMain(args);
-            }
-        });
+    public static void setUpOnce() {
+        server = new Thread(() -> main.runMain(args));
         server.start();
     }
 

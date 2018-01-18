@@ -378,25 +378,19 @@ public class HtmlServerUnloadedJSProxyTest extends HtmlServerUnloadedJSTest {
     }
 
     @BeforeClass
-    public static void setUpOnce() throws IOException {
-        proxyServer = new Thread(new Runnable() {
-            public void run() {
-                main.runMain(args);
-            }
-        });
+    public static void setUpOnce() {
+        proxyServer = new Thread(() -> main.runMain(args));
         proxyServer.start();
-        webServer = new Thread(new Runnable() {
-            public void run() {
-                try {
-                    serverSocket = new ServerSocket(9001);
-                    File wwwRoot = new File("src/test-integration/resources/jsSearch");
-                    while (true) {
-                        Socket socket = serverSocket.accept();
-                        (new HttpServer(socket, wwwRoot, "testVersion")).start();
-                    }
-                } catch (IOException e) {
-                    //throw new RuntimeException(e);
+        webServer = new Thread(() -> {
+            try {
+                serverSocket = new ServerSocket(9001);
+                File wwwRoot = new File("src/test-integration/resources/jsSearch");
+                while (true) {
+                    Socket socket = serverSocket.accept();
+                    (new HttpServer(socket, wwwRoot, "testVersion")).start();
                 }
+            } catch (IOException e) {
+                //throw new RuntimeException(e);
             }
         });
         webServer.start();

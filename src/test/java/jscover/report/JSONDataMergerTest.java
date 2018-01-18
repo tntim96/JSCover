@@ -464,7 +464,7 @@ public class JSONDataMergerTest {
     @Test
     public void shouldGenerateEmptyCoverageJSONString() {
         List<Integer> lines = new ArrayList<Integer>(){{add(1);add(2);add(3);}};
-        SortedMap<Integer, SortedSet<Integer>> branchData = new TreeMap<Integer, SortedSet<Integer>>();
+        SortedMap<Integer, SortedSet<Integer>> branchData = new TreeMap<>();
         final ScriptCoverageCount script = new ScriptCoverageCount("/test.js", lines, 0, branchData);
         SortedMap<String, FileData> map = jsonMerger.createEmptyJSON(new ArrayList<ScriptCoverageCount>(){{add(script);}});
 
@@ -477,8 +477,8 @@ public class JSONDataMergerTest {
 
     @Test
     public void shouldGenerateEmptyCoverageJSONStringForEmptyJS() {
-        List<Integer> lines = new ArrayList<Integer>();
-        SortedMap<Integer, SortedSet<Integer>> branchData = new TreeMap<Integer, SortedSet<Integer>>();
+        List<Integer> lines = new ArrayList<>();
+        SortedMap<Integer, SortedSet<Integer>> branchData = new TreeMap<>();
         final ScriptCoverageCount script = new ScriptCoverageCount("/test.js", lines, 0, branchData);
         SortedMap<String, FileData> map = jsonMerger.createEmptyJSON(new ArrayList<ScriptCoverageCount>(){{add(script);}});
 
@@ -489,7 +489,7 @@ public class JSONDataMergerTest {
     @Test
     public void shouldGenerateEmptyCoverageJSONStringWithComments() {
         List<Integer> lines = new ArrayList<Integer>(){{add(1);add(3);}};
-        final ScriptCoverageCount script = new ScriptCoverageCount("/test.js", lines, 0, new TreeMap<Integer, SortedSet<Integer>>());
+        final ScriptCoverageCount script = new ScriptCoverageCount("/test.js", lines, 0, new TreeMap<>());
         SortedMap<String, FileData> map = jsonMerger.createEmptyJSON(new ArrayList<ScriptCoverageCount>(){{add(script);}});
 
         assertThat(map.keySet().iterator().next(), equalTo("/test.js"));
@@ -502,7 +502,7 @@ public class JSONDataMergerTest {
     @Test
     public void shouldGenerateEmptyCoverageJSONStringWithFunctions() {
         List<Integer> lines = new ArrayList<Integer>(){{add(1);add(3);}};
-        final ScriptCoverageCount script = new ScriptCoverageCount("/test.js", lines, 4, new TreeMap<Integer, SortedSet<Integer>>());
+        final ScriptCoverageCount script = new ScriptCoverageCount("/test.js", lines, 4, new TreeMap<>());
         SortedMap<String, FileData> map = jsonMerger.createEmptyJSON(new ArrayList<ScriptCoverageCount>(){{add(script);}});
 
         assertThat(map.keySet().iterator().next(), equalTo("/test.js"));
@@ -516,7 +516,7 @@ public class JSONDataMergerTest {
     @Test
     public void shouldGenerateEmptyCoverageJSONStringWithBranchData() {
         List<Integer> lines = new ArrayList<Integer>(){{add(1);add(3);}};
-        TreeMap<Integer, SortedSet<Integer>> branchData = new TreeMap<Integer, SortedSet<Integer>>();
+        TreeMap<Integer, SortedSet<Integer>> branchData = new TreeMap<>();
         branchData.put(12, new TreeSet<Integer>(){{add(1);add(2);}});
         final ScriptCoverageCount script = new ScriptCoverageCount("/test.js", lines, 4, branchData);
         SortedMap<String, FileData> map = jsonMerger.createEmptyJSON(new ArrayList<ScriptCoverageCount>(){{add(script);}});

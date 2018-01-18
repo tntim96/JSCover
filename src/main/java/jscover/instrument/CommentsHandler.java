@@ -361,12 +361,12 @@ public class CommentsHandler {
     //Marks the end of a section which is excluded from branch coverage.
     static final String EXCL_BR_STOP = "//#JSCOVER_EXCL_BR_STOP";
 
-    private Set<Integer> ignoreLines = new HashSet<Integer>();
-    private LinkedList<CommentRange> ignoreLineRanges = new LinkedList<CommentRange>();
-    private Set<Integer> ignoreBranches = new HashSet<Integer>();
-    private LinkedList<CommentRange> ignoreBranchRanges = new LinkedList<CommentRange>();
+    private Set<Integer> ignoreLines = new HashSet<>();
+    private LinkedList<CommentRange> ignoreLineRanges = new LinkedList<>();
+    private Set<Integer> ignoreBranches = new HashSet<>();
+    private LinkedList<CommentRange> ignoreBranchRanges = new LinkedList<>();
 
-    private LinkedList<JSCoverageIgnoreComment> jsCoverageIgnoreComments = new LinkedList<JSCoverageIgnoreComment>();
+    private LinkedList<JSCoverageIgnoreComment> jsCoverageIgnoreComments = new LinkedList<>();
 
     public List<JSCoverageIgnoreComment> getJsCoverageIgnoreComments() {
         return jsCoverageIgnoreComments;

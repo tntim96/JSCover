@@ -415,10 +415,7 @@ public class PersistentStaticHttpServer implements Runnable {
                 ioUtils.closeQuietly(conn);
                 ioUtils.closeQuietly(socket);
             }
-        } catch (HttpException e) {
-            e.printStackTrace();
-            ioUtils.closeQuietly(socket);
-        } catch (IOException e) {
+        } catch (HttpException | IOException e) {
             e.printStackTrace();
             ioUtils.closeQuietly(socket);
         }

@@ -361,7 +361,7 @@ public class FileScannerTest {
     private IoUtils ioUtils = IoUtils.getInstance();
 
     private FileScanner fileScanner;
-    private Set<String> urisAlreadyProcessed = new HashSet<String>();
+    private Set<String> urisAlreadyProcessed = new HashSet<>();
     private File file = new File("src/test-integration/resources/jsSearch");
 
     @Before

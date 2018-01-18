@@ -382,10 +382,10 @@ public class InstrumentingRequestHandlerTest {
     private @Mock ByteArrayInputStream bais;
     private final StringWriter stringWriter = new StringWriter();
     private PrintWriter pw = new PrintWriter(stringWriter);
-    private Map<String, List<String>> headers = new HashMap<String, List<String>>();
+    private Map<String, List<String>> headers = new HashMap<>();
 
     @Before
-    public void setUp() throws IOException {
+    public void setUp() {
         InstrumentingRequestHandler.uris.clear();
         webServer = new InstrumentingRequestHandler(null, configuration);
         ReflectionUtils.setField(webServer, "ioService", ioService);
@@ -482,7 +482,7 @@ public class InstrumentingRequestHandlerTest {
     }
 
     @Test
-    public void shouldDirectHEADToProxy() throws IOException {
+    public void shouldDirectHEADToProxy() {
         given(configuration.isProxy()).willReturn(true);
 
         HttpRequest request = new HttpRequest("somePostUrl", null, null, 0, null);
@@ -628,7 +628,7 @@ public class InstrumentingRequestHandlerTest {
         given(configuration.getVersion()).willReturn("theVersion");
         given(ioUtils.toStringNoClose(bais, 12)).willReturn("data");
         given(bais.skip(50)).willReturn(50L);
-        List<ScriptCoverageCount> unloadedJS = new ArrayList<ScriptCoverageCount>();
+        List<ScriptCoverageCount> unloadedJS = new ArrayList<>();
         unloadedJS.add(new ScriptCoverageCount("/js/unloaded.js", null, 0, null));
         given(unloadedSourceProcessor.getEmptyCoverageData(any(Set.class))).willReturn(unloadedJS);
 
@@ -688,20 +688,6 @@ public class InstrumentingRequestHandlerTest {
         assertThat(InstrumentingRequestHandler.uris.keySet().iterator().next(), equalTo("js/production.js"));
     }
 
-    @Test
-    public void shouldRecordInstrumentedURIsForWebServer() throws IOException {
-        File wwwRoot = new File("wwwRoot");
-        ReflectionUtils.setField(webServer, HttpServer.class, "wwwRoot", wwwRoot);
-
-        webServer.handleGet(new HttpRequest("/js/production.js", null, null, 0, null));
-
-        verify(instrumenterService).instrumentJSForWebServer(configuration, new File("wwwRoot/js/production.js"), "/js/production.js");
-        verifyZeroInteractions(ioService);
-        verifyZeroInteractions(jsonDataSaver);
-        verifyZeroInteractions(proxyService);
-        assertThat(InstrumentingRequestHandler.uris.size(), equalTo(1));
-        assertThat(InstrumentingRequestHandler.uris.keySet().iterator().next(), equalTo("js/production.js"));
-    }
 
     @Test
     public void shouldNotRecordInstrumentedURIsForWebServerIfNotFound() throws IOException {
@@ -763,7 +749,7 @@ public class InstrumentingRequestHandlerTest {
         ReflectionUtils.setField(webServer, HttpServer.class, "wwwRoot", wwwRoot);
         given(configuration.skipInstrumentation("test/production.js")).willReturn(false);
 
-        Map<String, List<String>> headers = new HashMap<String, List<String>>();
+        Map<String, List<String>> headers = new HashMap<>();
         headers.put("NoInstrument", new ArrayList<String>(){{add("true");}});
         HttpRequest request = new HttpRequest("/test/production.js", null, null, 0, null);
         request.setHeaders(headers);

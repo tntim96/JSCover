@@ -373,8 +373,8 @@ public class HtmlUnitUITest {
     private static HTMLCoverageData scriptD = new HTMLCoverageData("/scripts/script-d.js", "100%", "100%", "100%");
     private static HTMLCoverageData scriptEmpty = new HTMLCoverageData("/scripts/script-empty.js", "N/A", "N/A", "N/A");
     private static HTMLCoverageData scriptLine = new HTMLCoverageData("/scripts/script-line.js", "100%", "N/A", "N/A");
-    private static List<HTMLCoverageData> data = new ArrayList<HTMLCoverageData>();
-    private static Map<Integer, List<HTMLCoverageData>> dataMap = new HashMap<Integer, List<HTMLCoverageData>>();
+    private static List<HTMLCoverageData> data = new ArrayList<>();
+    private static Map<Integer, List<HTMLCoverageData>> dataMap = new HashMap<>();
     static {
         data.add(scriptA);
         data.add(scriptB);
@@ -398,11 +398,7 @@ public class HtmlUnitUITest {
     @BeforeClass
     public static void setUpOnce() throws IOException {
         FileUtils.deleteDirectory(reportDir);
-        server = new Thread(new Runnable() {
-            public void run() {
-                main.runMain(args);
-            }
-        });
+        server = new Thread(() -> main.runMain(args));
         server.start();
         storeResult();
     }
@@ -413,7 +409,7 @@ public class HtmlUnitUITest {
     }
 
     @Before
-    public void setUp() throws IOException {
+    public void setUp() {
         webClient.getOptions().setTimeout(1000);
     }
 
@@ -474,12 +470,12 @@ public class HtmlUnitUITest {
         final int matched[] = new int[]{0};
         for (int i = 0; i < data.size(); i++) {
             HtmlTableRow htmlTableRow = (HtmlTableRow) page.getByXPath("//tbody[@id='summaryTbody']/tr[" + (i + 1) + "]").get(0);
-            currentValue = verifyRow(page, field, currentValue, matched, htmlTableRow);
+            currentValue = verifyRow(field, currentValue, matched, htmlTableRow);
         }
         assertThat(matched[0], equalTo(data.size()));
     }
 
-    private int verifyRow(HtmlPage page, String field, int currentValue, int[] matched, HtmlTableRow htmlTableRow) {
+    private int verifyRow(String field, int currentValue, int[] matched, HtmlTableRow htmlTableRow) {
         final String path = htmlTableRow.getCell(0).asText();
         int value = parse(htmlTableRow.getCell(ReportField.getField(field).index).asText());
         assertThat(value, greaterThanOrEqualTo(currentValue));
@@ -495,7 +491,7 @@ public class HtmlUnitUITest {
             Integer value = parse((String) ReflectionUtils.getField(d, field.toLowerCase() + "Coverage"));
             List<HTMLCoverageData> list = dataMap.get(value);
             if (list == null) {
-                list = new ArrayList<HTMLCoverageData>();
+                list = new ArrayList<>();
                 dataMap.put(value, list);
             }
             list.add(d);

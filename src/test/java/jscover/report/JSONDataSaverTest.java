@@ -397,9 +397,9 @@ public class JSONDataSaverTest {
     @Test
     public void shouldSaveDataWithTranslatedUris() {
         String data = "data";
-        SortedMap<String, FileData> map = new TreeMap<String, FileData>();
+        SortedMap<String, FileData> map = new TreeMap<>();
         map.put("/exclude/js/code.js", fileData);
-        SortedMap<String, FileData> mapTranslated = new TreeMap<String, FileData>();
+        SortedMap<String, FileData> mapTranslated = new TreeMap<>();
         mapTranslated.put("/js/code.js", fileData);
         given(uriFileTranslator.mutates()).willReturn(true);
         given(jsonDataMerger.jsonToMap(data)).willReturn(map);
@@ -416,22 +416,20 @@ public class JSONDataSaverTest {
     @Ignore
     public void shouldSaveDataAfterFirstThread() throws InterruptedException {
         final StringBuilder sb = new StringBuilder();
-        Thread thread = new Thread(new Runnable() {
-            public void run() {
-                try {
-                    synchronized (JSONDataSaver.files) {
-                        sb.append("1");
-                        Thread.sleep(200);
-                        JSONDataSaver.files.remove(destDir);
-                        JSONDataSaver.files.notifyAll();
-                        Thread.sleep(200);
-                        sb.append("2");
-                    }
+        Thread thread = new Thread(() -> {
+            try {
+                synchronized (JSONDataSaver.files) {
+                    sb.append("1");
                     Thread.sleep(200);
-                    sb.append("3");
-                } catch (InterruptedException e) {
-                    throw new RuntimeException();
+                    JSONDataSaver.files.remove(destDir);
+                    JSONDataSaver.files.notifyAll();
+                    Thread.sleep(200);
+                    sb.append("2");
                 }
+                Thread.sleep(200);
+                sb.append("3");
+            } catch (InterruptedException e) {
+                throw new RuntimeException();
             }
         });
         JSONDataSaver.files.add(destDir);
@@ -450,17 +448,15 @@ public class JSONDataSaverTest {
     public void shouldReThrowInterruptedException() throws InterruptedException {
         final StringBuilder sb = new StringBuilder();
         final Thread testThread = Thread.currentThread();
-        Thread thread = new Thread(new Runnable() {
-            public void run() {
-                try {
-                    synchronized (JSONDataSaver.files) {
-                        sb.append("1");
-                        Thread.sleep(200);
-                        testThread.interrupt();
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+        Thread thread = new Thread(() -> {
+            try {
+                synchronized (JSONDataSaver.files) {
+                    sb.append("1");
+                    Thread.sleep(200);
+                    testThread.interrupt();
                 }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         });
         JSONDataSaver.files.add(destDir);
@@ -473,7 +469,7 @@ public class JSONDataSaverTest {
     @Test
     public void shouldSaveAndMergeData() {
         ioUtils.copy("json1", jsonFile);//Force merge
-        SortedMap<String, FileData> map = new TreeMap<String, FileData>();
+        SortedMap<String, FileData> map = new TreeMap<>();
         given(jsonDataMerger.mergeJSONCoverageStrings("json1", "json2")).willReturn(map);
         given(jsonDataMerger.toJSON(map)).willReturn("jsonMerged");
 
@@ -486,13 +482,13 @@ public class JSONDataSaverTest {
     @Test
     public void shouldSaveAndMergeDataWithTranslatedUris() {
         ioUtils.copy("jsonExisting", jsonFile);//Force merge
-        SortedMap<String, FileData> map = new TreeMap<String, FileData>();
+        SortedMap<String, FileData> map = new TreeMap<>();
         map.put("/exclude/js/code.js", fileData);
-        SortedMap<String, FileData> mapTranslated = new TreeMap<String, FileData>();
+        SortedMap<String, FileData> mapTranslated = new TreeMap<>();
         mapTranslated.put("/js/code.js", fileData);
-        SortedMap<String, FileData> mapExisting = new TreeMap<String, FileData>();
+        SortedMap<String, FileData> mapExisting = new TreeMap<>();
         mapExisting.put("/existing", fileData);
-        SortedMap<String, FileData> mapMerged = new TreeMap<String, FileData>();
+        SortedMap<String, FileData> mapMerged = new TreeMap<>();
         mapMerged.put("/merged", fileData);
         given(uriFileTranslator.mutates()).willReturn(true);
         given(jsonDataMerger.jsonToMap("jsonSubmitted")).willReturn(map);
@@ -508,24 +504,19 @@ public class JSONDataSaverTest {
     }
 
     ArgumentMatcher<SortedMap<String, FileData>> isMapWithKey(final String url) {
-        return new ArgumentMatcher<SortedMap<String, FileData>>() {
-            @Override
-            public boolean matches(SortedMap<String, FileData> map) {
-                return map.containsKey(url);
-            }
-        };
+        return map -> map.containsKey(url);
     }
 
     @Test
     public void shouldSaveAndIncludeUnloadedJS() {
-        List<ScriptCoverageCount> unloadJSData = new ArrayList<ScriptCoverageCount>();
+        List<ScriptCoverageCount> unloadJSData = new ArrayList<>();
 
-        SortedMap<String, FileData> jsonMap = new TreeMap<String, FileData>();
+        SortedMap<String, FileData> jsonMap = new TreeMap<>();
         final String loadedKey = "/loaded.js";
         FileData fileData = new FileData(loadedKey, null, null, null);
         jsonMap.put(loadedKey, fileData);
 
-        SortedMap<String, FileData> emptyJsonMap = new TreeMap<String, FileData>();
+        SortedMap<String, FileData> emptyJsonMap = new TreeMap<>();
         final String unloadedKey = "/unloaded.js";
         FileData emptyFileData = new FileData(unloadedKey, null, null, null);
         emptyJsonMap.put(unloadedKey, emptyFileData);
@@ -542,14 +533,14 @@ public class JSONDataSaverTest {
 
     @Test
     public void shouldSaveAndIncludeUnloadedJSWithTranslatedUris() {
-        List<ScriptCoverageCount> unloadJSData = new ArrayList<ScriptCoverageCount>();
+        List<ScriptCoverageCount> unloadJSData = new ArrayList<>();
 
-        SortedMap<String, FileData> jsonMap = new TreeMap<String, FileData>();
+        SortedMap<String, FileData> jsonMap = new TreeMap<>();
         String loadedKey = "/exclude/loaded.js";
         FileData fileData = new FileData(loadedKey, null, null, null);
         jsonMap.put(loadedKey, fileData);
 
-        SortedMap<String, FileData> emptyJsonMap = new TreeMap<String, FileData>();
+        SortedMap<String, FileData> emptyJsonMap = new TreeMap<>();
         String unloadedKey = "/unloaded.js";
         FileData emptyFileData = new FileData(unloadedKey, null, null, null);
         emptyJsonMap.put(unloadedKey, emptyFileData);
@@ -567,12 +558,7 @@ public class JSONDataSaverTest {
     }
 
     ArgumentMatcher<SortedMap<String, FileData>> isMapWithKeys(final String url1, final String url2) {
-        return new ArgumentMatcher<SortedMap<String, FileData>>() {
-            @Override
-            public boolean matches(SortedMap<String, FileData> map) {
-                return map.size() == 2 &&  map.containsKey(url1) && map.containsKey(url2);
-            }
-        };
+        return map -> map.size() == 2 &&  map.containsKey(url1) && map.containsKey(url2);
     }
 
 }

@@ -346,7 +346,6 @@ import com.google.javascript.jscomp.parsing.Config;
 import jscover.ConfigurationCommon;
 import jscover.util.ReflectionUtils;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;

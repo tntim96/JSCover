@@ -418,15 +418,15 @@ public class HttpRequestTest {
     @Test
     public void shouldNotSkipInstrumentationIfNoInstrumentHeaderNotPresent() {
         HttpRequest httpRequest = new HttpRequest("/test.js", null, null, 0, null);
-        httpRequest.setHeaders(new HashMap<String, List<String>>());
+        httpRequest.setHeaders(new HashMap<>());
         assertThat(httpRequest.skipInstrumentation(), equalTo(false));
     }
 
     @Test
     public void shouldSkipInstrumentationIfNoInstrumentHeaderPresent() {
         HttpRequest httpRequest = new HttpRequest("/test.js", null, null, 0, null);
-        Map<String, List<String>> headers = new HashMap<String, List<String>>();
-        headers.put("NoInstrument", new ArrayList<String>());
+        Map<String, List<String>> headers = new HashMap<>();
+        headers.put("NoInstrument", new ArrayList<>());
         httpRequest.setHeaders(headers);
         assertThat(httpRequest.skipInstrumentation(), equalTo(true));
     }
@@ -440,7 +440,7 @@ public class HttpRequestTest {
 
     @Test
     public void shouldReturnContentLength() {
-        Map<String, List<String>> headers = new HashMap<String, List<String>>();
+        Map<String, List<String>> headers = new HashMap<>();
         headers.put("Content-Length", new ArrayList<String>() {{
             add("1234");
         }});

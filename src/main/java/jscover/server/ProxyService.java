@@ -482,9 +482,7 @@ public class ProxyService {
         if ("proxy-connection".equals(header) || "connection".equals(header))
             return false;
         //Don't want to allow GZIP header
-        if ("accept-encoding".equals(header))
-            return false;
-        return true;
+        return !"accept-encoding".equals(header);
     }
 
     public String getUrl(HttpRequest request) throws IOException {

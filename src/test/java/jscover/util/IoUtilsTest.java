@@ -357,8 +357,6 @@ import java.util.Properties;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
@@ -391,7 +389,7 @@ public class IoUtilsTest {
     }
 
     @Test
-    public void shouldFlushNullStreamQuietly() throws IOException {
+    public void shouldFlushNullStreamQuietly() {
         ioUtils.flushQuietly(null);
     }
 
@@ -402,12 +400,12 @@ public class IoUtilsTest {
     }
 
     @Test(expected = RuntimeException.class)
-    public void shouldWrapExceptionsInToStringInputStream() throws IOException {
+    public void shouldWrapExceptionsInToStringInputStream() {
         ioUtils.toString(is);
     }
 
     @Test
-    public void shouldConvertInputStreamToString() throws IOException {
+    public void shouldConvertInputStreamToString() {
         String data = "Test";
         byte bytes[] = data.getBytes();
         assertThat(ioUtils.toStringNoClose(new ByteArrayInputStream(bytes), bytes.length), equalTo(data));
@@ -458,7 +456,7 @@ public class IoUtilsTest {
     }
 
     @Test
-    public void shouldCopyISToOSNoClose() throws Exception {
+    public void shouldCopyISToOSNoClose() {
         String data = "data";
         byte bytes[] = data.getBytes();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -481,7 +479,7 @@ public class IoUtilsTest {
     }
 
     @Test
-    public void shouldCopyISToOSNoCloseLength() throws Exception {
+    public void shouldCopyISToOSNoCloseLength() {
         String data = "data";
         byte bytes[] = data.getBytes();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -563,7 +561,7 @@ public class IoUtilsTest {
     }
 
     @Test
-    public void shouldCopyInputStreamToOutputStream() throws UnsupportedEncodingException {
+    public void shouldCopyInputStreamToOutputStream() {
         ByteArrayInputStream bais = new ByteArrayInputStream("shouldCopyInputStreamToOutputStream".getBytes());
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ioUtils.copy(bais, baos);
@@ -601,7 +599,7 @@ public class IoUtilsTest {
     }
 
     @Test(expected = RuntimeException.class)
-    public void shouldWrapExceptionsInCopyInputStreamToFile() throws IOException {
+    public void shouldWrapExceptionsInCopyInputStreamToFile() {
         ioUtils.copy(is, new File("target"));
     }
 
@@ -675,7 +673,7 @@ public class IoUtilsTest {
 
     static class MyOutputStream extends OutputStream {
         @Override
-        public void write(int b) throws IOException {}
+        public void write(int b) {}
     }
 
     private MyServerSocket getMyServerSocket() {

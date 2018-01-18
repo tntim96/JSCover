@@ -356,7 +356,6 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.concurrent.ExecutorService;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
@@ -367,15 +366,10 @@ public class FileSystemInstrumenterTest {
     private @Mock InstrumenterService instrumenterService;
     private @Mock IoUtils ioUtils;
     private @Mock ConfigurationForFS configuration;
-    private @Mock File log;
     private @Mock File src;
     private @Mock File dest;
     private @Mock File destParent;
-    private FilenameFilter acceptAll =  new FilenameFilter() {
-        public boolean accept(File dir, String name) {
-            return true;
-        }
-    };
+    private FilenameFilter acceptAll = (dir, name) -> true;
 
 
     @Before

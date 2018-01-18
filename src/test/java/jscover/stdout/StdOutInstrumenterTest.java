@@ -352,7 +352,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.PrintStream;
 
 import static org.mockito.BDDMockito.given;
@@ -369,7 +368,7 @@ public class StdOutInstrumenterTest {
 
 
     @Before
-    public void setUp() throws IOException {
+    public void setUp() {
         ReflectionUtils.setField(instrumenter, "loggerUtils", loggerUtils);
         ReflectionUtils.setField(instrumenter, "instrumenterService", instrumenterService);
         ReflectionUtils.setField(instrumenter, "dest", dest);

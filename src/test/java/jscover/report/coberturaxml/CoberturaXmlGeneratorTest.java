@@ -369,7 +369,7 @@ import static org.mockito.Mockito.mock;
 //Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013
 public class CoberturaXmlGeneratorTest {
     private CoberturaXmlGenerator generator = new CoberturaXmlGenerator();
-    Collection<Coverable> files = new HashSet<Coverable>();
+    Collection<Coverable> files = new HashSet<>();
     CoberturaData data = new CoberturaData(files);
 
     @Test(expected = RuntimeException.class)
@@ -477,7 +477,7 @@ public class CoberturaXmlGeneratorTest {
     @Test
     public void shouldGenerateXmlLineNoBranch() throws Exception {
         List<Integer> lines = new ArrayList<Integer>(){{add(null);}{add(10);}};
-        SortedMap<Integer, List<BranchData>> branchData = new TreeMap<Integer, List<BranchData>>();
+        SortedMap<Integer, List<BranchData>> branchData = new TreeMap<>();
         files.add(new FileData("/dir/file.js", lines, null, branchData));
 
         data = new CoberturaData(files);
@@ -494,9 +494,9 @@ public class CoberturaXmlGeneratorTest {
 
     @Test
     public void shouldGenerateXmlBranchNoLine() throws Exception {
-        List<Integer> lines = new ArrayList<Integer>();
-        SortedMap<Integer, List<BranchData>> branchDataMap = new TreeMap<Integer, List<BranchData>>();
-        List<BranchData> conditionsList = new ArrayList<BranchData>();
+        List<Integer> lines = new ArrayList<>();
+        SortedMap<Integer, List<BranchData>> branchDataMap = new TreeMap<>();
+        List<BranchData> conditionsList = new ArrayList<>();
         conditionsList.add(null);
         conditionsList.add(new BranchData(0, 0, 1, 0));
         branchDataMap.put(1, conditionsList);
@@ -523,8 +523,8 @@ public class CoberturaXmlGeneratorTest {
     @Test
     public void shouldGenerateXmlLineAndBranch() throws Exception {
         List<Integer> lines = new ArrayList<Integer>(){{add(null);}{add(10);}};
-        SortedMap<Integer, List<BranchData>> branchDataMap = new TreeMap<Integer, List<BranchData>>();
-        List<BranchData> conditionsList = new ArrayList<BranchData>();
+        SortedMap<Integer, List<BranchData>> branchDataMap = new TreeMap<>();
+        List<BranchData> conditionsList = new ArrayList<>();
         conditionsList.add(null);
         conditionsList.add(new BranchData(0, 0, 0, 1));
         branchDataMap.put(1, conditionsList);
@@ -550,9 +550,9 @@ public class CoberturaXmlGeneratorTest {
 
     @Test
     public void shouldGenerateXmlBranchNoLineNoHit() throws Exception {
-        List<Integer> lines = new ArrayList<Integer>();
-        SortedMap<Integer, List<BranchData>> branchDataMap = new TreeMap<Integer, List<BranchData>>();
-        List<BranchData> conditionsList = new ArrayList<BranchData>();
+        List<Integer> lines = new ArrayList<>();
+        SortedMap<Integer, List<BranchData>> branchDataMap = new TreeMap<>();
+        List<BranchData> conditionsList = new ArrayList<>();
         conditionsList.add(null);
         conditionsList.add(new BranchData(0, 0, 0, 0));
         branchDataMap.put(1, conditionsList);
@@ -576,7 +576,7 @@ public class CoberturaXmlGeneratorTest {
         assertThat(getXPath(xpath, document, "//condition/@type"), equalTo("jump"));
     }
 
-    private Document parseXml(String xml) throws ParserConfigurationException, SAXException, IOException {
+    public static Document parseXml(String xml) throws ParserConfigurationException, SAXException, IOException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setValidating(true);
         DocumentBuilder builder = factory.newDocumentBuilder();

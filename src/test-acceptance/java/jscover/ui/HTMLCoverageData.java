@@ -345,26 +345,10 @@ package jscover.ui;
 import java.util.Comparator;
 
 public class HTMLCoverageData {
-    private static Comparator<HTMLCoverageData> nameComparator = new Comparator<HTMLCoverageData>() {
-        public int compare(HTMLCoverageData o1, HTMLCoverageData o2) {
-            return o1.name.compareTo(o2.name);
-        }
-    };
-    private static Comparator<HTMLCoverageData> lineComparator = new Comparator<HTMLCoverageData>() {
-        public int compare(HTMLCoverageData o1, HTMLCoverageData o2) {
-            return parse(o1.lineCoverage) - parse(o2.lineCoverage);
-        }
-    };
-    private static Comparator<HTMLCoverageData> branchComparator = new Comparator<HTMLCoverageData>() {
-        public int compare(HTMLCoverageData o1, HTMLCoverageData o2) {
-            return parse(o1.branchCoverage) - parse(o2.branchCoverage);
-        }
-    };
-    private static Comparator<HTMLCoverageData> functionComparator = new Comparator<HTMLCoverageData>() {
-        public int compare(HTMLCoverageData o1, HTMLCoverageData o2) {
-            return parse(o1.functionCoverage) - parse(o2.functionCoverage);
-        }
-    };
+    private static Comparator<HTMLCoverageData> nameComparator = Comparator.comparing(o -> o.name);
+    private static Comparator<HTMLCoverageData> lineComparator = Comparator.comparingInt(o -> parse(o.lineCoverage));
+    private static Comparator<HTMLCoverageData> branchComparator = Comparator.comparingInt(o -> parse(o.branchCoverage));
+    private static Comparator<HTMLCoverageData> functionComparator = Comparator.comparingInt(o -> parse(o.functionCoverage));
     private String name;
     private String lineCoverage;
     private String branchCoverage;
@@ -395,18 +379,6 @@ public class HTMLCoverageData {
 
     public static Comparator<HTMLCoverageData> byName() {
         return nameComparator;
-    }
-
-    public static Comparator<HTMLCoverageData> byLine() {
-        return lineComparator;
-    }
-
-    public static Comparator<HTMLCoverageData> byBranch() {
-        return branchComparator;
-    }
-
-    public static Comparator<HTMLCoverageData> byFunction() {
-        return functionComparator;
     }
 
     public static Comparator<HTMLCoverageData> by(String comparator) {
