@@ -85,6 +85,11 @@ var getJasmineRequireObj = (function (jasmineGlobal) {
     j$.ObjectPath = jRequire.ObjectPath(j$);
     j$.GlobalErrors = jRequire.GlobalErrors(j$);
 
+    j$.Truthy = jRequire.Truthy(j$);
+    j$.Falsy = jRequire.Falsy(j$);
+    j$.Empty = jRequire.Empty(j$);
+    j$.NotEmpty = jRequire.NotEmpty(j$);
+
     j$.matchers = jRequire.requireMatchers(jRequire, j$);
 
     return j$;
@@ -116,6 +121,7 @@ getJasmineRequireObj().requireMatchers = function(jRequire, j$) {
       'toHaveBeenCalledBefore',
       'toHaveBeenCalledTimes',
       'toHaveBeenCalledWith',
+      'toHaveClass',
       'toMatch',
       'toThrow',
       'toThrowError',
@@ -254,8 +260,8 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
       return func.name;
     }
 
-    var matches = func.toString().match(/^\s*function\s*(\w*)\s*\(/) ||
-      func.toString().match(/^\s*\[object\s*(\w*)Constructor\]/);
+    var matches = func.toString().match(/^\s*function\s*(\w+)\s*\(/) ||
+      func.toString().match(/^\s*\[object\s*(\w+)Constructor\]/);
 
     return matches ? matches[1] : '<anonymous>';
   };
@@ -280,6 +286,38 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
   j$.anything = function() {
     return new j$.Anything();
   };
+
+  /**
+   * Get a matcher, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
+   * that will succeed if the actual value being compared is `true` or anything truthy.
+   * @name jasmine.truthy
+   * @function
+   */
+  j$.truthy = function() {return new j$.Truthy();};
+
+  /**
+   * Get a matcher, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
+   * that will succeed if the actual value being compared is  `null`, `undefined`, `0`, `false` or anything falsey.
+   * @name jasmine.falsy
+   * @function
+   */
+  j$.falsy = function() {return new j$.Falsy();};
+
+  /**
+   * Get a matcher, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
+   * that will succeed if the actual value being compared is empty.
+   * @name jasmine.empty
+   * @function
+   */
+  j$.empty = function() {return new j$.Empty();};
+
+  /**
+   * Get a matcher, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
+   * that will succeed if the actual value being compared is not empty.
+   * @name jasmine.notEmpty
+   * @function
+   */
+  j$.notEmpty = function() {return new j$.NotEmpty();};
 
   /**
    * Get a matcher, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
@@ -641,8 +679,11 @@ getJasmineRequireObj().Spec = function(j$) {
     return this.getSpecName(this);
   };
 
-  Spec.prototype.addDeprecationWarning = function(msg) {
-    this.result.deprecationWarnings.push(this.expectationResultFactory({ message: msg }));
+  Spec.prototype.addDeprecationWarning = function(deprecation) {
+    if (typeof deprecation === 'string') {
+      deprecation = { message: deprecation };
+    }
+    this.result.deprecationWarnings.push(this.expectationResultFactory(deprecation));
   };
 
   var extractCustomPendingMessage = function(e) {
@@ -753,17 +794,29 @@ getJasmineRequireObj().Env = function(j$) {
       return currentSpec || currentSuite();
     };
 
-    var globalErrors = new j$.GlobalErrors();
-    globalErrors.install();
-    globalErrors.pushListener(function(message, filename, lineno) {
-      topSuite.result.failedExpectations.push({
-        passed: false,
-        globalErrorType: 'load',
-        message: message,
-        filename: filename,
-        lineno: lineno
+    var globalErrors = null;
+    
+    var installGlobalErrors = function() {
+      if (globalErrors) {
+        return;
+      }
+
+      globalErrors = new j$.GlobalErrors();
+      globalErrors.install();
+    };
+
+    if (!options.suppressLoadErrors) {
+      installGlobalErrors();
+      globalErrors.pushListener(function(message, filename, lineno) {
+        topSuite.result.failedExpectations.push({
+          passed: false,
+          globalErrorType: 'load',
+          message: message,
+          filename: filename,
+          lineno: lineno
+        });
       });
-    });
+    }
 
     this.specFilter = function() {
       return true;
@@ -908,18 +961,11 @@ getJasmineRequireObj().Env = function(j$) {
       return seed;
     };
 
-    this.suppressLoadErrors = function() {
-      if (handlingLoadErrors) {
-        globalErrors.popListener();
-      }
-      handlingLoadErrors = false;
-    };
-
-    this.deprecated = function(msg) {
+    this.deprecated = function(deprecation) {
       var runnable = currentRunnable() || topSuite;
-      runnable.addDeprecationWarning(msg);
-      if(typeof console !== 'undefined' && typeof console.warn !== 'undefined') {
-        console.error('DEPRECATION: ' + msg);
+      runnable.addDeprecationWarning(deprecation);
+      if(typeof console !== 'undefined' && typeof console.error === 'function') {
+        console.error('DEPRECATION:', deprecation);
       }
     };
 
@@ -967,6 +1013,8 @@ getJasmineRequireObj().Env = function(j$) {
        * @function
        * @name Reporter#jasmineStarted
        * @param {JasmineStartedInfo} suiteInfo Information about the full Jasmine suite that is being run
+       * @param {Function} [done] Used to specify to Jasmine that this callback is asynchronous and Jasmine should wait until it has been called before moving on.
+       * @returns {} Optionally return a Promise instead of using `done` to cause Jasmine to wait for completion.
        */
       'jasmineStarted',
       /**
@@ -974,6 +1022,8 @@ getJasmineRequireObj().Env = function(j$) {
        * @function
        * @name Reporter#jasmineDone
        * @param {JasmineDoneInfo} suiteInfo Information about the full Jasmine suite that just finished running.
+       * @param {Function} [done] Used to specify to Jasmine that this callback is asynchronous and Jasmine should wait until it has been called before moving on.
+       * @returns {} Optionally return a Promise instead of using `done` to cause Jasmine to wait for completion.
        */
       'jasmineDone',
       /**
@@ -981,6 +1031,8 @@ getJasmineRequireObj().Env = function(j$) {
        * @function
        * @name Reporter#suiteStarted
        * @param {SuiteResult} result Information about the individual {@link describe} being run
+       * @param {Function} [done] Used to specify to Jasmine that this callback is asynchronous and Jasmine should wait until it has been called before moving on.
+       * @returns {} Optionally return a Promise instead of using `done` to cause Jasmine to wait for completion.
        */
       'suiteStarted',
       /**
@@ -990,6 +1042,8 @@ getJasmineRequireObj().Env = function(j$) {
        * @function
        * @name Reporter#suiteDone
        * @param {SuiteResult} result
+       * @param {Function} [done] Used to specify to Jasmine that this callback is asynchronous and Jasmine should wait until it has been called before moving on.
+       * @returns {} Optionally return a Promise instead of using `done` to cause Jasmine to wait for completion.
        */
       'suiteDone',
       /**
@@ -997,6 +1051,8 @@ getJasmineRequireObj().Env = function(j$) {
        * @function
        * @name Reporter#specStarted
        * @param {SpecResult} result Information about the individual {@link it} being run
+       * @param {Function} [done] Used to specify to Jasmine that this callback is asynchronous and Jasmine should wait until it has been called before moving on.
+       * @returns {} Optionally return a Promise instead of using `done` to cause Jasmine to wait for completion.
        */
       'specStarted',
       /**
@@ -1006,13 +1062,15 @@ getJasmineRequireObj().Env = function(j$) {
        * @function
        * @name Reporter#specDone
        * @param {SpecResult} result
+       * @param {Function} [done] Used to specify to Jasmine that this callback is asynchronous and Jasmine should wait until it has been called before moving on.
+       * @returns {} Optionally return a Promise instead of using `done` to cause Jasmine to wait for completion.
        */
       'specDone'
     ], queueRunnerFactory);
 
     this.execute = function(runnablesToRun) {
       var self = this;
-      this.suppressLoadErrors();
+      installGlobalErrors();
 
       if(!runnablesToRun) {
         if (focusedRunnables.length) {
@@ -1707,6 +1765,74 @@ getJasmineRequireObj().ArrayWithExactContents = function(j$) {
   return ArrayWithExactContents;
 };
 
+getJasmineRequireObj().Empty = function (j$) {
+
+  function Empty() {}
+
+  Empty.prototype.asymmetricMatch = function (other) {
+    if (j$.isString_(other) || j$.isArray_(other) || j$.isTypedArray_(other)) {
+      return other.length === 0;
+    }
+
+    if (j$.isMap(other) || j$.isSet(other)) {
+      return other.size === 0;
+    }
+
+    if (j$.isObject_(other)) {
+      return Object.keys(other).length === 0;
+    }
+    return false;
+  };
+
+  Empty.prototype.jasmineToString = function () {
+    return '<jasmine.empty>';
+  };
+
+  return Empty;
+};
+
+getJasmineRequireObj().Falsy = function(j$) {
+
+  function Falsy() {}
+
+  Falsy.prototype.asymmetricMatch = function(other) {
+    return !other;
+  };
+
+  Falsy.prototype.jasmineToString = function() {
+    return '<jasmine.falsy>';
+  };
+
+  return Falsy;
+};
+
+getJasmineRequireObj().NotEmpty = function (j$) {
+
+  function NotEmpty() {}
+
+  NotEmpty.prototype.asymmetricMatch = function (other) {
+    if (j$.isString_(other) || j$.isArray_(other) || j$.isTypedArray_(other)) {
+      return other.length !== 0;
+    }
+
+    if (j$.isMap(other) || j$.isSet(other)) {
+      return other.size !== 0;
+    }
+
+    if (j$.isObject_(other)) {
+      return Object.keys(other).length !== 0;
+    }
+
+    return false;
+  };
+
+  NotEmpty.prototype.jasmineToString = function () {
+    return '<jasmine.notEmpty>';
+  };
+
+  return NotEmpty;
+};
+
 getJasmineRequireObj().ObjectContaining = function(j$) {
 
   function ObjectContaining(sample) {
@@ -1776,6 +1902,21 @@ getJasmineRequireObj().StringMatching = function(j$) {
   };
 
   return StringMatching;
+};
+
+getJasmineRequireObj().Truthy = function(j$) {
+
+  function Truthy() {}
+
+  Truthy.prototype.asymmetricMatch = function(other) {
+    return !!other;
+  };
+
+  Truthy.prototype.jasmineToString = function() {
+    return '<jasmine.truthy>';
+  };
+
+  return Truthy;
 };
 
 getJasmineRequireObj().CallTracker = function(j$) {
@@ -2357,18 +2498,22 @@ getJasmineRequireObj().ExceptionFormatter = function(j$) {
 
       var stackTrace = new j$.StackTrace(error.stack);
       var lines = filterJasmine(stackTrace);
+      var result = '';
 
       if (stackTrace.message) {
         lines.unshift(stackTrace.message);
       }
 
-      return lines.join('\n');
+      result += formatProperties(error);
+      result += lines.join('\n');
+
+      return result;
     };
 
     function filterJasmine(stackTrace) {
       var result = [],
         jasmineMarker = stackTrace.style === 'webkit' ? '<Jasmine>' : '    at <Jasmine>';
- 
+
       stackTrace.frames.forEach(function(frame) {
         if (frame.file && frame.file !== jasmineFile) {
           result.push(frame.raw);
@@ -2376,8 +2521,32 @@ getJasmineRequireObj().ExceptionFormatter = function(j$) {
           result.push(jasmineMarker);
         }
       });
- 
+
       return result;
+    }
+
+    function formatProperties(error) {
+      if (!(error instanceof Object)) {
+        return;
+      }
+
+      var ignored = ['name', 'message', 'stack', 'fileName', 'sourceURL', 'line', 'lineNumber', 'column', 'description'];
+      var result = {};
+      var empty = true;
+
+      for (var prop in error) {
+        if (j$.util.arrayContains(ignored, prop)) {
+          continue;
+        }
+        result[prop] = error[prop];
+        empty = false;
+      }
+
+      if (!empty) {
+        return 'error properties: ' + j$.pp(result) + '\n';
+      }
+
+      return '';
     }
   }
 
@@ -2530,10 +2699,14 @@ getJasmineRequireObj().buildExpectationResult = function() {
 
       var error = options.error;
       if (!error) {
-        try {
-          throw new Error(message());
-        } catch (e) {
-          error = e;
+        if (options.stack) {
+          error = options;
+        } else {
+          try {
+            throw new Error(message());
+          } catch (e) {
+            error = e;
+          }
         }
       }
       return stackFormatter(error);
@@ -3764,6 +3937,40 @@ getJasmineRequireObj().toHaveBeenCalledWith = function(j$) {
   }
 
   return toHaveBeenCalledWith;
+};
+
+getJasmineRequireObj().toHaveClass = function(j$) {
+  /**
+   * {@link expect} the actual value to be a DOM element that has the expected class
+   * @function
+   * @name matchers#toHaveClass
+   * @param {Object} expected - The class name to test for
+   * @example
+   * var el = document.createElement('div');
+   * el.className = 'foo bar baz';
+   * expect(el).toHaveClass('bar');
+   */
+  function toHaveClass(util, customEqualityTesters) {
+    return {
+      compare: function(actual, expected) {
+        if (!isElement(actual)) {
+          throw new Error(j$.pp(actual) + ' is not a DOM element');
+        }
+
+        return {
+          pass: actual.classList.contains(expected)
+        };
+      }
+    };
+  }
+
+  function isElement(maybeEl) {
+    return maybeEl &&
+      maybeEl.classList &&
+      j$.isFunction_(maybeEl.classList.contains);
+  }
+
+  return toHaveClass;
 };
 
 getJasmineRequireObj().toMatch = function(j$) {
@@ -5749,8 +5956,11 @@ getJasmineRequireObj().Suite = function(j$) {
     }
   };
 
-  Suite.prototype.addDeprecationWarning = function(msg) {
-    this.result.deprecationWarnings.push(this.expectationResultFactory({ message: msg }));
+  Suite.prototype.addDeprecationWarning = function(deprecation) {
+    if (typeof deprecation === 'string') {
+      deprecation = { message: deprecation };
+    }
+    this.result.deprecationWarnings.push(this.expectationResultFactory(deprecation));
   };
 
   function isFailure(args) {
@@ -6020,5 +6230,5 @@ getJasmineRequireObj().UserContext = function(j$) {
 };
 
 getJasmineRequireObj().version = function() {
-  return '3.0.0';
+  return '3.1.0';
 };

@@ -1,3 +1,7 @@
+2.0.5 / 2018-??-??
+==================
+  * Internal: Upgrade Jasmine 3.0.0 to 3.1.0
+
 2.0.4 / 2018-02-17
 ==================
   * Upgrade closure-compiler v20171023 to v20180204 
