@@ -1,11 +1,11 @@
 2.0.5 / 2018-??-??
 ==================
-  * Internal: Upgrade Jasmine 3.0.0 to 3.1.0
+  * Internal: Upgrade Jasmine 3.0.0 to 3.1.0, Mockito 2.15.0 to 2.16
 
 2.0.4 / 2018-02-17
 ==================
   * Upgrade closure-compiler v20171023 to v20180204 
-  * Internal: Upgrade HtmlUnit 2.27 to 2.29, Mockito 2.11.0 to 2.13, Jasmine 2.8.0 to 3.0.0
+  * Internal: Upgrade HtmlUnit 2.27 to 2.29, Mockito 2.11.0 to 2.15, Jasmine 2.8.0 to 3.0.0
 
 2.0.3 / 2017-11-05
 ==================
