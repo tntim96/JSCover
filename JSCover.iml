@@ -11,15 +11,6 @@
       <src_folder value="file://$MODULE_DIR$/src/test-integration/resources" expected_position="5" />
     </src_description>
   </component>
-  <component name="FacetManager">
-    <facet type="JRUBY" name="JRuby">
-      <configuration>
-        <JRUBY_FACET_CONFIG_ID NAME="JRUBY_SDK_NAME" VALUE="" />
-        <LOAD_PATH number="0" />
-        <I18N_FOLDERS number="0" />
-      </configuration>
-    </facet>
-  </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
     <output url="file://$MODULE_DIR$/target/classes" />
     <output-test url="file://$MODULE_DIR$/target/test-classes" />
