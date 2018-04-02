@@ -29,7 +29,7 @@ describe 'SeleniumIde' do
     end
     jsCoverJSFile = '../../target/example-fs-localStorage/jscoverage.js'
     jsCoverJS = File.read(jsCoverJSFile)
-    jsReportCode = '\njscoverage_isReport = true;'
+    jsReportCode = "\njscoverage_isReport = true;"
     if jsCoverJS.index(jsReportCode) == nil
       File.open jsCoverJSFile, 'a' do |f|
         f.write jsReportCode
