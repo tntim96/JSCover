@@ -354,7 +354,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import static java.lang.String.format;
-import static java.util.logging.Level.SEVERE;
+import static java.util.logging.Level.*;
 
 public class UnloadedSourceProcessor {
     private static final Logger logger = Logger.getLogger(UnloadedSourceProcessor.class.getName());
@@ -379,6 +379,7 @@ public class UnloadedSourceProcessor {
 
     public void getEmptyCoverageData(List<ScriptCoverageCount> scripts, File file) {
         String uri = ioUtils.getRelativePath(file, scanPath);
+        logger.log(FINE, "Adding empty coverage for file: ''{0}'' URI: ''{1}''", new Object[]{file, uri});
         try {
             String source = ioUtils.loadFromFileSystem(file);
             SourceProcessor sourceProcessor = new SourceProcessor(config, uri, source);
