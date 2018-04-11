@@ -514,8 +514,8 @@ fs.write("target/jscoverage.json", json, 'w');
                     <text>
                         Further documentation can be found at:
                         <ul>
-                            <li><a href="http://docs.oracle.com/javase/1.6.0/docs/api/java/util/regex/Pattern.html" target="_blank">Pattern</a></li>
-                            <li><a href="http://docs.oracle.com/javase/1.6.0/docs/api/java/util/regex/Matcher.html" target="_blank">Matcher</a></li>
+                            <li><a href="https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html" target="_blank">Pattern</a></li>
+                            <li><a href="https://docs.oracle.com/javase/8/docs/api/java/util/regex/Matcher.html" target="_blank">Matcher</a></li>
                         </ul>
                     </text>
                 </item>
@@ -658,7 +658,7 @@ fs.write("target/jscoverage.json", json, 'w');
                             <td>SEVERE</td>
                             <td>
                                 Use the specified Java log level; valid values for LEVEL are
-                                <a href="http://docs.oracle.com/javase/1.6.0/docs/api/java/util/logging/Level.html"
+                                <a href="https://docs.oracle.com/javase/8/docs/api/java/util/logging/Level.html"
                                    target="_blank">SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST</a>.
                             </td>
                         </tr>
@@ -816,7 +816,7 @@ fs.write("target/jscoverage.json", json, 'w');
                         <tr>
                             <td>--threads=NUMBER</td>
                             <td>
-                                <a href="http://docs.oracle.com/javase/6/docs/api/java/lang/Runtime.html#availableProcessors%28%29"
+                                <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Runtime.html#availableProcessors--"
                                     target="_blank">Runtime.getRuntime().availableProcessors()</a>
                             </td>
                             <td>Specify NUMBER of threads for performing instrumentation</td>
@@ -873,7 +873,7 @@ fs.write("target/jscoverage.json", json, 'w');
                             <td>SEVERE</td>
                             <td>
                                 Use the specified Java log level; valid values for LEVEL are
-                                <a href="http://docs.oracle.com/javase/1.6.0/docs/api/java/util/logging/Level.html"
+                                <a href="https://docs.oracle.com/javase/8/docs/api/java/util/logging/Level.html"
                                    target="_blank">SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST</a>.
                             </td>
                         </tr>
@@ -1115,10 +1115,10 @@ fs.write("target/jscoverage.json", json, 'w');
                     <text>
                         Full Java documentation of the configuration of property file can be found in:
                         <ul>
-                            <li><a href="http://docs.oracle.com/javase/1.6.0/docs/api/java/util/logging/ConsoleHandler.html" target="_blank">ConsoleHandler</a></li>
-                            <li><a href="http://docs.oracle.com/javase/1.6.0/docs/api/java/util/logging/FileHandler.html" target="_blank">FileHandler</a></li>
-                            <li><a href="http://docs.oracle.com/javase/1.6.0/docs/api/java/util/logging/Level.html" target="_blank">Level</a></li>
-                            <li><a href="http://docs.oracle.com/javase/1.6.0/docs/api/java/util/logging/package-summary.html" target="_blank">Logging package summary</a></li>
+                            <li><a href="https://docs.oracle.com/javase/8/docs/api/java/util/logging/ConsoleHandler.html" target="_blank">ConsoleHandler</a></li>
+                            <li><a href="https://docs.oracle.com/javase/8/docs/api/java/util/logging/FileHandler.html" target="_blank">FileHandler</a></li>
+                            <li><a href="https://docs.oracle.com/javase/8/docs/api/java/util/logging/Level.html" target="_blank">Level</a></li>
+                            <li><a href="https://docs.oracle.com/javase/8/docs/api/java/util/logging/package-summary.html" target="_blank">Logging package summary</a></li>
                         </ul>
                     </text>
                 </item>
