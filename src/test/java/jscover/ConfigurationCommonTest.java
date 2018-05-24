@@ -353,7 +353,7 @@ public class ConfigurationCommonTest {
 
     @Test
     public void shouldHaveDefaults() {
-        assertThat(config.getECMAVersion(), is(Config.LanguageMode.ECMASCRIPT8));
+        assertThat(config.getECMAVersion(), is(Config.LanguageMode.ES_NEXT));
         assertThat(config.isIncludeUnloadedJS(), is(false));
         assertThat(config.isIncludeBranch(), is(true));
         assertThat(config.isIncludeFunction(), is(true));

@@ -349,7 +349,7 @@ import org.junit.Test;
 
 import java.io.File;
 
-import static com.google.javascript.jscomp.parsing.Config.LanguageMode.ECMASCRIPT8;
+import static com.google.javascript.jscomp.parsing.Config.LanguageMode.ES_NEXT;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.SEVERE;
 import static org.hamcrest.Matchers.*;
@@ -365,7 +365,7 @@ public class ConfigurationForServerTest {
         assertThat(configuration.getDocumentRoot().toString(), equalTo(System.getProperty("user.dir")));
         assertThat(configuration.getPort(), equalTo(8080));
         assertThat(configuration.getReportDir(), is(new File(System.getProperty("user.dir"))));
-        assertThat(configuration.getECMAVersion(), equalTo(ECMASCRIPT8));
+        assertThat(configuration.getECMAVersion(), equalTo(ES_NEXT));
         assertThat(configuration.skipInstrumentation("/"), is(false));
         assertThat(configuration.isProxy(), is(false));
         assertThat(configuration.isSaveJSONOnly(), is(false));
@@ -400,7 +400,7 @@ public class ConfigurationForServerTest {
         assertThat(configuration.getDocumentRoot().toString(), equalTo(System.getProperty("user.dir")));
         assertThat(configuration.getPort(), equalTo(8080));
         assertThat(configuration.isProxy(), is(false));
-        assertThat(configuration.getECMAVersion(), equalTo(ECMASCRIPT8));
+        assertThat(configuration.getECMAVersion(), equalTo(ES_NEXT));
         assertThat(configuration.skipInstrumentation("/"), is(false));
         assertThat(configuration.isIncludeBranch(), is(true));
         assertThat(configuration.isIncludeFunction(), is(true));

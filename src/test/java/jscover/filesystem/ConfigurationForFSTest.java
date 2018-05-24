@@ -362,7 +362,7 @@ public class ConfigurationForFSTest {
         ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs", "src", "doc"});
         assertThat(configuration.showHelp(), is(false));
         assertThat(configuration.isInvalid(), is(false));
-        assertThat(configuration.getECMAVersion(), equalTo(Config.LanguageMode.ECMASCRIPT8));
+        assertThat(configuration.getECMAVersion(), equalTo(Config.LanguageMode.ES_NEXT));
         assertThat(configuration.skipInstrumentation("/"), is(false));
         assertThat(configuration.isIncludeBranch(), is(true));
         assertThat(configuration.isIncludeFunction(), is(true));
