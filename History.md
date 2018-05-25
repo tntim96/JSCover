@@ -1,5 +1,6 @@
 2.0.6 / 2018-??-??
 ==================
+  * Add GNU classpath exception to license (https://github.com/tntim96/JSCover/issues/271)
   * Upgrade closure-compiler v20180204 to v20180506
   * Bump JS language in from ECMASCRIPT8 to ES_NEXT 
   * Internal: Mockito 2.18.0 to 2.18.3
