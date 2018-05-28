@@ -1,4 +1,4 @@
-2.0.6 / 2018-??-??
+2.0.6 / 2018-05-28
 ==================
   * Add GNU classpath exception to license (https://github.com/tntim96/JSCover/issues/271)
   * Upgrade closure-compiler v20180204 to v20180506
