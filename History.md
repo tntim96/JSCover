@@ -1,6 +1,6 @@
 2.0.7 / 2018-??-??
 ==================
-  * Upgrade closure-compiler v20180506 to v20180610
+  * Upgrade closure-compiler v20180506 to v20180716
   * Internal: Mockito 2.18.3 to 2.19.1
 
 2.0.6 / 2018-05-28
