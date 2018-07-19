@@ -99,7 +99,6 @@
         <property name="tmpDir" value="${build.dir}/tmp"/>
         <mkdir dir="${tmpDir}"/>
         <unzip src="${com.google.javascript:closure-compiler:jar}" dest="${tmpDir}"/>
-        <move file="${tmpDir}/LICENSE" tofile="${tmpDir}/META-INF/LICENSE-closure-compiler.txt"/>
         <copy todir="${tmpDir}" includeemptydirs="no">
             <fileset dir="${classes.main.dir}" />
         </copy>
