@@ -1249,6 +1249,17 @@
         <root url="jar://$MAVEN_REPOSITORY$/org/mortbay/jetty/servlet-api-2.5/6.1.14/servlet-api-2.5-6.1.14-sources.jar!/" />
       </SOURCES>
     </library>
+    <library name="Maven: org.mozilla:rhino:1.7.10">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino/1.7.10/rhino-1.7.10.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino/1.7.10/rhino-1.7.10-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino/1.7.10/rhino-1.7.10-sources.jar!/" />
+      </SOURCES>
+    </library>
     <library name="Maven: org.objenesis:objenesis:2.6">
       <CLASSES>
         <root url="jar://$MAVEN_REPOSITORY$/org/objenesis/objenesis/2.6/objenesis-2.6.jar!/" />
