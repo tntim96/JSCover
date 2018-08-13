@@ -21,6 +21,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 var getJasmineRequireObj = (function (jasmineGlobal) {
+  /* globals exports, global, module, window */
   var jasmineRequire;
 
   if (typeof module !== 'undefined' && module.exports && typeof exports !== 'undefined') {
@@ -59,6 +60,7 @@ var getJasmineRequireObj = (function (jasmineGlobal) {
     j$.StackTrace = jRequire.StackTrace(j$);
     j$.ExceptionFormatter = jRequire.ExceptionFormatter(j$);
     j$.Expectation = jRequire.Expectation();
+    j$.AsyncExpectation = jRequire.AsyncExpectation(j$);
     j$.buildExpectationResult = jRequire.buildExpectationResult();
     j$.JsApiReporter = jRequire.JsApiReporter();
     j$.matchersUtil = jRequire.matchersUtil(j$);
@@ -240,7 +242,14 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
   };
 
   j$.isDomNode = function(obj) {
-    return obj.nodeType > 0;
+    // Node is a function, because constructors
+    return typeof jasmineGlobal.Node !== 'undefined' ?
+      obj instanceof jasmineGlobal.Node :
+          obj !== null &&
+          typeof obj === 'object' &&
+          typeof obj.nodeType === 'number' &&
+          typeof obj.nodeName === 'string';
+    // return obj.nodeType > 0;
   };
 
   j$.isMap = function(obj) {
@@ -252,7 +261,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
   };
 
   j$.isPromise = function(obj) {
-    return typeof jasmineGlobal.Promise !== 'undefined' && obj.constructor === jasmineGlobal.Promise;
+    return typeof jasmineGlobal.Promise !== 'undefined' && obj && obj.constructor === jasmineGlobal.Promise;
   };
 
   j$.fnNameFor = function(func) {
@@ -486,7 +495,7 @@ getJasmineRequireObj().util = function(j$) {
     return false;
   }
 
-  function errorWithStack() {
+  util.errorWithStack = function errorWithStack () {
     // Don't throw and catch if we don't have to, because it makes it harder
     // for users to debug their code with exception breakpoints.
     var error = new Error();
@@ -501,10 +510,10 @@ getJasmineRequireObj().util = function(j$) {
     } catch (e) {
       return e;
     }
-  }
+  };
 
   function callerFile() {
-    var trace = new j$.StackTrace(errorWithStack().stack);
+    var trace = new j$.StackTrace(util.errorWithStack());
     return trace.frames[2].file;
   }
 
@@ -528,6 +537,7 @@ getJasmineRequireObj().util = function(j$) {
 getJasmineRequireObj().Spec = function(j$) {
   function Spec(attrs) {
     this.expectationFactory = attrs.expectationFactory;
+    this.asyncExpectationFactory = attrs.asyncExpectationFactory;
     this.resultCallback = attrs.resultCallback || function() {};
     this.id = attrs.id;
     this.description = attrs.description || '';
@@ -582,6 +592,10 @@ getJasmineRequireObj().Spec = function(j$) {
 
   Spec.prototype.expect = function(actual) {
     return this.expectationFactory(actual, this);
+  };
+
+  Spec.prototype.expectAsync = function(actual) {
+    return this.asyncExpectationFactory(actual, this);
   };
 
   Spec.prototype.execute = function(onComplete, excluded) {
@@ -704,6 +718,7 @@ getJasmineRequireObj().Spec = function(j$) {
 };
 
 if (typeof window == void 0 && typeof exports == 'object') {
+  /* globals exports */
   exports.Spec = jasmineRequire.Spec;
 }
 
@@ -769,9 +784,9 @@ getJasmineRequireObj().Env = function(j$) {
 
     var totalSpecsDefined = 0;
 
-    var realSetTimeout = j$.getGlobal().setTimeout;
-    var realClearTimeout = j$.getGlobal().clearTimeout;
-    var clearStack = j$.getClearStack(j$.getGlobal());
+    var realSetTimeout = global.setTimeout;
+    var realClearTimeout = global.clearTimeout;
+    var clearStack = j$.getClearStack(global);
     this.clock = new j$.Clock(global, function () { return new j$.DelayedFunctionScheduler(); }, new j$.MockDate(global));
 
     var runnableResources = {};
@@ -782,6 +797,7 @@ getJasmineRequireObj().Env = function(j$) {
     var throwOnExpectationFailure = false;
     var stopOnSpecFailure = false;
     var random = true;
+    var hidingDisabled = false;
     var seed = null;
     var handlingLoadErrors = true;
     var hasFailures = false;
@@ -795,7 +811,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     var globalErrors = null;
-    
+
     var installGlobalErrors = function() {
       if (globalErrors) {
         return;
@@ -872,6 +888,19 @@ getJasmineRequireObj().Env = function(j$) {
       }
     };
 
+    var asyncExpectationFactory = function(actual, spec) {
+      return j$.AsyncExpectation.factory({
+        util: j$.matchersUtil,
+        customEqualityTesters: runnableResources[spec.id].customEqualityTesters,
+        actual: actual,
+        addExpectationResult: addExpectationResult
+      });
+
+      function addExpectationResult(passed, result) {
+        return spec.addExpectationResult(passed, result);
+      }
+    };
+
     var defaultResourcesForRunnable = function(id, parentRunnableId) {
       var resources = {spies: [], customEqualityTesters: [], customMatchers: {}, customSpyStrategies: {}};
 
@@ -930,6 +959,13 @@ getJasmineRequireObj().Env = function(j$) {
     var maximumSpecCallbackDepth = 20;
     var currentSpecCallbackDepth = 0;
 
+    /**
+     * Sets whether Jasmine should throw an Error when an expectation fails.
+     * This causes a spec to only have one expectation failure.
+     * @name Env#throwOnExpectationFailure
+     * @function
+     * @param {Boolean} value Whether to throw when a expectation fails
+     */
     this.throwOnExpectationFailure = function(value) {
       throwOnExpectationFailure = !!value;
     };
@@ -938,6 +974,12 @@ getJasmineRequireObj().Env = function(j$) {
       return throwOnExpectationFailure;
     };
 
+    /**
+     * Set whether to stop suite execution when a spec fails
+     * @name Env#stopOnSpecFailure
+     * @function
+     * @param {Boolean} value Whether to stop suite execution when a spec fails
+     */
     this.stopOnSpecFailure = function(value) {
       stopOnSpecFailure = !!value;
     };
@@ -946,6 +988,12 @@ getJasmineRequireObj().Env = function(j$) {
       return stopOnSpecFailure;
     };
 
+    /**
+     * Set whether to randomize test execution order
+     * @name Env#randomizeTests
+     * @function
+     * @param {Boolean} value Whether to randomize execution order
+     */
     this.randomizeTests = function(value) {
       random = !!value;
     };
@@ -954,11 +1002,29 @@ getJasmineRequireObj().Env = function(j$) {
       return random;
     };
 
+    /**
+     * Set the random number seed for spec randomization
+     * @name Env#seed
+     * @function
+     * @param {Number} value The seed value
+     */
     this.seed = function(value) {
       if (value) {
         seed = value;
       }
       return seed;
+    };
+
+    this.hidingDisabled = function(value) {
+      return hidingDisabled;
+    };
+
+    /**
+     * @name Env#hideDisabled
+     * @function
+     */
+    this.hideDisabled = function(value) {
+      hidingDisabled = !!value;
     };
 
     this.deprecated = function(deprecation) {
@@ -994,6 +1060,7 @@ getJasmineRequireObj().Env = function(j$) {
       id: getNextSuiteId(),
       description: 'Jasmine__TopLevel__Suite',
       expectationFactory: expectationFactory,
+      asyncExpectationFactory: asyncExpectationFactory,
       expectationResultFactory: expectationResultFactory
     });
     defaultResourcesForRunnable(topSuite.id);
@@ -1006,6 +1073,7 @@ getJasmineRequireObj().Env = function(j$) {
     /**
      * This represents the available reporter callback for an object passed to {@link Env#addReporter}.
      * @interface Reporter
+     * @see custom_reporter
      */
     var reporter = new j$.ReportDispatcher([
       /**
@@ -1015,6 +1083,7 @@ getJasmineRequireObj().Env = function(j$) {
        * @param {JasmineStartedInfo} suiteInfo Information about the full Jasmine suite that is being run
        * @param {Function} [done] Used to specify to Jasmine that this callback is asynchronous and Jasmine should wait until it has been called before moving on.
        * @returns {} Optionally return a Promise instead of using `done` to cause Jasmine to wait for completion.
+       * @see async
        */
       'jasmineStarted',
       /**
@@ -1024,6 +1093,7 @@ getJasmineRequireObj().Env = function(j$) {
        * @param {JasmineDoneInfo} suiteInfo Information about the full Jasmine suite that just finished running.
        * @param {Function} [done] Used to specify to Jasmine that this callback is asynchronous and Jasmine should wait until it has been called before moving on.
        * @returns {} Optionally return a Promise instead of using `done` to cause Jasmine to wait for completion.
+       * @see async
        */
       'jasmineDone',
       /**
@@ -1033,6 +1103,7 @@ getJasmineRequireObj().Env = function(j$) {
        * @param {SuiteResult} result Information about the individual {@link describe} being run
        * @param {Function} [done] Used to specify to Jasmine that this callback is asynchronous and Jasmine should wait until it has been called before moving on.
        * @returns {} Optionally return a Promise instead of using `done` to cause Jasmine to wait for completion.
+       * @see async
        */
       'suiteStarted',
       /**
@@ -1044,6 +1115,7 @@ getJasmineRequireObj().Env = function(j$) {
        * @param {SuiteResult} result
        * @param {Function} [done] Used to specify to Jasmine that this callback is asynchronous and Jasmine should wait until it has been called before moving on.
        * @returns {} Optionally return a Promise instead of using `done` to cause Jasmine to wait for completion.
+       * @see async
        */
       'suiteDone',
       /**
@@ -1053,6 +1125,7 @@ getJasmineRequireObj().Env = function(j$) {
        * @param {SpecResult} result Information about the individual {@link it} being run
        * @param {Function} [done] Used to specify to Jasmine that this callback is asynchronous and Jasmine should wait until it has been called before moving on.
        * @returns {} Optionally return a Promise instead of using `done` to cause Jasmine to wait for completion.
+       * @see async
        */
       'specStarted',
       /**
@@ -1064,6 +1137,7 @@ getJasmineRequireObj().Env = function(j$) {
        * @param {SpecResult} result
        * @param {Function} [done] Used to specify to Jasmine that this callback is asynchronous and Jasmine should wait until it has been called before moving on.
        * @returns {} Optionally return a Promise instead of using `done` to cause Jasmine to wait for completion.
+       * @see async
        */
       'specDone'
     ], queueRunnerFactory);
@@ -1152,8 +1226,8 @@ getJasmineRequireObj().Env = function(j$) {
           /**
            * Information passed to the {@link Reporter#jasmineDone} event.
            * @typedef JasmineDoneInfo
-           * @property {OverallStatus} - The overall result of the sute: 'passed', 'failed', or 'incomplete'.
-           * @property {IncompleteReason} - Explanation of why the suite was incimplete.
+           * @property {OverallStatus} overallStatus - The overall result of the sute: 'passed', 'failed', or 'incomplete'.
+           * @property {IncompleteReason} incompleteReason - Explanation of why the suite was incomplete.
            * @property {Order} order - Information about the ordering (random or not) of this execution of the suite.
            * @property {Expectation[]} failedExpectations - List of expectations that failed in an {@link afterAll} at the global level.
            * @property {Expectation[]} deprecationWarnings - List of deprecation warnings that occurred at the global level.
@@ -1180,10 +1254,22 @@ getJasmineRequireObj().Env = function(j$) {
       reporter.addReporter(reporterToAdd);
     };
 
+    /**
+     * Provide a fallback reporter if no other reporters have been specified.
+     * @name Env#provideFallbackReporter
+     * @function
+     * @param {Reporter} reporterToAdd The reporter
+     * @see custom_reporter
+     */
     this.provideFallbackReporter = function(reporterToAdd) {
       reporter.provideFallbackReporter(reporterToAdd);
     };
 
+    /**
+     * Clear all registered reporters
+     * @name Env#clearReporters
+     * @function
+     */
     this.clearReporters = function() {
       reporter.clearReporters();
     };
@@ -1223,6 +1309,11 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     this.createSpy = function(name, originalFn) {
+      if (arguments.length === 1 && j$.isFunction_(name)) {
+        originalFn = name;
+        name = originalFn.name;
+      }
+
       return spyFactory.createSpy(name, originalFn);
     };
 
@@ -1256,6 +1347,7 @@ getJasmineRequireObj().Env = function(j$) {
         description: description,
         parentSuite: currentDeclarationSuite,
         expectationFactory: expectationFactory,
+        asyncExpectationFactory: asyncExpectationFactory,
         expectationResultFactory: expectationResultFactory,
         throwOnExpectationFailure: throwOnExpectationFailure
       });
@@ -1349,6 +1441,7 @@ getJasmineRequireObj().Env = function(j$) {
         id: getNextSpecId(),
         beforeAndAfterFns: beforeAndAfterFns(suite),
         expectationFactory: expectationFactory,
+        asyncExpectationFactory: asyncExpectationFactory,
         resultCallback: specResultCallback,
         getSpecName: function(spec) {
           return getSpecName(spec, suite);
@@ -1360,7 +1453,7 @@ getJasmineRequireObj().Env = function(j$) {
         userContext: function() { return suite.clonedSharedUserContext(); },
         queueableFn: {
           fn: fn,
-          timeout: function() { return timeout || j$.DEFAULT_TIMEOUT_INTERVAL; }
+          timeout: timeout || 0
         },
         throwOnExpectationFailure: throwOnExpectationFailure
       });
@@ -1430,12 +1523,20 @@ getJasmineRequireObj().Env = function(j$) {
       return currentRunnable().expect(actual);
     };
 
+    this.expectAsync = function(actual) {
+      if (!currentRunnable()) {
+        throw new Error('\'expectAsync\' was used when there was no current spec, this could be because an asynchronous test timed out');
+      }
+
+      return currentRunnable().expectAsync(actual);
+    };
+
     this.beforeEach = function(beforeEachFunction, timeout) {
       ensureIsNotNested('beforeEach');
       ensureIsFunctionOrAsync(beforeEachFunction, 'beforeEach');
       currentDeclarationSuite.beforeEach({
         fn: beforeEachFunction,
-        timeout: function() { return timeout || j$.DEFAULT_TIMEOUT_INTERVAL; }
+        timeout: timeout || 0
       });
     };
 
@@ -1444,7 +1545,7 @@ getJasmineRequireObj().Env = function(j$) {
       ensureIsFunctionOrAsync(beforeAllFunction, 'beforeAll');
       currentDeclarationSuite.beforeAll({
         fn: beforeAllFunction,
-        timeout: function() { return timeout || j$.DEFAULT_TIMEOUT_INTERVAL; }
+        timeout: timeout || 0
       });
     };
 
@@ -1454,7 +1555,7 @@ getJasmineRequireObj().Env = function(j$) {
       afterEachFunction.isCleanup = true;
       currentDeclarationSuite.afterEach({
         fn: afterEachFunction,
-        timeout: function() { return timeout || j$.DEFAULT_TIMEOUT_INTERVAL; }
+        timeout: timeout || 0
       });
     };
 
@@ -1463,7 +1564,7 @@ getJasmineRequireObj().Env = function(j$) {
       ensureIsFunctionOrAsync(afterAllFunction, 'afterAll');
       currentDeclarationSuite.afterAll({
         fn: afterAllFunction,
-        timeout: function() { return timeout || j$.DEFAULT_TIMEOUT_INTERVAL; }
+        timeout: timeout || 0
       });
     };
 
@@ -1485,11 +1586,11 @@ getJasmineRequireObj().Env = function(j$) {
         message += ': ';
         if (error.message) {
           message += error.message;
-        } else if (jasmine.isString_(error)) {
+        } else if (j$.isString_(error)) {
           message += error;
         } else {
           // pretty print all kind of objects. This includes arrays.
-          message += jasmine.pp(error);
+          message += j$.pp(error);
         }
       }
 
@@ -1676,6 +1777,7 @@ getJasmineRequireObj().Any = function(j$) {
     }
 
     /* jshint -W122 */
+    /* global Symbol */
     if (typeof Symbol != 'undefined' && this.expectedObject == Symbol) {
       return typeof other == 'symbol';
     }
@@ -1727,7 +1829,7 @@ getJasmineRequireObj().ArrayContaining = function(j$) {
   };
 
   ArrayContaining.prototype.jasmineToString = function () {
-    return '<jasmine.arrayContaining(' + jasmine.pp(this.sample) +')>';
+    return '<jasmine.arrayContaining(' + j$.pp(this.sample) +')>';
   };
 
   return ArrayContaining;
@@ -1919,6 +2021,160 @@ getJasmineRequireObj().Truthy = function(j$) {
   return Truthy;
 };
 
+getJasmineRequireObj().AsyncExpectation = function(j$) {
+  var promiseForMessage = {
+    jasmineToString: function() { return 'a promise'; }
+  };
+
+  /**
+   * Asynchronous matchers.
+   * @namespace async-matchers
+   */
+  function AsyncExpectation(options) {
+    var global = options.global || j$.getGlobal();
+    this.util = options.util || { buildFailureMessage: function() {} };
+    this.customEqualityTesters = options.customEqualityTesters || [];
+    this.addExpectationResult = options.addExpectationResult || function(){};
+    this.actual = options.actual;
+    this.isNot = options.isNot;
+
+    if (!global.Promise) {
+      throw new Error('expectAsync is unavailable because the environment does not support promises.');
+    }
+
+    if (!j$.isPromise(this.actual)) {
+      throw new Error('Expected expectAsync to be called with a promise.');
+    }
+
+    ['toBeResolved', 'toBeRejected', 'toBeResolvedTo'].forEach(wrapCompare.bind(this));
+  }
+
+  function wrapCompare(name) {
+    var compare = this[name];
+    this[name] = function() {
+      var self = this;
+      var args = Array.prototype.slice.call(arguments);
+      args.unshift(this.actual);
+
+      // Capture the call stack here, before we go async, so that it will
+      // contain frames that are relevant to the user instead of just parts
+      // of Jasmine.
+      var errorForStack = j$.util.errorWithStack();
+
+      return compare.apply(self, args).then(function(result) {
+        var message;
+
+        if (self.isNot) {
+          result.pass = !result.pass;
+        }
+
+        args[0] = promiseForMessage;
+        message = j$.Expectation.finalizeMessage(self.util, name, self.isNot, args, result);
+
+        self.addExpectationResult(result.pass, {
+          matcherName: name,
+          passed: result.pass,
+          message: message,
+          error: undefined,
+          errorForStack: errorForStack,
+          actual: self.actual
+        });
+      });
+    };
+  }
+
+  /**
+   * Expect a promise to be resolved.
+   * @function
+   * @async
+   * @name async-matchers#toBeResolved
+   * @example
+   * await expectAsync(aPromise).toBeResolved();
+   * @example
+   * return expectAsync(aPromise).toBeResolved();
+   */
+  AsyncExpectation.prototype.toBeResolved = function(actual) {
+    return actual.then(
+      function() { return {pass: true}; },
+      function() { return {pass: false}; }
+    );
+  };
+
+  /**
+   * Expect a promise to be rejected.
+   * @function
+   * @async
+   * @name async-matchers#toBeRejected
+   * @example
+   * await expectAsync(aPromise).toBeRejected();
+   * @example
+   * return expectAsync(aPromise).toBeRejected();
+   */
+  AsyncExpectation.prototype.toBeRejected = function(actual) {
+    return actual.then(
+      function() { return {pass: false}; },
+      function() { return {pass: true}; }
+    );
+  };
+
+  /**
+   * Expect a promise to be resolved to a value equal to the expected, using deep equality comparison.
+   * @function
+   * @async
+   * @name async-matchers#toBeResolvedTo
+   * @param {Object} expected - Value that the promise is expected to resolve to
+   * @example
+   * await expectAsync(aPromise).toBeResolvedTo({prop: 'value'});
+   * @example
+   * return expectAsync(aPromise).toBeResolvedTo({prop: 'value'});
+   */
+  AsyncExpectation.prototype.toBeResolvedTo = function(actualPromise, expectedValue) {
+    var self = this;
+
+    function prefix(passed) {
+      return 'Expected a promise ' +
+        (passed ? 'not ' : '') +
+        'to be resolved to ' + j$.pp(expectedValue);
+    }
+
+    return actualPromise.then(
+      function(actualValue) {
+        if (self.util.equals(actualValue, expectedValue, self.customEqualityTesters)) {
+          return {
+           pass: true,
+           message: prefix(true) + '.'
+         };
+        } else {
+          return {
+            pass: false,
+            message: prefix(false) + ' but it was resolved to ' + j$.pp(actualValue) + '.'
+          };
+        }
+      },
+      function() {
+        return {
+          pass: false,
+          message: prefix(false) + ' but it was rejected.'
+        };
+      }
+    );
+  };
+
+
+  AsyncExpectation.factory = function(options) {
+    var expect = new AsyncExpectation(options);
+
+    options = j$.util.clone(options);
+    options.isNot = true;
+    expect.not = new AsyncExpectation(options);
+
+    return expect;
+  };
+
+
+  return AsyncExpectation;
+};
+
 getJasmineRequireObj().CallTracker = function(j$) {
 
   /**
@@ -2107,6 +2363,7 @@ getJasmineRequireObj().clearStack = function(j$) {
 
 getJasmineRequireObj().Clock = function() {
 
+  /* global process */
   var NODE_JS = typeof process !== 'undefined' && process.versions && typeof process.versions.node === 'string';
 
   /**
@@ -2496,7 +2753,7 @@ getJasmineRequireObj().ExceptionFormatter = function(j$) {
         return null;
       }
 
-      var stackTrace = new j$.StackTrace(error.stack);
+      var stackTrace = new j$.StackTrace(error);
       var lines = filterJasmine(stackTrace);
       var result = '';
 
@@ -2576,7 +2833,7 @@ getJasmineRequireObj().Expectation = function() {
     return function() {
       var args = Array.prototype.slice.call(arguments, 0),
         expected = args.slice(0),
-        message = '';
+        message;
 
       args.unshift(this.actual);
 
@@ -2594,20 +2851,7 @@ getJasmineRequireObj().Expectation = function() {
       }
 
       var result = matcherCompare.apply(null, args);
-
-      if (!result.pass) {
-        if (!result.message) {
-          args.unshift(this.isNot);
-          args.unshift(name);
-          message = this.util.buildFailureMessage.apply(null, args);
-        } else {
-          if (Object.prototype.toString.apply(result.message) === '[object Function]') {
-            message = result.message();
-          } else {
-            message = result.message;
-          }
-        }
-      }
+      message = Expectation.finalizeMessage(this.util, name, this.isNot, args, result);
 
       if (expected.length == 1) {
         expected = expected[0];
@@ -2626,6 +2870,23 @@ getJasmineRequireObj().Expectation = function() {
         }
       );
     };
+  };
+
+  Expectation.finalizeMessage = function(util, name, isNot, args, result) {
+    if (result.pass) {
+      return '';
+    } else if (result.message) {
+      if (Object.prototype.toString.apply(result.message) === '[object Function]') {
+        return result.message();
+      } else {
+        return result.message;
+      }
+    } else {
+      args = args.slice();
+      args.unshift(isNot);
+      args.unshift(name);
+      return util.buildFailureMessage.apply(null, args);
+    }
   };
 
   Expectation.addCoreMatchers = function(matchers) {
@@ -2699,7 +2960,9 @@ getJasmineRequireObj().buildExpectationResult = function() {
 
       var error = options.error;
       if (!error) {
-        if (options.stack) {
+        if (options.errorForStack) {
+          error = options.errorForStack;
+        } else if (options.stack) {
           error = options;
         } else {
           try {
@@ -2743,18 +3006,29 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
       }
     };
 
+    this.originalHandlers = {};
+    this.installOne_ = function installOne_(errorType) {
+      this.originalHandlers[errorType] = global.process.listeners(errorType);
+      global.process.removeAllListeners(errorType);
+      global.process.on(errorType, onerror);
+
+      this.uninstall = function uninstall() {
+        var errorTypes = Object.keys(this.originalHandlers);
+        for (var iType = 0; iType < errorTypes.length; iType++) {
+          var errorType = errorTypes[iType];
+          global.process.removeListener(errorType, onerror);
+          for (var i = 0; i < this.originalHandlers[errorType].length; i++) {
+            global.process.on(errorType, this.originalHandlers[errorType][i]);
+          }
+          delete this.originalHandlers[errorType];
+        }
+      };
+    };
+
     this.install = function install() {
       if (global.process && global.process.listeners && j$.isFunction_(global.process.on)) {
-        var originalHandlers = global.process.listeners('uncaughtException');
-        global.process.removeAllListeners('uncaughtException');
-        global.process.on('uncaughtException', onerror);
-
-        this.uninstall = function uninstall() {
-          global.process.removeListener('uncaughtException', onerror);
-          for (var i = 0; i < originalHandlers.length; i++) {
-            global.process.on('uncaughtException', originalHandlers[i]);
-          }
-        };
+        this.installOne_('uncaughtException');
+        this.installOne_('unhandledRejection');
       } else {
         var originalHandler = global.onerror;
         global.onerror = onerror;
@@ -3038,8 +3312,14 @@ getJasmineRequireObj().matchersUtil = function(j$) {
       });
 
       for (i = 0; i < aLength || i < bLength; i++) {
+        var formatter = false;
         diffBuilder.withPath(i, function() {
-          result = eq(i < aLength ? a[i] : void 0, i < bLength ? b[i] : void 0, aStack, bStack, customTesters, diffBuilder) && result;
+          if (i >= bLength) {
+            diffBuilder.record(a[i], void 0, actualArrayIsLongerFormatter);
+            result = false;
+          } else {
+            result = eq(i < aLength ? a[i] : void 0, i < bLength ? b[i] : void 0, aStack, bStack, customTesters, diffBuilder) && result;
+          }
         });
       }
       if (!result) {
@@ -3263,6 +3543,13 @@ getJasmineRequireObj().matchersUtil = function(j$) {
       path + ' to be a kind of ' +
       j$.fnNameFor(expected.constructor) +
       ', but was ' + j$.pp(actual) + '.';
+  }
+
+  function actualArrayIsLongerFormatter(actual, expected, path) {
+    return 'Unexpected ' +
+      path + (path.depth() ? ' = ' : '') +
+      j$.pp(actual) +
+      ' in array.';
   }
 
   function formatKeyValuePairs(obj) {
@@ -4617,8 +4904,8 @@ getJasmineRequireObj().pp = function(j$) {
     if (el.innerHTML === '') {
       this.append(el.outerHTML.replace(closingTag, ''));
     } else {
-      var tagEnd = el.outerHTML.indexOf(el.innerHTML);
-      this.append(el.outerHTML.substring(0, tagEnd));
+      var tagEnd = el.outerHTML.indexOf('>');
+      this.append(el.outerHTML.substring(0, tagEnd + 1));
       this.append('...' + closingTag);
     }
   };
@@ -4803,12 +5090,16 @@ getJasmineRequireObj().QueueRunner = function(j$) {
 
     self.globalErrors.pushListener(handleError);
 
-    if (queueableFn.timeout) {
+    if (queueableFn.timeout !== undefined) {
+      var timeoutInterval = queueableFn.timeout || j$.DEFAULT_TIMEOUT_INTERVAL;
       timeoutId = self.setTimeout(function() {
-        var error = new Error('Timeout - Async callback was not invoked within timeout specified by jasmine.DEFAULT_TIMEOUT_INTERVAL.');
+        var error = new Error(
+          'Timeout - Async callback was not invoked within ' + timeoutInterval + 'ms ' +
+          (queueableFn.timeout ? '(custom timeout)' : '(set by jasmine.DEFAULT_TIMEOUT_INTERVAL)')
+        );
         onException(error);
         next();
-      }, queueableFn.timeout());
+      }, timeoutInterval);
     }
 
     try {
@@ -4857,7 +5148,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
         return;
       }
 
-      self.errored = result.errored;
+      self.errored = self.errored || result.errored;
 
       if (this.completeOnFirstError && result.errored) {
         this.skipToCleanup(iterativeIndex);
@@ -5017,6 +5308,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @param {String} description Textual description of what this spec is checking
      * @param {implementationCallback} [testFunction] Function that contains the code of your test. If not provided the test will be `pending`.
      * @param {Int} [timeout={@link jasmine.DEFAULT_TIMEOUT_INTERVAL}] Custom timeout for an async spec.
+     * @see async
      */
     it: function() {
       return env.it.apply(env, arguments);
@@ -5046,6 +5338,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @param {String} description Textual description of what this spec is checking.
      * @param {implementationCallback} testFunction Function that contains the code of your test.
      * @param {Int} [timeout={@link jasmine.DEFAULT_TIMEOUT_INTERVAL}] Custom timeout for an async spec.
+     * @see async
      */
     fit: function() {
       return env.fit.apply(env, arguments);
@@ -5058,6 +5351,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @global
      * @param {implementationCallback} [function] Function that contains the code to setup your specs.
      * @param {Int} [timeout={@link jasmine.DEFAULT_TIMEOUT_INTERVAL}] Custom timeout for an async beforeEach.
+     * @see async
      */
     beforeEach: function() {
       return env.beforeEach.apply(env, arguments);
@@ -5070,6 +5364,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @global
      * @param {implementationCallback} [function] Function that contains the code to teardown your specs.
      * @param {Int} [timeout={@link jasmine.DEFAULT_TIMEOUT_INTERVAL}] Custom timeout for an async afterEach.
+     * @see async
      */
     afterEach: function() {
       return env.afterEach.apply(env, arguments);
@@ -5084,6 +5379,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @global
      * @param {implementationCallback} [function] Function that contains the code to setup your specs.
      * @param {Int} [timeout={@link jasmine.DEFAULT_TIMEOUT_INTERVAL}] Custom timeout for an async beforeAll.
+     * @see async
      */
     beforeAll: function() {
       return env.beforeAll.apply(env, arguments);
@@ -5098,6 +5394,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @global
      * @param {implementationCallback} [function] Function that contains the code to teardown your specs.
      * @param {Int} [timeout={@link jasmine.DEFAULT_TIMEOUT_INTERVAL}] Custom timeout for an async afterAll.
+     * @see async
      */
     afterAll: function() {
       return env.afterAll.apply(env, arguments);
@@ -5113,6 +5410,25 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      */
     expect: function(actual) {
       return env.expect(actual);
+    },
+
+    /**
+     * Create an asynchronous expectation for a spec. Note that the matchers
+     * that are provided by an asynchronous expectation all return promises
+     * which must be either returned from the spec or waited for using `await`
+     * in order for Jasmine to associate them with the correct spec.
+     * @name expectAsync
+     * @function
+     * @global
+     * @param {Object} actual - Actual computed value to test expectations against.
+     * @return {async-matchers}
+     * @example
+     * await expectAsync(somePromise).toBeResolved();
+     * @example
+     * return expectAsync(somePromise).toBeResolved();
+     */
+    expectAsync: function(actual) {
+      return env.expectAsync(actual);
     },
 
     /**
@@ -5162,6 +5478,18 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      */
     spyOnProperty: function(obj, methodName, accessType) {
       return env.spyOnProperty(obj, methodName, accessType);
+    },
+
+    /**
+     * Installs spies on all writable and configurable properties of an object.
+     * @name spyOnProperty
+     * @function
+     * @global
+     * @param {Object} obj - The object upon which to install the {@link Spy}s
+     * @returns {Object} the spied object
+     */
+    spyOnAllFunctions: function(obj) {
+      return env.spyOnAllFunctions(obj);
     },
 
     jsApiReporter: new jasmine.JsApiReporter({
@@ -5582,6 +5910,23 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
       return spy;
     };
 
+    this.spyOnAllFunctions = function(obj) {
+      if (j$.util.isUndefined(obj)) {
+        throw new Error('spyOnAllFunctions could not find an object to spy upon');
+      }
+
+      for (var prop in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, prop) && obj[prop] instanceof Function) {
+          var descriptor = Object.getOwnPropertyDescriptor(obj, prop);
+          if ((descriptor.writable || descriptor.set) && descriptor.configurable) {
+            this.spyOn(obj, prop);
+          }
+        }
+      }
+
+      return obj;
+    };
+
     this.clearSpies = function() {
       var spies = currentSpies();
       for (var i = spies.length - 1; i >= 0; i--) {
@@ -5726,15 +6071,16 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
 };
 
 getJasmineRequireObj().StackTrace = function(j$) {
-  function StackTrace(rawTrace) {
-    var lines = rawTrace
+  function StackTrace(error) {
+    var lines = error.stack
       .split('\n')
       .filter(function(line) { return line !== ''; });
 
-    if (lines[0].match(/^Error/)) {
-      this.message = lines.shift();
-    } else {
-      this.message = undefined;
+    var extractResult = extractMessage(error.message, lines);
+
+    if (extractResult) {
+      this.message = extractResult.message;
+      lines = extractResult.remainder;
     }
 
     var parseResult = tryParseFrames(lines);
@@ -5802,6 +6148,34 @@ getJasmineRequireObj().StackTrace = function(j$) {
       }
     }
   }
+
+  function extractMessage(message, stackLines) {
+    var len = messagePrefixLength(message, stackLines);
+
+    if (len > 0) {
+      return {
+        message: stackLines.slice(0, len).join('\n'),
+        remainder: stackLines.slice(len)
+      };
+    }
+  }
+
+  function messagePrefixLength(message, stackLines) {
+    if (!stackLines[0].match(/^Error/)) {
+      return 0;
+    }
+
+    var messageLines = message.split('\n');
+    var i;
+
+    for (i = 1; i < messageLines.length; i++) {
+      if (messageLines[i] !== stackLines[i]) {
+        return 0;
+      }
+    }
+
+    return messageLines.length;
+  }
   
   return StackTrace;
 };
@@ -5813,6 +6187,7 @@ getJasmineRequireObj().Suite = function(j$) {
     this.parentSuite = attrs.parentSuite;
     this.description = attrs.description;
     this.expectationFactory = attrs.expectationFactory;
+    this.asyncExpectationFactory = attrs.asyncExpectationFactory;
     this.expectationResultFactory = attrs.expectationResultFactory;
     this.throwOnExpectationFailure = !!attrs.throwOnExpectationFailure;
 
@@ -5843,6 +6218,10 @@ getJasmineRequireObj().Suite = function(j$) {
 
   Suite.prototype.expect = function(actual) {
     return this.expectationFactory(actual, this);
+  };
+
+  Suite.prototype.expectAsync = function(actual) {
+    return this.asyncExpectationFactory(actual, this);
   };
 
   Suite.prototype.getFullName = function() {
@@ -5971,6 +6350,7 @@ getJasmineRequireObj().Suite = function(j$) {
 };
 
 if (typeof window == void 0 && typeof exports == 'object') {
+  /* globals exports */
   exports.Suite = jasmineRequire.Suite;
 }
 
@@ -6173,8 +6553,11 @@ getJasmineRequireObj().TreeProcessor = function() {
 
             queueRunnerFactory({
               onComplete: function () {
+                var args = Array.prototype.slice.call(arguments, [0]);
                 node.cleanupBeforeAfter();
-                nodeComplete(node, node.getResult(), done);
+                nodeComplete(node, node.getResult(), function() {
+                  done.apply(undefined, args);
+                });
               },
               queueableFns: [onStart].concat(wrapChildren(node, segmentNumber)),
               userContext: node.sharedUserContext(),
@@ -6230,5 +6613,5 @@ getJasmineRequireObj().UserContext = function(j$) {
 };
 
 getJasmineRequireObj().version = function() {
-  return '3.1.0';
+  return '3.2.0';
 };
