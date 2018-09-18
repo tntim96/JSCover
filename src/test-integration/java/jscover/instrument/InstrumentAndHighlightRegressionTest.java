@@ -349,6 +349,7 @@ import com.google.javascript.jscomp.parsing.ParserRunner;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.SimpleErrorReporter;
 import com.google.javascript.rhino.SimpleSourceFile;
+import com.google.javascript.rhino.StaticSourceFile;
 import jscover.ConfigurationCommon;
 import jscover.util.IoUtils;
 import org.junit.AfterClass;
@@ -698,7 +699,7 @@ public class InstrumentAndHighlightRegressionTest {
     private Node parse(String source) {
         SimpleErrorReporter errorReporter = new SimpleErrorReporter();
         return ParserRunner.parse(
-                new SimpleSourceFile("test.js", false),
+                new SimpleSourceFile("test.js", StaticSourceFile.SourceKind.STRONG),
                 source,
                 parserConfig,
                 errorReporter).ast;

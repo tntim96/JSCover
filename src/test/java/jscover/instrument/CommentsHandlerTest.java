@@ -347,6 +347,7 @@ import com.google.javascript.jscomp.parsing.ParserRunner;
 import com.google.javascript.jscomp.parsing.parser.trees.Comment;
 import com.google.javascript.rhino.SimpleErrorReporter;
 import com.google.javascript.rhino.SimpleSourceFile;
+import com.google.javascript.rhino.StaticSourceFile;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -414,7 +415,7 @@ public class CommentsHandlerTest {
     private List<Comment> parse(String source) {
         SimpleErrorReporter errorReporter = new SimpleErrorReporter();
         return ParserRunner.parse(
-                new SimpleSourceFile("test.js", false),
+                new SimpleSourceFile("test.js", StaticSourceFile.SourceKind.STRONG),
                 source,
                 parserConfig,
                 errorReporter).comments;
