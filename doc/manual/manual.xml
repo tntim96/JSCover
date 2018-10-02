@@ -114,7 +114,7 @@
         </text>
         <section>
             <item>
-                <text>The best way to get started is to run the the examples included in the distribution.</text>
+                <text>The best way to get started is to run the examples included in the distribution.</text>
                 <heading id="gettingStartedServer">Server</heading>
                 <item>
                     <heading id="gettingStartedServerStartServer">Start The Server</heading>
@@ -675,7 +675,7 @@ fs.write("target/jscoverage.json", json, 'w');
                     <item>
                         <heading id="proxyURIToFilePathTranslation">Translating a URI to a File Path</heading>
                         <text>
-                            When operating as a proxy, it is possible to have a URI which doesn't match the the file
+                            When operating as a proxy, it is possible to have a URI which doesn't match the file
                             system path. This is normally not a problem, as the JavaScript contents will be saved to the
                             file-system using the URI. However, there a two potential problems to be handled:
                             <ol>
