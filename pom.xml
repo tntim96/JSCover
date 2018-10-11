@@ -73,7 +73,7 @@
         <dependency>
             <groupId>com.google.javascript</groupId>
             <artifactId>closure-compiler</artifactId>
-            <version>v20180910</version>
+            <version>v20181008</version>
         </dependency>
         <dependency>
             <groupId>net.sourceforge.htmlunit</groupId>
@@ -101,7 +101,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>2.22.0</version>
+            <version>2.23.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
