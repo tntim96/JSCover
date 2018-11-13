@@ -59,8 +59,9 @@ var getJasmineRequireObj = (function (jasmineGlobal) {
     j$.Env = jRequire.Env(j$);
     j$.StackTrace = jRequire.StackTrace(j$);
     j$.ExceptionFormatter = jRequire.ExceptionFormatter(j$);
-    j$.Expectation = jRequire.Expectation();
-    j$.AsyncExpectation = jRequire.AsyncExpectation(j$);
+    j$.ExpectationFilterChain = jRequire.ExpectationFilterChain();
+    j$.Expector = jRequire.Expector(j$);
+    j$.Expectation = jRequire.Expectation(j$);
     j$.buildExpectationResult = jRequire.buildExpectationResult();
     j$.JsApiReporter = jRequire.JsApiReporter();
     j$.matchersUtil = jRequire.matchersUtil(j$);
@@ -93,6 +94,7 @@ var getJasmineRequireObj = (function (jasmineGlobal) {
     j$.NotEmpty = jRequire.NotEmpty(j$);
 
     j$.matchers = jRequire.requireMatchers(jRequire, j$);
+    j$.asyncMatchers = jRequire.requireAsyncMatchers(jRequire, j$);
 
     return j$;
   };
@@ -261,7 +263,11 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
   };
 
   j$.isPromise = function(obj) {
-    return typeof jasmineGlobal.Promise !== 'undefined' && obj && obj.constructor === jasmineGlobal.Promise;
+    return typeof jasmineGlobal.Promise !== 'undefined' && !!obj && obj.constructor === jasmineGlobal.Promise;
+  };
+
+  j$.isPromiseLike = function(obj) {
+    return !!obj && j$.isFunction_(obj.then);
   };
 
   j$.fnNameFor = function(func) {
@@ -794,13 +800,61 @@ getJasmineRequireObj().Env = function(j$) {
     var currentSpec = null;
     var currentlyExecutingSuites = [];
     var currentDeclarationSuite = null;
-    var throwOnExpectationFailure = false;
-    var stopOnSpecFailure = false;
-    var random = true;
-    var hidingDisabled = false;
-    var seed = null;
-    var handlingLoadErrors = true;
     var hasFailures = false;
+
+    /**
+     * This represents the available options to configure Jasmine.
+     * Options that are not provided will use their default values
+     * @interface Configuration
+     */
+    var config = {
+      /**
+       * Whether to randomize spec execution order
+       * @name Configuration#random
+       * @type Boolean
+       * @default true
+       */
+      random: true,
+      /**
+       * Seed to use as the basis of randomization.
+       * Null causes the seed to be determined randomly at the start of execution.
+       * @name Configuration#seed
+       * @type function
+       * @default null
+       */
+      seed: null,
+      /**
+       * Whether to stop execution of the suite after the first spec failure
+       * @name Configuration#failFast
+       * @type Boolean
+       * @default false
+       */
+      failFast: false,
+      /**
+       * Whether to cause specs to only have one expectation failure.
+       * @name Configuration#oneFailurePerSpec
+       * @type Boolean
+       * @default false
+       */
+      oneFailurePerSpec: false,
+      /**
+       * Function to use to filter specs
+       * @name Configuration#specFilter
+       * @type function
+       * @default true
+       */
+      specFilter: function() {
+        return true;
+      },
+      /**
+       * Whether or not reporters should hide disabled specs from their output.
+       * Currently only supported by Jasmine's HTMLReporter
+       * @name Configuration#hideDisabled
+       * @type Boolean
+       * @default false
+       */
+      hideDisabled: false
+    };
 
     var currentSuite = function() {
       return currentlyExecutingSuites[currentlyExecutingSuites.length - 1];
@@ -834,9 +888,62 @@ getJasmineRequireObj().Env = function(j$) {
       });
     }
 
-    this.specFilter = function() {
-      return true;
+    /**
+     * Configure your jasmine environment
+     * @name Env#configure
+     * @argument {Configuration} configuration
+     * @function
+     */
+    this.configure = function(configuration) {
+      if (configuration.specFilter) {
+        config.specFilter = configuration.specFilter;
+      }
+
+      if (configuration.hasOwnProperty('random')) {
+        config.random = !!configuration.random;
+      }
+
+      if (configuration.hasOwnProperty('seed')) {
+        config.seed = configuration.seed;
+      }
+
+      if (configuration.hasOwnProperty('failFast')) {
+        config.failFast = configuration.failFast;
+      }
+
+      if (configuration.hasOwnProperty('oneFailurePerSpec')) {
+        config.oneFailurePerSpec = configuration.oneFailurePerSpec;
+      }
+
+      if (configuration.hasOwnProperty('hideDisabled')) {
+        config.hideDisabled = configuration.hideDisabled;
+      }
     };
+
+    /**
+     * Get the current configuration for your jasmine environment
+     * @name Env#configuration
+     * @function
+     * @returns {Configuration}
+     */
+    this.configuration = function() {
+      var result = {};
+      for (var property in config) {
+        result[property] = config[property];
+      }
+      return result;
+    };
+
+    Object.defineProperty(this, 'specFilter', {
+      get: function() {
+        self.deprecated('Getting specFilter directly from Env is deprecated, please check the specFilter option from `configuration`');
+        return config.specFilter;
+      },
+      set: function(val) {
+        self.deprecated('Setting specFilter directly on Env is deprecated, please use the specFilter option in `configure`');
+        config.specFilter = val;
+      }
+    });
 
     this.addSpyStrategy = function(name, fn) {
       if(!currentRunnable()) {
@@ -863,6 +970,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     j$.Expectation.addCoreMatchers(j$.matchers);
+    j$.Expectation.addAsyncCoreMatchers(j$.asyncMatchers);
 
     var nextSpecId = 0;
     var getNextSpecId = function() {
@@ -875,7 +983,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     var expectationFactory = function(actual, spec) {
-      return j$.Expectation.Factory({
+      return j$.Expectation.factory({
         util: j$.matchersUtil,
         customEqualityTesters: runnableResources[spec.id].customEqualityTesters,
         customMatchers: runnableResources[spec.id].customMatchers,
@@ -889,7 +997,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     var asyncExpectationFactory = function(actual, spec) {
-      return j$.AsyncExpectation.factory({
+      return j$.Expectation.asyncFactory({
         util: j$.matchersUtil,
         customEqualityTesters: runnableResources[spec.id].customEqualityTesters,
         actual: actual,
@@ -965,13 +1073,16 @@ getJasmineRequireObj().Env = function(j$) {
      * @name Env#throwOnExpectationFailure
      * @function
      * @param {Boolean} value Whether to throw when a expectation fails
+     * @deprecated Use the `oneFailurePerSpec` option with {@link Env#configure}
      */
     this.throwOnExpectationFailure = function(value) {
-      throwOnExpectationFailure = !!value;
+      this.deprecated('Setting throwOnExpectationFailure directly on Env is deprecated, please use the oneFailurePerSpec option in `configure`');
+      this.configure({oneFailurePerSpec: !!value});
     };
 
     this.throwingExpectationFailures = function() {
-      return throwOnExpectationFailure;
+      this.deprecated('Getting throwingExpectationFailures directly from Env is deprecated, please check the oneFailurePerSpec option from `configuration`');
+      return config.oneFailurePerSpec;
     };
 
     /**
@@ -979,13 +1090,16 @@ getJasmineRequireObj().Env = function(j$) {
      * @name Env#stopOnSpecFailure
      * @function
      * @param {Boolean} value Whether to stop suite execution when a spec fails
+     * @deprecated Use the `failFast` option with {@link Env#configure}
      */
     this.stopOnSpecFailure = function(value) {
-      stopOnSpecFailure = !!value;
+      this.deprecated('Setting stopOnSpecFailure directly is deprecated, please use the failFast option in `configure`');
+      this.configure({failFast: !!value});
     };
 
     this.stoppingOnSpecFailure = function() {
-      return stopOnSpecFailure;
+      this.deprecated('Getting stoppingOnSpecFailure directly from Env is deprecated, please check the failFast option from `configuration`');
+      return config.failFast;
     };
 
     /**
@@ -993,13 +1107,16 @@ getJasmineRequireObj().Env = function(j$) {
      * @name Env#randomizeTests
      * @function
      * @param {Boolean} value Whether to randomize execution order
+     * @deprecated Use the `random` option with {@link Env#configure}
      */
     this.randomizeTests = function(value) {
-      random = !!value;
+      this.deprecated('Setting randomizeTests directly is deprecated, please use the random option in `configure`');
+      config.random = !!value;
     };
 
     this.randomTests = function() {
-      return random;
+      this.deprecated('Getting randomTests directly from Env is deprecated, please check the random option from `configuration`');
+      return config.random;
     };
 
     /**
@@ -1007,16 +1124,19 @@ getJasmineRequireObj().Env = function(j$) {
      * @name Env#seed
      * @function
      * @param {Number} value The seed value
+     * @deprecated Use the `seed` option with {@link Env#configure}
      */
     this.seed = function(value) {
+      this.deprecated('Setting seed directly is deprecated, please use the seed option in `configure`');
       if (value) {
-        seed = value;
+        config.seed = value;
       }
-      return seed;
+      return config.seed;
     };
 
     this.hidingDisabled = function(value) {
-      return hidingDisabled;
+      this.deprecated('Getting hidingDisabled directly from Env is deprecated, please check the hideDisabled option from `configuration`');
+      return config.hideDisabled;
     };
 
     /**
@@ -1024,7 +1144,8 @@ getJasmineRequireObj().Env = function(j$) {
      * @function
      */
     this.hideDisabled = function(value) {
-      hidingDisabled = !!value;
+      this.deprecated('Setting hideDisabled directly is deprecated, please use the hideDisabled option in `configure`');
+      config.hideDisabled = !!value;
     };
 
     this.deprecated = function(deprecation) {
@@ -1038,9 +1159,9 @@ getJasmineRequireObj().Env = function(j$) {
     var queueRunnerFactory = function(options, args) {
       var failFast = false;
       if (options.isLeaf) {
-        failFast = throwOnExpectationFailure;
+        failFast = config.oneFailurePerSpec;
       } else if (!options.isReporter) {
-        failFast = stopOnSpecFailure;
+        failFast = config.failFast;
       }
       options.clearStack = options.clearStack || clearStack;
       options.timeout = {setTimeout: realSetTimeout, clearTimeout: realClearTimeout};
@@ -1155,8 +1276,8 @@ getJasmineRequireObj().Env = function(j$) {
       }
 
       var order = new j$.Order({
-        random: random,
-        seed: seed
+        random: config.random,
+        seed: config.seed
       });
 
       var processor = new j$.TreeProcessor({
@@ -1186,7 +1307,7 @@ getJasmineRequireObj().Env = function(j$) {
           return order.sort(node.children);
         },
         excludeNode: function(spec) {
-          return !self.specFilter(spec);
+          return !config.specFilter(spec);
         }
       });
 
@@ -1353,7 +1474,7 @@ getJasmineRequireObj().Env = function(j$) {
         expectationFactory: expectationFactory,
         asyncExpectationFactory: asyncExpectationFactory,
         expectationResultFactory: expectationResultFactory,
-        throwOnExpectationFailure: throwOnExpectationFailure
+        throwOnExpectationFailure: config.oneFailurePerSpec
       });
 
       return suite;
@@ -1459,7 +1580,7 @@ getJasmineRequireObj().Env = function(j$) {
           fn: fn,
           timeout: timeout || 0
         },
-        throwOnExpectationFailure: throwOnExpectationFailure
+        throwOnExpectationFailure: config.oneFailurePerSpec
       });
 
       return spec;
@@ -1607,7 +1728,7 @@ getJasmineRequireObj().Env = function(j$) {
         error: error && error.message ? error : null
       });
 
-      if (self.throwingExpectationFailures()) {
+      if (config.oneFailurePerSpec) {
         throw new Error(message);
       }
     };
@@ -2023,160 +2144,6 @@ getJasmineRequireObj().Truthy = function(j$) {
   };
 
   return Truthy;
-};
-
-getJasmineRequireObj().AsyncExpectation = function(j$) {
-  var promiseForMessage = {
-    jasmineToString: function() { return 'a promise'; }
-  };
-
-  /**
-   * Asynchronous matchers.
-   * @namespace async-matchers
-   */
-  function AsyncExpectation(options) {
-    var global = options.global || j$.getGlobal();
-    this.util = options.util || { buildFailureMessage: function() {} };
-    this.customEqualityTesters = options.customEqualityTesters || [];
-    this.addExpectationResult = options.addExpectationResult || function(){};
-    this.actual = options.actual;
-    this.isNot = options.isNot;
-
-    if (!global.Promise) {
-      throw new Error('expectAsync is unavailable because the environment does not support promises.');
-    }
-
-    if (!j$.isPromise(this.actual)) {
-      throw new Error('Expected expectAsync to be called with a promise.');
-    }
-
-    ['toBeResolved', 'toBeRejected', 'toBeResolvedTo'].forEach(wrapCompare.bind(this));
-  }
-
-  function wrapCompare(name) {
-    var compare = this[name];
-    this[name] = function() {
-      var self = this;
-      var args = Array.prototype.slice.call(arguments);
-      args.unshift(this.actual);
-
-      // Capture the call stack here, before we go async, so that it will
-      // contain frames that are relevant to the user instead of just parts
-      // of Jasmine.
-      var errorForStack = j$.util.errorWithStack();
-
-      return compare.apply(self, args).then(function(result) {
-        var message;
-
-        if (self.isNot) {
-          result.pass = !result.pass;
-        }
-
-        args[0] = promiseForMessage;
-        message = j$.Expectation.finalizeMessage(self.util, name, self.isNot, args, result);
-
-        self.addExpectationResult(result.pass, {
-          matcherName: name,
-          passed: result.pass,
-          message: message,
-          error: undefined,
-          errorForStack: errorForStack,
-          actual: self.actual
-        });
-      });
-    };
-  }
-
-  /**
-   * Expect a promise to be resolved.
-   * @function
-   * @async
-   * @name async-matchers#toBeResolved
-   * @example
-   * await expectAsync(aPromise).toBeResolved();
-   * @example
-   * return expectAsync(aPromise).toBeResolved();
-   */
-  AsyncExpectation.prototype.toBeResolved = function(actual) {
-    return actual.then(
-      function() { return {pass: true}; },
-      function() { return {pass: false}; }
-    );
-  };
-
-  /**
-   * Expect a promise to be rejected.
-   * @function
-   * @async
-   * @name async-matchers#toBeRejected
-   * @example
-   * await expectAsync(aPromise).toBeRejected();
-   * @example
-   * return expectAsync(aPromise).toBeRejected();
-   */
-  AsyncExpectation.prototype.toBeRejected = function(actual) {
-    return actual.then(
-      function() { return {pass: false}; },
-      function() { return {pass: true}; }
-    );
-  };
-
-  /**
-   * Expect a promise to be resolved to a value equal to the expected, using deep equality comparison.
-   * @function
-   * @async
-   * @name async-matchers#toBeResolvedTo
-   * @param {Object} expected - Value that the promise is expected to resolve to
-   * @example
-   * await expectAsync(aPromise).toBeResolvedTo({prop: 'value'});
-   * @example
-   * return expectAsync(aPromise).toBeResolvedTo({prop: 'value'});
-   */
-  AsyncExpectation.prototype.toBeResolvedTo = function(actualPromise, expectedValue) {
-    var self = this;
-
-    function prefix(passed) {
-      return 'Expected a promise ' +
-        (passed ? 'not ' : '') +
-        'to be resolved to ' + j$.pp(expectedValue);
-    }
-
-    return actualPromise.then(
-      function(actualValue) {
-        if (self.util.equals(actualValue, expectedValue, self.customEqualityTesters)) {
-          return {
-           pass: true,
-           message: prefix(true) + '.'
-         };
-        } else {
-          return {
-            pass: false,
-            message: prefix(false) + ' but it was resolved to ' + j$.pp(actualValue) + '.'
-          };
-        }
-      },
-      function() {
-        return {
-          pass: false,
-          message: prefix(false) + ' but it was rejected.'
-        };
-      }
-    );
-  };
-
-
-  AsyncExpectation.factory = function(options) {
-    var expect = new AsyncExpectation(options);
-
-    options = j$.util.clone(options);
-    options.isNot = true;
-    expect.not = new AsyncExpectation(options);
-
-    return expect;
-  };
-
-
-  return AsyncExpectation;
 };
 
 getJasmineRequireObj().CallTracker = function(j$) {
@@ -2737,6 +2704,8 @@ getJasmineRequireObj().ExceptionFormatter = function(j$) {
 
       if (error.name && error.message) {
         message += error.name + ': ' + error.message;
+      } else if (error.message) {
+        message += error.message;
       } else {
         message += error.toString() + ' thrown';
       }
@@ -2814,107 +2783,238 @@ getJasmineRequireObj().ExceptionFormatter = function(j$) {
   return ExceptionFormatter;
 };
 
-getJasmineRequireObj().Expectation = function() {
+getJasmineRequireObj().Expectation = function(j$) {
+  var promiseForMessage = {
+    jasmineToString: function() { return 'a promise'; }
+  };
 
   /**
    * Matchers that come with Jasmine out of the box.
    * @namespace matchers
    */
   function Expectation(options) {
-    this.util = options.util || { buildFailureMessage: function() {} };
-    this.customEqualityTesters = options.customEqualityTesters || [];
-    this.actual = options.actual;
-    this.addExpectationResult = options.addExpectationResult || function(){};
-    this.isNot = options.isNot;
+    this.expector = new j$.Expector(options);
 
     var customMatchers = options.customMatchers || {};
     for (var matcherName in customMatchers) {
-      this[matcherName] = Expectation.prototype.wrapCompare(matcherName, customMatchers[matcherName]);
+      this[matcherName] = wrapSyncCompare(matcherName, customMatchers[matcherName]);
     }
   }
 
-  Expectation.prototype.wrapCompare = function(name, matcherFactory) {
-    return function() {
-      var args = Array.prototype.slice.call(arguments, 0),
-        expected = args.slice(0),
-        message;
-
-      args.unshift(this.actual);
-
-      var matcher = matcherFactory(this.util, this.customEqualityTesters),
-          matcherCompare = matcher.compare;
-
-      function defaultNegativeCompare() {
-        var result = matcher.compare.apply(null, args);
-        result.pass = !result.pass;
-        return result;
-      }
-
-      if (this.isNot) {
-        matcherCompare = matcher.negativeCompare || defaultNegativeCompare;
-      }
-
-      var result = matcherCompare.apply(null, args);
-      message = Expectation.finalizeMessage(this.util, name, this.isNot, args, result);
-
-      if (expected.length == 1) {
-        expected = expected[0];
-      }
-
-      // TODO: how many of these params are needed?
-      this.addExpectationResult(
-        result.pass,
-        {
-          matcherName: name,
-          passed: result.pass,
-          message: message,
-          error: result.error,
-          actual: this.actual,
-          expected: expected // TODO: this may need to be arrayified/sliced
-        }
-      );
-    };
+  /**
+   * Add some context for an {@link expect}
+   * @function
+   * @name matchers#withContext
+   * @param {String} message - Additional context to show when the matcher fails
+   * @return {matchers}
+   */
+  Expectation.prototype.withContext = function withContext(message) {
+    return addFilter(this, new ContextAddingFilter(message));
   };
 
-  Expectation.finalizeMessage = function(util, name, isNot, args, result) {
-    if (result.pass) {
-      return '';
-    } else if (result.message) {
-      if (Object.prototype.toString.apply(result.message) === '[object Function]') {
+  /**
+   * Invert the matcher following this {@link expect}
+   * @member
+   * @name matchers#not
+   * @type {matchers}
+   * @example
+   * expect(something).not.toBe(true);
+   */
+  Object.defineProperty(Expectation.prototype, 'not', {
+    get: function() {
+      return addFilter(this, syncNegatingFilter);
+    }
+  });
+
+  /**
+   * Asynchronous matchers.
+   * @namespace async-matchers
+   */
+  function AsyncExpectation(options) {
+    var global = options.global || j$.getGlobal();
+    this.expector = new j$.Expector(options);
+
+    if (!global.Promise) {
+      throw new Error('expectAsync is unavailable because the environment does not support promises.');
+    }
+
+    if (!j$.isPromiseLike(this.expector.actual)) {
+      throw new Error('Expected expectAsync to be called with a promise.');
+    }
+  }
+
+  /**
+   * Add some context for an {@link expectAsync}
+   * @function
+   * @name async-matchers#withContext
+   * @param {String} message - Additional context to show when the async matcher fails
+   * @return {async-matchers}
+   */
+  AsyncExpectation.prototype.withContext = function withContext(message) {
+    return addFilter(this, new ContextAddingFilter(message));
+  };
+
+  /**
+   * Invert the matcher following this {@link expectAsync}
+   * @member
+   * @name async-matchers#not
+   * @type {async-matchers}
+   * @example
+   * await expectAsync(myPromise).not.toBeResolved();
+   * @example
+   * return expectAsync(myPromise).not.toBeResolved();
+   */
+  Object.defineProperty(AsyncExpectation.prototype, 'not', {
+    get: function() {
+      return addFilter(this, asyncNegatingFilter);
+    }
+  });
+
+  function wrapSyncCompare(name, matcherFactory) {
+    return function() {
+      var result = this.expector.compare(name, matcherFactory, arguments);
+      this.expector.processResult(result);
+    };
+  }
+
+  function wrapAsyncCompare(name, matcherFactory) {
+    return function() {
+      var self = this;
+
+      // Capture the call stack here, before we go async, so that it will contain
+      // frames that are relevant to the user instead of just parts of Jasmine.
+      var errorForStack = j$.util.errorWithStack();
+
+      return this.expector.compare(name, matcherFactory, arguments).then(function(result) {
+        self.expector.processResult(result, errorForStack, promiseForMessage);
+      });
+    };
+  }
+
+  function addCoreMatchers(prototype, matchers, wrapper) {
+    for (var matcherName in matchers) {
+      var matcher = matchers[matcherName];
+      prototype[matcherName] = wrapper(matcherName, matcher);
+    }
+  }
+
+  function addFilter(source, filter) {
+    var result = Object.create(source);
+    result.expector = source.expector.addFilter(filter);
+    return result;
+  }
+
+  function negatedFailureMessage(result, matcherName, args, util) {
+    if (result.message) {
+      if (j$.isFunction_(result.message)) {
         return result.message();
       } else {
         return result.message;
       }
-    } else {
-      args = args.slice();
-      args.unshift(isNot);
-      args.unshift(name);
-      return util.buildFailureMessage.apply(null, args);
+    }
+
+    args = args.slice();
+    args.unshift(true);
+    args.unshift(matcherName);
+    return util.buildFailureMessage.apply(null, args);
+  }
+
+  function negate(result) {
+    result.pass = !result.pass;
+    return result;
+  }
+
+  var syncNegatingFilter = {
+    selectComparisonFunc: function(matcher) {
+      function defaultNegativeCompare() {
+        return negate(matcher.compare.apply(null, arguments));
+      }
+
+      return matcher.negativeCompare || defaultNegativeCompare;
+    },
+    buildFailureMessage: negatedFailureMessage
+  };
+
+  var asyncNegatingFilter = {
+    selectComparisonFunc: function(matcher) {
+      function defaultNegativeCompare() {
+        return matcher.compare.apply(this, arguments).then(negate);
+      }
+
+      return defaultNegativeCompare;
+    },
+    buildFailureMessage: negatedFailureMessage
+  };
+
+  function ContextAddingFilter(message) {
+    this.message = message;
+  }
+
+  ContextAddingFilter.prototype.modifyFailureMessage = function(msg) {
+    return this.message + ': ' + msg;
+  };
+
+  return {
+    factory: function(options) {
+      return new Expectation(options || {});
+    },
+    addCoreMatchers: function(matchers) {
+      addCoreMatchers(Expectation.prototype, matchers, wrapSyncCompare);
+    },
+    asyncFactory: function(options) {
+      return new AsyncExpectation(options || {});
+    },
+    addAsyncCoreMatchers: function(matchers) {
+      addCoreMatchers(AsyncExpectation.prototype, matchers, wrapAsyncCompare);
     }
   };
+};
 
-  Expectation.addCoreMatchers = function(matchers) {
-    var prototype = Expectation.prototype;
-    for (var matcherName in matchers) {
-      var matcher = matchers[matcherName];
-      prototype[matcherName] = prototype.wrapCompare(matcherName, matcher);
+getJasmineRequireObj().ExpectationFilterChain = function() {
+  function ExpectationFilterChain(maybeFilter, prev) {
+    this.filter_ = maybeFilter;
+    this.prev_ = prev;
+  }
+
+  ExpectationFilterChain.prototype.addFilter = function(filter) {
+    return new ExpectationFilterChain(filter, this);
+  };
+
+  ExpectationFilterChain.prototype.selectComparisonFunc = function(matcher) {
+    return this.callFirst_('selectComparisonFunc', arguments).result;
+  };
+
+  ExpectationFilterChain.prototype.buildFailureMessage = function(result, matcherName, args, util) {
+    return this.callFirst_('buildFailureMessage', arguments).result;
+  };
+
+  ExpectationFilterChain.prototype.modifyFailureMessage = function(msg) {
+    var result = this.callFirst_('modifyFailureMessage', arguments).result;
+    return result || msg;
+  };
+
+  ExpectationFilterChain.prototype.callFirst_ = function(fname, args) {
+    var prevResult;
+
+    if (this.prev_) {
+      prevResult = this.prev_.callFirst_(fname, args);
+
+      if (prevResult.found) {
+        return prevResult;
+      }
     }
+
+    if (this.filter_ && this.filter_[fname]) {
+      return {
+        found: true,
+        result: this.filter_[fname].apply(this.filter_, args)
+      };
+    }
+
+    return {found: false};
   };
 
-  Expectation.Factory = function(options) {
-    options = options || {};
-
-    var expect = new Expectation(options);
-
-    // TODO: this would be nice as its own Object - NegativeExpectation
-    // TODO: copy instead of mutate options
-    options.isNot = true;
-    expect.not = new Expectation(options);
-
-    return expect;
-  };
-
-  return Expectation;
+  return ExpectationFilterChain;
 };
 
 //TODO: expectation result may make more sense as a presentation of an expectation.
@@ -2981,6 +3081,87 @@ getJasmineRequireObj().buildExpectationResult = function() {
   }
 
   return buildExpectationResult;
+};
+
+getJasmineRequireObj().Expector = function(j$) {
+  function Expector(options) {
+    this.util = options.util || { buildFailureMessage: function() {} };
+    this.customEqualityTesters = options.customEqualityTesters || [];
+    this.actual = options.actual;
+    this.addExpectationResult = options.addExpectationResult || function(){};
+    this.filters = new j$.ExpectationFilterChain();
+  }
+
+  Expector.prototype.instantiateMatcher = function(matcherName, matcherFactory, args) {
+    this.matcherName = matcherName;
+    this.args = Array.prototype.slice.call(args, 0);
+    this.expected = this.args.slice(0);
+
+    this.args.unshift(this.actual);
+
+    var matcher = matcherFactory(this.util, this.customEqualityTesters);
+    var comparisonFunc = this.filters.selectComparisonFunc(matcher);
+    return comparisonFunc || matcher.compare;
+  };
+
+  Expector.prototype.buildMessage = function(result) {
+    var self = this;
+
+    if (result.pass) {
+      return '';
+    }
+
+    var msg = this.filters.buildFailureMessage(result, this.matcherName, this.args, this.util, defaultMessage);
+    return this.filters.modifyFailureMessage(msg || defaultMessage());
+
+    function defaultMessage() {
+      if (!result.message) {
+        var args = self.args.slice();
+        args.unshift(false);
+        args.unshift(self.matcherName);
+        return self.util.buildFailureMessage.apply(null, args);
+      } else if (j$.isFunction_(result.message)) {
+        return result.message();
+      } else {
+        return result.message;
+      }
+    }
+  };
+
+  Expector.prototype.compare = function(matcherName, matcherFactory, args) {
+    var matcherCompare = this.instantiateMatcher(matcherName, matcherFactory, args);
+    return matcherCompare.apply(null, this.args);
+  };
+
+  Expector.prototype.addFilter = function(filter) {
+    var result = Object.create(this);
+    result.filters = this.filters.addFilter(filter);
+    return result;
+  };
+
+  Expector.prototype.processResult = function(result, errorForStack, actualOverride) {
+    this.args[0] = actualOverride || this.args[0];
+    var message = this.buildMessage(result);
+
+    if (this.expected.length === 1) {
+      this.expected = this.expected[0];
+    }
+
+    this.addExpectationResult(
+      result.pass,
+      {
+        matcherName: this.matcherName,
+        passed: result.pass,
+        message: message,
+        error: errorForStack ? undefined : result.error,
+        errorForStack: errorForStack || undefined,
+        actual: this.actual,
+        expected: this.expected // TODO: this may need to be arrayified/sliced
+      }
+    );
+  };
+
+  return Expector;
 };
 
 getJasmineRequireObj().formatErrorMsg = function() {
@@ -3053,6 +3234,146 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
   }
 
   return GlobalErrors;
+};
+
+getJasmineRequireObj().toBeRejected = function(j$) {
+  /**
+   * Expect a promise to be rejected.
+   * @function
+   * @async
+   * @name async-matchers#toBeRejected
+   * @example
+   * await expectAsync(aPromise).toBeRejected();
+   * @example
+   * return expectAsync(aPromise).toBeRejected();
+   */
+  return function toBeResolved(util) {
+    return {
+      compare: function(actual) {
+        return actual.then(
+          function() { return {pass: false}; },
+          function() { return {pass: true}; }
+        );
+      }
+    };
+  };
+};
+
+getJasmineRequireObj().toBeRejectedWith = function(j$) {
+  /**
+   * Expect a promise to be rejected with a value equal to the expected, using deep equality comparison.
+   * @function
+   * @async
+   * @name async-matchers#toBeRejectedWith
+   * @param {Object} expected - Value that the promise is expected to be rejected with
+   * @example
+   * await expectAsync(aPromise).toBeRejectedWith({prop: 'value'});
+   * @example
+   * return expectAsync(aPromise).toBeRejectedWith({prop: 'value'});
+   */
+  return function toBeRejectedWith(util, customEqualityTesters) {
+    return {
+      compare: function(actualPromise, expectedValue) {
+        function prefix(passed) {
+          return 'Expected a promise ' +
+            (passed ? 'not ' : '') +
+            'to be rejected with ' + j$.pp(expectedValue);
+        }
+
+        return actualPromise.then(
+          function() {
+          return {
+            pass: false,
+            message: prefix(false) + ' but it was resolved.'
+          };
+        },
+        function(actualValue) {
+          if (util.equals(actualValue, expectedValue, customEqualityTesters)) {
+            return {
+              pass: true,
+              message: prefix(true) + '.'
+            };
+          } else {
+            return {
+              pass: false,
+              message: prefix(false) + ' but it was rejected with ' + j$.pp(actualValue) + '.'
+            };
+          }
+        }
+        );
+      }
+    };
+  };
+};
+
+getJasmineRequireObj().toBeResolved = function(j$) {
+  /**
+   * Expect a promise to be resolved.
+   * @function
+   * @async
+   * @name async-matchers#toBeResolved
+   * @example
+   * await expectAsync(aPromise).toBeResolved();
+   * @example
+   * return expectAsync(aPromise).toBeResolved();
+   */
+  return function toBeResolved(util) {
+    return {
+      compare: function(actual) {
+        return actual.then(
+          function() { return {pass: true}; },
+          function() { return {pass: false}; }
+        );
+      }
+    };
+  };
+};
+
+getJasmineRequireObj().toBeResolvedTo = function(j$) {
+  /**
+   * Expect a promise to be resolved to a value equal to the expected, using deep equality comparison.
+   * @function
+   * @async
+   * @name async-matchers#toBeResolvedTo
+   * @param {Object} expected - Value that the promise is expected to resolve to
+   * @example
+   * await expectAsync(aPromise).toBeResolvedTo({prop: 'value'});
+   * @example
+   * return expectAsync(aPromise).toBeResolvedTo({prop: 'value'});
+   */
+  return function toBeResolvedTo(util, customEqualityTesters) {
+    return {
+      compare: function(actualPromise, expectedValue) {
+        function prefix(passed) {
+          return 'Expected a promise ' +
+            (passed ? 'not ' : '') +
+            'to be resolved to ' + j$.pp(expectedValue);
+        }
+
+        return actualPromise.then(
+          function(actualValue) {
+          if (util.equals(actualValue, expectedValue, customEqualityTesters)) {
+            return {
+              pass: true,
+              message: prefix(true) + '.'
+            };
+          } else {
+            return {
+              pass: false,
+              message: prefix(false) + ' but it was resolved to ' + j$.pp(actualValue) + '.'
+            };
+          }
+        },
+        function() {
+          return {
+            pass: false,
+            message: prefix(false) + ' but it was rejected.'
+          };
+        }
+        );
+      }
+    };
+  };
 };
 
 getJasmineRequireObj().DiffBuilder = function(j$) {
@@ -3645,7 +3966,24 @@ getJasmineRequireObj().ObjectPath = function(j$) {
   return ObjectPath;
 };
 
-getJasmineRequireObj().toBe = function() {
+getJasmineRequireObj().requireAsyncMatchers = function(jRequire, j$) {
+  var availableMatchers = [
+      'toBeResolved',
+      'toBeRejected',
+      'toBeResolvedTo',
+      'toBeRejectedWith'
+    ],
+    matchers = {};
+
+  for (var i = 0; i < availableMatchers.length; i++) {
+    var name = availableMatchers[i];
+    matchers[name] = jRequire[name](j$);
+  }
+
+  return matchers;
+};
+
+getJasmineRequireObj().toBe = function(j$) {
   /**
    * {@link expect} the actual value to be `===` to the expected value.
    * @function
@@ -3654,12 +3992,20 @@ getJasmineRequireObj().toBe = function() {
    * @example
    * expect(thing).toBe(realThing);
    */
-  function toBe() {
+  function toBe(util) {
+    var tip = ' Tip: To check for deep equality, use .toEqual() instead of .toBe().';
+
     return {
       compare: function(actual, expected) {
-        return {
-          pass: actual === expected
+        var result = {
+          pass: actual === expected,
         };
+
+        if (typeof expected === 'object') {
+          result.message = util.buildFailureMessage('toBe', result.pass, actual, expected) + tip;
+        }
+
+        return result;
       }
     };
   }
@@ -4994,26 +5340,29 @@ getJasmineRequireObj().QueueRunner = function(j$) {
 
   function once(fn) {
     var called = false;
-    return function() {
+    return function(arg) {
       if (!called) {
         called = true;
-        fn.apply(null, arguments);
+        // Direct call using single parameter, because cleanup/next does not need more
+        fn(arg);
       }
       return null;
     };
   }
 
+  function emptyFn() {}
+
   function QueueRunner(attrs) {
     var queueableFns = attrs.queueableFns || [];
     this.queueableFns = queueableFns.concat(attrs.cleanupFns || []);
     this.firstCleanupIx = queueableFns.length;
-    this.onComplete = attrs.onComplete || function() {};
+    this.onComplete = attrs.onComplete || emptyFn;
     this.clearStack = attrs.clearStack || function(fn) {fn();};
-    this.onException = attrs.onException || function() {};
+    this.onException = attrs.onException || emptyFn;
     this.userContext = attrs.userContext || new j$.UserContext();
     this.timeout = attrs.timeout || {setTimeout: setTimeout, clearTimeout: clearTimeout};
-    this.fail = attrs.fail || function() {};
-    this.globalErrors = attrs.globalErrors || { pushListener: function() {}, popListener: function() {} };
+    this.fail = attrs.fail || emptyFn;
+    this.globalErrors = attrs.globalErrors || { pushListener: emptyFn, popListener: emptyFn };
     this.completeOnFirstError = !!attrs.completeOnFirstError;
     this.errored = false;
 
@@ -5055,7 +5404,9 @@ getJasmineRequireObj().QueueRunner = function(j$) {
         next(error);
       },
       cleanup = once(function cleanup() {
-        self.clearTimeout(timeoutId);
+        if (timeoutId !== void 0) {
+          self.clearTimeout(timeoutId);
+        }
         self.globalErrors.popListener(handleError);
       }),
       next = once(function next(err) {
@@ -6617,5 +6968,5 @@ getJasmineRequireObj().UserContext = function(j$) {
 };
 
 getJasmineRequireObj().version = function() {
-  return '3.2.1';
+  return '3.3.0';
 };
