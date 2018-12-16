@@ -37,8 +37,8 @@
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="inheritedJdk" />
-    <orderEntry type="library" name="Maven: com.google.javascript:closure-compiler:v20181125" level="project" />
-    <orderEntry type="library" name="Maven: com.google.javascript:closure-compiler-externs:v20181125" level="project" />
+    <orderEntry type="library" name="Maven: com.google.javascript:closure-compiler:v20181210" level="project" />
+    <orderEntry type="library" name="Maven: com.google.javascript:closure-compiler-externs:v20181210" level="project" />
     <orderEntry type="library" name="Maven: args4j:args4j:2.0.26" level="project" />
     <orderEntry type="library" name="Maven: com.google.errorprone:error_prone_annotations:2.3.1" level="project" />
     <orderEntry type="library" name="Maven: com.google.guava:guava:25.1-jre" level="project" />
@@ -99,7 +99,7 @@
     <orderEntry type="module-library">
       <library name="Maven: com.sun:tools:0">
         <CLASSES>
-          <root url="jar://$USER_HOME$/.sdkman/candidates/java/8.0.172-zulu/lib/tools.jar!/" />
+          <root url="jar://$USER_HOME$/.sdkman/candidates/java/current/lib/tools.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
