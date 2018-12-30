@@ -146,7 +146,6 @@
                 <include name="build.*"/>
                 <include name="config/**"/>
                 <include name="data/**"/>
-                <include name="dest/**"/>
                 <include name="doc/**"/>
                 <include name="examples/**"/>
                 <include name="lib/**"/>
