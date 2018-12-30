@@ -293,7 +293,7 @@
     <target name="run-acceptance-tests" depends="compile-acceptance-tests" xmlns:jacoco="antlib:org.jacoco.ant">
         <property name="tests" value="*Test" />
         <jacoco:coverage destfile="jacoco-acceptance.exec" includes="jscover.*" excludes="*.ExitHelper:*.*Test">
-            <junit fork="true" forkmode="once" haltonfailure="no" haltonerror="no" failureProperty="test.failure" errorproperty="test.failure">
+            <junit fork="true" forkmode="perTest" haltonfailure="no" haltonerror="no" failureProperty="test.failure" errorproperty="test.failure">
                 <jvmarg value="-ea"/>
                 <classpath>
                     <path refid="classpath-test" />
