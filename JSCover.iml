@@ -82,31 +82,13 @@
     <orderEntry type="library" scope="TEST" name="Maven: net.bytebuddy:byte-buddy:1.9.3" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: net.bytebuddy:byte-buddy-agent:1.9.3" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.objenesis:objenesis:2.6" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: net.sourceforge.cobertura:cobertura:2.1.1" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.ow2.asm:asm:5.0.1" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.ow2.asm:asm-tree:5.0.1" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.ow2.asm:asm-commons:5.0.1" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.ow2.asm:asm-util:5.0.1" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.ow2.asm:asm-analysis:5.0.1" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: oro:oro:2.0.8" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: jaxen:jaxen:1.1.4" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.apache.ant:ant:1.8.3" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.apache.ant:ant-launcher:1.8.3" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.apache.ant:ant-junit:1.8.3" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.mortbay.jetty:servlet-api-2.5:6.1.14" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.mortbay.jetty:jetty:6.1.14" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.mortbay.jetty:jetty-util:6.1.14" level="project" />
-    <orderEntry type="module-library">
-      <library name="Maven: com.sun:tools:0">
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.sdkman/candidates/java/current/lib/tools.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="library" scope="TEST" name="Maven: org.slf4j:slf4j-api:1.7.5" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: ch.qos.logback:logback-classic:1.0.13" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: ch.qos.logback:logback-core:1.0.13" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jacoco:org.jacoco.ant:0.8.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jacoco:org.jacoco.core:0.8.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.ow2.asm:asm:6.2.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.ow2.asm:asm-commons:6.2.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.ow2.asm:asm-analysis:6.2.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.ow2.asm:asm-tree:6.2.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jacoco:org.jacoco.report:0.8.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jacoco:org.jacoco.agent:0.8.2" level="project" />
   </component>
 </module>

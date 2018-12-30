@@ -2,6 +2,7 @@
 ==================
   * Upgrade closure-compiler v20180506 to v20181210
   * Internal: Mockito 2.18.3 to 2.23.4, HtmlUnit 2.31 to 2.33, Upgrade Jasmine 3.1.0 to 3.3.0
+  * Internal: Swap from Cobertura to Jacoco for coverage
 
 2.0.6 / 2018-05-28
 ==================

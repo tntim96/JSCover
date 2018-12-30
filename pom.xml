@@ -105,9 +105,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-        	<groupId>net.sourceforge.cobertura</groupId>
-        	<artifactId>cobertura</artifactId>
-        	<version>2.1.1</version>
+        	<groupId>org.jacoco</groupId>
+        	<artifactId>org.jacoco.ant</artifactId>
+        	<version>0.8.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

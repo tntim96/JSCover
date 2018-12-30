@@ -4,6 +4,7 @@
 bin
 build
 junit*
+jacoco*
 target
 /*.log
 /*.lck
