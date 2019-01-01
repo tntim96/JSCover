@@ -25,7 +25,7 @@
 }
 
 #tabs {
-  clear: all;
+  clear: both;
   position: static;
   top: auto;
   left: auto;
