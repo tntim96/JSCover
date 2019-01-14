@@ -73,7 +73,7 @@
         <dependency>
             <groupId>com.google.javascript</groupId>
             <artifactId>closure-compiler</artifactId>
-            <version>v20181210</version>
+            <version>v20190106</version>
         </dependency>
         <dependency>
             <groupId>net.sourceforge.htmlunit</groupId>
