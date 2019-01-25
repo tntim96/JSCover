@@ -37,8 +37,8 @@
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="inheritedJdk" />
-    <orderEntry type="library" name="Maven: com.google.javascript:closure-compiler:v20190106" level="project" />
-    <orderEntry type="library" name="Maven: com.google.javascript:closure-compiler-externs:v20190106" level="project" />
+    <orderEntry type="library" name="Maven: com.google.javascript:closure-compiler:v20190121" level="project" />
+    <orderEntry type="library" name="Maven: com.google.javascript:closure-compiler-externs:v20190121" level="project" />
     <orderEntry type="library" name="Maven: args4j:args4j:2.0.26" level="project" />
     <orderEntry type="library" name="Maven: com.google.errorprone:error_prone_annotations:2.3.1" level="project" />
     <orderEntry type="library" name="Maven: com.google.guava:guava:25.1-jre" level="project" />
@@ -82,13 +82,13 @@
     <orderEntry type="library" scope="TEST" name="Maven: net.bytebuddy:byte-buddy:1.9.3" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: net.bytebuddy:byte-buddy-agent:1.9.3" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.objenesis:objenesis:2.6" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.jacoco:org.jacoco.ant:0.8.2" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.jacoco:org.jacoco.core:0.8.2" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.ow2.asm:asm:6.2.1" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.ow2.asm:asm-commons:6.2.1" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.ow2.asm:asm-analysis:6.2.1" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.ow2.asm:asm-tree:6.2.1" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.jacoco:org.jacoco.report:0.8.2" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.jacoco:org.jacoco.agent:0.8.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jacoco:org.jacoco.ant:0.8.3" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jacoco:org.jacoco.core:0.8.3" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.ow2.asm:asm:7.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.ow2.asm:asm-commons:7.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.ow2.asm:asm-analysis:7.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.ow2.asm:asm-tree:7.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jacoco:org.jacoco.report:0.8.3" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jacoco:org.jacoco.agent:0.8.3" level="project" />
   </component>
 </module>

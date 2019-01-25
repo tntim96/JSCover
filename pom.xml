@@ -73,7 +73,7 @@
         <dependency>
             <groupId>com.google.javascript</groupId>
             <artifactId>closure-compiler</artifactId>
-            <version>v20190106</version>
+            <version>v20190121</version>
         </dependency>
         <dependency>
             <groupId>net.sourceforge.htmlunit</groupId>
@@ -107,7 +107,7 @@
         <dependency>
         	<groupId>org.jacoco</groupId>
         	<artifactId>org.jacoco.ant</artifactId>
-        	<version>0.8.2</version>
+        	<version>0.8.3</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

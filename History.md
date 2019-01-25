@@ -1,6 +1,6 @@
 2.0.8 / 2019-??-??
 ==================
-  * Upgrade closure-compiler v20181210 to v20190106
+  * Upgrade closure-compiler v20181210 to v20190121
 
 2.0.7 / 2019-01-01
 ==================
