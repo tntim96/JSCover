@@ -1172,15 +1172,15 @@
         <root url="jar://$MAVEN_REPOSITORY$/org/jacoco/org.jacoco.report/0.8.3/org.jacoco.report-0.8.3-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.mockito:mockito-core:2.24.0">
+    <library name="Maven: org.mockito:mockito-core:2.24.5">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/2.24.0/mockito-core-2.24.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/2.24.5/mockito-core-2.24.5.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/2.24.0/mockito-core-2.24.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/2.24.5/mockito-core-2.24.5-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/2.24.0/mockito-core-2.24.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/2.24.5/mockito-core-2.24.5-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.mozilla:rhino:1.7.10">
