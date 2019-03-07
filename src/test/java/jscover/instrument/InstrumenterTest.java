@@ -960,10 +960,10 @@ public class InstrumenterTest {
 
     @Test
     public void shouldInstrumentES6ExportDefault() {
-        String source = "export default (x) => Math.exp(x);";
+        String source = "export default x => Math.exp(x);";
         String instrumentedSource = sourceProcessor.instrumentSource(source);
         String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
-                "export default(x) => Math.exp(x)\n";
+                "export default x => Math.exp(x)\n";
         assertEquals(expectedSource, instrumentedSource);
     }
 
@@ -996,10 +996,10 @@ public class InstrumenterTest {
 
     @Test
     public void shouldInstrumentES6ArrowFunction() {
-        String source = "var a3 = a.map( s => s.length );";
+        String source = "var a3 = a.map(s => s.length );";
         String instrumentedSource = sourceProcessor.instrumentSource(source);
         String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
-                "var a3 = a.map((s) => s.length);\n";
+                "var a3 = a.map(s => s.length);\n";
         assertEquals(expectedSource, instrumentedSource);
     }
 
@@ -1158,7 +1158,7 @@ public class InstrumenterTest {
                 "};";
         String instrumentedSource = sourceProcessor.instrumentSource(source);
         String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
-                "var calculatorMixin = (Base) => class extends Base {\n" +
+                "var calculatorMixin = Base => class extends Base {\n" +
                 "  calc() {\n" +
                 "    _$jscoverage['test.js'].functionData[0]++;\n" +
                 "  }\n" +
@@ -1199,7 +1199,7 @@ public class InstrumenterTest {
                 "})";
         String instrumentedSource = sourceProcessor.instrumentSource(source);
         String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
-                "nums.forEach((v) => {\n" +
+                "nums.forEach(v => {\n" +
                 "  _$jscoverage['test.js'].lineData[2]++;\n" +
                 "  if (v % 5 === 0) {\n" +
                 "    _$jscoverage['test.js'].lineData[3]++;\n" +
