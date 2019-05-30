@@ -776,26 +776,26 @@
         <root url="jar://$MAVEN_REPOSITORY$/com/google/j2objc/j2objc-annotations/1.1/j2objc-annotations-1.1-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: com.google.javascript:closure-compiler-externs:v20190513">
+    <library name="Maven: com.google.javascript:closure-compiler-externs:v20190528">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler-externs/v20190513/closure-compiler-externs-v20190513.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler-externs/v20190528/closure-compiler-externs-v20190528.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler-externs/v20190513/closure-compiler-externs-v20190513-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler-externs/v20190528/closure-compiler-externs-v20190528-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler-externs/v20190513/closure-compiler-externs-v20190513-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler-externs/v20190528/closure-compiler-externs-v20190528-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: com.google.javascript:closure-compiler:v20190513">
+    <library name="Maven: com.google.javascript:closure-compiler:v20190528">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler/v20190513/closure-compiler-v20190513.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler/v20190528/closure-compiler-v20190528.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler/v20190513/closure-compiler-v20190513-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler/v20190528/closure-compiler-v20190528-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler/v20190513/closure-compiler-v20190513-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler/v20190528/closure-compiler-v20190528-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: com.google.jsinterop:jsinterop-annotations:1.0.0">
@@ -1172,15 +1172,15 @@
         <root url="jar://$MAVEN_REPOSITORY$/org/jacoco/org.jacoco.report/0.8.4/org.jacoco.report-0.8.4-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.mockito:mockito-core:2.27.0">
+    <library name="Maven: org.mockito:mockito-core:2.28.2">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/2.27.0/mockito-core-2.27.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/2.28.2/mockito-core-2.28.2.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/2.27.0/mockito-core-2.27.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/2.28.2/mockito-core-2.28.2-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/2.27.0/mockito-core-2.27.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/2.28.2/mockito-core-2.28.2-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.mozilla:rhino:1.7.10">
