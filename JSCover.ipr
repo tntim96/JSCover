@@ -1183,15 +1183,15 @@
         <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/2.28.2/mockito-core-2.28.2-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.mozilla:rhino:1.7.10">
+    <library name="Maven: org.mozilla:rhino:1.7.11">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino/1.7.10/rhino-1.7.10.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino/1.7.11/rhino-1.7.11.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino/1.7.10/rhino-1.7.10-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino/1.7.11/rhino-1.7.11-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino/1.7.10/rhino-1.7.10-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino/1.7.11/rhino-1.7.11-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.objenesis:objenesis:2.6">
