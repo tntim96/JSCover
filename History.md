@@ -1,4 +1,4 @@
-2.0.8 / 2019-??-??
+2.0.8 / 2019-06-22
 ==================
   * Upgrade closure-compiler v20181210 to v20190618, Rhino 1.7.10 to 1.7.11
   * Instrumentation added in class body (https://github.com/tntim96/JSCover/issues/275)
