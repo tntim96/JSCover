@@ -1092,6 +1092,18 @@ public class InstrumenterTest {
     }
 
     @Test
+    public void shouldNotInstrumentES6ClassStatement() {
+        String source = "class Rectangle {\n" +
+                "  ;\n" +
+                "}";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "class Rectangle {\n" +
+                "}\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+    @Test
     public void shouldInstrumentES6ClassPrototypeMethod() {
         String source = "class Rectangle {\n" +
                 "  get area() {\n" +

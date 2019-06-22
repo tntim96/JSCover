@@ -409,6 +409,8 @@ class NodeProcessor {
                 //Don't do anything here.
             } else if (parent.isArrayLit()) {
                 //Don't do anything here.
+            } else if (parent.isClassMembers()) {
+                //Don't do anything here.
             } else if (parent != null) {
                 addInstrumentationBefore(node);
             }
