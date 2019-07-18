@@ -1,3 +1,8 @@
+2.0.9 / 2019-??-??
+==================
+  * Upgrade closure-compiler v20190618 to v20190709
+  * Internal: Mockito 2.28.2 to 3.0.0
+
 2.0.8 / 2019-06-22
 ==================
   * Upgrade closure-compiler v20181210 to v20190618, Rhino 1.7.10 to 1.7.11
