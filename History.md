@@ -1,6 +1,6 @@
 2.0.9 / 2019-??-??
 ==================
-  * Upgrade closure-compiler v20190618 to v20190729
+  * Upgrade closure-compiler v20190618 to v20190819
   * Internal: Mockito 2.28.2 to 3.0.0
 
 2.0.8 / 2019-06-22
