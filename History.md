@@ -1,5 +1,6 @@
 2.0.9 / 2019-??-??
 ==================
+  * Add support for for...of (https://github.com/tntim96/JSCover/issues/276)
   * Upgrade closure-compiler v20190618 to v20190819
   * Internal: Mockito 2.28.2 to 3.0.0, HtmlUnit 2.35 to 2.36.0
 

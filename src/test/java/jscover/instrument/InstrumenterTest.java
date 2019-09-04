@@ -925,6 +925,26 @@ public class InstrumenterTest {
     }
 
     @Test
+    public void shouldInstrumentForOf() {
+        String source ="var m = [[1,2],[3,4]];\n" +
+                "for (const [x, y] of m) {\n" +
+                "  console.log(x);\n" +
+                "  console.log(y);\n" +
+                "}";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "var m = [[1, 2], [3, 4]];\n" +
+                "_$jscoverage['test.js'].lineData[2]++;\n" +
+                "for (const [x, y] of m) {\n" +
+                "  _$jscoverage['test.js'].lineData[3]++;\n" +
+                "  console.log(x);\n" +
+                "  _$jscoverage['test.js'].lineData[4]++;\n" +
+                "  console.log(y);\n" +
+                "}\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+    @Test
     public void shouldInstrumentIgnoringLine() {
         String source = "var x = 7;" + CommentsHandler.EXCL_LINE;
         String instrumentedSource = sourceProcessor.instrumentSource(source);

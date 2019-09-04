@@ -399,6 +399,7 @@ class NodeProcessor {
                 || node.isWhile()
                 || node.isDo()
                 || node.isForIn()
+                || node.isForOf()
                 || node.isSwitch()
                 || node.isLet()
                 || node.isExport()
