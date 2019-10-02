@@ -390,7 +390,7 @@ public class ProxyServiceTest {
 
         proxyService.copyHeadersExceptEncoding(request, conn);
 
-        verifyZeroInteractions(conn);
+        verifyNoInteractions(conn);
     }
 
     @Test

@@ -433,7 +433,7 @@ public class FileSystemInstrumenterTest {
 
         fsi.copyFolder(src, dest);
 
-        verifyZeroInteractions(instrumenterService);
+        verifyNoInteractions(instrumenterService);
     }
 
     @Test
@@ -447,7 +447,7 @@ public class FileSystemInstrumenterTest {
 
         fsi.copyFolder(src, dest);
 
-        verifyZeroInteractions(instrumenterService);
+        verifyNoInteractions(instrumenterService);
     }
 
     @Test
@@ -460,7 +460,7 @@ public class FileSystemInstrumenterTest {
 
         fsi.copyFolder(src, dest, acceptAll, true);
 
-        verifyZeroInteractions(instrumenterService);
+        verifyNoInteractions(instrumenterService);
         verify(ioUtils).copy(src, dest);
     }
 
@@ -474,7 +474,7 @@ public class FileSystemInstrumenterTest {
 
         fsi.copyFolder(src, dest, acceptAll, true);
 
-        verifyZeroInteractions(instrumenterService);
+        verifyNoInteractions(instrumenterService);
         verify(ioUtils, times(0)).copy(src, dest);
     }
 }

@@ -427,7 +427,7 @@ public class MainTest {
         given(config.showHelp()).willReturn(true);
         main.runMain(new String[]{});
         verify(config).getHelpText();
-        verifyZeroInteractions(exitHelper);
+        verifyNoInteractions(exitHelper);
     }
 
     @Test
@@ -447,7 +447,7 @@ public class MainTest {
 
         File lcovFile = new File(jsonDirectory, "jscover.lcov");
         verify(lCovGenerator).saveData(list.values(), srcDir.getCanonicalPath(), lcovFile);
-        verifyZeroInteractions(exitHelper);
+        verifyNoInteractions(exitHelper);
     }
 
     @Test
@@ -482,7 +482,7 @@ public class MainTest {
         File xmlFile = new File(jsonDirectory, "cobertura-coverage.xml");
         verify(coberturaXmlGenerator).generateXml(argThat(coberturaDataMatcher), argThat(is(srcDir.getCanonicalPath())), argThat(is("version")));
         verify(ioUtils).copy("<xml/>", xmlFile);
-        verifyZeroInteractions(exitHelper);
+        verifyNoInteractions(exitHelper);
     }
 
     @Test
@@ -527,7 +527,7 @@ public class MainTest {
         };
 
         verify(xmlSummary).saveSummary(argThat(coverableMatcher), argThat(fileMatcher), argThat(is("version")));
-        verifyZeroInteractions(exitHelper);
+        verifyNoInteractions(exitHelper);
     }
 
     @Test
@@ -591,7 +591,7 @@ public class MainTest {
             inOrder.verify(ioUtils).copyDir(src2, srcDest);
         }
 
-        verifyZeroInteractions(exitHelper);
+        verifyNoInteractions(exitHelper);
     }
 
     private TypeSafeMatcher<SortedMap<String, FileData>> getTypeSafeMatcher() {

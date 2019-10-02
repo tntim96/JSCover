@@ -411,37 +411,37 @@ public class MainInstanceTest {
     @Test
     public void shouldExitWithError() {
         main.runMain(new String[]{"--unknown"});
-        verifyZeroInteractions(webDaemon);
-        verifyZeroInteractions(fileSystemInstrumenter);
+        verifyNoInteractions(webDaemon);
+        verifyNoInteractions(fileSystemInstrumenter);
         verify(exitHelper).exit(1);
     }
 
     @Test
     public void shouldPrintVersion() {
         main.runMain(new String[]{"-V"});
-        verifyZeroInteractions(webDaemon);
-        verifyZeroInteractions(exitHelper);
+        verifyNoInteractions(webDaemon);
+        verifyNoInteractions(exitHelper);
     }
 
     @Test
     public void shouldPrintCharSets() {
         main.runMain(new String[]{"-h", "encoding"});
-        verifyZeroInteractions(webDaemon);
-        verifyZeroInteractions(exitHelper);
+        verifyNoInteractions(webDaemon);
+        verifyNoInteractions(exitHelper);
     }
 
     @Test
     public void shouldShowWebServerHelp() {
         main.runMain(new String[]{"-ws", "-h"});
-        verifyZeroInteractions(webDaemon);
-        verifyZeroInteractions(exitHelper);
+        verifyNoInteractions(webDaemon);
+        verifyNoInteractions(exitHelper);
     }
 
     @Test
     public void shouldShowFileSystemHelp() {
         main.runMain(new String[]{"-ws", "-h"});
-        verifyZeroInteractions(fileSystemInstrumenter);
-        verifyZeroInteractions(exitHelper);
+        verifyNoInteractions(fileSystemInstrumenter);
+        verifyNoInteractions(exitHelper);
     }
 
     @Test
@@ -459,13 +459,13 @@ public class MainInstanceTest {
             }
         };
         verify(webDaemon, times(1)).start(argThat(matcher));
-        verifyZeroInteractions(exitHelper);
+        verifyNoInteractions(exitHelper);
     }
 
     @Test
     public void shouldRunWebServerWithInvalidOptions() {
         main.runMain(new String[]{"-ws", "--porty=7"});
-        verifyZeroInteractions(webDaemon);
+        verifyNoInteractions(webDaemon);
         verify(exitHelper, times(1)).exit(1);
     }
 
@@ -484,13 +484,13 @@ public class MainInstanceTest {
             }
         };
         verify(fileSystemInstrumenter, times(1)).run(argThat(matcher));
-        verifyZeroInteractions(exitHelper);
+        verifyNoInteractions(exitHelper);
     }
 
     @Test
     public void shouldRunFileSystemWithInvalidOptions() {
         main.runMain(new String[]{"-fs"});
-        verifyZeroInteractions(fileSystemInstrumenter);
+        verifyNoInteractions(fileSystemInstrumenter);
         verify(exitHelper, times(1)).exit(1);
     }
 
@@ -509,13 +509,13 @@ public class MainInstanceTest {
             }
         };
         verify(stdOutInstrumenter, times(1)).run(argThat(matcher));
-        verifyZeroInteractions(exitHelper);
+        verifyNoInteractions(exitHelper);
     }
 
     @Test
     public void shouldRunStdIOWithInvalidOptions() {
         main.runMain(new String[]{"-io"});
-        verifyZeroInteractions(stdOutInstrumenter);
+        verifyNoInteractions(stdOutInstrumenter);
         verify(exitHelper, times(1)).exit(1);
     }
 
@@ -524,7 +524,7 @@ public class MainInstanceTest {
         main.runMain(new String[]{"-gf", "dest"});
         verify(ioService, times(1)).generateJSCoverFilesForWebServer(argThat(getFileNameMatcher("dest")), (String) eq(properties.get("version")));
         verify(ioUtils, times(0)).copyDir(any(File.class), any(File.class));
-        verifyZeroInteractions(exitHelper);
+        verifyNoInteractions(exitHelper);
     }
 
     @Test
@@ -532,14 +532,14 @@ public class MainInstanceTest {
         main.runMain(new String[]{"-gf", "src", "dest"});
         verify(ioService, times(1)).generateJSCoverFilesForWebServer(argThat(getFileNameMatcher("dest")), (String) eq(properties.get("version")));
         verify(ioUtils, times(1)).copyDir(argThat(getFileNameMatcher("src")), argThat(getFileNameMatcher(Main.reportSrcSubDir, "dest")));
-        verifyZeroInteractions(exitHelper);
+        verifyNoInteractions(exitHelper);
     }
 
     @Test
     public void shouldRunGenerateFilesWithInvalidOptions() {
         main.runMain(new String[]{"-gf"});
-        verifyZeroInteractions(ioService);
-        verifyZeroInteractions(exitHelper);
+        verifyNoInteractions(ioService);
+        verifyNoInteractions(exitHelper);
     }
 
     public Matcher<? extends File> getFileNameMatcher(final String name) {
@@ -563,19 +563,19 @@ public class MainInstanceTest {
     @Test
     public void shouldRunRegExp() {
         main.runMain(new String[]{"-regex-test", "/js/.*.js", "/js/script.js"});
-        verifyZeroInteractions(exitHelper);
+        verifyNoInteractions(exitHelper);
     }
 
     @Test
     public void shouldRunRegExpNoMatch() {
         main.runMain(new String[]{"-regex-test", "/js/.*.js", "/script.js"});
-        verifyZeroInteractions(exitHelper);
+        verifyNoInteractions(exitHelper);
     }
 
     @Test
     public void shouldRunRegExpWithInvalidOptions() {
         main.runMain(new String[]{"-regex-test", "/js/.*.js"});
-        verifyZeroInteractions(exitHelper);
+        verifyNoInteractions(exitHelper);
     }
 
     @Test
@@ -592,7 +592,7 @@ public class MainInstanceTest {
         } catch (RuntimeException rte) {
             assertThat(rte.getCause(), sameInstance(toBeThrown));
         }
-        verifyZeroInteractions(exitHelper);
+        verifyNoInteractions(exitHelper);
     }
 
     @Test
