@@ -479,6 +479,20 @@ public class InstrumenterTest {
         assertEquals(expectedSource, instrumentedSource);
     }
 
+
+    @Test
+    public void shouldInstrumentForOfLoopAcrossLines() {
+        String source = "for (\nconst [x, y] of m)\n" +
+                "  console.log(x,y);";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "for (const [x, y] of m) {\n" +
+                "  _$jscoverage['test.js'].lineData[3]++;\n" +
+                "  console.log(x, y);\n" +
+                "}\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
     @Test
     public void shouldInstrumentIfWithIfParent() {
         String source = "if ( i > 0 )\n" +
