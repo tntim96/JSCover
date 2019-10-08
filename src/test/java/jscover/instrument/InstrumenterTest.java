@@ -507,6 +507,17 @@ public class InstrumenterTest {
     }
 
     @Test
+    public void shouldNotInstrumentInsideForIn() {
+        String source = "for (\n" +
+                "var x in y) { }";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "for (" +
+                "var x in y) {\n}\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+    @Test
     public void shouldInstrumentIfWithIfParent() {
         String source = "if ( i > 0 )\n" +
                 "  var x = 1;";

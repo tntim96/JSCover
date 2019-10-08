@@ -443,6 +443,7 @@ class NodeProcessor {
         Node parent = node.getParent();
         if (parent.isVanillaFor()) {
         } else if (parent.isForOf()) {
+        } else if (parent.isForIn()) {
         } else if (parent.isGetterDef()) {
         } else if (parent.isSetterDef()) {
         } else if (parent.isGetProp()) {
