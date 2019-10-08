@@ -400,6 +400,19 @@ public class InstrumenterTest {
     }
 
     @Test
+    public void shouldNotInstrumentReturnOfFunction() {
+        String source = "return (\n" +
+                "  function() {\n" +
+                "});";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "return function() {\n" +
+                "  _$jscoverage['test.js'].functionData[0]++;\n" +
+                "};\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+    @Test
     public void shouldInstrumentIfStatementInSwitchCase() {
         String source = "switch (x) {\ncase 10:\nif (a) {\nx++;\n}\n}";
         String instrumentedSource = sourceProcessor.instrumentSource(source);

@@ -2,6 +2,7 @@
 ==================
   * Add support for for...of (https://github.com/tntim96/JSCover/issues/276)
   * Don't instrument for..of loop code (https://github.com/tntim96/JSCover/issues/279)
+  * Should not instrument between return of function (https://github.com/tntim96/JSCover/issues/280)
   * Upgrade closure-compiler v20190618 to v20190929
   * Internal: Mockito 2.28.2 to 3.1.0, HtmlUnit 2.35 to 2.36.0
 

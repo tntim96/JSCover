@@ -422,6 +422,7 @@ class NodeProcessor {
                     && !parent.isStringKey()
                     && !parent.isCall()
                     && !parent.isNew()
+                    && !parent.isReturn()
                     && !parent.isName()
                     && !parent.isArrayLit()
                     && !parent.isAssign()
