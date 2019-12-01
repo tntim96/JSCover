@@ -1,11 +1,11 @@
-2.0.9 / 2019-??-??
+2.0.9 / 2020-??-??
 ==================
   * Add support for for...of (https://github.com/tntim96/JSCover/issues/276)
   * Don't instrument for..of loop code (https://github.com/tntim96/JSCover/issues/279)
   * Should not instrument between return of function (https://github.com/tntim96/JSCover/issues/280)
   * Should not instrument inside for...in (https://github.com/tntim96/JSCover/issues/281)
   * Upgrade closure-compiler v20190618 to v20191111
-  * Internal: Mockito 2.28.2 to 3.1.0, HtmlUnit 2.35 to 2.36.0, Jacoco 0.8.4 to 0.8.5 
+  * Internal: Mockito 2.28.2 to 3.2.0, HtmlUnit 2.35 to 2.36.0, Jacoco 0.8.4 to 0.8.5 
 
 2.0.8 / 2019-06-22
 ==================
