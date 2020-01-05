@@ -4,7 +4,7 @@
   * Don't instrument for..of loop code (https://github.com/tntim96/JSCover/issues/279)
   * Should not instrument between return of function (https://github.com/tntim96/JSCover/issues/280)
   * Should not instrument inside for...in (https://github.com/tntim96/JSCover/issues/281)
-  * Upgrade closure-compiler v20190618 to v20191111
+  * Upgrade closure-compiler v20190618 to v20200101
   * Internal: Mockito 2.28.2 to 3.2.4, HtmlUnit 2.35 to 2.36.0, Jacoco 0.8.4 to 0.8.5, Upgrade Jasmine 3.4.0 to 3.5.0
 
 2.0.8 / 2019-06-22
