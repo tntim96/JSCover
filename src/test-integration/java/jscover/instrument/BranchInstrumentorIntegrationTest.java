@@ -355,8 +355,8 @@ import org.mozilla.javascript.*;
 import static com.google.javascript.jscomp.parsing.Config.JsDocParsing.TYPES_ONLY;
 import static com.google.javascript.jscomp.parsing.Config.LanguageMode.ECMASCRIPT8;
 import static com.google.javascript.jscomp.parsing.Config.RunMode.KEEP_GOING;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 
 public class BranchInstrumentorIntegrationTest {
     private static IoUtils ioUtils = IoUtils.getInstance();

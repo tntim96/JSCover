@@ -352,8 +352,8 @@ import java.io.File;
 import static com.google.javascript.jscomp.parsing.Config.LanguageMode.ES_NEXT;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.SEVERE;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
 
 public class ConfigurationForServerTest {
 

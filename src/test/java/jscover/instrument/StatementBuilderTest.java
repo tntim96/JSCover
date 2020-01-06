@@ -352,9 +352,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 
 public class StatementBuilderTest {
     private StatementBuilder builder = new StatementBuilder();

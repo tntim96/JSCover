@@ -6,8 +6,8 @@ import jscover.Main;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
 
 public class WebDaemonTest {
     private Thread server;

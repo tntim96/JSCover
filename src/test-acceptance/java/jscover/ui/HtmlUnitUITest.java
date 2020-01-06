@@ -361,8 +361,8 @@ import java.util.*;
 
 import static jscover.ui.HTMLCoverageData.byName;
 import static jscover.ui.HTMLCoverageData.parse;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
 
 public class HtmlUnitUITest {
     private static Thread server;

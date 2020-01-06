@@ -354,8 +354,8 @@ import java.util.Properties;
 
 import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 public class MainReportMergeAcceptanceTest {
     private IoUtils ioUtils = IoUtils.getInstance();

@@ -353,8 +353,8 @@ import java.util.TimeZone;
 import java.util.logging.LogRecord;
 
 import static java.util.logging.Level.FINER;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)

@@ -358,8 +358,8 @@ import static com.google.javascript.jscomp.parsing.Config.JsDocParsing.INCLUDE_D
 import static com.google.javascript.jscomp.parsing.Config.LanguageMode.ECMASCRIPT8;
 import static com.google.javascript.jscomp.parsing.Config.RunMode.KEEP_GOING;
 import static jscover.instrument.CommentsHandler.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CommentsHandlerTest {

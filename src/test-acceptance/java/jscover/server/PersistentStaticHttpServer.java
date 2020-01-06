@@ -342,7 +342,13 @@ Public License instead of this License.
 
 package jscover.server;
 
-import static java.util.logging.Level.FINE;
+import jscover.util.IoUtils;
+import org.apache.http.HttpRequest;
+import org.apache.http.*;
+import org.apache.http.entity.BasicHttpEntity;
+import org.apache.http.impl.DefaultBHttpServerConnection;
+import org.apache.http.message.BasicHttpResponse;
+import org.apache.http.util.EntityUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -350,19 +356,7 @@ import java.net.Socket;
 import java.nio.charset.Charset;
 import java.util.logging.Logger;
 
-import jscover.util.IoUtils;
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpEntityEnclosingRequest;
-import org.apache.http.HttpException;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpServerConnection;
-import org.apache.http.HttpStatus;
-import org.apache.http.HttpVersion;
-import org.apache.http.entity.BasicHttpEntity;
-import org.apache.http.impl.DefaultBHttpServerConnection;
-import org.apache.http.message.BasicHttpResponse;
-import org.apache.http.util.EntityUtils;
+import static java.util.logging.Level.FINE;
 
 /**
  * This is a server that always server the same static content and 

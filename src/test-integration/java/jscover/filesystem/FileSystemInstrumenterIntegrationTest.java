@@ -13,8 +13,8 @@ import java.util.SortedMap;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 public class FileSystemInstrumenterIntegrationTest {
     private FileSystemInstrumenter fileSystemInstrumenter = new FileSystemInstrumenter();
