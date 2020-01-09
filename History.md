@@ -1,4 +1,4 @@
-2.0.9 / 2020-??-??
+2.0.9 / 2020-01-10
 ==================
   * Add support for for...of (https://github.com/tntim96/JSCover/issues/276)
   * Don't instrument for..of loop code (https://github.com/tntim96/JSCover/issues/279)
