@@ -381,4 +381,17 @@ public class InstrumenterService {
         String jsInstrumented = sourceProcessor.processSourceForFileSystem();
         ioUtils.copy(jsInstrumented, dest);
     }
+    
+    public void instrumentJSForFileSystem(ConfigurationCommon config, String source, File dest, String uri) {
+        logger.log(INFO, "Instrumenting {0}", uri);
+        SourceProcessor sourceProcessor = new SourceProcessor(config, "/" + uri, source);
+        String jsInstrumented = sourceProcessor.processSourceForFileSystem();
+        ioUtils.copy(jsInstrumented, dest);
+    }
+
+    public String instrumentJSForFileSystem(ConfigurationCommon config, String source, String uri) {
+        logger.log(INFO, "Instrumenting {0}", uri);
+        SourceProcessor sourceProcessor = new SourceProcessor(config, "/" + uri, source);
+        return sourceProcessor.processSourceForFileSystem();    
+    }
 }
