@@ -37,15 +37,15 @@
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="inheritedJdk" />
-    <orderEntry type="library" name="Maven: com.google.javascript:closure-compiler:v20200112" level="project" />
-    <orderEntry type="library" name="Maven: com.google.javascript:closure-compiler-externs:v20200112" level="project" />
+    <orderEntry type="library" name="Maven: com.google.javascript:closure-compiler:v20200204" level="project" />
+    <orderEntry type="library" name="Maven: com.google.javascript:closure-compiler-externs:v20200204" level="project" />
     <orderEntry type="library" name="Maven: args4j:args4j:2.0.26" level="project" />
     <orderEntry type="library" name="Maven: com.google.errorprone:error_prone_annotations:2.3.1" level="project" />
     <orderEntry type="library" name="Maven: com.google.guava:guava:25.1-jre" level="project" />
     <orderEntry type="library" name="Maven: org.checkerframework:checker-qual:2.0.0" level="project" />
     <orderEntry type="library" name="Maven: com.google.j2objc:j2objc-annotations:1.1" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.mojo:animal-sniffer-annotations:1.14" level="project" />
-    <orderEntry type="library" name="Maven: com.google.protobuf:protobuf-java:3.0.2" level="project" />
+    <orderEntry type="library" name="Maven: com.google.protobuf:protobuf-java:3.11.1" level="project" />
     <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.7" level="project" />
     <orderEntry type="library" name="Maven: com.google.code.findbugs:jsr305:3.0.1" level="project" />
     <orderEntry type="library" name="Maven: com.google.jsinterop:jsinterop-annotations:1.0.2" level="project" />
