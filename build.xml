@@ -13,7 +13,6 @@
             <isset property="maven.repo.local"/>
         </condition>
         <echo>maven.repo.local=${maven.repo.local}</echo>
-        <artifact:remoteRepository id="central" url="https://repo1.maven.org/maven2/"/>
         <artifact:localRepository id="local.repository" path="${maven.repo.local}"/>
         <artifact:pom file="pom.xml" id="maven.project"/>
         <artifact:dependencies pathId="compile.classpath" filesetId="compile.fileset" useScope="compile">
