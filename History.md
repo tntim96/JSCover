@@ -2,6 +2,7 @@
 ==================
   * Upgrade closure-compiler v20200101 to v20200204, Rhino 1.7.11 to 1.7.12
   * Internal: HtmlUnit 2.36 to 2.37.0
+  * Replace deprecated Maven Ant Tasks with Maven Artifact Resolver Ant Tasks (https://github.com/tntim96/JSCover/issues/285)
 
 2.0.9 / 2020-01-10
 ==================

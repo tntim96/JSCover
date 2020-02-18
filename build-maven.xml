@@ -1,4 +1,4 @@
-<project name="maven" basedir="." xmlns:artifact="antlib:org.apache.maven.artifact.ant">
+<project name="maven" basedir=".">
     <property file="build.properties" />
     <property file="src/main/resources/jscover/configuration.properties" />
 
@@ -48,15 +48,5 @@
         <property name="mavenBundleDir" value="${build.dir}/mavenBundle"/>
         <jar jarfile="${dist.dir}/${ant.project.name}-${version}-bundle.jar" basedir="${mavenBundleDir}"
              compress="true"/>
-    </target>
-
-    <target name="deploy" depends="" description="Deploy snapshot version to Maven snapshot repository">
-        <artifact:mvn>
-            <arg value="org.apache.maven.plugins:maven-deploy-plugin:2.6:deploy-file"/>
-            <arg value="-Durl=${maven-snapshots-repository-url}"/>
-            <arg value="-DrepositoryId=${maven-snapshots-repository-id}"/>
-            <arg value="-DpomFile=pom.xml"/>
-            <arg value="-Dfile=${maven-jar}"/>
-        </artifact:mvn>
     </target>
 </project>

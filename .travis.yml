@@ -7,6 +7,5 @@ cache:
   directories:
   - $HOME/.m2
 script:
-  - mvn dependency:resolve
   - ant release
   - bash <(curl -s https://codecov.io/bash) -f target/reports/coverage/all/coverage.xml
