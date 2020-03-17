@@ -1,7 +1,7 @@
 2.0.10 / 2020-??-??
 ==================
   * Upgrade closure-compiler v20200101 to v20200224, Rhino 1.7.11 to 1.7.12
-  * Internal: HtmlUnit 2.36 to 2.38.0, Mockito 3.2.4 to 3.3.0
+  * Internal: HtmlUnit 2.36 to 2.38.0, Mockito 3.2.4 to 3.3.3
   * Replace deprecated Maven Ant Tasks with Maven Artifact Resolver Ant Tasks (https://github.com/tntim96/JSCover/issues/285)
 
 2.0.9 / 2020-01-10
