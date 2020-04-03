@@ -303,13 +303,13 @@ function simulateKeyEvent(target /*:HTMLElement*/, type /*:String*/,
  * @param {Number} detail (Optional) The number of times the mouse button has
  *      been used. The default value is 1.
  * @param {Number} screenX (Optional) The x-coordinate on the screen at which
- *      point the event occured. The default is 0.
+ *      point the event occurred. The default is 0.
  * @param {Number} screenY (Optional) The y-coordinate on the screen at which
- *      point the event occured. The default is 0.
+ *      point the event occurred. The default is 0.
  * @param {Number} clientX (Optional) The x-coordinate on the client at which
- *      point the event occured. The default is 0.
+ *      point the event occurred. The default is 0.
  * @param {Number} clientY (Optional) The y-coordinate on the client at which
- *      point the event occured. The default is 0.
+ *      point the event occurred. The default is 0.
  * @param {Boolean} ctrlKey (Optional) Indicates if one of the CTRL keys
  *      is pressed while the event is firing. The default is false.
  * @param {Boolean} altKey (Optional) Indicates if one of the ALT keys
@@ -616,13 +616,13 @@ function simulateUIEvent(target /*:HTMLElement*/, type /*:String*/,
  * @param {Number} detail (Optional) Specifies some detail information about
  *      the event depending on the type of event.
  * @param {Number} screenX (Optional) The x-coordinate on the screen at which
- *      point the event occured. The default is 0.
+ *      point the event occurred. The default is 0.
  * @param {Number} screenY (Optional) The y-coordinate on the screen at which
- *      point the event occured. The default is 0.
+ *      point the event occurred. The default is 0.
  * @param {Number} clientX (Optional) The x-coordinate on the client at which
- *      point the event occured. The default is 0.
+ *      point the event occurred. The default is 0.
  * @param {Number} clientY (Optional) The y-coordinate on the client at which
- *      point the event occured. The default is 0.
+ *      point the event occurred. The default is 0.
  * @param {Boolean} ctrlKey (Optional) Indicates if one of the CTRL keys
  *      is pressed while the event is firing. The default is false.
  * @param {Boolean} altKey (Optional) Indicates if one of the ALT keys
@@ -719,13 +719,13 @@ function simulateGestureEvent(target, type,
  * @param {Number} detail (Optional) Specifies some detail information about
  *      the event depending on the type of event.
  * @param {Number} screenX (Optional) The x-coordinate on the screen at which
- *      point the event occured. The default is 0.
+ *      point the event occurred. The default is 0.
  * @param {Number} screenY (Optional) The y-coordinate on the screen at which
- *      point the event occured. The default is 0.
+ *      point the event occurred. The default is 0.
  * @param {Number} clientX (Optional) The x-coordinate on the client at which
- *      point the event occured. The default is 0.
+ *      point the event occurred. The default is 0.
  * @param {Number} clientY (Optional) The y-coordinate on the client at which
- *      point the event occured. The default is 0.
+ *      point the event occurred. The default is 0.
  * @param {Boolean} ctrlKey (Optional) Indicates if one of the CTRL keys
  *      is pressed while the event is firing. The default is false.
  * @param {Boolean} altKey (Optional) Indicates if one of the ALT keys
