@@ -21,7 +21,7 @@ public class HtmlUnitIsolateBrowserTest {
     private static Main main = new Main();
     private static String reportDir = "target/isolateBrowser";
 
-    protected WebClient webClient = new WebClient(BrowserVersion.FIREFOX_60);
+    protected WebClient webClient = new WebClient(BrowserVersion.FIREFOX_68);
     private IoService ioService = new IoService(false);
     private static String[] args = new String[]{
             "-ws",
