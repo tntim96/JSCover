@@ -37,8 +37,8 @@
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="inheritedJdk" />
-    <orderEntry type="library" name="Maven: com.google.javascript:closure-compiler:v20200426" level="project" />
-    <orderEntry type="library" name="Maven: com.google.javascript:closure-compiler-externs:v20200426" level="project" />
+    <orderEntry type="library" name="Maven: com.google.javascript:closure-compiler:v20200504" level="project" />
+    <orderEntry type="library" name="Maven: com.google.javascript:closure-compiler-externs:v20200504" level="project" />
     <orderEntry type="library" name="Maven: args4j:args4j:2.0.26" level="project" />
     <orderEntry type="library" name="Maven: com.google.errorprone:error_prone_annotations:2.3.1" level="project" />
     <orderEntry type="library" name="Maven: com.google.guava:guava:25.1-jre" level="project" />
