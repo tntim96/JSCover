@@ -18,7 +18,7 @@ x = [x];
 _$jscoverage['javascript-rb.js'].lineData[3]++;
 x = [x, y];
 _$jscoverage['javascript-rb.js'].lineData[4]++;
-x = [x, y];
+x = [x, y, ];
 _$jscoverage['javascript-rb.js'].lineData[5]++;
 x = [x, , y];
 _$jscoverage['javascript-rb.js'].lineData[6]++;
