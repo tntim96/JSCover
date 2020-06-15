@@ -354,8 +354,8 @@ import java.util.regex.PatternSyntaxException;
 import static java.lang.String.format;
 
 public class ConfigurationForFS extends ConfigurationCommon {
-    public static final String EXLCUDE_PREFIX = "--exclude=";
-    public static final String EXLCUDE_REG_PREFIX = "--exclude-reg=";
+    public static final String EXCLUDE_PREFIX = "--exclude=";
+    public static final String EXCLUDE_REG_PREFIX = "--exclude-reg=";
     public static final String THREAD_COUNT = "--threads=";
 
     private final Set<String> excludes = new HashSet<>();
@@ -419,9 +419,9 @@ public class ConfigurationForFS extends ConfigurationCommon {
             return;
         if (arg.startsWith(Main.FILESYSTEM_PREFIX)) {
             //Ignore this
-        } else if (arg.startsWith(EXLCUDE_PREFIX)) {
+        } else if (arg.startsWith(EXCLUDE_PREFIX)) {
             addExclude(arg);
-        } else if (arg.startsWith(EXLCUDE_REG_PREFIX)) {
+        } else if (arg.startsWith(EXCLUDE_REG_PREFIX)) {
             addExcludeReg(arg);
         } else if (arg.startsWith(THREAD_COUNT)) {
             threads = Integer.parseInt(arg.substring(THREAD_COUNT.length()));
@@ -437,14 +437,14 @@ public class ConfigurationForFS extends ConfigurationCommon {
     }
 
     public void addExclude(String arg) {
-        String uri = arg.substring(EXLCUDE_PREFIX.length());
+        String uri = arg.substring(EXCLUDE_PREFIX.length());
         if (uri.startsWith("/"))
             uri = uri.substring(1);
         excludes.add(uri);
     }
 
     public void addExcludeReg(String arg) {
-        String patternString = arg.substring(EXLCUDE_REG_PREFIX.length());
+        String patternString = arg.substring(EXCLUDE_REG_PREFIX.length());
         try {
             excludeRegs.add(Pattern.compile(patternString));
         } catch(PatternSyntaxException e) {

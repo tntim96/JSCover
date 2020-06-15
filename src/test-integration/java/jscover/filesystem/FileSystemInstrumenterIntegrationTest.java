@@ -67,7 +67,7 @@ public class FileSystemInstrumenterIntegrationTest {
         configurationForFS.setDestDir(destDir);
         configurationForFS.setIncludeUnloadedJS(true);
         configurationForFS.addNoInstrument(ConfigurationCommon.NO_INSTRUMENT_PREFIX + "/noInstrument");
-        configurationForFS.addExclude(ConfigurationForFS.EXLCUDE_PREFIX + "/level1/level2");
+        configurationForFS.addExclude(ConfigurationForFS.EXCLUDE_PREFIX + "/level1/level2");
         fileSystemInstrumenter.run(configurationForFS);
 
         String json = ioUtils.loadFromFileSystem(new File(destDir, "jscoverage.json"));

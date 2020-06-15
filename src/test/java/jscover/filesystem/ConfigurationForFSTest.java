@@ -386,8 +386,8 @@ public class ConfigurationForFSTest {
         configuration.setSrcDir(src);
         File dest = new File("doc");
         configuration.setDestDir(dest);
-        configuration.addExclude(ConfigurationForFS.EXLCUDE_PREFIX+"/excluded");
-        configuration.addExcludeReg(ConfigurationForFS.EXLCUDE_REG_PREFIX+"/excludedReg");
+        configuration.addExclude(ConfigurationForFS.EXCLUDE_PREFIX +"/excluded");
+        configuration.addExcludeReg(ConfigurationForFS.EXCLUDE_REG_PREFIX +"/excludedReg");
 
         assertThat(configuration.getSrcDir(), sameInstance(src));
         assertThat(configuration.getDestDir(), sameInstance(dest));
