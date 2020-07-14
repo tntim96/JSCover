@@ -55,7 +55,7 @@ function jscoverage_serializeCoverageToJSON() {
 
 function jscoverage_parseCoverageJSON(data) {
     var result = {};
-    var json = eval('(' + data + ')');
+    var json = JSON.parse(data);
     var file;
     for (file in json) {
         var fileCoverage = json[file];

@@ -50,7 +50,7 @@ function BranchData() {
 }
 
 BranchData.fromJson = function(jsonString) {
-    var json = eval('(' + jsonString + ')');
+    var json = JSON.parse(jsonString);
     var branchData = new BranchData();
     branchData.init(json.position, json.nodeLength);
     branchData.evalFalse = json.evalFalse;

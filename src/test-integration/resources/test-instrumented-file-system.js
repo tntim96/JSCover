@@ -50,7 +50,7 @@ function BranchData() {
 }
 
 BranchData.fromJson = function(jsonString) {
-    var json = eval('(' + jsonString + ')');
+    var json = JSON.parse(jsonString);
     var branchData = new BranchData();
     branchData.init(json.position, json.nodeLength);
     branchData.evalFalse = json.evalFalse;
@@ -183,7 +183,7 @@ function jscoverage_serializeCoverageToJSON() {
 
 function jscoverage_parseCoverageJSON(data) {
     var result = {};
-    var json = eval('(' + data + ')');
+    var json = JSON.parse(data);
     var file;
     for (file in json) {
         var fileCoverage = json[file];
