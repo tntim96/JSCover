@@ -2,7 +2,7 @@
 ==================
   * Replace 'eval' with 'JSON.parse' (https://github.com/tntim96/JSCover/issues/290)
   * Upgrade closure-compiler v20200101 to v20200628, Rhino 1.7.11 to 1.7.12
-  * Internal: HtmlUnit 2.36 to 2.42.0, Mockito 3.2.4 to 3.3.3
+  * Internal: HtmlUnit 2.36 to 2.42.0, Mockito 3.2.4 to 3.4.2
   * Replace deprecated Maven Ant Tasks with Maven Artifact Resolver Ant Tasks (https://github.com/tntim96/JSCover/issues/285)
 
 2.0.9 / 2020-01-10
