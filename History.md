@@ -1,4 +1,4 @@
-2.0.10 / 2020-??-??
+2.0.10 / 2020-07-17
 ==================
   * Replace 'eval' with 'JSON.parse' (https://github.com/tntim96/JSCover/issues/290)
   * Upgrade closure-compiler v20200101 to v20200628, Rhino 1.7.11 to 1.7.12
