@@ -8,7 +8,7 @@ if (!window.jscoverage_report) {
             }
         };
 
-        json = jscoverage_serializeCoverageToJSON();
+        var json = jscoverage_serializeCoverageToJSON();
 
         var request = createRequest();
         var url = '/jscoverage-store';
