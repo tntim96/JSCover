@@ -1,7 +1,7 @@
 2.0.11 / 2020-??-??
 ==================
   * Upgrade closure-compiler v20200628 to v20200719
-  * Internal: Mockito 3.2.4 to 3.4.6
+  * Internal: HtmlUnit 2.42 to 2.43.0, Mockito 3.2.4 to 3.4.6
 
 2.0.10 / 2020-07-17
 ==================
