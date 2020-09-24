@@ -350,10 +350,10 @@ import jscover.util.ReflectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -395,7 +395,7 @@ public class HtmlUnitUITest {
             "--report-dir=" + reportDir
     };
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpOnce() throws IOException {
         FileUtils.deleteDirectory(reportDir);
         server = new Thread(() -> main.runMain(args));
@@ -403,12 +403,12 @@ public class HtmlUnitUITest {
         storeResult();
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDown() {
         main.stop();
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         webClient.getOptions().setTimeout(1000);
     }

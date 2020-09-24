@@ -343,11 +343,11 @@ Public License instead of this License.
 package jscover.server;
 
 import org.hamcrest.Matchers;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -361,7 +361,7 @@ import static org.hamcrest.Matchers.startsWith;
 import static org.mockito.Mockito.*;
 
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ProxyServiceTest {
     private static final Charset UTF8 = Charset.forName("UTF-8");
     private ProxyService proxyService = new ProxyService();
@@ -369,7 +369,7 @@ public class ProxyServiceTest {
     @Mock private HttpURLConnection conn;
     private Map<String, List<String>> headers = new HashMap<>();
 
-    @Before
+    @BeforeEach
     public void setUp() {
         request.setHeaders(headers);
     }

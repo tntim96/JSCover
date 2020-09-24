@@ -3,8 +3,8 @@ package jscover.server;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import jscover.Main;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -19,7 +19,7 @@ public class WebDaemonTest {
             "--port=8081"
     };
 
-    @Before
+    @BeforeEach
     public void setUp() {
         server = new Thread(() -> main.runMain(args));
         server.start();

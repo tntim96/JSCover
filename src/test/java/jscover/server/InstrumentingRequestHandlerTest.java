@@ -351,11 +351,11 @@ import jscover.util.IoService;
 import jscover.util.IoUtils;
 import jscover.util.ReflectionUtils;
 import jscover.util.UriFileTranslator;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.*;
 import java.util.*;
@@ -365,10 +365,11 @@ import static jscover.server.InstrumentingRequestHandler.JSCOVERAGE_STORE;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class InstrumentingRequestHandlerTest {
     private InstrumentingRequestHandler webServer;
     private @Mock IoService ioService;
@@ -378,13 +379,13 @@ public class InstrumentingRequestHandlerTest {
     private @Mock UnloadedSourceProcessor unloadedSourceProcessor;
     private @Mock UriFileTranslator uriFileTranslator;
     private @Mock ProxyService proxyService;
-    private @Mock ConfigurationForServer configuration;
+    private @Mock(lenient = true) ConfigurationForServer configuration;
     private @Mock ByteArrayInputStream bais;
     private final StringWriter stringWriter = new StringWriter();
     private PrintWriter pw = new PrintWriter(stringWriter);
     private Map<String, List<String>> headers = new HashMap<>();
 
-    @Before
+    @BeforeEach
     public void setUp() {
         InstrumentingRequestHandler.uris.clear();
         webServer = new InstrumentingRequestHandler(null, configuration);
@@ -446,12 +447,14 @@ public class InstrumentingRequestHandlerTest {
         verifyNoInteractions(jsonDataSaver);
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void shouldDirectHEADToHttpServer() {
         given(configuration.isProxy()).willReturn(false);
 
         HttpRequest request = new HttpRequest("somePostUrl", null, null, 0, null);
-        webServer.handleOther("HEAD", request);
+        assertThrows(UnsupportedOperationException.class, () -> {
+            webServer.handleOther("HEAD", request);
+        });
     }
 
     @Test

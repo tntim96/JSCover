@@ -342,28 +342,31 @@ Public License instead of this License.
 
 package jscover.report;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class SummaryDataTest {
     @Mock Coverable fileData1;
     @Mock Coverable fileData2;
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void shouldNotSupportOperation() {
         List<Coverable> files = new ArrayList<>();
         SummaryData summaryData = new SummaryData(files);
-        summaryData.getUri();
+        assertThrows(UnsupportedOperationException.class, () -> {
+            summaryData.getUri();
+        });
     }
 
     @Test

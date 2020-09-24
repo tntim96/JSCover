@@ -345,31 +345,32 @@ package jscover.instrument;
 import com.google.javascript.rhino.IR;
 import com.google.javascript.rhino.Node;
 import jscover.util.ReflectionUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static java.util.logging.Level.SEVERE;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ParseTreeInstrumenterTest {
     private ParseTreeInstrumenter instrumenter;
     @Mock private NodeProcessor nodeProcessor;
     private Node astNode = IR.returnNode();
     @Mock private Logger logger;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         instrumenter = new ParseTreeInstrumenter("/dir/file.js", true, new CommentsHandler());
         ReflectionUtils.setField(instrumenter, "nodeProcessor", nodeProcessor);
@@ -377,7 +378,7 @@ public class ParseTreeInstrumenterTest {
         astNode.setLineno(7);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         ReflectionUtils.setField(instrumenter, "logger", Logger.getLogger(ParseTreeInstrumenter.class.getName()));
     }
@@ -392,19 +393,23 @@ public class ParseTreeInstrumenterTest {
         verify(logger).log(SEVERE, "Error on line 7 of /dir/file.js", exception);
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void shouldRethrowExceptionIfNoLog() {
-        ReflectionUtils.setField(instrumenter, "log", null);
+        ReflectionUtils.setField(instrumenter, "logger", null);
         given(nodeProcessor.processNode(astNode)).willThrow(new RuntimeException("Ouch!"));
 
-        instrumenter.visit(astNode);
+        assertThrows(RuntimeException.class, () -> {
+            instrumenter.visit(astNode);
+        });
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void shouldRethrowExceptionWhileLogging() {
         given(nodeProcessor.processNode(astNode)).willThrow(new RuntimeException("Ouch!"));
         doThrow(new IllegalArgumentException("Ouchy!")).doNothing().when(logger).log(any(Level.class), anyString(), any(Throwable.class));
 
-        instrumenter.visit(astNode);
+        assertThrows(RuntimeException.class, () -> {
+            instrumenter.visit(astNode);
+        });
     }
 }

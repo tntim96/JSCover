@@ -342,12 +342,12 @@ Public License instead of this License.
 
 package jscover.util;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.TimeZone;
 import java.util.logging.LogRecord;
@@ -357,13 +357,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.BDDMockito.given;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class LogFormatterTest {
     private static TimeZone defaultTimeZone = TimeZone.getDefault();
     private LogFormatter logFormatter = new LogFormatter();
     private @Mock LogRecord logRecord;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         given(logRecord.getMillis()).willReturn(1375795185848L);
         given(logRecord.getThreadID()).willReturn(157);
@@ -373,7 +373,7 @@ public class LogFormatterTest {
         TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         TimeZone.setDefault(defaultTimeZone);
     }

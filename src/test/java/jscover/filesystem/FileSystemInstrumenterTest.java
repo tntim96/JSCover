@@ -346,11 +346,11 @@ import jscover.instrument.InstrumenterService;
 import jscover.util.IoService;
 import jscover.util.IoUtils;
 import jscover.util.ReflectionUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -359,7 +359,7 @@ import java.util.concurrent.ExecutorService;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class FileSystemInstrumenterTest {
     private FileSystemInstrumenter fsi = new FileSystemInstrumenter();
     private @Mock IoService ioService;
@@ -367,12 +367,12 @@ public class FileSystemInstrumenterTest {
     private @Mock IoUtils ioUtils;
     private @Mock ConfigurationForFS configuration;
     private @Mock File src;
-    private @Mock File dest;
+    private @Mock(lenient = true) File dest;
     private @Mock File destParent;
     private FilenameFilter acceptAll = (dir, name) -> true;
 
 
-    @Before
+    @BeforeEach
     public void setUp() {
         ReflectionUtils.setField(fsi, "ioService", ioService);
         ReflectionUtils.setField(fsi, "instrumenterService", instrumenterService);

@@ -348,10 +348,10 @@ import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import jscover.Main;
 import jscover.util.IoUtils;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -360,7 +360,7 @@ import java.net.Socket;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 //Provided by https://github.com/devangnegandhi 6 Sept 2013
 public class HtmlServerUnloadedJSProxyOnlyInstrumentRegTest {
@@ -384,7 +384,7 @@ public class HtmlServerUnloadedJSProxyOnlyInstrumentRegTest {
             "--report-dir=" + reportDir
     };
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpOnce() {
         proxyServer = new Thread(() -> main.runMain(args));
         proxyServer.start();
@@ -403,13 +403,13 @@ public class HtmlServerUnloadedJSProxyOnlyInstrumentRegTest {
         webServer.start();
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDown() {
         main.stop();
         IoUtils.getInstance().closeQuietly(serverSocket);
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         ProxyConfig proxyConfig = new ProxyConfig("localhost", proxyPort);
         proxyConfig.addHostsToProxyBypass("127.0.0.1");

@@ -345,12 +345,12 @@ package jscover.instrument;
 
 import com.google.javascript.jscomp.parsing.Config;
 import jscover.ConfigurationCommon;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.mozilla.javascript.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -359,9 +359,9 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.BDDMockito.given;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class InMemoryCoverageTest extends ScriptableObject {
-    private @Mock ConfigurationCommon config;
+    private @Mock(lenient = true) ConfigurationCommon config;
     private static CompilerEnvirons compilerEnv = new CompilerEnvirons();
     static {
         // compilerEnv.setAllowMemberExprAsFunctionName(true);
@@ -370,7 +370,7 @@ public class InMemoryCoverageTest extends ScriptableObject {
     }
     private SourceProcessor processor;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         given(config.getECMAVersion()).willReturn(Config.LanguageMode.ECMASCRIPT8);
         given(config.isIncludeBranch()).willReturn(true);
@@ -401,7 +401,7 @@ public class InMemoryCoverageTest extends ScriptableObject {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void shouldPrintLineCoverage() {
         Context cx = Context.enter();
         Scriptable scope = cx.initStandardObjects();

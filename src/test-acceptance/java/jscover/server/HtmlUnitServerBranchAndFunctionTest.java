@@ -347,9 +347,9 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlTable;
 import com.gargoylesoftware.htmlunit.html.HtmlTableCell;
 import jscover.Main;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
@@ -369,13 +369,13 @@ public class HtmlUnitServerBranchAndFunctionTest extends HtmlUnitServerTest {
             "--report-dir=" + reportDir
     };
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpOnce() {
         server = new Thread(() -> main.runMain(args));
         server.start();
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDown() {
         main.stop();
     }

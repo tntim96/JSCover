@@ -342,10 +342,10 @@ Public License instead of this License.
 
 package jscover.util;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.logging.LogRecord;
 
@@ -353,7 +353,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ExceptionRecordingHandlerTest {
     private ExceptionRecordingHandler handler = new ExceptionRecordingHandler();
     private @Mock LogRecord logRecord;

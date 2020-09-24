@@ -345,9 +345,9 @@ package jscover.server;
 import com.gargoylesoftware.htmlunit.ProxyConfig;
 import jscover.Main;
 import jscover.util.IoUtils;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 
 import java.io.File;
 import java.io.IOException;
@@ -377,7 +377,7 @@ public class HtmlServerUnloadedJSProxyTest extends HtmlServerUnloadedJSTest {
         return reportDir;
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpOnce() {
         proxyServer = new Thread(() -> main.runMain(args));
         proxyServer.start();
@@ -396,13 +396,13 @@ public class HtmlServerUnloadedJSProxyTest extends HtmlServerUnloadedJSTest {
         webServer.start();
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDown() {
         main.stop();
         IoUtils.getInstance().closeQuietly(serverSocket);
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         ProxyConfig proxyConfig = new ProxyConfig("localhost", proxyPort);
         proxyConfig.addHostsToProxyBypass("127.0.0.1");

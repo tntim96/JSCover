@@ -352,13 +352,13 @@ import com.google.javascript.rhino.SimpleSourceFile;
 import com.google.javascript.rhino.StaticSourceFile;
 import jscover.ConfigurationCommon;
 import jscover.util.IoUtils;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -370,10 +370,10 @@ import java.util.Set;
 import static com.google.javascript.jscomp.parsing.Config.JsDocParsing.TYPES_ONLY;
 import static com.google.javascript.jscomp.parsing.Config.LanguageMode.ECMASCRIPT8;
 import static com.google.javascript.jscomp.parsing.Config.RunMode.KEEP_GOING;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class InstrumentAndHighlightRegressionTest {
     private static Set<String> tested = new HashSet<>();
     private static Map<String, String> allTests = new HashMap<>();
@@ -383,7 +383,7 @@ public class InstrumentAndHighlightRegressionTest {
     private CompilerOptions options = new CompilerOptions();
     @Mock private ConfigurationCommon config;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         given(config.getECMAVersion()).willReturn(ECMASCRIPT8);
         given(config.isIncludeBranch()).willReturn(false);
@@ -393,7 +393,7 @@ public class InstrumentAndHighlightRegressionTest {
         options.setLanguage(CompilerOptions.LanguageMode.ECMASCRIPT_NEXT);
     }
 
-    @AfterClass
+    @AfterAll
     public static void afterClass() {
         for (String testName : allTests.keySet()) {
             if (!tested.contains(testName)) {
@@ -528,7 +528,7 @@ public class InstrumentAndHighlightRegressionTest {
     }
 
     @Test
-    @Ignore("This is handled by JVM 'file.encoding' system property")
+    @Disabled("This is handled by JVM 'file.encoding' system property")
     public void shouldInstrumentISO_8859_1() {
         testFile("javascript-iso-8859-1.js");
     }
@@ -539,7 +539,7 @@ public class InstrumentAndHighlightRegressionTest {
     }
 
     @Test//https://bugzilla.mozilla.org/show_bug.cgi?id=689314
-    @Ignore("Deprecated SpiderMonkey-specific")//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Expression_Closures
+    @Disabled("Deprecated SpiderMonkey-specific")//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Expression_Closures
     public void shouldInstrumentLambda() {
         testFile("javascript-lambda.js");
     }
@@ -654,7 +654,7 @@ public class InstrumentAndHighlightRegressionTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void shouldInstrumentIgnore() {
         testFile("javascript-ignore", "ignore.js");
     }

@@ -346,15 +346,15 @@ import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import jscover.Main;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class HtmlUnitLocalStorageTest {
     private static Thread server;
@@ -375,18 +375,18 @@ public class HtmlUnitLocalStorageTest {
         return reportDir;
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpOnce() {
         server = new Thread(() -> main.runMain(args));
         server.start();
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDown() {
         main.stop();
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         File jsonFile = new File(getReportDir() + "/jscoverage.json");
         if (jsonFile.exists())

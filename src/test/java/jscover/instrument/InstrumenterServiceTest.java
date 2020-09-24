@@ -346,26 +346,27 @@ import com.google.javascript.jscomp.parsing.Config;
 import jscover.ConfigurationCommon;
 import jscover.server.UriNotFound;
 import jscover.util.IoUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.File;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class InstrumenterServiceTest {
-    @Mock private ConfigurationCommon config;
+    @Mock(lenient = true) private ConfigurationCommon config;
     private InstrumenterService service = new InstrumenterService();
     private IoUtils ioUtils = IoUtils.getInstance();
     private File src = new File("target/src.js");
 
-    @Before
+    @BeforeEach
     public void setUp() {
         src.delete();
         ioUtils.copy("x++;", src);
@@ -393,9 +394,11 @@ public class InstrumenterServiceTest {
         assertThat(jsInstrumented, containsString("_$jscoverage['/src.js'].lineData[1]++;"));
     }
 
-    @Test(expected = UriNotFound.class)
+    @Test
     public void shouldNotInstrumentForWebServer() {
-        service.instrumentJSForWebServer(config, new File("notFound.js"), "/src.js");
+        assertThrows(UriNotFound.class, () -> {
+            service.instrumentJSForWebServer(config, new File("notFound.js"), "/src.js");
+        });
     }
 
     @Test

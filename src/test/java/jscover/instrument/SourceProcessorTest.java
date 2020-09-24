@@ -346,11 +346,11 @@ import com.google.javascript.jscomp.parsing.Config;
 import jscover.ConfigurationCommon;
 import jscover.util.IoUtils;
 import jscover.util.ReflectionUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.TreeSet;
 
@@ -361,13 +361,13 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class SourceProcessorTest {
     private SourceProcessor sourceProcessor;
     @Mock private ConfigurationCommon config;
     @Mock private IoUtils ioUtils;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         given(config.getECMAVersion()).willReturn(Config.LanguageMode.ECMASCRIPT8);
         sourceProcessor = new SourceProcessor(config, "test.js", "x;");

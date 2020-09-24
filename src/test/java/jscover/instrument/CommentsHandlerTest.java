@@ -348,9 +348,9 @@ import com.google.javascript.jscomp.parsing.parser.trees.Comment;
 import com.google.javascript.rhino.SimpleErrorReporter;
 import com.google.javascript.rhino.SimpleSourceFile;
 import com.google.javascript.rhino.StaticSourceFile;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
@@ -361,7 +361,7 @@ import static jscover.instrument.CommentsHandler.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class CommentsHandlerTest {
     private CommentsHandler handler = new CommentsHandler();
     private static Config parserConfig = ParserRunner.createConfig(ECMASCRIPT8, INCLUDE_DESCRIPTIONS_WITH_WHITESPACE, KEEP_GOING, null, false, Config.StrictMode.SLOPPY);

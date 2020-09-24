@@ -345,14 +345,14 @@ package jscover.report;
 import jscover.util.IoUtils;
 import jscover.util.ReflectionUtils;
 import jscover.util.UriFileTranslator;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -362,26 +362,27 @@ import java.util.TreeMap;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.BDDMockito.given;
 
 //Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class JSONDataSaverTest {
     private JSONDataSaver jsonDataSaver = new JSONDataSaver();
-    private @Mock JSONDataMerger jsonDataMerger;
+    private @Mock(lenient = true) JSONDataMerger jsonDataMerger;
     private @Mock UriFileTranslator uriFileTranslator;
     private @Mock FileData fileData;
     private IoUtils ioUtils = IoUtils.getInstance();
     private File destDir = new File("target");
     private File jsonFile = new File(destDir,"jscoverage.json");
 
-    @Before
+    @BeforeEach
     public void setUp() {
         ReflectionUtils.setField(jsonDataSaver, "jsonDataMerger", jsonDataMerger);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         jsonFile.delete();
     }
@@ -413,7 +414,7 @@ public class JSONDataSaverTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void shouldSaveDataAfterFirstThread() throws InterruptedException {
         final StringBuilder sb = new StringBuilder();
         Thread thread = new Thread(() -> {
@@ -443,8 +444,8 @@ public class JSONDataSaverTest {
         assertThat(sb.toString(), equalTo("1243"));
     }
 
-    @Test(expected = RuntimeException.class)
-    @Ignore
+    @Test
+    @Disabled
     public void shouldReThrowInterruptedException() throws InterruptedException {
         final StringBuilder sb = new StringBuilder();
         final Thread testThread = Thread.currentThread();
@@ -461,7 +462,9 @@ public class JSONDataSaverTest {
         });
         JSONDataSaver.files.add(destDir);
         thread.start();
-        jsonDataSaver.saveJSONData(destDir, "data", null, new jscover.util.UriFileTranslatorNoOp());
+        assertThrows(RuntimeException.class, () -> {
+            jsonDataSaver.saveJSONData(destDir, "data", null, new jscover.util.UriFileTranslatorNoOp());
+        });
         sb.append("4");
         thread.join();
     }

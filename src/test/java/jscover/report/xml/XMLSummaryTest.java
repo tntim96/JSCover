@@ -343,11 +343,11 @@ Public License instead of this License.
 package jscover.report.xml;
 
 import jscover.report.Coverable;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.w3c.dom.Document;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -362,12 +362,12 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.BDDMockito.given;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class XMLSummaryTest {
     private XMLSummary xmlSummary = new XMLSummary();
     @Mock Coverable data;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpOnce() {
         Locale.setDefault(Locale.ENGLISH);
     }

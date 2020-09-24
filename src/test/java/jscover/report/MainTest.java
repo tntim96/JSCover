@@ -353,13 +353,13 @@ import jscover.util.ReflectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InOrder;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.File;
 import java.io.IOException;
@@ -377,7 +377,7 @@ import static org.mockito.Mockito.*;
 import static org.mockito.hamcrest.MockitoHamcrest.argThat;
 
 //Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class MainTest {
     private Main main = new Main();
     private @Mock ExitHelper exitHelper;
@@ -389,7 +389,7 @@ public class MainTest {
     private @Mock IoService ioService;
     private @Mock ConfigurationForReport config;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         Main.properties.setProperty("version", "theVersion");
         ReflectionUtils.setField(main, "exitHelper", exitHelper);

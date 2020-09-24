@@ -343,11 +343,11 @@ Public License instead of this License.
 package jscover.util;
 
 import org.hamcrest.Matchers;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -357,12 +357,11 @@ import java.util.Properties;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class IoUtilsTest {
     private IoUtils ioUtils = IoUtils.getInstance();
     private @Mock Socket socket;
@@ -401,9 +400,11 @@ public class IoUtilsTest {
         ioUtils.closeQuietly(socket);
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void shouldWrapExceptionsInToStringInputStream() {
-        ioUtils.toString(is);
+        assertThrows(RuntimeException.class, () -> {
+            ioUtils.toString(is);
+        });
     }
 
     @Test
@@ -413,15 +414,19 @@ public class IoUtilsTest {
         assertThat(ioUtils.toStringNoClose(new ByteArrayInputStream(bytes), bytes.length), equalTo(data));
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void shouldWrapExceptionsInToStringNoCloseInputStream() throws IOException {
         given(is.read(any(byte[].class), anyInt(), anyInt())).willThrow(new IOException("Ouch!"));
-        ioUtils.toStringNoClose(is, 10);
+        assertThrows(RuntimeException.class, () -> {
+            ioUtils.toStringNoClose(is, 10);
+        });
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void shouldWrapExceptionsInToStringFile() {
-        ioUtils.toString(new File("/"));
+        assertThrows(RuntimeException.class, () -> {
+            ioUtils.toString(new File("/"));
+        });
     }
 
     @Test
@@ -520,10 +525,12 @@ public class IoUtilsTest {
         }
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void shouldWrapExceptionsInCopyReaderToFile() throws IOException {
         given(reader.read(any(char[].class))).willThrow(new IOException("Ouch!"));
-        ioUtils.copy(reader, new File("target/dummy.txt"));
+        assertThrows(RuntimeException.class, () -> {
+            ioUtils.copy(reader, new File("target/dummy.txt"));
+        });
     }
 
     @Test
@@ -547,9 +554,11 @@ public class IoUtilsTest {
         assertEquals("Working!", ioUtils.loadFromClassPath("test.txt"));
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void shouldNotLoadFileFromClasspath() {
-        ioUtils.loadFromClassPath("/test.txt");
+        assertThrows(RuntimeException.class, () -> {
+            ioUtils.loadFromClassPath("/test.txt");
+        });
     }
 
     @Test
@@ -557,9 +566,11 @@ public class IoUtilsTest {
         assertEquals("Working!", ioUtils.loadFromFileSystem(new File("src/test/resources/jscover/util/test.txt")));
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void shouldThrowExceptionLoadingFileFromFileSystem() {
-        ioUtils.loadFromFileSystem(new File("notThere"));
+        assertThrows(RuntimeException.class, () -> {
+            ioUtils.loadFromFileSystem(new File("notThere"));
+        });
     }
 
     @Test
@@ -600,20 +611,24 @@ public class IoUtilsTest {
         dest.delete();
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void shouldWrapExceptionsInCopyInputStreamToFile() {
-        ioUtils.copy(is, new File("target"));
+        assertThrows(RuntimeException.class, () -> {
+            ioUtils.copy(is, new File("target"));
+        });
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void shouldWrapExceptionsInCopyFileToFile() {
         File dest = mock(File.class);
         given(dest.getParentFile()).willReturn(dest);
 
-        ioUtils.copy(new File("target"), dest);
+        assertThrows(RuntimeException.class, () -> {
+            ioUtils.copy(new File("target"), dest);
+        });
     }
 
-    @Test//(expected = RuntimeException.class)
+    @Test
     public void shouldWrapExceptionsInIsSubDirectory() throws IOException {
         File file = mock(File.class);
         given(file.getCanonicalPath()).willThrow(new IOException("Ouch!"));

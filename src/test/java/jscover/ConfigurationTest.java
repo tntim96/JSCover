@@ -342,18 +342,18 @@ Public License instead of this License.
 
 package jscover;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Properties;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ConfigurationTest {
     private Configuration configuration = new Configuration();
     private Properties properties = new Properties();
 
-    @Before
+    @BeforeEach
     public void setUp() {
         properties.setProperty("version","1.0");
         configuration.setProperties(properties);

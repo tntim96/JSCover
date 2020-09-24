@@ -350,10 +350,10 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlTable;
 import jscover.Main;
 import jscover.util.IoUtils;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -361,7 +361,7 @@ import java.io.IOException;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class HtmlUnitServerTest {
     private static Thread server;
@@ -383,18 +383,18 @@ public class HtmlUnitServerTest {
         return reportDir;
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpOnce() {
         server = new Thread(() -> main.runMain(args));
         server.start();
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDown() {
         main.stop();
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         webClient.getOptions().setTimeout(1000);
     }

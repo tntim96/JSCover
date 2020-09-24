@@ -345,21 +345,22 @@ import com.google.javascript.jscomp.CodePrinter;
 import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.rhino.IR;
 import com.google.javascript.rhino.Node;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class StatementBuilderTest {
     private StatementBuilder builder = new StatementBuilder();
     private CompilerOptions options = new CompilerOptions();
     private SortedSet<Integer> validLines = new TreeSet<>();
 
-    @Before
+    @BeforeEach
     public void setUp() {
         options.setPreferSingleQuotes(true);
     }
@@ -383,9 +384,11 @@ public class StatementBuilderTest {
         assertThat(validLines, hasItem(7));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void shouldThrowExceptionIfLineNumberInvalid() {
-        builder.buildInstrumentationStatement(0, "/dir/file.js", validLines);
+        assertThrows(IllegalStateException.class, () -> {
+            builder.buildInstrumentationStatement(0, "/dir/file.js", validLines);
+        });
     }
 
     @Test

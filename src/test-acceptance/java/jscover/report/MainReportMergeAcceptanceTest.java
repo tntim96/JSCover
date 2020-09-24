@@ -345,8 +345,8 @@ package jscover.report;
 import jscover.util.IoUtils;
 import org.apache.commons.io.FileUtils;
 import org.hamcrest.Matchers;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -371,7 +371,7 @@ public class MainReportMergeAcceptanceTest {
             "target/report12"
     };
 
-    @Before
+    @BeforeEach
     public void setUp() throws IOException {
         FileUtils.deleteDirectory(reportDir1);
         FileUtils.deleteDirectory(reportDir2);

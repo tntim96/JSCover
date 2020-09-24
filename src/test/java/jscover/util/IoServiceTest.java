@@ -343,11 +343,11 @@ Public License instead of this License.
 package jscover.util;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.File;
 import java.io.IOException;
@@ -358,7 +358,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.BDDMockito.given;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class IoServiceTest {
     private IoService ioService = new IoService(false);
     private IoUtils ioUtils = IoUtils.getInstance();
@@ -366,7 +366,7 @@ public class IoServiceTest {
     @Mock
     private DateTime dateTime;
 
-    @Before
+    @BeforeEach
     public void before() throws IOException {
         FileUtils.deleteDirectory(destDir);
 
