@@ -346,8 +346,8 @@ import com.gargoylesoftware.htmlunit.ProxyConfig;
 import jscover.Main;
 import jscover.util.IoUtils;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 
 import java.io.File;
 import java.io.IOException;

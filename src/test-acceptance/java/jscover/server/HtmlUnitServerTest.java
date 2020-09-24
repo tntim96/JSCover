@@ -351,8 +351,8 @@ import com.gargoylesoftware.htmlunit.html.HtmlTable;
 import jscover.Main;
 import jscover.util.IoUtils;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
