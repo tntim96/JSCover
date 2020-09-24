@@ -254,6 +254,26 @@
 		<property name="tests" value="*Test" />
 		<delete dir="${report.test.dir}" />
 		<mkdir dir="${report.test.dir}" />
+        <jacoco:agent property="jacocoagent" destfile="jacoco-integration.exec" excludes="*.ExitHelper:*.*Test"/>
+        <junitlauncher>
+            <classpath>
+                <path refid="classpath-test" />
+                <path refid="compile.classpath" />
+                <path refid="test.classpath" />
+            </classpath>
+            <testclasses>
+                <fileset dir="${classes.test-unit.dir}">
+                    <include name="**/${tests}.class" />
+                </fileset>
+                <fileset dir="${classes.test-integration.dir}">
+                    <include name="**/${tests}.class" />
+                </fileset>
+                <fork>
+                    <jvmarg value="${jacocoagent}"/>
+                </fork>
+            </testclasses>
+        </junitlauncher>
+<!--
         <jacoco:coverage destfile="jacoco-integration.exec" includes="jscover.*" excludes="*.ExitHelper:*.*Test">
             <junit fork="true" forkmode="perBatch" haltonfailure="no" haltonerror="no" failureProperty="test.failure" errorproperty="test.failure">
                 <jvmarg value="-ea"/>
@@ -274,6 +294,7 @@
                 </batchtest>
             </junit>
         </jacoco:coverage>
+-->
         <antcall target="report-if-failed"/>
 		<fail if="test.failure"/>
 	</target>

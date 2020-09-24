@@ -1321,6 +1321,17 @@
         <root url="jar://$MAVEN_REPOSITORY$/org/junit/platform/junit-platform-engine/1.7.0/junit-platform-engine-1.7.0-sources.jar!/" />
       </SOURCES>
     </library>
+    <library name="Maven: org.junit.platform:junit-platform-launcher:1.7.0">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/junit/platform/junit-platform-launcher/1.7.0/junit-platform-launcher-1.7.0.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/junit/platform/junit-platform-launcher/1.7.0/junit-platform-launcher-1.7.0-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/junit/platform/junit-platform-launcher/1.7.0/junit-platform-launcher-1.7.0-sources.jar!/" />
+      </SOURCES>
+    </library>
     <library name="Maven: org.mockito:mockito-core:3.5.11">
       <CLASSES>
         <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/3.5.11/mockito-core-3.5.11.jar!/" />
