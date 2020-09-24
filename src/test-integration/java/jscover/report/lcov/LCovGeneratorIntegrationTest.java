@@ -345,7 +345,6 @@ package jscover.report.lcov;
 import jscover.report.FileData;
 import jscover.report.JSONDataMerger;
 import jscover.util.IoUtils;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
