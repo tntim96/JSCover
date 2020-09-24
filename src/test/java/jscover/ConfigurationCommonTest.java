@@ -343,10 +343,11 @@ Public License instead of this License.
 package jscover;
 
 import com.google.javascript.jscomp.parsing.Config;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ConfigurationCommonTest {
     private ConfigurationCommon config = new ConfigurationCommon();
@@ -399,16 +400,20 @@ public class ConfigurationCommonTest {
         assertThat(config.isolateBrowser(), is(true));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void shouldNotCombineIsolateBrowserAndLocalStorage() {
         config.parseArg("--local-storage");
-        config.parseArg("--isolate-browser");
+        assertThrows(IllegalArgumentException.class, () -> {
+            config.parseArg("--isolate-browser");
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void shouldNotCombineLocalStorageAndIsolateBrowser() {
         config.parseArg("--isolate-browser");
-        config.parseArg("--local-storage");
+        assertThrows(IllegalArgumentException.class, () -> {
+            config.parseArg("--local-storage");
+        });
     }
 
     @Test

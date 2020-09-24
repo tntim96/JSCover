@@ -347,7 +347,7 @@ import jscover.report.Coverable;
 import jscover.report.FileData;
 import jscover.util.LocalEntityResolver;
 import jscover.util.ReThrowingErrorHandler;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -363,6 +363,7 @@ import java.util.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -372,9 +373,11 @@ public class CoberturaXmlGeneratorTest {
     Collection<Coverable> files = new HashSet<>();
     CoberturaData data = new CoberturaData(files);
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void shouldWrapException() {
-        generator.generateXml(null, null, null);
+        assertThrows(RuntimeException.class, () -> {
+            generator.generateXml(null, null, null);
+        });
     }
 
     @Test

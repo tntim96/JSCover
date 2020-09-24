@@ -342,23 +342,28 @@ Public License instead of this License.
 
 package jscover.report;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class BranchDataTest {
     private BranchData branchData = new BranchData(1, 2, 3, 4);
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void shouldThrowExceptionIfAddingBranchDataWithMismatchedPosition() {
-        branchData.addCoverage(new BranchData(0, 2, 0, 0));
+        assertThrows(IllegalStateException.class, () -> {
+            branchData.addCoverage(new BranchData(0, 2, 0, 0));
+        });
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void shouldThrowExceptionIfAddingBranchDataWithMismatchedNodeLength() {
-        branchData.addCoverage(new BranchData(1, 0, 0, 0));
+        assertThrows(IllegalStateException.class, () -> {
+            branchData.addCoverage(new BranchData(1, 0, 0, 0));
+        });
     }
 
     @Test

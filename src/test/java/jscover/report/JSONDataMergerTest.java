@@ -343,13 +343,14 @@ Public License instead of this License.
 package jscover.report;
 
 import jscover.util.IoUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 //Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013
 public class JSONDataMergerTest {
@@ -436,9 +437,11 @@ public class JSONDataMergerTest {
         assertThat(coverageData.getBranchData().get(2).get(1).getEvalTrue(), equalTo(2));
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void shouldReThrowException() {
-        jsonMerger.jsonToMap("{\"/test.js\":{\"lineData\":\"}}");
+        assertThrows(RuntimeException.class, () -> {
+            jsonMerger.jsonToMap("{\"/test.js\":{\"lineData\":\"}}");
+        });
     }
 
     @Test

@@ -344,7 +344,7 @@ package jscover.filesystem;
 
 import com.google.javascript.jscomp.parsing.Config;
 import jscover.util.ReflectionUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.Set;

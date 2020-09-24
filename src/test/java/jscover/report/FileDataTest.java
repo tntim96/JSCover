@@ -342,7 +342,7 @@ Public License instead of this License.
 
 package jscover.report;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -348,7 +348,7 @@ import com.google.javascript.jscomp.parsing.ParserRunner;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.StaticSourceFile;
 import com.google.javascript.rhino.Token;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static com.google.javascript.jscomp.parsing.Config.JsDocParsing.TYPES_ONLY;
 import static com.google.javascript.jscomp.parsing.Config.LanguageMode.ECMASCRIPT8;

@@ -345,9 +345,10 @@ package jscover.report.lcov;
 import jscover.report.FileData;
 import jscover.report.JSONDataMerger;
 import jscover.util.IoUtils;
-import org.junit.After;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.SortedMap;
@@ -361,13 +362,13 @@ public class LCovGeneratorIntegrationTest {
     private IoUtils ioUtils = IoUtils.getInstance();
     private File dest;
 
-    @After
+    @AfterEach
     public void tearDown() {
         //dest.delete();
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void shouldGenerateLCovDataForYUI3() {
         String json = IoUtils.getInstance().loadFromFileSystem(new File("src/test-integration/resources/jscover/report/xml/jscoverage.json"));
         SortedMap<String, FileData> data = jsonDataMerger.jsonToMap(json);

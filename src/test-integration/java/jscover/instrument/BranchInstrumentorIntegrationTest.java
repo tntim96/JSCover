@@ -349,7 +349,7 @@ import com.google.javascript.jscomp.parsing.ParserRunner;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.StaticSourceFile;
 import jscover.util.IoUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mozilla.javascript.*;
 
 import static com.google.javascript.jscomp.parsing.Config.JsDocParsing.TYPES_ONLY;

@@ -342,7 +342,7 @@ Public License instead of this License.
 
 package jscover.server;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.net.MalformedURLException;
 import java.net.URL;

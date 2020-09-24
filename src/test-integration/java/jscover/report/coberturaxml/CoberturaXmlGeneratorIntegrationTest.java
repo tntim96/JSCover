@@ -344,7 +344,7 @@ package jscover.report.coberturaxml;
 
 import jscover.report.JSONDataMerger;
 import jscover.util.IoUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -359,6 +359,7 @@ import java.io.IOException;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CoberturaXmlGeneratorIntegrationTest {
     private CoberturaXmlGenerator xmlGenerator = new CoberturaXmlGenerator();
@@ -394,9 +395,11 @@ public class CoberturaXmlGeneratorIntegrationTest {
         parseXml(validXml);
     }
 
-    @Test(expected = SAXParseException.class)
+    @Test
     public void shouldThrowErrorForInvalidXmlToDtd() throws Exception {
-        parseXml(validXml.replaceAll("filename=\"code.js\"", ""));
+        assertThrows(SAXParseException.class, () -> {
+            parseXml(validXml.replaceAll("filename=\"code.js\"", ""));
+        });
     }
 
     @Test
