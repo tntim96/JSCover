@@ -354,11 +354,11 @@ import jscover.util.ReflectionUtils;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.File;
 import java.io.IOException;
@@ -369,11 +369,11 @@ import static com.google.javascript.jscomp.parsing.Config.LanguageMode.ECMASCRIP
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.*;
 import static org.mockito.hamcrest.MockitoHamcrest.argThat;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class MainInstanceTest {
     private Main main = new Main();
     private Properties properties = new Properties();
@@ -385,7 +385,7 @@ public class MainInstanceTest {
     private @Mock IoUtils ioUtils;
     private @Mock IoService ioService;
 
-    @Before
+    @BeforeEach
     public void setUp() throws IOException {
         ReflectionUtils.setField(main, "exitHelper", exitHelper);
         ReflectionUtils.setField(main, "mainHelper", mainHelper);
