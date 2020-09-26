@@ -165,7 +165,7 @@
                 </sourcefiles>
             </structure>
             <html destdir="${report.coverage.dir}"/>
-            <xml destfile="${report.coverage.dir}/cobertura.xml"/>
+            <xml destfile="${report.coverage.dir}/jacoco.xml"/>
             <check>
                 <rule element="BUNDLE">
                     <limit counter="LINE" value="COVEREDRATIO" minimum="0.92"/>
