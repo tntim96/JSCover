@@ -73,7 +73,7 @@
         <dependency>
             <groupId>com.google.javascript</groupId>
             <artifactId>closure-compiler</artifactId>
-            <version>v20201006</version>
+            <version>v20201102</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
