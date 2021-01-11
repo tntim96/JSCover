@@ -1,6 +1,6 @@
 2.0.11 / 2020-??-??
 ==================
-  * Upgrade closure-compiler v20200628 to v20201207
+  * Upgrade closure-compiler v20200628 to v20210106
   * Add GSON dependency, com.google.code.gson:gson:2.8.6, removed from closure-compiler
   * Internal: HtmlUnit 2.42 to 2.46.0, Mockito 3.2.4 to 3.7.0, Rhino 1.7.12 to 1.7.13, JaCoCo 0.8.5 to 0.8.6, Jasmine 3.5.0 to 3.6.0, JUnit 4.13 tp 4.13.1
 
