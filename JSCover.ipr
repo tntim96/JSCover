@@ -841,26 +841,26 @@
         <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit-cssparser/1.7.0/htmlunit-cssparser-1.7.0-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: net.sourceforge.htmlunit:htmlunit:2.47.0">
+    <library name="Maven: net.sourceforge.htmlunit:htmlunit:2.47.1">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit/2.47.0/htmlunit-2.47.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit/2.47.1/htmlunit-2.47.1.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit/2.47.0/htmlunit-2.47.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit/2.47.1/htmlunit-2.47.1-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit/2.47.0/htmlunit-2.47.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit/2.47.1/htmlunit-2.47.1-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: net.sourceforge.htmlunit:neko-htmlunit:2.47.0">
+    <library name="Maven: net.sourceforge.htmlunit:neko-htmlunit:2.47.1">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/neko-htmlunit/2.47.0/neko-htmlunit-2.47.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/neko-htmlunit/2.47.1/neko-htmlunit-2.47.1.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/neko-htmlunit/2.47.0/neko-htmlunit-2.47.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/neko-htmlunit/2.47.1/neko-htmlunit-2.47.1-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/neko-htmlunit/2.47.0/neko-htmlunit-2.47.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/neko-htmlunit/2.47.1/neko-htmlunit-2.47.1-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.apache.commons:commons-lang3:3.11">
