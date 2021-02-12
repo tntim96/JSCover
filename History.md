@@ -1,4 +1,4 @@
-2.0.11 / 2020-??-??
+2.0.11 / 2021-02-12
 ==================
   * Upgrade closure-compiler v20200628 to v20210202
   * Add GSON dependency, com.google.code.gson:gson:2.8.6, removed from closure-compiler
