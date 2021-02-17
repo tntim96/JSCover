@@ -1,7 +1,7 @@
 [JSCover](http://tntim96.github.com/JSCover) - A JavaScript code coverage measurement tool.
 ================================
 
-[![Build Status](https://github.com/tntim96/JSCover/workflows/Java%20CI/badge.svg)](https://github.com/tntim96/JSCover/actions?query=workflow%3A%22Java+CI%22)
+[![Build Status](https://github.com/tntim96/JSCover/workflows/Java-CI/badge.svg)](https://github.com/tntim96/JSCover/actions?query=workflow%3A%22Java-CI%22)
 [![codecov](https://codecov.io/gh/tntim96/JSCover/branch/master/graph/badge.svg)](https://codecov.io/gh/tntim96/JSCover)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.tntim96/JSCover/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.tntim96/JSCover)
 [![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-green.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
