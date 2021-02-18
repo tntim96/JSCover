@@ -786,15 +786,15 @@
         <root url="jar://$MAVEN_REPOSITORY$/commons-net/commons-net/3.7.2/commons-net-3.7.2-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: junit:junit:4.13.1">
+    <library name="Maven: junit:junit:4.13.2">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/junit/junit/4.13.1/junit-4.13.1.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/junit/junit/4.13.2/junit-4.13.2.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/junit/junit/4.13.1/junit-4.13.1-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/junit/junit/4.13.2/junit-4.13.2-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/junit/junit/4.13.1/junit-4.13.1-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/junit/junit/4.13.2/junit-4.13.2-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: net.bytebuddy:byte-buddy-agent:1.10.19">
