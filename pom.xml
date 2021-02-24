@@ -10,7 +10,7 @@
     <name>JSCover</name>
     <version>2.0.12-SNAPSHOT</version>
     <description>JSCover is a tool that measures code coverage for JavaScript programs.</description>
-    <url>http://tntim96.github.com/JSCover/</url>
+    <url>http://tntim96.github.io/JSCover/</url>
     <prerequisites>
         <maven>3.2.3</maven>
     </prerequisites>
