@@ -1,0 +1,8 @@
+image: openjdk:8
+
+before_script:
+  - apt-get update
+  - apt-get -y install ant
+
+build:
+  script: "ant release"
