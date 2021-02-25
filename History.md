@@ -1,7 +1,7 @@
 2.0.12 / 2021-??-??
 ==================
   * Update all pages links to github.io
-  * Internal: JUnit 4.13.1 tp 4.13.2
+  * Internal: JUnit 4.13.1 tp 4.13.2, Mockito 3.7.7 to 3.8.0
 
 2.0.11 / 2021-02-12
 ==================
