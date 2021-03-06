@@ -346,7 +346,6 @@ import com.google.javascript.jscomp.SourceFile;
 import com.google.javascript.jscomp.parsing.Config;
 import com.google.javascript.jscomp.parsing.ParserRunner;
 import com.google.javascript.rhino.Node;
-import com.google.javascript.rhino.StaticSourceFile;
 import com.google.javascript.rhino.Token;
 import org.junit.Test;
 
@@ -364,7 +363,7 @@ public class BranchInstrumentorTest {
 
     static Node parse(String source) {
         return ParserRunner.parse(
-                new SourceFile("test.js", StaticSourceFile.SourceKind.STRONG),
+                SourceFile.fromFile("test.js"),
                 source,
                 ParserRunner.createConfig(ECMASCRIPT8, TYPES_ONLY, KEEP_GOING, null, false, Config.StrictMode.SLOPPY),
                 null).ast;
