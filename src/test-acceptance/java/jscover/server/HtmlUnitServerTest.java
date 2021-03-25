@@ -478,8 +478,8 @@ public class HtmlUnitServerTest {
     }
 
     private void verifySource(HtmlTable sourceTable, int row, int coverageCount, String source) {
-        assertThat(sourceTable.getRow(row).getCell(1).asText(), equalTo(""+coverageCount));
-        assertThat(sourceTable.getRow(row).getCell(2).asText(), equalTo(source));
+        assertThat(sourceTable.getRow(row).getCell(1).asNormalizedText(), equalTo(""+coverageCount));
+        assertThat(sourceTable.getRow(row).getCell(2).asNormalizedText(), equalTo(source));
     }
 
     @Test

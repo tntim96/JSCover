@@ -2,7 +2,7 @@
 ==================
   * Upgrade closure-compiler v20210202 to v20210302
   * Update all pages links to github.io
-  * Internal: JUnit 4.13.1 tp 4.13.2, Mockito 3.7.7 to 3.8.0
+  * Internal: JUnit 4.13.1 tp 4.13.2, Mockito 3.7.7 to 3.8.0, HtmlUnit 2.47.1 to 2.48.0
 
 2.0.11 / 2021-02-12
 ==================

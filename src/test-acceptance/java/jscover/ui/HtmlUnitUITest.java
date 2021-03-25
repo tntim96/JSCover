@@ -441,10 +441,10 @@ public class HtmlUnitUITest {
     }
 
     private void verifyScriptMatchesRow(HTMLCoverageData data, HtmlTableRow row) {
-        assertThat(data.getName(), equalTo(row.getCell(0).asText()));
-        assertThat(data.getLineCoverage(), equalTo(row.getCell(10).asText()));
-        assertThat(data.getBranchCoverage(), equalTo(row.getCell(11).asText()));
-        assertThat(data.getFunctionCoverage(), equalTo(row.getCell(12).asText()));
+        assertThat(data.getName(), equalTo(row.getCell(0).asNormalizedText()));
+        assertThat(data.getLineCoverage(), equalTo(row.getCell(10).asNormalizedText()));
+        assertThat(data.getBranchCoverage(), equalTo(row.getCell(11).asNormalizedText()));
+        assertThat(data.getFunctionCoverage(), equalTo(row.getCell(12).asNormalizedText()));
     }
 
     @Test
@@ -476,8 +476,8 @@ public class HtmlUnitUITest {
     }
 
     private int verifyRow(String field, int currentValue, int[] matched, HtmlTableRow htmlTableRow) {
-        final String path = htmlTableRow.getCell(0).asText();
-        int value = parse(htmlTableRow.getCell(ReportField.getField(field).index).asText());
+        final String path = htmlTableRow.getCell(0).asNormalizedText();
+        int value = parse(htmlTableRow.getCell(ReportField.getField(field).index).asNormalizedText());
         assertThat(value, greaterThanOrEqualTo(currentValue));
         currentValue = value;
         List<HTMLCoverageData> list = dataMap.get(value);
