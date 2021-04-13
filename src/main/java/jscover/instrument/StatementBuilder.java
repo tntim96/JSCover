@@ -377,8 +377,7 @@ class StatementBuilder {
         Node coverVar = IR.name("_$jscoverage");
         Node path = IR.string(fileName);
         Node getURI = IR.getelem(coverVar, path);
-        Node prop = IR.string(identifier);
-        Node propGet = IR.getprop(getURI, prop);
+        Node propGet = IR.getprop(getURI, identifier);
         Node number = IR.number(lineNumber);
         return IR.getelem(propGet, number);
     }

@@ -453,7 +453,7 @@ class NodeProcessor {
         } else if (parent.isImportStar()) {
         } else if (parent.isComputedProp()) {
         } else {
-            parent.addChildBefore(buildInstrumentationStatement(node.getLineno()), node);
+            buildInstrumentationStatement(node.getLineno()).insertBefore(node);
         }
     }
     

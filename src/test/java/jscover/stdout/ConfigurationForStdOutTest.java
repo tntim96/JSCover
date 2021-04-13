@@ -346,7 +346,7 @@ import org.junit.Test;
 
 import java.io.File;
 
-import static com.google.javascript.jscomp.parsing.Config.LanguageMode.ECMASCRIPT7;
+import static com.google.javascript.jscomp.parsing.Config.LanguageMode.ECMASCRIPT5;
 import static java.util.logging.Level.SEVERE;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -378,9 +378,9 @@ public class ConfigurationForStdOutTest {
 
     @Test
     public void shouldGetSourceFileAndCommonConfiguration() {
-        ConfigurationForStdOut configuration = ConfigurationForStdOut.parse(new String[]{"-io", "--js-version=ECMASCRIPT7", "doc/example/script.js"});
+        ConfigurationForStdOut configuration = ConfigurationForStdOut.parse(new String[]{"-io", "--js-version=ECMASCRIPT5", "doc/example/script.js"});
         assertThat(configuration.getSrcFile(), equalTo(new File("doc/example/script.js")));
-        assertThat(configuration.getECMAVersion(), equalTo(ECMASCRIPT7));
+        assertThat(configuration.getECMAVersion(), equalTo(ECMASCRIPT5));
     }
 
     @Test

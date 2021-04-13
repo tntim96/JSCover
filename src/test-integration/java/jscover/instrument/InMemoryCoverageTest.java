@@ -372,7 +372,7 @@ public class InMemoryCoverageTest extends ScriptableObject {
 
     @Before
     public void setUp() {
-        given(config.getECMAVersion()).willReturn(Config.LanguageMode.ECMASCRIPT8);
+        given(config.getECMAVersion()).willReturn(Config.LanguageMode.ES_NEXT);
         given(config.isIncludeBranch()).willReturn(true);
         given(config.isIncludeFunction()).willReturn(true);
     }

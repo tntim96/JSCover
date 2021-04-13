@@ -369,7 +369,7 @@ public class InstrumenterServiceTest {
     public void setUp() {
         src.delete();
         ioUtils.copy("x++;", src);
-        given(config.getECMAVersion()).willReturn(Config.LanguageMode.ECMASCRIPT8);
+        given(config.getECMAVersion()).willReturn(Config.LanguageMode.ES_NEXT);
         given(config.isIncludeBranch()).willReturn(false);
         given(config.isIncludeFunction()).willReturn(false);
     }

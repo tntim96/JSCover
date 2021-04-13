@@ -368,7 +368,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static com.google.javascript.jscomp.parsing.Config.JsDocParsing.TYPES_ONLY;
-import static com.google.javascript.jscomp.parsing.Config.LanguageMode.ECMASCRIPT8;
+import static com.google.javascript.jscomp.parsing.Config.LanguageMode.ES_NEXT;
 import static com.google.javascript.jscomp.parsing.Config.RunMode.KEEP_GOING;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.BDDMockito.given;
@@ -377,7 +377,7 @@ import static org.mockito.BDDMockito.given;
 public class InstrumentAndHighlightRegressionTest {
     private static Set<String> tested = new HashSet<>();
     private static Map<String, String> allTests = new HashMap<>();
-    private static Config parserConfig = ParserRunner.createConfig(ECMASCRIPT8, TYPES_ONLY, KEEP_GOING, null, false, Config.StrictMode.SLOPPY);
+    private static Config parserConfig = ParserRunner.createConfig(ES_NEXT, TYPES_ONLY, KEEP_GOING, null, false, Config.StrictMode.SLOPPY);
 
     private IoUtils ioUtils = IoUtils.getInstance();
     private CompilerOptions options = new CompilerOptions();
@@ -385,7 +385,7 @@ public class InstrumentAndHighlightRegressionTest {
 
     @Before
     public void setUp() {
-        given(config.getECMAVersion()).willReturn(ECMASCRIPT8);
+        given(config.getECMAVersion()).willReturn(ES_NEXT);
         given(config.isIncludeBranch()).willReturn(false);
         given(config.isIncludeFunction()).willReturn(true);
         options.setPreferSingleQuotes(true);

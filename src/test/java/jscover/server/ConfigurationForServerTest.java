@@ -463,8 +463,8 @@ public class ConfigurationForServerTest {
 
     @Test
     public void shouldParseECMAVersion() {
-        ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--js-version=ECMASCRIPT7"});
-        assertThat(configuration.getECMAVersion(), equalTo(Config.LanguageMode.ECMASCRIPT7));
+        ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--js-version=ECMASCRIPT5"});
+        assertThat(configuration.getECMAVersion(), equalTo(Config.LanguageMode.ECMASCRIPT5));
     }
 
     @Test

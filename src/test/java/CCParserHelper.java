@@ -4,7 +4,7 @@ import com.google.javascript.jscomp.parsing.ParserRunner;
 import com.google.javascript.rhino.Node;
 
 import static com.google.javascript.jscomp.parsing.Config.JsDocParsing.TYPES_ONLY;
-import static com.google.javascript.jscomp.parsing.Config.LanguageMode.ECMASCRIPT8;
+import static com.google.javascript.jscomp.parsing.Config.LanguageMode.ES_NEXT;
 import static com.google.javascript.jscomp.parsing.Config.RunMode.KEEP_GOING;
 
 
@@ -22,7 +22,7 @@ public class CCParserHelper {
         return ParserRunner.parse(
                 SourceFile.fromFile("test.js"),
                 source,
-                ParserRunner.createConfig(ECMASCRIPT8, TYPES_ONLY, KEEP_GOING, null, false, Config.StrictMode.SLOPPY),
+                ParserRunner.createConfig(ES_NEXT, TYPES_ONLY, KEEP_GOING, null, false, Config.StrictMode.SLOPPY),
                 null).ast;
     }
 

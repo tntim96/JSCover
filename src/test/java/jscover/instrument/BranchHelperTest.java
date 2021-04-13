@@ -8,7 +8,7 @@ import com.google.javascript.rhino.Token;
 import org.junit.Test;
 
 import static com.google.javascript.jscomp.parsing.Config.JsDocParsing.TYPES_ONLY;
-import static com.google.javascript.jscomp.parsing.Config.LanguageMode.ECMASCRIPT8;
+import static com.google.javascript.jscomp.parsing.Config.LanguageMode.ES_NEXT;
 import static com.google.javascript.jscomp.parsing.Config.RunMode.KEEP_GOING;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -71,7 +71,7 @@ public class BranchHelperTest {
         return ParserRunner.parse(
                 SourceFile.fromFile("test.js"),
                 source,
-                ParserRunner.createConfig(ECMASCRIPT8, TYPES_ONLY, KEEP_GOING, null, false, Config.StrictMode.SLOPPY),
+                ParserRunner.createConfig(ES_NEXT, TYPES_ONLY, KEEP_GOING, null, false, Config.StrictMode.SLOPPY),
                 null).ast;
     }
 

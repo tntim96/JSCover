@@ -355,8 +355,7 @@ public class BranchStatementBuilder {
         Node indexConditionNumber = IR.getelem(indexLineNumber, conditionNumberLiteral);
         Node positionLiteral = IR.number(position);
         Node lengthLiteral = IR.number(length);
-        Node initCall = IR.string("init");
-        Node propertyName = IR.getprop(indexConditionNumber, initCall);
+        Node propertyName = IR.getprop(indexConditionNumber, "init");
         Node fnCall = IR.call(propertyName, positionLiteral, lengthLiteral);
         return IR.exprResult(fnCall);
     }
@@ -369,8 +368,7 @@ public class BranchStatementBuilder {
         Node indexLineNumber = buildLineDeclaration(uri, lineNo);
         Node conditionNumberLiteral = IR.number(conditionNo);
         Node indexConditionNumber = IR.getelem(indexLineNumber, conditionNumberLiteral);
-        Node initCall = IR.string("ranCondition");
-        Node propertyName = IR.getprop(indexConditionNumber, initCall);
+        Node propertyName = IR.getprop(indexConditionNumber, "ranCondition");
         Node result = IR.name("result");
         Node fnCall = IR.call(propertyName, result);
         return IR.exprResult(fnCall);
@@ -380,8 +378,7 @@ public class BranchStatementBuilder {
         Node coverVar = IR.name("_$jscoverage");
         Node path = IR.string(uri);
         Node getURI = IR.getelem(coverVar, path);
-        Node prop = IR.string("branchData");
-        Node propGet = IR.getprop(getURI, prop);
+        Node propGet = IR.getprop(getURI, "branchData");
         Node number = IR.string("" + lineNo);
         return IR.getelem(propGet, number);
     }

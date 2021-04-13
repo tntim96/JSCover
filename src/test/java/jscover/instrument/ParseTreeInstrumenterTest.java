@@ -374,7 +374,7 @@ public class ParseTreeInstrumenterTest {
         instrumenter = new ParseTreeInstrumenter("/dir/file.js", true, new CommentsHandler());
         ReflectionUtils.setField(instrumenter, "nodeProcessor", nodeProcessor);
         ReflectionUtils.setField(instrumenter, "logger", logger);
-        astNode.setLineno(7);
+        astNode.setLinenoCharno(7, 0);
     }
 
     @After

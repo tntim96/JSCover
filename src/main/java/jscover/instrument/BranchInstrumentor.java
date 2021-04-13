@@ -407,7 +407,7 @@ public class BranchInstrumentor implements NodeVisitor {
         functionCall.setChangeTime(-1);
         functionWrapperCount++;
 
-        parent.replaceChild(node, functionCall);
+        node.replaceWith(functionCall);
         return true;
     }
 

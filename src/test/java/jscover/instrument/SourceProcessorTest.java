@@ -369,7 +369,7 @@ public class SourceProcessorTest {
 
     @Before
     public void setUp() {
-        given(config.getECMAVersion()).willReturn(Config.LanguageMode.ECMASCRIPT8);
+        given(config.getECMAVersion()).willReturn(Config.LanguageMode.ES_NEXT);
         sourceProcessor = new SourceProcessor(config, "test.js", "x;");
         ReflectionUtils.setField(sourceProcessor, "ioUtils", ioUtils);
     }

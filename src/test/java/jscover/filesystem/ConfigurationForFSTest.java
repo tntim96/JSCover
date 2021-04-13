@@ -479,8 +479,8 @@ public class ConfigurationForFSTest {
 
     @Test
     public void shouldParseECMAVersion() {
-        ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs", "--js-version=ECMASCRIPT7", "src", "doc"});
-        assertThat(configuration.getECMAVersion(), equalTo(Config.LanguageMode.ECMASCRIPT7));
+        ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs", "--js-version=ECMASCRIPT5", "src", "doc"});
+        assertThat(configuration.getECMAVersion(), equalTo(Config.LanguageMode.ECMASCRIPT5));
     }
 
     @Test

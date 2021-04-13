@@ -367,7 +367,7 @@ public class InstrumenterTest {
 
     @Before
     public void setUp() {
-        given(config.getECMAVersion()).willReturn(Config.LanguageMode.ECMASCRIPT8);
+        given(config.getECMAVersion()).willReturn(Config.LanguageMode.ES_NEXT);
         given(config.isIncludeBranch()).willReturn(false);
         given(config.isIncludeFunction()).willReturn(true);
         sourceProcessor = new SourceProcessor(config, "test.js", "x;");
