@@ -382,7 +382,7 @@ public class ProxyService {
             PrintWriter remotePrintWriter = new PrintWriter(remoteOutputStream);
 
             String uri = getRawURI(url);
-            remotePrintWriter.print(method + " " + uri + " HTTP/1.0\n");
+            remotePrintWriter.print(method + " " + uri + " HTTP/1.0\r\n");
             sendHeaders(request, remotePrintWriter);
             ioUtils.copyNoClose(remoteInputStream, os);
         } catch (IOException e) {
