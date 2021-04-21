@@ -1,5 +1,6 @@
 2.0.12 / 2021-??-??
 ==================
+  * Proxy Server: Get request is not ending \r\n (https://github.com/tntim96/JSCover/issues/302)
   * Upgrade closure-compiler v20210202 to v20210406
   * Update all pages links to github.io
   * Internal: JUnit 4.13.1 tp 4.13.2, Mockito 3.7.7 to 3.9.0, HtmlUnit 2.47.1 to 2.49.1
