@@ -404,7 +404,7 @@ public class HtmlServerUnloadedJSProxyTest extends HtmlServerUnloadedJSTest {
 
     @Before
     public void setUp() {
-        ProxyConfig proxyConfig = new ProxyConfig("localhost", proxyPort);
+        ProxyConfig proxyConfig = new ProxyConfig("localhost", proxyPort, "http");
         proxyConfig.addHostsToProxyBypass("127.0.0.1");
         webClient.getOptions().setProxyConfig(proxyConfig);
         webClient.getOptions().setTimeout(1000);
