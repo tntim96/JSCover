@@ -4,7 +4,7 @@
   * Upgrade closure-compiler v20210202 to v20210601
   * Upgrade GSON 2.8.6 to 2.8.7
   * Update all pages links to github.io
-  * Internal: JUnit 4.13.1 tp 4.13.2, Mockito 3.7.7 to 3.11.0, HtmlUnit 2.47.1 to 2.50.0
+  * Internal: JUnit 4.13.1 tp 4.13.2, Mockito 3.7.7 to 3.11.1, HtmlUnit 2.47.1 to 2.50.0
 
 2.0.11 / 2021-02-12
 ==================
