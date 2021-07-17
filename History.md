@@ -1,4 +1,4 @@
-2.0.12 / 2021-??-??
+2.0.12 / 2021-07-17
 ==================
   * Proxy Server: Get request is not ending \r\n (https://github.com/tntim96/JSCover/issues/302)
   * Upgrade closure-compiler v20210202 to v20210601
