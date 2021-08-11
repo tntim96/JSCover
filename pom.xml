@@ -10,7 +10,7 @@
     <name>JSCover</name>
     <version>2.0.13-SNAPSHOT</version>
     <description>JSCover is a tool that measures code coverage for JavaScript programs.</description>
-    <url>http://tntim96.github.io/JSCover/</url>
+    <url>https://tntim96.github.io/JSCover/</url>
     <prerequisites>
         <maven>3.2.3</maven>
     </prerequisites>
@@ -20,12 +20,12 @@
     <licenses>
         <license>
             <name>GNU General Public License, version 2</name>
-            <url>http://www.gnu.org/licenses/gpl-2.0.txt</url>
+            <url>https://www.gnu.org/licenses/gpl-2.0.txt</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
     <scm>
-        <url>http://github.com/tntim96/JSCover/</url>
+        <url>https://github.com/tntim96/JSCover/</url>
         <connection>scm:git:git://github.com/tntim96/JSCover.git</connection>
     </scm>
     <repositories>
@@ -67,7 +67,7 @@
     </developers>
     <issueManagement>
         <system>github</system>
-        <url>http://github.com/tntim96/JSCover/issues</url>
+        <url>https://github.com/tntim96/JSCover/issues</url>
     </issueManagement>
     <dependencies>
         <dependency>
