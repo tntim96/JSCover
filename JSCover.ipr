@@ -715,15 +715,15 @@
         <root url="jar://$MAVEN_REPOSITORY$/com/google/code/gson/gson/2.8.7/gson-2.8.7-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: com.google.javascript:closure-compiler:v20210601">
+    <library name="Maven: com.google.javascript:closure-compiler:v20210808">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler/v20210601/closure-compiler-v20210601.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler/v20210808/closure-compiler-v20210808.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler/v20210601/closure-compiler-v20210601-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler/v20210808/closure-compiler-v20210808-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler/v20210601/closure-compiler-v20210601-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler/v20210808/closure-compiler-v20210808-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: com.shapesecurity:salvation2:3.0.0">
