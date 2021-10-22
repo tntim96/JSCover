@@ -1,7 +1,7 @@
 2.0.13 / 202?-??-??
 ==================
   * Upgrade closure-compiler v20210601 to v20211006
-  * Internal: HtmlUnit 2.51.0 to 2.53.0, Mockito 3.11.2 to 4.0.0, GSON 2.8.7 to 2.8.8, Jasmine 3.8.0 to 3.9.0
+  * Internal: HtmlUnit 2.51.0 to 2.54.0, Mockito 3.11.2 to 4.0.0, GSON 2.8.7 to 2.8.8, Jasmine 3.8.0 to 3.9.0
 
 2.0.12 / 2021-07-17
 ==================
