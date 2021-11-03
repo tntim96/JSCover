@@ -342,20 +342,24 @@ Public License instead of this License.
 
 package jscover.instrument;
 
-import com.google.javascript.jscomp.parsing.Config;
 import jscover.ConfigurationCommon;
 import jscover.util.IoUtils;
 import jscover.util.ReflectionUtils;
+import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.TreeSet;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.startsWith;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
@@ -369,7 +373,6 @@ public class SourceProcessorTest {
 
     @Before
     public void setUp() {
-        given(config.getECMAVersion()).willReturn(Config.LanguageMode.ES_NEXT);
         sourceProcessor = new SourceProcessor(config, "test.js", "x;");
         ReflectionUtils.setField(sourceProcessor, "ioUtils", ioUtils);
     }
@@ -438,5 +441,13 @@ public class SourceProcessorTest {
         given(ioUtils.loadFromClassPath("/jscoverage-branch.js")).willReturn("<branch>");
 
         assertThat(sourceProcessor.processSource(), startsWith("<branch><common>var jsCover_isolateBrowser = true;\n<header>"));
+    }
+
+    @Test
+    public void shouldNotChangeEvalBehaviour() throws IOException {
+        sourceProcessor = new SourceProcessor(config, "testEval.js", IOUtils.resourceToString("/testEval.js", StandardCharsets.UTF_8));
+        String result = sourceProcessor.processSource();
+        System.out.println(result);
+        assertThat(result, not(containsString("(0,eval)")));
     }
 }

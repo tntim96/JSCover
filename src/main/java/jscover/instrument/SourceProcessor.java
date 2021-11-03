@@ -342,14 +342,12 @@ Public License instead of this License.
 
 package jscover.instrument;
 
+import com.google.javascript.jscomp.BlackHoleErrorManager;
 import com.google.javascript.jscomp.CodePrinter;
 import com.google.javascript.jscomp.CompilerOptions;
+import com.google.javascript.jscomp.ErrorManager;
 import com.google.javascript.jscomp.SourceFile;
-import com.google.javascript.jscomp.parsing.Config;
-import com.google.javascript.jscomp.parsing.ParserRunner;
-import com.google.javascript.rhino.ErrorReporter;
 import com.google.javascript.rhino.Node;
-import com.google.javascript.rhino.StaticSourceFile;
 import jscover.ConfigurationCommon;
 import jscover.util.IoUtils;
 
@@ -359,7 +357,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static com.google.javascript.jscomp.parsing.Config.JsDocParsing.INCLUDE_DESCRIPTIONS_WITH_WHITESPACE;
-import static com.google.javascript.jscomp.parsing.Config.RunMode.KEEP_GOING;
 import static java.lang.String.format;
 
 //Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013
@@ -376,7 +373,6 @@ class SourceProcessor {
     private CommentsHandler commentsHandler = new CommentsHandler();
     private ParseTreeInstrumenter instrumenter;
     private BranchInstrumentor branchInstrumentor;
-    private Config config;
     private CompilerOptions options = new CompilerOptions();
     private IoUtils ioUtils = IoUtils.getInstance();
     private boolean includeBranchCoverage;
@@ -389,9 +385,13 @@ class SourceProcessor {
         this.source = source;
         this.instrumenter = new ParseTreeInstrumenter(uri, config.isIncludeFunction(), commentsHandler);
         this.branchInstrumentor = new BranchInstrumentor(uri, config.isDetectCoalesce(), commentsHandler);
-        this.config = ParserRunner.createConfig(config.getECMAVersion(), INCLUDE_DESCRIPTIONS_WITH_WHITESPACE, KEEP_GOING, null, false, Config.StrictMode.SLOPPY);
         this.options.setPreferSingleQuotes(true);
         this.options.setPrettyPrint(true);
+        this.options.setPreserveDetailedSourceInfo(true);
+        this.options.setStrictModeInput(false);
+        this.options.setContinueAfterErrors(true);
+        this.options.setParseJsDocDocumentation(INCLUDE_DESCRIPTIONS_WITH_WHITESPACE);
+        this.options.setRemoveDeadCode(false);
         this.includeBranchCoverage = config.isIncludeBranch();
         this.includeFunctionCoverage = config.isIncludeFunction();
         this.localStorage = config.isLocalStorage();
@@ -462,10 +462,12 @@ class SourceProcessor {
         SourceFile sourceFile = SourceFile.fromCode(sourceURI, source);
 //        com.google.javascript.jscomp.parsing.parser.SourceFile sf = new com.google.javascript.jscomp.parsing.parser.SourceFile(sourceURI, source);
 //        LineNumberTable lineNumberTable = new LineNumberTable(sf);
-        ParserRunner.ParseResult parsed = parse(source, sourceFile);
-        Node jsRoot = parsed.ast;
+        ErrorManager errorManager = new BlackHoleErrorManager();
+        com.google.javascript.jscomp.Compiler compiler = new com.google.javascript.jscomp.Compiler(errorManager);
+        compiler.initOptions(options);
+        Node jsRoot = compiler.parse(sourceFile);
 //        System.out.println("jsRoot.toStringTree():\n" + jsRoot.toStringTree());
-        commentsHandler.processComments(parsed.comments);
+        commentsHandler.processComments(compiler.getComments(sourceURI));
 
         NodeWalker nodeWalker = new NodeWalker();
         nodeWalker.visit(jsRoot, instrumenter);
@@ -489,28 +491,6 @@ class SourceProcessor {
             }
         }
     }
-
-
-    private ParserRunner.ParseResult parse(String source, StaticSourceFile sourceFile) {
-        ErrorReporter errorReporter = new ErrorReporter(){
-            @Override
-            public void warning(String message, String sourceName, int line, int lineOffset) {
-                logger.log(Level.WARNING, "{0}, sourceName: {1}, line: {2} lineOffset: {3}", new Object[]{message, sourceName, line, lineOffset});
-            }
-
-            @Override
-            public void error(String message, String sourceName, int line, int lineOffset) {
-                logger.log(Level.SEVERE, "{0}, sourceName: {1}, line: {2} lineOffset: {3}", new Object[]{message, sourceName, line, lineOffset});
-            }
-        };
-        ParserRunner.ParseResult parseResult = ParserRunner.parse(
-                sourceFile,
-                source,
-                config,
-                errorReporter);
-        return parseResult;
-    }
-
 
     protected String getJsLineInitialization(String fileName, SortedSet<Integer> validLines) {
         fileName = fileName.replace("\\", "\\\\").replace("'", "\\'");
