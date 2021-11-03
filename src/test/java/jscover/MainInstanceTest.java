@@ -365,7 +365,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
 
-import static com.google.javascript.jscomp.parsing.Config.LanguageMode.ECMASCRIPT5;
+import static com.google.javascript.jscomp.CompilerOptions.LanguageMode.ECMASCRIPT5;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;

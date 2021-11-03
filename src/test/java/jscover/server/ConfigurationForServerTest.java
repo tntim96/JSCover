@@ -342,14 +342,14 @@ Public License instead of this License.
 
 package jscover.server;
 
-import com.google.javascript.jscomp.parsing.Config;
+import com.google.javascript.jscomp.CompilerOptions;
 import jscover.util.UriFileTranslatorNoOp;
 import jscover.util.UriFileTranslatorReg;
 import org.junit.Test;
 
 import java.io.File;
 
-import static com.google.javascript.jscomp.parsing.Config.LanguageMode.ES_NEXT;
+import static com.google.javascript.jscomp.CompilerOptions.LanguageMode.ECMASCRIPT_NEXT;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.SEVERE;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -365,7 +365,7 @@ public class ConfigurationForServerTest {
         assertThat(configuration.getDocumentRoot().toString(), equalTo(System.getProperty("user.dir")));
         assertThat(configuration.getPort(), equalTo(8080));
         assertThat(configuration.getReportDir(), is(new File(System.getProperty("user.dir"))));
-        assertThat(configuration.getECMAVersion(), equalTo(ES_NEXT));
+        assertThat(configuration.getECMAVersion(), equalTo(ECMASCRIPT_NEXT));
         assertThat(configuration.skipInstrumentation("/"), is(false));
         assertThat(configuration.isProxy(), is(false));
         assertThat(configuration.isSaveJSONOnly(), is(false));
@@ -400,7 +400,7 @@ public class ConfigurationForServerTest {
         assertThat(configuration.getDocumentRoot().toString(), equalTo(System.getProperty("user.dir")));
         assertThat(configuration.getPort(), equalTo(8080));
         assertThat(configuration.isProxy(), is(false));
-        assertThat(configuration.getECMAVersion(), equalTo(ES_NEXT));
+        assertThat(configuration.getECMAVersion(), equalTo(ECMASCRIPT_NEXT));
         assertThat(configuration.skipInstrumentation("/"), is(false));
         assertThat(configuration.isIncludeBranch(), is(true));
         assertThat(configuration.isIncludeFunction(), is(true));
@@ -464,7 +464,7 @@ public class ConfigurationForServerTest {
     @Test
     public void shouldParseECMAVersion() {
         ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--js-version=ECMASCRIPT5"});
-        assertThat(configuration.getECMAVersion(), equalTo(Config.LanguageMode.ECMASCRIPT5));
+        assertThat(configuration.getECMAVersion(), equalTo(CompilerOptions.LanguageMode.ECMASCRIPT5));
     }
 
     @Test

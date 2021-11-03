@@ -342,6 +342,7 @@ Public License instead of this License.
 
 package jscover.instrument;
 
+import com.google.javascript.jscomp.CompilerOptions;
 import jscover.ConfigurationCommon;
 import org.junit.Before;
 import org.junit.Test;
@@ -360,6 +361,7 @@ public class InstrumenterWithBranchTest {
 
     @Before
     public void setUp() {
+        given(config.getECMAVersion()).willReturn(CompilerOptions.LanguageMode.ECMASCRIPT_NEXT);
         given(config.isIncludeBranch()).willReturn(true);
         given(config.isIncludeFunction()).willReturn(true);
         sourceProcessor = new SourceProcessor(config, "test.js", "x;");

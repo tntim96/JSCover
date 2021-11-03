@@ -344,12 +344,7 @@ package jscover.instrument;
 
 import com.google.javascript.jscomp.CodePrinter;
 import com.google.javascript.jscomp.CompilerOptions;
-import com.google.javascript.jscomp.parsing.Config;
-import com.google.javascript.jscomp.parsing.ParserRunner;
 import com.google.javascript.rhino.Node;
-import com.google.javascript.rhino.SimpleErrorReporter;
-import com.google.javascript.rhino.SimpleSourceFile;
-import com.google.javascript.rhino.StaticSourceFile;
 import jscover.ConfigurationCommon;
 import jscover.util.IoUtils;
 import org.junit.AfterClass;
@@ -367,9 +362,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static com.google.javascript.jscomp.parsing.Config.JsDocParsing.TYPES_ONLY;
-import static com.google.javascript.jscomp.parsing.Config.LanguageMode.ES_NEXT;
-import static com.google.javascript.jscomp.parsing.Config.RunMode.KEEP_GOING;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.BDDMockito.given;
 
@@ -377,7 +369,6 @@ import static org.mockito.BDDMockito.given;
 public class InstrumentAndHighlightRegressionTest {
     private static Set<String> tested = new HashSet<>();
     private static Map<String, String> allTests = new HashMap<>();
-    private static Config parserConfig = ParserRunner.createConfig(ES_NEXT, TYPES_ONLY, KEEP_GOING, null, false, Config.StrictMode.SLOPPY);
 
     private IoUtils ioUtils = IoUtils.getInstance();
     private CompilerOptions options = new CompilerOptions();
@@ -385,6 +376,7 @@ public class InstrumentAndHighlightRegressionTest {
 
     @Before
     public void setUp() {
+        given(config.getECMAVersion()).willReturn(CompilerOptions.LanguageMode.ECMASCRIPT_NEXT);
         given(config.isIncludeBranch()).willReturn(false);
         given(config.isIncludeFunction()).willReturn(true);
         options.setPreferSingleQuotes(true);
@@ -696,12 +688,6 @@ public class InstrumentAndHighlightRegressionTest {
     }
 
     private Node parse(String source) {
-        SimpleErrorReporter errorReporter = new SimpleErrorReporter();
-        return ParserRunner.parse(
-                new SimpleSourceFile("test.js", StaticSourceFile.SourceKind.STRONG),
-                source,
-                parserConfig,
-                errorReporter).ast;
+        return TestHelper.parse(source);
     }
-
 }

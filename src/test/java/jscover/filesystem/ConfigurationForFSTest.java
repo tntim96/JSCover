@@ -342,7 +342,7 @@ Public License instead of this License.
 
 package jscover.filesystem;
 
-import com.google.javascript.jscomp.parsing.Config;
+import com.google.javascript.jscomp.CompilerOptions;
 import jscover.util.ReflectionUtils;
 import org.junit.Test;
 
@@ -362,7 +362,7 @@ public class ConfigurationForFSTest {
         ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs", "src", "doc"});
         assertThat(configuration.showHelp(), is(false));
         assertThat(configuration.isInvalid(), is(false));
-        assertThat(configuration.getECMAVersion(), equalTo(Config.LanguageMode.ES_NEXT));
+        assertThat(configuration.getECMAVersion(), equalTo(CompilerOptions.LanguageMode.ECMASCRIPT_NEXT));
         assertThat(configuration.skipInstrumentation("/"), is(false));
         assertThat(configuration.isIncludeBranch(), is(true));
         assertThat(configuration.isIncludeFunction(), is(true));
@@ -480,7 +480,7 @@ public class ConfigurationForFSTest {
     @Test
     public void shouldParseECMAVersion() {
         ConfigurationForFS configuration = ConfigurationForFS.parse(new String[]{"-fs", "--js-version=ECMASCRIPT5", "src", "doc"});
-        assertThat(configuration.getECMAVersion(), equalTo(Config.LanguageMode.ECMASCRIPT5));
+        assertThat(configuration.getECMAVersion(), equalTo(CompilerOptions.LanguageMode.ECMASCRIPT5));
     }
 
     @Test

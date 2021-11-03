@@ -342,21 +342,13 @@ Public License instead of this License.
 
 package jscover.instrument;
 
-import com.google.javascript.jscomp.parsing.Config;
-import com.google.javascript.jscomp.parsing.ParserRunner;
 import com.google.javascript.jscomp.parsing.parser.trees.Comment;
-import com.google.javascript.rhino.SimpleErrorReporter;
-import com.google.javascript.rhino.SimpleSourceFile;
-import com.google.javascript.rhino.StaticSourceFile;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.List;
 
-import static com.google.javascript.jscomp.parsing.Config.JsDocParsing.INCLUDE_DESCRIPTIONS_WITH_WHITESPACE;
-import static com.google.javascript.jscomp.parsing.Config.LanguageMode.ES_NEXT;
-import static com.google.javascript.jscomp.parsing.Config.RunMode.KEEP_GOING;
 import static jscover.instrument.CommentsHandler.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -364,7 +356,6 @@ import static org.hamcrest.Matchers.equalTo;
 @RunWith(MockitoJUnitRunner.class)
 public class CommentsHandlerTest {
     private CommentsHandler handler = new CommentsHandler();
-    private static Config parserConfig = ParserRunner.createConfig(ES_NEXT, INCLUDE_DESCRIPTIONS_WITH_WHITESPACE, KEEP_GOING, null, false, Config.StrictMode.SLOPPY);
 
 
     @Test
@@ -413,12 +404,6 @@ public class CommentsHandlerTest {
     }
 
     private List<Comment> parse(String source) {
-        SimpleErrorReporter errorReporter = new SimpleErrorReporter();
-        return ParserRunner.parse(
-                new SimpleSourceFile("test.js", StaticSourceFile.SourceKind.STRONG),
-                source,
-                parserConfig,
-                errorReporter).comments;
+        return TestHelper.parseForComments(source);
     }
-
 }

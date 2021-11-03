@@ -342,11 +342,7 @@ Public License instead of this License.
 
 package jscover.instrument;
 
-import com.google.javascript.jscomp.BlackHoleErrorManager;
-import com.google.javascript.jscomp.CodePrinter;
-import com.google.javascript.jscomp.CompilerOptions;
-import com.google.javascript.jscomp.ErrorManager;
-import com.google.javascript.jscomp.SourceFile;
+import com.google.javascript.jscomp.*;
 import com.google.javascript.rhino.Node;
 import jscover.ConfigurationCommon;
 import jscover.util.IoUtils;
@@ -364,7 +360,7 @@ class SourceProcessor {
     private static final Logger logger = Logger.getLogger(SourceProcessor.class.getName());
     private static final String initLine = "  _$jscoverage['%s'].lineData[%d] = 0;\n";
 
-	// Function Coverage (HA-CA)
+    // Function Coverage (HA-CA)
     private static final String initFunction = "  _$jscoverage['%s'].functionData[%d] = 0;\n";
     private static final String ignoreJS = "\nif (!(%s)) {\n  _$jscoverage['%s'].conditionals[%d] = %d;\n}";
 
@@ -373,7 +369,7 @@ class SourceProcessor {
     private CommentsHandler commentsHandler = new CommentsHandler();
     private ParseTreeInstrumenter instrumenter;
     private BranchInstrumentor branchInstrumentor;
-    private CompilerOptions options = new CompilerOptions();
+    private CompilerOptions options;
     private IoUtils ioUtils = IoUtils.getInstance();
     private boolean includeBranchCoverage;
     private boolean includeFunctionCoverage;
@@ -385,17 +381,24 @@ class SourceProcessor {
         this.source = source;
         this.instrumenter = new ParseTreeInstrumenter(uri, config.isIncludeFunction(), commentsHandler);
         this.branchInstrumentor = new BranchInstrumentor(uri, config.isDetectCoalesce(), commentsHandler);
-        this.options.setPreferSingleQuotes(true);
-        this.options.setPrettyPrint(true);
-        this.options.setPreserveDetailedSourceInfo(true);
-        this.options.setStrictModeInput(false);
-        this.options.setContinueAfterErrors(true);
-        this.options.setParseJsDocDocumentation(INCLUDE_DESCRIPTIONS_WITH_WHITESPACE);
-        this.options.setRemoveDeadCode(false);
+        this.options = configureCompilerOption(config.getECMAVersion());
         this.includeBranchCoverage = config.isIncludeBranch();
         this.includeFunctionCoverage = config.isIncludeFunction();
         this.localStorage = config.isLocalStorage();
         this.isolateBrowser = config.isolateBrowser();
+    }
+
+    public static CompilerOptions configureCompilerOption(CompilerOptions.LanguageMode ecmaVersion) {
+        CompilerOptions options = new CompilerOptions();
+        options.setLanguageIn(ecmaVersion);
+        options.setPreferSingleQuotes(true);
+        options.setPrettyPrint(true);
+        options.setPreserveDetailedSourceInfo(true);
+        options.setStrictModeInput(false);
+        options.setContinueAfterErrors(true);
+        options.setParseJsDocDocumentation(INCLUDE_DESCRIPTIONS_WITH_WHITESPACE);
+        options.setRemoveDeadCode(false);
+        return options;
     }
 
     ParseTreeInstrumenter getInstrumenter() {
@@ -462,7 +465,7 @@ class SourceProcessor {
         SourceFile sourceFile = SourceFile.fromCode(sourceURI, source);
 //        com.google.javascript.jscomp.parsing.parser.SourceFile sf = new com.google.javascript.jscomp.parsing.parser.SourceFile(sourceURI, source);
 //        LineNumberTable lineNumberTable = new LineNumberTable(sf);
-        ErrorManager errorManager = new BlackHoleErrorManager();
+        ErrorManager errorManager = new LoggerErrorManager(logger);
         com.google.javascript.jscomp.Compiler compiler = new com.google.javascript.jscomp.Compiler(errorManager);
         compiler.initOptions(options);
         Node jsRoot = compiler.parse(sourceFile);
@@ -504,12 +507,12 @@ class SourceProcessor {
         return sb.toString();
     }
 
-	// Function Coverage (HA-CA)
+    // Function Coverage (HA-CA)
     protected String getJsFunctionInitialization(String fileName, int numFunction) {
         fileName = fileName.replace("\\", "\\\\").replace("'", "\\'");
         StringBuilder sb = new StringBuilder(format("if (! _$jscoverage['%s'].functionData) {\n", fileName));
         sb.append(format("  _$jscoverage['%s'].functionData = [];\n", fileName));
-        for ( int i = 0; i < numFunction; ++i) {
+        for (int i = 0; i < numFunction; ++i) {
             sb.append(format(initFunction, fileName, i));
         }
         sb.append("}\n");

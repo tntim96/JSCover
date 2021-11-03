@@ -346,7 +346,7 @@ import org.junit.Test;
 
 import java.io.File;
 
-import static com.google.javascript.jscomp.parsing.Config.LanguageMode.ECMASCRIPT5;
+import static com.google.javascript.jscomp.CompilerOptions.LanguageMode.ECMASCRIPT5;
 import static java.util.logging.Level.SEVERE;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
