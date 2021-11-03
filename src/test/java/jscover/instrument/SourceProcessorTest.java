@@ -342,7 +342,7 @@ Public License instead of this License.
 
 package jscover.instrument;
 
-import com.google.javascript.jscomp.parsing.Config;
+import com.google.javascript.jscomp.CompilerOptions;
 import jscover.ConfigurationCommon;
 import jscover.util.IoUtils;
 import jscover.util.ReflectionUtils;
@@ -369,7 +369,7 @@ public class SourceProcessorTest {
 
     @Before
     public void setUp() {
-        given(config.getECMAVersion()).willReturn(Config.LanguageMode.ES_NEXT);
+        given(config.getECMAVersion()).willReturn(CompilerOptions.LanguageMode.ECMASCRIPT_NEXT);
         sourceProcessor = new SourceProcessor(config, "test.js", "x;");
         ReflectionUtils.setField(sourceProcessor, "ioUtils", ioUtils);
     }

@@ -342,7 +342,7 @@ Public License instead of this License.
 
 package jscover;
 
-import com.google.javascript.jscomp.parsing.Config;
+import com.google.javascript.jscomp.CompilerOptions;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -353,7 +353,7 @@ public class ConfigurationCommonTest {
 
     @Test
     public void shouldHaveDefaults() {
-        assertThat(config.getECMAVersion(), is(Config.LanguageMode.ES_NEXT));
+        assertThat(config.getECMAVersion(), is(CompilerOptions.LanguageMode.ECMASCRIPT_NEXT));
         assertThat(config.isIncludeUnloadedJS(), is(false));
         assertThat(config.isIncludeBranch(), is(true));
         assertThat(config.isIncludeFunction(), is(true));
@@ -364,7 +364,7 @@ public class ConfigurationCommonTest {
 
     @Test
     public void shouldSetValues() {
-        config.setECMAVersion(Config.LanguageMode.ECMASCRIPT3);
+        config.setECMAVersion(CompilerOptions.LanguageMode.ECMASCRIPT3);
         config.setIncludeUnloadedJS(true);
         config.setIncludeBranch(false);
         config.setIncludeFunction(false);
@@ -372,7 +372,7 @@ public class ConfigurationCommonTest {
         config.setIsolateBrowser(true);
         config.setDetectCoalesce(true);
 
-        assertThat(config.getECMAVersion(), is(Config.LanguageMode.ECMASCRIPT3));
+        assertThat(config.getECMAVersion(), is(CompilerOptions.LanguageMode.ECMASCRIPT3));
         assertThat(config.isIncludeUnloadedJS(), is(true));
         assertThat(config.isIncludeBranch(), is(false));
         assertThat(config.isIncludeFunction(), is(false));

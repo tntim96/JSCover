@@ -343,17 +343,11 @@
 package jscover.instrument;
 
 import com.google.javascript.jscomp.CodePrinter;
-import com.google.javascript.jscomp.SourceFile;
-import com.google.javascript.jscomp.parsing.Config;
-import com.google.javascript.jscomp.parsing.ParserRunner;
 import com.google.javascript.rhino.Node;
 import jscover.util.IoUtils;
 import org.junit.Test;
 import org.mozilla.javascript.*;
 
-import static com.google.javascript.jscomp.parsing.Config.JsDocParsing.TYPES_ONLY;
-import static com.google.javascript.jscomp.parsing.Config.LanguageMode.ES_NEXT;
-import static com.google.javascript.jscomp.parsing.Config.RunMode.KEEP_GOING;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
@@ -945,10 +939,6 @@ public class BranchInstrumentorIntegrationTest {
     }
 
     static Node parse(String source) {
-        return ParserRunner.parse(
-                SourceFile.fromFile("test.js"),
-                source,
-                ParserRunner.createConfig(ES_NEXT, TYPES_ONLY, KEEP_GOING, null, false, Config.StrictMode.SLOPPY),
-                null).ast;
+        return TestHelper.parse(source);
     }
 }

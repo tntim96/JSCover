@@ -342,7 +342,7 @@ Public License instead of this License.
 
 package jscover.instrument;
 
-import com.google.javascript.jscomp.parsing.Config;
+import com.google.javascript.jscomp.CompilerOptions;
 import jscover.ConfigurationCommon;
 import jscover.server.UriNotFound;
 import jscover.util.IoUtils;
@@ -369,7 +369,7 @@ public class InstrumenterServiceTest {
     public void setUp() {
         src.delete();
         ioUtils.copy("x++;", src);
-        given(config.getECMAVersion()).willReturn(Config.LanguageMode.ES_NEXT);
+        given(config.getECMAVersion()).willReturn(CompilerOptions.LanguageMode.ECMASCRIPT_NEXT);
         given(config.isIncludeBranch()).willReturn(false);
         given(config.isIncludeFunction()).willReturn(false);
     }

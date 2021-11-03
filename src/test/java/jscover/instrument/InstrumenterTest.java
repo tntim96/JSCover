@@ -342,7 +342,7 @@ Public License instead of this License.
 
 package jscover.instrument;
 
-import com.google.javascript.jscomp.parsing.Config;
+import com.google.javascript.jscomp.CompilerOptions;
 import jscover.ConfigurationCommon;
 import jscover.util.ReflectionUtils;
 import org.junit.Before;
@@ -351,9 +351,10 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.io.IOException;
+
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.BDDMockito.given;
 
@@ -367,7 +368,7 @@ public class InstrumenterTest {
 
     @Before
     public void setUp() {
-        given(config.getECMAVersion()).willReturn(Config.LanguageMode.ES_NEXT);
+        given(config.getECMAVersion()).willReturn(CompilerOptions.LanguageMode.ECMASCRIPT_NEXT);
         given(config.isIncludeBranch()).willReturn(false);
         given(config.isIncludeFunction()).willReturn(true);
         sourceProcessor = new SourceProcessor(config, "test.js", "x;");
@@ -1401,6 +1402,24 @@ public class InstrumenterTest {
                 "    start += step;\n" +
                 "  }\n" +
                 "}\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+
+    @Test
+    public void shouldNotChangeEvalBehaviour() {
+        String source = "var functions = {\n" +
+                "  func: function() {\n" +
+                "    eval(\"this.style.height\");\n" +
+                "  }.bind(document.documentElement)\n" +
+                "}";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "var functions = {func:function() {\n" +
+                "  _$jscoverage['test.js'].functionData[0]++;\n" +
+                "  _$jscoverage['test.js'].lineData[3]++;\n" +
+                "  eval('this.style.height');\n" +
+                "}.bind(document.documentElement)};\n";
         assertEquals(expectedSource, instrumentedSource);
     }
 }

@@ -1,11 +1,5 @@
-import com.google.javascript.jscomp.SourceFile;
-import com.google.javascript.jscomp.parsing.Config;
-import com.google.javascript.jscomp.parsing.ParserRunner;
 import com.google.javascript.rhino.Node;
-
-import static com.google.javascript.jscomp.parsing.Config.JsDocParsing.TYPES_ONLY;
-import static com.google.javascript.jscomp.parsing.Config.LanguageMode.ES_NEXT;
-import static com.google.javascript.jscomp.parsing.Config.RunMode.KEEP_GOING;
+import jscover.instrument.TestHelper;
 
 
 public class CCParserHelper {
@@ -19,11 +13,7 @@ public class CCParserHelper {
 
 
     static Node parse(String source) {
-        return ParserRunner.parse(
-                SourceFile.fromFile("test.js"),
-                source,
-                ParserRunner.createConfig(ES_NEXT, TYPES_ONLY, KEEP_GOING, null, false, Config.StrictMode.SLOPPY),
-                null).ast;
+        return TestHelper.parse(source);
     }
 
 }
