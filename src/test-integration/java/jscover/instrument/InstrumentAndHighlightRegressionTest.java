@@ -385,7 +385,6 @@ public class InstrumentAndHighlightRegressionTest {
 
     @Before
     public void setUp() {
-        given(config.getECMAVersion()).willReturn(ES_NEXT);
         given(config.isIncludeBranch()).willReturn(false);
         given(config.isIncludeFunction()).willReturn(true);
         options.setPreferSingleQuotes(true);
