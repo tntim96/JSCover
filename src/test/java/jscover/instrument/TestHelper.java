@@ -351,8 +351,6 @@ import com.google.javascript.rhino.Node;
 
 import java.util.List;
 
-import static com.google.javascript.jscomp.parsing.Config.JsDocParsing.INCLUDE_DESCRIPTIONS_WITH_WHITESPACE;
-
 public class TestHelper {
 
     public static Node parse(String source) {
