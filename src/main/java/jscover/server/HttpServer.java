@@ -355,7 +355,7 @@ import static java.util.logging.Level.*;
 
 public class HttpServer extends Thread {
     private static final Logger logger = Logger.getLogger(HttpServer.class.getName());
-    public static final int HEADER_SIZE = 1024 * 5;
+    public static final int HEADER_SIZE = 1024 * 16;
 
     private Socket socket;
     private String version;
@@ -373,6 +373,7 @@ public class HttpServer extends Thread {
         this.version = version;
     }
 
+    @Override
     public void run() {
         BufferedReader br = null;
         String requestString = null;
