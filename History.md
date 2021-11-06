@@ -1,5 +1,6 @@
-2.0.13 / 202?-??-??
+2.0.13 / 2021-11-06
 ==================
+  * 404 with large query headers (https://github.com/tntim96/JSCover/issues/308)
   * Fix eval('this') handling (https://github.com/tntim96/JSCover/issues/268)
   * Upgrade closure-compiler v20210601 to v20211006
   * Upgrade GSON 2.8.7 to 2.8.9
