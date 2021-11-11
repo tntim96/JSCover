@@ -1,4 +1,8 @@
-2.0.13 / 2021-11-06
+2.0.14 / 2021-??-??
+==================
+  * Upgrade closure-compiler v20211006 to v20211107
+  
+ 2.0.13 / 2021-11-06
 ==================
   * 404 with large query headers (https://github.com/tntim96/JSCover/issues/308)
   * Fix eval('this') handling (https://github.com/tntim96/JSCover/issues/268)
