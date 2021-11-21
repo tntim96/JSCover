@@ -69,9 +69,9 @@
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.13.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-core:2.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest:2.2" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.mockito:mockito-core:4.0.0" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: net.bytebuddy:byte-buddy:1.11.19" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: net.bytebuddy:byte-buddy-agent:1.11.19" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.mockito:mockito-core:4.1.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: net.bytebuddy:byte-buddy:1.12.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: net.bytebuddy:byte-buddy-agent:1.12.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.objenesis:objenesis:3.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.jacoco:org.jacoco.ant:0.8.7" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.jacoco:org.jacoco.core:0.8.7" level="project" />
