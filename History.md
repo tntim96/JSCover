@@ -1,6 +1,6 @@
 2.0.14 / 2021-??-??
 ==================
-  * Upgrade closure-compiler v20211006 to v20211201
+  * Upgrade closure-compiler v20211006 to v20220104
   * Internal: HtmlUnit 2.54.0 to 2.56.0, Mockito 4.0.0 to 4.2.0
   
  2.0.13 / 2021-11-06
