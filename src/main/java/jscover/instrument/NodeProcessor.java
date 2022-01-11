@@ -410,6 +410,10 @@ class NodeProcessor {
                 //Don't do anything here.
             } else if (parent.isArrayLit()) {
                 //Don't do anything here.
+            } else if (parent.isArrowFunction()) {
+                //Don't do anything here.
+            } else if (parent.isClass()) {
+                //Don't do anything here.
             } else if (parent.isClassMembers()) {
                 //Don't do anything here.
             } else if (parent != null) {

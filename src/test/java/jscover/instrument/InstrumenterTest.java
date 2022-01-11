@@ -1422,4 +1422,25 @@ public class InstrumenterTest {
                 "}.bind(document.documentElement)};\n";
         assertEquals(expectedSource, instrumentedSource);
     }
+
+
+    @Test
+    public void shouldInstrumentClassInArrowFunction() {
+        String source = "superclass =>\n" +
+                "class extends superclass {\n" +
+                "eat(food) {\n" +
+                "console.log(\"Eating ${food}\");\n" +
+                "}\n" +
+                "};";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "superclass => class extends superclass {\n" +
+                "  eat(food) {\n" +
+                "    _$jscoverage['test.js'].functionData[0]++;\n" +
+                "    _$jscoverage['test.js'].lineData[4]++;\n" +
+                "    console.log('Eating ${food}');\n" +
+                "  }\n" +
+                "};\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
 }
