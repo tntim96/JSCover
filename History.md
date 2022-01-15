@@ -1,4 +1,4 @@
-2.0.14 / 2022-01-??
+2.0.14 / 2022-01-15
 ==================
   * IllegalStateException: FUNCTION when arrow function is used (https://github.com/tntim96/JSCover/issues/310)
   * Upgrade closure-compiler v20211006 to v20220104
