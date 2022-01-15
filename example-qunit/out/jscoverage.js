@@ -50,7 +50,7 @@ function BranchData() {
 }
 
 BranchData.fromJson = function(jsonString) {
-    var json = eval('(' + jsonString + ')');
+    var json = JSON.parse(jsonString);
     var branchData = new BranchData();
     branchData.init(json.position, json.nodeLength);
     branchData.evalFalse = json.evalFalse;
@@ -183,7 +183,7 @@ function jscoverage_serializeCoverageToJSON() {
 
 function jscoverage_parseCoverageJSON(data) {
     var result = {};
-    var json = eval('(' + data + ')');
+    var json = JSON.parse(data);
     var file;
     for (file in json) {
         var fileCoverage = json[file];
@@ -206,7 +206,7 @@ function jscoverage_html_escape(s) {
 }
 /*
     jscoverage.js - code coverage for JavaScript
-    Copyright (C) 2007-2010 siliconforks.com - 2012-2020 tntim96
+    Copyright (C) 2007-2010 siliconforks.com - 2012-2022 tntim96
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
