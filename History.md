@@ -2,7 +2,7 @@
 ==================
   * IllegalStateException: FUNCTION when arrow function is used (https://github.com/tntim96/JSCover/issues/310)
   * Upgrade closure-compiler v20211006 to v20220104
-  * Internal: HtmlUnit 2.54.0 to 2.56.0, Mockito 4.0.0 to 4.2.0, Rhino 1.7.13 to 1.7.14
+  * Internal: HtmlUnit 2.54.0 to 2.57.0, Mockito 4.0.0 to 4.3.1, Rhino 1.7.13 to 1.7.14
   
  2.0.13 / 2021-11-06
 ==================
