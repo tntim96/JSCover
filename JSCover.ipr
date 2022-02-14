@@ -682,6 +682,9 @@
       <method />
     </configuration>
   </component>
+  <component name="ProjectType">
+    <option name="id" value="jpab" />
+  </component>
   <component name="RemoteRepositoriesConfiguration">
     <remote-repository>
       <option name="id" value="central" />

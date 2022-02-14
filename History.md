@@ -1,3 +1,7 @@
+2.0.15 / 2022-??-??
+==================
+  * Fix selenium-ide.html in localStorage-file-system example (https://github.com/tntim96/JSCover/issues/312)
+
 2.0.14 / 2022-01-15
 ==================
   * IllegalStateException: FUNCTION when arrow function is used (https://github.com/tntim96/JSCover/issues/310)
