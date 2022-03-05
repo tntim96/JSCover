@@ -1,7 +1,7 @@
 2.0.15 / 2022-??-??
 ==================
   * Fix selenium-ide.html in localStorage-file-system example (https://github.com/tntim96/JSCover/issues/312)
-  * Upgrade gson 2.8.9 to 2.9.0
+  * Upgrade closure-compiler v20220202 to v20220301, gson 2.8.9 to 2.9.0
 
 2.0.14 / 2022-01-15
 ==================
