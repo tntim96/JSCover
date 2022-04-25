@@ -430,6 +430,7 @@ class NodeProcessor {
                     && !parent.isName()
                     && !parent.isArrayLit()
                     && !parent.isAssign()
+                    && !parent.isComma()
                     && !isBooleanOperation(parent)) {
                 addInstrumentationBefore(node);
             }

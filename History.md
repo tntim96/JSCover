@@ -1,5 +1,6 @@
 2.0.15 / 2022-??-??
 ==================
+  * Fix selenium-ide.html in localStorage-file-system example (https://github.com/tntim96/JSCover/issues/303)
   * Fix selenium-ide.html in localStorage-file-system example (https://github.com/tntim96/JSCover/issues/312)
   * Upgrade closure-compiler v20220202 to v20220405, gson 2.8.9 to 2.9.0
   * Internal: HtmlUnit 2.58.0 to 2.60.0, Mockito 4.3.1 to 4.5.1, JaCoCo 0.8.7 to 0.8.8

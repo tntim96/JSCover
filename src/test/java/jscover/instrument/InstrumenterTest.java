@@ -1443,4 +1443,19 @@ public class InstrumenterTest {
                 "};\n";
         assertEquals(expectedSource, instrumentedSource);
     }
+
+
+    @Test
+    public void shouldInstrumentFunctionAfterCommaInAssignment() {
+        String source = "u = a\n" +
+                "    , function (x) { return x;};";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "u = a, function(x) {\n" +
+                "  _$jscoverage['test.js'].functionData[0]++;\n" +
+                "  _$jscoverage['test.js'].lineData[2]++;\n" +
+                "  return x;\n" +
+                "};\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
 }
