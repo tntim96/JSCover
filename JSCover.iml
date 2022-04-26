@@ -39,17 +39,17 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="library" name="Maven: com.google.javascript:closure-compiler:v20220405" level="project" />
     <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.9.0" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: net.sourceforge.htmlunit:htmlunit:2.60.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: net.sourceforge.htmlunit:htmlunit:2.61.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: xalan:xalan:2.7.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: xalan:serializer:2.7.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.httpcomponents:httpmime:4.5.13" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.httpcomponents:httpclient:4.5.13" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.httpcomponents:httpcore:4.4.13" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: net.sourceforge.htmlunit:htmlunit-core-js:2.60.0" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: net.sourceforge.htmlunit:neko-htmlunit:2.60.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: net.sourceforge.htmlunit:htmlunit-core-js:2.61.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: net.sourceforge.htmlunit:neko-htmlunit:2.61.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: xerces:xercesImpl:2.12.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: xml-apis:xml-apis:1.4.01" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: net.sourceforge.htmlunit:htmlunit-cssparser:1.11.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: net.sourceforge.htmlunit:htmlunit-cssparser:1.12.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.commons:commons-lang3:3.12.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.commons:commons-text:1.9" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: commons-io:commons-io:2.10.0" level="project" />
@@ -58,13 +58,13 @@
     <orderEntry type="library" scope="TEST" name="Maven: commons-codec:commons-codec:1.15" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.brotli:dec:0.1.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: com.shapesecurity:salvation2:3.0.0" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.eclipse.jetty.websocket:websocket-client:9.4.45.v20220203" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.eclipse.jetty:jetty-client:9.4.45.v20220203" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.eclipse.jetty:jetty-http:9.4.45.v20220203" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.eclipse.jetty:jetty-util:9.4.45.v20220203" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.eclipse.jetty:jetty-io:9.4.45.v20220203" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.eclipse.jetty.websocket:websocket-common:9.4.45.v20220203" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.eclipse.jetty.websocket:websocket-api:9.4.45.v20220203" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.eclipse.jetty.websocket:websocket-client:9.4.46.v20220331" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.eclipse.jetty:jetty-client:9.4.46.v20220331" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.eclipse.jetty:jetty-http:9.4.46.v20220331" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.eclipse.jetty:jetty-util:9.4.46.v20220331" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.eclipse.jetty:jetty-io:9.4.46.v20220331" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.eclipse.jetty.websocket:websocket-common:9.4.46.v20220331" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.eclipse.jetty.websocket:websocket-api:9.4.46.v20220331" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.mozilla:rhino:1.7.14" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.13.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-core:2.2" level="project" />
