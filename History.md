@@ -1,3 +1,6 @@
+2.0.16 / 2022-??-??
+==================
+
 2.0.15 / 2022-04-27
 ==================
   * Fix instrument function after comma in assignment (https://github.com/tntim96/JSCover/issues/303)
