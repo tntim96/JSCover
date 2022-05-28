@@ -702,11 +702,6 @@
       <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
     </remote-repository>
   </component>
-  <component name="SwUserDefinedSpecifications">
-    <option name="specTypeByUrl">
-      <map />
-    </option>
-  </component>
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
   </component>
@@ -800,26 +795,26 @@
         <root url="jar://$MAVEN_REPOSITORY$/junit/junit/4.13.2/junit-4.13.2-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: net.bytebuddy:byte-buddy-agent:1.12.9">
+    <library name="Maven: net.bytebuddy:byte-buddy-agent:1.12.10">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy-agent/1.12.9/byte-buddy-agent-1.12.9.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy-agent/1.12.10/byte-buddy-agent-1.12.10.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy-agent/1.12.9/byte-buddy-agent-1.12.9-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy-agent/1.12.10/byte-buddy-agent-1.12.10-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy-agent/1.12.9/byte-buddy-agent-1.12.9-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy-agent/1.12.10/byte-buddy-agent-1.12.10-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: net.bytebuddy:byte-buddy:1.12.9">
+    <library name="Maven: net.bytebuddy:byte-buddy:1.12.10">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy/1.12.9/byte-buddy-1.12.9.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy/1.12.10/byte-buddy-1.12.10.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy/1.12.9/byte-buddy-1.12.9-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy/1.12.10/byte-buddy-1.12.10-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy/1.12.9/byte-buddy-1.12.9-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy/1.12.10/byte-buddy-1.12.10-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: net.sourceforge.htmlunit:htmlunit-core-js:2.61.1">
@@ -1075,15 +1070,15 @@
         <root url="jar://$MAVEN_REPOSITORY$/org/jacoco/org.jacoco.report/0.8.8/org.jacoco.report-0.8.8-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.mockito:mockito-core:4.5.1">
+    <library name="Maven: org.mockito:mockito-core:4.6.0">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/4.5.1/mockito-core-4.5.1.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/4.6.0/mockito-core-4.6.0.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/4.5.1/mockito-core-4.5.1-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/4.6.0/mockito-core-4.6.0-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/4.5.1/mockito-core-4.5.1-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/4.6.0/mockito-core-4.6.0-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.mozilla:rhino:1.7.14">
