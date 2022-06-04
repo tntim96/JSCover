@@ -39,14 +39,14 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="library" name="Maven: com.google.javascript:closure-compiler:v20220502" level="project" />
     <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.9.0" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: net.sourceforge.htmlunit:htmlunit:2.61.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: net.sourceforge.htmlunit:htmlunit:2.62.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: xalan:xalan:2.7.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: xalan:serializer:2.7.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.httpcomponents:httpmime:4.5.13" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.httpcomponents:httpclient:4.5.13" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.httpcomponents:httpcore:4.4.13" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: net.sourceforge.htmlunit:htmlunit-core-js:2.61.1" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: net.sourceforge.htmlunit:neko-htmlunit:2.61.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: net.sourceforge.htmlunit:htmlunit-core-js:2.62.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: net.sourceforge.htmlunit:neko-htmlunit:2.62.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: xerces:xercesImpl:2.12.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: xml-apis:xml-apis:1.4.01" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: net.sourceforge.htmlunit:htmlunit-cssparser:1.12.0" level="project" />
