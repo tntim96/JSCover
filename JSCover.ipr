@@ -63,6 +63,9 @@
   <component name="JavadocGenerationManager">
     <option name="OTHER_OPTIONS" value="" />
   </component>
+  <component name="JpaBuddyIdeaProjectConfig">
+    <option name="renamerInitialized" value="true" />
+  </component>
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>
@@ -718,15 +721,15 @@
         <root url="jar://$MAVEN_REPOSITORY$/com/google/code/gson/gson/2.9.1/gson-2.9.1-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: com.google.javascript:closure-compiler:v20220803">
+    <library name="Maven: com.google.javascript:closure-compiler:v20220905">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler/v20220803/closure-compiler-v20220803.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler/v20220905/closure-compiler-v20220905.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler/v20220803/closure-compiler-v20220803-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler/v20220905/closure-compiler-v20220905-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler/v20220803/closure-compiler-v20220803-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler/v20220905/closure-compiler-v20220905-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: com.shapesecurity:salvation2:3.0.1">
@@ -795,26 +798,26 @@
         <root url="jar://$MAVEN_REPOSITORY$/junit/junit/4.13.2/junit-4.13.2-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: net.bytebuddy:byte-buddy-agent:1.12.13">
+    <library name="Maven: net.bytebuddy:byte-buddy-agent:1.12.14">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy-agent/1.12.13/byte-buddy-agent-1.12.13.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy-agent/1.12.14/byte-buddy-agent-1.12.14.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy-agent/1.12.13/byte-buddy-agent-1.12.13-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy-agent/1.12.14/byte-buddy-agent-1.12.14-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy-agent/1.12.13/byte-buddy-agent-1.12.13-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy-agent/1.12.14/byte-buddy-agent-1.12.14-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: net.bytebuddy:byte-buddy:1.12.13">
+    <library name="Maven: net.bytebuddy:byte-buddy:1.12.14">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy/1.12.13/byte-buddy-1.12.13.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy/1.12.14/byte-buddy-1.12.14.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy/1.12.13/byte-buddy-1.12.13-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy/1.12.14/byte-buddy-1.12.14-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy/1.12.13/byte-buddy-1.12.13-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy/1.12.14/byte-buddy-1.12.14-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: net.sourceforge.htmlunit:htmlunit-core-js:2.64.0">
@@ -1070,15 +1073,15 @@
         <root url="jar://$MAVEN_REPOSITORY$/org/jacoco/org.jacoco.report/0.8.8/org.jacoco.report-0.8.8-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.mockito:mockito-core:4.7.0">
+    <library name="Maven: org.mockito:mockito-core:4.8.0">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/4.7.0/mockito-core-4.7.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/4.8.0/mockito-core-4.8.0.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/4.7.0/mockito-core-4.7.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/4.8.0/mockito-core-4.8.0-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/4.7.0/mockito-core-4.7.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/4.8.0/mockito-core-4.8.0-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.mozilla:rhino:1.7.14">
