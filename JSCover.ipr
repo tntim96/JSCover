@@ -820,15 +820,15 @@
         <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy/1.12.14/byte-buddy-1.12.14-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: net.sourceforge.htmlunit:htmlunit-core-js:2.64.0">
+    <library name="Maven: net.sourceforge.htmlunit:htmlunit-core-js:2.65.0">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit-core-js/2.64.0/htmlunit-core-js-2.64.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit-core-js/2.65.0/htmlunit-core-js-2.65.0.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit-core-js/2.64.0/htmlunit-core-js-2.64.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit-core-js/2.65.0/htmlunit-core-js-2.65.0-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit-core-js/2.64.0/htmlunit-core-js-2.64.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit-core-js/2.65.0/htmlunit-core-js-2.65.0-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: net.sourceforge.htmlunit:htmlunit-cssparser:1.12.0">
@@ -842,26 +842,37 @@
         <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit-cssparser/1.12.0/htmlunit-cssparser-1.12.0-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: net.sourceforge.htmlunit:htmlunit:2.64.0">
+    <library name="Maven: net.sourceforge.htmlunit:htmlunit-xpath:2.65.0">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit/2.64.0/htmlunit-2.64.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit-xpath/2.65.0/htmlunit-xpath-2.65.0.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit/2.64.0/htmlunit-2.64.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit-xpath/2.65.0/htmlunit-xpath-2.65.0-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit/2.64.0/htmlunit-2.64.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit-xpath/2.65.0/htmlunit-xpath-2.65.0-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: net.sourceforge.htmlunit:neko-htmlunit:2.64.0">
+    <library name="Maven: net.sourceforge.htmlunit:htmlunit:2.65.1">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/neko-htmlunit/2.64.0/neko-htmlunit-2.64.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit/2.65.1/htmlunit-2.65.1.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/neko-htmlunit/2.64.0/neko-htmlunit-2.64.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit/2.65.1/htmlunit-2.65.1-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/neko-htmlunit/2.64.0/neko-htmlunit-2.64.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit/2.65.1/htmlunit-2.65.1-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: net.sourceforge.htmlunit:neko-htmlunit:2.65.0">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/neko-htmlunit/2.65.0/neko-htmlunit-2.65.0.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/neko-htmlunit/2.65.0/neko-htmlunit-2.65.0-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/neko-htmlunit/2.65.0/neko-htmlunit-2.65.0-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.apache.commons:commons-lang3:3.12.0">
@@ -930,81 +941,81 @@
         <root url="jar://$MAVEN_REPOSITORY$/org/brotli/dec/0.1.2/dec-0.1.2-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.eclipse.jetty.websocket:websocket-api:9.4.48.v20220622">
+    <library name="Maven: org.eclipse.jetty.websocket:websocket-api:9.4.49.v20220914">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/jetty/websocket/websocket-api/9.4.48.v20220622/websocket-api-9.4.48.v20220622.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/jetty/websocket/websocket-api/9.4.49.v20220914/websocket-api-9.4.49.v20220914.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/jetty/websocket/websocket-api/9.4.48.v20220622/websocket-api-9.4.48.v20220622-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/jetty/websocket/websocket-api/9.4.49.v20220914/websocket-api-9.4.49.v20220914-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/jetty/websocket/websocket-api/9.4.48.v20220622/websocket-api-9.4.48.v20220622-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/jetty/websocket/websocket-api/9.4.49.v20220914/websocket-api-9.4.49.v20220914-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.eclipse.jetty.websocket:websocket-client:9.4.48.v20220622">
+    <library name="Maven: org.eclipse.jetty.websocket:websocket-client:9.4.49.v20220914">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/jetty/websocket/websocket-client/9.4.48.v20220622/websocket-client-9.4.48.v20220622.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/jetty/websocket/websocket-client/9.4.49.v20220914/websocket-client-9.4.49.v20220914.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/jetty/websocket/websocket-client/9.4.48.v20220622/websocket-client-9.4.48.v20220622-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/jetty/websocket/websocket-client/9.4.49.v20220914/websocket-client-9.4.49.v20220914-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/jetty/websocket/websocket-client/9.4.48.v20220622/websocket-client-9.4.48.v20220622-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/jetty/websocket/websocket-client/9.4.49.v20220914/websocket-client-9.4.49.v20220914-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.eclipse.jetty.websocket:websocket-common:9.4.48.v20220622">
+    <library name="Maven: org.eclipse.jetty.websocket:websocket-common:9.4.49.v20220914">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/jetty/websocket/websocket-common/9.4.48.v20220622/websocket-common-9.4.48.v20220622.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/jetty/websocket/websocket-common/9.4.49.v20220914/websocket-common-9.4.49.v20220914.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/jetty/websocket/websocket-common/9.4.48.v20220622/websocket-common-9.4.48.v20220622-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/jetty/websocket/websocket-common/9.4.49.v20220914/websocket-common-9.4.49.v20220914-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/jetty/websocket/websocket-common/9.4.48.v20220622/websocket-common-9.4.48.v20220622-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/jetty/websocket/websocket-common/9.4.49.v20220914/websocket-common-9.4.49.v20220914-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.eclipse.jetty:jetty-client:9.4.48.v20220622">
+    <library name="Maven: org.eclipse.jetty:jetty-client:9.4.49.v20220914">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-client/9.4.48.v20220622/jetty-client-9.4.48.v20220622.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-client/9.4.49.v20220914/jetty-client-9.4.49.v20220914.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-client/9.4.48.v20220622/jetty-client-9.4.48.v20220622-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-client/9.4.49.v20220914/jetty-client-9.4.49.v20220914-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-client/9.4.48.v20220622/jetty-client-9.4.48.v20220622-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-client/9.4.49.v20220914/jetty-client-9.4.49.v20220914-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.eclipse.jetty:jetty-http:9.4.48.v20220622">
+    <library name="Maven: org.eclipse.jetty:jetty-http:9.4.49.v20220914">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-http/9.4.48.v20220622/jetty-http-9.4.48.v20220622.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-http/9.4.49.v20220914/jetty-http-9.4.49.v20220914.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-http/9.4.48.v20220622/jetty-http-9.4.48.v20220622-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-http/9.4.49.v20220914/jetty-http-9.4.49.v20220914-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-http/9.4.48.v20220622/jetty-http-9.4.48.v20220622-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-http/9.4.49.v20220914/jetty-http-9.4.49.v20220914-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.eclipse.jetty:jetty-io:9.4.48.v20220622">
+    <library name="Maven: org.eclipse.jetty:jetty-io:9.4.49.v20220914">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-io/9.4.48.v20220622/jetty-io-9.4.48.v20220622.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-io/9.4.49.v20220914/jetty-io-9.4.49.v20220914.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-io/9.4.48.v20220622/jetty-io-9.4.48.v20220622-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-io/9.4.49.v20220914/jetty-io-9.4.49.v20220914-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-io/9.4.48.v20220622/jetty-io-9.4.48.v20220622-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-io/9.4.49.v20220914/jetty-io-9.4.49.v20220914-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.eclipse.jetty:jetty-util:9.4.48.v20220622">
+    <library name="Maven: org.eclipse.jetty:jetty-util:9.4.49.v20220914">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-util/9.4.48.v20220622/jetty-util-9.4.48.v20220622.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-util/9.4.49.v20220914/jetty-util-9.4.49.v20220914.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-util/9.4.48.v20220622/jetty-util-9.4.48.v20220622-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-util/9.4.49.v20220914/jetty-util-9.4.49.v20220914-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-util/9.4.48.v20220622/jetty-util-9.4.48.v20220622-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-util/9.4.49.v20220914/jetty-util-9.4.49.v20220914-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.hamcrest:hamcrest-core:2.2">
@@ -1148,28 +1159,6 @@
       </JAVADOC>
       <SOURCES>
         <root url="jar://$MAVEN_REPOSITORY$/org/ow2/asm/asm/9.2/asm-9.2-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: xalan:serializer:2.7.2">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/xalan/serializer/2.7.2/serializer-2.7.2.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/xalan/serializer/2.7.2/serializer-2.7.2-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/xalan/serializer/2.7.2/serializer-2.7.2-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: xalan:xalan:2.7.2">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/xalan/xalan/2.7.2/xalan-2.7.2.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/xalan/xalan/2.7.2/xalan-2.7.2-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/xalan/xalan/2.7.2/xalan-2.7.2-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: xerces:xercesImpl:2.12.2">
