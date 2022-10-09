@@ -1,7 +1,7 @@
 2.0.16 / 2022-??-??
 ==================
   * Requires Java 11
-  * Upgrade closure-compiler v20220405 to v20220905, gson 2.9.0 to 2.9.1
+  * Upgrade closure-compiler v20220405 to v20221004, gson 2.9.0 to 2.9.1
   * Internal: HtmlUnit 2.61.0 to 2.65.1, Mockito 4.5.1 to 4.8.0
 
 2.0.15 / 2022-04-27
