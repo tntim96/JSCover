@@ -798,37 +798,37 @@
         <root url="jar://$MAVEN_REPOSITORY$/junit/junit/4.13.2/junit-4.13.2-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: net.bytebuddy:byte-buddy-agent:1.12.14">
+    <library name="Maven: net.bytebuddy:byte-buddy-agent:1.12.16">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy-agent/1.12.14/byte-buddy-agent-1.12.14.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy-agent/1.12.16/byte-buddy-agent-1.12.16.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy-agent/1.12.14/byte-buddy-agent-1.12.14-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy-agent/1.12.16/byte-buddy-agent-1.12.16-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy-agent/1.12.14/byte-buddy-agent-1.12.14-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy-agent/1.12.16/byte-buddy-agent-1.12.16-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: net.bytebuddy:byte-buddy:1.12.14">
+    <library name="Maven: net.bytebuddy:byte-buddy:1.12.16">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy/1.12.14/byte-buddy-1.12.14.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy/1.12.16/byte-buddy-1.12.16.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy/1.12.14/byte-buddy-1.12.14-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy/1.12.16/byte-buddy-1.12.16-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy/1.12.14/byte-buddy-1.12.14-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy/1.12.16/byte-buddy-1.12.16-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: net.sourceforge.htmlunit:htmlunit-core-js:2.65.0">
+    <library name="Maven: net.sourceforge.htmlunit:htmlunit-core-js:2.66.0">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit-core-js/2.65.0/htmlunit-core-js-2.65.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit-core-js/2.66.0/htmlunit-core-js-2.66.0.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit-core-js/2.65.0/htmlunit-core-js-2.65.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit-core-js/2.66.0/htmlunit-core-js-2.66.0-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit-core-js/2.65.0/htmlunit-core-js-2.65.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit-core-js/2.66.0/htmlunit-core-js-2.66.0-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: net.sourceforge.htmlunit:htmlunit-cssparser:1.12.0">
@@ -842,37 +842,37 @@
         <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit-cssparser/1.12.0/htmlunit-cssparser-1.12.0-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: net.sourceforge.htmlunit:htmlunit-xpath:2.65.0">
+    <library name="Maven: net.sourceforge.htmlunit:htmlunit-xpath:2.66.0">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit-xpath/2.65.0/htmlunit-xpath-2.65.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit-xpath/2.66.0/htmlunit-xpath-2.66.0.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit-xpath/2.65.0/htmlunit-xpath-2.65.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit-xpath/2.66.0/htmlunit-xpath-2.66.0-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit-xpath/2.65.0/htmlunit-xpath-2.65.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit-xpath/2.66.0/htmlunit-xpath-2.66.0-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: net.sourceforge.htmlunit:htmlunit:2.65.1">
+    <library name="Maven: net.sourceforge.htmlunit:htmlunit:2.66.0">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit/2.65.1/htmlunit-2.65.1.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit/2.66.0/htmlunit-2.66.0.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit/2.65.1/htmlunit-2.65.1-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit/2.66.0/htmlunit-2.66.0-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit/2.65.1/htmlunit-2.65.1-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit/2.66.0/htmlunit-2.66.0-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: net.sourceforge.htmlunit:neko-htmlunit:2.65.0">
+    <library name="Maven: net.sourceforge.htmlunit:neko-htmlunit:2.66.0">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/neko-htmlunit/2.65.0/neko-htmlunit-2.65.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/neko-htmlunit/2.66.0/neko-htmlunit-2.66.0.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/neko-htmlunit/2.65.0/neko-htmlunit-2.65.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/neko-htmlunit/2.66.0/neko-htmlunit-2.66.0-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/neko-htmlunit/2.65.0/neko-htmlunit-2.65.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/neko-htmlunit/2.66.0/neko-htmlunit-2.66.0-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.apache.commons:commons-lang3:3.12.0">
@@ -886,15 +886,15 @@
         <root url="jar://$MAVEN_REPOSITORY$/org/apache/commons/commons-lang3/3.12.0/commons-lang3-3.12.0-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.apache.commons:commons-text:1.9">
+    <library name="Maven: org.apache.commons:commons-text:1.10.0">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/apache/commons/commons-text/1.9/commons-text-1.9.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/apache/commons/commons-text/1.10.0/commons-text-1.10.0.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/apache/commons/commons-text/1.9/commons-text-1.9-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/apache/commons/commons-text/1.10.0/commons-text-1.10.0-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/apache/commons/commons-text/1.9/commons-text-1.9-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/apache/commons/commons-text/1.10.0/commons-text-1.10.0-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.apache.httpcomponents:httpclient:4.5.13">
@@ -1084,15 +1084,15 @@
         <root url="jar://$MAVEN_REPOSITORY$/org/jacoco/org.jacoco.report/0.8.8/org.jacoco.report-0.8.8-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.mockito:mockito-core:4.8.0">
+    <library name="Maven: org.mockito:mockito-core:4.8.1">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/4.8.0/mockito-core-4.8.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/4.8.1/mockito-core-4.8.1.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/4.8.0/mockito-core-4.8.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/4.8.1/mockito-core-4.8.1-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/4.8.0/mockito-core-4.8.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/4.8.1/mockito-core-4.8.1-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.mozilla:rhino:1.7.14">
