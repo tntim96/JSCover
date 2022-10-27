@@ -371,8 +371,22 @@ class NodeProcessor {
         return statementBuilder.buildFunctionInstrumentationStatement(functionNumber, fileName);
     }
 
+    boolean isInTemplateLiteral(Node node) {
+        if (node.isTemplateLit()) {
+            return true;
+        }
+        Node parent = node.getParent();
+        if (parent == null) {
+            return false;
+        }
+        return isInTemplateLiteral(parent);
+    }
+
     boolean processNode(Node node) {
         if (statementBuilder.isInstrumentation(node)) {
+            return false;
+        }
+        if (isInTemplateLiteral(node)) {
             return false;
         }
         // Function Coverage (HA-CA), tntim96

@@ -30,11 +30,12 @@ if (!jsCover_isolateBrowser) {
 
     try {
         if (typeof top === 'object' && top !== null && top._$jscoverage) {
-            this._$jscoverage = top._$jscoverage;
+            _$jscoverage = top._$jscoverage;
         }
     } catch (e) {
     }
 }
-if (!this._$jscoverage) {
-    this._$jscoverage = {};
+var _$jscoverage;
+if (!_$jscoverage) {
+    _$jscoverage = {};
 }

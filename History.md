@@ -1,5 +1,6 @@
 2.0.16 / 2022-??-??
 ==================
+  * Fix instruments in lit-html template (https://github.com/tntim96/JSCover/issues/311)
   * Requires Java 11
   * Upgrade closure-compiler v20220405 to v20221004, gson 2.9.0 to 2.10
   * Internal: HtmlUnit 2.61.0 to 2.66.0, Mockito 4.5.1 to 4.8.1

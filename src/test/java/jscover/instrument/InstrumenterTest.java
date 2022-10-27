@@ -351,10 +351,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.io.IOException;
-
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.BDDMockito.given;
 
@@ -1456,6 +1455,16 @@ public class InstrumenterTest {
                 "  _$jscoverage['test.js'].lineData[2]++;\n" +
                 "  return x;\n" +
                 "};\n";
+        assertEquals(expectedSource, instrumentedSource);
+    }
+
+
+    @Test
+    public void shouldInstrumentTemplateLiteral() {
+        String source = "let x = `\n@mouseenter=\"${(evt) => alert('hovered')}\">`;";
+        String instrumentedSource = sourceProcessor.instrumentSource(source);
+        String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
+                "let x = `\n@mouseenter=\"${evt => alert('hovered')}\">`;\n";
         assertEquals(expectedSource, instrumentedSource);
     }
 }

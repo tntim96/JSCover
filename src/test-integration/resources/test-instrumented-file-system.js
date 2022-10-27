@@ -200,7 +200,7 @@ function jscoverage_pad(s) {
 }
 
 function jscoverage_html_escape(s) {
-    return s.replace(/[<>\&\"\']/g, function (c) {
+    return s.replace(/[<>&"']/g, function (c) {
         return '&#' + c.charCodeAt(0) + ';';
     });
 }
@@ -237,13 +237,14 @@ if (!jsCover_isolateBrowser) {
 
     try {
         if (typeof top === 'object' && top !== null && top._$jscoverage) {
-            this._$jscoverage = top._$jscoverage;
+            _$jscoverage = top._$jscoverage;
         }
     } catch (e) {
     }
 }
-if (!this._$jscoverage) {
-    this._$jscoverage = {};
+var _$jscoverage;
+if (!_$jscoverage) {
+    _$jscoverage = {};
 }
 if (! _$jscoverage['test-simple.js']) {
   _$jscoverage['test-simple.js'] = {};

@@ -21,7 +21,7 @@ if (!window.jscoverage_report) {
         //console.log("Configuring async jsreport cb");
         request.onreadystatechange = function () {
             //console.log("jsreport cb called");
-            if (request.readyState == 4 && callback) {
+            if (request.readyState === 4 && callback) {
                 callback(request);
             }
         };

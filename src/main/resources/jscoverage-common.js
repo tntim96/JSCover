@@ -72,7 +72,7 @@ function jscoverage_pad(s) {
 }
 
 function jscoverage_html_escape(s) {
-    return s.replace(/[<>\&\"\']/g, function (c) {
+    return s.replace(/[<>&"']/g, function (c) {
         return '&#' + c.charCodeAt(0) + ';';
     });
 }
