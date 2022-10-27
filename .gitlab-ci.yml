@@ -1,4 +1,4 @@
-image: openjdk:11-jdk
+image: openjdk:8
 
 before_script:
   - apt-get update
