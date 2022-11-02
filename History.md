@@ -1,6 +1,7 @@
-2.0.16 / 2022-??-??
+2.0.16 / 2022-11-02
 ==================
   * Fix instruments in lit-html template (https://github.com/tntim96/JSCover/issues/311)
+  * Fix "this" is undefined in header.js in strict mode (https://github.com/tntim96/JSCover/issues/293)
   * Upgrade closure-compiler v20220405 to v20220601, gson 2.9.0 to 2.10
   * Internal: HtmlUnit 2.61.0 to 2.66.0, Mockito 4.5.1 to 4.8.1
 
