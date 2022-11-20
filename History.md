@@ -1,3 +1,6 @@
+2.0.17 / 2022-??-??
+==================
+
 2.0.16 / 2022-11-02
 ==================
   * Fix instruments in lit-html template (https://github.com/tntim96/JSCover/issues/311)
