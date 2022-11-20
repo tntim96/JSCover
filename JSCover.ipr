@@ -1073,15 +1073,15 @@
         <root url="jar://$MAVEN_REPOSITORY$/org/jacoco/org.jacoco.report/0.8.8/org.jacoco.report-0.8.8-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.mockito:mockito-core:4.8.1">
+    <library name="Maven: org.mockito:mockito-core:4.9.0">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/4.8.1/mockito-core-4.8.1.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/4.9.0/mockito-core-4.9.0.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/4.8.1/mockito-core-4.8.1-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/4.9.0/mockito-core-4.9.0-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/4.8.1/mockito-core-4.8.1-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/4.9.0/mockito-core-4.9.0-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.mozilla:rhino:1.7.14">
@@ -1095,15 +1095,15 @@
         <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino/1.7.14/rhino-1.7.14-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.objenesis:objenesis:3.2">
+    <library name="Maven: org.objenesis:objenesis:3.3">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/objenesis/objenesis/3.2/objenesis-3.2.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/objenesis/objenesis/3.3/objenesis-3.3.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/objenesis/objenesis/3.2/objenesis-3.2-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/objenesis/objenesis/3.3/objenesis-3.3-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/objenesis/objenesis/3.2/objenesis-3.2-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/objenesis/objenesis/3.3/objenesis-3.3-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.ow2.asm:asm-analysis:9.2">
