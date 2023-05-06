@@ -33,13 +33,18 @@
 <h3>Why won't the coverage report load in Google Chrome or FireFox?</h3>
 <h3>Why doesn't the manual load off the file-system in Google Chrome or FireFox?</h3>
 <h3>Why don't the web-pages load off the file-system in Google Chrome or FireFox?</h3>
-<p>Try:</p>
-<ul>
-    <li>Chrome: start with '--allow-file-access-from-files' switch</li>
-    <li>FireFox <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS/Errors/CORSRequestNotHttp">no longer
-        allows this</a></li>
-</ul>
-
+<p>For Chrome: start with '--allow-file-access-from-files' switch</p>
+<p>For FireFox</p>
+<ol>
+    <li>In a new tab, type or paste <b>about:config</b> in the address bar and press Enter/Return. Click the button promising to be careful or accepting the risk.</li>
+    <li>In the search box above the list, type or paste <b>uniq</b></li>
+    <li>Double-click the <b>privacy.file_unique_origin</b> preference to switch the value from true to <b>false</b></li>
+    <li>Firefox > 106 <b>security.fileuri.strict_origin_policy</b> set <b>false</b></li>
+</ol>
+<p>
+    For more information see <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS/Errors/CORSRequestNotHttp" target="_blank">Reason: CORS request not HTTP</a>.<br>
+Answer from <a href="https://stackoverflow.com/questions/51081754/cross-origin-request-blocked-when-loading-local-file#answer-57125361" target="_blank">Cross-Origin Request Blocked when loading local file</a>.
+</p>
 
 <h3>Does the developer use JSCover on projects</h3>
 <p>Yes.</p>

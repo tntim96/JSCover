@@ -54,7 +54,7 @@ p {
     color: #ddd;
 }
 
-ul {
+ul,ol {
     color: #ddd;
     margin: 0;
 }
