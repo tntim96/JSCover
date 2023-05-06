@@ -200,13 +200,13 @@ function jscoverage_pad(s) {
 }
 
 function jscoverage_html_escape(s) {
-    return s.replace(/[<>\&\"\']/g, function (c) {
+    return s.replace(/[<>&"']/g, function (c) {
         return '&#' + c.charCodeAt(0) + ';';
     });
 }
 /*
     jscoverage.js - code coverage for JavaScript
-    Copyright (C) 2007-2010 siliconforks.com - 2012-2022 tntim96
+    Copyright (C) 2007-2010 siliconforks.com - 2012-2023 tntim96
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

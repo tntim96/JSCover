@@ -200,7 +200,7 @@ function jscoverage_pad(s) {
 }
 
 function jscoverage_html_escape(s) {
-    return s.replace(/[<>\&\"\']/g, function (c) {
+    return s.replace(/[<>&"']/g, function (c) {
         return '&#' + c.charCodeAt(0) + ';';
     });
 }
@@ -237,13 +237,14 @@ if (!jsCover_isolateBrowser) {
 
     try {
         if (typeof top === 'object' && top !== null && top._$jscoverage) {
-            this._$jscoverage = top._$jscoverage;
+            _$jscoverage = top._$jscoverage;
         }
     } catch (e) {
     }
 }
-if (!this._$jscoverage) {
-    this._$jscoverage = {};
+var _$jscoverage;
+if (!_$jscoverage) {
+    _$jscoverage = {};
 }
 if (! _$jscoverage['/underscore-umd.js']) {
   _$jscoverage['/underscore-umd.js'] = {};
@@ -2116,7 +2117,7 @@ if (! _$jscoverage['/underscore-umd.js'].branchData) {
   _$jscoverage['/underscore-umd.js'].branchData['1875'] = [];
   _$jscoverage['/underscore-umd.js'].branchData['1875'][1] = new BranchData();
 }
-_$jscoverage['/underscore-umd.js'].branchData['22'][4].init(41, 24);
+_$jscoverage['/underscore-umd.js'].branchData['22'][4].init(42, 24);
 function visit444_22_4(result) {
   _$jscoverage['/underscore-umd.js'].branchData['22'][4].ranCondition(result);
   return result;
@@ -2126,32 +2127,32 @@ function visit443_424_6(result) {
   _$jscoverage['/underscore-umd.js'].branchData['424'][6].ranCondition(result);
   return result;
 }
-_$jscoverage['/underscore-umd.js'].branchData['22'][3].init(12, 25);
+_$jscoverage['/underscore-umd.js'].branchData['22'][3].init(13, 25);
 function visit442_22_3(result) {
   _$jscoverage['/underscore-umd.js'].branchData['22'][3].ranCondition(result);
   return result;
 }
-_$jscoverage['/underscore-umd.js'].branchData['21'][7].init(40, 18);
+_$jscoverage['/underscore-umd.js'].branchData['21'][7].init(41, 18);
 function visit441_21_7(result) {
   _$jscoverage['/underscore-umd.js'].branchData['21'][7].ranCondition(result);
   return result;
 }
-_$jscoverage['/underscore-umd.js'].branchData['1507'][5].init(64, 19);
+_$jscoverage['/underscore-umd.js'].branchData['1507'][5].init(65, 19);
 function visit440_1507_5(result) {
   _$jscoverage['/underscore-umd.js'].branchData['1507'][5].ranCondition(result);
   return result;
 }
-_$jscoverage['/underscore-umd.js'].branchData['1495'][7].init(59, 25);
+_$jscoverage['/underscore-umd.js'].branchData['1495'][7].init(60, 25);
 function visit439_1495_7(result) {
   _$jscoverage['/underscore-umd.js'].branchData['1495'][7].ranCondition(result);
   return result;
 }
-_$jscoverage['/underscore-umd.js'].branchData['1482'][5].init(65, 20);
+_$jscoverage['/underscore-umd.js'].branchData['1482'][5].init(66, 20);
 function visit438_1482_5(result) {
   _$jscoverage['/underscore-umd.js'].branchData['1482'][5].ranCondition(result);
   return result;
 }
-_$jscoverage['/underscore-umd.js'].branchData['1470'][7].init(59, 25);
+_$jscoverage['/underscore-umd.js'].branchData['1470'][7].init(60, 25);
 function visit437_1470_7(result) {
   _$jscoverage['/underscore-umd.js'].branchData['1470'][7].ranCondition(result);
   return result;
@@ -2161,12 +2162,12 @@ function visit436_424_5(result) {
   _$jscoverage['/underscore-umd.js'].branchData['424'][5].ranCondition(result);
   return result;
 }
-_$jscoverage['/underscore-umd.js'].branchData['22'][2].init(12, 53);
+_$jscoverage['/underscore-umd.js'].branchData['22'][2].init(13, 53);
 function visit435_22_2(result) {
   _$jscoverage['/underscore-umd.js'].branchData['22'][2].ranCondition(result);
   return result;
 }
-_$jscoverage['/underscore-umd.js'].branchData['21'][6].init(13, 23);
+_$jscoverage['/underscore-umd.js'].branchData['21'][6].init(14, 23);
 function visit434_21_6(result) {
   _$jscoverage['/underscore-umd.js'].branchData['21'][6].ranCondition(result);
   return result;
@@ -2176,7 +2177,7 @@ function visit433_1862_5(result) {
   _$jscoverage['/underscore-umd.js'].branchData['1862'][5].ranCondition(result);
   return result;
 }
-_$jscoverage['/underscore-umd.js'].branchData['1507'][4].init(39, 21);
+_$jscoverage['/underscore-umd.js'].branchData['1507'][4].init(40, 21);
 function visit432_1507_4(result) {
   _$jscoverage['/underscore-umd.js'].branchData['1507'][4].ranCondition(result);
   return result;
@@ -2186,17 +2187,17 @@ function visit431_1499_3(result) {
   _$jscoverage['/underscore-umd.js'].branchData['1499'][3].ranCondition(result);
   return result;
 }
-_$jscoverage['/underscore-umd.js'].branchData['1495'][6].init(88, 11);
+_$jscoverage['/underscore-umd.js'].branchData['1495'][6].init(89, 11);
 function visit430_1495_6(result) {
   _$jscoverage['/underscore-umd.js'].branchData['1495'][6].ranCondition(result);
   return result;
 }
-_$jscoverage['/underscore-umd.js'].branchData['1495'][5].init(28, 27);
+_$jscoverage['/underscore-umd.js'].branchData['1495'][5].init(29, 27);
 function visit429_1495_5(result) {
   _$jscoverage['/underscore-umd.js'].branchData['1495'][5].ranCondition(result);
   return result;
 }
-_$jscoverage['/underscore-umd.js'].branchData['1482'][4].init(39, 22);
+_$jscoverage['/underscore-umd.js'].branchData['1482'][4].init(40, 22);
 function visit428_1482_4(result) {
   _$jscoverage['/underscore-umd.js'].branchData['1482'][4].ranCondition(result);
   return result;
@@ -2206,12 +2207,12 @@ function visit427_1474_3(result) {
   _$jscoverage['/underscore-umd.js'].branchData['1474'][3].ranCondition(result);
   return result;
 }
-_$jscoverage['/underscore-umd.js'].branchData['1470'][6].init(88, 11);
+_$jscoverage['/underscore-umd.js'].branchData['1470'][6].init(89, 11);
 function visit426_1470_6(result) {
   _$jscoverage['/underscore-umd.js'].branchData['1470'][6].ranCondition(result);
   return result;
 }
-_$jscoverage['/underscore-umd.js'].branchData['1470'][5].init(28, 27);
+_$jscoverage['/underscore-umd.js'].branchData['1470'][5].init(29, 27);
 function visit425_1470_5(result) {
   _$jscoverage['/underscore-umd.js'].branchData['1470'][5].ranCondition(result);
   return result;
@@ -2221,12 +2222,12 @@ function visit424_424_4(result) {
   _$jscoverage['/underscore-umd.js'].branchData['424'][4].ranCondition(result);
   return result;
 }
-_$jscoverage['/underscore-umd.js'].branchData['22'][1].init(12, 63);
+_$jscoverage['/underscore-umd.js'].branchData['22'][1].init(13, 63);
 function visit423_22_1(result) {
   _$jscoverage['/underscore-umd.js'].branchData['22'][1].ranCondition(result);
   return result;
 }
-_$jscoverage['/underscore-umd.js'].branchData['21'][5].init(13, 45);
+_$jscoverage['/underscore-umd.js'].branchData['21'][5].init(14, 45);
 function visit422_21_5(result) {
   _$jscoverage['/underscore-umd.js'].branchData['21'][5].ranCondition(result);
   return result;
@@ -2266,7 +2267,7 @@ function visit415_1570_3(result) {
   _$jscoverage['/underscore-umd.js'].branchData['1570'][3].ranCondition(result);
   return result;
 }
-_$jscoverage['/underscore-umd.js'].branchData['1507'][3].init(39, 44);
+_$jscoverage['/underscore-umd.js'].branchData['1507'][3].init(40, 44);
 function visit414_1507_3(result) {
   _$jscoverage['/underscore-umd.js'].branchData['1507'][3].ranCondition(result);
   return result;
@@ -2276,12 +2277,12 @@ function visit413_1499_2(result) {
   _$jscoverage['/underscore-umd.js'].branchData['1499'][2].ranCondition(result);
   return result;
 }
-_$jscoverage['/underscore-umd.js'].branchData['1495'][4].init(28, 56);
+_$jscoverage['/underscore-umd.js'].branchData['1495'][4].init(29, 56);
 function visit412_1495_4(result) {
   _$jscoverage['/underscore-umd.js'].branchData['1495'][4].ranCondition(result);
   return result;
 }
-_$jscoverage['/underscore-umd.js'].branchData['1482'][3].init(39, 46);
+_$jscoverage['/underscore-umd.js'].branchData['1482'][3].init(40, 46);
 function visit411_1482_3(result) {
   _$jscoverage['/underscore-umd.js'].branchData['1482'][3].ranCondition(result);
   return result;
@@ -2291,7 +2292,7 @@ function visit410_1474_2(result) {
   _$jscoverage['/underscore-umd.js'].branchData['1474'][2].ranCondition(result);
   return result;
 }
-_$jscoverage['/underscore-umd.js'].branchData['1470'][4].init(28, 56);
+_$jscoverage['/underscore-umd.js'].branchData['1470'][4].init(29, 56);
 function visit409_1470_4(result) {
   _$jscoverage['/underscore-umd.js'].branchData['1470'][4].ranCondition(result);
   return result;
@@ -2366,12 +2367,12 @@ function visit395_105_5(result) {
   _$jscoverage['/underscore-umd.js'].branchData['105'][5].ranCondition(result);
   return result;
 }
-_$jscoverage['/underscore-umd.js'].branchData['90'][4].init(34, 17);
+_$jscoverage['/underscore-umd.js'].branchData['90'][4].init(35, 17);
 function visit394_90_4(result) {
   _$jscoverage['/underscore-umd.js'].branchData['90'][4].ranCondition(result);
   return result;
 }
-_$jscoverage['/underscore-umd.js'].branchData['21'][4].init(13, 53);
+_$jscoverage['/underscore-umd.js'].branchData['21'][4].init(14, 53);
 function visit393_21_4(result) {
   _$jscoverage['/underscore-umd.js'].branchData['21'][4].ranCondition(result);
   return result;
@@ -2446,7 +2447,7 @@ function visit379_1499_1(result) {
   _$jscoverage['/underscore-umd.js'].branchData['1499'][1].ranCondition(result);
   return result;
 }
-_$jscoverage['/underscore-umd.js'].branchData['1495'][3].init(28, 71);
+_$jscoverage['/underscore-umd.js'].branchData['1495'][3].init(29, 71);
 function visit378_1495_3(result) {
   _$jscoverage['/underscore-umd.js'].branchData['1495'][3].ranCondition(result);
   return result;
@@ -2461,7 +2462,7 @@ function visit376_1474_1(result) {
   _$jscoverage['/underscore-umd.js'].branchData['1474'][1].ranCondition(result);
   return result;
 }
-_$jscoverage['/underscore-umd.js'].branchData['1470'][3].init(28, 71);
+_$jscoverage['/underscore-umd.js'].branchData['1470'][3].init(29, 71);
 function visit375_1470_3(result) {
   _$jscoverage['/underscore-umd.js'].branchData['1470'][3].ranCondition(result);
   return result;
@@ -2666,12 +2667,12 @@ function visit335_105_3(result) {
   _$jscoverage['/underscore-umd.js'].branchData['105'][3].ranCondition(result);
   return result;
 }
-_$jscoverage['/underscore-umd.js'].branchData['90'][3].init(34, 26);
+_$jscoverage['/underscore-umd.js'].branchData['90'][3].init(35, 26);
 function visit334_90_3(result) {
   _$jscoverage['/underscore-umd.js'].branchData['90'][3].ranCondition(result);
   return result;
 }
-_$jscoverage['/underscore-umd.js'].branchData['21'][3].init(13, 132);
+_$jscoverage['/underscore-umd.js'].branchData['21'][3].init(13, 136);
 function visit333_21_3(result) {
   _$jscoverage['/underscore-umd.js'].branchData['21'][3].ranCondition(result);
   return result;
@@ -2716,7 +2717,7 @@ function visit325_1794_1(result) {
   _$jscoverage['/underscore-umd.js'].branchData['1794'][1].ranCondition(result);
   return result;
 }
-_$jscoverage['/underscore-umd.js'].branchData['1775'][2].init(17, 37);
+_$jscoverage['/underscore-umd.js'].branchData['1775'][2].init(18, 37);
 function visit324_1775_2(result) {
   _$jscoverage['/underscore-umd.js'].branchData['1775'][2].ranCondition(result);
   return result;
@@ -2821,7 +2822,7 @@ function visit304_1534_2(result) {
   _$jscoverage['/underscore-umd.js'].branchData['1534'][2].ranCondition(result);
   return result;
 }
-_$jscoverage['/underscore-umd.js'].branchData['1507'][1].init(12, 71);
+_$jscoverage['/underscore-umd.js'].branchData['1507'][1].init(12, 73);
 function visit303_1507_1(result) {
   _$jscoverage['/underscore-umd.js'].branchData['1507'][1].ranCondition(result);
   return result;
@@ -2841,7 +2842,7 @@ function visit300_1495_2(result) {
   _$jscoverage['/underscore-umd.js'].branchData['1495'][2].ranCondition(result);
   return result;
 }
-_$jscoverage['/underscore-umd.js'].branchData['1482'][1].init(12, 73);
+_$jscoverage['/underscore-umd.js'].branchData['1482'][1].init(12, 75);
 function visit299_1482_1(result) {
   _$jscoverage['/underscore-umd.js'].branchData['1482'][1].ranCondition(result);
   return result;
@@ -3206,7 +3207,7 @@ function visit227_275_1(result) {
   _$jscoverage['/underscore-umd.js'].branchData['275'][1].ranCondition(result);
   return result;
 }
-_$jscoverage['/underscore-umd.js'].branchData['267'][2].init(16, 50);
+_$jscoverage['/underscore-umd.js'].branchData['267'][2].init(17, 50);
 function visit226_267_2(result) {
   _$jscoverage['/underscore-umd.js'].branchData['267'][2].ranCondition(result);
   return result;
@@ -3266,7 +3267,7 @@ function visit215_90_2(result) {
   _$jscoverage['/underscore-umd.js'].branchData['90'][2].ranCondition(result);
   return result;
 }
-_$jscoverage['/underscore-umd.js'].branchData['21'][2].init(13, 173);
+_$jscoverage['/underscore-umd.js'].branchData['21'][2].init(13, 177);
 function visit214_21_2(result) {
   _$jscoverage['/underscore-umd.js'].branchData['21'][2].ranCondition(result);
   return result;
@@ -3331,7 +3332,7 @@ function visit202_1778_1(result) {
   _$jscoverage['/underscore-umd.js'].branchData['1778'][1].ranCondition(result);
   return result;
 }
-_$jscoverage['/underscore-umd.js'].branchData['1775'][1].init(17, 42);
+_$jscoverage['/underscore-umd.js'].branchData['1775'][1].init(17, 44);
 function visit201_1775_1(result) {
   _$jscoverage['/underscore-umd.js'].branchData['1775'][1].ranCondition(result);
   return result;
@@ -3471,12 +3472,12 @@ function visit174_1519_1(result) {
   _$jscoverage['/underscore-umd.js'].branchData['1519'][1].ranCondition(result);
   return result;
 }
-_$jscoverage['/underscore-umd.js'].branchData['1495'][1].init(8, 91);
+_$jscoverage['/underscore-umd.js'].branchData['1495'][1].init(8, 93);
 function visit173_1495_1(result) {
   _$jscoverage['/underscore-umd.js'].branchData['1495'][1].ranCondition(result);
   return result;
 }
-_$jscoverage['/underscore-umd.js'].branchData['1470'][1].init(8, 91);
+_$jscoverage['/underscore-umd.js'].branchData['1470'][1].init(8, 93);
 function visit172_1470_1(result) {
   _$jscoverage['/underscore-umd.js'].branchData['1470'][1].ranCondition(result);
   return result;
@@ -4171,7 +4172,7 @@ function visit34_271_1(result) {
   _$jscoverage['/underscore-umd.js'].branchData['271'][1].ranCondition(result);
   return result;
 }
-_$jscoverage['/underscore-umd.js'].branchData['267'][1].init(16, 62);
+_$jscoverage['/underscore-umd.js'].branchData['267'][1].init(16, 64);
 function visit33_267_1(result) {
   _$jscoverage['/underscore-umd.js'].branchData['267'][1].ranCondition(result);
   return result;
@@ -4286,7 +4287,7 @@ function visit11_95_1(result) {
   _$jscoverage['/underscore-umd.js'].branchData['95'][1].ranCondition(result);
   return result;
 }
-_$jscoverage['/underscore-umd.js'].branchData['90'][1].init(11, 49);
+_$jscoverage['/underscore-umd.js'].branchData['90'][1].init(11, 51);
 function visit10_90_1(result) {
   _$jscoverage['/underscore-umd.js'].branchData['90'][1].ranCondition(result);
   return result;
@@ -4326,7 +4327,7 @@ function visit3_28_1(result) {
   _$jscoverage['/underscore-umd.js'].branchData['28'][1].ranCondition(result);
   return result;
 }
-_$jscoverage['/underscore-umd.js'].branchData['21'][1].init(13, 191);
+_$jscoverage['/underscore-umd.js'].branchData['21'][1].init(13, 195);
 function visit2_21_1(result) {
   _$jscoverage['/underscore-umd.js'].branchData['21'][1].ranCondition(result);
   return result;
@@ -4356,7 +4357,7 @@ _$jscoverage['/underscore-umd.js'].lineData[1]++;
 })(this, function() {
   _$jscoverage['/underscore-umd.js'].functionData[3]++;
   _$jscoverage['/underscore-umd.js'].lineData[16]++;
-  var VERSION = '1.13.2';
+  var VERSION = '1.13.6';
   _$jscoverage['/underscore-umd.js'].lineData[21]++;
   var root = visit2_21_1(visit214_21_2(visit333_21_3(visit393_21_4(visit422_21_5(visit434_21_6(typeof self == 'object') && visit441_21_7(self.self === self)) && self) || visit423_22_1(visit435_22_2(visit442_22_3(typeof global == 'object') && visit444_22_4(global.global === global)) && global)) || Function('return this')()) || {});
   _$jscoverage['/underscore-umd.js'].lineData[27]++;
