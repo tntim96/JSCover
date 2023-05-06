@@ -1,6 +1,8 @@
 2.0.17 / 2022-??-??
 ==================
-* Internal: HtmlUnit 2.66.0 to 2.70.0, Mockito 4.8.1 to 4.11.0, JaCoCo 0.8.8 to 0.8.10
+  * Java 11 to align with closure-compiler
+  * Upgrade closure-compiler v20220601 to v20230502
+  * Internal: HtmlUnit 2.66.0 to 2.70.0, Mockito 4.8.1 to 5.3.1, JaCoCo 0.8.8 to 0.8.10
 
 2.0.16 / 2022-11-02
 ==================
