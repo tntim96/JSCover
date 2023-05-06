@@ -8,3 +8,4 @@ jacoco*
 target
 /*.log
 /*.lck
+/.ant-targets-build.xml
