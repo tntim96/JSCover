@@ -658,7 +658,7 @@ fs.write("target/jscoverage.json", json, 'w');
                             <td>SEVERE</td>
                             <td>
                                 Use the specified Java log level; valid values for LEVEL are
-                                <a href="https://docs.oracle.com/javase/8/docs/api/java/util/logging/Level.html"
+                                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.logging/java/util/logging/Level.html"
                                    target="_blank">SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST</a>.
                             </td>
                         </tr>
@@ -873,7 +873,7 @@ fs.write("target/jscoverage.json", json, 'w');
                             <td>SEVERE</td>
                             <td>
                                 Use the specified Java log level; valid values for LEVEL are
-                                <a href="https://docs.oracle.com/javase/8/docs/api/java/util/logging/Level.html"
+                                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.logging/java/util/logging/Level.html"
                                    target="_blank">SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST</a>.
                             </td>
                         </tr>
@@ -1115,10 +1115,10 @@ fs.write("target/jscoverage.json", json, 'w');
                     <text>
                         Full Java documentation of the configuration of property file can be found in:
                         <ul>
-                            <li><a href="https://docs.oracle.com/javase/8/docs/api/java/util/logging/ConsoleHandler.html" target="_blank">ConsoleHandler</a></li>
-                            <li><a href="https://docs.oracle.com/javase/8/docs/api/java/util/logging/FileHandler.html" target="_blank">FileHandler</a></li>
-                            <li><a href="https://docs.oracle.com/javase/8/docs/api/java/util/logging/Level.html" target="_blank">Level</a></li>
-                            <li><a href="https://docs.oracle.com/javase/8/docs/api/java/util/logging/package-summary.html" target="_blank">Logging package summary</a></li>
+                            <li><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.logging/java/util/logging/ConsoleHandler.html" target="_blank">ConsoleHandler</a></li>
+                            <li><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.logging/java/util/logging/FileHandler.html" target="_blank">FileHandler</a></li>
+                            <li><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.logging/java/util/logging/Level.html" target="_blank">Level</a></li>
+                            <li><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.logging/java/util/logging/package-summary.html" target="_blank">Logging package summary</a></li>
                         </ul>
                     </text>
                 </item>

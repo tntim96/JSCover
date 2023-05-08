@@ -1,3 +1,7 @@
+2.0.19 / 2023-??-??
+==================
+  * Update documentation and manual for Java 11
+
 2.0.18 / 2023-05-07
 ==================
   * Update documentation and samples
