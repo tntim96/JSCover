@@ -342,7 +342,7 @@ Public License instead of this License.
 
 package jscover.server;
 
-import com.gargoylesoftware.htmlunit.ProxyConfig;
+import org.htmlunit.ProxyConfig;
 import jscover.Main;
 import jscover.util.IoUtils;
 import org.junit.AfterClass;

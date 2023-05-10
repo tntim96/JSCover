@@ -342,9 +342,9 @@ Public License instead of this License.
 
 package jscover.ui;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlTableRow;
+import org.htmlunit.WebClient;
+import org.htmlunit.html.HtmlPage;
+import org.htmlunit.html.HtmlTableRow;
 import jscover.Main;
 import jscover.util.ReflectionUtils;
 import org.apache.commons.io.FileUtils;

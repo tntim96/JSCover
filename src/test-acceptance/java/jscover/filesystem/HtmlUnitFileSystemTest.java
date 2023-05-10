@@ -342,9 +342,9 @@ Public License instead of this License.
 
 package jscover.filesystem;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlInput;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import org.htmlunit.WebClient;
+import org.htmlunit.html.HtmlInput;
+import org.htmlunit.html.HtmlPage;
 import jscover.Main;
 import jscover.util.IoUtils;
 import org.junit.Test;
