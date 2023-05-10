@@ -519,7 +519,7 @@ public class HtmlUnitServerTest {
             jsonFile.delete();
 
         HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html");
-        ((HtmlInput)page.getHtmlElementById("location")).setValueAttribute("http://localhost:9001/example/index.html");
+        ((HtmlInput)page.getHtmlElementById("location")).setValue("http://localhost:9001/example/index.html");
         page.getHtmlElementById("openInWindowButton").click();
         webClient.waitForBackgroundJavaScript(100);
 
@@ -575,7 +575,7 @@ public class HtmlUnitServerTest {
     @Test
     public void shouldWorkWithServerIFrameByNavigationButtons() throws Exception {
         HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html");
-        ((HtmlInput)page.getHtmlElementById("location")).setValueAttribute("http://localhost:9001/example/index.html");
+        ((HtmlInput)page.getHtmlElementById("location")).setValue("http://localhost:9001/example/index.html");
         page.getHtmlElementById("openInFrameButton").click();
         webClient.waitForBackgroundJavaScript(100);
 
@@ -585,7 +585,7 @@ public class HtmlUnitServerTest {
     @Test
     public void shouldWorkWithServerWindowByNavigationButtons() throws Exception {
         HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html");
-        ((HtmlInput)page.getHtmlElementById("location")).setValueAttribute("http://localhost:9001/example/index.html");
+        ((HtmlInput)page.getHtmlElementById("location")).setValue("http://localhost:9001/example/index.html");
         page.getHtmlElementById("openInWindowButton").click();
         webClient.waitForBackgroundJavaScript(100);
 
@@ -646,7 +646,7 @@ public class HtmlUnitServerTest {
     @Test
     public void shouldWorkWithPost() throws Exception {
         HtmlPage page = webClient.getPage("http://localhost:9001/example/post.html");
-        ((HtmlInput)page.getHtmlElementById("inputName")).setValueAttribute("POST data!!!");
+        ((HtmlInput)page.getHtmlElementById("inputName")).setValue("POST data!!!");
         page = page.getHtmlElementById("submitButton").click();
 
         String data = page.getHtmlElementById("postData").getTextContent();
@@ -666,7 +666,7 @@ public class HtmlUnitServerTest {
     @Test
     public void shouldWorkWithLargeUpload() throws Exception {
         HtmlPage page = webClient.getPage("http://localhost:9001/example/upload.html");
-        ((HtmlInput)page.getHtmlElementById("uploader")).setValueAttribute("lib/runtime/js.jar");
+        ((HtmlInput)page.getHtmlElementById("uploader")).setValue("lib/runtime/js.jar");
         page = page.getHtmlElementById("submitButton").click();
 
         String data = page.getHtmlElementById("postData").getTextContent();
@@ -675,7 +675,7 @@ public class HtmlUnitServerTest {
 
     private void testFileUpload(String postFile) throws IOException {
         HtmlPage page = webClient.getPage("http://localhost:9001/example/upload.html");
-        ((HtmlInput)page.getHtmlElementById("uploader")).setValueAttribute(postFile);
+        ((HtmlInput)page.getHtmlElementById("uploader")).setValue(postFile);
         page = page.getHtmlElementById("submitButton").click();
 
         String data = page.getHtmlElementById("postData").getTextContent();

@@ -382,7 +382,7 @@ public class HtmlUnitFileSystemTest {
         verifyTotal(webClient, page, 15);
 
         page = webClient.getPage(getFileURL(reportDir + "/jscoverage.html"));
-        ((HtmlInput)page.getHtmlElementById("location")).setValueAttribute(getFileURL(reportDir+"/example/index.html"));
+        ((HtmlInput)page.getHtmlElementById("location")).setValue(getFileURL(reportDir+"/example/index.html"));
         page.getHtmlElementById("openInFrameButton").click();
         webClient.waitForBackgroundJavaScript(100);
         verifyTotal(webClient, page, 15);

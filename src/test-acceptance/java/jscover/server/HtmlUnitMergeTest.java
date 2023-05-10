@@ -425,7 +425,7 @@ public class HtmlUnitMergeTest {
     private void saveReportByJavaScript() throws IOException {
         WebClient webClient = new WebClient();
         HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html");
-        ((HtmlInput)page.getHtmlElementById("location")).setValueAttribute("http://localhost:9001/index.html");
+        ((HtmlInput)page.getHtmlElementById("location")).setValue("http://localhost:9001/index.html");
         page.getHtmlElementById("openInWindowButton").click();
         webClient.waitForBackgroundJavaScript(100);
 
