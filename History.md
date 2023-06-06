@@ -1,7 +1,7 @@
 2.0.19 / 2023-??-??
 ==================
   * Update documentation and manual for Java 11
-  * Internal: HtmlUnit 2.70.0 to 3.2.0
+  * Internal: HtmlUnit 2.70.0 to 3.3.0
 
 2.0.18 / 2023-05-07
 ==================
