@@ -1,5 +1,6 @@
 2.0.19 / 2023-??-??
 ==================
+  * Upgrade closure-compiler v20230502 to v20230802
   * Update documentation and manual for Java 11
   * Internal: HtmlUnit 2.70.0 to 3.4.0, Mockito 5.3.1 to 5.4.0
 
