@@ -1060,52 +1060,52 @@
         <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/neko-htmlunit/3.6.0/neko-htmlunit-3.6.0-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.jacoco:org.jacoco.agent:0.8.10" type="java-imported" external-system-id="Maven">
-      <properties groupId="org.jacoco" artifactId="org.jacoco.agent" version="0.8.10" />
+    <library name="Maven: org.jacoco:org.jacoco.agent:0.8.11" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.jacoco" artifactId="org.jacoco.agent" version="0.8.11" />
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/jacoco/org.jacoco.agent/0.8.10/org.jacoco.agent-0.8.10.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/jacoco/org.jacoco.agent/0.8.11/org.jacoco.agent-0.8.11.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/jacoco/org.jacoco.agent/0.8.10/org.jacoco.agent-0.8.10-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/jacoco/org.jacoco.agent/0.8.11/org.jacoco.agent-0.8.11-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/jacoco/org.jacoco.agent/0.8.10/org.jacoco.agent-0.8.10-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/jacoco/org.jacoco.agent/0.8.11/org.jacoco.agent-0.8.11-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.jacoco:org.jacoco.ant:0.8.10" type="java-imported" external-system-id="Maven">
-      <properties groupId="org.jacoco" artifactId="org.jacoco.ant" version="0.8.10" />
+    <library name="Maven: org.jacoco:org.jacoco.ant:0.8.11" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.jacoco" artifactId="org.jacoco.ant" version="0.8.11" />
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/jacoco/org.jacoco.ant/0.8.10/org.jacoco.ant-0.8.10.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/jacoco/org.jacoco.ant/0.8.11/org.jacoco.ant-0.8.11.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/jacoco/org.jacoco.ant/0.8.10/org.jacoco.ant-0.8.10-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/jacoco/org.jacoco.ant/0.8.11/org.jacoco.ant-0.8.11-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/jacoco/org.jacoco.ant/0.8.10/org.jacoco.ant-0.8.10-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/jacoco/org.jacoco.ant/0.8.11/org.jacoco.ant-0.8.11-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.jacoco:org.jacoco.core:0.8.10" type="java-imported" external-system-id="Maven">
-      <properties groupId="org.jacoco" artifactId="org.jacoco.core" version="0.8.10" />
+    <library name="Maven: org.jacoco:org.jacoco.core:0.8.11" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.jacoco" artifactId="org.jacoco.core" version="0.8.11" />
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/jacoco/org.jacoco.core/0.8.10/org.jacoco.core-0.8.10.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/jacoco/org.jacoco.core/0.8.11/org.jacoco.core-0.8.11.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/jacoco/org.jacoco.core/0.8.10/org.jacoco.core-0.8.10-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/jacoco/org.jacoco.core/0.8.11/org.jacoco.core-0.8.11-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/jacoco/org.jacoco.core/0.8.10/org.jacoco.core-0.8.10-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/jacoco/org.jacoco.core/0.8.11/org.jacoco.core-0.8.11-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.jacoco:org.jacoco.report:0.8.10" type="java-imported" external-system-id="Maven">
-      <properties groupId="org.jacoco" artifactId="org.jacoco.report" version="0.8.10" />
+    <library name="Maven: org.jacoco:org.jacoco.report:0.8.11" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.jacoco" artifactId="org.jacoco.report" version="0.8.11" />
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/jacoco/org.jacoco.report/0.8.10/org.jacoco.report-0.8.10.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/jacoco/org.jacoco.report/0.8.11/org.jacoco.report-0.8.11.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/jacoco/org.jacoco.report/0.8.10/org.jacoco.report-0.8.10-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/jacoco/org.jacoco.report/0.8.11/org.jacoco.report-0.8.11-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/jacoco/org.jacoco.report/0.8.10/org.jacoco.report-0.8.10-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/jacoco/org.jacoco.report/0.8.11/org.jacoco.report-0.8.11-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.mockito:mockito-core:5.6.0" type="java-imported" external-system-id="Maven">
@@ -1144,40 +1144,40 @@
         <root url="jar://$MAVEN_REPOSITORY$/org/objenesis/objenesis/3.3/objenesis-3.3-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.ow2.asm:asm-commons:9.5" type="java-imported" external-system-id="Maven">
-      <properties groupId="org.ow2.asm" artifactId="asm-commons" version="9.5" />
+    <library name="Maven: org.ow2.asm:asm-commons:9.6" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.ow2.asm" artifactId="asm-commons" version="9.6" />
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/ow2/asm/asm-commons/9.5/asm-commons-9.5.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/ow2/asm/asm-commons/9.6/asm-commons-9.6.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/ow2/asm/asm-commons/9.5/asm-commons-9.5-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/ow2/asm/asm-commons/9.6/asm-commons-9.6-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/ow2/asm/asm-commons/9.5/asm-commons-9.5-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/ow2/asm/asm-commons/9.6/asm-commons-9.6-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.ow2.asm:asm-tree:9.5" type="java-imported" external-system-id="Maven">
-      <properties groupId="org.ow2.asm" artifactId="asm-tree" version="9.5" />
+    <library name="Maven: org.ow2.asm:asm-tree:9.6" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.ow2.asm" artifactId="asm-tree" version="9.6" />
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/ow2/asm/asm-tree/9.5/asm-tree-9.5.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/ow2/asm/asm-tree/9.6/asm-tree-9.6.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/ow2/asm/asm-tree/9.5/asm-tree-9.5-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/ow2/asm/asm-tree/9.6/asm-tree-9.6-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/ow2/asm/asm-tree/9.5/asm-tree-9.5-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/ow2/asm/asm-tree/9.6/asm-tree-9.6-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.ow2.asm:asm:9.5" type="java-imported" external-system-id="Maven">
-      <properties groupId="org.ow2.asm" artifactId="asm" version="9.5" />
+    <library name="Maven: org.ow2.asm:asm:9.6" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.ow2.asm" artifactId="asm" version="9.6" />
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/ow2/asm/asm/9.5/asm-9.5.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/ow2/asm/asm/9.6/asm-9.6.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/ow2/asm/asm/9.5/asm-9.5-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/ow2/asm/asm/9.6/asm-9.6-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/ow2/asm/asm/9.5/asm-9.5-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/ow2/asm/asm/9.6/asm-9.6-sources.jar!/" />
       </SOURCES>
     </library>
   </component>
