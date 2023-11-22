@@ -2,7 +2,7 @@
 ==================
   * Upgrade closure-compiler v20230502 to v20231112
   * Update documentation and manual for Java 11
-  * Internal: HtmlUnit 2.70.0 to 3.7.0, Mockito 5.3.1 to 5.7.0, JaCoCo 0.8.10 to 0.8.11
+  * Internal: HtmlUnit 2.70.0 to 3.8.0, Mockito 5.3.1 to 5.7.0, JaCoCo 0.8.10 to 0.8.11
 
 2.0.18 / 2023-05-07
 ==================
