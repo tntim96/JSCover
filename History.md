@@ -1,4 +1,7 @@
-2.0.19 / 2023-01-02
+2.0.20 / 2024-??-??
+==================
+
+2.0.19 / 2024-01-02
 ==================
   * Upgrade closure-compiler v20230502 to v20231112
   * Update documentation and manual for Java 11
