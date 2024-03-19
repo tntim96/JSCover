@@ -712,16 +712,16 @@
         <root url="jar://$MAVEN_REPOSITORY$/com/google/code/gson/gson/2.10.1/gson-2.10.1-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: com.google.javascript:closure-compiler:v20231112" type="java-imported" external-system-id="Maven">
-      <properties groupId="com.google.javascript" artifactId="closure-compiler" version="v20231112" />
+    <library name="Maven: com.google.javascript:closure-compiler:v20240317" type="java-imported" external-system-id="Maven">
+      <properties groupId="com.google.javascript" artifactId="closure-compiler" version="v20240317" />
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler/v20231112/closure-compiler-v20231112.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler/v20240317/closure-compiler-v20240317.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler/v20231112/closure-compiler-v20231112-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler/v20240317/closure-compiler-v20240317-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler/v20231112/closure-compiler-v20231112-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler/v20240317/closure-compiler-v20240317-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: commons-codec:commons-codec:1.16.1" type="java-imported" external-system-id="Maven">
