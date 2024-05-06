@@ -1,7 +1,7 @@
 2.0.20 / 2024-??-??
 ==================
   * Upgrade closure-compiler v20231112 to v20240317
-  * Internal: HtmlUnit 3.9.0 to 4.1.0, Mockito 5.8.0 to 5.11.0, JaCoCo 0.8.11 to 0.8.12
+  * Internal: HtmlUnit 3.9.0 to 4.1.0, Mockito 5.8.0 to 5.11.0, JaCoCo 0.8.11 to 0.8.12, Rhino 1.7.14 to 1.7.15
 
 2.0.19 / 2024-01-02
 ==================
