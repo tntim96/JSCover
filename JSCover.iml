@@ -28,6 +28,10 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/resources" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test-acceptance/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test-acceptance/resources" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test-integration/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test-integration/resources" type="java-test-resource" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
