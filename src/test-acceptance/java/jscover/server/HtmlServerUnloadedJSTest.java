@@ -342,13 +342,12 @@ Public License instead of this License.
 
 package jscover.server;
 
+import jscover.Main;
+import jscover.util.IoUtils;
 import org.htmlunit.WebClient;
 import org.htmlunit.html.HtmlElement;
 import org.htmlunit.html.HtmlPage;
-import jscover.Main;
-import jscover.util.IoUtils;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -361,18 +360,20 @@ import static org.junit.Assert.assertEquals;
 
 public class HtmlServerUnloadedJSTest {
     private static Thread server;
-    private static Main main = new Main();
-    private static String reportDir = "target/ws-unloaded-report";
+    private static final Main main = new Main();
+    private static final String reportDir = "target/ws-unloaded-report";
 
     private static String[] args = new String[]{
             "-ws",
-            "--document-root=src/test-integration/resources/jsSearch",
+            "--document-root=target",
             "--port=9001",
-            "--no-instrument=noInstrument",
+            "--no-instrument=test-classes/jsSearch/noInstrument",
+            "--no-instrument=ws-unloaded-report",
+            "--only-instrument-reg=test-classes/jsSearch/.*",
             "--include-unloaded-js",
             "--report-dir=" + reportDir
     };
-    protected WebClient webClient = new WebClient();
+    protected WebClient webClient = getWebClient();
     protected IoUtils ioUtils = IoUtils.getInstance();
 
     protected String getReportDir() {
@@ -390,17 +391,18 @@ public class HtmlServerUnloadedJSTest {
         main.stop();
     }
 
-    @Before
-    public void setUp() {
-        webClient.getOptions().setTimeout(1000);
+    private static WebClient getWebClient() {
+        WebClient webClient = new WebClient();
+        webClient.getOptions().setTimeout(10000);
+        return webClient;
     }
 
     protected String getIndex() {
-        return "index.html";
+        return "/test-classes/jsSearch/index.html";
     }
 
     protected String getPrefix() {
-        return "";
+        return "/test-classes/jsSearch";
     }
 
     @Test
@@ -432,15 +434,17 @@ public class HtmlServerUnloadedJSTest {
         assertThat(json, containsString("/root.js"));
         assertThat(json, containsString("/level1/level2/level2.js"));
 
-        String url = "file:///" + new File(getReportDir() + "/jscoverage.html").getAbsolutePath();
-        page = webClient.getPage(url);
-        webClient.waitForBackgroundJavaScript(1000);
+        webClient.close();
+        webClient = getWebClient();
+        page = webClient.getPage("http://localhost:9001/ws-unloaded-report/jscoverage.html");
+        webClient.waitForBackgroundJavaScript(2000);
+
         assertEquals("53%", page.getElementById("summaryTotal").getTextContent());
         assertEquals("33%", page.getElementById("branchSummaryTotal").getTextContent());
         assertEquals("50%", page.getElementById("functionSummaryTotal").getTextContent());
-        verifyCoverage(page, "/root.js", "80%", "50%", "100%");
-        verifyCoverage(page, "/level1/level1.js", "75%", "50%", "N/A");
-        verifyCoverage(page, "/level1/level2/level2.js", "0%", "0%", "0%");
+        verifyCoverage(page, getPrefix() + "/root.js", "80%", "50%", "100%");
+        verifyCoverage(page, getPrefix() + "/level1/level1.js", "75%", "50%", "N/A");
+        verifyCoverage(page, getPrefix() + "/level1/level2/level2.js", "0%", "0%", "0%");
     }
 
     private void verifyCoverage(HtmlPage page, String uri, String linePercentage, String branchPercentage, String functionPercentage) {
