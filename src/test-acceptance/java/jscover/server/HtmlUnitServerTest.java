@@ -342,16 +342,15 @@ Public License instead of this License.
 
 package jscover.server;
 
+import jscover.Main;
+import jscover.util.IoUtils;
 import org.htmlunit.Page;
 import org.htmlunit.WebClient;
 import org.htmlunit.WebWindow;
 import org.htmlunit.html.HtmlInput;
 import org.htmlunit.html.HtmlPage;
 import org.htmlunit.html.HtmlTable;
-import jscover.Main;
-import jscover.util.IoUtils;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -365,19 +364,21 @@ import static org.junit.Assert.assertEquals;
 
 public class HtmlUnitServerTest {
     private static Thread server;
-    private static Main main = new Main();
-    private static String reportDir = "target/ws-report";
-    private static String[] args = new String[]{
+    private static final Main main = new Main();
+    private static final String reportDir = "target/ws-report";
+    private static final String[] args = new String[]{
             "-ws",
-            "--document-root=src/test-acceptance/resources",
+            "--document-root=target",
             "--port=9001",
             "--no-branch",
             "--no-function",
-            "--no-instrument=example/lib",
+            "--no-instrument=test-classes/example/lib",
+            "--no-instrument=ws-report",
             "--report-dir=" + reportDir
     };
 
-    protected WebClient webClient = new WebClient();
+    protected WebClient webClient = getWebClient();
+
     protected IoUtils ioUtils = IoUtils.getInstance();
     protected String getReportDir() {
         return reportDir;
@@ -394,18 +395,19 @@ public class HtmlUnitServerTest {
         main.stop();
     }
 
-    @Before
-    public void setUp() {
-        webClient.getOptions().setTimeout(1000);
+    private static WebClient getWebClient() {
+        WebClient webClient = new WebClient();
+        webClient.getOptions().setTimeout(10000);
+        return webClient;
     }
 
     protected String getTestUrl() {
-        return "example/index.html";
+        return "test-classes/example/index.html";
     }
 
     @Test
     public void shouldNotInstrument() throws Exception {
-        Page page = webClient.getPage("http://localhost:9001/example/lib/noInstrument.js");
+        Page page = webClient.getPage("http://localhost:9001/test-classes/example/lib/noInstrument.js");
         assertThat(page.getWebResponse().getContentAsString(), equalTo("alert('Hey');"));
     }
 
@@ -460,7 +462,7 @@ public class HtmlUnitServerTest {
 
         verifyTotal(webClient, page, 15);
 
-        page.getAnchorByText("/example/script.js").click();
+        page.getAnchorByText("/test-classes/example/script.js").click();
         webClient.waitForBackgroundJavaScript(2000);
         HtmlTable sourceTable = (HtmlTable)page.getElementById("sourceTable");
         verifySource(sourceTable, 11, 0, "  else if (element.id === 'radio2') {");
@@ -470,7 +472,7 @@ public class HtmlUnitServerTest {
         webClient.waitForBackgroundJavaScript(500);
         verifyTotal(webClient, page, 68, 0, 0);
 
-        page.getAnchorByText("/example/script.js").click();
+        page.getAnchorByText("/test-classes/example/script.js").click();
         webClient.waitForBackgroundJavaScript(2000);
         sourceTable = (HtmlTable)page.getElementById("sourceTable");
         verifySource(sourceTable, 11, 1, "  else if (element.id === 'radio2') {");
@@ -508,8 +510,7 @@ public class HtmlUnitServerTest {
         String json = ioUtils.toString(jsonFile);
         assertThat(json, containsString("/script.js"));
 
-        page = webClient.getPage("file:///"+ new File(getReportDir()+"/jscoverage.html").getAbsolutePath());
-        verifyTotal(webClient, page, 89, branchPercentage, functionPercentage);
+        verifyCoverage("/jscoverage.html", 89, branchPercentage, functionPercentage);
     }
 
     @Test
@@ -519,7 +520,7 @@ public class HtmlUnitServerTest {
             jsonFile.delete();
 
         HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html");
-        ((HtmlInput)page.getHtmlElementById("location")).setValue("http://localhost:9001/example/index.html");
+        ((HtmlInput)page.getHtmlElementById("location")).setValue("http://localhost:9001/test-classes/example/index.html");
         page.getHtmlElementById("openInWindowButton").click();
         webClient.waitForBackgroundJavaScript(100);
 
@@ -532,8 +533,7 @@ public class HtmlUnitServerTest {
         String json = ioUtils.toString(jsonFile);
         assertThat(json, containsString("/script.js"));
 
-        page = webClient.getPage("file:///"+ new File(getReportDir()+"/directory/jscoverage.html").getAbsolutePath());
-        verifyTotal(webClient, page, 15);
+        verifyCoverage("/directory/jscoverage.html", 15, 0, 0);
     }
 
     @Test
@@ -542,7 +542,7 @@ public class HtmlUnitServerTest {
         if (jsonFile.exists())
             jsonFile.delete();
 
-        HtmlPage page = webClient.getPage("http://localhost:9001/example/index.html");
+        HtmlPage page = webClient.getPage("http://localhost:9001/test-classes/example/index.html");
 
         page.executeJavaScript("jscoverage_report('directory-no-ui');");
         webClient.waitForBackgroundJavaScript(2000);
@@ -550,8 +550,7 @@ public class HtmlUnitServerTest {
         String json = ioUtils.toString(jsonFile);
         assertThat(json, containsString("/script.js"));
 
-        page = webClient.getPage("file:///"+ new File(getReportDir()+"/directory-no-ui/jscoverage.html").getAbsolutePath());
-        verifyTotal(webClient, page, 15);
+        verifyCoverage("/directory-no-ui/jscoverage.html", 15, 0, 0);
     }
 
     @Test
@@ -560,7 +559,7 @@ public class HtmlUnitServerTest {
         if (jsonFile.exists())
             jsonFile.delete();
 
-        HtmlPage page = webClient.getPage("http://localhost:9001/example/index.html");
+        HtmlPage page = webClient.getPage("http://localhost:9001/test-classes/example/index.html");
 
         page.executeJavaScript("jscoverage_report('directory-no-ui-cb', function(response){});");
         webClient.waitForBackgroundJavaScript(100);
@@ -568,14 +567,13 @@ public class HtmlUnitServerTest {
         String json = ioUtils.toString(jsonFile);
         assertThat(json, containsString("/script.js"));
 
-        page = webClient.getPage("file:///"+ new File(getReportDir()+"/directory-no-ui-cb/jscoverage.html").getAbsolutePath());
-        verifyTotal(webClient, page, 15);
+        verifyCoverage("/directory-no-ui-cb/jscoverage.html", 15, 0, 0);
     }
 
     @Test
     public void shouldWorkWithServerIFrameByNavigationButtons() throws Exception {
         HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html");
-        ((HtmlInput)page.getHtmlElementById("location")).setValue("http://localhost:9001/example/index.html");
+        ((HtmlInput)page.getHtmlElementById("location")).setValue("http://localhost:9001/test-classes/example/index.html");
         page.getHtmlElementById("openInFrameButton").click();
         webClient.waitForBackgroundJavaScript(100);
 
@@ -585,7 +583,7 @@ public class HtmlUnitServerTest {
     @Test
     public void shouldWorkWithServerWindowByNavigationButtons() throws Exception {
         HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html");
-        ((HtmlInput)page.getHtmlElementById("location")).setValue("http://localhost:9001/example/index.html");
+        ((HtmlInput)page.getHtmlElementById("location")).setValue("http://localhost:9001/test-classes/example/index.html");
         page.getHtmlElementById("openInWindowButton").click();
         webClient.waitForBackgroundJavaScript(100);
 
@@ -598,7 +596,7 @@ public class HtmlUnitServerTest {
     }
 
     protected void testWorkInInvertedMode(int branchPercentage1, int branchPercentage2, int functionPercentage1, int functionPercentage2) throws IOException {
-        HtmlPage page = webClient.getPage("http://localhost:9001/example/index.html");
+        HtmlPage page = webClient.getPage("http://localhost:9001/test-classes/example/index.html");
         page.getHtmlElementById("launchJSCover").click();
         webClient.waitForBackgroundJavaScript(100);
 
@@ -645,7 +643,7 @@ public class HtmlUnitServerTest {
 
     @Test
     public void shouldWorkWithPost() throws Exception {
-        HtmlPage page = webClient.getPage("http://localhost:9001/example/post.html");
+        HtmlPage page = webClient.getPage("http://localhost:9001/test-classes/example/post.html");
         ((HtmlInput)page.getHtmlElementById("inputName")).setValue("POST data!!!");
         page = page.getHtmlElementById("submitButton").click();
 
@@ -665,7 +663,7 @@ public class HtmlUnitServerTest {
 
     @Test
     public void shouldWorkWithLargeUpload() throws Exception {
-        HtmlPage page = webClient.getPage("http://localhost:9001/example/upload.html");
+        HtmlPage page = webClient.getPage("http://localhost:9001/test-classes/example/upload.html");
         ((HtmlInput)page.getHtmlElementById("uploader")).setValue("lib/runtime/js.jar");
         page = page.getHtmlElementById("submitButton").click();
 
@@ -674,7 +672,7 @@ public class HtmlUnitServerTest {
     }
 
     private void testFileUpload(String postFile) throws IOException {
-        HtmlPage page = webClient.getPage("http://localhost:9001/example/upload.html");
+        HtmlPage page = webClient.getPage("http://localhost:9001/test-classes/example/upload.html");
         ((HtmlInput)page.getHtmlElementById("uploader")).setValue(postFile);
         page = page.getHtmlElementById("submitButton").click();
 
@@ -688,6 +686,14 @@ public class HtmlUnitServerTest {
 
     protected void verifyTotal(WebClient webClient, HtmlPage page, int percentage, int branchPercentage, int functionPercentage) throws IOException {
         page.getHtmlElementById("summaryTab").click();
+        webClient.waitForBackgroundJavaScript(2000);
+        verifyTotals(page, percentage, branchPercentage, functionPercentage);
+    }
+
+    private void verifyCoverage(String url, int percentage, int branchPercentage, int functionPercentage) throws IOException {
+        webClient.close();
+        webClient = getWebClient();
+        HtmlPage page = webClient.getPage("http://localhost:9001/ws-report" + url);
         webClient.waitForBackgroundJavaScript(2000);
         verifyTotals(page, percentage, branchPercentage, functionPercentage);
     }
