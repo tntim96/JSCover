@@ -363,7 +363,7 @@ public class HtmlServerUnloadedJSTest {
     private static final Main main = new Main();
     private static final String reportDir = "target/ws-unloaded-report";
 
-    private static String[] args = new String[]{
+    private static final String[] args = new String[]{
             "-ws",
             "--document-root=target",
             "--port=9001",
