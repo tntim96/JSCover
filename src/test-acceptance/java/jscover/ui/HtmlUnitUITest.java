@@ -367,12 +367,12 @@ import static org.hamcrest.Matchers.*;
 public class HtmlUnitUITest {
     private static Thread server;
     private static Main main = new Main();
-    private static HTMLCoverageData scriptA = new HTMLCoverageData("/scripts/script-a.js", "33%", "0%", "33%");
-    private static HTMLCoverageData scriptB = new HTMLCoverageData("/scripts/script-b.js", "50%", "0%", "66%");
-    private static HTMLCoverageData scriptC = new HTMLCoverageData("/scripts/script-c.js", "72%", "25%", "100%");
-    private static HTMLCoverageData scriptD = new HTMLCoverageData("/scripts/script-d.js", "100%", "100%", "100%");
-    private static HTMLCoverageData scriptEmpty = new HTMLCoverageData("/scripts/script-empty.js", "N/A", "N/A", "N/A");
-    private static HTMLCoverageData scriptLine = new HTMLCoverageData("/scripts/script-line.js", "100%", "N/A", "N/A");
+    private static HTMLCoverageData scriptA = new HTMLCoverageData("/test-classes/jscover/ui/scripts/script-a.js", "33%", "0%", "33%");
+    private static HTMLCoverageData scriptB = new HTMLCoverageData("/test-classes/jscover/ui/scripts/script-b.js", "50%", "0%", "66%");
+    private static HTMLCoverageData scriptC = new HTMLCoverageData("/test-classes/jscover/ui/scripts/script-c.js", "72%", "25%", "100%");
+    private static HTMLCoverageData scriptD = new HTMLCoverageData("/test-classes/jscover/ui/scripts/script-d.js", "100%", "100%", "100%");
+    private static HTMLCoverageData scriptEmpty = new HTMLCoverageData("/test-classes/jscover/ui/scripts/script-empty.js", "N/A", "N/A", "N/A");
+    private static HTMLCoverageData scriptLine = new HTMLCoverageData("/test-classes/jscover/ui/scripts/script-line.js", "100%", "N/A", "N/A");
     private static List<HTMLCoverageData> data = new ArrayList<>();
     private static Map<Integer, List<HTMLCoverageData>> dataMap = new HashMap<>();
     static {
@@ -389,9 +389,10 @@ public class HtmlUnitUITest {
 
     protected static String[] args = new String[]{
             "-ws",
-            "--document-root=src/test-acceptance/resources/jscover/ui",
+            "--document-root=target",
             "--port=9001",
             "--no-instrument=example/lib",
+            "--no-instrument=UI-testing",
             "--report-dir=" + reportDir
     };
 
@@ -416,7 +417,7 @@ public class HtmlUnitUITest {
     private static void storeResult() throws IOException {
         WebClient webClient = new WebClient();
         webClient.getOptions().setTimeout(1000);
-        HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?index.html");
+        HtmlPage page = webClient.getPage("http://localhost:9001/jscoverage.html?/test-classes/jscover/ui/index.html");
 
         page.getHtmlElementById("storeTab").click();
         webClient.waitForBackgroundJavaScript(500);
@@ -429,7 +430,7 @@ public class HtmlUnitUITest {
 
     @Test
     public void shouldSortFilesByName() throws IOException {
-        HtmlPage page = webClient.getPage("file:///"+ new File(reportDir+"/jscoverage.html").getAbsolutePath());
+        HtmlPage page = webClient.getPage("http://localhost:9001/UI-testing/jscoverage.html");
         page.getHtmlElementById("summaryTab").click();
         webClient.waitForBackgroundJavaScript(2000);
 
@@ -449,7 +450,7 @@ public class HtmlUnitUITest {
 
     @Test
     public void shouldSortFilesByCoverage() throws IOException {
-        HtmlPage page = webClient.getPage("file:///"+ new File(reportDir+"/jscoverage.html").getAbsolutePath());
+        HtmlPage page = webClient.getPage("http://localhost:9001/UI-testing/jscoverage.html");
         page.getHtmlElementById("summaryTab").click();
         webClient.waitForBackgroundJavaScript(2000);
         page.getHtmlElementById("sortByName").click();
