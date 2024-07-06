@@ -357,6 +357,7 @@ import java.net.Socket;
 public class HtmlServerUnloadedJSProxyTest extends HtmlServerUnloadedJSTest {
     private static Thread webServer;
     private static Thread proxyServer;
+    private static Thread reportWebServer;
     private static Main main = new Main();
     private static ServerSocket serverSocket;
     private static int proxyPort = 3129;
@@ -370,6 +371,10 @@ public class HtmlServerUnloadedJSProxyTest extends HtmlServerUnloadedJSTest {
             "--no-instrument=noInstrument",
             "--include-unloaded-js",
             "--report-dir=" + reportDir
+    };
+    protected static String[] reportWebServerArgs = new String[]{
+            reportDir,
+            "9002",
     };
 
     @Override
@@ -394,6 +399,8 @@ public class HtmlServerUnloadedJSProxyTest extends HtmlServerUnloadedJSTest {
             }
         });
         webServer.start();
+        reportWebServer = new Thread(() -> SimpleWebServer.main(reportWebServerArgs));
+        reportWebServer.start();
     }
 
     @AfterClass

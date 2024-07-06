@@ -366,6 +366,7 @@ import static org.junit.Assert.assertEquals;
 public class HtmlServerUnloadedJSProxyOnlyInstrumentRegTest {
     private static Thread webServer;
     private static Thread proxyServer;
+    private static Thread reportWebServer;
     private static Main main = new Main();
     private static ServerSocket serverSocket;
     private static int proxyPort = 3129;
@@ -382,6 +383,10 @@ public class HtmlServerUnloadedJSProxyOnlyInstrumentRegTest {
             "--only-instrument-reg=/level1/.*",
             "--include-unloaded-js",
             "--report-dir=" + reportDir
+    };
+    protected static String[] reportWebServerArgs = new String[]{
+            reportDir,
+            "9002",
     };
 
     @BeforeClass
@@ -401,6 +406,8 @@ public class HtmlServerUnloadedJSProxyOnlyInstrumentRegTest {
             }
         });
         webServer.start();
+        reportWebServer = new Thread(() -> SimpleWebServer.main(reportWebServerArgs));
+        reportWebServer.start();
     }
 
     @AfterClass
@@ -445,8 +452,7 @@ public class HtmlServerUnloadedJSProxyOnlyInstrumentRegTest {
         assertThat(json, containsString("/level1/level1.js"));
         assertThat(json, containsString("/level1/level2/level2.js"));
 
-        String url = "file:///" + new File(reportDir + "/jscoverage.html").getAbsolutePath();
-        page = webClient.getPage(url);
+        page = webClient.getPage("http://127.0.0.1:9002/jscoverage.html");
         webClient.waitForBackgroundJavaScript(1000);
 
         assertEquals("37%", page.getElementById("summaryTotal").getTextContent());

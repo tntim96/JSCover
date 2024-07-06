@@ -357,6 +357,7 @@ import java.net.Socket;
 public class HtmlServerUnloadedJSProxyUriToFileTest extends HtmlServerUnloadedJSTest {
     private static Thread webServer;
     private static Thread server;
+    private static Thread reportWebServer;
     private static Main main = new Main();
     private static ServerSocket serverSocket;
     private static int proxyPort = 3129;
@@ -372,6 +373,10 @@ public class HtmlServerUnloadedJSProxyUriToFileTest extends HtmlServerUnloadedJS
             "--uri-to-file-replace=$1",
             "--include-unloaded-js",
             "--report-dir=" + reportDir
+    };
+    protected static String[] reportWebServerArgs = new String[]{
+            reportDir,
+            "9002",
     };
 
     @Override
@@ -406,6 +411,8 @@ public class HtmlServerUnloadedJSProxyUriToFileTest extends HtmlServerUnloadedJS
             }
         });
         webServer.start();
+        reportWebServer = new Thread(() -> SimpleWebServer.main(reportWebServerArgs));
+        reportWebServer.start();
     }
 
     @AfterClass

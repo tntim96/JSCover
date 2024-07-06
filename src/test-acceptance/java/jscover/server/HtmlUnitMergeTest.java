@@ -363,6 +363,7 @@ import static org.junit.Assert.assertEquals;
 
 public class HtmlUnitMergeTest {
     private static Thread server;
+    private static Thread webServer;
     private static Main main = new Main();
     private static String reportDir = "target/ws-merge-report";
     private static String[] args = new String[]{
@@ -373,6 +374,10 @@ public class HtmlUnitMergeTest {
             "--include-unloaded-js",
             "--report-dir=" + reportDir
     };
+    protected static String[] webServerArgs = new String[]{
+            reportDir,
+            "9002",
+    };
 
     private IoUtils ioUtils = IoUtils.getInstance();
 
@@ -380,6 +385,8 @@ public class HtmlUnitMergeTest {
     public static void setUpOnce() {
         server = new Thread(() -> main.runMain(args));
         server.start();
+        webServer = new Thread(() -> SimpleWebServer.main(webServerArgs));
+        webServer.start();
     }
 
     @AfterClass
@@ -401,9 +408,8 @@ public class HtmlUnitMergeTest {
         assertThat(json, containsString("/root.js"));
         assertThat(json, containsString("/level1/level2/level2.js"));
 
-        String url = "file:///" + new File(reportDir + "/jscoverage.html").getAbsolutePath();
         WebClient webClient = new WebClient();
-        HtmlPage page = webClient.getPage(url);
+        HtmlPage page = webClient.getPage("http://localhost:9002/jscoverage.html");
         webClient.waitForBackgroundJavaScript(1000);
         assertEquals("53%", page.getElementById("summaryTotal").getTextContent());
         assertEquals("33%", page.getElementById("branchSummaryTotal").getTextContent());

@@ -342,6 +342,7 @@ Public License instead of this License.
 
 package jscover.ui;
 
+import jscover.server.SimpleWebServer;
 import org.htmlunit.WebClient;
 import org.htmlunit.html.HtmlPage;
 import org.htmlunit.html.HtmlTableRow;
@@ -366,6 +367,7 @@ import static org.hamcrest.Matchers.*;
 
 public class HtmlUnitUITest {
     private static Thread server;
+    private static Thread webServer;
     private static Main main = new Main();
     private static HTMLCoverageData scriptA = new HTMLCoverageData("/scripts/script-a.js", "33%", "0%", "33%");
     private static HTMLCoverageData scriptB = new HTMLCoverageData("/scripts/script-b.js", "50%", "0%", "66%");
@@ -394,12 +396,18 @@ public class HtmlUnitUITest {
             "--no-instrument=example/lib",
             "--report-dir=" + reportDir
     };
+    protected static String[] webServerArgs = new String[]{
+            reportDir.getAbsolutePath(),
+            "9002",
+    };
 
     @BeforeClass
     public static void setUpOnce() throws IOException {
         FileUtils.deleteDirectory(reportDir);
         server = new Thread(() -> main.runMain(args));
         server.start();
+        webServer = new Thread(() -> SimpleWebServer.main(webServerArgs));
+        webServer.start();
         storeResult();
     }
 
@@ -429,7 +437,7 @@ public class HtmlUnitUITest {
 
     @Test
     public void shouldSortFilesByName() throws IOException {
-        HtmlPage page = webClient.getPage("file:///"+ new File(reportDir+"/jscoverage.html").getAbsolutePath());
+        HtmlPage page = webClient.getPage("http://localhost:9002/jscoverage.html");
         page.getHtmlElementById("summaryTab").click();
         webClient.waitForBackgroundJavaScript(2000);
 
@@ -449,7 +457,7 @@ public class HtmlUnitUITest {
 
     @Test
     public void shouldSortFilesByCoverage() throws IOException {
-        HtmlPage page = webClient.getPage("file:///"+ new File(reportDir+"/jscoverage.html").getAbsolutePath());
+        HtmlPage page = webClient.getPage("http://localhost:9002/jscoverage.html");
         page.getHtmlElementById("summaryTab").click();
         webClient.waitForBackgroundJavaScript(2000);
         page.getHtmlElementById("sortByName").click();

@@ -342,14 +342,18 @@ Public License instead of this License.
 
 package jscover.server;
 
+import jscover.util.IoUtils;
+
 import java.io.File;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 public class SimpleWebServer {
     private static boolean running = true;
+    private static IoUtils ioUtils = new IoUtils();
 
-    public static void main(String args[]) throws Exception {
+    public static void main(String args[]) {
         ServerSocket server = null;
         try {
             server = new ServerSocket(Integer.valueOf(args[1]));
@@ -358,8 +362,10 @@ public class SimpleWebServer {
                 Socket socket = server.accept();
                 (new HttpServer(socket, wwwRoot, "simpleWebServer")).start();
             }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         } finally {
-            server.close();
+            ioUtils.closeQuietly(server);
         }
     }
 }

@@ -361,6 +361,7 @@ import static org.junit.Assert.assertEquals;
 
 public class HtmlServerUnloadedJSTest {
     private static Thread server;
+    private static Thread webServer;
     private static Main main = new Main();
     private static String reportDir = "target/ws-unloaded-report";
 
@@ -371,6 +372,10 @@ public class HtmlServerUnloadedJSTest {
             "--no-instrument=noInstrument",
             "--include-unloaded-js",
             "--report-dir=" + reportDir
+    };
+    protected static String[] webServerArgs = new String[]{
+            reportDir,
+            "9002",
     };
     protected WebClient webClient = new WebClient();
     protected IoUtils ioUtils = IoUtils.getInstance();
@@ -383,6 +388,8 @@ public class HtmlServerUnloadedJSTest {
     public static void setUpOnce() {
         server = new Thread(() -> main.runMain(args));
         server.start();
+        webServer = new Thread(() -> SimpleWebServer.main(webServerArgs));
+        webServer.start();
     }
 
     @AfterClass
@@ -432,8 +439,7 @@ public class HtmlServerUnloadedJSTest {
         assertThat(json, containsString("/root.js"));
         assertThat(json, containsString("/level1/level2/level2.js"));
 
-        String url = "file:///" + new File(getReportDir() + "/jscoverage.html").getAbsolutePath();
-        page = webClient.getPage(url);
+        page = webClient.getPage("http://127.0.0.1:9002/jscoverage.html");
         webClient.waitForBackgroundJavaScript(1000);
         assertEquals("53%", page.getElementById("summaryTotal").getTextContent());
         assertEquals("33%", page.getElementById("branchSummaryTotal").getTextContent());

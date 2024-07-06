@@ -359,6 +359,7 @@ import static org.hamcrest.Matchers.equalTo;
 
 public class HtmlUnitServerBranchAndFunctionTest extends HtmlUnitServerTest {
     private static Thread server;
+    private static Thread webServer;
     private static Main main = new Main();
     private static String reportDir = "target/ws-branch-report";
     protected static String[] args = new String[]{
@@ -368,11 +369,17 @@ public class HtmlUnitServerBranchAndFunctionTest extends HtmlUnitServerTest {
             "--no-instrument=example/lib",
             "--report-dir=" + reportDir
     };
+    protected static String[] webServerArgs = new String[]{
+            reportDir,
+            "9002",
+    };
 
     @BeforeClass
     public static void setUpOnce() {
         server = new Thread(() -> main.runMain(args));
         server.start();
+        webServer = new Thread(() -> SimpleWebServer.main(webServerArgs));
+        webServer.start();
     }
 
     @AfterClass

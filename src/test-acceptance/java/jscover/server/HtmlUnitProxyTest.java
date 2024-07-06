@@ -357,6 +357,7 @@ import java.net.Socket;
 public class HtmlUnitProxyTest extends HtmlUnitServerTest {
     private static Thread webServer;
     private static Thread proxyServer;
+    private static Thread reportWebServer;
     private static Main main = new Main();
     private static ServerSocket serverSocket;
     private static int proxyPort = 3129;
@@ -371,6 +372,10 @@ public class HtmlUnitProxyTest extends HtmlUnitServerTest {
             "--no-function",
             "--no-instrument=example/lib",
             "--report-dir=" + reportDir
+    };
+    protected static String[] reportWebServerArgs = new String[]{
+            reportDir,
+            "9002",
     };
 
     @Override
@@ -395,6 +400,8 @@ public class HtmlUnitProxyTest extends HtmlUnitServerTest {
             }
         });
         webServer.start();
+        reportWebServer = new Thread(() -> SimpleWebServer.main(reportWebServerArgs));
+        reportWebServer.start();
     }
 
     @AfterClass

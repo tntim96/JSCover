@@ -18,6 +18,7 @@ import static org.junit.Assert.assertEquals;
 
 public class HtmlUnitIsolateBrowserTest {
     private static Thread server;
+    private static Thread webServer;
     private static Main main = new Main();
     private static String reportDir = "target/isolateBrowser";
 
@@ -31,6 +32,10 @@ public class HtmlUnitIsolateBrowserTest {
             "--isolate-browser",
             "--report-dir=" + reportDir
     };
+    protected static String[] webServerArgs = new String[]{
+            reportDir,
+            "9002",
+    };
 
     protected String getReportDir() {
         return reportDir;
@@ -40,6 +45,8 @@ public class HtmlUnitIsolateBrowserTest {
     public static void setUpOnce() {
         server = new Thread(() -> main.runMain(args));
         server.start();
+        webServer = new Thread(() -> SimpleWebServer.main(webServerArgs));
+        webServer.start();
     }
 
     @AfterClass
@@ -71,7 +78,7 @@ public class HtmlUnitIsolateBrowserTest {
         duplicatePage.getElementById("radio1").click();
         duplicatePage.executeJavaScript("jscoverage_report();");
         webClient.waitForBackgroundJavaScript(2000);
-        page = webClient.getPage("file:///"+ new File(getReportDir()+"/jscoverage.html").getAbsolutePath());
+        page = webClient.getPage("http://localhost:9002/jscoverage.html");
         verifyTotal(page, 57, 12, 33);
     }
 

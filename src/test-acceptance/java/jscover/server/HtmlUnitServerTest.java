@@ -365,6 +365,7 @@ import static org.junit.Assert.assertEquals;
 
 public class HtmlUnitServerTest {
     private static Thread server;
+    private static Thread webServer;
     private static Main main = new Main();
     private static String reportDir = "target/ws-report";
     private static String[] args = new String[]{
@@ -375,6 +376,10 @@ public class HtmlUnitServerTest {
             "--no-function",
             "--no-instrument=example/lib",
             "--report-dir=" + reportDir
+    };
+    protected static String[] webServerArgs = new String[]{
+            reportDir,
+            "9002",
     };
 
     protected WebClient webClient = new WebClient();
@@ -387,6 +392,8 @@ public class HtmlUnitServerTest {
     public static void setUpOnce() {
         server = new Thread(() -> main.runMain(args));
         server.start();
+        webServer = new Thread(() -> SimpleWebServer.main(webServerArgs));
+        webServer.start();
     }
 
     @AfterClass
@@ -508,7 +515,7 @@ public class HtmlUnitServerTest {
         String json = ioUtils.toString(jsonFile);
         assertThat(json, containsString("/script.js"));
 
-        page = webClient.getPage("file:///"+ new File(getReportDir()+"/jscoverage.html").getAbsolutePath());
+        page = webClient.getPage("http://127.0.0.1:9002/jscoverage.html");
         verifyTotal(webClient, page, 89, branchPercentage, functionPercentage);
     }
 
@@ -532,7 +539,7 @@ public class HtmlUnitServerTest {
         String json = ioUtils.toString(jsonFile);
         assertThat(json, containsString("/script.js"));
 
-        page = webClient.getPage("file:///"+ new File(getReportDir()+"/directory/jscoverage.html").getAbsolutePath());
+        page = webClient.getPage("http://127.0.0.1:9002/directory/jscoverage.html");
         verifyTotal(webClient, page, 15);
     }
 
@@ -550,7 +557,7 @@ public class HtmlUnitServerTest {
         String json = ioUtils.toString(jsonFile);
         assertThat(json, containsString("/script.js"));
 
-        page = webClient.getPage("file:///"+ new File(getReportDir()+"/directory-no-ui/jscoverage.html").getAbsolutePath());
+        page = webClient.getPage("http://127.0.0.1:9002/directory-no-ui/jscoverage.html");
         verifyTotal(webClient, page, 15);
     }
 
@@ -568,7 +575,7 @@ public class HtmlUnitServerTest {
         String json = ioUtils.toString(jsonFile);
         assertThat(json, containsString("/script.js"));
 
-        page = webClient.getPage("file:///"+ new File(getReportDir()+"/directory-no-ui-cb/jscoverage.html").getAbsolutePath());
+        page = webClient.getPage("http://127.0.0.1:9002/directory-no-ui-cb/jscoverage.html");
         verifyTotal(webClient, page, 15);
     }
 
