@@ -396,6 +396,7 @@ public class HtmlUnitServerTest {
 
     @Before
     public void setUp() {
+        webClient.getOptions().setFileProtocolForXMLHttpRequestsAllowed(true);
         webClient.getOptions().setTimeout(1000);
     }
 

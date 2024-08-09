@@ -53,6 +53,7 @@ public class HtmlUnitIsolateBrowserTest {
         if (jsonFile.exists())
             jsonFile.delete();
         ioService.generateJSCoverFilesForWebServer(new File(reportDir), "isolateBrowser");
+        webClient.getOptions().setFileProtocolForXMLHttpRequestsAllowed(true);
     }
 
     protected String getTestUrl() {
