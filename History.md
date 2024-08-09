@@ -1,7 +1,8 @@
 2.0.20 / 2024-??-??
 ==================
+  * Fix sort by name implementation (https://github.com/tntim96/JSCover/issues/328)
   * Upgrade closure-compiler v20231112 to v20240317, gson 2.10.1 to 2.11.0
-  * Internal: HtmlUnit 3.9.0 to 4.1.0, Mockito 5.8.0 to 5.12.0, JaCoCo 0.8.11 to 0.8.12, Rhino 1.7.14 to 1.7.15, Maven Resolver Ant Tasks 1.2.1-SNAPSHOT to 1.5.1
+  * Internal: HtmlUnit 3.9.0 to 4.4.0, Mockito 5.8.0 to 5.12.0, JaCoCo 0.8.11 to 0.8.12, Rhino 1.7.14 to 1.7.15, Maven Resolver Ant Tasks 1.2.1-SNAPSHOT to 1.5.1
 
 2.0.19 / 2024-01-02
 ==================
