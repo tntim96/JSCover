@@ -403,6 +403,7 @@ public class HtmlUnitMergeTest {
 
         String url = "file:///" + new File(reportDir + "/jscoverage.html").getAbsolutePath();
         WebClient webClient = new WebClient();
+        webClient.getOptions().setFileProtocolForXMLHttpRequestsAllowed(true);
         HtmlPage page = webClient.getPage(url);
         webClient.waitForBackgroundJavaScript(1000);
         assertEquals("53%", page.getElementById("summaryTotal").getTextContent());
