@@ -1,4 +1,4 @@
-2.0.20 / 2024-??-??
+2.0.20 / 2024-08-30
 ==================
   * Fix sort by name implementation (https://github.com/tntim96/JSCover/issues/328)
   * Upgrade closure-compiler v20231112 to v20240317, gson 2.10.1 to 2.11.0
