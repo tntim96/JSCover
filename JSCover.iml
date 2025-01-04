@@ -56,7 +56,10 @@
     <orderEntry type="library" scope="TEST" name="Maven: commons-net:commons-net:3.11.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: commons-codec:commons-codec:1.17.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.brotli:dec:0.1.2" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.mozilla:rhino:1.7.15" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.mozilla:rhino-all:1.8.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.mozilla:rhino:1.8.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.mozilla:rhino-tools:1.8.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.mozilla:rhino-xml:1.8.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.13.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-core:3.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest:3.0" level="project" />

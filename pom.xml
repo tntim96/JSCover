@@ -88,8 +88,8 @@
         </dependency>
         <dependency>
             <groupId>org.mozilla</groupId>
-            <artifactId>rhino</artifactId>
-            <version>1.7.15</version>
+            <artifactId>rhino-all</artifactId>
+            <version>1.8.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>

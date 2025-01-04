@@ -1074,16 +1074,52 @@
         <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/5.15.2/mockito-core-5.15.2-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.mozilla:rhino:1.7.15" type="java-imported" external-system-id="Maven">
-      <properties groupId="org.mozilla" artifactId="rhino" version="1.7.15" baseVersion="1.7.15" />
+    <library name="Maven: org.mozilla:rhino-all:1.8.0" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.mozilla" artifactId="rhino-all" version="1.8.0" baseVersion="1.8.0" />
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino/1.7.15/rhino-1.7.15.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino-all/1.8.0/rhino-all-1.8.0.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino/1.7.15/rhino-1.7.15-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino-all/1.8.0/rhino-all-1.8.0-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino/1.7.15/rhino-1.7.15-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino-all/1.8.0/rhino-all-1.8.0-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.mozilla:rhino-tools:1.8.0" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.mozilla" artifactId="rhino-tools" version="1.8.0" baseVersion="1.8.0" />
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino-tools/1.8.0/rhino-tools-1.8.0.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino-tools/1.8.0/rhino-tools-1.8.0-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino-tools/1.8.0/rhino-tools-1.8.0-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.mozilla:rhino-xml:1.8.0" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.mozilla" artifactId="rhino-xml" version="1.8.0" baseVersion="1.8.0" />
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino-xml/1.8.0/rhino-xml-1.8.0.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino-xml/1.8.0/rhino-xml-1.8.0-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino-xml/1.8.0/rhino-xml-1.8.0-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.mozilla:rhino:1.8.0" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.mozilla" artifactId="rhino" version="1.8.0" baseVersion="1.8.0" />
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino/1.8.0/rhino-1.8.0.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino/1.8.0/rhino-1.8.0-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino/1.8.0/rhino-1.8.0-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.objenesis:objenesis:3.3" type="java-imported" external-system-id="Maven">
