@@ -887,8 +887,8 @@ public class BranchInstrumentorIntegrationTest {
         Function coveredFn = (Function) ScriptableObject.getProperty(coverageData, "covered");
         Function testFn = (Function) scope.get("test", scope);
 
-        assertThat(coverageData.get("evalTrue", coverageData), equalTo(0d));
-        assertThat(coverageData.get("evalFalse", coverageData), equalTo(0d));
+        assertThat(coverageData.get("evalTrue", coverageData), equalTo(0.0));
+        assertThat(coverageData.get("evalFalse", coverageData), equalTo(0.0));
         assertThat(coverageData.get("position", coverageData), equalTo(10));
         assertThat(coverageData.get("nodeLength", coverageData), equalTo(5));
         assertThat(coveredFn.call(context, scope, coverageData, new Object[0]), equalTo(false));
