@@ -750,16 +750,16 @@
         <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler/v20240317/closure-compiler-v20240317-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: commons-codec:commons-codec:1.17.1" type="java-imported" external-system-id="Maven">
-      <properties groupId="commons-codec" artifactId="commons-codec" version="1.17.1" baseVersion="1.17.1" />
+    <library name="Maven: commons-codec:commons-codec:1.17.2" type="java-imported" external-system-id="Maven">
+      <properties groupId="commons-codec" artifactId="commons-codec" version="1.17.2" baseVersion="1.17.2" />
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/commons-codec/commons-codec/1.17.1/commons-codec-1.17.1.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/commons-codec/commons-codec/1.17.2/commons-codec-1.17.2.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/commons-codec/commons-codec/1.17.1/commons-codec-1.17.1-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/commons-codec/commons-codec/1.17.2/commons-codec-1.17.2-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/commons-codec/commons-codec/1.17.1/commons-codec-1.17.1-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/commons-codec/commons-codec/1.17.2/commons-codec-1.17.2-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: commons-io:commons-io:2.18.0" type="java-imported" external-system-id="Maven">
@@ -784,18 +784,6 @@
       </JAVADOC>
       <SOURCES>
         <root url="jar://$MAVEN_REPOSITORY$/commons-logging/commons-logging/1.3.4/commons-logging-1.3.4-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: commons-net:commons-net:3.11.1" type="java-imported" external-system-id="Maven">
-      <properties groupId="commons-net" artifactId="commons-net" version="3.11.1" baseVersion="3.11.1" />
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/commons-net/commons-net/3.11.1/commons-net-3.11.1.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/commons-net/commons-net/3.11.1/commons-net-3.11.1-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/commons-net/commons-net/3.11.1/commons-net-3.11.1-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: junit:junit:4.13.2" type="java-imported" external-system-id="Maven">
@@ -846,18 +834,6 @@
         <root url="jar://$MAVEN_REPOSITORY$/org/apache/commons/commons-lang3/3.17.0/commons-lang3-3.17.0-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.apache.commons:commons-text:1.12.0" type="java-imported" external-system-id="Maven">
-      <properties groupId="org.apache.commons" artifactId="commons-text" version="1.12.0" baseVersion="1.12.0" />
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/apache/commons/commons-text/1.12.0/commons-text-1.12.0.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/apache/commons/commons-text/1.12.0/commons-text-1.12.0-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/apache/commons/commons-text/1.12.0/commons-text-1.12.0-sources.jar!/" />
-      </SOURCES>
-    </library>
     <library name="Maven: org.apache.httpcomponents:httpclient:4.5.14" type="java-imported" external-system-id="Maven">
       <properties groupId="org.apache.httpcomponents" artifactId="httpclient" version="4.5.14" baseVersion="4.5.14" />
       <CLASSES>
@@ -892,6 +868,18 @@
       </JAVADOC>
       <SOURCES>
         <root url="jar://$MAVEN_REPOSITORY$/org/apache/httpcomponents/httpmime/4.5.14/httpmime-4.5.14-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.apiguardian:apiguardian-api:1.1.2" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.apiguardian" artifactId="apiguardian-api" version="1.1.2" baseVersion="1.1.2" />
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.brotli:dec:0.1.2" type="java-imported" external-system-id="Maven">
@@ -930,88 +918,88 @@
         <root url="jar://$MAVEN_REPOSITORY$/org/hamcrest/hamcrest/3.0/hamcrest-3.0-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.htmlunit:htmlunit-core-js:4.7.0" type="java-imported" external-system-id="Maven">
-      <properties groupId="org.htmlunit" artifactId="htmlunit-core-js" version="4.7.0" baseVersion="4.7.0" />
+    <library name="Maven: org.htmlunit:htmlunit-core-js:4.8.0" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.htmlunit" artifactId="htmlunit-core-js" version="4.8.0" baseVersion="4.8.0" />
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-core-js/4.7.0/htmlunit-core-js-4.7.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-core-js/4.8.0/htmlunit-core-js-4.8.0.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-core-js/4.7.0/htmlunit-core-js-4.7.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-core-js/4.8.0/htmlunit-core-js-4.8.0-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-core-js/4.7.0/htmlunit-core-js-4.7.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-core-js/4.8.0/htmlunit-core-js-4.8.0-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.htmlunit:htmlunit-csp:4.7.0" type="java-imported" external-system-id="Maven">
-      <properties groupId="org.htmlunit" artifactId="htmlunit-csp" version="4.7.0" baseVersion="4.7.0" />
+    <library name="Maven: org.htmlunit:htmlunit-csp:4.8.0" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.htmlunit" artifactId="htmlunit-csp" version="4.8.0" baseVersion="4.8.0" />
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-csp/4.7.0/htmlunit-csp-4.7.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-csp/4.8.0/htmlunit-csp-4.8.0.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-csp/4.7.0/htmlunit-csp-4.7.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-csp/4.8.0/htmlunit-csp-4.8.0-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-csp/4.7.0/htmlunit-csp-4.7.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-csp/4.8.0/htmlunit-csp-4.8.0-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.htmlunit:htmlunit-cssparser:4.7.0" type="java-imported" external-system-id="Maven">
-      <properties groupId="org.htmlunit" artifactId="htmlunit-cssparser" version="4.7.0" baseVersion="4.7.0" />
+    <library name="Maven: org.htmlunit:htmlunit-cssparser:4.8.0" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.htmlunit" artifactId="htmlunit-cssparser" version="4.8.0" baseVersion="4.8.0" />
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-cssparser/4.7.0/htmlunit-cssparser-4.7.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-cssparser/4.8.0/htmlunit-cssparser-4.8.0.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-cssparser/4.7.0/htmlunit-cssparser-4.7.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-cssparser/4.8.0/htmlunit-cssparser-4.8.0-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-cssparser/4.7.0/htmlunit-cssparser-4.7.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-cssparser/4.8.0/htmlunit-cssparser-4.8.0-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.htmlunit:htmlunit-websocket-client:4.7.0" type="java-imported" external-system-id="Maven">
-      <properties groupId="org.htmlunit" artifactId="htmlunit-websocket-client" version="4.7.0" baseVersion="4.7.0" />
+    <library name="Maven: org.htmlunit:htmlunit-websocket-client:4.8.0" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.htmlunit" artifactId="htmlunit-websocket-client" version="4.8.0" baseVersion="4.8.0" />
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-websocket-client/4.7.0/htmlunit-websocket-client-4.7.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-websocket-client/4.8.0/htmlunit-websocket-client-4.8.0.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-websocket-client/4.7.0/htmlunit-websocket-client-4.7.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-websocket-client/4.8.0/htmlunit-websocket-client-4.8.0-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-websocket-client/4.7.0/htmlunit-websocket-client-4.7.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-websocket-client/4.8.0/htmlunit-websocket-client-4.8.0-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.htmlunit:htmlunit-xpath:4.7.0" type="java-imported" external-system-id="Maven">
-      <properties groupId="org.htmlunit" artifactId="htmlunit-xpath" version="4.7.0" baseVersion="4.7.0" />
+    <library name="Maven: org.htmlunit:htmlunit-xpath:4.8.0" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.htmlunit" artifactId="htmlunit-xpath" version="4.8.0" baseVersion="4.8.0" />
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-xpath/4.7.0/htmlunit-xpath-4.7.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-xpath/4.8.0/htmlunit-xpath-4.8.0.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-xpath/4.7.0/htmlunit-xpath-4.7.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-xpath/4.8.0/htmlunit-xpath-4.8.0-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-xpath/4.7.0/htmlunit-xpath-4.7.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-xpath/4.8.0/htmlunit-xpath-4.8.0-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.htmlunit:htmlunit:4.7.0" type="java-imported" external-system-id="Maven">
-      <properties groupId="org.htmlunit" artifactId="htmlunit" version="4.7.0" baseVersion="4.7.0" />
+    <library name="Maven: org.htmlunit:htmlunit:4.8.0" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.htmlunit" artifactId="htmlunit" version="4.8.0" baseVersion="4.8.0" />
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit/4.7.0/htmlunit-4.7.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit/4.8.0/htmlunit-4.8.0.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit/4.7.0/htmlunit-4.7.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit/4.8.0/htmlunit-4.8.0-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit/4.7.0/htmlunit-4.7.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit/4.8.0/htmlunit-4.8.0-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.htmlunit:neko-htmlunit:4.7.0" type="java-imported" external-system-id="Maven">
-      <properties groupId="org.htmlunit" artifactId="neko-htmlunit" version="4.7.0" baseVersion="4.7.0" />
+    <library name="Maven: org.htmlunit:neko-htmlunit:4.8.0" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.htmlunit" artifactId="neko-htmlunit" version="4.8.0" baseVersion="4.8.0" />
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/neko-htmlunit/4.7.0/neko-htmlunit-4.7.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/neko-htmlunit/4.8.0/neko-htmlunit-4.8.0.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/neko-htmlunit/4.7.0/neko-htmlunit-4.7.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/neko-htmlunit/4.8.0/neko-htmlunit-4.8.0-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/neko-htmlunit/4.7.0/neko-htmlunit-4.7.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/neko-htmlunit/4.8.0/neko-htmlunit-4.8.0-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.jacoco:org.jacoco.agent:0.8.12" type="java-imported" external-system-id="Maven">
@@ -1060,6 +1048,42 @@
       </JAVADOC>
       <SOURCES>
         <root url="jar://$MAVEN_REPOSITORY$/org/jacoco/org.jacoco.report/0.8.12/org.jacoco.report-0.8.12-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.junit.platform:junit-platform-commons:1.11.3" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.junit.platform" artifactId="junit-platform-commons" version="1.11.3" baseVersion="1.11.3" />
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/junit/platform/junit-platform-commons/1.11.3/junit-platform-commons-1.11.3.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/junit/platform/junit-platform-commons/1.11.3/junit-platform-commons-1.11.3-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/junit/platform/junit-platform-commons/1.11.3/junit-platform-commons-1.11.3-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.junit.platform:junit-platform-engine:1.11.3" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.junit.platform" artifactId="junit-platform-engine" version="1.11.3" baseVersion="1.11.3" />
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/junit/platform/junit-platform-engine/1.11.3/junit-platform-engine-1.11.3.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/junit/platform/junit-platform-engine/1.11.3/junit-platform-engine-1.11.3-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/junit/platform/junit-platform-engine/1.11.3/junit-platform-engine-1.11.3-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.junit.vintage:junit-vintage-engine:5.11.3" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.junit.vintage" artifactId="junit-vintage-engine" version="5.11.3" baseVersion="5.11.3" />
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/junit/vintage/junit-vintage-engine/5.11.3/junit-vintage-engine-5.11.3.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/junit/vintage/junit-vintage-engine/5.11.3/junit-vintage-engine-5.11.3-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/junit/vintage/junit-vintage-engine/5.11.3/junit-vintage-engine-5.11.3-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.mockito:mockito-core:5.15.2" type="java-imported" external-system-id="Maven">
@@ -1132,6 +1156,18 @@
       </JAVADOC>
       <SOURCES>
         <root url="jar://$MAVEN_REPOSITORY$/org/objenesis/objenesis/3.3/objenesis-3.3-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.opentest4j:opentest4j:1.3.0" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.opentest4j" artifactId="opentest4j" version="1.3.0" baseVersion="1.3.0" />
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.ow2.asm:asm-commons:9.7" type="java-imported" external-system-id="Maven">
