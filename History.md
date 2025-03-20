@@ -1,7 +1,8 @@
 2.0.21 / 2024-??-??
 ==================
 * Upgrade gson 2.11.0 to 2.12.1
-* Internal: Mockito 5.13.0 to 5.16.1, HtmlUnit 4.4.0 to 4.10.0, Rhino 1.7.15 to 1.8.0
+* Internal: Mockito 5.13.0 to 5.16.1, HtmlUnit 4.4.0 to 4.10.0, Rhino 1.7.15 to 1.8.0, Maven Resolver Ant Tasks 1.2.1-SNAPSHOT to 1.5.1
+* Internal: Maven Resolver Ant Tasks 1.5.1 to 1.5.2
 
 2.0.20 / 2024-08-30
 ==================
