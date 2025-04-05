@@ -1,4 +1,4 @@
-image: openjdk:21
+image: openjdk:21-slim
 
 before_script:
   - apt-get update
