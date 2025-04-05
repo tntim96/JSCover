@@ -83,7 +83,7 @@
         <dependency>
             <groupId>org.htmlunit</groupId>
             <artifactId>htmlunit</artifactId>
-            <version>4.11.0</version>
+            <version>4.11.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -107,13 +107,13 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>5.16.1</version>
+            <version>5.17.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
         	<groupId>org.jacoco</groupId>
         	<artifactId>org.jacoco.ant</artifactId>
-        	<version>0.8.12</version>
+        	<version>0.8.13</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
