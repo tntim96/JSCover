@@ -69,7 +69,7 @@
 
 	<target name="compile" depends="init, dirsetup">
 		<javac includeantruntime="false" debug="true" srcdir="${src.main.dir}" destdir="${classes.main.dir}"
-               classpathref="compile.classpath" source="11" target="11"/>
+               classpathref="compile.classpath" source="21" target="21"/>
 		<copy todir="${classes.main.dir}" includeemptydirs="no">
 			<fileset dir="${src.resources.dir}" />
 		</copy>

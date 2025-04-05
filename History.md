@@ -1,8 +1,9 @@
 2.0.21 / 2025-??-??
 ==================
-* Upgrade gson 2.11.0 to 2.12.1
-* Internal: Mockito 5.13.0 to 5.17.0, HtmlUnit 4.4.0 to 4.11.1, Rhino 1.7.15 to 1.8.0
-* Internal: Maven Resolver Ant Tasks 1.2.1-SNAPSHOT to 1.5.2, JaCoCo 0.8.12 to 0.8.13
+ * Java 17 to align with closure-compiler
+ * Upgrade closure-compiler v20240317 to v20250402, gson 2.11.0 to 2.12.1
+ * Internal: Mockito 5.13.0 to 5.17.0, HtmlUnit 4.4.0 to 4.11.1, Rhino 1.7.15 to 1.8.0
+ * Internal: Maven Resolver Ant Tasks 1.2.1-SNAPSHOT to 1.5.2, JaCoCo 0.8.12 to 0.8.13
 
 2.0.20 / 2024-08-30
 ==================

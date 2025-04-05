@@ -397,7 +397,6 @@ class SourceProcessor {
         options.setStrictModeInput(false);
         options.setContinueAfterErrors(true);
         options.setParseJsDocDocumentation(INCLUDE_DESCRIPTIONS_WITH_WHITESPACE);
-        options.setRemoveUnreachableCode(false);
         return options;
     }
 
