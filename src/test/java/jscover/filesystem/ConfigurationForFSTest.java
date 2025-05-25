@@ -370,6 +370,7 @@ public class ConfigurationForFSTest {
         assertThat(configuration.getThreads(), is(Runtime.getRuntime().availableProcessors()));
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void shouldHaveDefaultsViaConstructor() {
         ConfigurationForFS configuration = new ConfigurationForFS();
@@ -379,6 +380,7 @@ public class ConfigurationForFSTest {
         assertThat(((Set<String>)ReflectionUtils.getField(configuration, "excludeRegs")).size(), is(0));
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void shouldSetValues() {
         ConfigurationForFS configuration = new ConfigurationForFS();

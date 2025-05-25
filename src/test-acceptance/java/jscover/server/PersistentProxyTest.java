@@ -353,6 +353,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.URI;
 import java.net.URL;
 
 import static org.junit.Assert.assertEquals;
@@ -415,7 +416,7 @@ public class PersistentProxyTest {
     }
 
     protected void doTestRequests(HttpMethod... methods) throws Exception {
-        URL testURL = new URL(getTestUrl());
+        URL testURL = URI.create(getTestUrl()).toURL();
         int count = 0;
         for (HttpMethod method : methods) {
             count++;

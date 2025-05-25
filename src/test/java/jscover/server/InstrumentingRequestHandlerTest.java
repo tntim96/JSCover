@@ -381,8 +381,8 @@ public class InstrumentingRequestHandlerTest {
     private @Mock ConfigurationForServer configuration;
     private @Mock ByteArrayInputStream bais;
     private final StringWriter stringWriter = new StringWriter();
-    private PrintWriter pw = new PrintWriter(stringWriter);
-    private Map<String, List<String>> headers = new HashMap<>();
+    private final PrintWriter pw = new PrintWriter(stringWriter);
+    private final Map<String, List<String>> headers = new HashMap<>();
 
     @Before
     public void setUp() {
@@ -399,13 +399,13 @@ public class InstrumentingRequestHandlerTest {
         ReflectionUtils.setField(webServer, HttpServer.class, "pw", pw);
         ReflectionUtils.setField(webServer, HttpServer.class, "version", "testVersion");
         ReflectionUtils.setField(webServer, HttpServer.class, "ioUtils", ioUtils);
-        headers.put("Content-Length", new ArrayList<String>() {{
+        headers.put("Content-Length", new ArrayList<>() {{
             add("12");
         }});
     }
 
     @Test
-    public void shouldServeJSCoverageJS() throws IOException {
+    public void shouldServeJSCoverageJS() {
         webServer.handleGet(new HttpRequest("/jscoverage.js", null, null, 0, null));
         verify(ioService).generateJSCoverageServerJS();
         verifyNoInteractions(jsonDataSaver);
@@ -469,7 +469,7 @@ public class InstrumentingRequestHandlerTest {
     }
 
     @Test
-    public void shouldDirectGETToProxy() throws IOException {
+    public void shouldDirectGETToProxy() {
         given(configuration.isProxy()).willReturn(true);
 
         HttpRequest request = new HttpRequest("somePostUrl", null, null, 0, null);
@@ -551,7 +551,9 @@ public class InstrumentingRequestHandlerTest {
     }
 
     private void testStoreJSCoverageJSONInSpecifiedSubDirectory(boolean saveJSONOnly) {
-        InstrumentingRequestHandler.uris = new HashMap<String, String>(){{put("js/util.js",null);}};
+        InstrumentingRequestHandler.uris = new HashMap<>() {{
+            put("js/util.js", null);
+        }};
         File file = new File("target/temp");
         file.deleteOnExit();
         given(configuration.getReportDir()).willReturn(file);
@@ -585,7 +587,9 @@ public class InstrumentingRequestHandlerTest {
     }
 
     private void testStoreJSCoverageJSONInSpecifiedSubDirectoryForProxy(boolean saveJSONOnly) {
-        InstrumentingRequestHandler.uris = new HashMap<String, String>(){{put("js/util.js","someJavaScript");}};
+        InstrumentingRequestHandler.uris = new HashMap<>() {{
+            put("js/util.js", "someJavaScript");
+        }};
         File file = new File("target/temp");
         file.deleteOnExit();
         given(configuration.isProxy()).willReturn(true);
@@ -630,7 +634,7 @@ public class InstrumentingRequestHandlerTest {
         given(bais.skip(50)).willReturn(50L);
         List<ScriptCoverageCount> unloadedJS = new ArrayList<>();
         unloadedJS.add(new ScriptCoverageCount("/js/unloaded.js", null, 0, null));
-        given(unloadedSourceProcessor.getEmptyCoverageData(any(Set.class))).willReturn(unloadedJS);
+        given(unloadedSourceProcessor.getEmptyCoverageData(anySet())).willReturn(unloadedJS);
 
         webServer.handlePostOrPut(new HttpRequest(JSCOVERAGE_STORE, bais, null, 50, headers));
 
@@ -646,7 +650,7 @@ public class InstrumentingRequestHandlerTest {
     }
 
     @Test
-    public void shouldServeJSCoverageHTML() throws IOException {
+    public void shouldServeJSCoverageHTML() {
         given(configuration.getVersion()).willReturn("123");
         given(ioService.generateJSCoverageHtml("123")).willReturn("theHtml");
 
@@ -665,7 +669,7 @@ public class InstrumentingRequestHandlerTest {
     }
 
     @Test
-    public void shouldServeJSCoverageHighlightCSS() throws IOException {
+    public void shouldServeJSCoverageHighlightCSS() {
         webServer.handleGet(new HttpRequest("/jscoverage-highlight.css", null, null, 0, null));
 
         verify(ioService).getResourceAsStream("/jscoverage-highlight.css");
@@ -674,7 +678,7 @@ public class InstrumentingRequestHandlerTest {
     }
 
     @Test
-    public void shouldServeInstrumentedJSForWebServer() throws IOException {
+    public void shouldServeInstrumentedJSForWebServer() {
         File wwwRoot = new File("wwwRoot");
         ReflectionUtils.setField(webServer, HttpServer.class, "wwwRoot", wwwRoot);
 
@@ -690,7 +694,7 @@ public class InstrumentingRequestHandlerTest {
 
 
     @Test
-    public void shouldNotRecordInstrumentedURIsForWebServerIfNotFound() throws IOException {
+    public void shouldNotRecordInstrumentedURIsForWebServerIfNotFound() {
         File wwwRoot = new File("wwwRoot");
         ReflectionUtils.setField(webServer, HttpServer.class, "wwwRoot", wwwRoot);
         given(instrumenterService.instrumentJSForWebServer(configuration, new File("wwwRoot/js/production.js"), "/js/production.js")).willThrow(new UriNotFound("Ouch!", null));
@@ -731,7 +735,7 @@ public class InstrumentingRequestHandlerTest {
     }
 
     @Test
-    public void shouldServeNonInstrumentedJS() throws IOException {
+    public void shouldServeNonInstrumentedJS() {
         File wwwRoot = new File("wwwRoot");
         ReflectionUtils.setField(webServer, HttpServer.class, "wwwRoot", wwwRoot);
         given(configuration.skipInstrumentation("test/production.js")).willReturn(true);
@@ -744,13 +748,15 @@ public class InstrumentingRequestHandlerTest {
     }
 
     @Test
-    public void shouldServeNonInstrumentedJSWhenViewingSource() throws IOException {
+    public void shouldServeNonInstrumentedJSWhenViewingSource() {
         File wwwRoot = new File("wwwRoot");
         ReflectionUtils.setField(webServer, HttpServer.class, "wwwRoot", wwwRoot);
         given(configuration.skipInstrumentation("test/production.js")).willReturn(false);
 
         Map<String, List<String>> headers = new HashMap<>();
-        headers.put("NoInstrument", new ArrayList<String>(){{add("true");}});
+        headers.put("NoInstrument", new ArrayList<>() {{
+            add("true");
+        }});
         HttpRequest request = new HttpRequest("/test/production.js", null, null, 0, null);
         request.setHeaders(headers);
         webServer.handleGet(request);

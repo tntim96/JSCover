@@ -362,7 +362,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import java.util.Properties;
 
 import static com.google.javascript.jscomp.CompilerOptions.LanguageMode.ECMASCRIPT5;
@@ -375,8 +374,8 @@ import static org.mockito.hamcrest.MockitoHamcrest.argThat;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MainInstanceTest {
-    private Main main = new Main();
-    private Properties properties = new Properties();
+    private final Main main = new Main();
+    private final Properties properties = new Properties();
     private @Mock ExitHelper exitHelper;
     private @Mock MainHelper mainHelper;
     private @Mock WebDaemon webDaemon;
@@ -399,7 +398,7 @@ public class MainInstanceTest {
 
     @Test
     public void shouldWrapIoException() throws IOException {
-        doThrow(new IOException("Ouch!")).when(mainHelper).checkDependantClasses(any(List.class), any(String.class));
+        doThrow(new IOException("Ouch!")).when(mainHelper).checkDependantClasses(anyList(), any(String.class));
 
         try {
             main.initialize();
@@ -445,10 +444,10 @@ public class MainInstanceTest {
     }
 
     @Test
-    public void shouldRunWebServer() throws IOException, InterruptedException {
+    public void shouldRunWebServer() throws IOException {
         main.runMain(new String[]{"-ws", "--port=1234"});
 
-        TypeSafeMatcher<ConfigurationForServer> matcher = new TypeSafeMatcher<ConfigurationForServer>() {
+        TypeSafeMatcher<ConfigurationForServer> matcher = new TypeSafeMatcher<>() {
             @Override
             protected boolean matchesSafely(ConfigurationForServer item) {
                 return item.getPort() == 1234;
@@ -473,7 +472,7 @@ public class MainInstanceTest {
     public void shouldRunFileSystem() {
         main.runMain(new String[]{"-fs", "--js-version=ECMASCRIPT5", "src", "dest"});
 
-        TypeSafeMatcher<ConfigurationForFS> matcher = new TypeSafeMatcher<ConfigurationForFS>() {
+        TypeSafeMatcher<ConfigurationForFS> matcher = new TypeSafeMatcher<>() {
             @Override
             protected boolean matchesSafely(ConfigurationForFS item) {
                 return item.getECMAVersion() == ECMASCRIPT5;
@@ -498,7 +497,7 @@ public class MainInstanceTest {
     public void shouldRunStdIO() {
         main.runMain(new String[]{"-io", "--js-version=ECMASCRIPT5", "doc/example/script.js"});
 
-        TypeSafeMatcher<ConfigurationForStdOut> matcher = new TypeSafeMatcher<ConfigurationForStdOut>() {
+        TypeSafeMatcher<ConfigurationForStdOut> matcher = new TypeSafeMatcher<>() {
             @Override
             protected boolean matchesSafely(ConfigurationForStdOut item) {
                 return item.getECMAVersion() == ECMASCRIPT5;
@@ -547,7 +546,7 @@ public class MainInstanceTest {
     }
 
     public Matcher<? extends File> getFileNameMatcher(final String name, final String parent) {
-        return new TypeSafeMatcher<File>() {
+        return new TypeSafeMatcher<>() {
             @Override
             protected boolean matchesSafely(File file) {
                 return file.getName().equals(name) && (parent == null || file.getParent().equals(parent));

@@ -359,14 +359,14 @@ import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LogFormatterTest {
-    private static TimeZone defaultTimeZone = TimeZone.getDefault();
-    private LogFormatter logFormatter = new LogFormatter();
+    private static final TimeZone defaultTimeZone = TimeZone.getDefault();
+    private final LogFormatter logFormatter = new LogFormatter();
     private @Mock LogRecord logRecord;
 
     @Before
     public void setUp() {
         given(logRecord.getMillis()).willReturn(1375795185848L);
-        given(logRecord.getThreadID()).willReturn(157);
+        given(logRecord.getLongThreadID()).willReturn(157L);
         given(logRecord.getLevel()).willReturn(FINER);
         given(logRecord.getMessage()).willReturn("Hello");
         given(logRecord.getLoggerName()).willReturn("Loggy");
@@ -382,7 +382,7 @@ public class LogFormatterTest {
     public void shouldFormatLogRecord() {
         String actual = logFormatter.format(logRecord);
 
-        assertThat(actual, equalTo("20130806 13:19:45.848,157,FINER,\"Hello\",Loggy,"+System.getProperty("line.separator")));
+        assertThat(actual, equalTo("20130806 13:19:45.848,157,FINER,\"Hello\",Loggy,"+ System.lineSeparator()));
     }
 
     @Test
@@ -392,7 +392,7 @@ public class LogFormatterTest {
 
         String actual = logFormatter.format(logRecord);
 
-        assertThat(actual, equalTo("20130806 13:19:45.848,157,FINER,\"Hello World!\",Loggy,"+System.getProperty("line.separator")));
+        assertThat(actual, equalTo("20130806 13:19:45.848,157,FINER,\"Hello World!\",Loggy,"+ System.lineSeparator()));
     }
 
     @Test
@@ -402,7 +402,7 @@ public class LogFormatterTest {
 
         String actual = logFormatter.format(logRecord);
 
-        assertThat(actual, equalTo("20130806 13:19:45.848,157,FINER,\"Hello {0}!\",Loggy,"+System.getProperty("line.separator")));
+        assertThat(actual, equalTo("20130806 13:19:45.848,157,FINER,\"Hello {0}!\",Loggy,"+ System.lineSeparator()));
     }
 
     @Test

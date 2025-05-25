@@ -345,23 +345,24 @@ package jscover.server;
 import org.junit.Test;
 
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ProxyRequestHandlerTest {
-    private ProxyService proxyRequestHandler = new ProxyService();
+    private final ProxyService proxyRequestHandler = new ProxyService();
 
     @Test
     public void shouldGetRequestURIFromURL() throws MalformedURLException {
-        URL url = new URL("http://localhost/test.html");
+        URL url = URI.create("http://localhost/test.html").toURL();
         assertThat(proxyRequestHandler.getRawURI(url), equalTo("/test.html"));
     }
 
     @Test
     public void shouldGetRequestURIFromURLWithQueryParameters() throws MalformedURLException {
-        URL url = new URL("http://localhost/test.html?a=b");
+        URL url = URI.create("http://localhost/test.html?a=b").toURL();
         assertThat(proxyRequestHandler.getRawURI(url), equalTo("/test.html?a=b"));
     }
 }
