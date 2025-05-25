@@ -344,7 +344,6 @@ package jscover.server;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -356,9 +355,9 @@ public class HttpRequest {
     private String path;
     private URL url;
     private Map<String, List<String>> headers;
-    private InputStream inputStream;
-    private OutputStream outputStream;
-    private int postIndex;
+    private final InputStream inputStream;
+    private final OutputStream outputStream;
+    private final int postIndex;
 
     public HttpRequest(String path, InputStream inputStream, OutputStream outputStream, int postIndex, Map<String, List<String>> headers) {
         this.inputStream = inputStream;
@@ -378,11 +377,7 @@ public class HttpRequest {
     }
 
     public static String urlDecode(String path) {
-        try {
-            return URLDecoder.decode(path, Charset.defaultCharset().name());
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
+        return URLDecoder.decode(path, Charset.defaultCharset());
     }
 
     public String getPath() {
@@ -426,7 +421,7 @@ public class HttpRequest {
     }
 
     public int getContentLength() {
-        return Integer.valueOf(headers.get("Content-Length").get(0));
+        return Integer.parseInt(headers.get("Content-Length").get(0));
     }
 
     public boolean skipInstrumentation() {
