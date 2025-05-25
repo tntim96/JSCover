@@ -33,7 +33,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="JSCover" target="11" />
+      <module name="JSCover" target="21" />
     </bytecodeTargetLevel>
   </component>
   <component name="CopyrightManager" default="" />

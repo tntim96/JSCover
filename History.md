@@ -1,4 +1,4 @@
-2.0.21 / 2025-??-??
+2.0.21 / 2025-05-25
 ==================
  * Java 21 to align with closure-compiler
  * Upgrade closure-compiler v20240317 to v20250407, gson 2.11.0 to 2.13.1
