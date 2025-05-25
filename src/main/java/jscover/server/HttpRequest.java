@@ -345,7 +345,6 @@ package jscover.server;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
@@ -366,7 +365,7 @@ public class HttpRequest {
         this.postIndex = postIndex;
         this.headers = headers;
         try {
-            this.url = URI.create(path).toURL();
+            this.url = new URL(path);
             this.path = urlDecode(url.getPath());
         } catch (MalformedURLException e) {
             path = urlDecode(path);
