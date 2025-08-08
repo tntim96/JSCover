@@ -684,6 +684,11 @@
   </component>
   <component name="RemoteRepositoriesConfiguration">
     <remote-repository>
+      <option name="id" value="central-portal-snapshots" />
+      <option name="name" value="Central Portal Snapshots" />
+      <option name="url" value="https://central.sonatype.com/repository/maven-snapshots/" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="maven_central" />
       <option name="name" value="Maven Central" />
       <option name="url" value="https://repo.maven.apache.org/maven2/" />
@@ -906,16 +911,16 @@
         <root url="jar://$MAVEN_REPOSITORY$/org/hamcrest/hamcrest/3.0/hamcrest-3.0-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.htmlunit:htmlunit-core-js:4.14.0" type="java-imported" external-system-id="Maven">
-      <properties groupId="org.htmlunit" artifactId="htmlunit-core-js" version="4.14.0" baseVersion="4.14.0" />
+    <library name="Maven: org.htmlunit:htmlunit-core-js:4.15.0-SNAPSHOT" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.htmlunit" artifactId="htmlunit-core-js" version="4.15.0-20250807.155709-3" baseVersion="4.15.0-SNAPSHOT" />
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-core-js/4.14.0/htmlunit-core-js-4.14.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-core-js/4.15.0-SNAPSHOT/htmlunit-core-js-4.15.0-20250807.155709-3.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-core-js/4.14.0/htmlunit-core-js-4.14.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-core-js/4.15.0-SNAPSHOT/htmlunit-core-js-4.15.0-20250807.155709-3-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-core-js/4.14.0/htmlunit-core-js-4.14.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-core-js/4.15.0-SNAPSHOT/htmlunit-core-js-4.15.0-20250807.155709-3-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.htmlunit:htmlunit-csp:4.14.0" type="java-imported" external-system-id="Maven">
@@ -966,28 +971,28 @@
         <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-xpath/4.14.0/htmlunit-xpath-4.14.0-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.htmlunit:htmlunit:4.14.0" type="java-imported" external-system-id="Maven">
-      <properties groupId="org.htmlunit" artifactId="htmlunit" version="4.14.0" baseVersion="4.14.0" />
+    <library name="Maven: org.htmlunit:htmlunit:4.15.0-SNAPSHOT" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.htmlunit" artifactId="htmlunit" version="4.15.0-20250806.160312-1" baseVersion="4.15.0-SNAPSHOT" />
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit/4.14.0/htmlunit-4.14.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit/4.15.0-SNAPSHOT/htmlunit-4.15.0-20250806.160312-1.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit/4.14.0/htmlunit-4.14.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit/4.15.0-SNAPSHOT/htmlunit-4.15.0-20250806.160312-1-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit/4.14.0/htmlunit-4.14.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit/4.15.0-SNAPSHOT/htmlunit-4.15.0-20250806.160312-1-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.htmlunit:neko-htmlunit:4.14.0" type="java-imported" external-system-id="Maven">
-      <properties groupId="org.htmlunit" artifactId="neko-htmlunit" version="4.14.0" baseVersion="4.14.0" />
+    <library name="Maven: org.htmlunit:neko-htmlunit:4.15.0-SNAPSHOT" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.htmlunit" artifactId="neko-htmlunit" version="4.15.0-20250804.161016-12" baseVersion="4.15.0-SNAPSHOT" />
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/neko-htmlunit/4.14.0/neko-htmlunit-4.14.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/neko-htmlunit/4.15.0-SNAPSHOT/neko-htmlunit-4.15.0-20250804.161016-12.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/neko-htmlunit/4.14.0/neko-htmlunit-4.14.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/neko-htmlunit/4.15.0-SNAPSHOT/neko-htmlunit-4.15.0-20250804.161016-12-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/neko-htmlunit/4.14.0/neko-htmlunit-4.14.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/neko-htmlunit/4.15.0-SNAPSHOT/neko-htmlunit-4.15.0-20250804.161016-12-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.jacoco:org.jacoco.agent:0.8.13" type="java-imported" external-system-id="Maven">

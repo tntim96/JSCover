@@ -39,13 +39,13 @@
     <orderEntry type="library" name="Maven: com.google.javascript:closure-compiler:v20250706" level="project" />
     <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.13.1" level="project" />
     <orderEntry type="library" name="Maven: com.google.errorprone:error_prone_annotations:2.38.0" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.htmlunit:htmlunit:4.14.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.htmlunit:htmlunit:4.15.0-SNAPSHOT" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.httpcomponents:httpmime:4.5.14" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.httpcomponents:httpclient:4.5.14" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.httpcomponents:httpcore:4.4.16" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: commons-codec:commons-codec:1.11" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.htmlunit:htmlunit-core-js:4.14.0" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.htmlunit:neko-htmlunit:4.14.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.htmlunit:htmlunit-core-js:4.15.0-SNAPSHOT" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.htmlunit:neko-htmlunit:4.15.0-SNAPSHOT" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.htmlunit:htmlunit-cssparser:4.14.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.htmlunit:htmlunit-xpath:4.14.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.htmlunit:htmlunit-csp:4.14.0" level="project" />
