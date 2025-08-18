@@ -12,6 +12,8 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 21
+      - name: Download latest snapshot
+        run: mvn dependency:resolve
       - name: Build with Ant
         run: ant release
       - name: Publish coverage

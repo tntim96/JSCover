@@ -47,6 +47,20 @@
             <url>https://oss.sonatype.org/content/repositories/comgithubtntim96-1078</url>
         </repository>
         -->
+        <!--- Repo for HTMLUnit -->
+        <!--
+        <repository>
+            <name>Central Portal Snapshots</name>
+            <id>central-portal-snapshots</id>
+            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        -->
     </repositories>
     <distributionManagement>
         <snapshotRepository>
@@ -83,7 +97,7 @@
         <dependency>
             <groupId>org.htmlunit</groupId>
             <artifactId>htmlunit</artifactId>
-            <version>4.13.0</version>
+            <version>4.15.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -107,7 +121,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>5.18.0</version>
+            <version>5.19.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
