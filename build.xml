@@ -258,6 +258,7 @@
         <jacoco:coverage destfile="jacoco-integration.exec" includes="jscover.*" excludes="*.ExitHelper:*.*Test">
             <junit fork="true" forkmode="perBatch" haltonfailure="no" haltonerror="no" failureProperty="test.failure" errorproperty="test.failure">
                 <jvmarg value="-ea"/>
+                <jvmarg value="-javaagent:${org.mockito:mockito-core:jar}"/>
                 <classpath>
                     <path refid="classpath-test" />
                     <path refid="compile.classpath" />
