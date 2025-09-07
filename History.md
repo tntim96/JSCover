@@ -1,6 +1,6 @@
 2.0.22 / 2025-??-??
 ==================
- * Upgrade closure-compiler v20250407 to v20250706
+ * Upgrade closure-compiler v20250407 to v20250820
  * Internal: HtmlUnit 4.12.0 to 4.15.0, Maven Resolver Ant Tasks 1.5.2 tp 1.6.0
 
 2.0.21 / 2025-05-25
