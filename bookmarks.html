@@ -105,6 +105,8 @@ document.getElementById('allDownloads').innerHTML = '<a href="'+link+'" target="
 
 <h1>Release Steps</h1>
 <ol>
+    <li>Upload the latest SNAPSHOT (mvn deploy)</li>
+    <li>Test the maven SNAPSHOT release with JSCover-maven-test. Commit, push and wait for build to complete for JSCover-maven-test before continuing.</li>
     <li>Update release version (i.e. no `-SNAPSHOT`) in configuration.properties and pom.xml</li>
     <li>Update version in web pages and download links, labels, downloads link and tag version in this file (bookmarks.html)</li>
     <li>Update release date in History.md</li>
@@ -112,10 +114,7 @@ document.getElementById('allDownloads').innerHTML = '<a href="'+link+'" target="
     <li>Make sure all tests pass and build sourceforge release (ant release)</li>
     <li>Commit changes and tag with version (git tag v2.0.22, git push --tags, git push gl-origin --tags, git push sf-origin --tags)</li>
     <li>Upload sourceforge release</li>
-    <li>Build Maven files (ant generate-files)</li>
-    <li>Sign files (gpg -ab filename)</li>
-    <li>Build Maven bundle (ant maven-bundle) and upload</li>
-    <li>Test the maven staged release with JSCover-maven-test. Commit, push and wait for build to complete for JSCover-maven-test before releasing.</li>
+    <li>Release (mvn deploy)</li>
     <li>Upload websites (JSCover-gh-pages $ cp -R ../JSCover/doc/* ./, git push origin gh-pages)</li>
     <li>Update snapshot version in configuration.properties, pom.xml, and add new release entry in History.md</li>
     <li>Optional: publish on GitHub via release UI</li>
