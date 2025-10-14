@@ -108,7 +108,7 @@
         <dependency>
         	<groupId>org.jacoco</groupId>
         	<artifactId>org.jacoco.ant</artifactId>
-        	<version>0.8.13</version>
+        	<version>0.8.14</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
