@@ -342,9 +342,11 @@ Public License instead of this License.
 
 package jscover.server;
 
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
@@ -365,14 +367,14 @@ public class HttpRequest {
         this.postIndex = postIndex;
         this.headers = headers;
         try {
-            this.url = new URL(path);
+            this.url = URI.create(path).toURL();
             this.path = urlDecode(url.getPath());
-        } catch (MalformedURLException e) {
+        } catch (IllegalArgumentException | MalformedURLException e) {
             path = urlDecode(path);
             int index = path.indexOf("?");
             if (index > 0)
                 path = path.substring(0, index);
-            this.path = path.replaceAll("//","/");
+            this.path = path.replaceAll("//", "/");
         }
     }
 
@@ -425,6 +427,6 @@ public class HttpRequest {
     }
 
     public boolean skipInstrumentation() {
-        return getHeaders()!=null && getHeaders().containsKey("NoInstrument");
+        return getHeaders() != null && getHeaders().containsKey("NoInstrument");
     }
 }
