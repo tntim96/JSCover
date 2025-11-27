@@ -78,7 +78,7 @@
         <dependency>
             <groupId>org.htmlunit</groupId>
             <artifactId>htmlunit</artifactId>
-            <version>4.18.0</version>
+            <version>4.19.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
