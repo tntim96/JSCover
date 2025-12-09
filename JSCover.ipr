@@ -906,88 +906,88 @@
         <root url="jar://$MAVEN_REPOSITORY$/org/hamcrest/hamcrest/3.0/hamcrest-3.0-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.htmlunit:htmlunit-core-js:4.19.0" type="java-imported" external-system-id="Maven">
-      <properties groupId="org.htmlunit" artifactId="htmlunit-core-js" version="4.19.0" baseVersion="4.19.0" />
+    <library name="Maven: org.htmlunit:htmlunit-core-js:4.20.0" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.htmlunit" artifactId="htmlunit-core-js" version="4.20.0" baseVersion="4.20.0" />
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-core-js/4.19.0/htmlunit-core-js-4.19.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-core-js/4.20.0/htmlunit-core-js-4.20.0.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-core-js/4.19.0/htmlunit-core-js-4.19.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-core-js/4.20.0/htmlunit-core-js-4.20.0-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-core-js/4.19.0/htmlunit-core-js-4.19.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-core-js/4.20.0/htmlunit-core-js-4.20.0-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.htmlunit:htmlunit-csp:4.19.0" type="java-imported" external-system-id="Maven">
-      <properties groupId="org.htmlunit" artifactId="htmlunit-csp" version="4.19.0" baseVersion="4.19.0" />
+    <library name="Maven: org.htmlunit:htmlunit-csp:4.20.0" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.htmlunit" artifactId="htmlunit-csp" version="4.20.0" baseVersion="4.20.0" />
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-csp/4.19.0/htmlunit-csp-4.19.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-csp/4.20.0/htmlunit-csp-4.20.0.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-csp/4.19.0/htmlunit-csp-4.19.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-csp/4.20.0/htmlunit-csp-4.20.0-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-csp/4.19.0/htmlunit-csp-4.19.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-csp/4.20.0/htmlunit-csp-4.20.0-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.htmlunit:htmlunit-cssparser:4.19.0" type="java-imported" external-system-id="Maven">
-      <properties groupId="org.htmlunit" artifactId="htmlunit-cssparser" version="4.19.0" baseVersion="4.19.0" />
+    <library name="Maven: org.htmlunit:htmlunit-cssparser:4.20.0" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.htmlunit" artifactId="htmlunit-cssparser" version="4.20.0" baseVersion="4.20.0" />
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-cssparser/4.19.0/htmlunit-cssparser-4.19.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-cssparser/4.20.0/htmlunit-cssparser-4.20.0.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-cssparser/4.19.0/htmlunit-cssparser-4.19.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-cssparser/4.20.0/htmlunit-cssparser-4.20.0-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-cssparser/4.19.0/htmlunit-cssparser-4.19.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-cssparser/4.20.0/htmlunit-cssparser-4.20.0-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.htmlunit:htmlunit-websocket-client:4.19.0" type="java-imported" external-system-id="Maven">
-      <properties groupId="org.htmlunit" artifactId="htmlunit-websocket-client" version="4.19.0" baseVersion="4.19.0" />
+    <library name="Maven: org.htmlunit:htmlunit-websocket-client:4.20.0" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.htmlunit" artifactId="htmlunit-websocket-client" version="4.20.0" baseVersion="4.20.0" />
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-websocket-client/4.19.0/htmlunit-websocket-client-4.19.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-websocket-client/4.20.0/htmlunit-websocket-client-4.20.0.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-websocket-client/4.19.0/htmlunit-websocket-client-4.19.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-websocket-client/4.20.0/htmlunit-websocket-client-4.20.0-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-websocket-client/4.19.0/htmlunit-websocket-client-4.19.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-websocket-client/4.20.0/htmlunit-websocket-client-4.20.0-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.htmlunit:htmlunit-xpath:4.19.0" type="java-imported" external-system-id="Maven">
-      <properties groupId="org.htmlunit" artifactId="htmlunit-xpath" version="4.19.0" baseVersion="4.19.0" />
+    <library name="Maven: org.htmlunit:htmlunit-xpath:4.20.0" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.htmlunit" artifactId="htmlunit-xpath" version="4.20.0" baseVersion="4.20.0" />
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-xpath/4.19.0/htmlunit-xpath-4.19.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-xpath/4.20.0/htmlunit-xpath-4.20.0.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-xpath/4.19.0/htmlunit-xpath-4.19.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-xpath/4.20.0/htmlunit-xpath-4.20.0-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-xpath/4.19.0/htmlunit-xpath-4.19.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit-xpath/4.20.0/htmlunit-xpath-4.20.0-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.htmlunit:htmlunit:4.19.0" type="java-imported" external-system-id="Maven">
-      <properties groupId="org.htmlunit" artifactId="htmlunit" version="4.19.0" baseVersion="4.19.0" />
+    <library name="Maven: org.htmlunit:htmlunit:4.20.0" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.htmlunit" artifactId="htmlunit" version="4.20.0" baseVersion="4.20.0" />
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit/4.19.0/htmlunit-4.19.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit/4.20.0/htmlunit-4.20.0.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit/4.19.0/htmlunit-4.19.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit/4.20.0/htmlunit-4.20.0-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit/4.19.0/htmlunit-4.19.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/htmlunit/4.20.0/htmlunit-4.20.0-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.htmlunit:neko-htmlunit:4.19.0" type="java-imported" external-system-id="Maven">
-      <properties groupId="org.htmlunit" artifactId="neko-htmlunit" version="4.19.0" baseVersion="4.19.0" />
+    <library name="Maven: org.htmlunit:neko-htmlunit:4.20.0" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.htmlunit" artifactId="neko-htmlunit" version="4.20.0" baseVersion="4.20.0" />
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/neko-htmlunit/4.19.0/neko-htmlunit-4.19.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/neko-htmlunit/4.20.0/neko-htmlunit-4.20.0.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/neko-htmlunit/4.19.0/neko-htmlunit-4.19.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/neko-htmlunit/4.20.0/neko-htmlunit-4.20.0-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/neko-htmlunit/4.19.0/neko-htmlunit-4.19.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/htmlunit/neko-htmlunit/4.20.0/neko-htmlunit-4.20.0-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.jacoco:org.jacoco.agent:0.8.14" type="java-imported" external-system-id="Maven">
@@ -1050,52 +1050,52 @@
         <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/5.20.0/mockito-core-5.20.0-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.mozilla:rhino-all:1.8.0" type="java-imported" external-system-id="Maven">
-      <properties groupId="org.mozilla" artifactId="rhino-all" version="1.8.0" baseVersion="1.8.0" />
+    <library name="Maven: org.mozilla:rhino-all:1.8.1" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.mozilla" artifactId="rhino-all" version="1.8.1" baseVersion="1.8.1" />
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino-all/1.8.0/rhino-all-1.8.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino-all/1.8.1/rhino-all-1.8.1.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino-all/1.8.0/rhino-all-1.8.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino-all/1.8.1/rhino-all-1.8.1-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino-all/1.8.0/rhino-all-1.8.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino-all/1.8.1/rhino-all-1.8.1-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.mozilla:rhino-tools:1.8.0" type="java-imported" external-system-id="Maven">
-      <properties groupId="org.mozilla" artifactId="rhino-tools" version="1.8.0" baseVersion="1.8.0" />
+    <library name="Maven: org.mozilla:rhino-tools:1.8.1" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.mozilla" artifactId="rhino-tools" version="1.8.1" baseVersion="1.8.1" />
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino-tools/1.8.0/rhino-tools-1.8.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino-tools/1.8.1/rhino-tools-1.8.1.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino-tools/1.8.0/rhino-tools-1.8.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino-tools/1.8.1/rhino-tools-1.8.1-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino-tools/1.8.0/rhino-tools-1.8.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino-tools/1.8.1/rhino-tools-1.8.1-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.mozilla:rhino-xml:1.8.0" type="java-imported" external-system-id="Maven">
-      <properties groupId="org.mozilla" artifactId="rhino-xml" version="1.8.0" baseVersion="1.8.0" />
+    <library name="Maven: org.mozilla:rhino-xml:1.8.1" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.mozilla" artifactId="rhino-xml" version="1.8.1" baseVersion="1.8.1" />
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino-xml/1.8.0/rhino-xml-1.8.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino-xml/1.8.1/rhino-xml-1.8.1.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino-xml/1.8.0/rhino-xml-1.8.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino-xml/1.8.1/rhino-xml-1.8.1-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino-xml/1.8.0/rhino-xml-1.8.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino-xml/1.8.1/rhino-xml-1.8.1-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.mozilla:rhino:1.8.0" type="java-imported" external-system-id="Maven">
-      <properties groupId="org.mozilla" artifactId="rhino" version="1.8.0" baseVersion="1.8.0" />
+    <library name="Maven: org.mozilla:rhino:1.8.1" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.mozilla" artifactId="rhino" version="1.8.1" baseVersion="1.8.1" />
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino/1.8.0/rhino-1.8.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino/1.8.1/rhino-1.8.1.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino/1.8.0/rhino-1.8.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino/1.8.1/rhino-1.8.1-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino/1.8.0/rhino-1.8.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino/1.8.1/rhino-1.8.1-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.objenesis:objenesis:3.3" type="java-imported" external-system-id="Maven">
