@@ -1038,16 +1038,16 @@
         <root url="jar://$MAVEN_REPOSITORY$/org/jacoco/org.jacoco.report/0.8.14/org.jacoco.report-0.8.14-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.mockito:mockito-core:5.20.0" type="java-imported" external-system-id="Maven">
-      <properties groupId="org.mockito" artifactId="mockito-core" version="5.20.0" baseVersion="5.20.0" />
+    <library name="Maven: org.mockito:mockito-core:5.21.0" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.mockito" artifactId="mockito-core" version="5.21.0" baseVersion="5.21.0" />
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/5.20.0/mockito-core-5.20.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/5.21.0/mockito-core-5.21.0.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/5.20.0/mockito-core-5.20.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/5.21.0/mockito-core-5.21.0-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/5.20.0/mockito-core-5.20.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/5.21.0/mockito-core-5.21.0-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.mozilla:rhino-all:1.8.1" type="java-imported" external-system-id="Maven">
