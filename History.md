@@ -1,7 +1,7 @@
 2.0.23 / 202?-??-??
 ==================
- * Upgrade losure-compiler v20250820 to v20251216, gson 2.13.1 to 2.13.2
- * Internal: Mockito 5.19.0 to 5.20.0, HtmlUnit 4.15.0 to 4.19.0, JaCoCo 0.8.13 to 0.8.14
+ * Upgrade closure-compiler v20250820 to v20251216, gson 2.13.1 to 2.13.2
+ * Internal: Mockito 5.19.0 to 5.20.0, HtmlUnit 4.15.0 to 4.21.0, JaCoCo 0.8.13 to 0.8.14, Rhino 1.8.1 to 1.9.0
   
 2.0.22 / 2025-09-07
 ==================

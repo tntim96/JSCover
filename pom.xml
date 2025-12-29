@@ -78,13 +78,13 @@
         <dependency>
             <groupId>org.htmlunit</groupId>
             <artifactId>htmlunit</artifactId>
-            <version>4.20.0</version>
+            <version>4.21.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mozilla</groupId>
             <artifactId>rhino-all</artifactId>
-            <version>1.8.1</version>
+            <version>1.9.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
