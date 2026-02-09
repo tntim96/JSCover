@@ -206,7 +206,7 @@ function jscoverage_html_escape(s) {
 }
 /*
     jscoverage.js - code coverage for JavaScript
-    Copyright (C) 2007-2010 siliconforks.com - 2012-2023 tntim96
+    Copyright (C) 2007-2010 siliconforks.com - 2012-2026 tntim96
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -1040,18 +1040,18 @@ function getFilesSortedByCoverage(filesIn) {
     files[i].fnPc = getSafeVal(parseInt(tbody.children[i].children[12].children[1].innerHTML, 10));
   }
 
-  if (sortOrder%3===1) {
-    if (sortColumn == 'Name')
-      files.sort(function(file1,file2) {return file1.file>=file2.file});
-    else
-      files.sort(function(file1,file2) {return file1[sortColumn]-file2[sortColumn]});
-  } else if (sortOrder%3===2) {
-    if (sortColumn == 'Name')
-      files.sort(function(file1,file2) {return file2.file>=file1.file});
-    else
-      files.sort(function(file1,file2) {return file2[sortColumn]-file1[sortColumn]});
+  if (sortOrder%3===0) {
+    return filesIn.sort();
   } else {
-      return filesIn.sort();
+    var order = 1;
+    var property = sortColumn;
+    if (sortColumn == 'Name') property = 'file';
+    if (sortOrder%3===2) order = -1;
+    files.sort(function (file1, file2) {
+      if(file1[property] < file2[property]) { return -1 * order; }
+      if(file1[property] > file2[property]) { return 1 * order; }
+      return 0;
+    });
   }
   var result = [];
   for (var i=0;i<files.length;i++) {
