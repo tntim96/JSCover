@@ -3,7 +3,7 @@
 
 [![Build Status](https://github.com/tntim96/JSCover/workflows/Java-CI/badge.svg)](https://github.com/tntim96/JSCover/actions?query=workflow%3A%22Java-CI%22)
 [![codecov](https://codecov.io/gh/tntim96/JSCover/branch/master/graph/badge.svg)](https://codecov.io/gh/tntim96/JSCover)
-[![Maven Central](https://img.shields.io/maven-central/v/com.github.tntim96/JSCover.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.github.tntim96%22%20AND%20a:%22JSCover%22)
+[![Maven Central](https://img.shields.io/maven-central/v/com.github.tntim96/JSCover.svg?label=Maven%20Central)](https://central.sonatype.com/artifact/com.github.tntim96/JSCover)
 [![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-green.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://matrix.to/#/#JSCover_Lobby:gitter.im)
 
