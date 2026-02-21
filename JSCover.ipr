@@ -750,16 +750,16 @@
         <root url="jar://$MAVEN_REPOSITORY$/com/google/errorprone/error_prone_annotations/2.41.0/error_prone_annotations-2.41.0-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: com.google.javascript:closure-compiler:v20260128" type="java-imported" external-system-id="Maven">
-      <properties groupId="com.google.javascript" artifactId="closure-compiler" version="v20260128" baseVersion="v20260128" />
+    <library name="Maven: com.google.javascript:closure-compiler:v20260218" type="java-imported" external-system-id="Maven">
+      <properties groupId="com.google.javascript" artifactId="closure-compiler" version="v20260218" baseVersion="v20260218" />
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler/v20260128/closure-compiler-v20260128.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler/v20260218/closure-compiler-v20260218.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler/v20260128/closure-compiler-v20260128-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler/v20260218/closure-compiler-v20260218-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler/v20260128/closure-compiler-v20260128-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler/v20260218/closure-compiler-v20260218-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: commons-codec:commons-codec:1.11" type="java-imported" external-system-id="Maven">
@@ -1050,52 +1050,52 @@
         <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/5.21.0/mockito-core-5.21.0-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.mozilla:rhino-all:1.9.0" type="java-imported" external-system-id="Maven">
-      <properties groupId="org.mozilla" artifactId="rhino-all" version="1.9.0" baseVersion="1.9.0" />
+    <library name="Maven: org.mozilla:rhino-all:1.9.1" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.mozilla" artifactId="rhino-all" version="1.9.1" baseVersion="1.9.1" />
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino-all/1.9.0/rhino-all-1.9.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino-all/1.9.1/rhino-all-1.9.1.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino-all/1.9.0/rhino-all-1.9.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino-all/1.9.1/rhino-all-1.9.1-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino-all/1.9.0/rhino-all-1.9.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino-all/1.9.1/rhino-all-1.9.1-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.mozilla:rhino-tools:1.9.0" type="java-imported" external-system-id="Maven">
-      <properties groupId="org.mozilla" artifactId="rhino-tools" version="1.9.0" baseVersion="1.9.0" />
+    <library name="Maven: org.mozilla:rhino-tools:1.9.1" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.mozilla" artifactId="rhino-tools" version="1.9.1" baseVersion="1.9.1" />
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino-tools/1.9.0/rhino-tools-1.9.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino-tools/1.9.1/rhino-tools-1.9.1.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino-tools/1.9.0/rhino-tools-1.9.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino-tools/1.9.1/rhino-tools-1.9.1-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino-tools/1.9.0/rhino-tools-1.9.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino-tools/1.9.1/rhino-tools-1.9.1-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.mozilla:rhino-xml:1.9.0" type="java-imported" external-system-id="Maven">
-      <properties groupId="org.mozilla" artifactId="rhino-xml" version="1.9.0" baseVersion="1.9.0" />
+    <library name="Maven: org.mozilla:rhino-xml:1.9.1" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.mozilla" artifactId="rhino-xml" version="1.9.1" baseVersion="1.9.1" />
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino-xml/1.9.0/rhino-xml-1.9.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino-xml/1.9.1/rhino-xml-1.9.1.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino-xml/1.9.0/rhino-xml-1.9.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino-xml/1.9.1/rhino-xml-1.9.1-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino-xml/1.9.0/rhino-xml-1.9.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino-xml/1.9.1/rhino-xml-1.9.1-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.mozilla:rhino:1.9.0" type="java-imported" external-system-id="Maven">
-      <properties groupId="org.mozilla" artifactId="rhino" version="1.9.0" baseVersion="1.9.0" />
+    <library name="Maven: org.mozilla:rhino:1.9.1" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.mozilla" artifactId="rhino" version="1.9.1" baseVersion="1.9.1" />
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino/1.9.0/rhino-1.9.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino/1.9.1/rhino-1.9.1.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino/1.9.0/rhino-1.9.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino/1.9.1/rhino-1.9.1-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino/1.9.0/rhino-1.9.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino/1.9.1/rhino-1.9.1-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.objenesis:objenesis:3.3" type="java-imported" external-system-id="Maven">

@@ -8,7 +8,7 @@
     <artifactId>JSCover</artifactId>
     <packaging>jar</packaging>
     <name>JSCover</name>
-    <version>2.0.23</version>
+    <version>2.0.24-SNAPSHOT</version>
     <description>JSCover is a tool that measures code coverage for JavaScript programs.</description>
     <url>https://tntim96.github.io/JSCover/</url>
     <prerequisites>
@@ -68,7 +68,7 @@
         <dependency>
             <groupId>com.google.javascript</groupId>
             <artifactId>closure-compiler</artifactId>
-            <version>v20260128</version>
+            <version>v20260218</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
@@ -84,7 +84,7 @@
         <dependency>
             <groupId>org.mozilla</groupId>
             <artifactId>rhino-all</artifactId>
-            <version>1.9.0</version>
+            <version>1.9.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>

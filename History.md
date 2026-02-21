@@ -1,4 +1,8 @@
-2.0.23 / 2026-02-10
+2.0.24 / 2026-??-??
+==================
+ * Upgrade closure-compiler v20260128 to v20260188, Rhino 1.9.0 to 1.9.1
+
+ * 2.0.23 / 2026-02-10
 ==================
  * Upgrade closure-compiler v20250820 to v20260128, gson 2.13.1 to 2.13.2
  * Internal: Mockito 5.19.0 to 5.20.0, HtmlUnit 4.15.0 to 4.21.0, JaCoCo 0.8.13 to 0.8.14, Rhino 1.8.1 to 1.9.0
