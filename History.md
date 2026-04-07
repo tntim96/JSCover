@@ -1,6 +1,6 @@
 2.0.24 / 2026-??-??
 ==================
- * Upgrade closure-compiler v20260128 to v20260331, Rhino 1.9.0 to 1.9.1 
+ * Upgrade closure-compiler v20260128 to v20260405, Rhino 1.9.0 to 1.9.1 
  * Internal: Mockito 5.20.0 to 5.23.0, JUnit 4.13.2 to JUnit 5.14.3
 
 2.0.23 / 2026-02-10
