@@ -343,8 +343,8 @@ Public License instead of this License.
 package jscover.server;
 
 import jscover.util.ReflectionUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.*;
 import java.util.List;
@@ -359,7 +359,7 @@ public class HttpServerTest {
     private final StringWriter stringWriter = new StringWriter();
     private PrintWriter pw = new PrintWriter(stringWriter);
 
-    @Before
+    @BeforeEach
     public void setUp() {
         ReflectionUtils.setField(httpServer, HttpServer.class, "pw", pw);
     }

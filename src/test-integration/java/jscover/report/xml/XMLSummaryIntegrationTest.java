@@ -345,9 +345,9 @@ package jscover.report.xml;
 import jscover.report.JSONDataMerger;
 import jscover.report.SummaryData;
 import jscover.util.IoUtils;
-import org.junit.After;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -366,12 +366,12 @@ public class XMLSummaryIntegrationTest {
     private JSONDataMerger jsonDataMerger = new JSONDataMerger();
     private File dest;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpOnce() {
         Locale.setDefault(Locale.ENGLISH);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         dest.delete();
     }

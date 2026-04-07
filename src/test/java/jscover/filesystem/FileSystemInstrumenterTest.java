@@ -346,11 +346,11 @@ import jscover.instrument.InstrumenterService;
 import jscover.util.IoService;
 import jscover.util.IoUtils;
 import jscover.util.ReflectionUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -359,7 +359,7 @@ import java.util.concurrent.ExecutorService;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class FileSystemInstrumenterTest {
     private FileSystemInstrumenter fsi = new FileSystemInstrumenter();
     private @Mock IoService ioService;
@@ -372,20 +372,19 @@ public class FileSystemInstrumenterTest {
     private FilenameFilter acceptAll = (dir, name) -> true;
 
 
-    @Before
+    @BeforeEach
     public void setUp() {
         ReflectionUtils.setField(fsi, "ioService", ioService);
         ReflectionUtils.setField(fsi, "instrumenterService", instrumenterService);
         ReflectionUtils.setField(fsi, "ioUtils", ioUtils);
         ReflectionUtils.setField(fsi, "configuration", configuration);
 
-        given(dest.getParentFile()).willReturn(destParent);
-
         given(configuration.getSrcDir()).willReturn(src);
     }
 
     @Test
     public void shouldInstrumentJSFile() {
+        given(dest.getParentFile()).willReturn(destParent);
         String path = "somePath.js";
         given(ioUtils.getRelativePath(any(File.class), any(File.class))).willReturn(path);
         given(configuration.exclude(path)).willReturn(false);
@@ -408,6 +407,7 @@ public class FileSystemInstrumenterTest {
 
     @Test
     public void shouldNotMakeSubDirectoriesIfExist() {
+        given(dest.getParentFile()).willReturn(destParent);
         String path = "somePath.js";
         given(ioUtils.getRelativePath(any(File.class), any(File.class))).willReturn(path);
         given(configuration.exclude(path)).willReturn(false);

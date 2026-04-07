@@ -343,8 +343,8 @@ Public License instead of this License.
 package jscover.server;
 
 import jscover.util.IoUtils;
-import org.apache.http.HttpRequest;
 import org.apache.http.*;
+import org.apache.http.HttpRequest;
 import org.apache.http.entity.BasicHttpEntity;
 import org.apache.http.impl.DefaultBHttpServerConnection;
 import org.apache.http.message.BasicHttpResponse;
