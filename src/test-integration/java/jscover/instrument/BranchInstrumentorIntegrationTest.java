@@ -345,7 +345,7 @@ package jscover.instrument;
 import com.google.javascript.jscomp.CodePrinter;
 import com.google.javascript.rhino.Node;
 import jscover.util.IoUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mozilla.javascript.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;

@@ -345,8 +345,8 @@ package jscover.instrument;
 import com.google.javascript.jscomp.CodePrinter;
 import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.rhino.Node;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -355,7 +355,7 @@ public class BranchStatementBuilderTest {
     private BranchStatementBuilder builder = new BranchStatementBuilder();
     private CompilerOptions options = new CompilerOptions();
 
-    @Before
+    @BeforeEach
     public void setUp() {
         options.setPreferSingleQuotes(true);
     }

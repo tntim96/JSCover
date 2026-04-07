@@ -345,8 +345,8 @@ package jscover.util;
 import jscover.Main;
 import jscover.filesystem.ConfigurationForFS;
 import jscover.server.ConfigurationForServer;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.HashSet;
@@ -364,7 +364,7 @@ public class FileScannerTest {
     private Set<String> urisAlreadyProcessed = new HashSet<>();
     private File file = new File("src/test-integration/resources/jsSearch");
 
-    @Before
+    @BeforeEach
     public void setUp() {
         //fileScanner = new FileScanner(configuration);
     }

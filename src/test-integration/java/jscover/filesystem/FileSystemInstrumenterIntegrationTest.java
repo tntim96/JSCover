@@ -4,8 +4,8 @@ import jscover.ConfigurationCommon;
 import jscover.report.FileData;
 import jscover.report.JSONDataMerger;
 import jscover.util.IoUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.Properties;
@@ -24,7 +24,7 @@ public class FileSystemInstrumenterIntegrationTest {
     private File srcDir = new File("src/test-integration/resources/jsSearch");
     private File destDir = new File("target/fs-test");
 
-    @Before
+    @BeforeEach
     public void setUp() {
         Properties properties = new Properties();
         properties.put("version", "test");

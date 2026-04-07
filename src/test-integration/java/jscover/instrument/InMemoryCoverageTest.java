@@ -345,12 +345,11 @@ package jscover.instrument;
 
 import com.google.javascript.jscomp.CompilerOptions;
 import jscover.ConfigurationCommon;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.mozilla.javascript.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -359,23 +358,10 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.BDDMockito.given;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class InMemoryCoverageTest extends ScriptableObject {
     private @Mock ConfigurationCommon config;
-    private static CompilerEnvirons compilerEnv = new CompilerEnvirons();
-    static {
-        // compilerEnv.setAllowMemberExprAsFunctionName(true);
-        compilerEnv.setLanguageVersion(Context.VERSION_1_8);
-        compilerEnv.setStrictMode(false);
-    }
     private SourceProcessor processor;
-
-    @Before
-    public void setUp() {
-        given(config.getECMAVersion()).willReturn(CompilerOptions.LanguageMode.ECMASCRIPT_NEXT);
-        given(config.isIncludeBranch()).willReturn(true);
-        given(config.isIncludeFunction()).willReturn(true);
-    }
 
     @Test
     public void shouldExecuteJS() {
@@ -388,6 +374,7 @@ public class InMemoryCoverageTest extends ScriptableObject {
 
     @Test
     public void shouldExecuteInstrumentedJS() {
+        given(config.getECMAVersion()).willReturn(CompilerOptions.LanguageMode.ECMASCRIPT_NEXT);
         Context cx = Context.enter();
         Scriptable scope = cx.initStandardObjects();
         String source = "function isNegative(x) {\n  if (x>=0)\n    return false;\n  else\n    return true;\n}; isNegative(12);";
@@ -401,7 +388,7 @@ public class InMemoryCoverageTest extends ScriptableObject {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void shouldPrintLineCoverage() {
         Context cx = Context.enter();
         Scriptable scope = cx.initStandardObjects();

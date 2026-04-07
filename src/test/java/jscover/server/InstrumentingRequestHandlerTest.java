@@ -351,24 +351,28 @@ import jscover.util.IoService;
 import jscover.util.IoUtils;
 import jscover.util.ReflectionUtils;
 import jscover.util.UriFileTranslator;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static java.lang.String.format;
 import static jscover.server.InstrumentingRequestHandler.JSCOVERAGE_STORE;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class InstrumentingRequestHandlerTest {
     private InstrumentingRequestHandler webServer;
     private @Mock IoService ioService;
@@ -384,7 +388,7 @@ public class InstrumentingRequestHandlerTest {
     private final PrintWriter pw = new PrintWriter(stringWriter);
     private final Map<String, List<String>> headers = new HashMap<>();
 
-    @Before
+    @BeforeEach
     public void setUp() {
         InstrumentingRequestHandler.uris.clear();
         webServer = new InstrumentingRequestHandler(null, configuration);
@@ -446,12 +450,12 @@ public class InstrumentingRequestHandlerTest {
         verifyNoInteractions(jsonDataSaver);
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void shouldDirectHEADToHttpServer() {
         given(configuration.isProxy()).willReturn(false);
 
         HttpRequest request = new HttpRequest("somePostUrl", null, null, 0, null);
-        webServer.handleOther("HEAD", request);
+        assertThrows(UnsupportedOperationException.class, () -> webServer.handleOther("HEAD", request));
     }
 
     @Test
@@ -578,6 +582,8 @@ public class InstrumentingRequestHandlerTest {
 
     @Test
     public void shouldStoreJSCoverageJSONInSpecifiedSubDirectoryAndCopySourceForReportForProxy() {
+        given(configuration.getVersion()).willReturn("theVersion");
+        given(configuration.isProxy()).willReturn(true);
         testStoreJSCoverageJSONInSpecifiedSubDirectoryForProxy(false);
     }
 
@@ -592,10 +598,8 @@ public class InstrumentingRequestHandlerTest {
         }};
         File file = new File("target/temp");
         file.deleteOnExit();
-        given(configuration.isProxy()).willReturn(true);
         given(configuration.isSaveJSONOnly()).willReturn(saveJSONOnly);
         given(configuration.getReportDir()).willReturn(file);
-        given(configuration.getVersion()).willReturn("theVersion");
         given(ioUtils.toStringNoClose(bais, 12)).willReturn("data");
         given(bais.skip(50)).willReturn(50L);
 
@@ -615,6 +619,7 @@ public class InstrumentingRequestHandlerTest {
 
     @Test
     public void shouldStoreJSCoverageJSONWithUnloadedJSAndCopySourceForReport() {
+        given(configuration.getVersion()).willReturn("theVersion");
         testStoreJSCoverageJSONWithUnloadedJS(false);
     }
 
@@ -629,7 +634,6 @@ public class InstrumentingRequestHandlerTest {
         given(configuration.isIncludeUnloadedJS()).willReturn(true);
         given(configuration.isSaveJSONOnly()).willReturn(saveJSONOnly);
         given(configuration.getReportDir()).willReturn(reportDir);
-        given(configuration.getVersion()).willReturn("theVersion");
         given(ioUtils.toStringNoClose(bais, 12)).willReturn("data");
         given(bais.skip(50)).willReturn(50L);
         List<ScriptCoverageCount> unloadedJS = new ArrayList<>();

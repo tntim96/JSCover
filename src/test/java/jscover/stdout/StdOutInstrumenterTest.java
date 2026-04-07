@@ -345,11 +345,11 @@ package jscover.stdout;
 import jscover.instrument.InstrumenterService;
 import jscover.util.LoggerUtils;
 import jscover.util.ReflectionUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.File;
 import java.io.PrintStream;
@@ -357,7 +357,7 @@ import java.io.PrintStream;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class StdOutInstrumenterTest {
     private StdOutInstrumenter instrumenter = new StdOutInstrumenter();
     private @Mock ConfigurationForStdOut configuration;
@@ -367,7 +367,7 @@ public class StdOutInstrumenterTest {
     private @Mock PrintStream dest;
 
 
-    @Before
+    @BeforeEach
     public void setUp() {
         ReflectionUtils.setField(instrumenter, "loggerUtils", loggerUtils);
         ReflectionUtils.setField(instrumenter, "instrumenterService", instrumenterService);

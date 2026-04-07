@@ -342,19 +342,19 @@ Public License instead of this License.
 
 package jscover.server;
 
-import org.htmlunit.ProxyConfig;
 import jscover.Main;
 import jscover.util.IoUtils;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.htmlunit.ProxyConfig;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class HtmlServerUnloadedJSProxyUriToFileTest extends HtmlServerUnloadedJSTest {
+public class HtmlServerUnloadedJSProxyUriToFileTest extends HtmlServerUnloadedJSTestBaseClass {
     private static Thread webServer;
     private static Thread server;
     private static Main main = new Main();
@@ -389,8 +389,8 @@ public class HtmlServerUnloadedJSProxyUriToFileTest extends HtmlServerUnloadedJS
         return "/exclude";
     }
 
-    @BeforeClass
-    public static void setUpOnce() {
+    @BeforeAll
+    public static void setUpOnce() throws InterruptedException {
         server = new Thread(() -> main.runMain(args));
         server.start();
         webServer = new Thread(() -> {
@@ -406,15 +406,16 @@ public class HtmlServerUnloadedJSProxyUriToFileTest extends HtmlServerUnloadedJS
             }
         });
         webServer.start();
+        Thread.sleep(10);
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDown() {
         main.stop();
         IoUtils.getInstance().closeQuietly(serverSocket);
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         webClient.getOptions().setFileProtocolForXMLHttpRequestsAllowed(true);
         ProxyConfig proxyConfig = new ProxyConfig("localhost", proxyPort, "http");

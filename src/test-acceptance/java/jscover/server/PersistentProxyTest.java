@@ -342,13 +342,13 @@ Public License instead of this License.
 
 package jscover.server;
 
-import org.htmlunit.*;
 import jscover.Main;
 import jscover.util.IoUtils;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.htmlunit.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -356,12 +356,13 @@ import java.net.Socket;
 import java.net.URI;
 import java.net.URL;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class PersistentProxyTest {
     private static Thread webServer;
     private static Thread proxyServer;
+    private static Thread staticServer;
     private static Main main = new Main();
     private static ServerSocket serverSocket;
     private static int proxyPort = 3129;
@@ -379,7 +380,7 @@ public class PersistentProxyTest {
             "--no-instrument-reg=.*",
     };
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpOnce() {
         proxyServer = new Thread(() -> main.runMain(args));
         proxyServer.start();
@@ -388,7 +389,8 @@ public class PersistentProxyTest {
                 serverSocket = new ServerSocket(9001);
                 while (true) {
                     final Socket socket = serverSocket.accept();
-                    new Thread(new PersistentStaticHttpServer(socket, CONTENT)).start();
+                    staticServer = new Thread(new PersistentStaticHttpServer(socket, CONTENT));
+                    staticServer.start();
                 }
             } catch (IOException e) {
                 //throw new RuntimeException(e);
@@ -397,13 +399,13 @@ public class PersistentProxyTest {
         webServer.start();
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDown() {
         main.stop();
         IoUtils.getInstance().closeQuietly(serverSocket);
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         ProxyConfig proxyConfig = new ProxyConfig("localhost", proxyPort, "http");
         proxyConfig.addHostsToProxyBypass("127.0.0.1");
@@ -423,7 +425,7 @@ public class PersistentProxyTest {
             WebRequest request = new WebRequest(testURL, method);
             try {
                 Page page = webClient.getPage(request);
-                assertEquals("Unexpected response", CONTENT, page.getWebResponse().getContentAsString());
+                assertEquals(CONTENT, page.getWebResponse().getContentAsString());
             } catch (Exception e) {
                 if (method != HttpMethod.POST || count != 2)
                     fail("Expected a response");

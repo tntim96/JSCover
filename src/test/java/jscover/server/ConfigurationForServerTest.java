@@ -345,7 +345,7 @@ package jscover.server;
 import com.google.javascript.jscomp.CompilerOptions;
 import jscover.util.UriFileTranslatorNoOp;
 import jscover.util.UriFileTranslatorReg;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 

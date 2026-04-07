@@ -342,14 +342,14 @@ Public License instead of this License.
 
 package jscover.server;
 
+import jscover.Main;
 import org.htmlunit.html.HtmlAnchor;
 import org.htmlunit.html.HtmlPage;
 import org.htmlunit.html.HtmlTable;
 import org.htmlunit.html.HtmlTableCell;
-import jscover.Main;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
@@ -357,9 +357,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 
-public class HtmlUnitServerBranchAndFunctionTest extends HtmlUnitServerTest {
-    private static Thread server;
+public class HtmlUnitServerBranchAndFunctionTest extends HtmlUnitServerTestBaseClass {
     private static Main main = new Main();
+    private static Thread server;
     private static String reportDir = "target/ws-branch-report";
     protected static String[] args = new String[]{
             "-ws",
@@ -369,13 +369,13 @@ public class HtmlUnitServerBranchAndFunctionTest extends HtmlUnitServerTest {
             "--report-dir=" + reportDir
     };
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpOnce() {
         server = new Thread(() -> main.runMain(args));
         server.start();
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDown() {
         main.stop();
     }

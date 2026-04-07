@@ -106,20 +106,26 @@
                 <attribute name="Main-Class" value="jscover.Main"/>
             </manifest>
         </jar>
-        <junit haltonfailure="yes" haltonerror="yes" failureProperty="test.failure" errorproperty="test.failure">
+        <junitlauncher haltOnFailure="false" failureProperty="test.failure" printSummary="true">
             <classpath>
                 <path refid="classpath-test" />
                 <path refid="compile.classpath" />
                 <path refid="test.classpath" />
             </classpath>
-            <formatter type="xml" />
-            <formatter type="brief" usefile="no" />
-            <batchtest fork="yes" todir="${report.test.dir}">
+
+            <testclasses outputDir="${report.test.dir}">
                 <fileset dir="${classes.test-acceptance.dir}">
-                    <include name="**/ClassVersionChecker.class" />
+                    <include name="**/${tests}.class" />
                 </fileset>
-            </batchtest>
-        </junit>
+
+                <fork dir="${basedir}" forkMode="perTestClass">
+                    <jvmarg value="-ea"/>
+                </fork>
+
+                <listener type="legacy-xml" />
+                <listener type="legacy-brief" sendSysOut="true" sendSysErr="true" />
+            </testclasses>
+        </junitlauncher>
         <antcall target="report-if-failed"/>
         <fail if="test.failure"/>
     </target>
@@ -255,50 +261,62 @@
 		<property name="tests" value="*Test" />
 		<delete dir="${report.test.dir}" />
 		<mkdir dir="${report.test.dir}" />
-        <jacoco:coverage destfile="jacoco-integration.exec" includes="jscover.*" excludes="*.ExitHelper:*.*Test">
-            <junit fork="true" forkmode="perBatch" haltonfailure="no" haltonerror="no" failureProperty="test.failure" errorproperty="test.failure">
-                <jvmarg value="-ea"/>
-                <jvmarg value="-javaagent:${org.mockito:mockito-core:jar}"/>
-                <classpath>
-                    <path refid="classpath-test" />
-                    <path refid="compile.classpath" />
-                    <path refid="test.classpath" />
-                </classpath>
-                <formatter type="xml" />
-                <formatter type="brief" usefile="no" />
-                <batchtest fork="yes" todir="${report.test.dir}">
-                    <fileset dir="${classes.test-unit.dir}">
-                        <include name="**/${tests}.class" />
-                    </fileset>
-                    <fileset dir="${classes.test-integration.dir}">
-                        <include name="**/${tests}.class" />
-                    </fileset>
-                </batchtest>
-            </junit>
-        </jacoco:coverage>
+        <jacoco:agent property="jacoco.agentvmparam" destfile="jacoco-integration.exec"/>
+        <junitlauncher haltOnFailure="false" failureProperty="test.failure" printSummary="true">
+            <classpath>
+                <path refid="classpath-test" />
+                <path refid="compile.classpath" />
+                <path refid="test.classpath" />
+            </classpath>
+
+            <testclasses outputDir="${report.test.dir}">
+                <fileset dir="${classes.test-unit.dir}">
+                    <include name="**/${tests}.class" />
+                </fileset>
+                <fileset dir="${classes.test-integration.dir}">
+                    <include name="**/${tests}.class" />
+                </fileset>
+
+                <fork dir="${basedir}">
+                    <jvmarg value="-ea"/>
+                    <jvmarg value="${jacoco.agentvmparam}"/>
+                    <jvmarg value="-javaagent:${org.mockito:mockito-core:jar}"/>
+                </fork>
+
+                <listener type="legacy-xml" />
+                <listener type="legacy-brief" sendSysOut="true" sendSysErr="true" />
+            </testclasses>
+        </junitlauncher>
         <antcall target="report-if-failed"/>
 		<fail if="test.failure"/>
 	</target>
 
     <target name="run-acceptance-tests" depends="compile-acceptance-tests" xmlns:jacoco="antlib:org.jacoco.ant">
         <property name="tests" value="*Test" />
-        <jacoco:coverage destfile="jacoco-acceptance.exec" includes="jscover.*" excludes="*.ExitHelper:*.*Test">
-            <junit fork="true" forkmode="perTest" haltonfailure="no" haltonerror="no" failureProperty="test.failure" errorproperty="test.failure">
-                <jvmarg value="-ea"/>
-                <classpath>
-                    <path refid="classpath-test" />
-                    <path refid="compile.classpath" />
-                    <path refid="test.classpath" />
-                </classpath>
-                <formatter type="xml" />
-                <formatter type="brief" usefile="no" />
-                <batchtest fork="yes" todir="${report.test.dir}">
-                    <fileset dir="${classes.test-acceptance.dir}">
-                        <include name="**/${tests}.class" />
-                    </fileset>
-                </batchtest>
-            </junit>
-        </jacoco:coverage>
+        <jacoco:agent property="jacoco.agentvmparam" destfile="jacoco-acceptance.exec"/>
+        <junitlauncher haltOnFailure="false"
+                       failureProperty="test.failure"
+                       printSummary="true">
+            <classpath>
+                <path refid="classpath-test" />
+                <path refid="compile.classpath" />
+                <path refid="test.classpath" />
+            </classpath>
+
+            <testclasses outputDir="${report.test.dir}">
+                <fileset dir="${classes.test-acceptance.dir}">
+                    <include name="**/${tests}.class" />
+                </fileset>
+
+                <fork dir="${basedir}" forkMode="perTestClass">
+                    <jvmarg value="-ea"/>
+                    <jvmarg value="${jacoco.agentvmparam}"/>
+                </fork>
+
+                <listener type="legacy-xml" />
+                <listener type="legacy-brief" sendSysOut="true" sendSysErr="true" />
+            </testclasses>
+        </junitlauncher>
         <antcall target="report-if-failed"/>
         <fail if="test.failure"/>
     </target>

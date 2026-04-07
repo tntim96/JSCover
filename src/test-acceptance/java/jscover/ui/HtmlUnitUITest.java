@@ -342,18 +342,18 @@ Public License instead of this License.
 
 package jscover.ui;
 
-import org.htmlunit.WebClient;
-import org.htmlunit.html.HtmlPage;
-import org.htmlunit.html.HtmlTableRow;
 import jscover.Main;
 import jscover.util.ReflectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.htmlunit.WebClient;
+import org.htmlunit.html.HtmlPage;
+import org.htmlunit.html.HtmlTableRow;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -395,7 +395,7 @@ public class HtmlUnitUITest {
             "--report-dir=" + reportDir
     };
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpOnce() throws IOException {
         FileUtils.deleteDirectory(reportDir);
         server = new Thread(() -> main.runMain(args));
@@ -403,12 +403,13 @@ public class HtmlUnitUITest {
         storeResult();
     }
 
-    @AfterClass
-    public static void tearDown() {
+    @AfterAll
+    public static void tearDown() throws InterruptedException {
         main.stop();
+        server.join(1000);
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         webClient.getOptions().setFileProtocolForXMLHttpRequestsAllowed(true);
         webClient.getOptions().setTimeout(1000);

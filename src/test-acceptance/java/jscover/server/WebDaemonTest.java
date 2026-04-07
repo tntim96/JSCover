@@ -1,10 +1,10 @@
 package jscover.server;
 
+import jscover.Main;
 import org.htmlunit.WebClient;
 import org.htmlunit.html.HtmlPage;
-import jscover.Main;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -19,10 +19,12 @@ public class WebDaemonTest {
             "--port=8081"
     };
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    public void setUp() throws InterruptedException {
+        webClient.getOptions().setTimeout(1000);
         server = new Thread(() -> main.runMain(args));
         server.start();
+        Thread.sleep(10);
     }
 
     @Test

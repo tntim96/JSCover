@@ -344,7 +344,7 @@ package jscover.report.lcov;
 
 import jscover.report.BranchData;
 import jscover.report.FileData;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;

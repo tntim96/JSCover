@@ -344,7 +344,7 @@ package jscover.instrument;
 
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.Token;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;

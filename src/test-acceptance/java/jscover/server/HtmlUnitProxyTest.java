@@ -342,22 +342,22 @@ Public License instead of this License.
  
  package jscover.server;
 
-import org.htmlunit.ProxyConfig;
 import jscover.Main;
 import jscover.util.IoUtils;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.htmlunit.ProxyConfig;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class HtmlUnitProxyTest extends HtmlUnitServerTest {
+public class HtmlUnitProxyTest extends HtmlUnitServerTestBaseClass {
+    private static Main main = new Main();
     private static Thread webServer;
     private static Thread proxyServer;
-    private static Main main = new Main();
     private static ServerSocket serverSocket;
     private static int proxyPort = 3129;
     private static String reportDir = "target/proxy-report";
@@ -378,7 +378,7 @@ public class HtmlUnitProxyTest extends HtmlUnitServerTest {
         return reportDir;
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpOnce() {
         proxyServer = new Thread(() -> main.runMain(args));
         proxyServer.start();
@@ -397,13 +397,13 @@ public class HtmlUnitProxyTest extends HtmlUnitServerTest {
         webServer.start();
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDown() {
         main.stop();
         IoUtils.getInstance().closeQuietly(serverSocket);
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         webClient.getOptions().setFileProtocolForXMLHttpRequestsAllowed(true);
         ProxyConfig proxyConfig = new ProxyConfig("localhost", proxyPort, "http");
