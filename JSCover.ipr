@@ -750,16 +750,16 @@
         <root url="jar://$MAVEN_REPOSITORY$/com/google/errorprone/error_prone_annotations/2.41.0/error_prone_annotations-2.41.0-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: com.google.javascript:closure-compiler:v20260406" type="java-imported" external-system-id="Maven">
-      <properties groupId="com.google.javascript" artifactId="closure-compiler" version="v20260406" baseVersion="v20260406" />
+    <library name="Maven: com.google.javascript:closure-compiler:v20260407" type="java-imported" external-system-id="Maven">
+      <properties groupId="com.google.javascript" artifactId="closure-compiler" version="v20260407" baseVersion="v20260407" />
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler/v20260406/closure-compiler-v20260406.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler/v20260407/closure-compiler-v20260407.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler/v20260406/closure-compiler-v20260406-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler/v20260407/closure-compiler-v20260407-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler/v20260406/closure-compiler-v20260406-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler/v20260407/closure-compiler-v20260407-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: commons-codec:commons-codec:1.11" type="java-imported" external-system-id="Maven">
@@ -1038,88 +1038,100 @@
         <root url="jar://$MAVEN_REPOSITORY$/org/jacoco/org.jacoco.report/0.8.14/org.jacoco.report-0.8.14-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.junit.jupiter:junit-jupiter-api:5.14.3" type="java-imported" external-system-id="Maven">
-      <properties groupId="org.junit.jupiter" artifactId="junit-jupiter-api" version="5.14.3" baseVersion="5.14.3" />
+    <library name="Maven: org.jspecify:jspecify:1.0.0" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.jspecify" artifactId="jspecify" version="1.0.0" baseVersion="1.0.0" />
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/junit/jupiter/junit-jupiter-api/5.14.3/junit-jupiter-api-5.14.3.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/jspecify/jspecify/1.0.0/jspecify-1.0.0.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/junit/jupiter/junit-jupiter-api/5.14.3/junit-jupiter-api-5.14.3-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/jspecify/jspecify/1.0.0/jspecify-1.0.0-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/junit/jupiter/junit-jupiter-api/5.14.3/junit-jupiter-api-5.14.3-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/jspecify/jspecify/1.0.0/jspecify-1.0.0-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.junit.jupiter:junit-jupiter-engine:5.14.3" type="java-imported" external-system-id="Maven">
-      <properties groupId="org.junit.jupiter" artifactId="junit-jupiter-engine" version="5.14.3" baseVersion="5.14.3" />
+    <library name="Maven: org.junit.jupiter:junit-jupiter-api:6.0.3" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.junit.jupiter" artifactId="junit-jupiter-api" version="6.0.3" baseVersion="6.0.3" />
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/junit/jupiter/junit-jupiter-engine/5.14.3/junit-jupiter-engine-5.14.3.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/junit/jupiter/junit-jupiter-api/6.0.3/junit-jupiter-api-6.0.3.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/junit/jupiter/junit-jupiter-engine/5.14.3/junit-jupiter-engine-5.14.3-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/junit/jupiter/junit-jupiter-api/6.0.3/junit-jupiter-api-6.0.3-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/junit/jupiter/junit-jupiter-engine/5.14.3/junit-jupiter-engine-5.14.3-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/junit/jupiter/junit-jupiter-api/6.0.3/junit-jupiter-api-6.0.3-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.junit.jupiter:junit-jupiter-params:5.14.3" type="java-imported" external-system-id="Maven">
-      <properties groupId="org.junit.jupiter" artifactId="junit-jupiter-params" version="5.14.3" baseVersion="5.14.3" />
+    <library name="Maven: org.junit.jupiter:junit-jupiter-engine:6.0.3" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.junit.jupiter" artifactId="junit-jupiter-engine" version="6.0.3" baseVersion="6.0.3" />
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/junit/jupiter/junit-jupiter-params/5.14.3/junit-jupiter-params-5.14.3.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/junit/jupiter/junit-jupiter-engine/6.0.3/junit-jupiter-engine-6.0.3.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/junit/jupiter/junit-jupiter-params/5.14.3/junit-jupiter-params-5.14.3-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/junit/jupiter/junit-jupiter-engine/6.0.3/junit-jupiter-engine-6.0.3-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/junit/jupiter/junit-jupiter-params/5.14.3/junit-jupiter-params-5.14.3-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/junit/jupiter/junit-jupiter-engine/6.0.3/junit-jupiter-engine-6.0.3-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.junit.jupiter:junit-jupiter:5.14.3" type="java-imported" external-system-id="Maven">
-      <properties groupId="org.junit.jupiter" artifactId="junit-jupiter" version="5.14.3" baseVersion="5.14.3" />
+    <library name="Maven: org.junit.jupiter:junit-jupiter-params:6.0.3" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.junit.jupiter" artifactId="junit-jupiter-params" version="6.0.3" baseVersion="6.0.3" />
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/junit/jupiter/junit-jupiter/5.14.3/junit-jupiter-5.14.3.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/junit/jupiter/junit-jupiter-params/6.0.3/junit-jupiter-params-6.0.3.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/junit/jupiter/junit-jupiter/5.14.3/junit-jupiter-5.14.3-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/junit/jupiter/junit-jupiter-params/6.0.3/junit-jupiter-params-6.0.3-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/junit/jupiter/junit-jupiter/5.14.3/junit-jupiter-5.14.3-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/junit/jupiter/junit-jupiter-params/6.0.3/junit-jupiter-params-6.0.3-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.junit.platform:junit-platform-commons:1.14.3" type="java-imported" external-system-id="Maven">
-      <properties groupId="org.junit.platform" artifactId="junit-platform-commons" version="1.14.3" baseVersion="1.14.3" />
+    <library name="Maven: org.junit.jupiter:junit-jupiter:6.0.3" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.junit.jupiter" artifactId="junit-jupiter" version="6.0.3" baseVersion="6.0.3" />
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/junit/platform/junit-platform-commons/1.14.3/junit-platform-commons-1.14.3.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/junit/jupiter/junit-jupiter/6.0.3/junit-jupiter-6.0.3.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/junit/platform/junit-platform-commons/1.14.3/junit-platform-commons-1.14.3-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/junit/jupiter/junit-jupiter/6.0.3/junit-jupiter-6.0.3-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/junit/platform/junit-platform-commons/1.14.3/junit-platform-commons-1.14.3-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/junit/jupiter/junit-jupiter/6.0.3/junit-jupiter-6.0.3-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.junit.platform:junit-platform-engine:1.14.3" type="java-imported" external-system-id="Maven">
-      <properties groupId="org.junit.platform" artifactId="junit-platform-engine" version="1.14.3" baseVersion="1.14.3" />
+    <library name="Maven: org.junit.platform:junit-platform-commons:6.0.3" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.junit.platform" artifactId="junit-platform-commons" version="6.0.3" baseVersion="6.0.3" />
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/junit/platform/junit-platform-engine/1.14.3/junit-platform-engine-1.14.3.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/junit/platform/junit-platform-commons/6.0.3/junit-platform-commons-6.0.3.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/junit/platform/junit-platform-engine/1.14.3/junit-platform-engine-1.14.3-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/junit/platform/junit-platform-commons/6.0.3/junit-platform-commons-6.0.3-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/junit/platform/junit-platform-engine/1.14.3/junit-platform-engine-1.14.3-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/junit/platform/junit-platform-commons/6.0.3/junit-platform-commons-6.0.3-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.junit.platform:junit-platform-launcher:1.14.3" type="java-imported" external-system-id="Maven">
-      <properties groupId="org.junit.platform" artifactId="junit-platform-launcher" version="1.14.3" baseVersion="1.14.3" />
+    <library name="Maven: org.junit.platform:junit-platform-engine:6.0.3" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.junit.platform" artifactId="junit-platform-engine" version="6.0.3" baseVersion="6.0.3" />
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/junit/platform/junit-platform-launcher/1.14.3/junit-platform-launcher-1.14.3.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/junit/platform/junit-platform-engine/6.0.3/junit-platform-engine-6.0.3.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/junit/platform/junit-platform-launcher/1.14.3/junit-platform-launcher-1.14.3-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/junit/platform/junit-platform-engine/6.0.3/junit-platform-engine-6.0.3-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/junit/platform/junit-platform-launcher/1.14.3/junit-platform-launcher-1.14.3-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/junit/platform/junit-platform-engine/6.0.3/junit-platform-engine-6.0.3-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.junit.platform:junit-platform-launcher:6.0.3" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.junit.platform" artifactId="junit-platform-launcher" version="6.0.3" baseVersion="6.0.3" />
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/junit/platform/junit-platform-launcher/6.0.3/junit-platform-launcher-6.0.3.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/junit/platform/junit-platform-launcher/6.0.3/junit-platform-launcher-6.0.3-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/junit/platform/junit-platform-launcher/6.0.3/junit-platform-launcher-6.0.3-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.mockito:mockito-core:5.23.0" type="java-imported" external-system-id="Maven">
