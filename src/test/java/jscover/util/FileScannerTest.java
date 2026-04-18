@@ -352,9 +352,7 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsIterableContaining.hasItem;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class FileScannerTest {
     private ConfigurationForServer configuration;
@@ -377,13 +375,13 @@ public class FileScannerTest {
         fileScanner = new FileScanner(configuration, file);
 
         Set<File> files = fileScanner.getFiles(urisAlreadyProcessed);
-        assertThat(files.size(), equalTo(6));
-        assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/root.js")));
-        assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/root-empty.js")));
-        assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/level1/level1.js")));
-        assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/level1/level2/level2.js")));
-        assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/level1/level2/level2-empty.js")));
-        assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/noInstrument/noInstrument.js")));
+        assertThat(files.size()).isEqualTo(6);
+        assertThat(files).contains(new File("src/test-integration/resources/jsSearch/root.js"));
+        assertThat(files).contains(new File("src/test-integration/resources/jsSearch/root-empty.js"));
+        assertThat(files).contains(new File("src/test-integration/resources/jsSearch/level1/level1.js"));
+        assertThat(files).contains(new File("src/test-integration/resources/jsSearch/level1/level2/level2.js"));
+        assertThat(files).contains(new File("src/test-integration/resources/jsSearch/level1/level2/level2-empty.js"));
+        assertThat(files).contains(new File("src/test-integration/resources/jsSearch/noInstrument/noInstrument.js"));
     }
 
     @Test
@@ -394,13 +392,13 @@ public class FileScannerTest {
         fileScanner = new FileScanner(configuration, file);
 
         Set<File> files = fileScanner.getFiles(urisAlreadyProcessed);
-        assertThat(files.size(), equalTo(6));
-        assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/root.js")));
-        assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/root-empty.js")));
-        assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/level1/level1.js")));
-        assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/level1/level2/level2.js")));
-        assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/level1/level2/level2-empty.js")));
-        assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/noInstrument/noInstrument.js")));
+        assertThat(files.size()).isEqualTo(6);
+        assertThat(files).contains(new File("src/test-integration/resources/jsSearch/root.js"));
+        assertThat(files).contains(new File("src/test-integration/resources/jsSearch/root-empty.js"));
+        assertThat(files).contains(new File("src/test-integration/resources/jsSearch/level1/level1.js"));
+        assertThat(files).contains(new File("src/test-integration/resources/jsSearch/level1/level2/level2.js"));
+        assertThat(files).contains(new File("src/test-integration/resources/jsSearch/level1/level2/level2-empty.js"));
+        assertThat(files).contains(new File("src/test-integration/resources/jsSearch/noInstrument/noInstrument.js"));
     }
 
     @Test
@@ -413,12 +411,12 @@ public class FileScannerTest {
         urisAlreadyProcessed.add("level2/level2.js");
 
         Set<File> files = fileScanner.getFiles(urisAlreadyProcessed);
-        assertThat(files.size(), equalTo(5));
-        assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/root-empty.js")));
-        assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/level1/level1.js")));
-        assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/level1/level2/level2.js")));
-        assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/level1/level2/level2-empty.js")));
-        assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/noInstrument/noInstrument.js")));
+        assertThat(files.size()).isEqualTo(5);
+        assertThat(files).contains(new File("src/test-integration/resources/jsSearch/root-empty.js"));
+        assertThat(files).contains(new File("src/test-integration/resources/jsSearch/level1/level1.js"));
+        assertThat(files).contains(new File("src/test-integration/resources/jsSearch/level1/level2/level2.js"));
+        assertThat(files).contains(new File("src/test-integration/resources/jsSearch/level1/level2/level2-empty.js"));
+        assertThat(files).contains(new File("src/test-integration/resources/jsSearch/noInstrument/noInstrument.js"));
     }
 
     @Test
@@ -430,12 +428,12 @@ public class FileScannerTest {
         fileScanner = new FileScanner(configuration, file);
 
         Set<File> files = fileScanner.getFiles(urisAlreadyProcessed);
-        assertThat(files.size(), equalTo(5));
-        assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/root.js")));
-        assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/root-empty.js")));
-        assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/level1/level1.js")));
-        assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/level1/level2/level2.js")));
-        assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/level1/level2/level2-empty.js")));
+        assertThat(files.size()).isEqualTo(5);
+        assertThat(files).contains(new File("src/test-integration/resources/jsSearch/root.js"));
+        assertThat(files).contains(new File("src/test-integration/resources/jsSearch/root-empty.js"));
+        assertThat(files).contains(new File("src/test-integration/resources/jsSearch/level1/level1.js"));
+        assertThat(files).contains(new File("src/test-integration/resources/jsSearch/level1/level2/level2.js"));
+        assertThat(files).contains(new File("src/test-integration/resources/jsSearch/level1/level2/level2-empty.js"));
     }
 
     @Test
@@ -453,8 +451,8 @@ public class FileScannerTest {
         ioUtils.copy(rootJS, rootJSReportCopy);
 
         Set<File> files = fileScanner.getFiles(urisAlreadyProcessed);
-        assertThat(files.size(), equalTo(1));
-        assertThat(files, hasItem(rootJSSourceCopy));
+        assertThat(files.size()).isEqualTo(1);
+        assertThat(files).contains(rootJSSourceCopy);
     }
 
     @Test
@@ -466,8 +464,8 @@ public class FileScannerTest {
         fileScanner = new FileScanner(configuration, file);
 
         Set<File> files = fileScanner.getFiles(urisAlreadyProcessed);
-        assertThat(files.size(), equalTo(2));
-        assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/level1/level2/level2.js")));
-        assertThat(files, hasItem(new File("src/test-integration/resources/jsSearch/level1/level2/level2-empty.js")));
+        assertThat(files.size()).isEqualTo(2);
+        assertThat(files).contains(new File("src/test-integration/resources/jsSearch/level1/level2/level2.js"));
+        assertThat(files).contains(new File("src/test-integration/resources/jsSearch/level1/level2/level2-empty.js"));
     }
 }

@@ -6,8 +6,7 @@ import org.htmlunit.html.HtmlPage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class WebDaemonTest {
     private Thread server;
@@ -30,9 +29,9 @@ public class WebDaemonTest {
     @Test
     public void shouldStopDaemon() throws Exception {
         HtmlPage page = webClient.getPage("http://localhost:8081/jscoverage.html");
-        assertThat(page.getTitleText(), equalTo("JSCover"));
+        assertThat(page.getTitleText()).isEqualTo("JSCover");
         main.stop();
         server.join(1000);
-        assertThat(server.getState(), equalTo(Thread.State.TERMINATED));
+        assertThat(server.getState()).isEqualTo(Thread.State.TERMINATED);
     }
 }

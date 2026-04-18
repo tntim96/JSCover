@@ -352,8 +352,8 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import static java.util.Arrays.asList;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 //Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013
 public class LCovGeneratorTest {
@@ -400,7 +400,7 @@ public class LCovGeneratorTest {
                 "DA:4,0\n" +
                 "DA:5,5\n" +
                 "end_of_record\n";
-        assertThat(result, equalTo(expected));
+        assertThat(result).isEqualTo(expected);
     }
 
     private BranchData getBranchData(int evalFalse, int evalTrue) {

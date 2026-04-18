@@ -350,9 +350,7 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 
-import static org.hamcrest.CoreMatchers.endsWith;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MainGenerateFileAcceptanceTest {
     private IoUtils ioUtils = IoUtils.getInstance();
@@ -372,10 +370,10 @@ public class MainGenerateFileAcceptanceTest {
         File jsCoverHtml = new File(reportDir, "jscoverage.html");
         File jsCoverJS = new File(reportDir, "jscoverage.js");
         File origSrc = new File(reportDir, Main.reportSrcSubDir);
-        assertThat(jsCoverHtml.exists(), is(true));
-        assertThat(jsCoverJS.exists(), is(true));
-        assertThat(origSrc.exists(), is(false));
-        assertThat(ioUtils.loadFromFileSystem(jsCoverJS), endsWith("\njscoverage_isReport = true;"));
+        assertThat(jsCoverHtml.exists()).isTrue();
+        assertThat(jsCoverJS.exists()).isTrue();
+        assertThat(origSrc.exists()).isFalse();
+        assertThat(ioUtils.loadFromFileSystem(jsCoverJS)).endsWith("\njscoverage_isReport = true;");
     }
 
     @Test
@@ -388,10 +386,10 @@ public class MainGenerateFileAcceptanceTest {
         File jsCoverHtml = new File(reportDir, "jscoverage.html");
         File jsCoverJS = new File(reportDir, "jscoverage.js");
         File origSrc = new File(reportDir, Main.reportSrcSubDir);
-        assertThat(jsCoverHtml.exists(), is(true));
-        assertThat(jsCoverJS.exists(), is(true));
-        assertThat(new File(origSrc, "script.js").exists(), is(true));
-        assertThat(ioUtils.loadFromFileSystem(jsCoverJS), endsWith("\njscoverage_isReport = true;"));
+        assertThat(jsCoverHtml.exists()).isTrue();
+        assertThat(jsCoverJS.exists()).isTrue();
+        assertThat(new File(origSrc, "script.js").exists()).isTrue();
+        assertThat(ioUtils.loadFromFileSystem(jsCoverJS)).endsWith("\njscoverage_isReport = true;");
     }
 
 }

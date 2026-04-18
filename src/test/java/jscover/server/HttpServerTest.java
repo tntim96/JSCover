@@ -351,8 +351,7 @@ import java.util.List;
 import java.util.Map;
 
 import static jscover.server.HTTP_STATUS.HTTP_OK;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class HttpServerTest {
     private HttpServer httpServer = new HttpServer(null, null, null);
@@ -371,9 +370,9 @@ public class HttpServerTest {
         Map<String, List<String>> headers = httpServer.readHeaders(br);
 
         List<String> header = headers.get("Host");
-        assertThat(headers.size(), equalTo(1));
-        assertThat(header.size(), equalTo(1));
-        assertThat(header.get(0), equalTo("localhost:8080"));
+        assertThat(headers.size()).isEqualTo(1);
+        assertThat(header.size()).isEqualTo(1);
+        assertThat(header.get(0)).isEqualTo("localhost:8080");
     }
 
     @Test
@@ -383,10 +382,10 @@ public class HttpServerTest {
         Map<String, List<String>> headers = httpServer.readHeaders(br);
 
         List<String> header = headers.get("Cookie");
-        assertThat(headers.size(), equalTo(1));
-        assertThat(header.size(), equalTo(2));
-        assertThat(header, hasItem("cookie1"));
-        assertThat(header, hasItem("cookie2"));
+        assertThat(headers.size()).isEqualTo(1);
+        assertThat(header.size()).isEqualTo(2);
+        assertThat(header).contains("cookie1");
+        assertThat(header).contains("cookie2");
     }
 
     private BufferedReader getBufferedReader(String s) {
@@ -400,14 +399,14 @@ public class HttpServerTest {
 
         Map<String, List<String>> headers = httpServer.readHeaders(br);
 
-        assertThat(headers.containsKey("Host"), is(true));
+        assertThat(headers.containsKey("Host")).isTrue();
     }
 
     @Test
     public void shouldSetContentLength() {
         httpServer.sendResponse(HTTP_OK, MIME.TEXT_PLAIN, "Hey");
 
-        assertThat(stringWriter.toString(), equalTo("HTTP/1.0 200 OK\nServer: JSCover/null\nContent-Type: text/plain\nConnection: close\nContent-Length: 3\n\nHey"));
+        assertThat(stringWriter.toString()).isEqualTo("HTTP/1.0 200 OK\nServer: JSCover/null\nContent-Type: text/plain\nConnection: close\nContent-Length: 3\n\nHey");
     }
 
     @Test
@@ -415,6 +414,6 @@ public class HttpServerTest {
         String data = new String("小方".getBytes("UTF-8"));
         httpServer.sendResponse(HTTP_OK, MIME.TEXT_PLAIN, data);
 
-        assertThat(stringWriter.toString(), equalTo("HTTP/1.0 200 OK\nServer: JSCover/null\nContent-Type: text/plain\nConnection: close\nContent-Length: 6\n\n"+data));
+        assertThat(stringWriter.toString()).isEqualTo("HTTP/1.0 200 OK\nServer: JSCover/null\nContent-Type: text/plain\nConnection: close\nContent-Length: 6\n\n"+data);
     }
 }

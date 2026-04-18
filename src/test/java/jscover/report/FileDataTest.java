@@ -350,14 +350,14 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import static java.util.Arrays.asList;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class FileDataTest {
     @Test
     public void shouldReturnUri() {
         FileData lineData = new FileData("/test/test.js", null, null, null);
-        assertThat(lineData.getUri(), equalTo("/test/test.js"));
+        assertThat(lineData.getUri()).isEqualTo("/test/test.js");
     }
 
     @Test
@@ -370,11 +370,11 @@ public class FileDataTest {
         lines.add(0);
         lines.add(5);
         FileData lineData = new FileData("test.js", lines, null, null);
-        assertThat(lineData.getCodeLineCount(), equalTo(4));
-        assertThat(lineData.getCodeLineCount(), equalTo(4));//Check cache
-        assertThat(lineData.getCodeLinesCoveredCount(), equalTo(3));
-        assertThat(lineData.getCodeLinesCoveredCount(), equalTo(3));//Check cache
-        assertThat(lineData.getLineCoverRate(), equalTo((double)3 / 4));
+        assertThat(lineData.getCodeLineCount()).isEqualTo(4);
+        assertThat(lineData.getCodeLineCount()).isEqualTo(4);//Check cache
+        assertThat(lineData.getCodeLinesCoveredCount()).isEqualTo(3);
+        assertThat(lineData.getCodeLinesCoveredCount()).isEqualTo(3);//Check cache
+        assertThat(lineData.getLineCoverRate()).isEqualTo((double)3 / 4);
     }
 
     @Test
@@ -385,14 +385,14 @@ public class FileDataTest {
         functions.add(0);
         functions.add(5);
         FileData functionData = new FileData("test.js", null, functions, null);
-        assertThat(functionData.getCodeFunctionCount(), equalTo(4));
-        assertThat(functionData.getCodeFunctionCount(), equalTo(4));//Check cache
-        assertThat(functionData.getCodeFunctionCoveredCount(), equalTo(3));
-        assertThat(functionData.getCodeFunctionCoveredCount(), equalTo(3));//Check cache
-        assertThat(functionData.getFunctionCoverRate(), equalTo((double)3 / 4));
+        assertThat(functionData.getCodeFunctionCount()).isEqualTo(4);
+        assertThat(functionData.getCodeFunctionCount()).isEqualTo(4);//Check cache
+        assertThat(functionData.getCodeFunctionCoveredCount()).isEqualTo(3);
+        assertThat(functionData.getCodeFunctionCoveredCount()).isEqualTo(3);//Check cache
+        assertThat(functionData.getFunctionCoverRate()).isEqualTo((double)3 / 4);
         
         functionData = new FileData("test.js", null, new ArrayList<>(), null);
-        assertThat(functionData.getFunctionCoverRate(), equalTo(1.0));
+        assertThat(functionData.getFunctionCoverRate()).isEqualTo(1.0);
     }
     
     @Test
@@ -401,11 +401,11 @@ public class FileDataTest {
         lines.put(3, asList(null, getBranchData(1, 0), getBranchData(0, 1)));
         lines.put(9, asList(null, getBranchData(1, 1)));
         FileData lineData = new FileData("test.js", null, null, lines);
-        assertThat(lineData.getBranchCount(), equalTo(6));
-        assertThat(lineData.getBranchCount(), equalTo(6));//Check cache
-        assertThat(lineData.getBranchesCoveredCount(), equalTo(4));
-        assertThat(lineData.getBranchesCoveredCount(), equalTo(4));//Check cache
-        assertThat(lineData.getBranchRate(), equalTo((double)2 / 3));
+        assertThat(lineData.getBranchCount()).isEqualTo(6);
+        assertThat(lineData.getBranchCount()).isEqualTo(6);//Check cache
+        assertThat(lineData.getBranchesCoveredCount()).isEqualTo(4);
+        assertThat(lineData.getBranchesCoveredCount()).isEqualTo(4);//Check cache
+        assertThat(lineData.getBranchRate()).isEqualTo((double)2 / 3);
     }
 
     private BranchData getBranchData(int evalFalse, int evalTrue) {

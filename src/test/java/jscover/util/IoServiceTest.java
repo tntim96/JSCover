@@ -354,8 +354,7 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -387,8 +386,8 @@ public class IoServiceTest {
 
         String html = ioService.generateJSCoverageHtml("1.0.18-SNAPSHOT");
 
-        assertThat(html, containsString("This is version 1.0.18-SNAPSHOT of JSCover"));
-        assertThat(html, containsString("Report generated at 15:12:55 25 Feb 2015"));
+        assertThat(html).contains("This is version 1.0.18-SNAPSHOT of JSCover");
+        assertThat(html).contains("Report generated at 15:12:55 25 Feb 2015");
     }
 
     @Test
@@ -396,12 +395,12 @@ public class IoServiceTest {
         ioService.generateJSCoverFilesForFileSystem(destDir, "theVersion");
 
         String html = ioUtils.loadFromFileSystem(new File(destDir,"jscoverage.html"));
-        assertThat(html, containsString("This is version theVersion of JSCover"));
+        assertThat(html).contains("This is version theVersion of JSCover");
 
         String js = ioUtils.loadFromFileSystem(new File(destDir,"jscoverage.js"));
-        assertThat(js, not(containsString("\njscoverage_isReport = true;")));
-        assertThat(js, not(containsString("localStorage")));
-        assertThat(new File(destDir,"jscoverage-clear-local-storage.html").exists(), is(false));
+        assertThat(js).doesNotContain("\njscoverage_isReport = true;");
+        assertThat(js).doesNotContain("localStorage");
+        assertThat(new File(destDir,"jscoverage-clear-local-storage.html").exists()).isFalse();
     }
 
     @Test
@@ -410,12 +409,12 @@ public class IoServiceTest {
         ioService.generateJSCoverFilesForFileSystem(destDir, "theVersion");
 
         String html = ioUtils.loadFromFileSystem(new File(destDir,"jscoverage.html"));
-        assertThat(html, containsString("This is version theVersion of JSCover"));
+        assertThat(html).contains("This is version theVersion of JSCover");
 
         String js = ioUtils.loadFromFileSystem(new File(destDir, "jscoverage.js"));
-        assertThat(js, not(containsString("\njscoverage_isReport = true;")));
-        assertThat(js, containsString("localStorage"));
-        assertThat(new File(destDir,"jscoverage-clear-local-storage.html").exists(), is(true));
+        assertThat(js).doesNotContain("\njscoverage_isReport = true;");
+        assertThat(js).contains("localStorage");
+        assertThat(new File(destDir,"jscoverage-clear-local-storage.html").exists()).isTrue();
     }
 
     @Test
@@ -423,25 +422,25 @@ public class IoServiceTest {
         ioService.generateJSCoverFilesForWebServer(destDir, "theVersion");
 
         String html = ioUtils.loadFromFileSystem(new File(destDir,"jscoverage.html"));
-        assertThat(html, containsString("This is version theVersion of JSCover"));
+        assertThat(html).contains("This is version theVersion of JSCover");
 
         String js = ioUtils.loadFromFileSystem(new File(destDir,"jscoverage.js"));
-        assertThat(js, containsString("\njscoverage_isReport = true;"));
-        assertThat(js, not(containsString("localStorage")));
+        assertThat(js).contains("\njscoverage_isReport = true;");
+        assertThat(js).doesNotContain("localStorage");
     }
 
     @Test
     public void shouldGenerateJSForWebServer() {
         String js = ioService.generateJSCoverageServerJS();
-        assertThat(js, containsString("\njscoverage_isServer = true;"));
-        assertThat(js, not(containsString("localStorage")));
+        assertThat(js).contains("\njscoverage_isServer = true;");
+        assertThat(js).doesNotContain("localStorage");
     }
 
     @Test
     public void shouldGenerateJSForWebServerWithLocalStorage() {
         IoService ioService = new IoService(true);
         String js = ioService.generateJSCoverageServerJS();
-        assertThat(js, containsString("\njscoverage_isServer = true;"));
-        assertThat(js, containsString("localStorage"));
+        assertThat(js).contains("\njscoverage_isServer = true;");
+        assertThat(js).contains("localStorage");
     }
 }

@@ -358,8 +358,7 @@ import javax.xml.xpath.XPathFactory;
 import java.io.ByteArrayInputStream;
 import java.util.Locale;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -386,13 +385,13 @@ public class XMLSummaryTest {
         DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         Document document = builder.parse(new ByteArrayInputStream(xml.getBytes()));
 
-        assertThat(getXPath(xpath, document, "/coverage/@line-rate"), equalTo("0.333333"));
-        assertThat(getXPath(xpath, document, "/coverage/@branch-rate"), equalTo("0.666667"));
-        assertThat(getXPath(xpath, document, "/coverage/@lines-covered"), equalTo("2"));
-        assertThat(getXPath(xpath, document, "/coverage/@lines"), equalTo("1"));
-        assertThat(getXPath(xpath, document, "/coverage/@branches-covered"), equalTo("5"));
-        assertThat(getXPath(xpath, document, "/coverage/@branches"), equalTo("4"));
-        assertThat(getXPath(xpath, document, "/coverage/@version"), equalTo("theVersion"));
+        assertThat(getXPath(xpath, document, "/coverage/@line-rate")).isEqualTo("0.333333");
+        assertThat(getXPath(xpath, document, "/coverage/@branch-rate")).isEqualTo("0.666667");
+        assertThat(getXPath(xpath, document, "/coverage/@lines-covered")).isEqualTo("2");
+        assertThat(getXPath(xpath, document, "/coverage/@lines")).isEqualTo("1");
+        assertThat(getXPath(xpath, document, "/coverage/@branches-covered")).isEqualTo("5");
+        assertThat(getXPath(xpath, document, "/coverage/@branches")).isEqualTo("4");
+        assertThat(getXPath(xpath, document, "/coverage/@version")).isEqualTo("theVersion");
     }
 
     private String getXPath(XPath xpath, Document document, String expression) throws Exception {

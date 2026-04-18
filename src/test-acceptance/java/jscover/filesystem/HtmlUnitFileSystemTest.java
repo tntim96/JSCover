@@ -352,8 +352,7 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class HtmlUnitFileSystemTest {
@@ -373,10 +372,10 @@ public class HtmlUnitFileSystemTest {
         Main.main(args);
 
         String noInstrumentJS = ioUtils.loadFromFileSystem(new File(reportDir+"/example/lib/noInstrument.js"));
-        assertThat(noInstrumentJS, equalTo("alert('Hey');"));
+        assertThat(noInstrumentJS).isEqualTo("alert('Hey');");
 
-        assertThat(new File(reportDir+"/example/script.js").exists(), equalTo(true));
-        assertThat(new File(reportDir+"/example/noCopy/test.txt").exists(), equalTo(false));
+        assertThat(new File(reportDir+"/example/script.js").exists()).isEqualTo(true);
+        assertThat(new File(reportDir+"/example/noCopy/test.txt").exists()).isEqualTo(false);
 
         HtmlPage page = webClient.getPage(getFileURL(reportDir + "/jscoverage.html?example/index.html"));
         verifyTotal(webClient, page, 15);

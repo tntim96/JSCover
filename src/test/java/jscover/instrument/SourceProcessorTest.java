@@ -354,9 +354,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.TreeSet;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.startsWith;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -382,7 +380,7 @@ public class SourceProcessorTest {
                 "  _$jscoverage['test.js'].lineData = [];\n" +
                 "  _$jscoverage['test.js'].lineData[1] = 0;\n" +
                 "}\n";
-        assertThat(actual, equalTo(expected));
+        assertThat(actual).isEqualTo(expected);
     }
 
     @Test
@@ -394,7 +392,7 @@ public class SourceProcessorTest {
                 "  _$jscoverage['test.js'].lineData = [];\n" +
                 "  _$jscoverage['test.js'].lineData[1] = 0;\n" +
                 "}\n";
-        assertThat(actual, equalTo(expected));
+        assertThat(actual).isEqualTo(expected);
     }
 
     @Test
@@ -403,7 +401,7 @@ public class SourceProcessorTest {
         given(ioUtils.loadFromClassPath("/jscoverage-common.js")).willReturn("<common>");
         given(ioUtils.loadFromClassPath("/jscoverage-branch.js")).willReturn("<branch>");
 
-        assertThat(sourceProcessor.processSource(), startsWith("<branch><common>var jsCover_isolateBrowser = false;\n<header>"));
+        assertThat(sourceProcessor.processSource()).startsWith("<branch><common>var jsCover_isolateBrowser = false;\n<header>");
         verify(ioUtils, times(1)).loadFromClassPath("/jscoverage-branch.js");
     }
 
@@ -414,7 +412,7 @@ public class SourceProcessorTest {
         given(ioUtils.loadFromClassPath("/jscoverage-common.js")).willReturn("<common>");
         given(ioUtils.loadFromClassPath("/jscoverage-branch.js")).willReturn("<branch>");
 
-        assertThat(sourceProcessor.processSource(), startsWith("<branch><common>var jsCover_isolateBrowser = false;\n<header>"));
+        assertThat(sourceProcessor.processSource()).startsWith("<branch><common>var jsCover_isolateBrowser = false;\n<header>");
         verify(ioUtils, times(1)).loadFromClassPath("/jscoverage-branch.js");
     }
 
@@ -426,7 +424,7 @@ public class SourceProcessorTest {
         given(ioUtils.loadFromClassPath("/jscoverage-branch.js")).willReturn("<branch>");
         given(ioUtils.loadFromClassPath("/jscoverage-localstorage.js")).willReturn("<localStorage>");
 
-        assertThat(sourceProcessor.processSource(), startsWith("<branch><common><localStorage>var jsCover_isolateBrowser = false;\n<header>"));
+        assertThat(sourceProcessor.processSource()).startsWith("<branch><common><localStorage>var jsCover_isolateBrowser = false;\n<header>");
         verify(ioUtils, times(1)).loadFromClassPath("/jscoverage-localstorage.js");
     }
 
@@ -437,6 +435,6 @@ public class SourceProcessorTest {
         given(ioUtils.loadFromClassPath("/jscoverage-common.js")).willReturn("<common>");
         given(ioUtils.loadFromClassPath("/jscoverage-branch.js")).willReturn("<branch>");
 
-        assertThat(sourceProcessor.processSource(), startsWith("<branch><common>var jsCover_isolateBrowser = true;\n<header>"));
+        assertThat(sourceProcessor.processSource()).startsWith("<branch><common>var jsCover_isolateBrowser = true;\n<header>");
     }
 }

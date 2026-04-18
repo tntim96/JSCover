@@ -356,9 +356,7 @@ import javax.xml.xpath.XPathFactory;
 import java.io.File;
 import java.io.IOException;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CoberturaXmlGeneratorIntegrationTest {
@@ -412,56 +410,56 @@ public class CoberturaXmlGeneratorIntegrationTest {
         //IoUtils.getInstance().copy(xml, new File("cobertura-coverage.xml"));
 
         //Check summary
-        assertThat(getXPath(xpath, document, "/coverage/@complexity"), equalTo("0"));
-        assertThat(getXPath(xpath, document, "/coverage/@line-rate"), equalTo("0.5301349726045703"));
-        assertThat(getXPath(xpath, document, "/coverage/@branch-rate"), equalTo("0.34330143540669855"));
-        assertThat(getXPath(xpath, document, "/coverage/@lines-covered"), equalTo("3967"));
-        assertThat(getXPath(xpath, document, "/coverage/@lines-valid"), equalTo("7483"));
-        assertThat(getXPath(xpath, document, "/coverage/@branches-covered"), equalTo("2009"));
-        assertThat(getXPath(xpath, document, "/coverage/@branches-valid"), equalTo("5852"));
-        assertThat(getXPath(xpath, document, "/coverage/@version"), equalTo("theVersion"));
-        assertThat(getXPath(xpath, document, "/coverage/@timestamp"), notNullValue());
+        assertThat(getXPath(xpath, document, "/coverage/@complexity")).isEqualTo("0");
+        assertThat(getXPath(xpath, document, "/coverage/@line-rate")).isEqualTo("0.5301349726045703");
+        assertThat(getXPath(xpath, document, "/coverage/@branch-rate")).isEqualTo("0.34330143540669855");
+        assertThat(getXPath(xpath, document, "/coverage/@lines-covered")).isEqualTo("3967");
+        assertThat(getXPath(xpath, document, "/coverage/@lines-valid")).isEqualTo("7483");
+        assertThat(getXPath(xpath, document, "/coverage/@branches-covered")).isEqualTo("2009");
+        assertThat(getXPath(xpath, document, "/coverage/@branches-valid")).isEqualTo("5852");
+        assertThat(getXPath(xpath, document, "/coverage/@version")).isEqualTo("theVersion");
+        assertThat(getXPath(xpath, document, "/coverage/@timestamp")).isNotNull();
 
         //Check summary
-        assertThat(getXPath(xpath, document, "/coverage/sources/source"), equalTo("c:/sourceDir"));
+        assertThat(getXPath(xpath, document, "/coverage/sources/source")).isEqualTo("c:/sourceDir");
 
         //Check package
-        assertThat(getXPath(xpath, document, "count(/coverage/packages/package)"), equalTo("42"));
+        assertThat(getXPath(xpath, document, "count(/coverage/packages/package)")).isEqualTo("42");
         String packageXPath = "/coverage/packages/package[@name='/build/yui']";
-        assertThat(getXPath(xpath, document, packageXPath + "/@name"), equalTo("/build/yui"));
-        assertThat(getXPath(xpath, document, packageXPath + "/@complexity"), equalTo("0"));
-        assertThat(getXPath(xpath, document, packageXPath + "/@line-rate"), equalTo("0.5865470852017938"));
-        assertThat(getXPath(xpath, document, packageXPath + "/@branch-rate"), equalTo("0.3797235023041475"));
+        assertThat(getXPath(xpath, document, packageXPath + "/@name")).isEqualTo("/build/yui");
+        assertThat(getXPath(xpath, document, packageXPath + "/@complexity")).isEqualTo("0");
+        assertThat(getXPath(xpath, document, packageXPath + "/@line-rate")).isEqualTo("0.5865470852017938");
+        assertThat(getXPath(xpath, document, packageXPath + "/@branch-rate")).isEqualTo("0.3797235023041475");
 
         //Check class
         String classXPath = packageXPath + "/classes/class[@name='/build/yui/yui.js']";
-        assertThat(getXPath(xpath, document, classXPath + "/@branch-rate"), equalTo("0.3797235023041475"));
-        assertThat(getXPath(xpath, document, classXPath + "/@line-rate"), equalTo("0.5865470852017938"));
-        assertThat(getXPath(xpath, document, classXPath + "/@complexity"), equalTo("0"));
-        assertThat(getXPath(xpath, document, classXPath + "/@filename"), equalTo("build/yui/yui.js"));
+        assertThat(getXPath(xpath, document, classXPath + "/@branch-rate")).isEqualTo("0.3797235023041475");
+        assertThat(getXPath(xpath, document, classXPath + "/@line-rate")).isEqualTo("0.5865470852017938");
+        assertThat(getXPath(xpath, document, classXPath + "/@complexity")).isEqualTo("0");
+        assertThat(getXPath(xpath, document, classXPath + "/@filename")).isEqualTo("build/yui/yui.js");
 
         //Check line
         String lineXPath = classXPath + "/lines/line[@number='10']";
-        assertThat(getXPath(xpath, document, lineXPath + "/@hits"), equalTo("1"));
-        assertThat(getXPath(xpath, document, lineXPath + "/@condition-coverage"), equalTo("50% (1/2)"));
-        assertThat(getXPath(xpath, document, lineXPath + "/@branch"), equalTo("true"));
+        assertThat(getXPath(xpath, document, lineXPath + "/@hits")).isEqualTo("1");
+        assertThat(getXPath(xpath, document, lineXPath + "/@condition-coverage")).isEqualTo("50% (1/2)");
+        assertThat(getXPath(xpath, document, lineXPath + "/@branch")).isEqualTo("true");
         //Check line with zero hits
         String lineZeroHitsXPath = classXPath + "/lines/line[@number='11']";
-        assertThat(getXPath(xpath, document, lineZeroHitsXPath + "/@hits"), equalTo("0"));
+        assertThat(getXPath(xpath, document, lineZeroHitsXPath + "/@hits")).isEqualTo("0");
 
         //Check line 62, branch data with branch hit but no line hit
         String branchXPath = classXPath + "/lines/line[@number='62']";
-        assertThat(getXPath(xpath, document, branchXPath + "/@hits"), equalTo("1"));
-        assertThat(getXPath(xpath, document, branchXPath + "/@condition-coverage"), equalTo("50% (2/4)"));
+        assertThat(getXPath(xpath, document, branchXPath + "/@hits")).isEqualTo("1");
+        assertThat(getXPath(xpath, document, branchXPath + "/@condition-coverage")).isEqualTo("50% (2/4)");
         //Check line 4393, branch data with no branch hit or line hit
         String branchUnHitXPath = classXPath + "/lines/line[@number='4393']";
-        assertThat(getXPath(xpath, document, branchUnHitXPath + "/@hits"), equalTo("0"));
-        assertThat(getXPath(xpath, document, branchUnHitXPath + "/@condition-coverage"), equalTo("0% (0/2)"));
+        assertThat(getXPath(xpath, document, branchUnHitXPath + "/@hits")).isEqualTo("0");
+        assertThat(getXPath(xpath, document, branchUnHitXPath + "/@condition-coverage")).isEqualTo("0% (0/2)");
 
         //Check condition
         String conditionXPath = lineXPath + "/conditions/condition[@number='1']";
-        assertThat(getXPath(xpath, document, conditionXPath + "/@coverage"), equalTo("50%"));
-        assertThat(getXPath(xpath, document, conditionXPath + "/@type"), equalTo("jump"));
+        assertThat(getXPath(xpath, document, conditionXPath + "/@coverage")).isEqualTo("50%");
+        assertThat(getXPath(xpath, document, conditionXPath + "/@type")).isEqualTo("jump");
     }
 
     private Document parseXml(String xml) throws ParserConfigurationException, SAXException, IOException {

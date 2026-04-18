@@ -354,8 +354,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.File;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 
@@ -386,8 +385,8 @@ public class InstrumenterServiceTest {
         service.instrumentJSForFileSystem(config, src, dest, "src.js");
         String jsInstrumented = ioUtils.loadFromFileSystem(dest);
 
-        assertThat(jsInstrumented, containsString("x++;"));
-        assertThat(jsInstrumented, containsString("_$jscoverage['/src.js'].lineData[1]++;"));
+        assertThat(jsInstrumented).contains("x++;");
+        assertThat(jsInstrumented).contains("_$jscoverage['/src.js'].lineData[1]++;");
     }
 
     @Test
@@ -395,8 +394,8 @@ public class InstrumenterServiceTest {
         addMockBehaviour();
         String jsInstrumented = service.instrumentJSForWebServer(config, src, "/src.js");
 
-        assertThat(jsInstrumented, containsString("x++;"));
-        assertThat(jsInstrumented, containsString("_$jscoverage['/src.js'].lineData[1]++;"));
+        assertThat(jsInstrumented).contains("x++;");
+        assertThat(jsInstrumented).contains("_$jscoverage['/src.js'].lineData[1]++;");
     }
 
     @Test
@@ -409,7 +408,7 @@ public class InstrumenterServiceTest {
         addMockBehaviour();
         String jsInstrumented = service.instrumentJSForProxyServer(config, "x++;", "/src.js");
 
-        assertThat(jsInstrumented, containsString("x++;"));
-        assertThat(jsInstrumented, containsString("_$jscoverage['/src.js'].lineData[1]++;"));
+        assertThat(jsInstrumented).contains("x++;");
+        assertThat(jsInstrumented).contains("_$jscoverage['/src.js'].lineData[1]++;");
     }
 }

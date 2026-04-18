@@ -348,73 +348,72 @@ import java.io.File;
 
 import static com.google.javascript.jscomp.CompilerOptions.LanguageMode.ECMASCRIPT5;
 import static java.util.logging.Level.SEVERE;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ConfigurationForStdOutTest {
 
     @Test
     public void shouldHaveDefaults() {
         ConfigurationForStdOut configuration = ConfigurationForStdOut.parse(new String[]{"-io", "doc/example/script.js"});
-        assertThat(configuration.showHelp(), is(false));
-        assertThat(configuration.isInvalid(), is(false));
-        assertThat(configuration.skipInstrumentation("/"), is(false));
-        assertThat(configuration.isIncludeBranch(), is(true));
-        assertThat(configuration.isIncludeFunction(), is(true));
-        assertThat(configuration.getLogLevel(), is(SEVERE));
+        assertThat(configuration.showHelp()).isFalse();
+        assertThat(configuration.isInvalid()).isFalse();
+        assertThat(configuration.skipInstrumentation("/")).isFalse();
+        assertThat(configuration.isIncludeBranch()).isTrue();
+        assertThat(configuration.isIncludeFunction()).isTrue();
+        assertThat(configuration.getLogLevel()).isEqualTo(SEVERE);
     }
 
     @Test
     public void shouldGetSourceFile() {
         ConfigurationForStdOut configuration = ConfigurationForStdOut.parse(new String[]{"-io", "doc/example/script.js"});
-        assertThat(configuration.getSrcFile(), equalTo(new File("doc/example/script.js")));
+        assertThat(configuration.getSrcFile()).isEqualTo(new File("doc/example/script.js"));
     }
 
     @Test
     public void shouldSetHelp() {
         ConfigurationForStdOut configuration = ConfigurationForStdOut.parse(new String[]{"-io", "-h"});
-        assertThat(configuration.showHelp(), is(true));
+        assertThat(configuration.showHelp()).isTrue();
     }
 
     @Test
     public void shouldGetSourceFileAndCommonConfiguration() {
         ConfigurationForStdOut configuration = ConfigurationForStdOut.parse(new String[]{"-io", "--js-version=ECMASCRIPT5", "doc/example/script.js"});
-        assertThat(configuration.getSrcFile(), equalTo(new File("doc/example/script.js")));
-        assertThat(configuration.getECMAVersion(), equalTo(ECMASCRIPT5));
+        assertThat(configuration.getSrcFile()).isEqualTo(new File("doc/example/script.js"));
+        assertThat(configuration.getECMAVersion()).isEqualTo(ECMASCRIPT5);
     }
 
     @Test
     public void shouldDetectInvalidFileIfDir() {
         ConfigurationForStdOut configuration = ConfigurationForStdOut.parse(new String[]{"-io", "doc"});
-        assertThat(configuration.showHelp(), is(true));
-        assertThat(configuration.isInvalid(), is(true));
+        assertThat(configuration.showHelp()).isTrue();
+        assertThat(configuration.isInvalid()).isTrue();
     }
 
     @Test
     public void shouldDetectInvalidFileIfInvalid() {
         ConfigurationForStdOut configuration = ConfigurationForStdOut.parse(new String[]{"-io", "not-there"});
-        assertThat(configuration.showHelp(), is(true));
-        assertThat(configuration.isInvalid(), is(true));
+        assertThat(configuration.showHelp()).isTrue();
+        assertThat(configuration.isInvalid()).isTrue();
     }
 
     @Test
     public void shouldDetectTooFewArgCount() {
         ConfigurationForStdOut configuration = ConfigurationForStdOut.parse(new String[]{"-io"});
-        assertThat(configuration.showHelp(), is(true));
-        assertThat(configuration.isInvalid(), is(true));
+        assertThat(configuration.showHelp()).isTrue();
+        assertThat(configuration.isInvalid()).isTrue();
     }
 
     @Test
     public void shouldDetectTooManyArgCount() {
         ConfigurationForStdOut configuration = ConfigurationForStdOut.parse(new String[]{"-io", "doc/example/script.js", "extra"});
-        assertThat(configuration.showHelp(), is(true));
-        assertThat(configuration.isInvalid(), is(true));
+        assertThat(configuration.showHelp()).isTrue();
+        assertThat(configuration.isInvalid()).isTrue();
     }
 
     @Test
     public void shouldRetrieveHelpText() {
         String helpText = new ConfigurationForStdOut().getHelpText();
-        assertThat(helpText, containsString("Usage: java -jar JSCover-all.jar -io [OPTION]... SOURCE-FILE"));
+        assertThat(helpText).contains("Usage: java -jar JSCover-all.jar -io [OPTION]... SOURCE-FILE");
     }
 
 }

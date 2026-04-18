@@ -358,8 +358,7 @@ import javax.xml.xpath.XPathFactory;
 import java.io.File;
 import java.util.Locale;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class XMLSummaryIntegrationTest {
     private XMLSummary xmlSummary = new XMLSummary();
@@ -386,13 +385,13 @@ public class XMLSummaryIntegrationTest {
         DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         Document document = builder.parse(dest);
 
-        assertThat(getXPath(xpath, document, "/coverage/@line-rate"), equalTo("0.530135"));
-        assertThat(getXPath(xpath, document, "/coverage/@branch-rate"), equalTo("0.343301"));
-        assertThat(getXPath(xpath, document, "/coverage/@lines-covered"), equalTo("3967"));
-        assertThat(getXPath(xpath, document, "/coverage/@lines"), equalTo("7483"));
-        assertThat(getXPath(xpath, document, "/coverage/@branches-covered"), equalTo("2009"));
-        assertThat(getXPath(xpath, document, "/coverage/@branches"), equalTo("5852"));
-        assertThat(getXPath(xpath, document, "/coverage/@version"), equalTo("theVersion"));
+        assertThat(getXPath(xpath, document, "/coverage/@line-rate")).isEqualTo("0.530135");
+        assertThat(getXPath(xpath, document, "/coverage/@branch-rate")).isEqualTo("0.343301");
+        assertThat(getXPath(xpath, document, "/coverage/@lines-covered")).isEqualTo("3967");
+        assertThat(getXPath(xpath, document, "/coverage/@lines")).isEqualTo("7483");
+        assertThat(getXPath(xpath, document, "/coverage/@branches-covered")).isEqualTo("2009");
+        assertThat(getXPath(xpath, document, "/coverage/@branches")).isEqualTo("5852");
+        assertThat(getXPath(xpath, document, "/coverage/@version")).isEqualTo("theVersion");
     }
 
     private String getXPath(XPath xpath, Document document, String expression) throws Exception {

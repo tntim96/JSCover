@@ -348,9 +348,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class MainHelperTest {
@@ -366,8 +364,8 @@ public class MainHelperTest {
             fail("Should have thrown exception");
         } catch(IllegalStateException e) {
             String message = e.getMessage();
-            assertThat(message, containsString("Ensure these JARs are in the same directory as JSCover.jar:"));
-            assertThat(message, containsString("js.jar"));
+            assertThat(message).contains("Ensure these JARs are in the same directory as JSCover.jar:");
+            assertThat(message).contains("js.jar");
         }
     }
 
@@ -381,7 +379,7 @@ public class MainHelperTest {
             fail("Should have thrown exception");
         } catch(IllegalStateException e) {
             String message = e.getMessage();
-            assertThat(message, equalTo("Could not find the 'Class-Path' attribute in the manifest 'MANIFEST-NO-CLASS-PATH.MF'"));
+            assertThat(message).isEqualTo("Could not find the 'Class-Path' attribute in the manifest 'MANIFEST-NO-CLASS-PATH.MF'");
         }
     }
 

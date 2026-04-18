@@ -342,7 +342,6 @@ Public License instead of this License.
 
 package jscover.instrument;
 
-
 import com.google.javascript.jscomp.parsing.parser.trees.Comment;
 
 import java.util.HashSet;

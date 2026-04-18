@@ -344,24 +344,23 @@ package jscover.util;
 
 import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class PatternMatcherStringTest {
     private PatternMatcherString pattern = new PatternMatcherString("thePattern");
 
     @Test
     public void shouldMatch() {
-        assertThat(pattern.matches("thePattern/test.js"), is(true));
+        assertThat(pattern.matches("thePattern/test.js")).isTrue();
     }
 
     @Test
     public void shouldNotMatch() {
-        assertThat(pattern.matches("theOtherPattern/test.js"), nullValue());
+        assertThat(pattern.matches("theOtherPattern/test.js")).isNull();
     }
 
     @Test
     public void shouldConvertToString() {
-        assertThat(pattern.toString(), equalTo("PatternMatcherString{pattern='thePattern'}"));
+        assertThat(pattern.toString()).isEqualTo("PatternMatcherString{pattern='thePattern'}");
     }
 }

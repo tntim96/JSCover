@@ -352,8 +352,7 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.util.SortedMap;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class LCovGeneratorIntegrationTest {
     private LCovGenerator lCovGenerator = new LCovGenerator();
@@ -418,6 +417,6 @@ public class LCovGeneratorIntegrationTest {
                 "DA:24,2\n" +
                 "DA:25,2\n" +
                 "end_of_record\n";
-        assertThat(result, equalTo(expected));
+        assertThat(result).isEqualTo(expected);
     }
 }

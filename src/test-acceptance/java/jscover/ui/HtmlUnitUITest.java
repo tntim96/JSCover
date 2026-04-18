@@ -345,8 +345,6 @@ package jscover.ui;
 import jscover.Main;
 import jscover.util.ReflectionUtils;
 import org.apache.commons.io.FileUtils;
-import org.hamcrest.Description;
-import org.hamcrest.TypeSafeMatcher;
 import org.htmlunit.WebClient;
 import org.htmlunit.html.HtmlPage;
 import org.htmlunit.html.HtmlTableRow;
@@ -358,11 +356,11 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.function.Predicate;
 
 import static jscover.ui.HTMLCoverageData.byName;
 import static jscover.ui.HTMLCoverageData.parse;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class HtmlUnitUITest {
     private static Thread server;
@@ -426,7 +424,7 @@ public class HtmlUnitUITest {
         webClient.waitForBackgroundJavaScript(2000);
         String result = page.getElementById("storeDiv").getTextContent();
 
-        assertThat(result, containsString("Coverage data stored at target"));
+        assertThat(result).contains("Coverage data stored at target");
     }
 
     @Test
@@ -443,10 +441,10 @@ public class HtmlUnitUITest {
     }
 
     private void verifyScriptMatchesRow(HTMLCoverageData data, HtmlTableRow row) {
-        assertThat(data.getName(), equalTo(row.getCell(0).asNormalizedText()));
-        assertThat(data.getLineCoverage(), equalTo(row.getCell(10).asNormalizedText()));
-        assertThat(data.getBranchCoverage(), equalTo(row.getCell(11).asNormalizedText()));
-        assertThat(data.getFunctionCoverage(), equalTo(row.getCell(12).asNormalizedText()));
+        assertThat(data.getName()).isEqualTo(row.getCell(0).asNormalizedText());
+        assertThat(data.getLineCoverage()).isEqualTo(row.getCell(10).asNormalizedText());
+        assertThat(data.getBranchCoverage()).isEqualTo(row.getCell(11).asNormalizedText());
+        assertThat(data.getFunctionCoverage()).isEqualTo(row.getCell(12).asNormalizedText());
     }
 
     @Test
@@ -474,17 +472,17 @@ public class HtmlUnitUITest {
             HtmlTableRow htmlTableRow = (HtmlTableRow) page.getByXPath("//tbody[@id='summaryTbody']/tr[" + (i + 1) + "]").get(0);
             currentValue = verifyRow(field, currentValue, matched, htmlTableRow);
         }
-        assertThat(matched[0], equalTo(data.size()));
+        assertThat(matched[0]).isEqualTo(data.size());
     }
 
     private int verifyRow(String field, int currentValue, int[] matched, HtmlTableRow htmlTableRow) {
         final String path = htmlTableRow.getCell(0).asNormalizedText();
         int value = parse(htmlTableRow.getCell(ReportField.getField(field).index).asNormalizedText());
-        assertThat(value, greaterThanOrEqualTo(currentValue));
+        assertThat(value).isGreaterThanOrEqualTo(currentValue);
         currentValue = value;
         List<HTMLCoverageData> list = dataMap.get(value);
-        assertThat(list, notNullValue());
-        assertThat(list, hasItem(getTypeSafeMatcher(matched, path)));
+        assertThat(list).isNotNull();
+        assertThat(list).anyMatch(getCoveragePredicate(matched, path));
         return currentValue;
     }
 
@@ -500,19 +498,13 @@ public class HtmlUnitUITest {
         }
     }
 
-    private TypeSafeMatcher<HTMLCoverageData> getTypeSafeMatcher(final int[] matched, final String path) {
-        return new TypeSafeMatcher<HTMLCoverageData>() {
-            @Override
-            protected boolean matchesSafely(HTMLCoverageData htmlCoverageData) {
-                boolean equals = htmlCoverageData.getName().equals(path);
-                if (equals)
-                    matched[0]++;
-                return equals;
+    private Predicate<HTMLCoverageData> getCoveragePredicate(final int[] matched, final String path) {
+        return data -> {
+            boolean equals = data.getName().equals(path);
+            if (equals) {
+                matched[0]++;
             }
-
-            public void describeTo(Description description) {
-
-            }
+            return equals;
         };
     }
 }

@@ -350,8 +350,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 
 import static jscover.instrument.CommentsHandler.*;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
 public class CommentsHandlerTest {
@@ -362,45 +361,45 @@ public class CommentsHandlerTest {
     public void shouldDetectJSCoverageIgnoreComments() {
         List<Comment> comments = parse("//#JSCOVERAGE_IF x < 10\nvar x = 0;\n//#JSCOVERAGE_ENDIF");
         handler.processComments(comments);
-        assertThat(handler.getJsCoverageIgnoreComments().size(), equalTo(1));
+        assertThat(handler.getJsCoverageIgnoreComments().size()).isEqualTo(1);
         JSCoverageIgnoreComment comment = handler.getJsCoverageIgnoreComments().iterator().next();
-        assertThat(comment.getStart(), equalTo(1));
-        assertThat(comment.getCondition(), equalTo("x < 10"));
-        assertThat(comment.getEnd(), equalTo(3));
+        assertThat(comment.getStart()).isEqualTo(1);
+        assertThat(comment.getCondition()).isEqualTo("x < 10");
+        assertThat(comment.getEnd()).isEqualTo(3);
     }
 
     @Test
     public void shouldDetectJSCoverIgnoreLine() {
         List<Comment> comments = parse("var x;\nx < 10;" + EXCL_LINE);
         handler.processComments(comments);
-        assertThat(handler.ignoreLine(1), equalTo(false));
-        assertThat(handler.ignoreLine(2), equalTo(true));
+        assertThat(handler.ignoreLine(1)).isEqualTo(false);
+        assertThat(handler.ignoreLine(2)).isEqualTo(true);
     }
 
     @Test
     public void shouldDetectJSCoverIgnoreLineRange() {
         List<Comment> comments = parse(EXCL_START + "\nvar x;\nx < 10;" + EXCL_STOP);
         handler.processComments(comments);
-        assertThat(handler.ignoreLine(1), equalTo(true));
-        assertThat(handler.ignoreLine(2), equalTo(true));
-        assertThat(handler.ignoreLine(4), equalTo(false));
+        assertThat(handler.ignoreLine(1)).isEqualTo(true);
+        assertThat(handler.ignoreLine(2)).isEqualTo(true);
+        assertThat(handler.ignoreLine(4)).isEqualTo(false);
     }
 
     @Test
     public void shouldDetectJSCoverIgnoreBranch() {
         List<Comment> comments = parse("var x;\nx < 10;" + EXCL_BR_LINE);
         handler.processComments(comments);
-        assertThat(handler.ignoreBranch(1), equalTo(false));
-        assertThat(handler.ignoreBranch(2), equalTo(true));
+        assertThat(handler.ignoreBranch(1)).isEqualTo(false);
+        assertThat(handler.ignoreBranch(2)).isEqualTo(true);
     }
 
     @Test
     public void shouldDetectJSCoverIgnoreBranchRange() {
         List<Comment> comments = parse(EXCL_BR_START + "\nvar x;\nx < 10;" + EXCL_BR_STOP);
         handler.processComments(comments);
-        assertThat(handler.ignoreBranch(1), equalTo(true));
-        assertThat(handler.ignoreBranch(2), equalTo(true));
-        assertThat(handler.ignoreBranch(4), equalTo(false));
+        assertThat(handler.ignoreBranch(1)).isEqualTo(true);
+        assertThat(handler.ignoreBranch(2)).isEqualTo(true);
+        assertThat(handler.ignoreBranch(4)).isEqualTo(false);
     }
 
     private List<Comment> parse(String source) {

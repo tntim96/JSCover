@@ -353,8 +353,7 @@ import java.util.TimeZone;
 import java.util.logging.LogRecord;
 
 import static java.util.logging.Level.FINER;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -382,7 +381,7 @@ public class LogFormatterTest {
     public void shouldFormatLogRecord() {
         String actual = logFormatter.format(logRecord);
 
-        assertThat(actual, equalTo("20130806 13:19:45.848,157,FINER,\"Hello\",Loggy,"+ System.lineSeparator()));
+        assertThat(actual).isEqualTo("20130806 13:19:45.848,157,FINER,\"Hello\",Loggy,"+ System.lineSeparator());
     }
 
     @Test
@@ -392,7 +391,7 @@ public class LogFormatterTest {
 
         String actual = logFormatter.format(logRecord);
 
-        assertThat(actual, equalTo("20130806 13:19:45.848,157,FINER,\"Hello World!\",Loggy,"+ System.lineSeparator()));
+        assertThat(actual).isEqualTo("20130806 13:19:45.848,157,FINER,\"Hello World!\",Loggy,"+ System.lineSeparator());
     }
 
     @Test
@@ -402,7 +401,7 @@ public class LogFormatterTest {
 
         String actual = logFormatter.format(logRecord);
 
-        assertThat(actual, equalTo("20130806 13:19:45.848,157,FINER,\"Hello {0}!\",Loggy,"+ System.lineSeparator()));
+        assertThat(actual).isEqualTo("20130806 13:19:45.848,157,FINER,\"Hello {0}!\",Loggy,"+ System.lineSeparator());
     }
 
     @Test
@@ -411,7 +410,7 @@ public class LogFormatterTest {
 
         String actual = logFormatter.format(logRecord);
 
-        assertThat(actual, startsWith("20130806 13:19:45.848,157,FINER,\"Hello\",Loggy,"));
-        assertThat(actual, containsString("java.lang.RuntimeException: Hey"));
+        assertThat(actual).startsWith("20130806 13:19:45.848,157,FINER,\"Hello\",Loggy,");
+        assertThat(actual).contains("java.lang.RuntimeException: Hey");
     }
 }

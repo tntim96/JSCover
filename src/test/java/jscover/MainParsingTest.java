@@ -344,9 +344,7 @@ package jscover;
 
 import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MainParsingTest {
     private Main main = new Main();
@@ -354,73 +352,73 @@ public class MainParsingTest {
 
     @Test
     public void shouldHaveDefaults() {
-        assertThat(main.getExitStatus(), equalTo(0));
+        assertThat(main.getExitStatus()).isEqualTo(0);
         main.parse(new String[]{});
-        assertThat(main.showHelp(), equalTo(true));
-        assertThat(main.printVersion(), equalTo(false));
-        assertThat(main.isServer(), equalTo(false));
-        assertThat(main.isFileSystem(), equalTo(false));
-        assertThat(main.showCharSets(), equalTo(false));
-        assertThat(main.isRegExpTest(), equalTo(false));
-        assertThat(main.isGenerateFiles(), equalTo(false));
+        assertThat(main.showHelp()).isEqualTo(true);
+        assertThat(main.printVersion()).isEqualTo(false);
+        assertThat(main.isServer()).isEqualTo(false);
+        assertThat(main.isFileSystem()).isEqualTo(false);
+        assertThat(main.showCharSets()).isEqualTo(false);
+        assertThat(main.isRegExpTest()).isEqualTo(false);
+        assertThat(main.isGenerateFiles()).isEqualTo(false);
     }
 
     @Test
     public void shouldParseVersion() {
-        assertThat(main.parse(new String[]{"-V"}).printVersion(), equalTo(true));
-        assertThat(main.parse(new String[]{"--version"}).printVersion(), equalTo(true));
-        assertThat(main.getExitStatus(), equalTo(0));
+        assertThat(main.parse(new String[]{"-V"}).printVersion()).isEqualTo(true);
+        assertThat(main.parse(new String[]{"--version"}).printVersion()).isEqualTo(true);
+        assertThat(main.getExitStatus()).isEqualTo(0);
     }
 
     @Test
     public void shouldParseFileSystem() {
-        assertThat(main.parse(new String[]{"-fs"}).isFileSystem(), equalTo(true));
-        assertThat(main.parse(new String[]{"src", "doc", "-fs"}).isFileSystem(), equalTo(true));
-        assertThat(main.getExitStatus(), equalTo(0));
+        assertThat(main.parse(new String[]{"-fs"}).isFileSystem()).isEqualTo(true);
+        assertThat(main.parse(new String[]{"src", "doc", "-fs"}).isFileSystem()).isEqualTo(true);
+        assertThat(main.getExitStatus()).isEqualTo(0);
     }
 
     @Test
     public void shouldParseServer() {
-        assertThat(main.parse(new String[]{"-ws"}).isServer(), equalTo(true));
-        assertThat(main.getExitStatus(), equalTo(0));
+        assertThat(main.parse(new String[]{"-ws"}).isServer()).isEqualTo(true);
+        assertThat(main.getExitStatus()).isEqualTo(0);
     }
 
     @Test
     public void shouldParseStdIO() {
-        assertThat(main.parse(new String[]{"-io"}).isStdOut(), equalTo(true));
-        assertThat(main.getExitStatus(), equalTo(0));
+        assertThat(main.parse(new String[]{"-io"}).isStdOut()).isEqualTo(true);
+        assertThat(main.getExitStatus()).isEqualTo(0);
     }
 
     @Test
     public void shouldParseHelp() {
-        assertThat(main.parse(new String[]{"-h"}).showHelp(), equalTo(true));
-        assertThat(main.parse(new String[]{"--help"}).showHelp(), equalTo(true));
-        assertThat(main.getExitStatus(), equalTo(0));
+        assertThat(main.parse(new String[]{"-h"}).showHelp()).isEqualTo(true);
+        assertThat(main.parse(new String[]{"--help"}).showHelp()).isEqualTo(true);
+        assertThat(main.getExitStatus()).isEqualTo(0);
     }
 
     @Test
     public void shouldShowHelpIfNoArgumentsProvided() {
-        assertThat(main.parse(new String[]{}).showHelp(), equalTo(true));
-        assertThat(main.getExitStatus(), equalTo(1));
+        assertThat(main.parse(new String[]{}).showHelp()).isEqualTo(true);
+        assertThat(main.getExitStatus()).isEqualTo(1);
     }
 
     @Test
     public void shouldParseEncodingHelp() {
-        assertThat(main.parse(new String[]{"-ws","encoding"}).showCharSets(), equalTo(false));
-        assertThat(main.parse(new String[]{"-h","encoding"}).showCharSets(), equalTo(true));
-        assertThat(main.getExitStatus(), equalTo(0));
+        assertThat(main.parse(new String[]{"-ws","encoding"}).showCharSets()).isEqualTo(false);
+        assertThat(main.parse(new String[]{"-h","encoding"}).showCharSets()).isEqualTo(true);
+        assertThat(main.getExitStatus()).isEqualTo(0);
     }
 
     @Test
     public void shouldParseGenerateFilesTest() {
-        assertThat(main.parse(new String[]{"-gf"}).isGenerateFiles(), equalTo(true));
-        assertThat(main.getExitStatus(), equalTo(0));
+        assertThat(main.parse(new String[]{"-gf"}).isGenerateFiles()).isEqualTo(true);
+        assertThat(main.getExitStatus()).isEqualTo(0);
     }
 
     @Test
     public void shouldParseRegularExpressionTest() {
-        assertThat(main.parse(new String[]{"-regex-test","/a.*","/ab"}).isRegExpTest(), equalTo(true));
-        assertThat(main.getExitStatus(), equalTo(0));
+        assertThat(main.parse(new String[]{"-regex-test","/a.*","/ab"}).isRegExpTest()).isEqualTo(true);
+        assertThat(main.getExitStatus()).isEqualTo(0);
     }
 
     @Test
@@ -439,19 +437,19 @@ public class MainParsingTest {
     }
 
     private void verifyInvalid(String[] args) {
-        assertThat(main.parse(args).showHelp(), equalTo(true));
-        assertThat(main.getExitStatus(), equalTo(1));
+        assertThat(main.parse(args).showHelp()).isEqualTo(true);
+        assertThat(main.getExitStatus()).isEqualTo(1);
     }
 
     @Test
     public void shouldDetectInvalidOptionsNoArgs() {
-        assertThat(main.parse(new String[]{}).showHelp(), equalTo(true));
-        assertThat(main.getExitStatus(), equalTo(1));
+        assertThat(main.parse(new String[]{}).showHelp()).isEqualTo(true);
+        assertThat(main.getExitStatus()).isEqualTo(1);
     }
 
     @Test
     public void shouldRetrieveHelpText() {
         String helpText = new Main().getHelpText();
-        assertThat(helpText, containsString("Usage: java -jar jscover.jar [OPTION]..."));
+        assertThat(helpText).contains("Usage: java -jar jscover.jar [OPTION]...");
     }
 }

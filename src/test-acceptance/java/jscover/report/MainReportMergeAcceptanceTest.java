@@ -344,7 +344,6 @@ package jscover.report;
 
 import jscover.util.IoUtils;
 import org.apache.commons.io.FileUtils;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -352,10 +351,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
 
-import static org.hamcrest.CoreMatchers.endsWith;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MainReportMergeAcceptanceTest {
     private IoUtils ioUtils = IoUtils.getInstance();
@@ -386,18 +382,18 @@ public class MainReportMergeAcceptanceTest {
         properties.load(jscover.Main.class.getResourceAsStream("/jscover/configuration.properties"));
         Main.main(args);
         File jsCoverHtml = new File(reportDir12, "jscoverage.html");
-        assertThat(jsCoverHtml.exists(), is(true));
+        assertThat(jsCoverHtml.exists()).isTrue();
         File jsCoverJS = new File(reportDir12, "jscoverage.js");
-        assertThat(jsCoverJS.exists(), is(true));
-        assertThat(ioUtils.loadFromFileSystem(jsCoverHtml), Matchers.containsString(properties.getProperty("version")));
-        assertThat(ioUtils.loadFromFileSystem(jsCoverJS), endsWith("\njscoverage_isReport = true;"));
+        assertThat(jsCoverJS.exists()).isTrue();
+        assertThat(ioUtils.loadFromFileSystem(jsCoverHtml)).contains(properties.getProperty("version"));
+        assertThat(ioUtils.loadFromFileSystem(jsCoverJS)).endsWith("\njscoverage_isReport = true;");
     }
 
     @Test
     public void shouldNotCopyExtraFiles() throws IOException {
         ioUtils.copy(data1, new File(reportDir1, "dummy.html"));
         Main.main(args);
-        assertThat(new File(reportDir12, "dummy.html").exists(), is(false));
+        assertThat(new File(reportDir12, "dummy.html").exists()).isFalse();
     }
 
     @Test
@@ -405,6 +401,6 @@ public class MainReportMergeAcceptanceTest {
         String expected = ioUtils.loadFromClassPath("/jscover/report/jscoverage-select-1-3.json");
         Main.main(args);
         String merged = ioUtils.loadFromFileSystem(new File(reportDir12, "jscoverage.json"));
-        assertThat(merged, equalTo(expected));
+        assertThat(merged).isEqualTo(expected);
     }
 }

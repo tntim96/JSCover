@@ -346,8 +346,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class IoUtilsIntegrationTest {
     IoUtils ioUtils = IoUtils.getInstance();
@@ -365,6 +364,6 @@ public class IoUtilsIntegrationTest {
     private void verifyFilesTheSame(String path, File src, File dest) {
         String data1 = ioUtils.loadFromFileSystem(new File(src, path));
         String data2 = ioUtils.loadFromFileSystem(new File(dest, path));
-        assertThat(data2, equalTo(data1));
+        assertThat(data2).isEqualTo(data1);
     }
 }

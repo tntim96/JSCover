@@ -347,9 +347,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 //Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013
@@ -365,7 +363,7 @@ public class JSONDataMergerTest {
 
         String merged = jsonMerger.toJSON(jsonMerger.mergeJSONCoverageStrings(data1, data2));
 
-        assertThat(merged, equalTo(expected));
+        assertThat(merged).isEqualTo(expected);
     }
 
     @Test
@@ -376,7 +374,7 @@ public class JSONDataMergerTest {
 
         String merged = jsonMerger.toJSON(jsonMerger.mergeJSONCoverageStrings(data1, data2));
 
-        assertThat(merged, equalTo(expected));
+        assertThat(merged).isEqualTo(expected);
     }
     
     @Test
@@ -387,7 +385,7 @@ public class JSONDataMergerTest {
 
         String merged = jsonMerger.toJSON(jsonMerger.mergeJSONCoverageStrings(data1, data2));
 
-        assertThat(merged, equalTo(expected));
+        assertThat(merged).isEqualTo(expected);
     }
     
     @Test
@@ -398,7 +396,7 @@ public class JSONDataMergerTest {
 
         String merged = jsonMerger.toJSON(jsonMerger.mergeJSONCoverageStrings(data1, data2));
 
-        assertThat(merged, equalTo(expected));
+        assertThat(merged).isEqualTo(expected);
     }
 
     @Test
@@ -406,11 +404,11 @@ public class JSONDataMergerTest {
         String data = "{\"/test.js\":{\"lineData\":[null,0,1]}}";
         SortedMap<String, FileData> map = jsonMerger.jsonToMap(data);
 
-        assertThat(map.keySet().size(), equalTo(1));
-        assertThat(map.keySet().iterator().next(), equalTo("/test.js"));
-        assertThat(map.values().iterator().next().getLines().get(0), nullValue());
-        assertThat(map.values().iterator().next().getLines().get(1), equalTo(0));
-        assertThat(map.values().iterator().next().getLines().get(2), equalTo(1));
+        assertThat(map.keySet().size()).isEqualTo(1);
+        assertThat(map.keySet().iterator().next()).isEqualTo("/test.js");
+        assertThat(map.values().iterator().next().getLines().get(0)).isNull();
+        assertThat(map.values().iterator().next().getLines().get(1)).isEqualTo(0);
+        assertThat(map.values().iterator().next().getLines().get(2)).isEqualTo(1);
     }
 
     @Test
@@ -419,22 +417,22 @@ public class JSONDataMergerTest {
 
         SortedMap<String, FileData> map = jsonMerger.jsonToMap(data);
 
-        assertThat(map.keySet().size(), equalTo(1));
-        assertThat(map.keySet().iterator().next(), equalTo("/test.js"));
+        assertThat(map.keySet().size()).isEqualTo(1);
+        assertThat(map.keySet().iterator().next()).isEqualTo("/test.js");
 
         FileData coverageData = map.values().iterator().next();
-        assertThat(coverageData.getLines().get(0), nullValue());
+        assertThat(coverageData.getLines().get(0)).isNull();
 
-        assertThat(coverageData.getLines().get(1), equalTo(1));
+        assertThat(coverageData.getLines().get(1)).isEqualTo(1);
 
-        assertThat(coverageData.getLines().get(2), equalTo(2));
-        assertThat(coverageData.getBranchData().size(), equalTo(1));
-        assertThat(coverageData.getBranchData().get(2).size(), equalTo(2));
-        assertThat(coverageData.getBranchData().get(2).get(0), nullValue());
-        assertThat(coverageData.getBranchData().get(2).get(1).getPosition(), equalTo(13));
-        assertThat(coverageData.getBranchData().get(2).get(1).getNodeLength(), equalTo(4));
-        assertThat(coverageData.getBranchData().get(2).get(1).getEvalFalse(), equalTo(1));
-        assertThat(coverageData.getBranchData().get(2).get(1).getEvalTrue(), equalTo(2));
+        assertThat(coverageData.getLines().get(2)).isEqualTo(2);
+        assertThat(coverageData.getBranchData().size()).isEqualTo(1);
+        assertThat(coverageData.getBranchData().get(2).size()).isEqualTo(2);
+        assertThat(coverageData.getBranchData().get(2).get(0)).isNull();
+        assertThat(coverageData.getBranchData().get(2).get(1).getPosition()).isEqualTo(13);
+        assertThat(coverageData.getBranchData().get(2).get(1).getNodeLength()).isEqualTo(4);
+        assertThat(coverageData.getBranchData().get(2).get(1).getEvalFalse()).isEqualTo(1);
+        assertThat(coverageData.getBranchData().get(2).get(1).getEvalTrue()).isEqualTo(2);
     }
 
     @Test
@@ -449,7 +447,7 @@ public class JSONDataMergerTest {
 
         String jsonString = jsonMerger.toJSON(map);
 
-        assertThat(jsonString, equalTo(data));
+        assertThat(jsonString).isEqualTo(data);
     }
 
     @Test
@@ -459,7 +457,7 @@ public class JSONDataMergerTest {
 
         String jsonString = jsonMerger.toJSON(map);
 
-        assertThat(jsonString, equalTo(data));
+        assertThat(jsonString).isEqualTo(data);
     }
 
     @Test
@@ -469,11 +467,11 @@ public class JSONDataMergerTest {
         final ScriptCoverageCount script = new ScriptCoverageCount("/test.js", lines, 0, branchData);
         SortedMap<String, FileData> map = jsonMerger.createEmptyJSON(new ArrayList<ScriptCoverageCount>(){{add(script);}});
 
-        assertThat(map.keySet().iterator().next(), equalTo("/test.js"));
-        assertThat(map.values().iterator().next().getLines().get(0), nullValue());
-        assertThat(map.values().iterator().next().getLines().get(1), equalTo(0));
-        assertThat(map.values().iterator().next().getLines().get(2), equalTo(0));
-        assertThat(map.values().iterator().next().getLines().get(3), equalTo(0));
+        assertThat(map.keySet().iterator().next()).isEqualTo("/test.js");
+        assertThat(map.values().iterator().next().getLines().get(0)).isNull();
+        assertThat(map.values().iterator().next().getLines().get(1)).isEqualTo(0);
+        assertThat(map.values().iterator().next().getLines().get(2)).isEqualTo(0);
+        assertThat(map.values().iterator().next().getLines().get(3)).isEqualTo(0);
     }
 
     @Test
@@ -483,8 +481,8 @@ public class JSONDataMergerTest {
         final ScriptCoverageCount script = new ScriptCoverageCount("/test.js", lines, 0, branchData);
         SortedMap<String, FileData> map = jsonMerger.createEmptyJSON(new ArrayList<ScriptCoverageCount>(){{add(script);}});
 
-        assertThat(map.keySet().iterator().next(), equalTo("/test.js"));
-        assertThat(map.values().iterator().next().getLines().size(), equalTo(0));
+        assertThat(map.keySet().iterator().next()).isEqualTo("/test.js");
+        assertThat(map.values().iterator().next().getLines().size()).isEqualTo(0);
     }
 
     @Test
@@ -493,11 +491,11 @@ public class JSONDataMergerTest {
         final ScriptCoverageCount script = new ScriptCoverageCount("/test.js", lines, 0, new TreeMap<>());
         SortedMap<String, FileData> map = jsonMerger.createEmptyJSON(new ArrayList<ScriptCoverageCount>(){{add(script);}});
 
-        assertThat(map.keySet().iterator().next(), equalTo("/test.js"));
-        assertThat(map.values().iterator().next().getLines().get(0), nullValue());
-        assertThat(map.values().iterator().next().getLines().get(1), equalTo(0));
-        assertThat(map.values().iterator().next().getLines().get(2), nullValue());
-        assertThat(map.values().iterator().next().getLines().get(3), equalTo(0));
+        assertThat(map.keySet().iterator().next()).isEqualTo("/test.js");
+        assertThat(map.values().iterator().next().getLines().get(0)).isNull();
+        assertThat(map.values().iterator().next().getLines().get(1)).isEqualTo(0);
+        assertThat(map.values().iterator().next().getLines().get(2)).isNull();
+        assertThat(map.values().iterator().next().getLines().get(3)).isEqualTo(0);
     }
 
     @Test
@@ -506,12 +504,12 @@ public class JSONDataMergerTest {
         final ScriptCoverageCount script = new ScriptCoverageCount("/test.js", lines, 4, new TreeMap<>());
         SortedMap<String, FileData> map = jsonMerger.createEmptyJSON(new ArrayList<ScriptCoverageCount>(){{add(script);}});
 
-        assertThat(map.keySet().iterator().next(), equalTo("/test.js"));
-        assertThat(map.values().iterator().next().getFunctions().size(), equalTo(4));
-        assertThat(map.values().iterator().next().getFunctions().get(0), equalTo(0));
-        assertThat(map.values().iterator().next().getFunctions().get(1), equalTo(0));
-        assertThat(map.values().iterator().next().getFunctions().get(2), equalTo(0));
-        assertThat(map.values().iterator().next().getFunctions().get(3), equalTo(0));
+        assertThat(map.keySet().iterator().next()).isEqualTo("/test.js");
+        assertThat(map.values().iterator().next().getFunctions().size()).isEqualTo(4);
+        assertThat(map.values().iterator().next().getFunctions().get(0)).isEqualTo(0);
+        assertThat(map.values().iterator().next().getFunctions().get(1)).isEqualTo(0);
+        assertThat(map.values().iterator().next().getFunctions().get(2)).isEqualTo(0);
+        assertThat(map.values().iterator().next().getFunctions().get(3)).isEqualTo(0);
     }
 
     @Test
@@ -522,18 +520,18 @@ public class JSONDataMergerTest {
         final ScriptCoverageCount script = new ScriptCoverageCount("/test.js", lines, 4, branchData);
         SortedMap<String, FileData> map = jsonMerger.createEmptyJSON(new ArrayList<ScriptCoverageCount>(){{add(script);}});
 
-        assertThat(map.keySet().iterator().next(), equalTo("/test.js"));
+        assertThat(map.keySet().iterator().next()).isEqualTo("/test.js");
         Map<Integer, List<BranchData>> branchMap = map.values().iterator().next().getBranchData();
-        assertThat(branchMap.size(), equalTo(1));
-        assertThat(branchMap.get(5), nullValue());
-        assertThat(branchMap.get(12).size(), equalTo(3));
-        assertThat(branchMap.get(12).get(0), nullValue());
+        assertThat(branchMap.size()).isEqualTo(1);
+        assertThat(branchMap.get(5)).isNull();
+        assertThat(branchMap.get(12).size()).isEqualTo(3);
+        assertThat(branchMap.get(12).get(0)).isNull();
         checkCondition(branchMap, 1);
         checkCondition(branchMap, 2);
     }
 
     private void checkCondition(Map<Integer, List<BranchData>> branchMap, int index) {
-        assertThat(branchMap.get(12).get(index).getEvalFalse(), equalTo(0));
-        assertThat(branchMap.get(12).get(index).getEvalTrue(), equalTo(0));
+        assertThat(branchMap.get(12).get(index).getEvalFalse()).isEqualTo(0);
+        assertThat(branchMap.get(12).get(index).getEvalTrue()).isEqualTo(0);
     }
 }

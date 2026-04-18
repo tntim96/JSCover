@@ -342,7 +342,6 @@
 
 package jscover.instrument;
 
-
 import com.google.javascript.jscomp.CompilerOptions;
 import jscover.ConfigurationCommon;
 import org.junit.jupiter.api.Disabled;
@@ -352,10 +351,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mozilla.javascript.*;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -369,7 +365,7 @@ public class InMemoryCoverageTest extends ScriptableObject {
         Scriptable scope = cx.initStandardObjects();
         String source = "function isNegative(x) {\n  if (x>=0)\n    return false;\n  else\n    return true;\n}; isNegative(12);";
         Object result = cx.evaluateString(scope, source, "inMemory.js", 1, null);
-        assertThat(result, is(false));
+        assertThat(result).isEqualTo(Boolean.FALSE);
     }
 
     @Test
@@ -384,7 +380,7 @@ public class InMemoryCoverageTest extends ScriptableObject {
 
         Object expected = cx.evaluateString(scope, source, "inMemory.js", 1, null);
         Object actual = cx.evaluateString(scope, instrumentedJS, "inMemory.js", 1, null);
-        assertThat(actual, equalTo(expected));
+        assertThat(actual).isEqualTo(expected);
     }
 
     @Test
@@ -425,9 +421,9 @@ public class InMemoryCoverageTest extends ScriptableObject {
 
     private void verifyLineCount(NativeArray array, Integer line, Double count) {
         if (count == null)
-            assertThat(array.get(line), nullValue());
+            assertThat(array.get(line)).isNull();
         else
-            assertThat(array.get(line), equalTo(count));
+            assertThat(array.get(line)).isEqualTo(count);
     }
 
     @Override

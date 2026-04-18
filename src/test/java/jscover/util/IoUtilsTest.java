@@ -342,7 +342,6 @@ Public License instead of this License.
 
 package jscover.util;
 
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -355,8 +354,7 @@ import java.net.Socket;
 import java.nio.charset.Charset;
 import java.util.Properties;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
@@ -409,7 +407,7 @@ public class IoUtilsTest {
     public void shouldConvertInputStreamToString() {
         String data = "Test";
         byte bytes[] = data.getBytes();
-        assertThat(ioUtils.toStringNoClose(new ByteArrayInputStream(bytes), bytes.length), equalTo(data));
+        assertThat(ioUtils.toStringNoClose(new ByteArrayInputStream(bytes), bytes.length)).isEqualTo(data);
     }
 
     @Test
@@ -464,7 +462,7 @@ public class IoUtilsTest {
 
         ioUtils.copyNoClose(new ByteArrayInputStream(bytes), baos);
 
-        assertThat(new String(baos.toByteArray()), equalTo(data));
+        assertThat(new String(baos.toByteArray())).isEqualTo(data);
     }
 
     @Test
@@ -487,7 +485,7 @@ public class IoUtilsTest {
 
         ioUtils.copyNoClose(new ByteArrayInputStream(bytes), baos, bytes.length);
 
-        assertThat(new String(baos.toByteArray()), equalTo(data));
+        assertThat(new String(baos.toByteArray())).isEqualTo(data);
     }
 
     @Test
@@ -617,21 +615,21 @@ public class IoUtilsTest {
         File file = mock(File.class);
         given(file.getCanonicalPath()).willThrow(new IOException("Ouch!"));
 
-        assertThat(ioUtils.isSubDirectory(file, file), Matchers.is(false));
+        assertThat(ioUtils.isSubDirectory(file, file)).isFalse();
     }
 
     @Test
     public void shouldGetRelativePath() {
-        assertThat(ioUtils.getRelativePath(new File("target/test.txt"), new File("target")), equalTo("test.txt"));
-        assertThat(ioUtils.getRelativePath(new File("target/level1/test.txt"), new File("target")), equalTo("level1/test.txt"));
-        assertThat(ioUtils.getRelativePath(new File("target\\test.txt"), new File("target")), equalTo("test.txt"));
-        assertThat(ioUtils.getRelativePath(new File("target"), new File("target")), equalTo(""));
+        assertThat(ioUtils.getRelativePath(new File("target/test.txt"), new File("target"))).isEqualTo("test.txt");
+        assertThat(ioUtils.getRelativePath(new File("target/level1/test.txt"), new File("target"))).isEqualTo("level1/test.txt");
+        assertThat(ioUtils.getRelativePath(new File("target\\test.txt"), new File("target"))).isEqualTo("test.txt");
+        assertThat(ioUtils.getRelativePath(new File("target"), new File("target"))).isEqualTo("");
     }
 
     @Test
     public void shouldGetCanonicalPath() throws IOException {
         File file = new File("target/test.txt");
-        assertThat(ioUtils.getCanonicalPath(file), equalTo(file.getCanonicalPath()));
+        assertThat(ioUtils.getCanonicalPath(file)).isEqualTo(file.getCanonicalPath());
     }
 
     @Test
@@ -642,7 +640,7 @@ public class IoUtilsTest {
             ioUtils.getCanonicalPath(file);
             fail("Expected exception");
         } catch (RuntimeException e) {
-            assertThat(e.getMessage(), equalTo("java.io.IOException: Ouch!"));
+            assertThat(e.getMessage()).isEqualTo("java.io.IOException: Ouch!");
         }
     }
 
@@ -663,7 +661,7 @@ public class IoUtilsTest {
             ioUtils.loadProperties(properties, is);
             fail("Expected exception");
         } catch (RuntimeException e) {
-            assertThat(e.getMessage(), equalTo("java.io.IOException: Ouch!"));
+            assertThat(e.getMessage()).isEqualTo("java.io.IOException: Ouch!");
         }
     }
 
@@ -696,41 +694,41 @@ public class IoUtilsTest {
     public void shouldDetectPostIndexCRLF() {
         String post = "POST /data HTTP/1.1\r\nSome Header\r\n\r\nData\r\rLine 3\n\nLine 5";
         Charset charset = Charset.forName("UTF-8");
-        assertThat(ioUtils.getDataIndex(post.getBytes(charset), charset), Matchers.equalTo(36));
+        assertThat(ioUtils.getDataIndex(post.getBytes(charset), charset)).isEqualTo(36);
     }
 
     @Test
     public void shouldDetectPostIndexLF() {
         String post = "POST /data HTTP/1.1\nSome Header\n\nData\r\n\r\nLine 3";
         Charset charset = Charset.forName("UTF-8");
-        assertThat(ioUtils.getDataIndex(post.getBytes(charset), charset), Matchers.equalTo(33));
+        assertThat(ioUtils.getDataIndex(post.getBytes(charset), charset)).isEqualTo(33);
     }
 
     @Test
     public void shouldDetectPostIndexCR() {
         String post = "POST /data HTTP/1.1\rSome Header\r\rData\r\n\r\nLine 3";
         Charset charset = Charset.forName("UTF-8");
-        assertThat(ioUtils.getDataIndex(post.getBytes(charset), charset), Matchers.equalTo(33));
+        assertThat(ioUtils.getDataIndex(post.getBytes(charset), charset)).isEqualTo(33);
     }
 
     @Test
     public void shouldDetectFirstLineEndIndexCRLF() {
         String post = "POST /data HTTP/1.1\r\nSome Header\r\n\r\nData\r\rLine 3\n\nLine 5";
         Charset charset = Charset.forName("UTF-8");
-        assertThat(ioUtils.getNewLineIndex(post.getBytes(charset), charset), Matchers.equalTo(19));
+        assertThat(ioUtils.getNewLineIndex(post.getBytes(charset), charset)).isEqualTo(19);
     }
 
     @Test
     public void shouldDetectFirstLineEndIndexLF() {
         String post = "POST /data HTTP/1.1\nSome Header\n\nData\r\n\r\nLine 3";
         Charset charset = Charset.forName("UTF-8");
-        assertThat(ioUtils.getNewLineIndex(post.getBytes(charset), charset), Matchers.equalTo(19));
+        assertThat(ioUtils.getNewLineIndex(post.getBytes(charset), charset)).isEqualTo(19);
     }
 
     @Test
     public void shouldDetectFirstLineEndIndexCR() {
         String post = "POST /data HTTP/1.1\rSome Header\r\rData\r\n\r\nLine 3";
         Charset charset = Charset.forName("UTF-8");
-        assertThat(ioUtils.getNewLineIndex(post.getBytes(charset), charset), Matchers.equalTo(19));
+        assertThat(ioUtils.getNewLineIndex(post.getBytes(charset), charset)).isEqualTo(19);
     }
 }

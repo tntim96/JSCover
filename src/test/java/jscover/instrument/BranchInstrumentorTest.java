@@ -346,8 +346,7 @@ import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.Token;
 import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class BranchInstrumentorTest {
@@ -364,7 +363,7 @@ public class BranchInstrumentorTest {
         String script = "var y = x > 0;";
         Node astRoot = parse(script);
         Node gtNode = NodeTestHelper.findNode(astRoot, Token.GT);
-        assertThat(getBranchInstrumentor().getLinePosition(gtNode), equalTo(8));
+        assertThat(getBranchInstrumentor().getLinePosition(gtNode)).isEqualTo(8);
     }
 
     @Test
@@ -372,7 +371,7 @@ public class BranchInstrumentorTest {
         String script = "x > 0;";
         Node astRoot = parse(script);
         Node gtNode = NodeTestHelper.findNode(astRoot, Token.GT);
-        assertThat(getBranchInstrumentor().getLinePosition(gtNode), equalTo(0));
+        assertThat(getBranchInstrumentor().getLinePosition(gtNode)).isEqualTo(0);
     }
 
     @Test
@@ -380,7 +379,7 @@ public class BranchInstrumentorTest {
         String script = "var x;\nvar y = x > 0;";
         Node astRoot = parse(script);
         Node gtNode = NodeTestHelper.findNode(astRoot, Token.GT);
-        assertThat(getBranchInstrumentor().getLinePosition(gtNode), equalTo(8));
+        assertThat(getBranchInstrumentor().getLinePosition(gtNode)).isEqualTo(8);
     }
 
     @Test
@@ -388,7 +387,7 @@ public class BranchInstrumentorTest {
         String script = "if (x > y) {a = 1;}";
         Node astRoot = parse(script);
         Node gtNode = NodeTestHelper.findNode(astRoot, Token.GT);
-        assertThat(getBranchInstrumentor().getLinePosition(gtNode), equalTo(4));
+        assertThat(getBranchInstrumentor().getLinePosition(gtNode)).isEqualTo(4);
     }
 
     @Test
@@ -400,7 +399,7 @@ public class BranchInstrumentorTest {
                 "}";
         Node astRoot = parse(script);
         Node gtNode = NodeTestHelper.findNode(astRoot, Token.GT);
-        assertThat(getBranchInstrumentor().getLinePosition(gtNode), equalTo(8));
+        assertThat(getBranchInstrumentor().getLinePosition(gtNode)).isEqualTo(8);
     }
 
     @Test
@@ -413,6 +412,6 @@ public class BranchInstrumentorTest {
                 "}";
         Node astRoot = parse(script);
         Node gtNode = NodeTestHelper.findNode(astRoot, Token.GT);
-        assertThat(getBranchInstrumentor().getLinePosition(gtNode), equalTo(8));
+        assertThat(getBranchInstrumentor().getLinePosition(gtNode)).isEqualTo(8);
     }
 }

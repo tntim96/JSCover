@@ -810,16 +810,16 @@
         <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy-agent/1.17.7/byte-buddy-agent-1.17.7-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: net.bytebuddy:byte-buddy:1.17.7" type="java-imported" external-system-id="Maven">
-      <properties groupId="net.bytebuddy" artifactId="byte-buddy" version="1.17.7" baseVersion="1.17.7" />
+    <library name="Maven: net.bytebuddy:byte-buddy:1.18.3" type="java-imported" external-system-id="Maven">
+      <properties groupId="net.bytebuddy" artifactId="byte-buddy" version="1.18.3" baseVersion="1.18.3" />
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy/1.17.7/byte-buddy-1.17.7.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy/1.18.3/byte-buddy-1.18.3.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy/1.17.7/byte-buddy-1.17.7-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy/1.18.3/byte-buddy-1.18.3-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy/1.17.7/byte-buddy-1.17.7-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy/1.18.3/byte-buddy-1.18.3-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.apache.commons:commons-lang3:3.20.0" type="java-imported" external-system-id="Maven">
@@ -882,28 +882,16 @@
         <root url="jar://$MAVEN_REPOSITORY$/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.hamcrest:hamcrest-core:3.0" type="java-imported" external-system-id="Maven">
-      <properties groupId="org.hamcrest" artifactId="hamcrest-core" version="3.0" baseVersion="3.0" />
+    <library name="Maven: org.assertj:assertj-core:3.27.7" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.assertj" artifactId="assertj-core" version="3.27.7" baseVersion="3.27.7" />
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/hamcrest/hamcrest-core/3.0/hamcrest-core-3.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/assertj/assertj-core/3.27.7/assertj-core-3.27.7.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/hamcrest/hamcrest-core/3.0/hamcrest-core-3.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/assertj/assertj-core/3.27.7/assertj-core-3.27.7-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/hamcrest/hamcrest-core/3.0/hamcrest-core-3.0-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.hamcrest:hamcrest:3.0" type="java-imported" external-system-id="Maven">
-      <properties groupId="org.hamcrest" artifactId="hamcrest" version="3.0" baseVersion="3.0" />
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/hamcrest/hamcrest/3.0/hamcrest-3.0.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/hamcrest/hamcrest/3.0/hamcrest-3.0-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/hamcrest/hamcrest/3.0/hamcrest-3.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/assertj/assertj-core/3.27.7/assertj-core-3.27.7-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.htmlunit:htmlunit-core-js:4.21.0" type="java-imported" external-system-id="Maven">

@@ -345,8 +345,7 @@ package jscover;
 import com.google.javascript.jscomp.CompilerOptions;
 import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ConfigurationCommonTest {
@@ -354,13 +353,13 @@ public class ConfigurationCommonTest {
 
     @Test
     public void shouldHaveDefaults() {
-        assertThat(config.getECMAVersion(), is(CompilerOptions.LanguageMode.ECMASCRIPT_NEXT));
-        assertThat(config.isIncludeUnloadedJS(), is(false));
-        assertThat(config.isIncludeBranch(), is(true));
-        assertThat(config.isIncludeFunction(), is(true));
-        assertThat(config.isLocalStorage(), is(false));
-        assertThat(config.isolateBrowser(), is(false));
-        assertThat(config.isDetectCoalesce(), is(false));
+        assertThat(config.getECMAVersion()).isEqualTo(CompilerOptions.LanguageMode.ECMASCRIPT_NEXT);
+        assertThat(config.isIncludeUnloadedJS()).isFalse();
+        assertThat(config.isIncludeBranch()).isTrue();
+        assertThat(config.isIncludeFunction()).isTrue();
+        assertThat(config.isLocalStorage()).isFalse();
+        assertThat(config.isolateBrowser()).isFalse();
+        assertThat(config.isDetectCoalesce()).isFalse();
     }
 
     @Test
@@ -373,31 +372,31 @@ public class ConfigurationCommonTest {
         config.setIsolateBrowser(true);
         config.setDetectCoalesce(true);
 
-        assertThat(config.getECMAVersion(), is(CompilerOptions.LanguageMode.ECMASCRIPT3));
-        assertThat(config.isIncludeUnloadedJS(), is(true));
-        assertThat(config.isIncludeBranch(), is(false));
-        assertThat(config.isIncludeFunction(), is(false));
-        assertThat(config.isLocalStorage(), is(true));
-        assertThat(config.isolateBrowser(), is(true));
-        assertThat(config.isDetectCoalesce(), is(true));
+        assertThat(config.getECMAVersion()).isEqualTo(CompilerOptions.LanguageMode.ECMASCRIPT3);
+        assertThat(config.isIncludeUnloadedJS()).isTrue();
+        assertThat(config.isIncludeBranch()).isFalse();
+        assertThat(config.isIncludeFunction()).isFalse();
+        assertThat(config.isLocalStorage()).isTrue();
+        assertThat(config.isolateBrowser()).isTrue();
+        assertThat(config.isDetectCoalesce()).isTrue();
     }
 
     @Test
     public void shouldParseIncludedUnloadedJS() {
-        assertThat(config.parseArg("--include-unloaded-js"), is(true));
-        assertThat(config.isIncludeUnloadedJS(), is(true));
+        assertThat(config.parseArg("--include-unloaded-js")).isTrue();
+        assertThat(config.isIncludeUnloadedJS()).isTrue();
     }
 
     @Test
     public void shouldParseLocalStorage() {
-        assertThat(config.parseArg("--local-storage"), is(true));
-        assertThat(config.isLocalStorage(), is(true));
+        assertThat(config.parseArg("--local-storage")).isTrue();
+        assertThat(config.isLocalStorage()).isTrue();
     }
 
     @Test
     public void shouldParseIsolateBrowser() {
-        assertThat(config.parseArg("--isolate-browser"), is(true));
-        assertThat(config.isolateBrowser(), is(true));
+        assertThat(config.parseArg("--isolate-browser")).isTrue();
+        assertThat(config.isolateBrowser()).isTrue();
     }
 
     @Test
@@ -414,7 +413,7 @@ public class ConfigurationCommonTest {
 
     @Test
     public void shouldParseDetectCoalesce() {
-        assertThat(config.parseArg("--detect-coalesce"), is(true));
-        assertThat(config.isDetectCoalesce(), is(true));
+        assertThat(config.parseArg("--detect-coalesce")).isTrue();
+        assertThat(config.isDetectCoalesce()).isTrue();
     }
 }

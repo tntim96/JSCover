@@ -13,9 +13,7 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public abstract class HtmlUnitServerTestBaseClass {
@@ -36,7 +34,7 @@ public abstract class HtmlUnitServerTestBaseClass {
     @Test
     public void shouldNotInstrument() throws Exception {
         Page page = webClient.getPage("http://localhost:9001/example/lib/noInstrument.js");
-        assertThat(page.getWebResponse().getContentAsString(), equalTo("alert('Hey');"));
+        assertThat(page.getWebResponse().getContentAsString()).isEqualTo("alert('Hey');");
     }
 
     @Test
@@ -108,8 +106,8 @@ public abstract class HtmlUnitServerTestBaseClass {
     }
 
     private void verifySource(HtmlTable sourceTable, int row, int coverageCount, String source) {
-        assertThat(sourceTable.getRow(row).getCell(1).asNormalizedText(), equalTo(""+coverageCount));
-        assertThat(sourceTable.getRow(row).getCell(2).asNormalizedText(), equalTo(source));
+        assertThat(sourceTable.getRow(row).getCell(1).asNormalizedText()).isEqualTo(""+coverageCount);
+        assertThat(sourceTable.getRow(row).getCell(2).asNormalizedText()).isEqualTo(source);
     }
 
     @Test
@@ -133,10 +131,10 @@ public abstract class HtmlUnitServerTestBaseClass {
         webClient.waitForBackgroundJavaScript(2000);
         String result = page.getElementById("storeDiv").getTextContent();
 
-        assertThat(result, containsString("Coverage data stored at target"));
+        assertThat(result).contains("Coverage data stored at target");
 
         String json = ioUtils.toString(jsonFile);
-        assertThat(json, containsString("/script.js"));
+        assertThat(json).contains("/script.js");
 
         page = webClient.getPage("file:///"+ new File(getReportDir()+"/jscoverage.html").getAbsolutePath());
         verifyTotal(webClient, page, 89, branchPercentage, functionPercentage);
@@ -160,7 +158,7 @@ public abstract class HtmlUnitServerTestBaseClass {
         webClient.waitForBackgroundJavaScript(2000);
 
         String json = ioUtils.toString(jsonFile);
-        assertThat(json, containsString("/script.js"));
+        assertThat(json).contains("/script.js");
 
         page = webClient.getPage("file:///"+ new File(getReportDir()+"/directory/jscoverage.html").getAbsolutePath());
         verifyTotal(webClient, page, 15);
@@ -178,7 +176,7 @@ public abstract class HtmlUnitServerTestBaseClass {
         webClient.waitForBackgroundJavaScript(2000);
 
         String json = ioUtils.toString(jsonFile);
-        assertThat(json, containsString("/script.js"));
+        assertThat(json).contains("/script.js");
 
         page = webClient.getPage("file:///"+ new File(getReportDir()+"/directory-no-ui/jscoverage.html").getAbsolutePath());
         verifyTotal(webClient, page, 15);
@@ -196,7 +194,7 @@ public abstract class HtmlUnitServerTestBaseClass {
         webClient.waitForBackgroundJavaScript(100);
 
         String json = ioUtils.toString(jsonFile);
-        assertThat(json, containsString("/script.js"));
+        assertThat(json).contains("/script.js");
 
         page = webClient.getPage("file:///"+ new File(getReportDir()+"/directory-no-ui-cb/jscoverage.html").getAbsolutePath());
         verifyTotal(webClient, page, 15);
@@ -280,7 +278,7 @@ public abstract class HtmlUnitServerTestBaseClass {
         page = page.getHtmlElementById("submitButton").click();
 
         String data = page.getHtmlElementById("postData").getTextContent();
-        assertThat(data, equalTo("inputName=POST+data%21%21%21"));
+        assertThat(data).isEqualTo("inputName=POST+data%21%21%21");
     }
 
     @Test
@@ -300,7 +298,7 @@ public abstract class HtmlUnitServerTestBaseClass {
         page = page.getHtmlElementById("submitButton").click();
 
         String data = page.getHtmlElementById("postData").getTextContent();
-        assertThat(data, containsString("js.jar"));
+        assertThat(data).contains("js.jar");
     }
 
     private void testFileUpload(String postFile) throws IOException {
@@ -309,7 +307,7 @@ public abstract class HtmlUnitServerTestBaseClass {
         page = page.getHtmlElementById("submitButton").click();
 
         String data = page.getHtmlElementById("postData").getTextContent();
-        assertThat(data, containsString("Line 1\nLine 2"));
+        assertThat(data).contains("Line 1\nLine 2");
     }
 
     protected void verifyTotal(WebClient webClient, HtmlPage page, int percentage) throws IOException {

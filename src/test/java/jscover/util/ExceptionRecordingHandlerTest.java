@@ -349,8 +349,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.logging.LogRecord;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -364,14 +363,14 @@ public class ExceptionRecordingHandlerTest {
 
         handler.publish(logRecord);
 
-        assertThat(handler.isExceptionThrown(), is(true));
+        assertThat(handler.isExceptionThrown()).isTrue();
     }
 
     @Test
     public void shouldNotRecordException() {
         handler.publish(logRecord);
 
-        assertThat(handler.isExceptionThrown(), is(false));
+        assertThat(handler.isExceptionThrown()).isFalse();
     }
 
     @Test
