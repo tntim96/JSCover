@@ -353,8 +353,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static jscover.report.ReportFormat.COBERTURAXML;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
@@ -371,123 +370,123 @@ public class ConfigurationForReportTest {
     public void shouldSetJSONDirectory() {
         File dir = mock(File.class);
         configuration.setJsonDirectory(dir);
-        assertThat(configuration.getJsonDirectory(), sameInstance(dir));
+        assertThat(configuration.getJsonDirectory()).isSameAs(dir);
     }
 
     @Test
     public void shouldSetSourceDirectory() {
         File dir = mock(File.class);
         configuration.setSourceDirectory(dir);
-        assertThat(configuration.getSourceDirectory(), sameInstance(dir));
+        assertThat(configuration.getSourceDirectory()).isSameAs(dir);
     }
 
     @Test
     public void shouldSetReportFormat() {
         configuration.setReportFormat(COBERTURAXML);
-        assertThat(configuration.getReportFormat(), is(COBERTURAXML));
+        assertThat(configuration.getReportFormat()).isEqualTo(COBERTURAXML);
     }
 
     @Test
     public void shouldBeInvalidIfNoArgs() {
         configuration.parse(new String[]{});
-        assertThat(configuration.showHelp(), equalTo(true));
-        assertThat(configuration.isInvalid(), equalTo(true));
-        assertThat(configuration.isFormat(), equalTo(false));
-        assertThat(configuration.isMerge(), equalTo(false));
+        assertThat(configuration.showHelp()).isEqualTo(true);
+        assertThat(configuration.isInvalid()).isEqualTo(true);
+        assertThat(configuration.isFormat()).isEqualTo(false);
+        assertThat(configuration.isMerge()).isEqualTo(false);
     }
 
     @Test
     public void shouldParseHelp1() {
         configuration.parse(new String[]{"-h"});
-        assertThat(configuration.showHelp(), equalTo(true));
-        assertThat(configuration.isInvalid(), equalTo(false));
+        assertThat(configuration.showHelp()).isEqualTo(true);
+        assertThat(configuration.isInvalid()).isEqualTo(false);
     }
 
     @Test
     public void shouldParseHelp2() {
         configuration.parse(new String[]{"--help"});
-        assertThat(configuration.showHelp(), equalTo(true));
-        assertThat(configuration.isInvalid(), equalTo(false));
+        assertThat(configuration.showHelp()).isEqualTo(true);
+        assertThat(configuration.isInvalid()).isEqualTo(false);
     }
 
     @Test
     public void shouldBeInvalidIfFormatAndMergePrefixesPResent() {
         configuration.parse(new String[]{"--format=XMLSUMMARY", "--merge"});
-        assertThat(configuration.showHelp(), equalTo(true));
-        assertThat(configuration.isInvalid(), equalTo(true));
-        assertThat(configuration.isFormat(), equalTo(true));
-        assertThat(configuration.isMerge(), equalTo(true));
+        assertThat(configuration.showHelp()).isEqualTo(true);
+        assertThat(configuration.isInvalid()).isEqualTo(true);
+        assertThat(configuration.isFormat()).isEqualTo(true);
+        assertThat(configuration.isMerge()).isEqualTo(true);
     }
 
     @Test
     public void shouldBeInvalidIfXmlSummaryWithTooManyArgs() {
         configuration.parse(new String[]{"--format=XMLSUMMARY", "target", "src"});
-        assertThat(configuration.showHelp(), equalTo(true));
-        assertThat(configuration.isInvalid(), equalTo(true));
-        assertThat(configuration.isFormat(), equalTo(true));
+        assertThat(configuration.showHelp()).isEqualTo(true);
+        assertThat(configuration.isInvalid()).isEqualTo(true);
+        assertThat(configuration.isFormat()).isEqualTo(true);
     }
 
     @Test
     public void shouldBeInvalidIfXmlSummaryWithTooFewArgs() {
         configuration.parse(new String[]{"--format=XMLSUMMARY"});
-        assertThat(configuration.showHelp(), equalTo(true));
-        assertThat(configuration.isInvalid(), equalTo(true));
+        assertThat(configuration.showHelp()).isEqualTo(true);
+        assertThat(configuration.isInvalid()).isEqualTo(true);
     }
 
     @Test
     public void shouldBeInvalidIfLCovWithTooManyArgs() {
         configuration.parse(new String[]{"--format=XMLSUMMARY", "target", "src", "extra"});
-        assertThat(configuration.showHelp(), equalTo(true));
-        assertThat(configuration.isInvalid(), equalTo(true));
+        assertThat(configuration.showHelp()).isEqualTo(true);
+        assertThat(configuration.isInvalid()).isEqualTo(true);
     }
 
     @Test
     public void shouldBeInvalidIfLCovWithTooFewArgs() {
         configuration.parse(new String[]{"--format=LCOV", "target"});
-        assertThat(configuration.showHelp(), equalTo(true));
-        assertThat(configuration.isInvalid(), equalTo(true));
+        assertThat(configuration.showHelp()).isEqualTo(true);
+        assertThat(configuration.isInvalid()).isEqualTo(true);
     }
 
     @Test
     public void shouldBeInvalidIfLCovWithNonExistentReportDir() {
         configuration.parse(new String[]{"--format=LCOV", "invalid", "invalid"});
-        assertThat(configuration.showHelp(), equalTo(true));
-        assertThat(configuration.isInvalid(), equalTo(true));
+        assertThat(configuration.showHelp()).isEqualTo(true);
+        assertThat(configuration.isInvalid()).isEqualTo(true);
     }
 
     @Test
     public void shouldBeInvalidIfLCovWithFileAsReportDir() {
         configuration.parse(new String[]{"--format=LCOV", "build.xml", "build.xml"});
-        assertThat(configuration.showHelp(), equalTo(true));
-        assertThat(configuration.isInvalid(), equalTo(true));
+        assertThat(configuration.showHelp()).isEqualTo(true);
+        assertThat(configuration.isInvalid()).isEqualTo(true);
     }
 
     @Test
     public void shouldParseXmlSummary() {
         configuration.parse(new String[]{"--format=XMLSUMMARY", "target"});
-        assertThat(configuration.showHelp(), equalTo(false));
-        assertThat(configuration.isInvalid(), equalTo(false));
-        assertThat(configuration.getReportFormat(), equalTo(ReportFormat.XMLSUMMARY));
-        assertThat(configuration.getJsonDirectory(), equalTo(new File("target")));
+        assertThat(configuration.showHelp()).isEqualTo(false);
+        assertThat(configuration.isInvalid()).isEqualTo(false);
+        assertThat(configuration.getReportFormat()).isEqualTo(ReportFormat.XMLSUMMARY);
+        assertThat(configuration.getJsonDirectory()).isEqualTo(new File("target"));
     }
 
     @Test
     public void shouldParseCoberturaXml() {
         configuration.parse(new String[]{"--format=COBERTURAXML", "target", "src"});
-        assertThat(configuration.showHelp(), equalTo(false));
-        assertThat(configuration.isInvalid(), equalTo(false));
-        assertThat(configuration.getReportFormat(), equalTo(COBERTURAXML));
-        assertThat(configuration.getJsonDirectory(), equalTo(new File("target")));
+        assertThat(configuration.showHelp()).isEqualTo(false);
+        assertThat(configuration.isInvalid()).isEqualTo(false);
+        assertThat(configuration.getReportFormat()).isEqualTo(COBERTURAXML);
+        assertThat(configuration.getJsonDirectory()).isEqualTo(new File("target"));
     }
 
     @Test
     public void shouldParseLCov() {
         configuration.parse(new String[]{"--format=LCOV", "target", "src"});
-        assertThat(configuration.showHelp(), equalTo(false));
-        assertThat(configuration.isInvalid(), equalTo(false));
-        assertThat(configuration.getReportFormat(), equalTo(ReportFormat.LCOV));
-        assertThat(configuration.getJsonDirectory(), equalTo(new File("target")));
-        assertThat(configuration.getSourceDirectory(), equalTo(new File("src")));
+        assertThat(configuration.showHelp()).isEqualTo(false);
+        assertThat(configuration.isInvalid()).isEqualTo(false);
+        assertThat(configuration.getReportFormat()).isEqualTo(ReportFormat.LCOV);
+        assertThat(configuration.getJsonDirectory()).isEqualTo(new File("target"));
+        assertThat(configuration.getSourceDirectory()).isEqualTo(new File("src"));
     }
 
     @Test
@@ -500,30 +499,30 @@ public class ConfigurationForReportTest {
         File merged = new File(destDir);
 
         configuration.parse(new String[]{"--merge", dir1, dir2, destDir});
-        assertThat(configuration.showHelp(), equalTo(false));
-        assertThat(configuration.isInvalid(), equalTo(false));
-        assertThat(configuration.getMergeDirs().size(), equalTo(2));
-        assertThat(configuration.getMergeDirs(), hasItem(report1));
-        assertThat(configuration.getMergeDirs(), hasItem(report2));
-        assertThat(configuration.getMergeDestDir(), equalTo(merged));
+        assertThat(configuration.showHelp()).isEqualTo(false);
+        assertThat(configuration.isInvalid()).isEqualTo(false);
+        assertThat(configuration.getMergeDirs().size()).isEqualTo(2);
+        assertThat(configuration.getMergeDirs()).contains(report1);
+        assertThat(configuration.getMergeDirs()).contains(report2);
+        assertThat(configuration.getMergeDestDir()).isEqualTo(merged);
     }
 
     @Test
     public void shouldDetectInsufficientMergeArguments() {
         configuration.parse(new String[]{"--merge", "dir1"});
-        assertThat(configuration.showHelp(), equalTo(true));
-        assertThat(configuration.isInvalid(), equalTo(true));
+        assertThat(configuration.showHelp()).isEqualTo(true);
+        assertThat(configuration.isInvalid()).isEqualTo(true);
     }
 
     @Test
     public void shouldDetectInvalidFile() {
-        assertThat(configuration.isValidFile(new File("doesntExists")), equalTo(false));
-        assertThat(configuration.isValidFile(new File("src")), equalTo(false));
+        assertThat(configuration.isValidFile(new File("doesntExists"))).isEqualTo(false);
+        assertThat(configuration.isValidFile(new File("src"))).isEqualTo(false);
     }
 
     @Test
     public void shouldDetectInvalidReportDirectory() {
-        assertThat(configuration.isValidReportDirectory(new File("build.xml")), equalTo(false));
+        assertThat(configuration.isValidReportDirectory(new File("build.xml"))).isEqualTo(false);
     }
 
     @Test
@@ -534,8 +533,8 @@ public class ConfigurationForReportTest {
         String destDir = "target/merged";
 
         configuration.parse(new String[]{"--merge", dir1, dir2, destDir});
-        assertThat(configuration.showHelp(), equalTo(true));
-        assertThat(configuration.isInvalid(), equalTo(true));
+        assertThat(configuration.showHelp()).isEqualTo(true);
+        assertThat(configuration.isInvalid()).isEqualTo(true);
     }
 
     private File createValidReportDir(String dir) {
@@ -548,19 +547,19 @@ public class ConfigurationForReportTest {
     @Test
     public void shouldRetrieveHelpText() {
         String helpText = configuration.getHelpText();
-        assertThat(helpText, containsString("Usage: java -cp JSCover-all.jar jscover.report.Main --format=XMLSUMMARY REPORT-DIR"));
-        assertThat(helpText, containsString("or     java -cp JSCover-all.jar jscover.report.Main --format=[ LCOV | COBERTURAXML ] REPORT-DIR SRC-DIRECTORY"));
-        assertThat(helpText, containsString("or     java -cp JSCover-all.jar jscover.report.Main --merge REPORT-DIR1 REPORT-DIR2... DEST-DIR"));
+        assertThat(helpText).contains("Usage: java -cp JSCover-all.jar jscover.report.Main --format=XMLSUMMARY REPORT-DIR");
+        assertThat(helpText).contains("or     java -cp JSCover-all.jar jscover.report.Main --format=[ LCOV | COBERTURAXML ] REPORT-DIR SRC-DIRECTORY");
+        assertThat(helpText).contains("or     java -cp JSCover-all.jar jscover.report.Main --merge REPORT-DIR1 REPORT-DIR2... DEST-DIR");
     }
 
     @Test
     public void shouldSetProperties() {
         List<File> mergeDirs = new ArrayList<>();
         configuration.setMergeDirs(mergeDirs);
-        assertThat(mergeDirs, sameInstance(mergeDirs));
+        assertThat(mergeDirs).isSameAs(mergeDirs);
 
         File mergeDestDir = new File(".");
         configuration.setMergeDestDir(mergeDestDir);
-        assertThat(mergeDestDir, sameInstance(mergeDestDir));
+        assertThat(mergeDestDir).isSameAs(mergeDestDir);
     }
 }

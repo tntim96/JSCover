@@ -348,8 +348,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ProxyRequestHandlerTest {
     private final ProxyService proxyRequestHandler = new ProxyService();
@@ -357,12 +356,12 @@ public class ProxyRequestHandlerTest {
     @Test
     public void shouldGetRequestURIFromURL() throws MalformedURLException {
         URL url = URI.create("http://localhost/test.html").toURL();
-        assertThat(proxyRequestHandler.getRawURI(url), equalTo("/test.html"));
+        assertThat(proxyRequestHandler.getRawURI(url)).isEqualTo("/test.html");
     }
 
     @Test
     public void shouldGetRequestURIFromURLWithQueryParameters() throws MalformedURLException {
         URL url = URI.create("http://localhost/test.html?a=b").toURL();
-        assertThat(proxyRequestHandler.getRawURI(url), equalTo("/test.html?a=b"));
+        assertThat(proxyRequestHandler.getRawURI(url)).isEqualTo("/test.html?a=b");
     }
 }

@@ -343,7 +343,6 @@ Public License instead of this License.
 package jscover.report;
 
 import jscover.ExitHelper;
-import jscover.report.coberturaxml.CoberturaData;
 import jscover.report.coberturaxml.CoberturaXmlGenerator;
 import jscover.report.lcov.LCovGenerator;
 import jscover.report.xml.XMLSummary;
@@ -351,8 +350,6 @@ import jscover.util.IoService;
 import jscover.util.IoUtils;
 import jscover.util.ReflectionUtils;
 import org.apache.commons.io.FileUtils;
-import org.hamcrest.Description;
-import org.hamcrest.TypeSafeMatcher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -369,12 +366,9 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import static jscover.Main.reportSrcSubDir;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.sameInstance;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
-import static org.mockito.hamcrest.MockitoHamcrest.argThat;
 
 //Function Coverage added by Howard Abrams, CA Technologies (HA-CA) - May 20 2013
 @ExtendWith(MockitoExtension.class)
@@ -413,7 +407,7 @@ public class MainTest {
     public void shouldSetConfig() {
         ConfigurationForReport configuration = mock(ConfigurationForReport.class);
         main.setConfig(configuration);
-        assertThat(ReflectionUtils.getField(main, "config"), sameInstance(configuration));
+        assertThat(ReflectionUtils.getField(main, "config")).isSameAs(configuration);
     }
 
     @Test
@@ -467,20 +461,12 @@ public class MainTest {
 
         main.runMain(new String[]{});
 
-        TypeSafeMatcher<CoberturaData> coberturaDataMatcher = new TypeSafeMatcher<CoberturaData>() {
-            @Override
-            protected boolean matchesSafely(CoberturaData coverable) {
-                return true;
-            }
-
-            public void describeTo(Description description) {
-
-            }
-        };
-
-
         File xmlFile = new File(jsonDirectory, "cobertura-coverage.xml");
-        verify(coberturaXmlGenerator).generateXml(argThat(coberturaDataMatcher), argThat(is(srcDir.getCanonicalPath())), argThat(is("version")));
+        verify(coberturaXmlGenerator).generateXml(
+                argThat(argument -> true),
+                eq(srcDir.getCanonicalPath()),
+                eq("version")
+        );
         verify(ioUtils).copy("<xml/>", xmlFile);
         verifyNoInteractions(exitHelper);
     }
@@ -504,29 +490,11 @@ public class MainTest {
 
         main.runMain(new String[]{});
 
-        TypeSafeMatcher<File> fileMatcher = new TypeSafeMatcher<File>() {
-            @Override
-            protected boolean matchesSafely(File file) {
-                return file.equals(jsonDirectory);
-            }
-
-            public void describeTo(Description description) {
-
-            }
-        };
-
-        TypeSafeMatcher<Coverable> coverableMatcher = new TypeSafeMatcher<Coverable>() {
-            @Override
-            protected boolean matchesSafely(Coverable coverable) {
-                return coverable.getCodeLineCount() == 42;
-            }
-
-            public void describeTo(Description description) {
-
-            }
-        };
-
-        verify(xmlSummary).saveSummary(argThat(coverableMatcher), argThat(fileMatcher), argThat(is("version")));
+        verify(xmlSummary).saveSummary(
+                argThat(c -> c.getCodeLineCount() == 42),
+                eq(jsonDirectory),
+                eq("version")
+        );
         verifyNoInteractions(exitHelper);
     }
 
@@ -569,7 +537,7 @@ public class MainTest {
         given(jsonDataMerger.jsonToMap("json1")).willReturn(map1);
         given(jsonDataMerger.jsonToMap("json2")).willReturn(map2);
         given(jsonDataMerger.mergeJSONCoverageMaps(mergedMapTemp, map2)).willReturn(mergedMap);
-        given(jsonDataMerger.toJSON(argThat(sameInstance(mergedMap)))).willReturn("mergedJSON");
+        given(jsonDataMerger.toJSON(same(mergedMap))).willReturn("mergedJSON");
 
         main.runMain(new String[]{});
 
@@ -591,18 +559,5 @@ public class MainTest {
         }
 
         verifyNoInteractions(exitHelper);
-    }
-
-    private TypeSafeMatcher<SortedMap<String, FileData>> getTypeSafeMatcher() {
-        return new TypeSafeMatcher<SortedMap<String, FileData>>() {
-            public void describeTo(Description description) {
-
-            }
-
-            @Override
-            protected boolean matchesSafely(SortedMap<String, FileData> item) {
-                return true;
-            }
-        };
     }
 }

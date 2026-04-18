@@ -348,8 +348,8 @@ import com.google.javascript.rhino.Node;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 public class BranchStatementBuilderTest {
     private BranchStatementBuilder builder = new BranchStatementBuilder();
@@ -361,41 +361,42 @@ public class BranchStatementBuilderTest {
     }
 
     @Test
-    public void shoudlBuildLineDeclaration() {
+    public void shouldBuildLineDeclaration() {
         Node statement = builder.buildLineDeclaration("test.js", 4);
-        assertThat(new CodePrinter.Builder(statement).setCompilerOptions(options).build(), equalTo("_$jscoverage['test.js'].branchData['4']"));
+        assertThat(new CodePrinter.Builder(statement).setCompilerOptions(options).build()).isEqualTo("_$jscoverage['test.js'].branchData['4']");
     }
 
     @Test
     public void shouldBuildLineAndConditionInitialisation() {
         Node statement = builder.buildLineAndConditionInitialisation("test.js", 4, 2, 12, 15);
-        assertThat(new CodePrinter.Builder(statement).setCompilerOptions(options).build(), equalTo("_$jscoverage['test.js'].branchData['4'][2].init(12,15)"));
+        assertThat(new CodePrinter.Builder(statement).setCompilerOptions(options).build()).isEqualTo("_$jscoverage['test.js'].branchData['4'][2].init(12,15)");
     }
 
     @Test
     public void shouldRemoveInstrumentationFromSource() {
-        assertThat(builder.removeInstrumentation("  _$jscoverage['/dir/code.js'].someOtherData[101]++;\n"), equalTo(""));
-        assertThat(builder.removeInstrumentation("x++;\n  _$jscoverage['/dir/code.js'].lineData[100]++;\n"), equalTo("x++;\n"));
+        assertThat(builder.removeInstrumentation("  _$jscoverage['/dir/code.js'].someOtherData[101]++;\n")).isEqualTo("");
+        assertThat(builder.removeInstrumentation("x++;\n  _$jscoverage['/dir/code.js'].lineData[100]++;\n")).isEqualTo("x++;\n");
     }
 
     @Test
     public void shouldRemoveInstrumentationFromSourceInInitialisation() {
         Node statement = builder.buildLineAndConditionInitialisation("test.js", 4, 2, 12, 15);
-        assertThat(new CodePrinter.Builder(statement).setCompilerOptions(options).build(), equalTo("_$jscoverage['test.js'].branchData['4'][2].init(12,15)"));
+        assertThat(new CodePrinter.Builder(statement).setCompilerOptions(options).build()).isEqualTo("_$jscoverage['test.js'].branchData['4'][2].init(12,15)");
     }
 
     @Test
     public void shouldBuildLineAndConditionCall() {
         Node statement = builder.buildLineAndConditionCall("test.js", 4, 2);
-        assertThat(new CodePrinter.Builder(statement).setCompilerOptions(options).build(), equalTo("_$jscoverage['test.js'].branchData['4'][2].ranCondition(result)"));
+        assertThat(new CodePrinter.Builder(statement).setCompilerOptions(options).build()).isEqualTo("_$jscoverage['test.js'].branchData['4'][2].ranCondition(result)");
     }
 
     @Test
     public void shouldBuildLineAndConditionRecordingFunction() {
         Node statement = builder.buildBranchRecordingFunction("test.js", 1, 4, 2);
-        assertThat(new CodePrinter.Builder(statement).setCompilerOptions(options).build(), equalTo("function visit1_4_2(result){" +
+        String expected = "function visit1_4_2(result){" +
                 "_$jscoverage['test.js'].branchData['4'][2].ranCondition(result);" +
                 "return result" +
-                "}"));
+                "}";
+        assertThat(new CodePrinter.Builder(statement).setCompilerOptions(options).build()).isEqualTo(expected);
     }
 }

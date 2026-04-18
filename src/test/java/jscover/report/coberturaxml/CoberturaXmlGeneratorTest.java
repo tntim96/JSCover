@@ -361,8 +361,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.*;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -384,8 +383,8 @@ public class CoberturaXmlGeneratorTest {
 
         Document document = parseXml(xml);
         XPath xpath = XPathFactory.newInstance().newXPath();
-        assertThat(getXPath(xpath, document, "/coverage/@version"), equalTo("version"));
-        assertThat(getXPath(xpath, document, "/coverage/sources/source"), equalTo("c:/sourceDir"));
+        assertThat(getXPath(xpath, document, "/coverage/@version")).isEqualTo("version");
+        assertThat(getXPath(xpath, document, "/coverage/sources/source")).isEqualTo("c:/sourceDir");
     }
 
     @Test
@@ -407,27 +406,27 @@ public class CoberturaXmlGeneratorTest {
 
         Document document = parseXml(xml);
         XPath xpath = XPathFactory.newInstance().newXPath();
-        assertThat(getXPath(xpath, document, "/coverage/@line-rate"), equalTo("0.5"));
-        assertThat(getXPath(xpath, document, "/coverage/@branch-rate"), equalTo("0.4"));
-        assertThat(getXPath(xpath, document, "/coverage/@lines-covered"), equalTo("5"));
-        assertThat(getXPath(xpath, document, "/coverage/@lines-valid"), equalTo("10"));
-        assertThat(getXPath(xpath, document, "/coverage/@branches-covered"), equalTo("2"));
-        assertThat(getXPath(xpath, document, "/coverage/@branches-valid"), equalTo("5"));
+        assertThat(getXPath(xpath, document, "/coverage/@line-rate")).isEqualTo("0.5");
+        assertThat(getXPath(xpath, document, "/coverage/@branch-rate")).isEqualTo("0.4");
+        assertThat(getXPath(xpath, document, "/coverage/@lines-covered")).isEqualTo("5");
+        assertThat(getXPath(xpath, document, "/coverage/@lines-valid")).isEqualTo("10");
+        assertThat(getXPath(xpath, document, "/coverage/@branches-covered")).isEqualTo("2");
+        assertThat(getXPath(xpath, document, "/coverage/@branches-valid")).isEqualTo("5");
 
         //Check package
-        assertThat(getXPath(xpath, document, "count(/coverage/packages/package)"), equalTo("1"));
+        assertThat(getXPath(xpath, document, "count(/coverage/packages/package)")).isEqualTo("1");
         String packageXPath = "/coverage/packages/package[@name='/dir']";
-        assertThat(getXPath(xpath, document, packageXPath + "/@name"), equalTo("/dir"));
-        assertThat(getXPath(xpath, document, packageXPath + "/@complexity"), equalTo("0"));
-        assertThat(getXPath(xpath, document, packageXPath + "/@line-rate"), equalTo("0.5"));
-        assertThat(getXPath(xpath, document, packageXPath + "/@branch-rate"), equalTo("0.4"));
+        assertThat(getXPath(xpath, document, packageXPath + "/@name")).isEqualTo("/dir");
+        assertThat(getXPath(xpath, document, packageXPath + "/@complexity")).isEqualTo("0");
+        assertThat(getXPath(xpath, document, packageXPath + "/@line-rate")).isEqualTo("0.5");
+        assertThat(getXPath(xpath, document, packageXPath + "/@branch-rate")).isEqualTo("0.4");
 
         //Check class
         String classXPath = packageXPath + "/classes/class[@name='/dir/file.js']";
-        assertThat(getXPath(xpath, document, classXPath + "/@branch-rate"), equalTo("0.4"));
-        assertThat(getXPath(xpath, document, classXPath + "/@line-rate"), equalTo("0.5"));
-        assertThat(getXPath(xpath, document, classXPath + "/@complexity"), equalTo("0"));
-        assertThat(getXPath(xpath, document, classXPath + "/@filename"), equalTo("dir/file.js"));
+        assertThat(getXPath(xpath, document, classXPath + "/@branch-rate")).isEqualTo("0.4");
+        assertThat(getXPath(xpath, document, classXPath + "/@line-rate")).isEqualTo("0.5");
+        assertThat(getXPath(xpath, document, classXPath + "/@complexity")).isEqualTo("0");
+        assertThat(getXPath(xpath, document, classXPath + "/@filename")).isEqualTo("dir/file.js");
     }
 
     @Test
@@ -459,20 +458,20 @@ public class CoberturaXmlGeneratorTest {
 
         Document document = parseXml(xml);
         XPath xpath = XPathFactory.newInstance().newXPath();
-        assertThat(getXPath(xpath, document, "/coverage/@line-rate"), equalTo("0.6"));
-        assertThat(getXPath(xpath, document, "/coverage/@branch-rate"), equalTo("0.7"));
-        assertThat(getXPath(xpath, document, "/coverage/@lines-covered"), equalTo("6"));
-        assertThat(getXPath(xpath, document, "/coverage/@lines-valid"), equalTo("10"));
-        assertThat(getXPath(xpath, document, "/coverage/@branches-covered"), equalTo("7"));
-        assertThat(getXPath(xpath, document, "/coverage/@branches-valid"), equalTo("10"));
+        assertThat(getXPath(xpath, document, "/coverage/@line-rate")).isEqualTo("0.6");
+        assertThat(getXPath(xpath, document, "/coverage/@branch-rate")).isEqualTo("0.7");
+        assertThat(getXPath(xpath, document, "/coverage/@lines-covered")).isEqualTo("6");
+        assertThat(getXPath(xpath, document, "/coverage/@lines-valid")).isEqualTo("10");
+        assertThat(getXPath(xpath, document, "/coverage/@branches-covered")).isEqualTo("7");
+        assertThat(getXPath(xpath, document, "/coverage/@branches-valid")).isEqualTo("10");
 
         //Check package
-        assertThat(getXPath(xpath, document, "count(/coverage/packages/package)"), equalTo("1"));
+        assertThat(getXPath(xpath, document, "count(/coverage/packages/package)")).isEqualTo("1");
         String packageXPath = "/coverage/packages/package[@name='/dir']";
-        assertThat(getXPath(xpath, document, packageXPath + "/@name"), equalTo("/dir"));
-        assertThat(getXPath(xpath, document, packageXPath + "/@complexity"), equalTo("0"));
-        assertThat(getXPath(xpath, document, packageXPath + "/@line-rate"), equalTo("0.6"));
-        assertThat(getXPath(xpath, document, packageXPath + "/@branch-rate"), equalTo("0.7"));
+        assertThat(getXPath(xpath, document, packageXPath + "/@name")).isEqualTo("/dir");
+        assertThat(getXPath(xpath, document, packageXPath + "/@complexity")).isEqualTo("0");
+        assertThat(getXPath(xpath, document, packageXPath + "/@line-rate")).isEqualTo("0.6");
+        assertThat(getXPath(xpath, document, packageXPath + "/@branch-rate")).isEqualTo("0.7");
     }
 
     @Test
@@ -487,10 +486,10 @@ public class CoberturaXmlGeneratorTest {
 
         Document document = parseXml(xml);
         XPath xpath = XPathFactory.newInstance().newXPath();
-        assertThat(getXPath(xpath, document, "count(//line)"), equalTo("1"));
-        assertThat(getXPath(xpath, document, "//line/@number"), equalTo("1"));
-        assertThat(getXPath(xpath, document, "//line/@hits"), equalTo("10"));
-        assertThat(getXPath(xpath, document, "//line/@branch"), equalTo("false"));
+        assertThat(getXPath(xpath, document, "count(//line)")).isEqualTo("1");
+        assertThat(getXPath(xpath, document, "//line/@number")).isEqualTo("1");
+        assertThat(getXPath(xpath, document, "//line/@hits")).isEqualTo("10");
+        assertThat(getXPath(xpath, document, "//line/@branch")).isEqualTo("false");
     }
 
     @Test
@@ -509,16 +508,16 @@ public class CoberturaXmlGeneratorTest {
 
         Document document = parseXml(xml);
         XPath xpath = XPathFactory.newInstance().newXPath();
-        assertThat(getXPath(xpath, document, "count(//line)"), equalTo("1"));
-        assertThat(getXPath(xpath, document, "//line/@number"), equalTo("1"));
-        assertThat(getXPath(xpath, document, "//line/@hits"), equalTo("1"));
-        assertThat(getXPath(xpath, document, "//line/@branch"), equalTo("true"));
-        assertThat(getXPath(xpath, document, "//line/@condition-coverage"), equalTo("50% (1/2)"));
+        assertThat(getXPath(xpath, document, "count(//line)")).isEqualTo("1");
+        assertThat(getXPath(xpath, document, "//line/@number")).isEqualTo("1");
+        assertThat(getXPath(xpath, document, "//line/@hits")).isEqualTo("1");
+        assertThat(getXPath(xpath, document, "//line/@branch")).isEqualTo("true");
+        assertThat(getXPath(xpath, document, "//line/@condition-coverage")).isEqualTo("50% (1/2)");
 
-        assertThat(getXPath(xpath, document, "count(//condition)"), equalTo("1"));
-        assertThat(getXPath(xpath, document, "//condition/@coverage"), equalTo("50%"));
-        assertThat(getXPath(xpath, document, "//condition/@number"), equalTo("1"));
-        assertThat(getXPath(xpath, document, "//condition/@type"), equalTo("jump"));
+        assertThat(getXPath(xpath, document, "count(//condition)")).isEqualTo("1");
+        assertThat(getXPath(xpath, document, "//condition/@coverage")).isEqualTo("50%");
+        assertThat(getXPath(xpath, document, "//condition/@number")).isEqualTo("1");
+        assertThat(getXPath(xpath, document, "//condition/@type")).isEqualTo("jump");
     }
 
     @Test
@@ -537,16 +536,16 @@ public class CoberturaXmlGeneratorTest {
 
         Document document = parseXml(xml);
         XPath xpath = XPathFactory.newInstance().newXPath();
-        assertThat(getXPath(xpath, document, "count(//line)"), equalTo("1"));
-        assertThat(getXPath(xpath, document, "//line/@number"), equalTo("1"));
-        assertThat(getXPath(xpath, document, "//line/@hits"), equalTo("1"));
-        assertThat(getXPath(xpath, document, "//line/@branch"), equalTo("true"));
-        assertThat(getXPath(xpath, document, "//line/@condition-coverage"), equalTo("50% (1/2)"));
+        assertThat(getXPath(xpath, document, "count(//line)")).isEqualTo("1");
+        assertThat(getXPath(xpath, document, "//line/@number")).isEqualTo("1");
+        assertThat(getXPath(xpath, document, "//line/@hits")).isEqualTo("1");
+        assertThat(getXPath(xpath, document, "//line/@branch")).isEqualTo("true");
+        assertThat(getXPath(xpath, document, "//line/@condition-coverage")).isEqualTo("50% (1/2)");
 
-        assertThat(getXPath(xpath, document, "count(//condition)"), equalTo("1"));
-        assertThat(getXPath(xpath, document, "//condition/@coverage"), equalTo("50%"));
-        assertThat(getXPath(xpath, document, "//condition/@number"), equalTo("1"));
-        assertThat(getXPath(xpath, document, "//condition/@type"), equalTo("jump"));
+        assertThat(getXPath(xpath, document, "count(//condition)")).isEqualTo("1");
+        assertThat(getXPath(xpath, document, "//condition/@coverage")).isEqualTo("50%");
+        assertThat(getXPath(xpath, document, "//condition/@number")).isEqualTo("1");
+        assertThat(getXPath(xpath, document, "//condition/@type")).isEqualTo("jump");
     }
 
     @Test
@@ -565,16 +564,16 @@ public class CoberturaXmlGeneratorTest {
 
         Document document = parseXml(xml);
         XPath xpath = XPathFactory.newInstance().newXPath();
-        assertThat(getXPath(xpath, document, "count(//line)"), equalTo("1"));
-        assertThat(getXPath(xpath, document, "//line/@number"), equalTo("1"));
-        assertThat(getXPath(xpath, document, "//line/@hits"), equalTo("0"));
-        assertThat(getXPath(xpath, document, "//line/@branch"), equalTo("true"));
-        assertThat(getXPath(xpath, document, "//line/@condition-coverage"), equalTo("0% (0/2)"));
+        assertThat(getXPath(xpath, document, "count(//line)")).isEqualTo("1");
+        assertThat(getXPath(xpath, document, "//line/@number")).isEqualTo("1");
+        assertThat(getXPath(xpath, document, "//line/@hits")).isEqualTo("0");
+        assertThat(getXPath(xpath, document, "//line/@branch")).isEqualTo("true");
+        assertThat(getXPath(xpath, document, "//line/@condition-coverage")).isEqualTo("0% (0/2)");
 
-        assertThat(getXPath(xpath, document, "count(//condition)"), equalTo("1"));
-        assertThat(getXPath(xpath, document, "//condition/@coverage"), equalTo("0%"));
-        assertThat(getXPath(xpath, document, "//condition/@number"), equalTo("1"));
-        assertThat(getXPath(xpath, document, "//condition/@type"), equalTo("jump"));
+        assertThat(getXPath(xpath, document, "count(//condition)")).isEqualTo("1");
+        assertThat(getXPath(xpath, document, "//condition/@coverage")).isEqualTo("0%");
+        assertThat(getXPath(xpath, document, "//condition/@number")).isEqualTo("1");
+        assertThat(getXPath(xpath, document, "//condition/@type")).isEqualTo("jump");
     }
 
     public static Document parseXml(String xml) throws ParserConfigurationException, SAXException, IOException {

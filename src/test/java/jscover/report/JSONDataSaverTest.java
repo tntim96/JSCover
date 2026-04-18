@@ -360,8 +360,7 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.BDDMockito.given;
@@ -392,7 +391,7 @@ public class JSONDataSaverTest {
         jsonDataSaver.saveJSONData(destDir, "data", null, uriFileTranslator);
 
         String json = ioUtils.loadFromFileSystem(new File(destDir, "jscoverage.json"));
-        assertThat(json, equalTo("data"));
+        assertThat(json).isEqualTo("data");
     }
 
     @Test
@@ -410,7 +409,7 @@ public class JSONDataSaverTest {
         jsonDataSaver.saveJSONData(destDir, data, null, uriFileTranslator);
 
         String json = ioUtils.loadFromFileSystem(new File(destDir, "jscoverage.json"));
-        assertThat(json, equalTo("dataTranslated"));
+        assertThat(json).isEqualTo("dataTranslated");
     }
 
     @Test
@@ -440,8 +439,8 @@ public class JSONDataSaverTest {
         thread.join();
 
         String json = ioUtils.loadFromFileSystem(new File(destDir, "jscoverage.json"));
-        assertThat(json, equalTo("data"));
-        assertThat(sb.toString(), equalTo("1243"));
+        assertThat(json).isEqualTo("data");
+        assertThat(sb.toString()).isEqualTo("1243");
     }
 
     @Test
@@ -477,7 +476,7 @@ public class JSONDataSaverTest {
         jsonDataSaver.saveJSONData(destDir, "json2", null, uriFileTranslator);
 
         String json = ioUtils.loadFromFileSystem(jsonFile);
-        assertThat(json, equalTo("jsonMerged"));
+        assertThat(json).isEqualTo("jsonMerged");
     }
 
     @Test
@@ -501,7 +500,7 @@ public class JSONDataSaverTest {
         jsonDataSaver.saveJSONData(destDir, "jsonSubmitted", null, uriFileTranslator);
 
         String json = ioUtils.loadFromFileSystem(jsonFile);
-        assertThat(json, equalTo("jsonMerged"));
+        assertThat(json).isEqualTo("jsonMerged");
     }
 
     ArgumentMatcher<SortedMap<String, FileData>> isMapWithKey(final String url) {
@@ -529,7 +528,7 @@ public class JSONDataSaverTest {
         jsonDataSaver.saveJSONData(destDir, "json1", unloadJSData, uriFileTranslator);
 
         String json = ioUtils.loadFromFileSystem(jsonFile);
-        assertThat(json, equalTo("jsonMerged"));
+        assertThat(json).isEqualTo("jsonMerged");
     }
 
     @Test
@@ -555,7 +554,7 @@ public class JSONDataSaverTest {
         jsonDataSaver.saveJSONData(destDir, "json1", unloadJSData, uriFileTranslator);
 
         String json = ioUtils.loadFromFileSystem(jsonFile);
-        assertThat(json, equalTo("jsonMerged"));
+        assertThat(json).isEqualTo("jsonMerged");
     }
 
     ArgumentMatcher<SortedMap<String, FileData>> isMapWithKeys(final String url1, final String url2) {

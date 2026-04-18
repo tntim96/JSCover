@@ -350,8 +350,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 
@@ -380,9 +379,9 @@ public class SummaryDataTest {
 
         SummaryData summaryData = new SummaryData(files);
 
-        assertThat(summaryData.getCodeLineCount(), equalTo(10));
-        assertThat(summaryData.getCodeLinesCoveredCount(), equalTo(7));
-        assertThat(summaryData.getLineCoverRate(), equalTo((double)7/10));
+        assertThat(summaryData.getCodeLineCount()).isEqualTo(10);
+        assertThat(summaryData.getCodeLinesCoveredCount()).isEqualTo(7);
+        assertThat(summaryData.getLineCoverRate()).isEqualTo((double)7/10);
     }
 
     @Test
@@ -398,9 +397,9 @@ public class SummaryDataTest {
 
         SummaryData summaryData = new SummaryData(files);
 
-        assertThat(summaryData.getBranchCount(), equalTo(10));
-        assertThat(summaryData.getBranchesCoveredCount(), equalTo(7));
-        assertThat(summaryData.getBranchRate(), equalTo((double)7/10));
+        assertThat(summaryData.getBranchCount()).isEqualTo(10);
+        assertThat(summaryData.getBranchesCoveredCount()).isEqualTo(7);
+        assertThat(summaryData.getBranchRate()).isEqualTo((double)7/10);
     }
 
     @Test
@@ -416,8 +415,8 @@ public class SummaryDataTest {
 
         SummaryData summaryData = new SummaryData(files);
 
-        assertThat(summaryData.getCodeFunctionCount(), equalTo(10));
-        assertThat(summaryData.getCodeFunctionCoveredCount(), equalTo(7));
-        assertThat(summaryData.getFunctionCoverRate(), equalTo((double)7/10));
+        assertThat(summaryData.getCodeFunctionCount()).isEqualTo(10);
+        assertThat(summaryData.getCodeFunctionCoveredCount()).isEqualTo(7);
+        assertThat(summaryData.getFunctionCoverRate()).isEqualTo((double)7/10);
     }
 }

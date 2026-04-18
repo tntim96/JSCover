@@ -346,8 +346,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.regex.Pattern;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class UriFileTranslatorRegTest {
 
@@ -356,7 +355,7 @@ public class UriFileTranslatorRegTest {
         String uri = "/src/C:/dev/trunk/rpux_trunk/client/tests/src/form/field/TU_DateRange.js";
         Pattern pattern = Pattern.compile("/src/(.*)");
         UriFileTranslatorReg translator = new UriFileTranslatorReg(pattern, "$1");
-        assertThat(translator.convertUriToFile(uri), equalTo("C:/dev/trunk/rpux_trunk/client/tests/src/form/field/TU_DateRange.js"));
+        assertThat(translator.convertUriToFile(uri)).isEqualTo("C:/dev/trunk/rpux_trunk/client/tests/src/form/field/TU_DateRange.js");
     }
 
     @Test
@@ -364,7 +363,7 @@ public class UriFileTranslatorRegTest {
         String uri = "/src/C:/dev/trunk/rpux_trunk/client/tests/src/form/field/TU_DateRange.js";
         Pattern pattern = Pattern.compile(".*/tests/(.*)");
         UriFileTranslatorReg translator = new UriFileTranslatorReg(pattern, "$1");
-        assertThat(translator.convertUriToFile(uri), equalTo("src/form/field/TU_DateRange.js"));
+        assertThat(translator.convertUriToFile(uri)).isEqualTo("src/form/field/TU_DateRange.js");
     }
 
     @Test
@@ -372,7 +371,7 @@ public class UriFileTranslatorRegTest {
         String uri = "/src/C:/dev/trunk/rpux_trunk/client/tests/src/form/field/TU_DateRange.js";
         Pattern pattern = Pattern.compile("/src/(.*)/tests(.*)");
         UriFileTranslatorReg translator = new UriFileTranslatorReg(pattern, "$1$2");
-        assertThat(translator.convertUriToFile(uri), equalTo("C:/dev/trunk/rpux_trunk/client/src/form/field/TU_DateRange.js"));
+        assertThat(translator.convertUriToFile(uri)).isEqualTo("C:/dev/trunk/rpux_trunk/client/src/form/field/TU_DateRange.js");
     }
 
     @Test
@@ -380,7 +379,7 @@ public class UriFileTranslatorRegTest {
         String uri = "/src/C:/dev/trunk/rpux_trunk/client/tests/src/form/field/TU_DateRange.js";
         Pattern pattern = Pattern.compile("/src/C:/dev/trunk/rpux_trunk/client(.*)");
         UriFileTranslatorReg translator = new UriFileTranslatorReg(pattern, "$1");
-        assertThat(translator.convertUriToFile(uri), equalTo("/tests/src/form/field/TU_DateRange.js"));
+        assertThat(translator.convertUriToFile(uri)).isEqualTo("/tests/src/form/field/TU_DateRange.js");
     }
 
     @Test
@@ -388,6 +387,6 @@ public class UriFileTranslatorRegTest {
         String uri = "/src/C:/dev/trunk/rpux_trunk/client/tests/src/form/field/TU_DateRange.js";
         Pattern pattern = Pattern.compile("/srcy/(.*)/tests(.*)");
         UriFileTranslatorReg translator = new UriFileTranslatorReg(pattern, "$1");
-        assertThat(translator.convertUriToFile(uri), equalTo("/src/C:/dev/trunk/rpux_trunk/client/tests/src/form/field/TU_DateRange.js"));
+        assertThat(translator.convertUriToFile(uri)).isEqualTo("/src/C:/dev/trunk/rpux_trunk/client/tests/src/form/field/TU_DateRange.js");
     }
 }

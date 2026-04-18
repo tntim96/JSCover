@@ -11,10 +11,7 @@ import java.io.File;
 import java.util.Properties;
 import java.util.SortedMap;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class FileSystemInstrumenterIntegrationTest {
     private FileSystemInstrumenter fileSystemInstrumenter = new FileSystemInstrumenter();
@@ -44,21 +41,21 @@ public class FileSystemInstrumenterIntegrationTest {
         String json = ioUtils.loadFromFileSystem(new File(destDir, "jscoverage.json"));
         SortedMap<String, FileData> map = jsonMerger.jsonToMap(json);
 
-        assertThat(map.keySet().size(), equalTo(6));
-        assertThat(map.containsKey("/root.js"), is(true));
-        assertThat(map.containsKey("/root-empty.js"), is(true));
-        assertThat(map.containsKey("/level1/level1.js"), is(true));
-        assertThat(map.containsKey("/level1/level2/level2-empty.js"), is(true));
-        assertThat(map.containsKey("/level1/level2/level2.js"), is(true));
-        assertThat(map.containsKey("/noInstrument/noInstrument.js"), is(true));
+        assertThat(map.keySet().size()).isEqualTo(6);
+        assertThat(map.containsKey("/root.js")).isTrue();
+        assertThat(map.containsKey("/root-empty.js")).isTrue();
+        assertThat(map.containsKey("/level1/level1.js")).isTrue();
+        assertThat(map.containsKey("/level1/level2/level2-empty.js")).isTrue();
+        assertThat(map.containsKey("/level1/level2/level2.js")).isTrue();
+        assertThat(map.containsKey("/noInstrument/noInstrument.js")).isTrue();
 
         FileData fileData = map.get("/level1/level1.js");
-        assertThat(fileData.getLines().size(), equalTo(5));
-        assertThat(fileData.getLines().get(0), nullValue());
-        assertThat(fileData.getLines().get(1), equalTo(0));
-        assertThat(fileData.getLines().get(2), equalTo(0));
-        assertThat(fileData.getLines().get(3), equalTo(0));
-        assertThat(fileData.getLines().get(4), equalTo(0));
+        assertThat(fileData.getLines().size()).isEqualTo(5);
+        assertThat(fileData.getLines().get(0)).isNull();
+        assertThat(fileData.getLines().get(1)).isEqualTo(0);
+        assertThat(fileData.getLines().get(2)).isEqualTo(0);
+        assertThat(fileData.getLines().get(3)).isEqualTo(0);
+        assertThat(fileData.getLines().get(4)).isEqualTo(0);
     }
 
     @Test
@@ -73,20 +70,20 @@ public class FileSystemInstrumenterIntegrationTest {
         String json = ioUtils.loadFromFileSystem(new File(destDir, "jscoverage.json"));
         SortedMap<String, FileData> map = jsonMerger.jsonToMap(json);
 
-        assertThat(map.keySet().size(), equalTo(3));
-        assertThat(map.containsKey("/root.js"), is(true));
-        assertThat(map.containsKey("/root-empty.js"), is(true));
-        assertThat(map.containsKey("/level1/level1.js"), is(true));
-        assertThat(map.containsKey("/level1/level2/level2-empty.js"), is(false));
-        assertThat(map.containsKey("/level1/level2/level2.js"), is(false));
-        assertThat(map.containsKey("/noInstrument/noInstrument.js"), is(false));
+        assertThat(map.keySet().size()).isEqualTo(3);
+        assertThat(map.containsKey("/root.js")).isTrue();
+        assertThat(map.containsKey("/root-empty.js")).isTrue();
+        assertThat(map.containsKey("/level1/level1.js")).isTrue();
+        assertThat(map.containsKey("/level1/level2/level2-empty.js")).isFalse();
+        assertThat(map.containsKey("/level1/level2/level2.js")).isFalse();
+        assertThat(map.containsKey("/noInstrument/noInstrument.js")).isFalse();
 
         FileData fileData = map.get("/level1/level1.js");
-        assertThat(fileData.getLines().size(), equalTo(5));
-        assertThat(fileData.getLines().get(0), nullValue());
-        assertThat(fileData.getLines().get(1), equalTo(0));
-        assertThat(fileData.getLines().get(2), equalTo(0));
-        assertThat(fileData.getLines().get(3), equalTo(0));
-        assertThat(fileData.getLines().get(4), equalTo(0));
+        assertThat(fileData.getLines().size()).isEqualTo(5);
+        assertThat(fileData.getLines().get(0)).isNull();
+        assertThat(fileData.getLines().get(1)).isEqualTo(0);
+        assertThat(fileData.getLines().get(2)).isEqualTo(0);
+        assertThat(fileData.getLines().get(3)).isEqualTo(0);
+        assertThat(fileData.getLines().get(4)).isEqualTo(0);
     }
 }

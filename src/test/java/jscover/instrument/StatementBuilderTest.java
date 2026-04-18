@@ -351,8 +351,7 @@ import org.junit.jupiter.api.Test;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class StatementBuilderTest {
@@ -368,20 +367,20 @@ public class StatementBuilderTest {
     @Test
     public void shouldBuildInstrumentationIncrementer() {
         Node statement = builder.buildInstrumentationIncrementer(7, "/dir/file.js", "lineData");
-        assertThat(new CodePrinter.Builder(statement).setCompilerOptions(options).build(), equalTo("_$jscoverage['/dir/file.js'].lineData[7]++"));
+        assertThat(new CodePrinter.Builder(statement).setCompilerOptions(options).build()).isEqualTo("_$jscoverage['/dir/file.js'].lineData[7]++");
     }
 
     @Test
     public void shouldCreateInstrumentationStatement2() {
         Node statement = builder.buildLineNumberExpression(7, "/dir/file.js", "lineData");
-        assertThat(new CodePrinter.Builder(statement).setCompilerOptions(options).build(), equalTo("_$jscoverage['/dir/file.js'].lineData[7]"));
+        assertThat(new CodePrinter.Builder(statement).setCompilerOptions(options).build()).isEqualTo("_$jscoverage['/dir/file.js'].lineData[7]");
     }
 
     @Test
     public void shouldCreateInstrumentationStatement() {
         Node statement = builder.buildInstrumentationStatement(7, "/dir/file.js", validLines);
-        assertThat(new CodePrinter.Builder(statement).setCompilerOptions(options).build(), equalTo("_$jscoverage['/dir/file.js'].lineData[7]++"));
-        assertThat(validLines, hasItem(7));
+        assertThat(new CodePrinter.Builder(statement).setCompilerOptions(options).build()).isEqualTo("_$jscoverage['/dir/file.js'].lineData[7]++");
+        assertThat(validLines).contains(7);
     }
 
     @Test
@@ -392,13 +391,13 @@ public class StatementBuilderTest {
     @Test
     public void shouldCreateConditionalIgnoreStatement() {
         Node statement = builder.buildConditionalStatement(7, 12, "/dir/file.js");
-        assertThat(new CodePrinter.Builder(statement).setCompilerOptions(options).build(), equalTo("_$jscoverage['/dir/file.js'].conditionals[7]=12"));
+        assertThat(new CodePrinter.Builder(statement).setCompilerOptions(options).build()).isEqualTo("_$jscoverage['/dir/file.js'].conditionals[7]=12");
     }
 
     @Test
     public void shouldCreateFunctionInstrumentationStatement() {
         Node statement = builder.buildFunctionInstrumentationStatement(7, "/dir/file.js");
-        assertThat(new CodePrinter.Builder(statement).setCompilerOptions(options).build(), equalTo("_$jscoverage['/dir/file.js'].functionData[7]++"));
+        assertThat(new CodePrinter.Builder(statement).setCompilerOptions(options).build()).isEqualTo("_$jscoverage['/dir/file.js'].functionData[7]++");
     }
 
     @Test
@@ -407,9 +406,9 @@ public class StatementBuilderTest {
         Node getProp = IR.getprop(jscover, "someval");
         Node call = IR.call(getProp);
 
-        assertThat(builder.isInstrumentation(call), is(true));//No source so must be synthetic
+        assertThat(builder.isInstrumentation(call)).isTrue();//No source so must be synthetic
         call.setSourceFileForTesting("Hey");
-        assertThat(builder.isInstrumentation(call), is(true));
+        assertThat(builder.isInstrumentation(call)).isTrue();
     }
 
     @Test
@@ -419,6 +418,6 @@ public class StatementBuilderTest {
         Node call = IR.call(getProp);
         call.setSourceFileForTesting("Hey");
 
-        assertThat(builder.isInstrumentation(call), is(false));
+        assertThat(builder.isInstrumentation(call)).isFalse();
     }
 }

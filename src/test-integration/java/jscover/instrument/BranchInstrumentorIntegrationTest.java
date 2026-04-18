@@ -348,8 +348,7 @@ import jscover.util.IoUtils;
 import org.junit.jupiter.api.Test;
 import org.mozilla.javascript.*;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class BranchInstrumentorIntegrationTest {
     private static IoUtils ioUtils = IoUtils.getInstance();
@@ -372,21 +371,21 @@ public class BranchInstrumentorIntegrationTest {
         Function coveredFn = (Function) ScriptableObject.getProperty(coverageData, "covered");
         Function testFn = (Function) scope.get("test", scope);
 
-        assertThat(coverageData.get("evalTrue", coverageData), equalTo(0));
-        assertThat(coverageData.get("evalFalse", coverageData), equalTo(0));
-        assertThat(coverageData.get("position", coverageData), equalTo(6));
-        assertThat(coverageData.get("nodeLength", coverageData), equalTo(5));
-        assertThat(coveredFn.call(context, scope, coverageData, new Object[0]), equalTo(false));
+        assertThat(coverageData.get("evalTrue", coverageData)).isEqualTo(0);
+        assertThat(coverageData.get("evalFalse", coverageData)).isEqualTo(0);
+        assertThat(coverageData.get("position", coverageData)).isEqualTo(6);
+        assertThat(coverageData.get("nodeLength", coverageData)).isEqualTo(5);
+        assertThat(coveredFn.call(context, scope, coverageData, new Object[0])).isEqualTo(false);
 
         testFn.call(context, scope, null, new Object[]{-1});
-        assertThat(coverageData.get("evalTrue", coverageData), equalTo(1));
-        assertThat(coverageData.get("evalFalse", coverageData), equalTo(0));
-        assertThat(coveredFn.call(context, scope, coverageData, new Object[0]), equalTo(false));
+        assertThat(coverageData.get("evalTrue", coverageData)).isEqualTo(1);
+        assertThat(coverageData.get("evalFalse", coverageData)).isEqualTo(0);
+        assertThat(coveredFn.call(context, scope, coverageData, new Object[0])).isEqualTo(false);
 
         testFn.call(context, scope, null, new Object[]{1});
-        assertThat(coverageData.get("evalTrue", coverageData), equalTo(1));
-        assertThat(coverageData.get("evalFalse", coverageData), equalTo(1));
-        assertThat(coveredFn.call(context, scope, coverageData, new Object[0]), equalTo(true));
+        assertThat(coverageData.get("evalTrue", coverageData)).isEqualTo(1);
+        assertThat(coverageData.get("evalFalse", coverageData)).isEqualTo(1);
+        assertThat(coveredFn.call(context, scope, coverageData, new Object[0])).isEqualTo(true);
     }
 
     @Test
@@ -397,8 +396,8 @@ public class BranchInstrumentorIntegrationTest {
         script.append("test(1);");
         runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
-        assertThat(coverageData.get("evalTrue", coverageData), equalTo(1));
-        assertThat(coverageData.get("evalFalse", coverageData), equalTo(0));
+        assertThat(coverageData.get("evalTrue", coverageData)).isEqualTo(1);
+        assertThat(coverageData.get("evalFalse", coverageData)).isEqualTo(0);
     }
 
     @Test
@@ -406,8 +405,8 @@ public class BranchInstrumentorIntegrationTest {
         StringBuilder script = new StringBuilder("var x = [ 1 || 0];\n");
         runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 1, 1);
-        assertThat(coverageData.get("evalTrue", coverageData), equalTo(1));
-        assertThat(coverageData.get("evalFalse", coverageData), equalTo(0));
+        assertThat(coverageData.get("evalTrue", coverageData)).isEqualTo(1);
+        assertThat(coverageData.get("evalFalse", coverageData)).isEqualTo(0);
     }
 
     @Test
@@ -415,15 +414,15 @@ public class BranchInstrumentorIntegrationTest {
         StringBuilder script = new StringBuilder("function test(a) {\n  var x = a || {};\n  }\ntest();");
         runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
-        assertThat(coverageData.get("evalTrue", coverageData), equalTo(1));
-        assertThat(coverageData.get("evalFalse", coverageData), equalTo(0));
+        assertThat(coverageData.get("evalTrue", coverageData)).isEqualTo(1);
+        assertThat(coverageData.get("evalFalse", coverageData)).isEqualTo(0);
     }
 
     @Test
     public void shouldNotWrapCoalesceIfConfiguredNotTo() {
         String source = "function test(a) {\n  var x = a || {};\n  }\ntest();";
         runScript(source, true);
-        assertThat(getBranchData(scope, "test.js").size(), equalTo(0));
+        assertThat(getBranchData(scope, "test.js").size()).isEqualTo(0);
     }
 
     @Test
@@ -431,8 +430,8 @@ public class BranchInstrumentorIntegrationTest {
         String source = "function test(a) {\n  var x = a > 7;\n  }\ntest(3);";
         runScript(source, true);
         Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
-        assertThat(coverageData.get("evalTrue", coverageData), equalTo(0));
-        assertThat(coverageData.get("evalFalse", coverageData), equalTo(1));
+        assertThat(coverageData.get("evalTrue", coverageData)).isEqualTo(0);
+        assertThat(coverageData.get("evalFalse", coverageData)).isEqualTo(1);
     }
 
     @Test
@@ -442,8 +441,8 @@ public class BranchInstrumentorIntegrationTest {
         script.append("var x = y[prop || 'a'];");
         runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 3, 1);
-        assertThat(coverageData.get("evalTrue", coverageData), equalTo(1));
-        assertThat(coverageData.get("evalFalse", coverageData), equalTo(0));
+        assertThat(coverageData.get("evalTrue", coverageData)).isEqualTo(1);
+        assertThat(coverageData.get("evalFalse", coverageData)).isEqualTo(0);
     }
 
     @Test
@@ -454,8 +453,8 @@ public class BranchInstrumentorIntegrationTest {
         script.append("test();\n");
         runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
-        assertThat(coverageData.get("evalTrue", coverageData), equalTo(0));
-        assertThat(coverageData.get("evalFalse", coverageData), equalTo(1));
+        assertThat(coverageData.get("evalTrue", coverageData)).isEqualTo(0);
+        assertThat(coverageData.get("evalFalse", coverageData)).isEqualTo(1);
     }
 
     @Test
@@ -464,8 +463,8 @@ public class BranchInstrumentorIntegrationTest {
         script.append("x = x === undefined;\n");
         runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
-        assertThat(coverageData.get("evalTrue", coverageData), equalTo(0));
-        assertThat(coverageData.get("evalFalse", coverageData), equalTo(1));
+        assertThat(coverageData.get("evalTrue", coverageData)).isEqualTo(0);
+        assertThat(coverageData.get("evalFalse", coverageData)).isEqualTo(1);
     }
 
     @Test
@@ -475,8 +474,8 @@ public class BranchInstrumentorIntegrationTest {
         script.append("  x--;\n");
         runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
-        assertThat(coverageData.get("evalTrue", coverageData), equalTo(1));
-        assertThat(coverageData.get("evalFalse", coverageData), equalTo(0));
+        assertThat(coverageData.get("evalTrue", coverageData)).isEqualTo(1);
+        assertThat(coverageData.get("evalFalse", coverageData)).isEqualTo(0);
     }
 
     @Test
@@ -486,8 +485,8 @@ public class BranchInstrumentorIntegrationTest {
         script.append("  x = false;\n");
         runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
-        assertThat(coverageData.get("evalTrue", coverageData), equalTo(1));
-        assertThat(coverageData.get("evalFalse", coverageData), equalTo(0));
+        assertThat(coverageData.get("evalTrue", coverageData)).isEqualTo(1);
+        assertThat(coverageData.get("evalFalse", coverageData)).isEqualTo(0);
     }
 
     @Test
@@ -497,8 +496,8 @@ public class BranchInstrumentorIntegrationTest {
         script.append("  x--;\n");
         runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
-        assertThat(coverageData.get("evalTrue", coverageData), equalTo(1));
-        assertThat(coverageData.get("evalFalse", coverageData), equalTo(1));
+        assertThat(coverageData.get("evalTrue", coverageData)).isEqualTo(1);
+        assertThat(coverageData.get("evalFalse", coverageData)).isEqualTo(1);
     }
 
     @Test
@@ -508,8 +507,8 @@ public class BranchInstrumentorIntegrationTest {
         script.append("  x = false;\n");
         runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
-        assertThat(coverageData.get("evalTrue", coverageData), equalTo(1));
-        assertThat(coverageData.get("evalFalse", coverageData), equalTo(1));
+        assertThat(coverageData.get("evalTrue", coverageData)).isEqualTo(1);
+        assertThat(coverageData.get("evalFalse", coverageData)).isEqualTo(1);
     }
 
     @Test
@@ -518,8 +517,8 @@ public class BranchInstrumentorIntegrationTest {
         script.append("  ;\n");
         runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 1, 1);
-        assertThat(coverageData.get("evalTrue", coverageData), equalTo(0));
-        assertThat(coverageData.get("evalFalse", coverageData), equalTo(1));
+        assertThat(coverageData.get("evalTrue", coverageData)).isEqualTo(0);
+        assertThat(coverageData.get("evalFalse", coverageData)).isEqualTo(1);
     }
 
     @Test
@@ -528,8 +527,8 @@ public class BranchInstrumentorIntegrationTest {
         script.append("  ;\n");
         runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 1, 1);
-        assertThat(coverageData.get("evalTrue", coverageData), equalTo(1));
-        assertThat(coverageData.get("evalFalse", coverageData), equalTo(0));
+        assertThat(coverageData.get("evalTrue", coverageData)).isEqualTo(1);
+        assertThat(coverageData.get("evalFalse", coverageData)).isEqualTo(0);
     }
 
     @Test
@@ -540,8 +539,8 @@ public class BranchInstrumentorIntegrationTest {
         script.append("while (x > 0)\n");
         runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 4, 1);
-        assertThat(coverageData.get("evalTrue", coverageData), equalTo(0));
-        assertThat(coverageData.get("evalFalse", coverageData), equalTo(1));
+        assertThat(coverageData.get("evalTrue", coverageData)).isEqualTo(0);
+        assertThat(coverageData.get("evalFalse", coverageData)).isEqualTo(1);
     }
 
     @Test
@@ -552,8 +551,8 @@ public class BranchInstrumentorIntegrationTest {
         script.append("while (x)\n");
         runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 4, 1);
-        assertThat(coverageData.get("evalTrue", coverageData), equalTo(0));
-        assertThat(coverageData.get("evalFalse", coverageData), equalTo(1));
+        assertThat(coverageData.get("evalTrue", coverageData)).isEqualTo(0);
+        assertThat(coverageData.get("evalFalse", coverageData)).isEqualTo(1);
     }
 
     @Test
@@ -564,8 +563,8 @@ public class BranchInstrumentorIntegrationTest {
         script.append("}\n");
         runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 1, 1);
-        assertThat(coverageData.get("evalTrue", coverageData), equalTo(1));
-        assertThat(coverageData.get("evalFalse", coverageData), equalTo(0));
+        assertThat(coverageData.get("evalTrue", coverageData)).isEqualTo(1);
+        assertThat(coverageData.get("evalFalse", coverageData)).isEqualTo(0);
     }
 
     @Test
@@ -574,8 +573,8 @@ public class BranchInstrumentorIntegrationTest {
         script.append("  ;\n");
         runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 1, 1);
-        assertThat(coverageData.get("evalTrue", coverageData), equalTo(1));
-        assertThat(coverageData.get("evalFalse", coverageData), equalTo(1));
+        assertThat(coverageData.get("evalTrue", coverageData)).isEqualTo(1);
+        assertThat(coverageData.get("evalFalse", coverageData)).isEqualTo(1);
     }
 
     @Test
@@ -583,7 +582,7 @@ public class BranchInstrumentorIntegrationTest {
         StringBuilder script = new StringBuilder("for (;;)\n");
         script.append("  break;\n");
         runScript(script.toString(), false);
-        assertThat(getBranchData(scope, "test.js").size(), equalTo(0));
+        assertThat(getBranchData(scope, "test.js").size()).isEqualTo(0);
     }
 
     @Test
@@ -593,8 +592,8 @@ public class BranchInstrumentorIntegrationTest {
         script.append("  x = false;\n");
         runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
-        assertThat(coverageData.get("evalTrue", coverageData), equalTo(1));
-        assertThat(coverageData.get("evalFalse", coverageData), equalTo(1));
+        assertThat(coverageData.get("evalTrue", coverageData)).isEqualTo(1);
+        assertThat(coverageData.get("evalFalse", coverageData)).isEqualTo(1);
     }
 
     @Test
@@ -603,8 +602,8 @@ public class BranchInstrumentorIntegrationTest {
         script.append("var y = x > 0 ? 1 : 0;\n");
         runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
-        assertThat(coverageData.get("evalTrue", coverageData), equalTo(1));
-        assertThat(coverageData.get("evalFalse", coverageData), equalTo(0));
+        assertThat(coverageData.get("evalTrue", coverageData)).isEqualTo(1);
+        assertThat(coverageData.get("evalFalse", coverageData)).isEqualTo(0);
     }
 
     @Test
@@ -613,8 +612,8 @@ public class BranchInstrumentorIntegrationTest {
         script.append("var y = (x > 0) ? 1 : 0;\n");
         runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
-        assertThat(coverageData.get("evalTrue", coverageData), equalTo(1));
-        assertThat(coverageData.get("evalFalse", coverageData), equalTo(0));
+        assertThat(coverageData.get("evalTrue", coverageData)).isEqualTo(1);
+        assertThat(coverageData.get("evalFalse", coverageData)).isEqualTo(0);
     }
 
     @Test
@@ -623,8 +622,8 @@ public class BranchInstrumentorIntegrationTest {
         script.append("var x = y ? 1 : 2;\n");
         runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
-        assertThat(coverageData.get("evalTrue", coverageData), equalTo(1));
-        assertThat(coverageData.get("evalFalse", coverageData), equalTo(0));
+        assertThat(coverageData.get("evalTrue", coverageData)).isEqualTo(1);
+        assertThat(coverageData.get("evalFalse", coverageData)).isEqualTo(0);
     }
 
     @Test
@@ -633,8 +632,8 @@ public class BranchInstrumentorIntegrationTest {
         script.append("var x = (y) ? 1 : 2;\n");
         runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
-        assertThat(coverageData.get("evalTrue", coverageData), equalTo(1));
-        assertThat(coverageData.get("evalFalse", coverageData), equalTo(0));
+        assertThat(coverageData.get("evalTrue", coverageData)).isEqualTo(1);
+        assertThat(coverageData.get("evalFalse", coverageData)).isEqualTo(0);
     }
 
     @Test
@@ -643,14 +642,14 @@ public class BranchInstrumentorIntegrationTest {
         script.append("var y = x > 0 ? x > 100 : x < 100;\n");
         runScript(script.toString(), false);
         Scriptable coverageData1 = getCoverageData(scope, "test.js", 2, 1);
-        assertThat(coverageData1.get("evalTrue", coverageData1), equalTo(1));
-        assertThat(coverageData1.get("evalFalse", coverageData1), equalTo(0));
+        assertThat(coverageData1.get("evalTrue", coverageData1)).isEqualTo(1);
+        assertThat(coverageData1.get("evalFalse", coverageData1)).isEqualTo(0);
         Scriptable coverageData2 = getCoverageData(scope, "test.js", 2, 2);
-        assertThat(coverageData2.get("evalTrue", coverageData2), equalTo(0));
-        assertThat(coverageData2.get("evalFalse", coverageData2), equalTo(1));
+        assertThat(coverageData2.get("evalTrue", coverageData2)).isEqualTo(0);
+        assertThat(coverageData2.get("evalFalse", coverageData2)).isEqualTo(1);
         Scriptable coverageData3 = getCoverageData(scope, "test.js", 2, 3);
-        assertThat(coverageData3.get("evalTrue", coverageData3), equalTo(0));
-        assertThat(coverageData3.get("evalFalse", coverageData3), equalTo(0));
+        assertThat(coverageData3.get("evalTrue", coverageData3)).isEqualTo(0);
+        assertThat(coverageData3.get("evalFalse", coverageData3)).isEqualTo(0);
     }
 
     @Test
@@ -659,8 +658,8 @@ public class BranchInstrumentorIntegrationTest {
         script.append("test(0, 1 > 0);\n");
         runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
-        assertThat(coverageData.get("evalTrue", coverageData), equalTo(1));
-        assertThat(coverageData.get("evalFalse", coverageData), equalTo(0));
+        assertThat(coverageData.get("evalTrue", coverageData)).isEqualTo(1);
+        assertThat(coverageData.get("evalFalse", coverageData)).isEqualTo(0);
     }
 
     @Test
@@ -672,8 +671,8 @@ public class BranchInstrumentorIntegrationTest {
         script.append("test(true);\n");
         runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
-        assertThat(coverageData.get("evalTrue", coverageData), equalTo(0));
-        assertThat(coverageData.get("evalFalse", coverageData), equalTo(1));
+        assertThat(coverageData.get("evalTrue", coverageData)).isEqualTo(0);
+        assertThat(coverageData.get("evalFalse", coverageData)).isEqualTo(1);
     }
 
     @Test
@@ -682,8 +681,8 @@ public class BranchInstrumentorIntegrationTest {
         script.append("test(1 > 0, 0);\n");
         runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
-        assertThat(coverageData.get("evalTrue", coverageData), equalTo(1));
-        assertThat(coverageData.get("evalFalse", coverageData), equalTo(0));
+        assertThat(coverageData.get("evalTrue", coverageData)).isEqualTo(1);
+        assertThat(coverageData.get("evalFalse", coverageData)).isEqualTo(0);
     }
 
     @Test
@@ -701,20 +700,20 @@ public class BranchInstrumentorIntegrationTest {
         Function coveredFn2 = (Function) ScriptableObject.getProperty(coverageData2, "covered");
         Function testFn = (Function) scope.get("test", scope);
 
-        assertThat(coveredFn1.call(context, scope, coverageData1, new Object[0]), equalTo(false));
-        assertThat(coveredFn2.call(context, scope, coverageData2, new Object[0]), equalTo(false));
+        assertThat(coveredFn1.call(context, scope, coverageData1, new Object[0])).isEqualTo(false);
+        assertThat(coveredFn2.call(context, scope, coverageData2, new Object[0])).isEqualTo(false);
 
         testFn.call(context, scope, null, new Object[]{-1});
-        assertThat(coveredFn1.call(context, scope, coverageData1, new Object[0]), equalTo(false));
-        assertThat(coveredFn2.call(context, scope, coverageData2, new Object[0]), equalTo(false));
+        assertThat(coveredFn1.call(context, scope, coverageData1, new Object[0])).isEqualTo(false);
+        assertThat(coveredFn2.call(context, scope, coverageData2, new Object[0])).isEqualTo(false);
 
         testFn.call(context, scope, null, new Object[]{1});
-        assertThat(coveredFn1.call(context, scope, coverageData1, new Object[0]), equalTo(true));
-        assertThat(coveredFn2.call(context, scope, coverageData2, new Object[0]), equalTo(false));
+        assertThat(coveredFn1.call(context, scope, coverageData1, new Object[0])).isEqualTo(true);
+        assertThat(coveredFn2.call(context, scope, coverageData2, new Object[0])).isEqualTo(false);
 
         testFn.call(context, scope, null, new Object[]{1000});
-        assertThat(coveredFn1.call(context, scope, coverageData1, new Object[0]), equalTo(true));
-        assertThat(coveredFn2.call(context, scope, coverageData2, new Object[0]), equalTo(true));
+        assertThat(coveredFn1.call(context, scope, coverageData1, new Object[0])).isEqualTo(true);
+        assertThat(coveredFn2.call(context, scope, coverageData2, new Object[0])).isEqualTo(true);
     }
 
     @Test
@@ -733,24 +732,24 @@ public class BranchInstrumentorIntegrationTest {
         Function coveredFn2 = (Function) ScriptableObject.getProperty(coverageData2, "covered");
         Function coveredFn3 = (Function) ScriptableObject.getProperty(coverageData3, "covered");
 
-        assertThat(coveredFn1.call(context, scope, coverageData1, new Object[0]), equalTo(false));
-        assertThat(coveredFn2.call(context, scope, coverageData2, new Object[0]), equalTo(false));
-        assertThat(coveredFn3.call(context, scope, coverageData3, new Object[0]), equalTo(false));
+        assertThat(coveredFn1.call(context, scope, coverageData1, new Object[0])).isEqualTo(false);
+        assertThat(coveredFn2.call(context, scope, coverageData2, new Object[0])).isEqualTo(false);
+        assertThat(coveredFn3.call(context, scope, coverageData3, new Object[0])).isEqualTo(false);
 
         testFn.call(context, scope, null, new Object[]{-1, -1});
-        assertThat(coveredFn1.call(context, scope, coverageData1, new Object[0]), equalTo(false));
-        assertThat(coveredFn2.call(context, scope, coverageData2, new Object[0]), equalTo(false));
-        assertThat(coveredFn3.call(context, scope, coverageData3, new Object[0]), equalTo(false));
+        assertThat(coveredFn1.call(context, scope, coverageData1, new Object[0])).isEqualTo(false);
+        assertThat(coveredFn2.call(context, scope, coverageData2, new Object[0])).isEqualTo(false);
+        assertThat(coveredFn3.call(context, scope, coverageData3, new Object[0])).isEqualTo(false);
 
         testFn.call(context, scope, null, new Object[]{1, -1});
-        assertThat(coveredFn1.call(context, scope, coverageData1, new Object[0]), equalTo(false));
-        assertThat(coveredFn2.call(context, scope, coverageData2, new Object[0]), equalTo(true));
-        assertThat(coveredFn3.call(context, scope, coverageData3, new Object[0]), equalTo(false));
+        assertThat(coveredFn1.call(context, scope, coverageData1, new Object[0])).isEqualTo(false);
+        assertThat(coveredFn2.call(context, scope, coverageData2, new Object[0])).isEqualTo(true);
+        assertThat(coveredFn3.call(context, scope, coverageData3, new Object[0])).isEqualTo(false);
 
         testFn.call(context, scope, null, new Object[]{1, 1});
-        assertThat(coveredFn1.call(context, scope, coverageData1, new Object[0]), equalTo(true));
-        assertThat(coveredFn2.call(context, scope, coverageData2, new Object[0]), equalTo(true));
-        assertThat(coveredFn3.call(context, scope, coverageData3, new Object[0]), equalTo(true));
+        assertThat(coveredFn1.call(context, scope, coverageData1, new Object[0])).isEqualTo(true);
+        assertThat(coveredFn2.call(context, scope, coverageData2, new Object[0])).isEqualTo(true);
+        assertThat(coveredFn3.call(context, scope, coverageData3, new Object[0])).isEqualTo(true);
     }
 
     @Test
@@ -766,16 +765,16 @@ public class BranchInstrumentorIntegrationTest {
         Function coveredFn2 = (Function) ScriptableObject.getProperty(coverageData2, "covered");
         Function testFn = (Function) scope.get("test", scope);
 
-        assertThat(coveredFn1.call(context, scope, coverageData1, new Object[0]), equalTo(false));
-        assertThat(coveredFn2.call(context, scope, coverageData2, new Object[0]), equalTo(false));
+        assertThat(coveredFn1.call(context, scope, coverageData1, new Object[0])).isEqualTo(false);
+        assertThat(coveredFn2.call(context, scope, coverageData2, new Object[0])).isEqualTo(false);
 
         testFn.call(context, scope, null, new Object[]{-1});
-        assertThat(coveredFn1.call(context, scope, coverageData1, new Object[0]), equalTo(false));
-        assertThat(coveredFn2.call(context, scope, coverageData2, new Object[0]), equalTo(false));
+        assertThat(coveredFn1.call(context, scope, coverageData1, new Object[0])).isEqualTo(false);
+        assertThat(coveredFn2.call(context, scope, coverageData2, new Object[0])).isEqualTo(false);
 
         testFn.call(context, scope, null, new Object[]{1});
-        assertThat(coveredFn1.call(context, scope, coverageData1, new Object[0]), equalTo(true));
-        assertThat(coveredFn2.call(context, scope, coverageData2, new Object[0]), equalTo(true));
+        assertThat(coveredFn1.call(context, scope, coverageData1, new Object[0])).isEqualTo(true);
+        assertThat(coveredFn2.call(context, scope, coverageData2, new Object[0])).isEqualTo(true);
     }
 
     @Test
@@ -785,8 +784,8 @@ public class BranchInstrumentorIntegrationTest {
         script.append("};\n");
         runScript(script.toString(), false);
         Scriptable coverageData1 = getCoverageData(scope, "test.js", 2, 1);
-        assertThat(coverageData1.get("evalTrue", coverageData1), equalTo(1));
-        assertThat(coverageData1.get("evalFalse", coverageData1), equalTo(0));
+        assertThat(coverageData1.get("evalTrue", coverageData1)).isEqualTo(1);
+        assertThat(coverageData1.get("evalFalse", coverageData1)).isEqualTo(0);
     }
 
     @Test
@@ -817,24 +816,24 @@ public class BranchInstrumentorIntegrationTest {
         Function coveredFn3 = (Function) ScriptableObject.getProperty(coverageData3, "covered");
         Function testFn = (Function) scope.get("test", scope);
 
-        assertThat(coveredFn1.call(context, scope, coverageData1, new Object[0]), equalTo(false));
-        assertThat(coveredFn2.call(context, scope, coverageData2, new Object[0]), equalTo(false));
-        assertThat(coveredFn2.call(context, scope, coverageData3, new Object[0]), equalTo(false));
+        assertThat(coveredFn1.call(context, scope, coverageData1, new Object[0])).isEqualTo(false);
+        assertThat(coveredFn2.call(context, scope, coverageData2, new Object[0])).isEqualTo(false);
+        assertThat(coveredFn2.call(context, scope, coverageData3, new Object[0])).isEqualTo(false);
 
         testFn.call(context, scope, null, new Object[]{-1, -1});
-        assertThat(coveredFn1.call(context, scope, coverageData1, new Object[0]), equalTo(false));
-        assertThat(coveredFn2.call(context, scope, coverageData2, new Object[0]), equalTo(false));
-        assertThat(coveredFn3.call(context, scope, coverageData3, new Object[0]), equalTo(false));
+        assertThat(coveredFn1.call(context, scope, coverageData1, new Object[0])).isEqualTo(false);
+        assertThat(coveredFn2.call(context, scope, coverageData2, new Object[0])).isEqualTo(false);
+        assertThat(coveredFn3.call(context, scope, coverageData3, new Object[0])).isEqualTo(false);
 
         testFn.call(context, scope, null, new Object[]{1, -1});
-        assertThat(coveredFn1.call(context, scope, coverageData1, new Object[0]), equalTo(true));
-        assertThat(coveredFn2.call(context, scope, coverageData2, new Object[0]), equalTo(true));
-        assertThat(coveredFn3.call(context, scope, coverageData3, new Object[0]), equalTo(false));
+        assertThat(coveredFn1.call(context, scope, coverageData1, new Object[0])).isEqualTo(true);
+        assertThat(coveredFn2.call(context, scope, coverageData2, new Object[0])).isEqualTo(true);
+        assertThat(coveredFn3.call(context, scope, coverageData3, new Object[0])).isEqualTo(false);
 
         testFn.call(context, scope, null, new Object[]{-1, 1});
-        assertThat(coveredFn1.call(context, scope, coverageData1, new Object[0]), equalTo(true));
-        assertThat(coveredFn2.call(context, scope, coverageData2, new Object[0]), equalTo(true));
-        assertThat(coveredFn3.call(context, scope, coverageData3, new Object[0]), equalTo(true));
+        assertThat(coveredFn1.call(context, scope, coverageData1, new Object[0])).isEqualTo(true);
+        assertThat(coveredFn2.call(context, scope, coverageData2, new Object[0])).isEqualTo(true);
+        assertThat(coveredFn3.call(context, scope, coverageData3, new Object[0])).isEqualTo(true);
     }
 
     @Test
@@ -844,8 +843,8 @@ public class BranchInstrumentorIntegrationTest {
         script.append("    ;\n");
         runScript(script.toString(), false);
         Scriptable coverageData = getCoverageData(scope, "test.js", 2, 1);
-        assertThat(coverageData.get("evalTrue", coverageData), equalTo(1));
-        assertThat(coverageData.get("evalFalse", coverageData), equalTo(0));
+        assertThat(coverageData.get("evalTrue", coverageData)).isEqualTo(1);
+        assertThat(coverageData.get("evalFalse", coverageData)).isEqualTo(0);
     }
 
     @Test
@@ -859,21 +858,21 @@ public class BranchInstrumentorIntegrationTest {
         Function coveredFn = (Function) ScriptableObject.getProperty(coverageData, "covered");
         Function testFn = (Function) scope.get("test", scope);
 
-        assertThat(coverageData.get("evalTrue", coverageData), equalTo(0));
-        assertThat(coverageData.get("evalFalse", coverageData), equalTo(0));
-        assertThat(coverageData.get("position", coverageData), equalTo(6));
-        assertThat(coverageData.get("nodeLength", coverageData), equalTo(1));
-        assertThat(coveredFn.call(context, scope, coverageData, new Object[0]), equalTo(false));
+        assertThat(coverageData.get("evalTrue", coverageData)).isEqualTo(0);
+        assertThat(coverageData.get("evalFalse", coverageData)).isEqualTo(0);
+        assertThat(coverageData.get("position", coverageData)).isEqualTo(6);
+        assertThat(coverageData.get("nodeLength", coverageData)).isEqualTo(1);
+        assertThat(coveredFn.call(context, scope, coverageData, new Object[0])).isEqualTo(false);
 
         testFn.call(context, scope, null, new Object[]{true});
-        assertThat(coverageData.get("evalTrue", coverageData), equalTo(1));
-        assertThat(coverageData.get("evalFalse", coverageData), equalTo(0));
-        assertThat(coveredFn.call(context, scope, coverageData, new Object[0]), equalTo(false));
+        assertThat(coverageData.get("evalTrue", coverageData)).isEqualTo(1);
+        assertThat(coverageData.get("evalFalse", coverageData)).isEqualTo(0);
+        assertThat(coveredFn.call(context, scope, coverageData, new Object[0])).isEqualTo(false);
 
         testFn.call(context, scope, null, new Object[]{false});
-        assertThat(coverageData.get("evalTrue", coverageData), equalTo(1));
-        assertThat(coverageData.get("evalFalse", coverageData), equalTo(1));
-        assertThat(coveredFn.call(context, scope, coverageData, new Object[0]), equalTo(true));
+        assertThat(coverageData.get("evalTrue", coverageData)).isEqualTo(1);
+        assertThat(coverageData.get("evalFalse", coverageData)).isEqualTo(1);
+        assertThat(coveredFn.call(context, scope, coverageData, new Object[0])).isEqualTo(true);
     }
 
     @Test
@@ -887,21 +886,21 @@ public class BranchInstrumentorIntegrationTest {
         Function coveredFn = (Function) ScriptableObject.getProperty(coverageData, "covered");
         Function testFn = (Function) scope.get("test", scope);
 
-        assertThat(coverageData.get("evalTrue", coverageData), equalTo(0));
-        assertThat(coverageData.get("evalFalse", coverageData), equalTo(0));
-        assertThat(coverageData.get("position", coverageData), equalTo(10));
-        assertThat(coverageData.get("nodeLength", coverageData), equalTo(5));
-        assertThat(coveredFn.call(context, scope, coverageData, new Object[0]), equalTo(false));
+        assertThat(coverageData.get("evalTrue", coverageData)).isEqualTo(0);
+        assertThat(coverageData.get("evalFalse", coverageData)).isEqualTo(0);
+        assertThat(coverageData.get("position", coverageData)).isEqualTo(10);
+        assertThat(coverageData.get("nodeLength", coverageData)).isEqualTo(5);
+        assertThat(coveredFn.call(context, scope, coverageData, new Object[0])).isEqualTo(false);
 
         testFn.call(context, scope, null, new Object[]{-1});
-        assertThat(coverageData.get("evalTrue", coverageData), equalTo(1));
-        assertThat(coverageData.get("evalFalse", coverageData), equalTo(0));
-        assertThat(coveredFn.call(context, scope, coverageData, new Object[0]), equalTo(false));
+        assertThat(coverageData.get("evalTrue", coverageData)).isEqualTo(1);
+        assertThat(coverageData.get("evalFalse", coverageData)).isEqualTo(0);
+        assertThat(coveredFn.call(context, scope, coverageData, new Object[0])).isEqualTo(false);
 
         testFn.call(context, scope, null, new Object[]{1});
-        assertThat(coverageData.get("evalTrue", coverageData), equalTo(1));
-        assertThat(coverageData.get("evalFalse", coverageData), equalTo(1));
-        assertThat(coveredFn.call(context, scope, coverageData, new Object[0]), equalTo(true));
+        assertThat(coverageData.get("evalTrue", coverageData)).isEqualTo(1);
+        assertThat(coverageData.get("evalFalse", coverageData)).isEqualTo(1);
+        assertThat(coveredFn.call(context, scope, coverageData, new Object[0])).isEqualTo(true);
     }
 
     private Scriptable getCoverageData(Scriptable scope, String uri, int lineNo, int conditionNo) {

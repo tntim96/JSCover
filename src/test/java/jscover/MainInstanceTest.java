@@ -342,18 +342,13 @@ Public License instead of this License.
 
 package jscover;
 
-import jscover.filesystem.ConfigurationForFS;
 import jscover.filesystem.FileSystemInstrumenter;
 import jscover.server.ConfigurationForServer;
 import jscover.server.WebDaemon;
-import jscover.stdout.ConfigurationForStdOut;
 import jscover.stdout.StdOutInstrumenter;
 import jscover.util.IoService;
 import jscover.util.IoUtils;
 import jscover.util.ReflectionUtils;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeMatcher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -365,12 +360,9 @@ import java.io.IOException;
 import java.util.Properties;
 
 import static com.google.javascript.jscomp.CompilerOptions.LanguageMode.ECMASCRIPT5;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.sameInstance;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.*;
-import static org.mockito.hamcrest.MockitoHamcrest.argThat;
 
 @ExtendWith(MockitoExtension.class)
 public class MainInstanceTest {
@@ -403,7 +395,7 @@ public class MainInstanceTest {
         try {
             main.initialize();
         } catch (RuntimeException e) {
-            assertThat(e.getMessage(), equalTo("java.io.IOException: Ouch!"));
+            assertThat(e.getMessage()).isEqualTo("java.io.IOException: Ouch!");
         }
     }
 
@@ -447,17 +439,7 @@ public class MainInstanceTest {
     public void shouldRunWebServer() throws IOException {
         main.runMain(new String[]{"-ws", "--port=1234"});
 
-        TypeSafeMatcher<ConfigurationForServer> matcher = new TypeSafeMatcher<>() {
-            @Override
-            protected boolean matchesSafely(ConfigurationForServer item) {
-                return item.getPort() == 1234;
-            }
-
-            public void describeTo(Description description) {
-
-            }
-        };
-        verify(webDaemon, times(1)).start(argThat(matcher));
+        verify(webDaemon).start(argThat(item -> item.getPort() == 1234));
         verifyNoInteractions(exitHelper);
     }
 
@@ -472,17 +454,7 @@ public class MainInstanceTest {
     public void shouldRunFileSystem() {
         main.runMain(new String[]{"-fs", "--js-version=ECMASCRIPT5", "src", "dest"});
 
-        TypeSafeMatcher<ConfigurationForFS> matcher = new TypeSafeMatcher<>() {
-            @Override
-            protected boolean matchesSafely(ConfigurationForFS item) {
-                return item.getECMAVersion() == ECMASCRIPT5;
-            }
-
-            public void describeTo(Description description) {
-
-            }
-        };
-        verify(fileSystemInstrumenter, times(1)).run(argThat(matcher));
+        verify(fileSystemInstrumenter).run(argThat(item -> item.getECMAVersion() == ECMASCRIPT5));
         verifyNoInteractions(exitHelper);
     }
 
@@ -497,17 +469,7 @@ public class MainInstanceTest {
     public void shouldRunStdIO() {
         main.runMain(new String[]{"-io", "--js-version=ECMASCRIPT5", "doc/example/script.js"});
 
-        TypeSafeMatcher<ConfigurationForStdOut> matcher = new TypeSafeMatcher<>() {
-            @Override
-            protected boolean matchesSafely(ConfigurationForStdOut item) {
-                return item.getECMAVersion() == ECMASCRIPT5;
-            }
-
-            public void describeTo(Description description) {
-
-            }
-        };
-        verify(stdOutInstrumenter, times(1)).run(argThat(matcher));
+        verify(stdOutInstrumenter).run(argThat(item -> item.getECMAVersion() == ECMASCRIPT5));
         verifyNoInteractions(exitHelper);
     }
 
@@ -521,16 +483,25 @@ public class MainInstanceTest {
     @Test
     public void shouldRunGenerateFiles() {
         main.runMain(new String[]{"-gf", "dest"});
-        verify(ioService, times(1)).generateJSCoverFilesForWebServer(argThat(getFileNameMatcher("dest")), (String) eq(properties.get("version")));
-        verify(ioUtils, times(0)).copyDir(any(File.class), any(File.class));
+        verify(ioService).generateJSCoverFilesForWebServer(
+                argThat(file -> matchesFileName(file, "dest", null)),
+                eq(properties.getProperty("version"))
+        );
+        verify(ioUtils, never()).copyDir(any(File.class), any(File.class));
         verifyNoInteractions(exitHelper);
     }
 
     @Test
     public void shouldRunGenerateFilesWithOriginalSource() {
         main.runMain(new String[]{"-gf", "src", "dest"});
-        verify(ioService, times(1)).generateJSCoverFilesForWebServer(argThat(getFileNameMatcher("dest")), (String) eq(properties.get("version")));
-        verify(ioUtils, times(1)).copyDir(argThat(getFileNameMatcher("src")), argThat(getFileNameMatcher(Main.reportSrcSubDir, "dest")));
+        verify(ioService).generateJSCoverFilesForWebServer(
+                argThat(file -> matchesFileName(file, "dest", null)),
+                eq((String)properties.get("version"))
+        );
+        verify(ioUtils).copyDir(
+                argThat(file -> matchesFileName(file, "src", null)),
+                argThat(file -> matchesFileName(file, Main.reportSrcSubDir, "dest"))
+        );
         verifyNoInteractions(exitHelper);
     }
 
@@ -541,22 +512,9 @@ public class MainInstanceTest {
         verifyNoInteractions(exitHelper);
     }
 
-    public Matcher<? extends File> getFileNameMatcher(final String name) {
-        return getFileNameMatcher(name, null);
-    }
-
-    public Matcher<? extends File> getFileNameMatcher(final String name, final String parent) {
-        return new TypeSafeMatcher<>() {
-            @Override
-            protected boolean matchesSafely(File file) {
-                return file.getName().equals(name) && (parent == null || file.getParent().equals(parent));
-            }
-
-            @Override
-            public void describeTo(Description description) {
-
-            }
-        };
+    private boolean matchesFileName(File file, String name, String parent) {
+        return file.getName().equals(name) &&
+                (parent == null || file.getParent().equals(parent));
     }
 
     @Test
@@ -589,18 +547,18 @@ public class MainInstanceTest {
             main.runMain(new String[]{"-ws", "--port=1234"});
             fail("Should have thrown exception");
         } catch (RuntimeException rte) {
-            assertThat(rte.getCause(), sameInstance(toBeThrown));
+            assertThat(rte.getCause()).isSameAs(toBeThrown);
         }
         verifyNoInteractions(exitHelper);
     }
 
     @Test
     public void shouldLogArguments() {
-        assertThat(main.logArgs(new String[]{"a", "b"}), equalTo("a,b"));
+        assertThat(main.logArgs(new String[]{"a", "b"})).isEqualTo("a,b");
     }
 
     @Test
     public void shouldGetArgsLogger() {
-        assertThat(main.getArgsLogger(new String[]{"a", "b"}).toString(), equalTo("a,b"));
+        assertThat(main.getArgsLogger(new String[]{"a", "b"}).toString()).isEqualTo("a,b");
     }
 }

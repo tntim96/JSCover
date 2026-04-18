@@ -365,9 +365,7 @@ import java.util.Map;
 
 import static java.lang.String.format;
 import static jscover.server.InstrumentingRequestHandler.JSCOVERAGE_STORE;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
@@ -431,7 +429,7 @@ public class InstrumentingRequestHandlerTest {
         verify(ioService).generateJSCoverFilesForWebServer(reportDir, "theVersion");
         verify(bais).skip(50);
         verifyNoInteractions(instrumenterService);
-        assertThat(stringWriter.toString(), containsString(format("Coverage data stored at %s", reportDir)));
+        assertThat(stringWriter.toString()).contains(format("Coverage data stored at %s", reportDir));
     }
 
     @Test//NB This test must be run with assertions enabled (i.e. JVM arg -ea)
@@ -469,7 +467,7 @@ public class InstrumentingRequestHandlerTest {
         verifyNoInteractions(ioService);
         verifyNoInteractions(jsonDataSaver);
         verifyNoInteractions(instrumenterService);
-        assertThat(stringWriter.toString(), containsString("thePostData"));
+        assertThat(stringWriter.toString()).contains("thePostData");
     }
 
     @Test
@@ -527,7 +525,7 @@ public class InstrumentingRequestHandlerTest {
         verifyNoInteractions(ioService);
         verify(bais).skip(50);
         verifyNoInteractions(instrumenterService);
-        assertThat(stringWriter.toString(), containsString(format("Error saving coverage data. Try deleting JSON file at %s", reportDir)));
+        assertThat(stringWriter.toString()).contains(format("Error saving coverage data. Try deleting JSON file at %s", reportDir));
     }
 
     @Test
@@ -546,7 +544,7 @@ public class InstrumentingRequestHandlerTest {
         verify(bais).skip(50);
         verify(ioService).generateJSCoverFilesForWebServer(subdirectory, "theVersion");
         verifyNoInteractions(instrumenterService);
-        assertThat(stringWriter.toString(), containsString(format("Coverage data stored at %s", subdirectory)));
+        assertThat(stringWriter.toString()).contains(format("Coverage data stored at %s", subdirectory));
     }
 
     @Test
@@ -577,7 +575,7 @@ public class InstrumentingRequestHandlerTest {
         verify(bais).skip(50);
         verify(ioUtils, times(saveJSONOnly ? 0 : 1)).copy(new File("js/util.js"), new File(configuration.getReportDir(), "subdirectory/" + Main.reportSrcSubDir + "/js/util.js"));
         verifyNoInteractions(instrumenterService);
-        assertThat(stringWriter.toString(), containsString(format("Coverage data stored at %s", subdirectory)));
+        assertThat(stringWriter.toString()).contains(format("Coverage data stored at %s", subdirectory));
     }
 
     @Test
@@ -614,7 +612,7 @@ public class InstrumentingRequestHandlerTest {
         verify(bais).skip(50);
         verify(ioUtils, times(saveJSONOnly ? 0 : 1)).copy("someJavaScript", new File(configuration.getReportDir(), "subdirectory/" + Main.reportSrcSubDir + "/js/util.js"));
         verifyNoInteractions(instrumenterService);
-        assertThat(stringWriter.toString(), containsString(format("Coverage data stored at %s", subdirectory)));
+        assertThat(stringWriter.toString()).contains(format("Coverage data stored at %s", subdirectory));
     }
 
     @Test
@@ -650,7 +648,7 @@ public class InstrumentingRequestHandlerTest {
         verify(bais).skip(50);
         verify(ioUtils, times(saveJSONOnly ? 0 : 1)).copy(new File("/js/unloaded.js"), new File(configuration.getReportDir(), Main.reportSrcSubDir + "/js/unloaded.js"));
         verifyNoInteractions(instrumenterService);
-        assertThat(stringWriter.toString(), containsString(format("Coverage data stored at %s", reportDir)));
+        assertThat(stringWriter.toString()).contains(format("Coverage data stored at %s", reportDir));
     }
 
     @Test
@@ -663,13 +661,13 @@ public class InstrumentingRequestHandlerTest {
         verify(ioService).generateJSCoverageHtml("123");
         verifyNoInteractions(jsonDataSaver);
         verifyNoInteractions(instrumenterService);
-        assertThat(stringWriter.toString(), equalTo("HTTP/1.0 200 OK\n" +
+        assertThat(stringWriter.toString()).isEqualTo("HTTP/1.0 200 OK\n" +
                 "Server: JSCover/testVersion\n" +
                 "Content-Type: text/html\n" +
                 "Connection: close\n" +
                 "Content-Length: 7\n" +
                 "\n" +
-                "theHtml"));
+                "theHtml");
     }
 
     @Test
@@ -692,8 +690,8 @@ public class InstrumentingRequestHandlerTest {
         verifyNoInteractions(ioService);
         verifyNoInteractions(jsonDataSaver);
         verifyNoInteractions(proxyService);
-        assertThat(InstrumentingRequestHandler.uris.size(), equalTo(1));
-        assertThat(InstrumentingRequestHandler.uris.keySet().iterator().next(), equalTo("js/production.js"));
+        assertThat(InstrumentingRequestHandler.uris.size()).isEqualTo(1);
+        assertThat(InstrumentingRequestHandler.uris.keySet().iterator().next()).isEqualTo("js/production.js");
     }
 
 
@@ -708,14 +706,14 @@ public class InstrumentingRequestHandlerTest {
         verifyNoInteractions(ioService);
         verifyNoInteractions(jsonDataSaver);
         verifyNoInteractions(proxyService);
-        assertThat(InstrumentingRequestHandler.uris.size(), equalTo(0));
-        assertThat(stringWriter.toString(), equalTo("HTTP/1.0 404 File Not Found\n" +
+        assertThat(InstrumentingRequestHandler.uris.size()).isEqualTo(0);
+        assertThat(stringWriter.toString()).isEqualTo("HTTP/1.0 404 File Not Found\n" +
                 "Server: JSCover/testVersion\n" +
                 "Content-Type: text/plain\n" +
                 "Connection: close\n" +
                 "Content-Length: 5\n" +
                 "\n" +
-                "Ouch!"));
+                "Ouch!");
     }
 
     @Test
@@ -733,9 +731,9 @@ public class InstrumentingRequestHandlerTest {
         verify(instrumenterService).instrumentJSForProxyServer(configuration, "someJavaScript;", "/exclude/js/production.js");
         verifyNoInteractions(ioService);
         verifyNoInteractions(jsonDataSaver);
-        assertThat(InstrumentingRequestHandler.uris.size(), equalTo(1));
-        assertThat(InstrumentingRequestHandler.uris.keySet().iterator().next(), equalTo("js/production.js"));
-        assertThat(InstrumentingRequestHandler.uris.values().iterator().next(), equalTo("someJavaScript;"));
+        assertThat(InstrumentingRequestHandler.uris.size()).isEqualTo(1);
+        assertThat(InstrumentingRequestHandler.uris.keySet().iterator().next()).isEqualTo("js/production.js");
+        assertThat(InstrumentingRequestHandler.uris.values().iterator().next()).isEqualTo("someJavaScript;");
     }
 
     @Test

@@ -351,9 +351,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItem;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
 
@@ -579,9 +577,9 @@ public class InstrumenterTest {
                 "  _$jscoverage['test.js'].lineData[3]++;\n" +
                 "};\n";
         assertEquals(expectedSource, instrumentedSource);
-        assertThat(instrumenter.getValidLines().size(), equalTo(2));
-        assertThat(instrumenter.getValidLines(), hasItem(1));
-        assertThat(instrumenter.getValidLines(), hasItem(3));
+        assertThat(instrumenter.getValidLines().size()).isEqualTo(2);
+        assertThat(instrumenter.getValidLines()).contains(1);
+        assertThat(instrumenter.getValidLines()).contains(3);
     }
 
     @Test
@@ -600,9 +598,9 @@ public class InstrumenterTest {
                 "  return 1;\n" +
                 "}};\n";
         assertEquals(expectedSource, instrumentedSource);
-        assertThat(instrumenter.getValidLines().size(), equalTo(2));
-        assertThat(instrumenter.getValidLines(), hasItem(1));
-        assertThat(instrumenter.getValidLines(), hasItem(3));
+        assertThat(instrumenter.getValidLines().size()).isEqualTo(2);
+        assertThat(instrumenter.getValidLines()).contains(1);
+        assertThat(instrumenter.getValidLines()).contains(3);
     }
 
     @Test
@@ -626,10 +624,10 @@ public class InstrumenterTest {
                 "  return false;\n" +
                 "};\n";
         assertEquals(expectedSource, instrumentedSource);
-        assertThat(instrumenter.getValidLines().size(), equalTo(3));
-        assertThat(instrumenter.getValidLines(), hasItem(1));
-        assertThat(instrumenter.getValidLines(), hasItem(3));
-        assertThat(instrumenter.getValidLines(), hasItem(5));
+        assertThat(instrumenter.getValidLines().size()).isEqualTo(3);
+        assertThat(instrumenter.getValidLines()).contains(1);
+        assertThat(instrumenter.getValidLines()).contains(3);
+        assertThat(instrumenter.getValidLines()).contains(5);
     }
 
     @Test
@@ -646,9 +644,9 @@ public class InstrumenterTest {
                 "  return true;\n" +
                 "}];\n";
         assertEquals(expectedSource, instrumentedSource);
-        assertThat(instrumenter.getValidLines().size(), equalTo(2));
-        assertThat(instrumenter.getValidLines(), hasItem(1));
-        assertThat(instrumenter.getValidLines(), hasItem(3));
+        assertThat(instrumenter.getValidLines().size()).isEqualTo(2);
+        assertThat(instrumenter.getValidLines()).contains(1);
+        assertThat(instrumenter.getValidLines()).contains(3);
     }
 
     @Test
@@ -665,9 +663,9 @@ public class InstrumenterTest {
                 "  return true;\n" +
                 "};\n";
         assertEquals(expectedSource, instrumentedSource);
-        assertThat(instrumenter.getValidLines().size(), equalTo(2));
-        assertThat(instrumenter.getValidLines(), hasItem(1));
-        assertThat(instrumenter.getValidLines(), hasItem(3));
+        assertThat(instrumenter.getValidLines().size()).isEqualTo(2);
+        assertThat(instrumenter.getValidLines()).contains(1);
+        assertThat(instrumenter.getValidLines()).contains(3);
     }
 
     @Test

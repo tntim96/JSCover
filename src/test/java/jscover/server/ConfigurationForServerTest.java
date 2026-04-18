@@ -352,29 +352,28 @@ import java.io.File;
 import static com.google.javascript.jscomp.CompilerOptions.LanguageMode.ECMASCRIPT_NEXT;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.SEVERE;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ConfigurationForServerTest {
 
     @Test
     public void shouldHaveDefaults() {
         ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{});
-        assertThat(configuration.showHelp(), is(false));
-        assertThat(configuration.isInvalid(), is(false));
-        assertThat(configuration.getDocumentRoot().toString(), equalTo(System.getProperty("user.dir")));
-        assertThat(configuration.getPort(), equalTo(8080));
-        assertThat(configuration.getReportDir(), is(new File(System.getProperty("user.dir"))));
-        assertThat(configuration.getECMAVersion(), equalTo(ECMASCRIPT_NEXT));
-        assertThat(configuration.skipInstrumentation("/"), is(false));
-        assertThat(configuration.isProxy(), is(false));
-        assertThat(configuration.isSaveJSONOnly(), is(false));
-        assertThat(configuration.isIncludeBranch(), is(true));
-        assertThat(configuration.isIncludeFunction(), is(true));
-        assertThat(configuration.getUriToFileMatcher(), nullValue());
-        assertThat(configuration.getUriToFileReplace(), nullValue());
-        assertThat(configuration.getUriFileTranslator(), instanceOf(UriFileTranslatorNoOp.class));
-        assertThat(configuration.getLogLevel(), is(SEVERE));
+        assertThat(configuration.showHelp()).isFalse();
+        assertThat(configuration.isInvalid()).isFalse();
+        assertThat(configuration.getDocumentRoot().toString()).isEqualTo(System.getProperty("user.dir"));
+        assertThat(configuration.getPort()).isEqualTo(8080);
+        assertThat(configuration.getReportDir()).isEqualTo(new File(System.getProperty("user.dir")));
+        assertThat(configuration.getECMAVersion()).isEqualTo(ECMASCRIPT_NEXT);
+        assertThat(configuration.skipInstrumentation("/")).isFalse();
+        assertThat(configuration.isProxy()).isFalse();
+        assertThat(configuration.isSaveJSONOnly()).isFalse();
+        assertThat(configuration.isIncludeBranch()).isTrue();
+        assertThat(configuration.isIncludeFunction()).isTrue();
+        assertThat(configuration.getUriToFileMatcher()).isNull();
+        assertThat(configuration.getUriToFileReplace()).isNull();
+        assertThat(configuration.getUriFileTranslator()).isInstanceOf(UriFileTranslatorNoOp.class);
+        assertThat(configuration.getLogLevel()).isEqualTo(SEVERE);
     }
 
     @Test
@@ -387,219 +386,219 @@ public class ConfigurationForServerTest {
         configuration.setReportDir(reportDir);
         configuration.setProxy(true);
 
-        assertThat(configuration.getDocumentRoot(), sameInstance(dir));
-        assertThat(configuration.getPort(), is(1234));
-        assertThat(configuration.getReportDir(), sameInstance(reportDir));
-        assertThat(configuration.isProxy(), is(true));
+        assertThat(configuration.getDocumentRoot()).isSameAs(dir);
+        assertThat(configuration.getPort()).isEqualTo(1234);
+        assertThat(configuration.getReportDir()).isSameAs(reportDir);
+        assertThat(configuration.isProxy()).isTrue();
     }
 
     @Test
     public void shouldIgnoreServerSwitch() {
         ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"-ws"});
-        assertThat(configuration.showHelp(), is(false));
-        assertThat(configuration.getDocumentRoot().toString(), equalTo(System.getProperty("user.dir")));
-        assertThat(configuration.getPort(), equalTo(8080));
-        assertThat(configuration.isProxy(), is(false));
-        assertThat(configuration.getECMAVersion(), equalTo(ECMASCRIPT_NEXT));
-        assertThat(configuration.skipInstrumentation("/"), is(false));
-        assertThat(configuration.isIncludeBranch(), is(true));
-        assertThat(configuration.isIncludeFunction(), is(true));
+        assertThat(configuration.showHelp()).isFalse();
+        assertThat(configuration.getDocumentRoot().toString()).isEqualTo(System.getProperty("user.dir"));
+        assertThat(configuration.getPort()).isEqualTo(8080);
+        assertThat(configuration.isProxy()).isFalse();
+        assertThat(configuration.getECMAVersion()).isEqualTo(ECMASCRIPT_NEXT);
+        assertThat(configuration.skipInstrumentation("/")).isFalse();
+        assertThat(configuration.isIncludeBranch()).isTrue();
+        assertThat(configuration.isIncludeFunction()).isTrue();
     }
 
     @Test
     public void shouldShowHelpOnError() {
         ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"unknown"});
-        assertThat(configuration.showHelp(), is(true));
-        assertThat(configuration.isInvalid(), is(true));
+        assertThat(configuration.showHelp()).isTrue();
+        assertThat(configuration.isInvalid()).isTrue();
     }
 
     @Test
     public void shouldParseHelp() {
-        assertThat(ConfigurationForServer.parse(new String[]{"-h"}).showHelp(), is(true));
-        assertThat(ConfigurationForServer.parse(new String[]{"--help"}).showHelp(), is(true));
-        assertThat(ConfigurationForServer.parse(new String[]{"-h"}).isInvalid(), is(false));
-        assertThat(ConfigurationForServer.parse(new String[]{"--help"}).isInvalid(), is(false));
+        assertThat(ConfigurationForServer.parse(new String[]{"-h"}).showHelp()).isTrue();
+        assertThat(ConfigurationForServer.parse(new String[]{"--help"}).showHelp()).isTrue();
+        assertThat(ConfigurationForServer.parse(new String[]{"-h"}).isInvalid()).isFalse();
+        assertThat(ConfigurationForServer.parse(new String[]{"--help"}).isInvalid()).isFalse();
     }
 
     @Test
     public void shouldParseBranch() {
-        assertThat(ConfigurationForServer.parse(new String[]{"-ws", "--no-branch"}).isIncludeBranch(), is(false));
+        assertThat(ConfigurationForServer.parse(new String[]{"-ws", "--no-branch"}).isIncludeBranch()).isFalse();
     }
 
     @Test
     public void shouldParseFunction() {
-        assertThat(ConfigurationForServer.parse(new String[]{"-ws", "--no-function"}).isIncludeFunction(), is(false));
+        assertThat(ConfigurationForServer.parse(new String[]{"-ws", "--no-function"}).isIncludeFunction()).isFalse();
     }
 
     @Test
     public void shouldParseDocumentRoot() {
-        assertThat(ConfigurationForServer.parse(new String[]{"--document-root=/"}).getDocumentRoot(), equalTo(new File("/")));
+        assertThat(ConfigurationForServer.parse(new String[]{"--document-root=/"}).getDocumentRoot()).isEqualTo(new File("/"));
     }
 
     @Test
     public void shouldDisallowDocumentRootThatIsNonExistent() {
-        assertThat(ConfigurationForServer.parse(new String[]{"--document-root=xxx"}).isInvalid(), is(true));
+        assertThat(ConfigurationForServer.parse(new String[]{"--document-root=xxx"}).isInvalid()).isTrue();
     }
 
     @Test
     public void shouldDisallowDocumentRootThatIsAFile() {
-        assertThat(ConfigurationForServer.parse(new String[]{"--document-root=build.xml"}).isInvalid(), is(true));
+        assertThat(ConfigurationForServer.parse(new String[]{"--document-root=build.xml"}).isInvalid()).isTrue();
     }
 
     @Test
     public void shouldParsePort() {
-        assertThat(ConfigurationForServer.parse(new String[]{"--port=80"}).getPort(), equalTo(80));
+        assertThat(ConfigurationForServer.parse(new String[]{"--port=80"}).getPort()).isEqualTo(80);
     }
 
     @Test
     public void shouldParseProxy() {
-        assertThat(ConfigurationForServer.parse(new String[]{"--proxy"}).isProxy(), is(true));
+        assertThat(ConfigurationForServer.parse(new String[]{"--proxy"}).isProxy()).isTrue();
     }
 
     @Test
     public void shouldParseSaveJSONOnly() {
-        assertThat(ConfigurationForServer.parse(new String[]{"--save-json-only"}).isSaveJSONOnly(), is(true));
+        assertThat(ConfigurationForServer.parse(new String[]{"--save-json-only"}).isSaveJSONOnly()).isTrue();
     }
 
     @Test
     public void shouldParseECMAVersion() {
         ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--js-version=ECMASCRIPT5"});
-        assertThat(configuration.getECMAVersion(), equalTo(CompilerOptions.LanguageMode.ECMASCRIPT5));
+        assertThat(configuration.getECMAVersion()).isEqualTo(CompilerOptions.LanguageMode.ECMASCRIPT5);
     }
 
     @Test
     public void shouldParseReportDir() {
-        assertThat(ConfigurationForServer.parse(new String[]{"--report-dir=/"}).getReportDir(), equalTo(new File("/")));
+        assertThat(ConfigurationForServer.parse(new String[]{"--report-dir=/"}).getReportDir()).isEqualTo(new File("/"));
     }
 
     @Test
     public void shouldParseLogLevel() {
-        assertThat(ConfigurationForServer.parse(new String[]{"--log=FINE"}).getLogLevel(), equalTo(FINE));
+        assertThat(ConfigurationForServer.parse(new String[]{"--log=FINE"}).getLogLevel()).isEqualTo(FINE);
     }
 
     @Test
     public void shouldParseNoInstrument() {
         ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--no-instrument=lib1", "--no-instrument=lib2", "--no-instrument=/lib3"});
-        assertThat(configuration.skipInstrumentation("test.js"), is(false));
-        assertThat(configuration.skipInstrumentation("lib1/test.js"), is(true));
-        assertThat(configuration.skipInstrumentation("lib2/test.js"), is(true));
-        assertThat(configuration.skipInstrumentation("lib3/test.js"), is(true));
-        assertThat(configuration.skipInstrumentation("lib4/test.js"), is(false));
+        assertThat(configuration.skipInstrumentation("test.js")).isFalse();
+        assertThat(configuration.skipInstrumentation("lib1/test.js")).isTrue();
+        assertThat(configuration.skipInstrumentation("lib2/test.js")).isTrue();
+        assertThat(configuration.skipInstrumentation("lib3/test.js")).isTrue();
+        assertThat(configuration.skipInstrumentation("lib4/test.js")).isFalse();
     }
 
     @Test
     public void shouldParseNoInstrumentReg() {
         ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--no-instrument-reg=.*/lib/.*", "--no-instrument-reg=.*/test/.*", "--no-instrument-reg=/.*/test2/.*"});
-        assertThat(configuration.skipInstrumentation("test.js"), is(false));
-        assertThat(configuration.skipInstrumentation("lib1/lib/test.js"), is(true));
-        assertThat(configuration.skipInstrumentation("lib2/test/test.js"), is(true));
-        assertThat(configuration.skipInstrumentation("lib3/test2/test.js"), is(true));
-        assertThat(configuration.skipInstrumentation("lib4/domain/test.js"), is(false));
+        assertThat(configuration.skipInstrumentation("test.js")).isFalse();
+        assertThat(configuration.skipInstrumentation("lib1/lib/test.js")).isTrue();
+        assertThat(configuration.skipInstrumentation("lib2/test/test.js")).isTrue();
+        assertThat(configuration.skipInstrumentation("lib3/test2/test.js")).isTrue();
+        assertThat(configuration.skipInstrumentation("lib4/domain/test.js")).isFalse();
     }
 
     @Test
     public void shouldHandleInvalidRegularExpression() {
         ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--no-instrument-reg=*"});
-        assertThat(configuration.showHelp(), is(true));
-        assertThat(configuration.isInvalid(), is(true));
+        assertThat(configuration.showHelp()).isTrue();
+        assertThat(configuration.isInvalid()).isTrue();
     }
 
     @Test
     public void shouldParseNoInstrumentWithLeadingSlash() {
         ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--no-instrument=/lib1", "--no-instrument=/lib2"});
-        assertThat(configuration.skipInstrumentation("test.js"), is(false));
-        assertThat(configuration.skipInstrumentation("lib1/test.js"), is(true));
-        assertThat(configuration.skipInstrumentation("lib2/test.js"), is(true));
-        assertThat(configuration.skipInstrumentation("lib3/test.js"), is(false));
+        assertThat(configuration.skipInstrumentation("test.js")).isFalse();
+        assertThat(configuration.skipInstrumentation("lib1/test.js")).isTrue();
+        assertThat(configuration.skipInstrumentation("lib2/test.js")).isTrue();
+        assertThat(configuration.skipInstrumentation("lib3/test.js")).isFalse();
     }
 
     @Test
     public void shouldRequireBothUriToFileSwitches() {
-        assertThat(ConfigurationForServer.parse(new String[]{"--uri-to-file-matcher=src/(.*)/tests(.*)"}).isInvalid(), is(true));
-        assertThat(ConfigurationForServer.parse(new String[]{"--uri-to-file-replace=$1$2"}).isInvalid(), is(true));
-        assertThat(ConfigurationForServer.parse(new String[]{"--uri-to-file-matcher=src/(.*)/tests(.*)", "--uri-to-file-replace=$1$2"}).isInvalid(), is(false));
+        assertThat(ConfigurationForServer.parse(new String[]{"--uri-to-file-matcher=src/(.*)/tests(.*)"}).isInvalid()).isTrue();
+        assertThat(ConfigurationForServer.parse(new String[]{"--uri-to-file-replace=$1$2"}).isInvalid()).isTrue();
+        assertThat(ConfigurationForServer.parse(new String[]{"--uri-to-file-matcher=src/(.*)/tests(.*)", "--uri-to-file-replace=$1$2"}).isInvalid()).isFalse();
     }
 
     @Test
     public void shouldParseUriToFileSwitches() {
         ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--uri-to-file-matcher=src/(.*)/tests(.*)", "--uri-to-file-replace=$1$2"});
-        assertThat(configuration.getUriToFileMatcher().pattern(), equalTo("src/(.*)/tests(.*)"));
-        assertThat(configuration.getUriToFileReplace(), equalTo("$1$2"));
-        assertThat(configuration.getUriFileTranslator(), instanceOf(UriFileTranslatorReg.class));
+        assertThat(configuration.getUriToFileMatcher().pattern()).isEqualTo("src/(.*)/tests(.*)");
+        assertThat(configuration.getUriToFileReplace()).isEqualTo("$1$2");
+        assertThat(configuration.getUriFileTranslator()).isInstanceOf(UriFileTranslatorReg.class);
     }
 
     @Test
     public void shouldHandleInvalidUriToFileReg() {
         ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--uri-to-file-matcher=src/(*)/tests(.*)", "--uri-to-file-replace=$1$2"});
-        assertThat(configuration.showHelp(), is(true));
-        assertThat(configuration.isInvalid(), is(true));
+        assertThat(configuration.showHelp()).isTrue();
+        assertThat(configuration.isInvalid()).isTrue();
     }
 
     @Test
     public void shouldRetrieveHelpText() {
         String helpText = new ConfigurationForServer().getHelpText();
-        assertThat(helpText, containsString("Usage: java -jar JSCover-all.jar -ws [OPTION]..."));
+        assertThat(helpText).contains("Usage: java -jar JSCover-all.jar -ws [OPTION]...");
     }
 
     @Test
     public void shouldParseInstrumentReg() {
         ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--only-instrument-reg=.*/production/.*"});
-        assertThat(configuration.skipInstrumentation("test.js"), is(true));
-        assertThat(configuration.skipInstrumentation("lib1/production/code.js"), is(false));
-        assertThat(configuration.skipInstrumentation("lib2/test/production.js"), is(true));
+        assertThat(configuration.skipInstrumentation("test.js")).isTrue();
+        assertThat(configuration.skipInstrumentation("lib1/production/code.js")).isFalse();
+        assertThat(configuration.skipInstrumentation("lib2/test/production.js")).isTrue();
     }
 
     @Test
     public void shouldParseInstrumentRegWithLeadingSlash() {
         ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--only-instrument-reg=/production/.*"});
-        assertThat(configuration.skipInstrumentation("production/code.js"), is(false));
+        assertThat(configuration.skipInstrumentation("production/code.js")).isFalse();
     }
 
     @Test
     public void shouldHandleInvalidInstrumentRegularExpression() {
         ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--only-instrument-reg=*"});
-        assertThat(configuration.showHelp(), is(true));
-        assertThat(configuration.isInvalid(), is(true));
+        assertThat(configuration.showHelp()).isTrue();
+        assertThat(configuration.isInvalid()).isTrue();
     }
 
     @Test
     public void shouldHandleInvalidOption() {
         ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--unknownoption"});
-        assertThat(configuration.showHelp(), is(true));
-        assertThat(configuration.isInvalid(), is(true));
+        assertThat(configuration.showHelp()).isTrue();
+        assertThat(configuration.isInvalid()).isTrue();
     }
 
     @Test
     public void shouldHandleInvalidShortOption() {
         ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"-u"});
-        assertThat(configuration.showHelp(), is(true));
-        assertThat(configuration.isInvalid(), is(true));
+        assertThat(configuration.showHelp()).isTrue();
+        assertThat(configuration.isInvalid()).isTrue();
     }
 
     @Test
     public void shouldParseInstrumentAndNoInstrumentReg1() {
         ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--no-instrument=lib1", "--no-instrument-reg=lib2/production/test.*", "--only-instrument-reg=.*/production/.*"});
-        assertThat(configuration.skipInstrumentation("lib1/production/test.js"), is(true));
-        assertThat(configuration.skipInstrumentation("lib2/production/test.js"), is(true));
-        assertThat(configuration.skipInstrumentation("lib3/production/code.js"), is(false));
-        assertThat(configuration.skipInstrumentation("lib4/code.js"), is(true));
+        assertThat(configuration.skipInstrumentation("lib1/production/test.js")).isTrue();
+        assertThat(configuration.skipInstrumentation("lib2/production/test.js")).isTrue();
+        assertThat(configuration.skipInstrumentation("lib3/production/code.js")).isFalse();
+        assertThat(configuration.skipInstrumentation("lib4/code.js")).isTrue();
     }
 
     @Test
     public void shouldParseInstrumentAndNoInstrumentReg2() {
         ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--no-instrument=lib1", "--only-instrument-reg=.*/production/.*", "--no-instrument-reg=lib2/production/test.*"});
-        assertThat(configuration.skipInstrumentation("lib1/production/test.js"), is(true));
-        assertThat(configuration.skipInstrumentation("lib2/production/test.js"), is(false));
-        assertThat(configuration.skipInstrumentation("lib3/production/code.js"), is(false));
-        assertThat(configuration.skipInstrumentation("lib4/code.js"), is(true));
+        assertThat(configuration.skipInstrumentation("lib1/production/test.js")).isTrue();
+        assertThat(configuration.skipInstrumentation("lib2/production/test.js")).isFalse();
+        assertThat(configuration.skipInstrumentation("lib3/production/code.js")).isFalse();
+        assertThat(configuration.skipInstrumentation("lib4/code.js")).isTrue();
     }
 
     @Test
     public void shouldParseInstrumentAndNoInstrumentReg3() {
         ConfigurationForServer configuration = ConfigurationForServer.parse(new String[]{"--only-instrument-reg=.*/production/.*", "--no-instrument=lib1", "--no-instrument-reg=lib2/production/test.*"});
-        assertThat(configuration.skipInstrumentation("lib1/production/test.js"), is(false));
-        assertThat(configuration.skipInstrumentation("lib2/production/test.js"), is(false));
-        assertThat(configuration.skipInstrumentation("lib3/production/code.js"), is(false));
-        assertThat(configuration.skipInstrumentation("lib4/code.js"), is(true));
+        assertThat(configuration.skipInstrumentation("lib1/production/test.js")).isFalse();
+        assertThat(configuration.skipInstrumentation("lib2/production/test.js")).isFalse();
+        assertThat(configuration.skipInstrumentation("lib3/production/code.js")).isFalse();
+        assertThat(configuration.skipInstrumentation("lib4/code.js")).isTrue();
     }
 }

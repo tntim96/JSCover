@@ -342,7 +342,6 @@ Public License instead of this License.
 
 package jscover.server;
 
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -354,20 +353,20 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.startsWith;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
 public class ProxyServiceTest {
-    private static final Charset UTF8 = Charset.forName("UTF-8");
-    private ProxyService proxyService = new ProxyService();
-    private HttpRequest request = new HttpRequest("test.js", null, null, 0, null);
+    private static final Charset UTF8 = StandardCharsets.UTF_8;
+    private final ProxyService proxyService = new ProxyService();
+    private final HttpRequest request = new HttpRequest("test.js", null, null, 0, null);
     @Mock private HttpURLConnection conn;
-    private Map<String, List<String>> headers = new HashMap<>();
+    private final Map<String, List<String>> headers = new HashMap<>();
 
     @BeforeEach
     public void setUp() {
@@ -376,7 +375,7 @@ public class ProxyServiceTest {
 
     @Test
     public void shouldAddHeaders() {
-        headers.put("Cookie", new ArrayList<String>(){{add("123");}{add("456");}});
+        headers.put("Cookie", new ArrayList<>(){{add("123");}{add("456");}});
 
         proxyService.copyHeadersExceptEncoding(request, conn);
 
@@ -395,7 +394,7 @@ public class ProxyServiceTest {
 
     @Test
     public void shouldNotAddEncodingHeaders() {
-        headers.put("Accept-Encoding", new ArrayList<String>() {{
+        headers.put("Accept-Encoding", new ArrayList<>() {{
             add("GZIP");
         }});
 
@@ -406,7 +405,7 @@ public class ProxyServiceTest {
 
     @Test
     public void shouldNotAddKeepAliveHeaders() {
-        headers.put("Proxy-Connection", new ArrayList<String>() {{
+        headers.put("Proxy-Connection", new ArrayList<>() {{
             add("keep-alive");
         }});
 
@@ -422,8 +421,8 @@ public class ProxyServiceTest {
         String url = "http://somehost/someURL";
         String requestString = "POST " + url + " HTTP/1.1\r\nContent-Length: 0\r\n\r\n";
 
-        String result = sendMethodAndHeaders(url, requestString, headers).toString("UTF-8");
-        assertThat(result, startsWith("POST /someURL HTTP/1.0"));
+        String result = sendMethodAndHeaders(url, requestString, headers).toString(StandardCharsets.UTF_8);
+        assertThat(result).startsWith("POST /someURL HTTP/1.0");
     }
 
     @Test
@@ -433,8 +432,8 @@ public class ProxyServiceTest {
         String url = "http://somehost/someURL";
         String requestString = "POST " + url + " HTTP/1.1\r\nContent-Length: 0\r\n\r\n";
 
-        String result = sendMethodAndHeaders(url, requestString, headers).toString("UTF-8");
-        assertThat(result, startsWith("POST /someURL"));
+        String result = sendMethodAndHeaders(url, requestString, headers).toString(StandardCharsets.UTF_8);
+        assertThat(result).startsWith("POST /someURL");
     }
 
     @Test
@@ -446,10 +445,10 @@ public class ProxyServiceTest {
 
         String url = "http://somehost/someURL";
         String requestString = "POST " + url + " HTTP/1.1\r\nProxy-Connection: keep-alive\r\nConnection: keep-alive\r\nContent-Length: 0\r\n\r\n";
-        String result = sendMethodAndHeaders(url, requestString, headers).toString("UTF-8");
+        String result = sendMethodAndHeaders(url, requestString, headers).toString(StandardCharsets.UTF_8);
 
-        assertThat(result, Matchers.not(Matchers.containsString("Connection")));
-        assertThat(result, Matchers.not(Matchers.containsString("keep-alive")));
+        assertThat(result).doesNotContain("Connection");
+        assertThat(result).doesNotContain("keep-alive");
     }
 
     private ByteArrayOutputStream sendMethodAndHeaders(String path, String requestString, Map<String, List<String>> headers) throws IOException {

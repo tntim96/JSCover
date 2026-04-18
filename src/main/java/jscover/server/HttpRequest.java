@@ -342,7 +342,6 @@ Public License instead of this License.
 
 package jscover.server;
 
-
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;

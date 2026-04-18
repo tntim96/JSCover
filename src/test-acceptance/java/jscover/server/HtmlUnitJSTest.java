@@ -352,9 +352,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.startsWith;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class HtmlUnitJSTest {
@@ -392,10 +390,10 @@ public class HtmlUnitJSTest {
         //Verify Jasmine test result
         HtmlPage frame = (HtmlPage)page.getFrameByName("browserIframe").getEnclosedPage();
         List<HtmlSpan> passed = frame.getByXPath("//span[contains(@class,'jasmine-passed')]");
-        assertThat(passed.size(), equalTo(1));
-        assertThat(frame.getByXPath("//span[contains(@class,'jasmine-failed')]").size(), equalTo(0));
-        assertThat(frame.getByXPath("//span[contains(@class,'jasmine-skipped')]").size(), equalTo(0));
-        assertThat(passed.get(0).asNormalizedText(), startsWith("15 specs, 0 failures"));
+        assertThat(passed.size()).isEqualTo(1);
+        assertThat(frame.getByXPath("//span[contains(@class,'jasmine-failed')]").size()).isEqualTo(0);
+        assertThat(frame.getByXPath("//span[contains(@class,'jasmine-skipped')]").size()).isEqualTo(0);
+        assertThat(passed.get(0).asNormalizedText()).startsWith("15 specs, 0 failures");
 
         //Store Report
         frame.executeJavaScript("jscoverage_report();");

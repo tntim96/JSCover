@@ -8,8 +8,7 @@ import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ClassVersionChecker {
     @Test
@@ -36,6 +35,6 @@ public class ClassVersionChecker {
 
         int majorVersion = buffer[6] << 8 | buffer[7];
         //int minorVersion = buffer[4] << 8 | buffer[5];
-        assertThat(file + " is not a 1.8 class! Major version " + majorVersion, majorVersion, equalTo(65));
+        assertThat(majorVersion).isEqualTo(65).overridingErrorMessage(file + " is not a 1.8 class! Major version " + majorVersion);
     }
 }

@@ -353,9 +353,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class HtmlUnitServerBranchAndFunctionTest extends HtmlUnitServerTestBaseClass {
     private static Main main = new Main();
@@ -447,22 +445,22 @@ public class HtmlUnitServerBranchAndFunctionTest extends HtmlUnitServerTestBaseC
     }
 
     private void verifySource(HtmlTable sourceTable, int row, int coverageCount, String source, String alertLine, String cssClass) throws IOException {
-        assertThat(sourceTable.getRow(row).getCell(1).asNormalizedText(), equalTo(""+coverageCount));
-        assertThat(sourceTable.getRow(row).getCell(3).asNormalizedText(), equalTo(source));
+        assertThat(sourceTable.getRow(row).getCell(1).asNormalizedText()).isEqualTo(""+coverageCount);
+        assertThat(sourceTable.getRow(row).getCell(3).asNormalizedText()).isEqualTo(source);
 
         HtmlTableCell branchCell = sourceTable.getRow(row).getCell(2);
         if (alertLine == null) {
-            assertThat(branchCell.asNormalizedText(), equalTo(" "));
-            assertThat(branchCell.getAttribute("class"), equalTo("numeric "+cssClass));
+            assertThat(branchCell.asNormalizedText()).isEqualTo(" ");
+            assertThat(branchCell.getAttribute("class")).isEqualTo("numeric "+cssClass);
         } else {
-            assertThat(branchCell.asNormalizedText(), equalTo("info"));
+            assertThat(branchCell.asNormalizedText()).isEqualTo("info");
             HtmlAnchor anchor = (HtmlAnchor) branchCell.getFirstChild().getFirstChild();
 
             final String alert[] = new String[1];
             webClient.setAlertHandler((page, message) -> alert[0] = message);
 
             anchor.click();
-            assertThat(alert[0], containsString(alertLine));
+            assertThat(alert[0]).contains(alertLine);
         }
     }
 }

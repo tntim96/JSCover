@@ -344,18 +344,17 @@ package jscover.server;
 
 import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MIMETest {
     @Test
     public void shouldGetJpegMimeType() {
-        assertThat(MIME.getMime("jpg"), equalTo(MIME.JPG));
-        assertThat(MIME.getMime("jpeg"), equalTo(MIME.JPG));
+        assertThat(MIME.getMime("jpg")).isEqualTo(MIME.JPG);
+        assertThat(MIME.getMime("jpeg")).isEqualTo(MIME.JPG);
     }
 
     @Test
     public void shouldGetXmlMimeType() {
-        assertThat(MIME.getMime("xml"), equalTo(MIME.XML));
+        assertThat(MIME.getMime("xml")).isEqualTo(MIME.XML);
     }
 }

@@ -358,8 +358,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 //Provided by https://github.com/devangnegandhi 6 Sept 2013
@@ -439,12 +438,12 @@ public class HtmlServerUnloadedJSProxyOnlyInstrumentRegTest {
         webClient.waitForBackgroundJavaScript(2000);
         String result = page.getElementById("storeDiv").getTextContent();
 
-        assertThat(result, containsString("Coverage data stored at " + new File(reportDir).getPath()));
+        assertThat(result).contains("Coverage data stored at " + new File(reportDir).getPath());
 
         String json = ioUtils.toString(jsonFile);
-        assertThat(json, not(containsString("/root.js")));
-        assertThat(json, containsString("/level1/level1.js"));
-        assertThat(json, containsString("/level1/level2/level2.js"));
+        assertThat(json).doesNotContain("/root.js");
+        assertThat(json).contains("/level1/level1.js");
+        assertThat(json).contains("/level1/level2/level2.js");
 
         String url = "file:///" + new File(reportDir + "/jscoverage.html").getAbsolutePath();
         page = webClient.getPage(url);
@@ -458,9 +457,9 @@ public class HtmlServerUnloadedJSProxyOnlyInstrumentRegTest {
     }
 
     private void verifyCoverage(HtmlPage page, String uri, String linePercentage, String branchPercentage, String functionPercentage) {
-        assertThat(getHtmlElement(page, "//tr[@id='row-" + uri + "']/td[11]/span").getTextContent(), equalTo(linePercentage));
-        assertThat(getHtmlElement(page, "//tr[@id='row-" + uri + "']/td[12]/span").getTextContent(), equalTo(branchPercentage));
-        assertThat(getHtmlElement(page, "//tr[@id='row-" + uri + "']/td[13]/span").getTextContent(), equalTo(functionPercentage));
+        assertThat(getHtmlElement(page, "//tr[@id='row-" + uri + "']/td[11]/span").getTextContent()).isEqualTo(linePercentage);
+        assertThat(getHtmlElement(page, "//tr[@id='row-" + uri + "']/td[12]/span").getTextContent()).isEqualTo(branchPercentage);
+        assertThat(getHtmlElement(page, "//tr[@id='row-" + uri + "']/td[13]/span").getTextContent()).isEqualTo(functionPercentage);
     }
 
     private HtmlElement getHtmlElement(HtmlPage page, String xpathExpr) {

@@ -4,8 +4,7 @@ import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.Token;
 import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class BranchHelperTest {
     private BranchHelper helper = new BranchHelper();
@@ -16,8 +15,8 @@ public class BranchHelperTest {
         Node astRoot = parse(script);
         Node orNode = NodeTestHelper.findNode(astRoot, Token.OR);
         Node assignNode = NodeTestHelper.findNode(astRoot, Token.ASSIGN);
-        assertThat(helper.isBoolean(orNode), is(true));
-        assertThat(helper.isBoolean(assignNode), is(false));
+        assertThat(helper.isBoolean(orNode)).isTrue();
+        assertThat(helper.isBoolean(assignNode)).isFalse();
     }
 
     @Test
@@ -25,7 +24,7 @@ public class BranchHelperTest {
         String script = "x = y || {};";
         Node astRoot = parse(script);
         Node orNode = NodeTestHelper.findNode(astRoot, Token.OR);
-        assertThat(helper.isCoalesce(orNode), is(true));
+        assertThat(helper.isCoalesce(orNode)).isTrue();
     }
 
     @Test
@@ -33,7 +32,7 @@ public class BranchHelperTest {
         String script = "function f(y) {return y || {};}";
         Node astRoot = parse(script);
         Node orNode = NodeTestHelper.findNode(astRoot, Token.OR);
-        assertThat(helper.isCoalesce(orNode), is(true));
+        assertThat(helper.isCoalesce(orNode)).isTrue();
     }
 
     @Test
@@ -42,7 +41,7 @@ public class BranchHelperTest {
         Node astRoot = parse(script);
 
         Node orNode = NodeTestHelper.findNode(astRoot, Token.OR);
-        assertThat(helper.isCoalesce(orNode), is(true));
+        assertThat(helper.isCoalesce(orNode)).isTrue();
     }
 
     @Test
@@ -50,7 +49,7 @@ public class BranchHelperTest {
         String script = "if (a || b) ;";
         Node astRoot = parse(script);
         Node orNode = NodeTestHelper.findNode(astRoot, Token.OR);
-        assertThat(helper.isCoalesce(orNode), is(false));
+        assertThat(helper.isCoalesce(orNode)).isFalse();
     }
 
     @Test
@@ -58,7 +57,7 @@ public class BranchHelperTest {
         String script = "x = y > 7;";
         Node astRoot = parse(script);
         Node node = NodeTestHelper.findNode(astRoot, Token.GT);
-        assertThat(helper.isCoalesce(node), is(false));
+        assertThat(helper.isCoalesce(node)).isFalse();
     }
 
     private Node parse(String source) {

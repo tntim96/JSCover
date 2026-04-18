@@ -351,8 +351,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -364,11 +363,11 @@ public class CoberturaDataTest {
     public void shouldExtractPackage() {
         CoberturaData data = new CoberturaData(new ArrayList<>());
 
-        assertThat(data.getPackage(null), equalTo(""));
-        assertThat(data.getPackage("test.js"), equalTo(""));
-        assertThat(data.getPackage("/test.js"), equalTo(""));
-        assertThat(data.getPackage("/level1/test.js"), equalTo("/level1"));
-        assertThat(data.getPackage("/level1/level2/test.js"), equalTo("/level1/level2"));
+        assertThat(data.getPackage(null)).isEqualTo("");
+        assertThat(data.getPackage("test.js")).isEqualTo("");
+        assertThat(data.getPackage("/test.js")).isEqualTo("");
+        assertThat(data.getPackage("/level1/test.js")).isEqualTo("/level1");
+        assertThat(data.getPackage("/level1/level2/test.js")).isEqualTo("/level1/level2");
     }
 
     @Test
@@ -384,9 +383,9 @@ public class CoberturaDataTest {
 
         CoberturaData data = new CoberturaData(files);
 
-        assertThat(data.getCodeLineCount(), equalTo(10));
-        assertThat(data.getCodeLinesCoveredCount(), equalTo(7));
-        assertThat(data.getLineCoverRate(), equalTo((double)7/10));
+        assertThat(data.getCodeLineCount()).isEqualTo(10);
+        assertThat(data.getCodeLinesCoveredCount()).isEqualTo(7);
+        assertThat(data.getLineCoverRate()).isEqualTo((double)7/10);
     }
 
     @Test
@@ -402,8 +401,8 @@ public class CoberturaDataTest {
 
         CoberturaData data = new CoberturaData(files);
 
-        assertThat(data.getBranchCount(), equalTo(10));
-        assertThat(data.getBranchesCoveredCount(), equalTo(7));
-        assertThat(data.getBranchRate(), equalTo((double)7/10));
+        assertThat(data.getBranchCount()).isEqualTo(10);
+        assertThat(data.getBranchesCoveredCount()).isEqualTo(7);
+        assertThat(data.getBranchRate()).isEqualTo((double)7/10);
     }
 }

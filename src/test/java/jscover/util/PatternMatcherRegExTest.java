@@ -344,22 +344,20 @@ package jscover.util;
 
 import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class PatternMatcherRegExTest {
+
     @Test
     public void shouldMatch() {
-        assertThat(PatternMatcherRegEx.getExcludePatternMatcher(".*/level2/.*").matches("/level1/level2/code.js"), is(true));
-        assertThat(PatternMatcherRegEx.getIncludePatternMatcher(".*/level2/.*").matches("/level1/level2/code.js"), is(false));
-        assertThat(PatternMatcherRegEx.getIncludePatternMatcher(".*/level2/.*").matches("/level1/level3/code.js"), nullValue());
-
+        assertThat(PatternMatcherRegEx.getExcludePatternMatcher(".*/level2/.*").matches("/level1/level2/code.js")).isTrue();
+        assertThat(PatternMatcherRegEx.getIncludePatternMatcher(".*/level2/.*").matches("/level1/level2/code.js")).isFalse();
+        assertThat(PatternMatcherRegEx.getIncludePatternMatcher(".*/level2/.*").matches("/level1/level3/code.js")).isNull();
     }
 
     @Test
     public void shouldConvertToString() {
-        assertThat(PatternMatcherRegEx.getIncludePatternMatcher(".*/level2/.*").toString(), equalTo("PatternMatcherRegEx{regPattern=.*/level2/.*, exclude=false}"));
-        assertThat(PatternMatcherRegEx.getExcludePatternMatcher(".*/level2/.*").toString(), equalTo("PatternMatcherRegEx{regPattern=.*/level2/.*, exclude=true}"));
-
+        assertThat(PatternMatcherRegEx.getIncludePatternMatcher(".*/level2/.*").toString()).isEqualTo("PatternMatcherRegEx{regPattern=.*/level2/.*, exclude=false}");
+        assertThat(PatternMatcherRegEx.getExcludePatternMatcher(".*/level2/.*").toString()).isEqualTo("PatternMatcherRegEx{regPattern=.*/level2/.*, exclude=true}");
     }
 }
