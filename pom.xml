@@ -68,7 +68,7 @@
         <dependency>
             <groupId>com.google.javascript</groupId>
             <artifactId>closure-compiler</artifactId>
-            <version>v20260407</version>
+            <version>v20260415</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
