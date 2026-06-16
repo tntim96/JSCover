@@ -68,7 +68,7 @@
         <dependency>
             <groupId>com.google.javascript</groupId>
             <artifactId>closure-compiler</artifactId>
-            <version>v20260531</version>
+            <version>v20260614</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
@@ -120,7 +120,7 @@
         <dependency>
         	<groupId>org.jacoco</groupId>
         	<artifactId>org.jacoco.ant</artifactId>
-        	<version>0.8.14</version>
+        	<version>0.8.15</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
