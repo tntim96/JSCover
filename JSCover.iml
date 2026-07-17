@@ -36,20 +36,20 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: com.google.javascript:closure-compiler:v20260712" level="project" />
+    <orderEntry type="library" name="Maven: com.google.javascript:closure-compiler:v20260714" level="project" />
     <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.14.0" level="project" />
     <orderEntry type="library" name="Maven: com.google.errorprone:error_prone_annotations:2.48.0" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.htmlunit:htmlunit:5.2.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.htmlunit:htmlunit:5.3.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.httpcomponents:httpmime:4.5.14" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.httpcomponents:httpclient:4.5.14" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.httpcomponents:httpcore:4.4.16" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: commons-codec:commons-codec:1.11" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.htmlunit:htmlunit-core-js:5.2.0" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.htmlunit:neko-htmlunit:5.2.0" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.htmlunit:htmlunit-cssparser:5.2.0" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.htmlunit:htmlunit-xpath:5.2.0" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.htmlunit:htmlunit-csp:5.2.0" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.htmlunit:htmlunit-websocket-client:5.2.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.htmlunit:htmlunit-core-js:5.3.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.htmlunit:neko-htmlunit:5.3.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.htmlunit:htmlunit-cssparser:5.3.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.htmlunit:htmlunit-xpath:5.3.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.htmlunit:htmlunit-csp:5.3.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.htmlunit:htmlunit-websocket-client:5.3.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.commons:commons-lang3:3.20.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: commons-io:commons-io:2.22.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: commons-logging:commons-logging:1.4.0" level="project" />
