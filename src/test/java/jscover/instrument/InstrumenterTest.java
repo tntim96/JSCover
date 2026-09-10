@@ -1462,7 +1462,7 @@ public class InstrumenterTest {
         String source = "let x = `\n@mouseenter=\"${(evt) => alert('hovered')}\">`;";
         String instrumentedSource = sourceProcessor.instrumentSource(source);
         String expectedSource = "_$jscoverage['test.js'].lineData[1]++;\n" +
-                "let x = `\n@mouseenter=\"${evt => alert('hovered')}\">`;\n";
+                "let x = `\n@mouseenter\\x3d\"${evt => alert('hovered')}\"\\x3e`;\n";
         assertEquals(expectedSource, instrumentedSource);
     }
 }
