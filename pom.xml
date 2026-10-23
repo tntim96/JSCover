@@ -12,7 +12,7 @@
     <description>JSCover is a tool that measures code coverage for JavaScript programs.</description>
     <url>https://tntim96.github.io/JSCover/</url>
     <prerequisites>
-        <maven>3.6.0</maven>
+        <maven>3.6.3</maven>
     </prerequisites>
     <properties>
         <argLine/>
@@ -68,7 +68,7 @@
         <dependency>
             <groupId>com.google.javascript</groupId>
             <artifactId>closure-compiler</artifactId>
-            <version>v20261005</version>
+            <version>v20261021</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
@@ -78,7 +78,7 @@
         <dependency>
             <groupId>org.htmlunit</groupId>
             <artifactId>htmlunit</artifactId>
-            <version>5.5.0</version>
+            <version>5.6.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -194,7 +194,7 @@
             <plugin>
                 <groupId>org.sonatype.central</groupId>
                 <artifactId>central-publishing-maven-plugin</artifactId>
-                <version>0.11.0</version>
+                <version>0.12.0</version>
                 <extensions>true</extensions>
                 <configuration>
                     <publishingServerId>central</publishingServerId>
