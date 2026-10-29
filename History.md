@@ -1,6 +1,6 @@
 2.0.24 / 2026-??-??
 ==================
- * Upgrade closure-compiler v20260128 to v20261021, Rhino 1.9.0 to 1.9.2, GSON 2.13.2 to 2.15.0
+ * Upgrade closure-compiler v20260128 to v20261026, Rhino 1.9.0 to 1.9.2, GSON 2.13.2 to 2.15.0
  * Internal: Mockito 5.20.0 to 5.24.0, JUnit 4.13.2 to JUnit 6.1.0, Hamcrest 3.0 to AssertJ 3.27.7
  * Internal: HTML Unit 4.21.0 to 5.6.0, JaCoCo 0.8.14 to 0.8.16, Maven Resolver Ant Tasks 1.6.0 to 2.0.0
 
